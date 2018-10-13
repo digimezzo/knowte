@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "file": "ngx-translate-http-loader.umd.js",
+  "sources": [
+    "ng://@ngx-translate/http-loader/out/src/http-loader.ts"
+  ],
+  "sourcesContent": [
+    "import {HttpClient} from \"@angular/common/http\";\nimport {TranslateLoader} from \"@ngx-translate/core\";\n\nexport class TranslateHttpLoader implements TranslateLoader {\n  constructor(private http: HttpClient, public prefix: string = \"/assets/i18n/\", public suffix: string = \".json\") {}\n\n  /**\n   * Gets the translations from the server\n   */\n  public getTranslation(lang: string): any {\n    return this.http.get(`${this.prefix}${lang}${this.suffix}`);\n  }\n}\n"
+  ],
+  "names": [],
+  "mappings": ";;;;;;AAGA,IAAA,mBAAA,kBAAA,YAAA;IACE,SAAF,mBAAA,CAAsB,IAAgB,EAAS,MAAgC,EAAS,MAAwB,EAAhH;QAA+C,IAA/C,MAAA,KAAA,KAAA,CAAA,EAA+C,EAAA,MAA/C,GAAA,eAA+E,CAA/E,EAAA;QAAwF,IAAxF,MAAA,KAAA,KAAA,CAAA,EAAwF,EAAA,MAAxF,GAAA,OAAgH,CAAhH,EAAA;QAAsB,IAAtB,CAAA,IAA0B,GAAJ,IAAI,CAAY;QAAS,IAA/C,CAAA,MAAqD,GAAN,MAAM,CAA0B;QAAS,IAAxF,CAAA,MAA8F,GAAN,MAAM,CAAkB;KAAI;IAK3G,mBAAT,CAAA,SAAA,CAAA,cAAuB,GAAd,UAAe,IAAY,EAApC;QACI,OAAO,IAAI,CAAC,IAAI,CAAC,GAAG,CAAC,EAAzB,GAA4B,IAAI,CAAC,MAAM,GAAG,IAAI,GAAG,IAAI,CAAC,MAAQ,CAAC,CAAC;;IAEhE,OAAA,mBAAC,CAAD;CAAC,EAAD,CAAA;;;;;;;;;;;;"
+}

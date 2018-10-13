@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "file": "ngx-translate-http-loader.js",
+  "sources": [
+    "ng://@ngx-translate/http-loader/out/src/http-loader.ts"
+  ],
+  "sourcesContent": [
+    "import {HttpClient} from \"@angular/common/http\";\nimport {TranslateLoader} from \"@ngx-translate/core\";\n\nexport class TranslateHttpLoader implements TranslateLoader {\n  constructor(private http: HttpClient, public prefix: string = \"/assets/i18n/\", public suffix: string = \".json\") {}\n\n  /**\n   * Gets the translations from the server\n   */\n  public getTranslation(lang: string): any {\n    return this.http.get(`${this.prefix}${lang}${this.suffix}`);\n  }\n}\n"
+  ],
+  "names": [],
+  "mappings": ";;;;AAGA,AAAA,MAAA,mBAAA,CAAA;;;;;;IACE,WAAF,CAAsB,IAAgB,EAAS,MAA/C,GAAgE,eAAe,EAAS,MAAxF,GAAyG,OAAO,EAAhH;QAAsB,IAAtB,CAAA,IAA0B,GAAJ,IAAI,CAAY;QAAS,IAA/C,CAAA,MAAqD,GAAN,MAAM,CAA0B;QAAS,IAAxF,CAAA,MAA8F,GAAN,MAAM,CAAkB;KAAI;;;;;;IAK3G,cAAc,CAAC,IAAY,EAApC;QACI,OAAO,IAAI,CAAC,IAAI,CAAC,GAAG,CAAC,CAAzB,EAA4B,IAAI,CAAC,MAAM,CAAvC,EAA0C,IAAI,CAA9C,EAAiD,IAAI,CAAC,MAAM,CAA5D,CAA8D,CAAC,CAAC;;CAE/D;;;;;;;;;;;;;;;;;"
+}

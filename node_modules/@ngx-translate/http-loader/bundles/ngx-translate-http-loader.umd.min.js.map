@@ -1,0 +1,22 @@
+{
+  "version": 3,
+  "file": "ngx-translate-http-loader.umd.min.js",
+  "sources": [
+    "ng://@ngx-translate/http-loader/out/src/http-loader.ts"
+  ],
+  "sourcesContent": [
+    "import {HttpClient} from \"@angular/common/http\";\nimport {TranslateLoader} from \"@ngx-translate/core\";\n\nexport class TranslateHttpLoader implements TranslateLoader {\n  constructor(private http: HttpClient, public prefix: string = \"/assets/i18n/\", public suffix: string = \".json\") {}\n\n  /**\n   * Gets the translations from the server\n   */\n  public getTranslation(lang: string): any {\n    return this.http.get(`${this.prefix}${lang}${this.suffix}`);\n  }\n}\n"
+  ],
+  "names": [
+    "TranslateHttpLoader",
+    "http",
+    "prefix",
+    "suffix",
+    "this",
+    "prototype",
+    "getTranslation",
+    "lang",
+    "get"
+  ],
+  "mappings": "2RAGA,IAAAA,EAAA,WACE,SAAFA,EAAsBC,EAAyBC,EAAyCC,QAAxF,IAAAD,IAA+CA,EAA/C,sBAAA,IAAAC,IAAwFA,EAAxF,SAAsBC,KAAtBH,KAAsBA,EAAyBG,KAA/CF,OAA+CA,EAAyCE,KAAxFD,OAAwFA,EAQxF,OAHSH,EAATK,UAAAC,eAAS,SAAeC,GACpB,OAAOH,KAAKH,KAAKO,IAAI,GAAGJ,KAAKF,OAASK,EAAOH,KAAKD,SAEtDH,EATA"
+}
