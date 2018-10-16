@@ -1,4 +1,18 @@
-.container {
-  height: 100%;
-  display: flex;
+@import 'theme.scss';
+
+mat-tab-group {
+  background-color: $color-darkgrey;
 }
+.mat-tab-body-wrapper {
+  color: #000;
+  background-color: #FFF;
+}
+.mat-tab-label {
+  color: #FFF;
+  font-size: 16px;
+}
+
+.mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
+  background: $color-accent;
+  height: 2px;
+} 

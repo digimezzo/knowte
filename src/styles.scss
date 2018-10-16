@@ -1,24 +1,25 @@
-* {margin: 0; padding: 0; border: 0; vertical-align: baseline;}
-html {box-sizing: border-box;}
-*, *:before, *:after {box-sizing: inherit;}
-html, body {height: 100%; margin: 0;}
-
-body {
-  font-family: "Segoe UI", sans-serif;
-  background: #1A2933; color: #FFF;
-}
-h1 {margin: 0 0 10px 0; font-weight: 600; line-height: 1.2;}
-p {margin-top: 10px; color: rgba(255,255,255,0.4);}
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import 'theme.scss';
 
 @font-face {
   font-family: segoe;
   src: url(assets/font/SegMDL2.ttf);
 }
 
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+* {margin: 0; padding: 0; border: 0; vertical-align: baseline;}
+html {box-sizing: border-box;}
+*, *:before, *:after {box-sizing: inherit;}
+html, body {height: 100%; margin: 0;}
 
 body {
-  border: 1px solid #48545c;
+  font-family: "Ubuntu", "Segoe UI", sans-serif;
+  background: #FFF; color: #000;
+}
+h1 {margin: 0 0 10px 0; font-weight: 600; line-height: 1.2;}
+p {margin-top: 10px; color: rgba(255,255,255,0.4);}
+
+body {
+  border: 1px solid $color-darkgrey;
   overflow-y: hidden;
 }
 
@@ -27,7 +28,7 @@ body {
   position: fixed;
   height: 32px;
   width: calc(100% - 2px); /*Compensate for body 1px border*/
-  background: #254053;
+  background: $color-darkgrey;
   padding: 4px;
   color: #FFF;
 }
@@ -42,7 +43,9 @@ body {
 
 #main {
   height: calc(100% - 32px);
+  width: 100%;
   margin-top: 32px;
+  padding: 0px;
   overflow-y: auto;
 }
 
@@ -53,7 +56,7 @@ body {
   top: 0;
   right: 0;
   height: 100%;
-  font-family: "Segoe MDL2 Assets";
+  font-family: segoe; 
   font-size: 10px;
   -webkit-app-region: no-drag;
 }
@@ -67,15 +70,14 @@ body {
   user-select: none;
   cursor: default;
   opacity: 0.8;
-  font-family: segoe; 
 }
 
 #window-controls .button:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
   opacity: 1;
 }
 #window-controls #close-button:hover {
-  background: #E81123;
+  background: $color-accent;
 }
 #window-controls #restore-button {
   display: none;
