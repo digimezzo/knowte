@@ -1,0 +1,8 @@
+{
+  "name": "@angular/flex-layout/extended",
+  "typings": "../extended.d.ts",
+  "main": "../bundles/flex-layout-extended.umd.js",
+  "module": "../esm5/extended.es5.js",
+  "es2015": "../esm2015/extended.js",
+  "sideEffects": false
+}

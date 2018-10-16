@@ -1,0 +1,8 @@
+{
+  "name": "@angular/flex-layout/grid",
+  "typings": "../grid.d.ts",
+  "main": "../bundles/flex-layout-grid.umd.js",
+  "module": "../esm5/grid.es5.js",
+  "es2015": "../esm2015/grid.js",
+  "sideEffects": false
+}

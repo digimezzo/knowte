@@ -1,7 +1,9 @@
 {
-  "PAGES": {
-      "HOME": {
-          "TITLE": "App works !"
-      }
-  }
+    "TABS": {
+        "ALL": "All",
+        "TODAY": "Today",
+        "YESTERDAY": "Yesterday",
+        "THISWEEK": "This week",
+        "MARKED": "Marked"
+    }
 }
