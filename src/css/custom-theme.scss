@@ -1,18 +1,28 @@
 // Custom Angular Material theme
 // See: https://blog.thoughtram.io/angular/2017/05/23/custom-themes-with-angular-material.html
-@import '../node_modules/@angular/material/theming';
+@import '../../node_modules/@angular/material/theming';
 
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
 @include mat-core();
 
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue.
 $custom-theme-primary: mat-palette($mat-blue);
 $custom-theme-accent: mat-palette($mat-pink, A200, A100, A400);
 $custom-theme-warn: mat-palette($mat-red);
 
+// Create the theme object (a Sass map containing all of the palettes).
 $custom-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
 
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
 @include angular-material-theme($custom-theme);
 
-// Workaround to get access to colors from our custom Angular Material theme
+// Export theme colors, so we can access colors from our custom Angular Material theme.
 // See: https://medium.com/@aleixsuau/how-to-use-angular-material-2-sass-variables-in-your-components-76ce0203f126
 $color-primary: mat-color($custom-theme-primary);
 $color-accent: mat-color($custom-theme-accent);

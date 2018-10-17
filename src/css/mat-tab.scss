@@ -1,0 +1,30 @@
+
+mat-tab-group {
+    background-color: $color-darkgrey;
+    height: 100%;
+  }
+  
+  .mat-tab-body-wrapper {
+    margin: 0px 0px 0px 300px;
+    color: #000;
+    background-color: #fff !important;
+    height: 100%;
+  }
+  
+  .mat-tab-label {
+    color: #FFF !important;
+    font-size: 16px;
+    opacity: 1 !important;
+  }
+  
+  .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
+    height: 3px;
+  }
+  
+  .mat-tab-header {
+    border-bottom-style: none !important;
+  }
+  
+  .mat-tab-header-pagination-chevron{
+    border-color: #FFF !important;
+  }
