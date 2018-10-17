@@ -1,8 +1,0 @@
-{
-  "name": "@angular/flex-layout/flex",
-  "typings": "../flex.d.ts",
-  "main": "../bundles/flex-layout-flex.umd.js",
-  "module": "../esm5/flex.es5.js",
-  "es2015": "../esm2015/flex.js",
-  "sideEffects": false
-}
