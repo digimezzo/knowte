@@ -1,18 +1,38 @@
 <div class="notebooksPane"></div>
 <mat-tab-group>
-  <mat-tab label="{{ 'TABS.ALL' | translate }}">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      {{ 'TABS.ALL' | translate }}
+      <div class="noteCount">924</div>
+    </ng-template>
     <p>{{ 'TABS.ALL' | translate }}</p>
   </mat-tab>
-  <mat-tab label="{{ 'TABS.TODAY' | translate }}">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      {{ 'TABS.TODAY' | translate }}
+      <div class="noteCount">10</div>
+    </ng-template>
     <p>{{ 'TABS.TODAY' | translate }}</p>
   </mat-tab>
-  <mat-tab label="{{ 'TABS.YESTERDAY' | translate }}">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      {{ 'TABS.YESTERDAY' | translate }}
+      <div class="noteCount">8</div>
+    </ng-template>
     <p>{{ 'TABS.YESTERDAY' | translate }}</p>
   </mat-tab>
-  <mat-tab label="{{ 'TABS.THISWEEK' | translate }}">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      {{ 'TABS.THISWEEK' | translate }}
+      <div class="noteCount">5</div>
+    </ng-template>
     <p>{{ 'TABS.THISWEEK' | translate }}</p>
   </mat-tab>
-  <mat-tab label="{{ 'TABS.MARKED' | translate }}">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      {{ 'TABS.THISWEEK' | translate }}
+      <div class="noteCount">2</div>
+    </ng-template>
     <p>{{ 'TABS.MARKED' | translate }}</p>
   </mat-tab>
 </mat-tab-group>

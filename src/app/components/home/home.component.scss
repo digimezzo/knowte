@@ -11,22 +11,36 @@
   width: 300px;
   z-index: 99;
 }
+
+.noteCount{
+  margin: 0 0 10px 10px;
+  min-width: 22px;
+  height:22px;
+  border-radius: 11px;
+  padding: 4px;
+  background-color: $color-accent;
+  font-size: 13px;
+}
+
 mat-tab-group {
   background-color: $color-darkgrey;
   height: 100%;
 }
+
 .mat-tab-body-wrapper {
   margin: 0px 0px 0px 300px;
   color: #000;
   background-color: #fff;
   height: 100%;
 }
+
 .mat-tab-label {
   color: #FFF;
   font-size: 16px;
+  opacity: 1 !important;
 }
 
 .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
   background: $color-accent;
   height: 2px;
-} 
+}
