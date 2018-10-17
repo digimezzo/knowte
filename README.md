@@ -2,7 +2,7 @@
 
 # Knowte 2
 
-Knowte is a note taking application that allows you to quickly and easily organize and find your notes. This version is written using Electron, Angular and Typescrpt.
+Knowte is a note taking application that allows you to quickly and easily organize and find your notes. This version is written using Electron, Angular and Typescript.
 
 [![Release](https://img.shields.io/github/release/digimezzo/Knowte2.svg?style=flat-square)](https://github.com/digimezzo/Knowte2/releases/latest)
 [![Issues](https://img.shields.io/github/issues/digimezzo/Knowte2.svg?style=flat-square)](https://github.com/digimezzo/Knowte2/issues)
