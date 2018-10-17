@@ -7,11 +7,12 @@ export class ColdObservable extends Observable {
         super(function (subscriber) {
             const observable = this;
             const index = observable.logSubscribedFrame();
-            subscriber.add(new Subscription(() => {
+            const subscription = new Subscription();
+            subscription.add(new Subscription(() => {
                 observable.logUnsubscribedFrame(index);
             }));
             observable.scheduleMessages(subscriber);
-            return subscriber;
+            return subscription;
         });
         this.messages = messages;
         this.subscriptions = [];

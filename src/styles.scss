@@ -13,10 +13,11 @@ html, body {height: 100%; margin: 0;}
 
 body {
   font-family: "Ubuntu", "Segoe UI", sans-serif;
-  background: #FFF; color: #000;
+  background: #FFF; 
+  color: #000;
 }
 h1 {margin: 0 0 10px 0; font-weight: 600; line-height: 1.2;}
-p {margin-top: 10px; color: rgba(255,255,255,0.4);}
+p {margin-top: 10px;}
 
 body {
   border: 1px solid $color-darkgrey;

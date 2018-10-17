@@ -12,10 +12,12 @@ export class HotObservable extends Subject {
     _subscribe(subscriber) {
         const subject = this;
         const index = subject.logSubscribedFrame();
-        subscriber.add(new Subscription(() => {
+        const subscription = new Subscription();
+        subscription.add(new Subscription(() => {
             subject.logUnsubscribedFrame(index);
         }));
-        return super._subscribe(subscriber);
+        subscription.add(super._subscribe(subscriber));
+        return subscription;
     }
     setup() {
         const subject = this;

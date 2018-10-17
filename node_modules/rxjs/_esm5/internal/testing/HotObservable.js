@@ -16,10 +16,12 @@ var HotObservable = /*@__PURE__*/ (function (_super) {
     HotObservable.prototype._subscribe = function (subscriber) {
         var subject = this;
         var index = subject.logSubscribedFrame();
-        subscriber.add(new Subscription(function () {
+        var subscription = new Subscription();
+        subscription.add(new Subscription(function () {
             subject.logUnsubscribedFrame(index);
         }));
-        return _super.prototype._subscribe.call(this, subscriber);
+        subscription.add(_super.prototype._subscribe.call(this, subscriber));
+        return subscription;
     };
     HotObservable.prototype.setup = function () {
         var subject = this;

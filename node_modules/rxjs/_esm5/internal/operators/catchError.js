@@ -1,6 +1,7 @@
-/** PURE_IMPORTS_START tslib,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
+/** PURE_IMPORTS_START tslib,_OuterSubscriber,_InnerSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
 import * as tslib_1 from "tslib";
 import { OuterSubscriber } from '../OuterSubscriber';
+import { InnerSubscriber } from '../InnerSubscriber';
 import { subscribeToResult } from '../util/subscribeToResult';
 export function catchError(selector) {
     return function catchErrorOperatorFunction(source) {
@@ -37,7 +38,9 @@ var CatchSubscriber = /*@__PURE__*/ (function (_super) {
                 return;
             }
             this._unsubscribeAndRecycle();
-            this.add(subscribeToResult(this, result));
+            var innerSubscriber = new InnerSubscriber(this, undefined, undefined);
+            this.add(innerSubscriber);
+            subscribeToResult(this, result, undefined, undefined, innerSubscriber);
         }
     };
     return CatchSubscriber;

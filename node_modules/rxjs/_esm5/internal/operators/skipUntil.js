@@ -1,6 +1,7 @@
-/** PURE_IMPORTS_START tslib,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
+/** PURE_IMPORTS_START tslib,_OuterSubscriber,_InnerSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
 import * as tslib_1 from "tslib";
 import { OuterSubscriber } from '../OuterSubscriber';
+import { InnerSubscriber } from '../InnerSubscriber';
 import { subscribeToResult } from '../util/subscribeToResult';
 export function skipUntil(notifier) {
     return function (source) { return source.lift(new SkipUntilOperator(notifier)); };
@@ -19,7 +20,10 @@ var SkipUntilSubscriber = /*@__PURE__*/ (function (_super) {
     function SkipUntilSubscriber(destination, notifier) {
         var _this = _super.call(this, destination) || this;
         _this.hasValue = false;
-        _this.add(_this.innerSubscription = subscribeToResult(_this, notifier));
+        var innerSubscriber = new InnerSubscriber(_this, undefined, undefined);
+        _this.add(innerSubscriber);
+        _this.innerSubscription = innerSubscriber;
+        subscribeToResult(_this, notifier, undefined, undefined, innerSubscriber);
         return _this;
     }
     SkipUntilSubscriber.prototype._next = function (value) {

@@ -35,6 +35,7 @@ var FindValueSubscriber = /*@__PURE__*/ (function (_super) {
         var destination = this.destination;
         destination.next(value);
         destination.complete();
+        this.unsubscribe();
     };
     FindValueSubscriber.prototype._next = function (value) {
         var _a = this, predicate = _a.predicate, thisArg = _a.thisArg;

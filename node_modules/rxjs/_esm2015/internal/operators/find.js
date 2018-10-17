@@ -29,6 +29,7 @@ export class FindValueSubscriber extends Subscriber {
         const destination = this.destination;
         destination.next(value);
         destination.complete();
+        this.unsubscribe();
     }
     _next(value) {
         const { predicate, thisArg } = this;

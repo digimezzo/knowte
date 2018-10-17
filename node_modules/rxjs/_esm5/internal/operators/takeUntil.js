@@ -12,7 +12,7 @@ var TakeUntilOperator = /*@__PURE__*/ (function () {
     TakeUntilOperator.prototype.call = function (subscriber, source) {
         var takeUntilSubscriber = new TakeUntilSubscriber(subscriber);
         var notifierSubscription = subscribeToResult(takeUntilSubscriber, this.notifier);
-        if (notifierSubscription && !notifierSubscription.closed) {
+        if (notifierSubscription && !takeUntilSubscriber.seenValue) {
             takeUntilSubscriber.add(notifierSubscription);
             return source.subscribe(takeUntilSubscriber);
         }
@@ -23,9 +23,12 @@ var TakeUntilOperator = /*@__PURE__*/ (function () {
 var TakeUntilSubscriber = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(TakeUntilSubscriber, _super);
     function TakeUntilSubscriber(destination) {
-        return _super.call(this, destination) || this;
+        var _this = _super.call(this, destination) || this;
+        _this.seenValue = false;
+        return _this;
     }
     TakeUntilSubscriber.prototype.notifyNext = function (outerValue, innerValue, outerIndex, innerIndex, innerSub) {
+        this.seenValue = true;
         this.complete();
     };
     TakeUntilSubscriber.prototype.notifyComplete = function () {

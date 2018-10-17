@@ -189,9 +189,8 @@ var WebSocketSubject = /*@__PURE__*/ (function (_super) {
         if (!this._socket) {
             this._connectSocket();
         }
-        var subscription = new Subscription();
-        subscription.add(this._output.subscribe(subscriber));
-        subscription.add(function () {
+        this._output.subscribe(subscriber);
+        subscriber.add(function () {
             var _socket = _this._socket;
             if (_this._output.observers.length === 0) {
                 if (_socket && _socket.readyState === 1) {
@@ -200,7 +199,7 @@ var WebSocketSubject = /*@__PURE__*/ (function (_super) {
                 _this._resetState();
             }
         });
-        return subscription;
+        return subscriber;
     };
     WebSocketSubject.prototype.unsubscribe = function () {
         var _a = this, source = _a.source, _socket = _a._socket;

@@ -137,7 +137,12 @@ var AjaxSubscriber = /*@__PURE__*/ (function (_super) {
         this.done = true;
         var _a = this, xhr = _a.xhr, request = _a.request, destination = _a.destination;
         var response = new AjaxResponse(e, xhr, request);
-        destination.next(response);
+        if (response.response === errorObject) {
+            destination.error(errorObject.e);
+        }
+        else {
+            destination.next(response);
+        }
     };
     AjaxSubscriber.prototype.send = function () {
         var _a = this, request = _a.request, _b = _a.request, user = _b.user, method = _b.method, url = _b.url, async = _b.async, password = _b.password, headers = _b.headers, body = _b.body;
@@ -212,7 +217,13 @@ var AjaxSubscriber = /*@__PURE__*/ (function (_super) {
             if (progressSubscriber) {
                 progressSubscriber.error(e);
             }
-            subscriber.error(new AjaxTimeoutError(this, request));
+            var ajaxTimeoutError = new AjaxTimeoutError(this, request);
+            if (ajaxTimeoutError.response === errorObject) {
+                subscriber.error(errorObject.e);
+            }
+            else {
+                subscriber.error(ajaxTimeoutError);
+            }
         }
         xhr.ontimeout = xhrTimeout;
         xhrTimeout.request = request;
@@ -239,7 +250,13 @@ var AjaxSubscriber = /*@__PURE__*/ (function (_super) {
                 if (progressSubscriber) {
                     progressSubscriber.error(e);
                 }
-                subscriber.error(new AjaxError('ajax error', this, request));
+                var ajaxError = new AjaxError('ajax error', this, request);
+                if (ajaxError.response === errorObject) {
+                    subscriber.error(errorObject.e);
+                }
+                else {
+                    subscriber.error(ajaxError);
+                }
             };
             xhr.onerror = xhrError_1;
             xhrError_1.request = request;
@@ -272,7 +289,13 @@ var AjaxSubscriber = /*@__PURE__*/ (function (_super) {
                     if (progressSubscriber) {
                         progressSubscriber.error(e);
                     }
-                    subscriber.error(new AjaxError('ajax error ' + status_1, this, request));
+                    var ajaxError = new AjaxError('ajax error ' + status_1, this, request);
+                    if (ajaxError.response === errorObject) {
+                        subscriber.error(errorObject.e);
+                    }
+                    else {
+                        subscriber.error(ajaxError);
+                    }
                 }
             }
         }
@@ -303,32 +326,31 @@ var AjaxResponse = /*@__PURE__*/ (function () {
     return AjaxResponse;
 }());
 export { AjaxResponse };
-var AjaxError = /*@__PURE__*/ (function (_super) {
-    tslib_1.__extends(AjaxError, _super);
-    function AjaxError(message, xhr, request) {
-        var _this = _super.call(this, message) || this;
-        _this.name = 'AjaxError';
-        _this.message = message;
-        _this.xhr = xhr;
-        _this.request = request;
-        _this.status = xhr.status;
-        _this.responseType = xhr.responseType || request.responseType;
-        _this.response = parseXhrResponse(_this.responseType, xhr);
-        Object.setPrototypeOf(_this, AjaxError.prototype);
-        return _this;
+function AjaxErrorImpl(message, xhr, request) {
+    Error.call(this);
+    this.message = message;
+    this.name = 'AjaxError';
+    this.xhr = xhr;
+    this.request = request;
+    this.status = xhr.status;
+    this.responseType = xhr.responseType || request.responseType;
+    this.response = parseXhrResponse(this.responseType, xhr);
+    return this;
+}
+AjaxErrorImpl.prototype = /*@__PURE__*/ Object.create(Error.prototype);
+export var AjaxError = AjaxErrorImpl;
+function parseJson(xhr) {
+    if ('response' in xhr) {
+        return xhr.responseType ? xhr.response : JSON.parse(xhr.response || xhr.responseText || 'null');
     }
-    return AjaxError;
-}(Error));
-export { AjaxError };
+    else {
+        return JSON.parse(xhr.responseText || 'null');
+    }
+}
 function parseXhrResponse(responseType, xhr) {
     switch (responseType) {
         case 'json':
-            if ('response' in xhr) {
-                return xhr.responseType ? xhr.response : JSON.parse(xhr.response || xhr.responseText || 'null');
-            }
-            else {
-                return JSON.parse(xhr.responseText || 'null');
-            }
+            return tryCatch(parseJson)(xhr);
         case 'xml':
             return xhr.responseXML;
         case 'text':
@@ -336,15 +358,10 @@ function parseXhrResponse(responseType, xhr) {
             return ('response' in xhr) ? xhr.response : xhr.responseText;
     }
 }
-var AjaxTimeoutError = /*@__PURE__*/ (function (_super) {
-    tslib_1.__extends(AjaxTimeoutError, _super);
-    function AjaxTimeoutError(xhr, request) {
-        var _this = _super.call(this, 'ajax timeout', xhr, request) || this;
-        _this.name = 'AjaxTimeoutError';
-        Object.setPrototypeOf(_this, AjaxTimeoutError.prototype);
-        return _this;
-    }
-    return AjaxTimeoutError;
-}(AjaxError));
-export { AjaxTimeoutError };
+function AjaxTimeoutErrorImpl(xhr, request) {
+    AjaxError.call(this, 'ajax timeout', xhr, request);
+    this.name = 'AjaxTimeoutError';
+    return this;
+}
+export var AjaxTimeoutError = AjaxTimeoutErrorImpl;
 //# sourceMappingURL=AjaxObservable.js.map

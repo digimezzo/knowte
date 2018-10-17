@@ -24,6 +24,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {MatTabsModule, MatButtonModule} from '@angular/material';
 
+import { FlexLayoutModule } from "@angular/flex-layout";
+
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -36,6 +38,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     WebviewDirective
   ],
   imports: [
+    FlexLayoutModule,
     MatTabsModule,
     MatButtonModule,
     BrowserAnimationsModule,

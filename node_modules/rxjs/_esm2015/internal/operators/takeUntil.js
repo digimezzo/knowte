@@ -10,7 +10,7 @@ class TakeUntilOperator {
     call(subscriber, source) {
         const takeUntilSubscriber = new TakeUntilSubscriber(subscriber);
         const notifierSubscription = subscribeToResult(takeUntilSubscriber, this.notifier);
-        if (notifierSubscription && !notifierSubscription.closed) {
+        if (notifierSubscription && !takeUntilSubscriber.seenValue) {
             takeUntilSubscriber.add(notifierSubscription);
             return source.subscribe(takeUntilSubscriber);
         }
@@ -20,8 +20,10 @@ class TakeUntilOperator {
 class TakeUntilSubscriber extends OuterSubscriber {
     constructor(destination) {
         super(destination);
+        this.seenValue = false;
     }
     notifyNext(outerValue, innerValue, outerIndex, innerIndex, innerSub) {
+        this.seenValue = true;
         this.complete();
     }
     notifyComplete() {

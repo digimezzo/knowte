@@ -1,11 +1,25 @@
 @import 'theme.scss';
 
+.notebooksPane{
+  position: absolute;
+  background-color: $color-lightgrey;
+  border-right: 1px solid $color-lightgrey-border;
+  top: 0;
+  left: 0;
+  margin: 82px 1px 1px 1px;
+  height: calc(100% - 83px);
+  width: 300px;
+  z-index: 99;
+}
 mat-tab-group {
   background-color: $color-darkgrey;
+  height: 100%;
 }
 .mat-tab-body-wrapper {
+  margin: 0px 0px 0px 300px;
   color: #000;
-  background-color: #FFF;
+  background-color: #fff;
+  height: 100%;
 }
 .mat-tab-label {
   color: #FFF;

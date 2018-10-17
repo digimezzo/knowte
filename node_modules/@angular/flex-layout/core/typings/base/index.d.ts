@@ -7,3 +7,4 @@
  */
 export * from './base';
 export * from './base-adapter';
+export * from './base-legacy';

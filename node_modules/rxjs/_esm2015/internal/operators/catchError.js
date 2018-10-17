@@ -1,4 +1,5 @@
 import { OuterSubscriber } from '../OuterSubscriber';
+import { InnerSubscriber } from '../InnerSubscriber';
 import { subscribeToResult } from '../util/subscribeToResult';
 export function catchError(selector) {
     return function catchErrorOperatorFunction(source) {
@@ -32,7 +33,9 @@ class CatchSubscriber extends OuterSubscriber {
                 return;
             }
             this._unsubscribeAndRecycle();
-            this.add(subscribeToResult(this, result));
+            const innerSubscriber = new InnerSubscriber(this, undefined, undefined);
+            this.add(innerSubscriber);
+            subscribeToResult(this, result, undefined, undefined, innerSubscriber);
         }
     }
 }

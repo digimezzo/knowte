@@ -28,7 +28,7 @@ export class AsyncAction extends Action {
         if (delay !== null && this.delay === delay && this.pending === false) {
             return id;
         }
-        return clearInterval(id) && undefined || undefined;
+        clearInterval(id);
     }
     execute(state, delay) {
         if (this.closed) {

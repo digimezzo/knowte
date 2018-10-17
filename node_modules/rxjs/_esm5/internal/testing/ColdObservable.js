@@ -10,11 +10,12 @@ var ColdObservable = /*@__PURE__*/ (function (_super) {
         var _this = _super.call(this, function (subscriber) {
             var observable = this;
             var index = observable.logSubscribedFrame();
-            subscriber.add(new Subscription(function () {
+            var subscription = new Subscription();
+            subscription.add(new Subscription(function () {
                 observable.logUnsubscribedFrame(index);
             }));
             observable.scheduleMessages(subscriber);
-            return subscriber;
+            return subscription;
         }) || this;
         _this.messages = messages;
         _this.subscriptions = [];
