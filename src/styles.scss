@@ -1,5 +1,4 @@
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
-@import 'theme.scss';
+@import 'custom-theme.scss';
 
 @font-face {
   font-family: segoe;
@@ -78,8 +77,9 @@ body {
   opacity: 1;
 }
 #window-controls #close-button:hover {
-  background: $color-accent;
+  background: $color-primary;
 }
+
 #window-controls #restore-button {
   display: none;
 }
@@ -87,9 +87,11 @@ body {
 #window-controls #min-button {
   grid-column: 1;
 }
+
 #window-controls #max-button, #window-controls #restore-button {
   grid-column: 2;
 }
+
 #window-controls #close-button {
   grid-column: 3;
 }

@@ -1,0 +1,24 @@
+// Custom Angular Material theme
+// See: https://blog.thoughtram.io/angular/2017/05/23/custom-themes-with-angular-material.html
+@import '../node_modules/@angular/material/theming';
+
+@include mat-core();
+
+$custom-theme-primary: mat-palette($mat-blue);
+$custom-theme-accent: mat-palette($mat-pink, A200, A100, A400);
+$custom-theme-warn: mat-palette($mat-red);
+
+$custom-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
+
+@include angular-material-theme($custom-theme);
+
+// Workaround to get access to colors from our custom Angular Material theme
+// See: https://medium.com/@aleixsuau/how-to-use-angular-material-2-sass-variables-in-your-components-76ce0203f126
+$color-primary: mat-color($custom-theme-primary);
+$color-accent: mat-color($custom-theme-accent);
+$color-warn: mat-color($custom-theme-warn);
+
+// Our own stuff
+$color-darkgrey: #272E36;
+$color-lightgrey: #f0f0f0;
+$color-lightgrey-border: #dedede;

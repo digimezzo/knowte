@@ -1,4 +1,4 @@
-@import 'theme.scss';
+@import 'custom-theme.scss';
 
 .notebooksPane{
   position: absolute;
@@ -6,8 +6,8 @@
   border-right: 1px solid $color-lightgrey-border;
   top: 0;
   left: 0;
-  margin: 82px 1px 1px 1px;
-  height: calc(100% - 83px);
+  margin: 81px 1px 1px 1px;
+  height: calc(100% - 82px);
   width: 300px;
   z-index: 99;
 }
@@ -17,9 +17,10 @@
   min-width: 22px;
   height:22px;
   border-radius: 11px;
-  padding: 4px;
-  background-color: $color-accent;
-  font-size: 13px;
+  padding: 5px;
+  background-color: $color-primary;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 mat-tab-group {
@@ -41,6 +42,9 @@ mat-tab-group {
 }
 
 .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
-  background: $color-accent;
-  height: 2px;
+  height: 3px;
+}
+
+.mat-tab-header {
+  border-bottom-style: none !important;
 }
