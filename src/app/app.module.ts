@@ -19,6 +19,9 @@ import { WebviewDirective } from './directives/webview.directive';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
+import { NotesComponent } from './components/notes/notes.component';
+import { SettingsComponent } from './components/settings/settings.component';
+import { InformationComponent } from './components/information/information.component';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -35,6 +38,9 @@ export function HttpLoaderFactory(http: HttpClient) {
   declarations: [
     AppComponent,
     HomeComponent,
+    NotesComponent,
+    SettingsComponent,
+    InformationComponent,
     WebviewDirective
   ],
   imports: [
