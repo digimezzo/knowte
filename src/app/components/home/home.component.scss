@@ -1,5 +1,10 @@
 @import 'css/custom-theme.scss';
 
+.mainContent { 
+  position: relative;
+  height: 100%;
+}
+
 .mat-tab-body-wrapper {
   margin: 0px 0px 0px 300px;
 }
@@ -10,8 +15,8 @@
   border-right: 1px solid $color-lightgrey-border;
   top: 0;
   left: 0;
-  margin: 81px 1px 1px 1px;
-  height: calc(100% - 82px);
+  margin: 48px 0 0 0;
+  height: calc(100% - 48px);
   width: 300px;
   z-index: 99;
 }
