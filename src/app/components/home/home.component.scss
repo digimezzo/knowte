@@ -1,5 +1,9 @@
 @import 'css/custom-theme.scss';
 
+.mat-tab-body-wrapper {
+  margin: 0px 0px 0px 300px;
+}
+
 .notebooksPane{
   position: absolute;
   background-color: $color-lightgrey;

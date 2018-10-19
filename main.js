@@ -15,7 +15,8 @@ function createWindow() {
         y: 50,
         width: 850,
         height: 600,
-        frame: false
+        frame: false,
+        icon: __dirname + "/src/assets/icons/png/64x64.png",
     });
     if (serve) {
         require('electron-reload')(__dirname, {
