@@ -1,9 +1,23 @@
 {
-    "TABS": {
+    "NOTES_TABS": {
         "ALL": "All",
         "TODAY": "Today",
         "YESTERDAY": "Yesterday",
         "THISWEEK": "This week",
         "MARKED": "Marked"
+    },
+    "SETTINGS_TABS": {
+        "APPEARANCE": "Appearance",
+        "BEHAVIOR": "Behavior",
+        "ADVANCED": "Advanced"
+    },
+    "INFORMATION_TABS": {
+        "ABOUT": "About",
+        "COMPONENTS": "Components"
+    },
+    "MAIN_MENU":{
+        "NOTES": "Notes",
+        "SETTINGS": "Settings",
+        "INFORMATION": "Information"
     }
 }

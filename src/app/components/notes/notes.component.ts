@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 @Component({
-  selector: 'app-notes',
+  selector: 'notes-component',
   templateUrl: './notes.component.html',
-  styleUrls: ['./notes.component.scss']
+  styleUrls: ['./notes.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class NotesComponent implements OnInit {
 
@@ -11,5 +12,4 @@ export class NotesComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

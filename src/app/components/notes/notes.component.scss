@@ -1,0 +1,34 @@
+@import 'css/custom-theme.scss';
+@import 'css/tabs-and-main-menu.scss';
+
+.notesContainer { 
+  position: relative;
+  height: 100%;
+}
+
+.notesContainer .mat-tab-body-wrapper {
+  margin: 0px -42px 0px 300px;
+}
+
+.notebooksContainer{
+  position: absolute;
+  background-color: $color-lightgrey;
+  border-right: 1px solid $color-lightgrey-border;
+  top: 0;
+  left: 0;
+  margin: 48px 0 0 0;
+  height: calc(100% - 48px);
+  width: 300px;
+  z-index: 99;
+}
+
+.noteCount{
+  margin: 0 0 10px 10px;
+  min-width: 22px;
+  height:22px;
+  border-radius: 11px;
+  padding: 5px;
+  background-color: $color-primary;
+  font-size: 12px;
+  font-weight: bold;
+}
