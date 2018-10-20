@@ -6,7 +6,32 @@
 }
 
 .mat-tab-body-wrapper {
-  margin: 0px 0px 0px 300px;
+  margin: 0px -42px 0px 300px;
+}
+
+.allPane{
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.tabsPane{
+  width: calc(100% - 42px);
+}
+
+.buttonPane{
+  display: flex;
+  width: 42px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  background-color: $color-darkgrey;
+}
+
+.buttonPane .mainMenuButton{
+  font-family: material; 
+  color: #FFF;
+  font-size: 20px;
 }
 
 .notebooksPane{
