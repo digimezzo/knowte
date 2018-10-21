@@ -21,7 +21,6 @@ p {margin-top: 10px;}
     height: 32px;
     width: calc(100% - 2px); /*Compensate for body 1px border*/
     background: $color-darkgrey;
-    padding: 4px;
     color: #FFF;
   }
   
@@ -88,15 +87,6 @@ p {margin-top: 10px;}
     grid-column: 3;
   }
   
-  #window-title {
-    grid-column: 1;
-    display: flex;
-    align-items: center;
-    font-family: "Ubuntu", "Segoe UI", sans-serif;
-    font-size: 12px;
-    margin-left: 8px;
-    overflow-x: hidden;
-  }
   #window-title span {
     overflow: hidden;
     text-overflow: ellipsis;

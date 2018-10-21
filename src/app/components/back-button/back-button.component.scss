@@ -1,0 +1,30 @@
+@import 'css/custom-theme.scss';
+
+.title-and-back-button-container {
+    display: flex;
+    height: 100%;
+    justify-content: left;
+    align-items: center;
+    font-size: 12px;
+}
+
+.back-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 46px;
+    height: 100%;
+    user-select: none;
+    cursor: default;
+    font-family: segoe; 
+    font-size: 13px;
+    -webkit-app-region: no-drag;
+}
+
+.back-button:hover {
+    background: $color-primary;
+}
+
+.title-container{
+    margin-left: 10px;
+}

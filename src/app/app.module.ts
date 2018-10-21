@@ -65,6 +65,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     })
   ],
   providers: [ElectronService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent, BackButtonComponent]
 })
 export class AppModule { }
