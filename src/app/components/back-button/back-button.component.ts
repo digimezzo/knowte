@@ -7,9 +7,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./back-button.component.scss']
 })
 export class BackButtonComponent implements OnInit {
-
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+  }
 
   ngOnInit() {
+  }
+
+  public goToNotes(): void {
+    this.router.navigate(['/notes']);
   }
 }
