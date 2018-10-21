@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 @Component({
-  selector: 'mainmenubutton-component',
-  templateUrl: './mainMenuButton.component.html',
-  styleUrls: ['./mainMenuButton.component.scss']
+  selector: 'main-menu-button',
+  templateUrl: './main-menu-button.component.html',
+  styleUrls: ['./main-menu-button.component.scss']
 })
 export class MainMenuButtonComponent implements OnInit {
 
@@ -11,5 +11,4 @@ export class MainMenuButtonComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

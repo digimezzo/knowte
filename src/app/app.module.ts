@@ -18,7 +18,7 @@ import { ElectronService } from './providers/electron.service';
 import { WebviewDirective } from './directives/webview.directive';
 
 import { AppComponent } from './app.component';
-import { MainMenuButtonComponent } from './components/mainMenuButton/mainMenuButton.component';
+import { MainMenuButtonComponent } from './components/main-menu-button/main-menu-button.component';
 import { NotesComponent } from './components/notes/notes.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { InformationComponent } from './components/information/information.component';
