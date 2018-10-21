@@ -18,6 +18,7 @@ import { ElectronService } from './providers/electron.service';
 import { WebviewDirective } from './directives/webview.directive';
 
 import { AppComponent } from './app.component';
+import { BackButtonComponent } from './components/back-button/back-button.component';
 import { MainMenuButtonComponent } from './components/main-menu-button/main-menu-button.component';
 import { NotesComponent } from './components/notes/notes.component';
 import { SettingsComponent } from './components/settings/settings.component';
@@ -37,6 +38,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 @NgModule({
   declarations: [
     AppComponent,
+    BackButtonComponent,
     MainMenuButtonComponent,
     NotesComponent,
     SettingsComponent,
