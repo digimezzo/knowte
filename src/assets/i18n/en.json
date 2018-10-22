@@ -1,4 +1,9 @@
 {
+    "PAGES":{
+        "NOTES": "Notes",
+        "SETTINGS": "Settings",
+        "INFORMATION": "Information"
+    },
     "NOTES_TABS": {
         "ALL": "All",
         "TODAY": "Today",
@@ -16,8 +21,12 @@
         "COMPONENTS": "Components"
     },
     "MAIN_MENU":{
-        "NOTES": "Notes",
+        "COLLECTIONS": "Collections",
+        "ADD_COLLECTION": "Add collection...",
         "SETTINGS": "Settings",
         "INFORMATION": "Information"
+    },
+    "TOOLTIPS":{
+        "BACK": "Back"
     }
 }

@@ -4,7 +4,14 @@
     </mat-icon>
 </button>
 <mat-menu #menu="matMenu">
-    <button routerLink="/notes" mat-menu-item>{{ 'MAIN_MENU.NOTES' | translate }}</button>
+    <button mat-menu-item [matMenuTriggerFor]="subMenu">{{ 'MAIN_MENU.COLLECTIONS' | translate }}</button>
+    <mat-divider></mat-divider>
     <button routerLink="/settings" mat-menu-item>{{ 'MAIN_MENU.SETTINGS' | translate }}</button>
     <button routerLink="/information" mat-menu-item>{{ 'MAIN_MENU.INFORMATION' | translate }}</button>
+</mat-menu>
+<mat-menu #subMenu="matMenu">
+    <button mat-menu-item>{{ 'MAIN_MENU.ADD_COLLECTION' | translate }}</button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item>Work notes</button>
+    <button mat-menu-item>Home notes</button>
 </mat-menu>
