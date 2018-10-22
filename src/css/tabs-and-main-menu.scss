@@ -1,20 +1,20 @@
-@import 'custom-theme.scss';
+@import 'variables.scss';
 
-.tabsAndMainMenuButtonContainer{
+.tabsAndMainMenuButtonContainer {
     display: flex;
     flex-wrap: nowrap;
     width: 100%;
-  }
-  
-  .tabsContainer{
+}
+
+.tabsContainer {
     width: calc(100% - 42px);
-  }
-  
-  .mainMenuButtonContainer{
+}
+
+.mainMenuButtonContainer {
     display: flex;
     width: 42px;
     height: 48px;
     align-items: center;
     justify-content: center;
     background-color: $color-darkgrey;
-  }
+}

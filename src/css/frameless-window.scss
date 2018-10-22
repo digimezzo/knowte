@@ -1,57 +1,82 @@
-* {margin: 0; padding: 0; border: 0; vertical-align: baseline;}
-html {box-sizing: border-box;}
-*, *:before, *:after {box-sizing: inherit;}
-html, body {height: 100%; margin: 0;}
-
-body {
-  font-family: "Ubuntu", "Segoe UI", sans-serif;
-  background: #FFF; 
-  color: #000;
-  border: 1px solid $color-darkgrey;
-  overflow-y: hidden;
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
 }
 
-h1 {margin: 0 0 10px 0; font-weight: 600; line-height: 1.2;}
+html {
+    box-sizing: border-box;
+}
 
-p {margin-top: 10px;}
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: "Ubuntu", "Segoe UI", sans-serif;
+    background: #FFF;
+    color: #000;
+    border: 1px solid $color-darkgrey;
+    overflow-y: hidden;
+}
+
+h1 {
+    margin: 0 0 10px 0;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+p {
+    margin-top: 10px;
+}
 
 #titlebar {
     display: block;
     position: fixed;
     height: 32px;
-    width: calc(100% - 2px); /*Compensate for body 1px border*/
+    width: calc(100% - 2px); // Compensate for body 1px border
     background: $color-darkgrey;
     color: #FFF;
-  }
-  
-  #titlebar #drag-region {
+}
+
+#titlebar #drag-region {
     width: 100%;
     height: 100%;
     -webkit-app-region: drag;
     display: grid;
     grid-template-columns: auto 138px;
-  }
-  
-  #main {
+}
+
+#main {
     height: calc(100% - 32px);
     width: 100%;
     margin-top: 32px;
     padding: 0px;
     overflow-y: auto;
-  }
-  
-  #window-controls {
+}
+
+#window-controls {
     display: grid;
     grid-template-columns: repeat(3, 46px);
     position: absolute;
     top: 0;
     right: 0;
     height: 100%;
-    font-family: segoe; 
+    font-family: segoe;
     font-size: 10px;
     -webkit-app-region: no-drag;
-  }
-  #window-controls .button {
+}
+
+#window-controls .button {
     grid-row: 1 / span 1;
     display: flex;
     justify-content: center;
@@ -61,34 +86,36 @@ p {margin-top: 10px;}
     user-select: none;
     cursor: default;
     opacity: 0.8;
-  }
-  
-  #window-controls .button:hover {
-    background: rgba(255,255,255,0.1);
+}
+
+#window-controls .button:hover {
+    background: rgba(255, 255, 255, 0.1);
     opacity: 1;
-  }
-  #window-controls #close-button:hover {
+}
+
+#window-controls #close-button:hover {
     background: $color-primary;
-  }
-  
-  #window-controls #restore-button {
+}
+
+#window-controls #restore-button {
     display: none;
-  }
-  
-  #window-controls #min-button {
+}
+
+#window-controls #min-button {
     grid-column: 1;
-  }
-  
-  #window-controls #max-button, #window-controls #restore-button {
+}
+
+#window-controls #max-button,
+#window-controls #restore-button {
     grid-column: 2;
-  }
-  
-  #window-controls #close-button {
+}
+
+#window-controls #close-button {
     grid-column: 3;
-  }
-  
-  #window-title span {
+}
+
+#window-title span {
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1.5;
-  }
+}

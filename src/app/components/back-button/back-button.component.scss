@@ -1,4 +1,4 @@
-@import 'css/custom-theme.scss';
+@import 'css/variables.scss';
 
 .title-and-back-button-container {
     display: flex;
@@ -16,7 +16,7 @@
     height: 100%;
     user-select: none;
     cursor: default;
-    font-family: segoe; 
+    font-family: segoe;
     font-size: 13px;
     -webkit-app-region: no-drag;
 }
@@ -25,6 +25,6 @@
     background: $color-primary;
 }
 
-.title-container{
+.title-container {
     margin-left: 10px;
 }

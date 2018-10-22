@@ -1,28 +1,28 @@
-
 mat-tab-group {
     background-color: $color-darkgrey;
     height: 100%;
-  }
-  
-  .mat-tab-body-wrapper {
+}
+
+.mat-tab-body-wrapper {
     color: #000;
     background-color: #fff !important;
     height: 100%;
-  }
-  
-  .mat-tab-label {
+}
+
+.mat-tab-label {
     color: #FFF !important;
     opacity: 1 !important;
-  }
-  
-  .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
+}
+
+.mat-tab-group.mat-primary .mat-ink-bar,
+.mat-tab-nav-bar.mat-primary .mat-ink-bar {
     height: 3px;
-  }
-  
-  .mat-tab-header {
+}
+
+.mat-tab-header {
     border-bottom-style: none !important;
-  }
-  
-  .mat-tab-header-pagination-chevron{
+}
+
+.mat-tab-header-pagination-chevron {
     border-color: #FFF !important;
-  }
+}
