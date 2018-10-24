@@ -17,6 +17,7 @@ function createWindow() {
         height: 600,
         frame: false,
         icon: __dirname + "/src/assets/icons/png/64x64.png",
+        show: false
     });
     if (serve) {
         require('electron-reload')(__dirname, {
@@ -38,6 +39,10 @@ function createWindow() {
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         win = null;
+    });
+    win.on('ready-to-show', function () {
+        win.show();
+        win.focus();
     });
 }
 try {

@@ -19,6 +19,7 @@ function createWindow() {
     height: 600,
     frame: false,
     icon: `${__dirname}/src/assets/icons/png/64x64.png`, 
+    show: false
   });
 
   if (serve) {
@@ -44,6 +45,10 @@ function createWindow() {
     win = null;
   });
 
+  win.on('ready-to-show', function() { 
+    win.show(); 
+    win.focus(); 
+  });
 }
 
 try {
