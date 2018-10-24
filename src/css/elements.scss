@@ -1,0 +1,12 @@
+@import 'variables.scss';
+
+h1 {
+    font-size: $fontsize-large;
+    font-weight: normal !important;
+    color: $color-primary;
+}
+
+.custom-tooltip {
+    background-color: $color-primary !important;
+    color: white !important;
+}

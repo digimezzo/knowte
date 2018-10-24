@@ -2,10 +2,14 @@
     <div class="tabsAndMainMenuButtonContainer">
         <div class="tabsContainer">
             <mat-tab-group>
-                <mat-tab label="{{ 'INFORMATION_TABS.ABOUT' | translate }}">
-                    <p class="m-20">Work in progress</p>
+                <mat-tab label="{{ 'InformationTabs.About' | translate }}">
+                    <div class="m-20">
+                        <h1>{{ 'AboutPage.About' | translate }}</h1>
+                        <h1>{{ 'AboutPage.Donate' | translate }}</h1>
+                        <h1>{{ 'AboutPage.ContactUs' | translate }}</h1>
+                    </div>
                 </mat-tab>
-                <mat-tab label="{{ 'INFORMATION_TABS.COMPONENTS' | translate }}">
+                <mat-tab label="{{ 'InformationTabs.Components' | translate }}">
                     <p class="m-20">Work in progress</p>
                 </mat-tab>
             </mat-tab-group>

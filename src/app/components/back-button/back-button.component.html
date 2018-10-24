@@ -1,10 +1,10 @@
 <div class="title-and-back-button-container">
-    <div class="back-button" *ngIf="router.url != '/notes'" (click)="goToNotes()" matTooltip="{{ 'TOOLTIPS.BACK' | translate }}">
+    <div class="back-button" *ngIf="router.url != '/notes'" (click)="goToNotes()" matTooltip="{{ 'Tooltips.Back' | translate }}">
         <span>&#xE72B;</span>
     </div>
     <div class="title-container">
-        <div *ngIf="router.url == '/notes'">{{ 'PAGES.NOTES' | translate }}</div>
-        <div *ngIf="router.url == '/settings'">{{ 'PAGES.SETTINGS' | translate }}</div>
-        <div *ngIf="router.url == '/information'">{{ 'PAGES.INFORMATION' | translate }}</div>
+        <div *ngIf="router.url == '/notes'">{{ 'Pages.Notes' | translate }}</div>
+        <div *ngIf="router.url == '/settings'">{{ 'Pages.Settings' | translate }}</div>
+        <div *ngIf="router.url == '/information'">{{ 'Pages.Information' | translate }}</div>
     </div>
 </div>

@@ -1,32 +1,37 @@
 {
-    "PAGES":{
-        "NOTES": "Notes",
-        "SETTINGS": "Settings",
-        "INFORMATION": "Information"
+    "Pages": {
+        "Notes": "Notes",
+        "Settings": "Settings",
+        "Information": "Information"
     },
-    "NOTES_TABS": {
-        "ALL": "All",
-        "TODAY": "Today",
-        "YESTERDAY": "Yesterday",
-        "THISWEEK": "This week",
-        "MARKED": "Marked"
+    "NotesTabs": {
+        "All": "All",
+        "Today": "Today",
+        "Yesterday": "Yesterday",
+        "ThisWeek": "This week",
+        "Marked": "Marked"
     },
-    "SETTINGS_TABS": {
-        "APPEARANCE": "Appearance",
-        "BEHAVIOR": "Behavior",
-        "ADVANCED": "Advanced"
+    "SettingsTabs": {
+        "Appearance": "Appearance",
+        "Behavior": "Behavior",
+        "Advanced": "Advanced"
     },
-    "INFORMATION_TABS": {
-        "ABOUT": "About",
-        "COMPONENTS": "Components"
+    "InformationTabs": {
+        "About": "About",
+        "Components": "Components"
     },
-    "MAIN_MENU":{
-        "COLLECTIONS": "Collections",
-        "ADD_COLLECTION": "Add collection...",
-        "SETTINGS": "Settings",
-        "INFORMATION": "Information"
+    "AboutPage": {
+        "About": "About",
+        "Donate": "Donate",
+        "ContactUs": "Contact us"
     },
-    "TOOLTIPS":{
-        "BACK": "Back"
+    "MainMenu": {
+        "Collections": "Collections",
+        "AddCollection": "Add collection...",
+        "Settings": "Settings",
+        "Information": "Information"
+    },
+    "Tooltips": {
+        "Back": "Back"
     }
 }
