@@ -1,6 +1,22 @@
 @import 'css/tabs-and-main-menu.scss';
+@import 'css/font-faces.scss';
 
 .informationContainer {
     position: relative;
     height: 100%;
+}
+
+.logoContainer {
+    display: flex;
+}
+
+.logoImageContainer {
+    width: 64px;
+}
+
+.logoTextContainer {
+    flex-grow: 1;
+    margin: auto 0px auto 20px;
+    font-family: roboto-thin; 
+    font-size: 42px;
 }
