@@ -15,6 +15,7 @@ function createWindow() {
         y: 50,
         width: 850,
         height: 600,
+        backgroundColor: '#fff',
         frame: false,
         icon: __dirname + "/src/assets/icons/png/64x64.png",
         show: false

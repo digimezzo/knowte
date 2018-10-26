@@ -23,7 +23,8 @@
     "AboutPage": {
         "About": "About",
         "Donate": "Donate",
-        "ContactUs": "Contact us"
+        "ContactUs": "Contact us",
+        "Version": "Version"
     },
     "MainMenu": {
         "Collections": "Collections",

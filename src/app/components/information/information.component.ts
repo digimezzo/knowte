@@ -8,20 +8,16 @@ import { Constants } from '../../core/constants';
 })
 export class InformationComponent implements OnInit {
 
-  private _applicationName: string;
+  public applicationName: string;
+  public applicationVersion: string;
+  public applicationCopyright: string;
 
   constructor() {
    this.applicationName = Constants.applicationName.toUpperCase();
+   this.applicationVersion = Constants.applicationVersion;
+   this.applicationCopyright = Constants.applicationCopyright;
   }
 
   ngOnInit() {
-  }
-
-  public get applicationName(): string {
-    return this._applicationName;
-  }
-
-  public set applicationName(v: string) {
-    this._applicationName = v;
   }
 }
