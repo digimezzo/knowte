@@ -22,7 +22,7 @@ body {
 }
 
 body {
-    font-family: "Ubuntu", "Segoe UI", sans-serif;
+    font-family: Roboto, Ubuntu, "Segoe UI", sans-serif;
     background: #FFF;
     color: #000;
     border: 1px solid $color-darkgrey;
@@ -71,7 +71,7 @@ p {
     top: 0;
     right: 0;
     height: 100%;
-    font-family: segoe;
+    font-family: Segoe;
     font-size: 10px;
     -webkit-app-region: no-drag;
 }

@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./back-button.component.scss']
 })
 export class BackButtonComponent implements OnInit {
-  constructor(private router: Router) {
+  constructor(public router: Router) {
   }
 
   ngOnInit() {
