@@ -46,6 +46,14 @@ function createWindow() {
         win.show();
         win.focus();
     });
+    // Makes links open in external browser
+    win.webContents.on('will-navigate', function (e, url) {
+        // Check that the requested url is not the current page
+        if (url != win.webContents.getURL()) {
+            e.preventDefault();
+            require('electron').shell.openExternal(url);
+        }
+    });
 }
 try {
     // This method will be called when Electron has finished

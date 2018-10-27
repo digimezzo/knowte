@@ -35,5 +35,8 @@
     },
     "Tooltips": {
         "Back": "Back"
+    },
+    "LicenseDialog": {
+        "License": "License"
     }
 }
