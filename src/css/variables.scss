@@ -1,9 +1,44 @@
 @import '../../node_modules/@angular/material/theming';
 
+// Custo palette (Created with: http://mcg.mbitson.com/)
+$knowte-blue: (
+    50: #E0EDF7,
+    100: #B3D3EC,
+    200: #80B6DF,
+    300: #4D98D2,
+    400: #2682C9,
+    500: #006CBF,
+    600: #0064B9,
+    700: #0059B1,
+    800: #004FA9,
+    900: #003D9B,
+    A100: #C6D8FF,
+    A200: #93B5FF,
+    A400: #6092FF,
+    A700: #4781FF,
+    contrast: (
+        50: $black-87-opacity,
+        100: $black-87-opacity,
+        200: $black-87-opacity,
+        300: $black-87-opacity,
+        400: $black-87-opacity,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white,
+        A100: $black-87-opacity,
+        A200: $black-87-opacity,
+        A400: $black-87-opacity,
+        A700: white,
+    )
+);
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue.
-$custom-theme-primary: mat-palette($mat-blue);
+//$custom-theme-primary: mat-palette($mat-blue);
+$custom-theme-primary: mat-palette($knowte-blue);
 $custom-theme-accent: mat-palette($mat-pink, A200, A100, A400);
 $custom-theme-warn: mat-palette($mat-red);
 
