@@ -7,6 +7,8 @@ mat-tab-group {
     color: #000;
     background-color: #fff !important;
     height: 100%;
+    margin: 0px -42px 0px 0px;
+    height: calc(100vh - 82px); // Hack to make tabs fill the window
 }
 
 .mat-tab-label {
