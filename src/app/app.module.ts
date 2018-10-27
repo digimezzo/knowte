@@ -26,7 +26,7 @@ import { InformationComponent } from './components/information/information.compo
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
-import {MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, MatTooltipModule} from '@angular/material';
+import {MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, MatTooltipModule, MatDialogModule} from '@angular/material';
 
 import { FlexLayoutModule } from "@angular/flex-layout";
 
@@ -47,6 +47,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   imports: [
     FlexLayoutModule,
+    MatDialogModule,
     MatTooltipModule,
     MatDividerModule,
     MatIconModule,

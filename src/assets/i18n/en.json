@@ -24,7 +24,8 @@
         "About": "About",
         "Donate": "Donate",
         "ContactUs": "Contact us",
-        "Version": "Version"
+        "Version": "Version",
+        "License": "License"
     },
     "MainMenu": {
         "Collections": "Collections",

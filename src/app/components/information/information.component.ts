@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { Constants } from '../../core/constants';
+import { LicenseDialogComponent } from '../license-dialog/license-dialog.component';
 
 @Component({
   selector: 'information-component',
@@ -12,12 +14,24 @@ export class InformationComponent implements OnInit {
   public applicationVersion: string;
   public applicationCopyright: string;
 
-  constructor() {
-   this.applicationName = Constants.applicationName.toUpperCase();
-   this.applicationVersion = Constants.applicationVersion;
-   this.applicationCopyright = Constants.applicationCopyright;
+  constructor(public dialog: MatDialog) {
+    this.applicationName = Constants.applicationName.toUpperCase();
+    this.applicationVersion = Constants.applicationVersion;
+    this.applicationCopyright = Constants.applicationCopyright;
   }
 
   ngOnInit() {
+  }
+
+  openLicenseDialog(): void {
+    const dialogRef = this.dialog.open(LicenseDialogComponent, {
+      width: '250px',
+      data: { name: "Test" }
+    });
+
+    // dialogRef.afterClosed().subscribe(result => {
+    //   console.log('The dialog was closed');
+    //   this.animal = result;
+    // });
   }
 }
