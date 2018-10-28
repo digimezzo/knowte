@@ -6,13 +6,19 @@
     height: 100%;
 }
 
+.notesContainer .mat-tab-body-wrapper {	
+    margin: 0 0 0 300px;	
+}
+
 .notebooksContainer {
     position: absolute;
     background-color: $color-lightgrey;
     border-right: 1px solid $color-lightgrey-border;
+    border-bottom: 1px solid $color-lightgrey-border;
+    border-left: 1px solid $color-lightgrey-border;
     top: 0;
     left: 0;
-    margin: 48px 0 0 0;
+    margin: 48px 0 0 1px;
     height: calc(100% - 48px);
     width: 300px;
     z-index: 99;

@@ -25,7 +25,6 @@ body {
     font-family: Roboto, Ubuntu, "Segoe UI", sans-serif;
     background: #FFF;
     color: #000;
-    border: 1px solid $color-darkgrey;
     overflow-y: hidden;
 }
 
@@ -41,9 +40,11 @@ p {
 
 #titlebar {
     display: block;
-    position: fixed;
+    position: absolute;
+    top: 0px;
+    left: 0px;
     height: 32px;
-    width: calc(100% - 2px); // Compensate for body 1px border
+    width: 100%;
     background: $color-darkgrey;
     color: #FFF;
 }
