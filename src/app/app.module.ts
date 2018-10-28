@@ -70,7 +70,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     })
   ],
   providers: [ElectronService],
-  bootstrap: [AppComponent, BackButtonComponent],
+  bootstrap: [AppComponent, BackButtonComponent, MainMenuButtonComponent],
   entryComponents: [
     LicenseDialogComponent
   ],

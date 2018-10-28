@@ -1,8 +1,6 @@
-<button class="mainMenuButton" mat-icon-button [matMenuTriggerFor]="menu">
-    <mat-icon>
-        <span>&#58836;</span>
-    </mat-icon>
-</button>
+<div class="button" mat-icon-button [matMenuTriggerFor]="menu">
+    &#xE700;
+</div>
 <mat-menu #menu="matMenu">
     <button mat-menu-item [matMenuTriggerFor]="subMenu">{{ 'MainMenu.Collections' | translate }}</button>
     <mat-divider></mat-divider>

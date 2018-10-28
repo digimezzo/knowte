@@ -53,7 +53,7 @@ p {
     height: 100%;
     -webkit-app-region: drag;
     display: grid;
-    grid-template-columns: auto 138px;
+    grid-template-columns: auto 184px;
 }
 
 #main {
@@ -66,7 +66,7 @@ p {
 
 #window-controls {
     display: grid;
-    grid-template-columns: repeat(3, 46px);
+    grid-template-columns: repeat(4, 46px);
     position: absolute;
     top: 0;
     right: 0;
@@ -101,17 +101,22 @@ p {
     display: none;
 }
 
-#window-controls #min-button {
+#window-controls #menu-button {
     grid-column: 1;
+    font-size: 16px !important;
+}
+
+#window-controls #min-button {
+    grid-column: 2;
 }
 
 #window-controls #max-button,
 #window-controls #restore-button {
-    grid-column: 2;
+    grid-column: 3;
 }
 
 #window-controls #close-button {
-    grid-column: 3;
+    grid-column: 4;
 }
 
 #window-title span {

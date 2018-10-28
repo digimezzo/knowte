@@ -1,33 +1,27 @@
 <div class="informationContainer">
-    <div class="tabsAndMainMenuButtonContainer">
-        <div class="tabsContainer">
-            <mat-tab-group>
-                <mat-tab label="{{ 'InformationTabs.About' | translate }}">
-                    <div class="m-20">
-                        <h1>{{ 'AboutPage.About' | translate }}</h1>
-                        <div class="logoContainer mt-20">
-                            <img class="logoImageContainer" src="assets/icons/png/64x64.png">
-                            <div class="logoTextContainer">{{applicationName}}</div>
-                        </div>
-                        <div class="mt-20">
-                            <div class="versionNumberContainer">
-                                {{ 'AboutPage.Version' | translate }}:
-                                <strong> {{applicationVersion}}</strong>
-                            </div>
-                            <div class="">{{applicationCopyright}}</div>
-                        </div>
-                        <button mat-raised-button color="primary" class="mt-20" (click)="openLicenseDialog()">{{ 'Buttons.License' | translate }}</button>
-                        <h1 class="mt-20">{{ 'AboutPage.Donate' | translate }}</h1>
-                        <h1 class="mt-20">{{ 'AboutPage.ContactUs' | translate }}</h1>
+    <mat-tab-group>
+        <mat-tab label="{{ 'InformationTabs.About' | translate }}">
+            <div class="m-20">
+                <h1>{{ 'AboutPage.About' | translate }}</h1>
+                <div class="logoContainer mt-20">
+                    <img class="logoImageContainer" src="assets/icons/png/64x64.png">
+                    <div class="logoTextContainer">{{applicationName}}</div>
+                </div>
+                <div class="mt-20">
+                    <div class="versionNumberContainer">
+                        {{ 'AboutPage.Version' | translate }}:
+                        <strong> {{applicationVersion}}</strong>
                     </div>
-                </mat-tab>
-                <mat-tab label="{{ 'InformationTabs.Components' | translate }}">
-                    <p class="m-20">Work in progress</p>
-                </mat-tab>
-            </mat-tab-group>
-        </div>
-        <div class="mainMenuButtonContainer">
-            <main-menu-button></main-menu-button>
-        </div>
-    </div>
+                    <div class="">{{applicationCopyright}}</div>
+                </div>
+                <button mat-raised-button color="primary" class="mt-20" (click)="openLicenseDialog()">{{
+                    'Buttons.License' | translate }}</button>
+                <h1 class="mt-20">{{ 'AboutPage.Donate' | translate }}</h1>
+                <h1 class="mt-20">{{ 'AboutPage.ContactUs' | translate }}</h1>
+            </div>
+        </mat-tab>
+        <mat-tab label="{{ 'InformationTabs.Components' | translate }}">
+            <p class="m-20">Work in progress</p>
+        </mat-tab>
+    </mat-tab-group>
 </div>
