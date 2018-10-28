@@ -1,5 +1,4 @@
 @import 'variables.scss';
-
 h1 {
     color: $color-primary;
 }
@@ -7,4 +6,9 @@ h1 {
 a {
     color: $color-primary;
     outline: none;
+}
+
+.separatorBox {
+    padding: 20px;
+    border-bottom: 1px solid #DEDEDE;
 }

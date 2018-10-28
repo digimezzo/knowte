@@ -25,7 +25,11 @@
         "Donate": "Donate",
         "ContactUs": "Contact us",
         "Version": "Version",
-        "License": "License"
+        "License": "License",
+        "IsKnowteUseful": "Is Knowte useful? Please consider donating. Thank you!",
+        "Website":"Website",
+        "Email":"E-mail",
+        "SocialNetworks":"Social networks"
     },
     "MainMenu": {
         "Collections": "Collections",
@@ -42,6 +46,7 @@
     "Buttons": {
         "Ok": "OK",
         "Cancel": "CANCEL",
-        "License": "LICENSE"
+        "License": "LICENSE",
+        "Donate": "DONATE"
     }
 }

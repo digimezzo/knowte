@@ -1,23 +1,37 @@
 <div class="informationContainer">
     <mat-tab-group>
         <mat-tab label="{{ 'InformationTabs.About' | translate }}">
-            <div class="m-20">
+            <div class="separatorBox">
                 <h1>{{ 'AboutPage.About' | translate }}</h1>
                 <div class="logoContainer mt-20">
                     <img class="logoImageContainer" src="assets/icons/png/64x64.png">
-                    <div class="logoTextContainer">{{applicationName}}</div>
+                    <p class="logoTextContainer">{{applicationName}}</p>
                 </div>
                 <div class="mt-20">
-                    <div class="versionNumberContainer">
+                    <p class="versionNumberContainer">
                         {{ 'AboutPage.Version' | translate }}:
                         <strong> {{applicationVersion}}</strong>
-                    </div>
-                    <div class="">{{applicationCopyright}}</div>
+                        <br />{{applicationCopyright}}</p>
                 </div>
-                <button mat-raised-button color="primary" class="mt-20" (click)="openLicenseDialog()">{{
-                    'Buttons.License' | translate }}</button>
-                <h1 class="mt-20">{{ 'AboutPage.Donate' | translate }}</h1>
-                <h1 class="mt-20">{{ 'AboutPage.ContactUs' | translate }}</h1>
+                <button mat-raised-button color="primary" (click)="openLicenseDialog()">
+                    {{ 'Buttons.License' | translate }}
+                </button>
+            </div>
+            <div class="separatorBox">
+                <h1>{{ 'AboutPage.Donate' | translate }}</h1>
+                <p>{{ 'AboutPage.IsKnowteUseful' | translate }}</p>
+                <button mat-raised-button color="primary" (click)="openDonateLink()">
+                    {{ 'Buttons.Donate' | translate }}
+                </button>
+            </div>
+            <div class="separatorBox">
+                <h1>{{ 'AboutPage.ContactUs' | translate }}</h1>
+                <p>
+                    {{ 'AboutPage.Website' | translate }}: <a href="{{ websiteUrl }}">{{ websiteUrl }}</a><br />
+                    {{ 'AboutPage.Email' | translate }}: <a href="{{ emailAddress }}">{{ emailAddress }}</a><br />
+                    {{ 'AboutPage.SocialNetworks' | translate }}: <a href="{{ facebookUrl }}">Facebook</a>,
+                    <a href="{{ twitterUrl }}">Twitter</a>
+                </p>
             </div>
         </mat-tab>
         <mat-tab label="{{ 'InformationTabs.Components' | translate }}">
