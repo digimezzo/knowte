@@ -25,7 +25,7 @@ export class InformationComponent implements OnInit {
 
   openLicenseDialog(): void {
     const dialogRef = this.dialog.open(LicenseDialogComponent, {
-      width: '400px'
+      width: '450px'
     });
 
     // dialogRef.afterClosed().subscribe(result => {

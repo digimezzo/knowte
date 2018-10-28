@@ -38,5 +38,10 @@
     },
     "LicenseDialog": {
         "License": "License"
+    },
+    "Buttons": {
+        "Ok": "OK",
+        "Cancel": "CANCEL",
+        "License": "LICENSE"
     }
 }
