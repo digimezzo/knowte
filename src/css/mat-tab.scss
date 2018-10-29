@@ -15,6 +15,7 @@ mat-tab-group {
 .mat-tab-label {
     color: #FFF !important;
     opacity: 1 !important;
+    user-select: none; // Prevents accidental selection of the header text
 }
 
 .mat-tab-group.mat-primary .mat-ink-bar,

@@ -31,6 +31,9 @@
         "Email":"E-mail",
         "SocialNetworks":"Social networks"
     },
+    "ComponentsPage": {
+        "Components": "Components"
+    },
     "MainMenu": {
         "Collections": "Collections",
         "AddCollection": "Add collection...",

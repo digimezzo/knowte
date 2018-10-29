@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Constants } from '../../core/constants';
+import { ProductInformation } from '../../core/product-information';
 import { LicenseDialogComponent } from '../license-dialog/license-dialog.component';
 
 @Component({
@@ -17,6 +18,7 @@ export class InformationComponent implements OnInit {
   public emailAddress: string;
   public facebookUrl: string;
   public twitterUrl: string;
+  public externalComponents: any[];
 
   constructor(public dialog: MatDialog) {
     this.applicationName = Constants.applicationName.toUpperCase();
@@ -26,6 +28,7 @@ export class InformationComponent implements OnInit {
     this.emailAddress = Constants.emailAddress;
     this.facebookUrl = Constants.facebookUrl;
     this.twitterUrl = Constants.twitterUrl;
+    this.externalComponents = ProductInformation.externalComponents;
   }
 
   ngOnInit() {

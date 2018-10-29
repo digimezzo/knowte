@@ -1,7 +1,7 @@
 <div class="informationContainer">
     <mat-tab-group>
         <mat-tab label="{{ 'InformationTabs.About' | translate }}">
-            <div class="separatorBox">
+            <div class="m-20">
                 <h1>{{ 'AboutPage.About' | translate }}</h1>
                 <div class="logoContainer mt-20">
                     <img class="logoImageContainer" src="assets/icons/png/64x64.png">
@@ -17,14 +17,16 @@
                     {{ 'Buttons.License' | translate }}
                 </button>
             </div>
-            <div class="separatorBox">
+            <hr>
+            <div class="m-20">
                 <h1>{{ 'AboutPage.Donate' | translate }}</h1>
                 <p>{{ 'AboutPage.IsKnowteUseful' | translate }}</p>
                 <button mat-raised-button color="primary" (click)="openDonateLink()">
                     {{ 'Buttons.Donate' | translate }}
                 </button>
             </div>
-            <div class="separatorBox">
+            <hr>
+            <div class="m-20">
                 <h1>{{ 'AboutPage.ContactUs' | translate }}</h1>
                 <p>
                     {{ 'AboutPage.Website' | translate }}: <a href="{{ websiteUrl }}">{{ websiteUrl }}</a><br />
@@ -35,7 +37,17 @@
             </div>
         </mat-tab>
         <mat-tab label="{{ 'InformationTabs.Components' | translate }}">
-            <p class="m-20">Work in progress</p>
+            <div class="m-20">
+                <h1>{{ 'ComponentsPage.Components' | translate }}</h1>
+
+                <p *ngFor="let externalComponent of externalComponents">
+                    <strong>{{externalComponent.name}}</strong><br />
+                    {{externalComponent.description}}<br />
+                    <a href="{{externalComponent.url}}">{{ 'AboutPage.Website' | translate }}</a>
+                    <a class="ml-10" href="{{externalComponent.licenseUrl}}">{{ 'AboutPage.License' | translate }}</a>
+                </p>
+
+            </div>
         </mat-tab>
     </mat-tab-group>
 </div>
