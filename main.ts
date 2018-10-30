@@ -1,13 +1,19 @@
 import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import { Constants } from './src/app/core/constants';
+
+// Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
+import log from 'electron-log';
 
 let win, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
 
-function createWindow() {
+// By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
+log.transports.file.level = 'info';
 
+function createWindow() {
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
 
@@ -36,7 +42,7 @@ function createWindow() {
     }));
   }
 
-  win.webContents.openDevTools();
+  //win.webContents.openDevTools();
 
   // Emitted when the window is closed.
   win.on('closed', () => {
@@ -63,6 +69,7 @@ function createWindow() {
 }
 
 try {
+  log.info(`+++ Starting ${Constants.applicationName} +++`);
 
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
@@ -71,6 +78,7 @@ try {
 
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
+    log.info(`+++ Stopping ${Constants.applicationName} +++`);
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
