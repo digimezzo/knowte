@@ -8,7 +8,7 @@
     <button routerLink="/information" mat-menu-item>{{ 'MainMenu.Information' | translate }}</button>
 </mat-menu>
 <mat-menu #subMenu="matMenu">
-    <button mat-menu-item>{{ 'MainMenu.AddCollection' | translate }}</button>
+    <button mat-menu-item (click)="addCollection()" >{{ 'MainMenu.AddCollection' | translate }}</button>
     <mat-divider></mat-divider>
     <button mat-menu-item>Work notes</button>
     <button mat-menu-item>Home notes</button>

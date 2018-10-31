@@ -51,5 +51,8 @@
         "Cancel": "CANCEL",
         "License": "LICENSE",
         "Donate": "DONATE"
+    },
+    "AddCollectionDialog": {
+        "AddCollection": "Add collection"
     }
 }

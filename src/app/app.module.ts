@@ -24,7 +24,8 @@ import { MainMenuButtonComponent } from './components/main-menu-button/main-menu
 import { NotesComponent } from './components/notes/notes.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { InformationComponent } from './components/information/information.component';
-import { LicenseDialogComponent } from './components/license-dialog/license-dialog.component';
+import { LicenseDialogComponent } from './components/dialogs/license-dialog/license-dialog.component';
+import { AddCollectionDialogComponent } from './components/dialogs/add-collection-dialog/add-collection-dialog.component';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -46,6 +47,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SettingsComponent,
     InformationComponent,
     LicenseDialogComponent,
+    AddCollectionDialogComponent,
     WebviewDirective
   ],
   imports: [
@@ -73,7 +75,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [ElectronService, CollectionService],
   bootstrap: [AppComponent, BackButtonComponent, MainMenuButtonComponent],
   entryComponents: [
-    LicenseDialogComponent
+    LicenseDialogComponent, AddCollectionDialogComponent
   ],
 })
 export class AppModule { }

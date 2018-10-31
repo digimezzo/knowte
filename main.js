@@ -4,11 +4,14 @@ var electron_1 = require("electron");
 var path = require("path");
 var url = require("url");
 var constants_1 = require("./src/app/core/constants");
+// Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
+// See post by megahertz: https://github.com/megahertz/electron-log/issues/60
+// "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
 var electron_log_1 = require("electron-log");
 var win, serve;
 var args = process.argv.slice(1);
 serve = args.some(function (val) { return val === '--serve'; });
-// By default, electron-log logs only starting from level 'warn'.
+// By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 electron_log_1.default.transports.file.level = 'info';
 function createWindow() {
     var electronScreen = electron_1.screen;

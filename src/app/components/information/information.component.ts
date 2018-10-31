@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Constants } from '../../core/constants';
-import { LicenseDialogComponent } from '../license-dialog/license-dialog.component';
+import { LicenseDialogComponent } from '../dialogs/license-dialog/license-dialog.component';
 
 @Component({
   selector: 'information-component',
@@ -19,7 +19,7 @@ export class InformationComponent implements OnInit {
   public twitterUrl: string;
   public externalComponents: any[];
 
-  constructor(public dialog: MatDialog) {
+  constructor(private dialog: MatDialog) {
     this.applicationName = Constants.applicationName.toUpperCase();
     this.applicationVersion = Constants.applicationVersion;
     this.applicationCopyright = Constants.applicationCopyright;
