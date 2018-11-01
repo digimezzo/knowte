@@ -1,0 +1,12 @@
+@import 'css/variables.scss';
+
+.mainMenuButton {
+    display: flex;
+}
+
+.mainMenuIcon {
+    font-family: Material;
+    font-size: 22px;
+    color: $color-grey-icon;
+    margin: 0 8px 0 0;
+}

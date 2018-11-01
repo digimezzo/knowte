@@ -2,14 +2,32 @@
     &#xE700;
 </div>
 <mat-menu #menu="matMenu">
-    <button mat-menu-item [matMenuTriggerFor]="subMenu">{{ 'MainMenu.Collections' | translate }}</button>
+    <button class="mainMenuButton" mat-menu-item [matMenuTriggerFor]="subMenu">
+        <span class="mainMenuIcon">&#xE6DD;</span>
+        {{ 'MainMenu.Collections' | translate }}
+    </button>
     <mat-divider></mat-divider>
-    <button routerLink="/settings" mat-menu-item>{{ 'MainMenu.Settings' | translate }}</button>
-    <button routerLink="/information" mat-menu-item>{{ 'MainMenu.Information' | translate }}</button>
+    <button class="mainMenuButton" routerLink="/settings" mat-menu-item>
+        <span class="mainMenuIcon">&#xE8B8;</span>
+        {{ 'MainMenu.Settings' | translate }}
+    </button>
+    <button class="mainMenuButton" routerLink="/information" mat-menu-item>
+        <span class="mainMenuIcon">&#xE88E;</span>
+        {{ 'MainMenu.Information' | translate }}
+    </button>
 </mat-menu>
 <mat-menu #subMenu="matMenu">
-    <button mat-menu-item (click)="addCollection()" >{{ 'MainMenu.AddCollection' | translate }}</button>
+    <button class="mainMenuButton" mat-menu-item (click)="addCollection()">
+        <span class="mainMenuIcon">&#xE145;</span>
+        {{ 'MainMenu.AddCollection' | translate }}
+    </button>
     <mat-divider></mat-divider>
-    <button mat-menu-item>Work notes</button>
-    <button mat-menu-item>Home notes</button>
+    <button class="mainMenuButton" mat-menu-item>
+        <span class="mainMenuIcon">&#xE02F;</span>
+        Work notes
+    </button>
+    <button class="mainMenuButton" mat-menu-item>
+            <span class="mainMenuIcon">&#xE02F;</span>
+            Home notes
+        </button>
 </mat-menu>
