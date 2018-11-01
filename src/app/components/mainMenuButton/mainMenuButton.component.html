@@ -1,4 +1,4 @@
-<div class="button" mat-icon-button [matMenuTriggerFor]="menu">
+<div *ngIf="hasCollections" class="button" mat-icon-button [matMenuTriggerFor]="menu">
     &#xE700;
 </div>
 <mat-menu #menu="matMenu">

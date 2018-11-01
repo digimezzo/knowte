@@ -1,13 +1,12 @@
 @import 'css/variables.scss';
 @import 'css/tabs-and-main-menu.scss';
-
 .notesContainer {
     position: relative;
     height: 100%;
 }
 
-.notesContainer .mat-tab-body-wrapper {	
-    margin: 0 0 0 300px;	
+.notesContainer .mat-tab-body-wrapper {
+    margin: 0 0 0 300px;
 }
 
 .notebooksContainer {
@@ -37,6 +36,11 @@
 
 .welcomeContainer {
     background-color: $color-darkgrey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 }
 
 .logoContainer {

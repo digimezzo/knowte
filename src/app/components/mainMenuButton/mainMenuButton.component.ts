@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
-import {AddCollectionDialogComponent } from '../dialogs/addCollectionDialog/addCollectionDialog.component';
+import { AddCollectionDialogComponent } from '../dialogs/addCollectionDialog/addCollectionDialog.component';
 import { MatDialog } from '@angular/material';
 
 @Component({
@@ -10,7 +10,11 @@ import { MatDialog } from '@angular/material';
 })
 export class MainMenuButtonComponent implements OnInit {
 
-  constructor(private dialog: MatDialog, private collectionService: CollectionService) { }
+  constructor(private dialog: MatDialog, private collectionService: CollectionService) {
+    this.hasCollections = collectionService.hasCollections;
+  }
+
+  public hasCollections: boolean;
 
   ngOnInit() {
   }
