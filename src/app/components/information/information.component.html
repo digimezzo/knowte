@@ -3,10 +3,7 @@
         <mat-tab label="{{ 'InformationTabs.About' | translate }}">
             <div class="m-20">
                 <h1>{{ 'AboutPage.About' | translate }}</h1>
-                <div class="logoContainer mt-20">
-                    <img class="logoImageContainer" src="assets/icons/png/64x64.png">
-                    <p class="logoTextContainer">{{applicationName}}</p>
-                </div>
+                <logo-full class="logoContainer mt-20" [textColor]="'black'"></logo-full>
                 <div class="mt-20">
                     <p class="versionNumberContainer">
                         {{ 'AboutPage.Version' | translate }}:

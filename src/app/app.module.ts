@@ -25,6 +25,7 @@ import { NotesComponent } from './components/notes/notes.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { InformationComponent } from './components/information/information.component';
 import { LicenseDialogComponent } from './components/dialogs/licenseDialog/licenseDialog.component';
+import { LogoFullComponent } from './components/logoFull/logoFull.component';
 import { AddCollectionDialogComponent } from './components/dialogs/addCollectionDialog/addCollectionDialog.component';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -48,6 +49,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     InformationComponent,
     LicenseDialogComponent,
     AddCollectionDialogComponent,
+    LogoFullComponent,
     WebviewDirective
   ],
   imports: [

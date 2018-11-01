@@ -1,4 +1,7 @@
-<div class="notesContainer">
+<div *ngIf="!hasCollections" class="welcomeContainer p-20">
+    <logo-full [textColor]="'white'"></logo-full>
+</div>
+<div *ngIf="hasCollections" class="notesContainer">
     <div class="notebooksContainer"></div>
     <mat-tab-group>
         <mat-tab>

@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Backend } from './backend';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class CollectionService {
   constructor() {
   }
+
+  public hasCollections: boolean = false;
 }

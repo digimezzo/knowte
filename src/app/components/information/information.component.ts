@@ -4,23 +4,12 @@ import { Constants } from '../../core/constants';
 import { LicenseDialogComponent } from '../dialogs/licenseDialog/licenseDialog.component';
 
 @Component({
-  selector: 'information-component',
+  selector: 'information',
   templateUrl: './information.component.html',
   styleUrls: ['./information.component.scss']
 })
 export class InformationComponent implements OnInit {
-
-  public applicationName: string;
-  public applicationVersion: string;
-  public applicationCopyright: string;
-  public websiteUrl: string;
-  public emailAddress: string;
-  public facebookUrl: string;
-  public twitterUrl: string;
-  public externalComponents: any[];
-
   constructor(private dialog: MatDialog) {
-    this.applicationName = Constants.applicationName.toUpperCase();
     this.applicationVersion = Constants.applicationVersion;
     this.applicationCopyright = Constants.applicationCopyright;
     this.websiteUrl = Constants.websiteUrl;
@@ -29,6 +18,14 @@ export class InformationComponent implements OnInit {
     this.twitterUrl = Constants.twitterUrl;
     this.externalComponents = Constants.externalComponents;
   }
+
+  public applicationVersion: string;
+  public applicationCopyright: string;
+  public websiteUrl: string;
+  public emailAddress: string;
+  public facebookUrl: string;
+  public twitterUrl: string;
+  public externalComponents: any[];
 
   ngOnInit() {
   }
