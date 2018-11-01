@@ -13,19 +13,19 @@ import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { ElectronService } from './providers/electron.service';
-import { CollectionService } from './providers/collection.service';
+import { ElectronService } from './services/electron.service';
+import { CollectionService } from './services/collection.service';
 
 import { WebviewDirective } from './directives/webview.directive';
 
 import { AppComponent } from './app.component';
-import { BackButtonComponent } from './components/back-button/back-button.component';
-import { MainMenuButtonComponent } from './components/main-menu-button/main-menu-button.component';
+import { BackButtonComponent } from './components/backButton/backButton.component';
+import { MainMenuButtonComponent } from './components/mainMenuButton/mainMenuButton.component';
 import { NotesComponent } from './components/notes/notes.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { InformationComponent } from './components/information/information.component';
-import { LicenseDialogComponent } from './components/dialogs/license-dialog/license-dialog.component';
-import { AddCollectionDialogComponent } from './components/dialogs/add-collection-dialog/add-collection-dialog.component';
+import { LicenseDialogComponent } from './components/dialogs/licenseDialog/licenseDialog.component';
+import { AddCollectionDialogComponent } from './components/dialogs/addCollectionDialog/addCollectionDialog.component';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 

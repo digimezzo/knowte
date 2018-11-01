@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'back-button',
-  templateUrl: './back-button.component.html',
-  styleUrls: ['./back-button.component.scss']
+  templateUrl: './backButton.component.html',
+  styleUrls: ['./backButton.component.scss']
 })
 export class BackButtonComponent implements OnInit {
   constructor(public router: Router) {

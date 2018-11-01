@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Constants } from '../../core/constants';
-import { LicenseDialogComponent } from '../dialogs/license-dialog/license-dialog.component';
+import { LicenseDialogComponent } from '../dialogs/licenseDialog/licenseDialog.component';
 
 @Component({
   selector: 'information-component',

@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { CollectionService } from '../../providers/collection.service';
-import {AddCollectionDialogComponent } from '../dialogs/add-collection-dialog/add-collection-dialog.component';
+import { CollectionService } from '../../services/collection.service';
+import {AddCollectionDialogComponent } from '../dialogs/addCollectionDialog/addCollectionDialog.component';
 import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'main-menu-button',
-  templateUrl: './main-menu-button.component.html',
-  styleUrls: ['./main-menu-button.component.scss']
+  templateUrl: './mainMenuButton.component.html',
+  styleUrls: ['./mainMenuButton.component.scss']
 })
 export class MainMenuButtonComponent implements OnInit {
 

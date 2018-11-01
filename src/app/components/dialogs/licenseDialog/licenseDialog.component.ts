@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'license-dialog-component',
-    templateUrl: './license-dialog.component.html',
-    styleUrls: ['./license-dialog.component.scss']
+    selector: 'license-dialog',
+    templateUrl: './licenseDialog.component.html',
+    styleUrls: ['./licenseDialog.component.scss']
 })
 export class LicenseDialogComponent implements OnInit {
 
