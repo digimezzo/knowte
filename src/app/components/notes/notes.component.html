@@ -1,6 +1,7 @@
 <div *ngIf="!hasCollections" class="welcomeContainer p-20">
     <div>
         <logo-full [textColor]="'white'"></logo-full>
+        <div class="welcomeText mt-20">{{ 'WelcomePage.Title' | translate }}</div>
     </div>
 </div>
 <div *ngIf="hasCollections" class="notesContainer">
