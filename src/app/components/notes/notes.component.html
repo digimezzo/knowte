@@ -1,8 +1,10 @@
-<div *ngIf="!hasCollections" class="welcomeContainer p-3">
-    <div>
-        <logo-full [textColor]="'white'"></logo-full>
-        <div class="welcomeText mt-3">{{ 'WelcomePage.Title' | translate }}</div>
-    </div>
+<div *ngIf="!hasCollections" class="welcomeContainer">
+    <logo-full [textColor]="'white'"></logo-full>
+    <div class="welcomeTitle mt-4">{{ 'WelcomePage.Title' | translate }}</div>
+    <div class="welcomeText mt-4">{{ 'WelcomePage.Text' | translate }}</div>
+    <button class="mt-4" mat-raised-button color="primary" (click)="openDirectoryChooser()">
+        {{ 'WelcomePage.SelectButton' | translate }}
+    </button>
 </div>
 <div *ngIf="hasCollections" class="notesContainer">
     <div class="notebooksContainer"></div>

@@ -10,7 +10,7 @@ import { Constants } from '../../core/constants';
   encapsulation: ViewEncapsulation.None
 })
 export class NotesComponent implements OnInit {
-  constructor(private collectionService: CollectionService) { 
+  constructor(private collectionService: CollectionService) {
     this.hasCollections = collectionService.hasCollections;
   }
 
@@ -18,5 +18,9 @@ export class NotesComponent implements OnInit {
   public applicationName: string = Constants.applicationName.toUpperCase();
 
   ngOnInit() {
+  }
+
+  public openDirectoryChooser(): void {
+
   }
 }
