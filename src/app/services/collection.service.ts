@@ -8,5 +8,5 @@ export class CollectionService {
   constructor() {
   }
 
-  public hasCollections: boolean = false;
+  public hasCollections: boolean = true;
 }

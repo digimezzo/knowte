@@ -1,7 +1,7 @@
-<div *ngIf="!hasCollections" class="welcomeContainer p-20">
+<div *ngIf="!hasCollections" class="welcomeContainer p-3">
     <div>
         <logo-full [textColor]="'white'"></logo-full>
-        <div class="welcomeText mt-20">{{ 'WelcomePage.Title' | translate }}</div>
+        <div class="welcomeText mt-3">{{ 'WelcomePage.Title' | translate }}</div>
     </div>
 </div>
 <div *ngIf="hasCollections" class="notesContainer">
@@ -12,35 +12,35 @@
                 {{ 'NotesTabs.All' | translate }}
                 <div class="noteCount">924</div>
             </ng-template>
-            <p class="m-20">Work in progress</p>
+            <p class="m-3">Work in progress</p>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Today' | translate }}
                 <div class="noteCount">10</div>
             </ng-template>
-            <p class="m-20">Work in progress</p>
+            <p class="m-3">Work in progress</p>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Yesterday' | translate }}
                 <div class="noteCount">8</div>
             </ng-template>
-            <p class="m-20">Work in progress</p>
+            <p class="m-3">Work in progress</p>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.ThisWeek' | translate }}
                 <div class="noteCount">5</div>
             </ng-template>
-            <p class="m-20">Work in progress</p>
+            <p class="m-3">Work in progress</p>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Marked' | translate }}
                 <div class="noteCount">2</div>
             </ng-template>
-            <p class="m-20">Work in progress</p>
+            <p class="m-3">Work in progress</p>
         </mat-tab>
     </mat-tab-group>
 </div>
