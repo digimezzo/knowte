@@ -3,6 +3,7 @@
 .notesContainer {
     position: relative;
     height: 100%;
+    width: 100%;
 }
 
 .notesContainer .mat-tab-body-wrapper {
@@ -32,73 +33,4 @@
     background-color: $color-primary;
     font-size: 12px;
     font-weight: bold;
-}
-
-.welcomeContainer {
-    background-color: $color-darkgrey;
-    width: 100%;
-    height: 100%;
-    padding: 64px;
-}
-
-.welcomeContentContainer{
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.welcomeContentContainerForeground{
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 99;
-}
-
-.welcomeContentContainerBackground{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
-
-.welcomePenImage{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    opacity: 0.025;
-}
-
-.logoContainer {
-    display: flex;
-}
-
-.logoImageContainer {
-    width: 64px;
-}
-
-.logoTextContainer {
-    flex-grow: 1;
-    margin: auto 0px auto 20px;
-    font-family: roboto-thin;
-    font-size: 48px;
-    color: white;
-}
-
-.welcomeTitle{
-    font-size: 24px;
-    color: white;
-}
-
-.welcomeText{
-    font-size: 16px;
-    color:#9fa2a5;
-    max-width: 600px;
 }

@@ -17,7 +17,7 @@ export class BackButtonComponent implements OnInit {
   ngOnInit() {
   }
 
-  public goToNotes(): void {
-    this.router.navigate(['/notes']);
+  public goToMain(): void {
+    this.router.navigate(['/main']);
   }
 }

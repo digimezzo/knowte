@@ -13,25 +13,29 @@ import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
+// Services
 import { ElectronService } from './services/electron.service';
 import { CollectionService } from './services/collection.service';
 
+// Directives
 import { WebviewDirective } from './directives/webview.directive';
 
+// Components
 import { AppComponent } from './app.component';
 import { BackButtonComponent } from './components/backButton/backButton.component';
 import { MainMenuButtonComponent } from './components/mainMenuButton/mainMenuButton.component';
-import { NotesComponent } from './components/notes/notes.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { InformationComponent } from './components/information/information.component';
 import { LicenseDialogComponent } from './components/dialogs/licenseDialog/licenseDialog.component';
 import { LogoFullComponent } from './components/logoFull/logoFull.component';
 import { AddCollectionDialogComponent } from './components/dialogs/addCollectionDialog/addCollectionDialog.component';
+import { MainComponent } from './components/main/main.component';
+import { WelcomeComponent } from './components/welcome/welcome.component';
+import { NotesComponent } from './components/notes/notes.component';
 
+// Modules
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-
 import {MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, MatTooltipModule, MatDialogModule} from '@angular/material';
-
 import { FlexLayoutModule } from "@angular/flex-layout";
 
 // AoT requires an exported function for factories
@@ -44,6 +48,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppComponent,
     BackButtonComponent,
     MainMenuButtonComponent,
+    MainComponent,
+    WelcomeComponent,
     NotesComponent,
     SettingsComponent,
     InformationComponent,

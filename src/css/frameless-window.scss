@@ -43,7 +43,7 @@ p {
     position: absolute;
     top: 0px;
     left: 0px;
-    height: 32px;
+    height: $titlebar-height;
     width: 100%;
     background: $color-darkgrey;
     color: #FFF;
@@ -58,9 +58,9 @@ p {
 }
 
 #main {
-    height: calc(100% - 32px);
+    height: calc(100% - $titlebar-height);
     width: 100%;
-    margin-top: 32px;
+    margin-top: $titlebar-height;
     padding: 0px;
     overflow-y: hidden;
 }

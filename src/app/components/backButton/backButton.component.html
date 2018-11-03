@@ -1,9 +1,9 @@
 <div *ngIf="hasCollections" class="title-and-back-button-container">
-    <div class="back-button" *ngIf="router.url != '/notes'" (click)="goToNotes()" matTooltip="{{ 'Tooltips.Back' | translate }}">
+    <div class="back-button" *ngIf="router.url != '/main'" (click)="goToMain()" matTooltip="{{ 'Tooltips.Back' | translate }}">
         <span>&#xE72B;</span>
     </div>
     <div class="title-container">
-        <div *ngIf="router.url == '/notes'">{{ 'Pages.Notes' | translate }}</div>
+        <div *ngIf="router.url == '/main'">{{ 'Pages.Notes' | translate }}</div>
         <div *ngIf="router.url == '/settings'">{{ 'Pages.Settings' | translate }}</div>
         <div *ngIf="router.url == '/information'">{{ 'Pages.Information' | translate }}</div>
     </div>
