@@ -17,6 +17,9 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ElectronService } from './services/electron.service';
 import { CollectionService } from './services/collection.service';
 
+// Stores
+import { NoteStore } from './data/noteStore';
+
 // Directives
 import { WebviewDirective } from './directives/webview.directive';
 
@@ -80,7 +83,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
     })
   ],
-  providers: [ElectronService, CollectionService],
+  providers: [ElectronService, CollectionService, NoteStore],
   bootstrap: [AppComponent, BackButtonComponent, MainMenuButtonComponent],
   entryComponents: [
     LicenseDialogComponent, AddCollectionDialogComponent

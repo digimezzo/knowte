@@ -1,10 +1,14 @@
+import { Injectable } from '@angular/core';
 import log from 'electron-log';
 import * as fs from 'fs';
 import { app } from 'electron';
 import * as path from 'path';
 import { Constants } from '../core/constants';
 
-export class DatabaseMigrator {
+@Injectable({
+    providedIn: 'root',
+})
+export class NoteStore {
     constructor() {
     }
 
@@ -15,11 +19,8 @@ export class DatabaseMigrator {
 
         if (!fs.existsSync(databaseFileFullPath)) {
             log.info("Database does not exist. Creating new database.");
-            this.createDatabase();
+            // this.createDatabase();
         }
     }
 
-    private createDatabase(): void {
-
-    }
 }

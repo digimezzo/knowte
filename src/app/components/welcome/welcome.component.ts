@@ -32,7 +32,7 @@ export class WelcomeComponent implements OnInit {
 
             log.info(`Selected directory: '${folderPath[0]}'`);
 
-            if (this.collectionService.createStorageDirectory(folderPath[0])) {
+            if (this.collectionService.initializeStorageDirectory(folderPath[0])) {
 
             }
         });
