@@ -55,7 +55,8 @@
         "Ok": "OK",
         "Cancel": "CANCEL",
         "License": "LICENSE",
-        "Donate": "DONATE"
+        "Donate": "DONATE",
+        "ViewLog": "VIEW LOG"
     },
     "AddCollectionDialog": {
         "AddCollection": "Add collection"
@@ -63,8 +64,8 @@
     "DialogTitles": {
         "SelectFolder": "Select a folder"
     },
-    "Errors": {
+    "ErrorTexts": {
         "Error": "Error",
-        "StorageDirectoryCreationError": "I could not create the directory '{storageDirectory}'. The directory might already exist or you don't have permission to create it. Please verify the log file for more information."
+        "StorageDirectoryCreationError": "I could not create the directory '{storageDirectory}'. The directory might already exist or you don't have permission to create it. Please verify the log for more information."
     }
 }

@@ -5,6 +5,7 @@ import * as Store from 'electron-store';
 import * as fs from 'fs';
 import { Constants } from '../core/constants';
 import * as path from 'path';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,9 @@ export class CollectionService {
   constructor(private noteStore: NoteStore) {
   }
 
+  private storageDirectoryInitializedSubject = new Subject<boolean>();
+  storageDirectoryInitialized$ = this.storageDirectoryInitializedSubject.asObservable();
+
   private store: Store = new Store();
 
   public hasCollections: boolean = this.hasStorageDirectory();
@@ -20,22 +24,21 @@ export class CollectionService {
   public initializeStorageDirectory(storageDirectoryParent: string): boolean {
     try {
       // We don't need to create the storage directory if it already exists.
-      if (this.hasStorageDirectory()) {
-        return true;
+      if (!this.hasStorageDirectory()) {
+        let storageDirectory: string = path.join(storageDirectoryParent, Constants.collectionsSubDirectory);
+        // 1. Create the storage directory on disk
+        fs.mkdirSync(storageDirectory);
+        log.error(`Created storageDirectory '${storageDirectory}' on disk`);
+
+        // 2. If storage directory creation succeeded, save the selected directory in the settings.
+        this.saveStorageDirectory(storageDirectory);
       }
-
-      let storageDirectory: string = path.join(storageDirectoryParent, Constants.collectionsSubDirectory);
-      // 1. Create the storage directory on disk
-      fs.mkdirSync(storageDirectory);
-      log.error(`Created storageDirectory '${storageDirectory}' on disk`);
-
-      // 2. If storage directory creation succeeded, save the selected directory in the settings.
-      this.saveStorageDirectory(storageDirectory);
     } catch (error) {
       log.error(`Could not create storage directory. Cause: ${error}`);
       return false;
     }
 
+    this.storageDirectoryInitializedSubject.next(true);
     return true;
   }
 
