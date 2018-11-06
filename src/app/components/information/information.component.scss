@@ -1,4 +1,9 @@
+@import 'css/variables.scss';
+// Couldn't find a better way to force the main container to fill the screen
 .informationContainer {
-    position: relative;
-    height: 100%;
+    position: absolute;
+    top: $titlebar-height;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
