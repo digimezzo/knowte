@@ -28,7 +28,7 @@ function createWindow() {
     backgroundColor: '#fff',
     frame: false,
     icon: `${__dirname}/src/assets/icons/png/64x64.png`,
-    show: true
+    show: false
   });
 
   if (serve) {
@@ -55,7 +55,11 @@ function createWindow() {
   });
 
   // 'ready-to-show' doesn't fire on Windows. See: https://github.com/electron/electron/issues/7779
-  win.on('ready-to-show', function () {
+  // win.on('ready-to-show', function () {
+    // win.show();
+    // win.focus();
+  // });
+  win.webContents.on('dom-ready', function () {
     win.show();
     win.focus();
   });
