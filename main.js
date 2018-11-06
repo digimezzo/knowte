@@ -25,7 +25,7 @@ function createWindow() {
         backgroundColor: '#fff',
         frame: false,
         icon: __dirname + "/src/assets/icons/png/64x64.png",
-        show: false
+        show: true
     });
     if (serve) {
         require('electron-reload')(__dirname, {
@@ -49,14 +49,14 @@ function createWindow() {
         win = null;
     });
     // 'ready-to-show' doesn't fire on Windows. See: https://github.com/electron/electron/issues/7779
-    win.on('ready-to-show', function () {
-        // win.show();
-        // win.focus();
-    });
-    win.webContents.on('dom-ready', function () {
-        win.show();
-        win.focus();
-    });
+    // win.on('ready-to-show', function () {
+    // win.show();
+    // win.focus();
+    // });
+    // win.webContents.on('dom-ready', function () {
+    //   win.show();
+    //   win.focus();
+    // });
     // Makes links open in external browser
     win.webContents.on('will-navigate', function (e, url) {
         // Check that the requested url is not the current page

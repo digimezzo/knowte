@@ -4,6 +4,8 @@ import { remote } from 'electron';
 import log from 'electron-log';
 import { Constants } from '../../core/constants';
 import { CollectionService } from '../../services/collection.service';
+import { MatDialog } from '@angular/material';
+import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 
 @Component({
     selector: 'welcome',
@@ -12,7 +14,7 @@ import { CollectionService } from '../../services/collection.service';
 })
 export class WelcomeComponent implements OnInit {
 
-    constructor(private translate: TranslateService, private collectionService: CollectionService) {
+    constructor(private translate: TranslateService, private collectionService: CollectionService, private dialog: MatDialog) {
         log.info("Showing welcome screen");
     }
 
@@ -32,8 +34,10 @@ export class WelcomeComponent implements OnInit {
 
             log.info(`Selected directory: '${folderPath[0]}'`);
 
-            if (this.collectionService.initializeStorageDirectory(folderPath[0])) {
-
+            if (!this.collectionService.initializeStorageDirectory(folderPath[0])) {
+                const dialogRef = this.dialog.open(ErrorDialogComponent, {
+                    width: '450px'
+                  });
             }
         });
     }
