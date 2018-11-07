@@ -21,23 +21,34 @@ export class CollectionService {
   private store: Store = new Store();
 
   public hasCollections: boolean = this.hasStorageDirectory();
+  private generarteStorageDirectoryPath(parentDirectory: string): string{
+    return path.join(parentDirectory, Constants.collectionsSubDirectory);
+  }
 
-  public initializeStorageDirectory(storageDirectoryParent: string): OperationResult {
+  private createStorageDirectoryOnDisk(storageDirectory: string): void {
+    fs.mkdirSync(storageDirectory);
+    log.info(`Created storageDirectory '${storageDirectory}' on disk`);
+  }
+
+  private saveStorageDirectoryInSettings(storageDirectory: string): void {
+    this.store.set('storageDirectory', storageDirectory);
+    log.info(`Saved storageDirectory '${storageDirectory}'`);
+  }
+
+  public initializeStorageDirectory(parentDirectory: string): OperationResult {
 
     let storageDirectory: string = "";
 
     try {
       // We don't need to create the storage directory if it already exists.
       if (!this.hasStorageDirectory()) {
-        storageDirectory = path.join(storageDirectoryParent, Constants.collectionsSubDirectory);
+        storageDirectory = this.generarteStorageDirectoryPath(parentDirectory);
 
         // 1. Create the storage directory on disk
-        fs.mkdirSync(storageDirectory);
-        log.info(`Created storageDirectory '${storageDirectory}' on disk`);
+        this.createStorageDirectoryOnDisk(storageDirectory);
 
         // 2. If storage directory creation succeeded, save the selected directory in the settings.
-        this.store.set('storageDirectory', storageDirectory);
-        log.info(`Saved storageDirectory '${storageDirectory}'`);
+        this.saveStorageDirectoryInSettings(storageDirectory);
 
         // 3. Delete the old index database, if it exists, and create a new database.
 
@@ -53,8 +64,7 @@ export class CollectionService {
   }
 
   public hasStorageDirectory(): boolean {
-    // If we have a storage directory and it exists on disk, 
-    // we assume that it can be used to store collections.
+    // If we have a storage directory and it exists on disk, we assume that it can be used to store collections.
     let storageDirectoryFoundInSettings: boolean = this.store.has('storageDirectory');
     let storageDirectoryFoundOnDisk: boolean = fs.existsSync(this.store.get('storageDirectory'));
 
