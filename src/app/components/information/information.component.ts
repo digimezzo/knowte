@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { Constants } from '../../core/constants';
 import { LicenseDialogComponent } from '../dialogs/licenseDialog/licenseDialog.component';
 
 @Component({
-  selector: 'information',
+  selector: 'information-page',
   templateUrl: './information.component.html',
   styleUrls: ['./information.component.scss']
 })
@@ -31,7 +31,7 @@ export class InformationComponent implements OnInit {
   }
 
   openLicenseDialog(): void {
-    const dialogRef = this.dialog.open(LicenseDialogComponent, {
+    let dialogRef: MatDialogRef<LicenseDialogComponent> = this.dialog.open(LicenseDialogComponent, {
       width: '450px'
     });
 

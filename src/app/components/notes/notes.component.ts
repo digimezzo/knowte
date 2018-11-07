@@ -3,7 +3,7 @@ import { CollectionService } from '../../services/collection.service';
 import log from 'electron-log';
 
 @Component({
-  selector: 'notes',
+  selector: 'notes-page',
   templateUrl: './notes.component.html',
   styleUrls: ['./notes.component.scss'],
   encapsulation: ViewEncapsulation.None

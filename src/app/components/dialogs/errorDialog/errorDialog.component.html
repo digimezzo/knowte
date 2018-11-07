@@ -1,6 +1,6 @@
-<h2 mat-dialog-title>{{ 'ErrorTexts.Error' | translate }}</h2>
+<h2 mat-dialog-title>{{ 'DialogTitles.Error' | translate }}</h2>
 <mat-dialog-content>
-    <p>{{errorText}}</p>
+    <p>{{ data.errorText }}</p>
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-raised-button color="primary" [mat-dialog-close]="true">{{ 'Buttons.Ok' | translate }}</button>

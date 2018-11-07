@@ -3,7 +3,7 @@ import { CollectionService } from '../../services/collection.service';
 import { Subscription } from "rxjs";
 
 @Component({
-    selector: 'main',
+    selector: 'main-page',
     templateUrl: './main.component.html',
     styleUrls: ['./main.component.scss']
 })

@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import { Constants } from '../core/constants';
 import * as path from 'path';
 import { Subject } from 'rxjs';
+import { OperationResult } from './operationResult';
 
 @Injectable({
   providedIn: 'root',
@@ -21,25 +22,34 @@ export class CollectionService {
 
   public hasCollections: boolean = this.hasStorageDirectory();
 
-  public initializeStorageDirectory(storageDirectoryParent: string): boolean {
+  public initializeStorageDirectory(storageDirectoryParent: string): OperationResult {
+
+    let storageDirectory: string = "";
+
     try {
       // We don't need to create the storage directory if it already exists.
       if (!this.hasStorageDirectory()) {
-        let storageDirectory: string = path.join(storageDirectoryParent, Constants.collectionsSubDirectory);
+        storageDirectory = path.join(storageDirectoryParent, Constants.collectionsSubDirectory);
+
         // 1. Create the storage directory on disk
         fs.mkdirSync(storageDirectory);
-        log.error(`Created storageDirectory '${storageDirectory}' on disk`);
+        log.info(`Created storageDirectory '${storageDirectory}' on disk`);
 
         // 2. If storage directory creation succeeded, save the selected directory in the settings.
-        this.saveStorageDirectory(storageDirectory);
+        this.store.set('storageDirectory', storageDirectory);
+        log.info(`Saved storageDirectory '${storageDirectory}'`);
+
+        // 3. Delete the old index database, if it exists, and create a new database.
+
+        // 4. Create a default collection
       }
     } catch (error) {
       log.error(`Could not create storage directory. Cause: ${error}`);
-      return false;
+      return new OperationResult(false, storageDirectory);
     }
 
     this.storageDirectoryInitializedSubject.next(true);
-    return true;
+    return new OperationResult(true, storageDirectory);
   }
 
   public hasStorageDirectory(): boolean {
@@ -55,17 +65,5 @@ export class CollectionService {
 
     log.info(`Storage directory was not found in the settings or on disk: storageDirectoryFoundInSettings=${storageDirectoryFoundInSettings}, storageDirectoryFoundOnDisk=${storageDirectoryFoundOnDisk}.`);
     return false;
-  }
-
-  public saveStorageDirectory(storageDirectory: string): boolean {
-    try {
-      this.store.set('storageDirectory', storageDirectory);
-      log.error(`Saved storageDirectory '${storageDirectory}'`);
-    } catch (error) {
-      log.error(`Could not save storage directory. Cause: ${error}`);
-      return false;
-    }
-
-    return true;
   }
 }

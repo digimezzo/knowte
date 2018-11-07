@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { AddCollectionDialogComponent } from '../dialogs/addCollectionDialog/addCollectionDialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -23,7 +23,7 @@ export class MainMenuButtonComponent implements OnInit {
   }
 
   public addCollection(): void {
-    const dialogRef = this.dialog.open(AddCollectionDialogComponent, {
+    let dialogRef: MatDialogRef<AddCollectionDialogComponent> = this.dialog.open(AddCollectionDialogComponent, {
       width: '450px'
     });
 

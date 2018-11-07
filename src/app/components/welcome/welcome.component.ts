@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { remote } from 'electron';
 import log from 'electron-log';
@@ -6,15 +6,16 @@ import { Constants } from '../../core/constants';
 import { CollectionService } from '../../services/collection.service';
 import { MatDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
+import { OperationResult } from '../../services/operationResult';
 
 @Component({
-    selector: 'welcome',
+    selector: 'welcome-page',
     templateUrl: './welcome.component.html',
     styleUrls: ['./welcome.component.scss']
 })
 export class WelcomeComponent implements OnInit {
 
-    constructor(private translate: TranslateService, private collectionService: CollectionService, private dialog: MatDialog) {
+    constructor(private translate: TranslateService, private collectionService: CollectionService, private dialog: MatDialog, private zone: NgZone) {
         log.info("Showing welcome screen");
     }
 
@@ -32,12 +33,17 @@ export class WelcomeComponent implements OnInit {
                 return;
             }
 
-            log.info(`Selected directory: '${folderPath[0]}'`);
+            let selectedParentPath: string = folderPath[0];
+            log.info(`Selected directory: '${selectedParentPath}'`);
 
-            if (!this.collectionService.initializeStorageDirectory(folderPath[0])) {
-                const dialogRef = this.dialog.open(ErrorDialogComponent, {
-                    width: '450px'
-                  });
+            let initializeStorageDirectory: OperationResult = this.collectionService.initializeStorageDirectory(selectedParentPath);
+
+            if (!initializeStorageDirectory.isSuccess) {
+                this.zone.run(() => {
+                    this.dialog.open(ErrorDialogComponent, {
+                        width: '450px', data: { errorText: this.translate.instant('ErrorTexts.StorageDirectoryCreationError').replace("{storageDirectory}", `'${initializeStorageDirectory.message}'`) }
+                    });
+                });
             }
         });
     }

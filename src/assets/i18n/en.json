@@ -62,10 +62,10 @@
         "AddCollection": "Add collection"
     },
     "DialogTitles": {
-        "SelectFolder": "Select a folder"
+        "SelectFolder": "Select a folder",
+        "Error": "Error"
     },
     "ErrorTexts": {
-        "Error": "Error",
-        "StorageDirectoryCreationError": "I could not create the directory '{storageDirectory}'. The directory might already exist or you don't have permission to create it. Please verify the log for more information."
+        "StorageDirectoryCreationError": "I could not create the directory {storageDirectory}. The directory might already exist or you don't have the required permissions to create it. Please verify the log for more information."
     }
 }

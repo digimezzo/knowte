@@ -32,6 +32,7 @@ import { InformationComponent } from './components/information/information.compo
 import { LicenseDialogComponent } from './components/dialogs/licenseDialog/licenseDialog.component';
 import { LogoFullComponent } from './components/logoFull/logoFull.component';
 import { AddCollectionDialogComponent } from './components/dialogs/addCollectionDialog/addCollectionDialog.component';
+import { ErrorDialogComponent } from './components/dialogs/errorDialog/errorDialog.component';
 import { MainComponent } from './components/main/main.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { NotesComponent } from './components/notes/notes.component';
@@ -58,6 +59,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     InformationComponent,
     LicenseDialogComponent,
     AddCollectionDialogComponent,
+    ErrorDialogComponent,
     LogoFullComponent,
     WebviewDirective
   ],
@@ -86,7 +88,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [ElectronService, CollectionService, NoteStore],
   bootstrap: [AppComponent, BackButtonComponent, MainMenuButtonComponent],
   entryComponents: [
-    LicenseDialogComponent, AddCollectionDialogComponent
+    LicenseDialogComponent, AddCollectionDialogComponent, ErrorDialogComponent
   ],
 })
 export class AppModule { }
