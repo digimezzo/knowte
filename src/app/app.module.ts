@@ -40,7 +40,6 @@ import { NotesComponent } from './components/notes/notes.component';
 // Modules
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, MatTooltipModule, MatDialogModule} from '@angular/material';
-import { FlexLayoutModule } from "@angular/flex-layout";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -64,7 +63,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     WebviewDirective
   ],
   imports: [
-    FlexLayoutModule,
     MatDialogModule,
     MatTooltipModule,
     MatDividerModule,
