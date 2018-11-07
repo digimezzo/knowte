@@ -16,7 +16,7 @@ import { OperationResult } from '../../services/operationResult';
 export class WelcomeComponent implements OnInit {
 
     constructor(private translate: TranslateService, private collectionService: CollectionService, private dialog: MatDialog, private zone: NgZone) {
-        log.info("Showing welcome screen");
+        log.info("Showing welcome page");
     }
 
     public applicationName: string = Constants.applicationName.toUpperCase();

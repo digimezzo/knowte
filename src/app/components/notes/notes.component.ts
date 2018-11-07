@@ -10,7 +10,7 @@ import log from 'electron-log';
 })
 export class NotesComponent implements OnInit {
   constructor(private collectionService: CollectionService) {
-    log.info("Showing main screen");
+    log.info("Showing notes page");
   }
 
   public allNotesCount: number = 0;

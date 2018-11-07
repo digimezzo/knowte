@@ -1,7 +1,6 @@
 import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import { Constants } from './src/app/core/constants';
 
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
@@ -54,12 +53,9 @@ function createWindow() {
     win = null;
   });
 
-  // 'ready-to-show' doesn't fire on Windows. See: https://github.com/electron/electron/issues/7779
-  // win.on('ready-to-show', function () {
-    // win.show();
-    // win.focus();
-  // });
-  win.webContents.on('dom-ready', function () {
+  // 'ready-to-show' doesn't fire on Windows in dev mode. In prod it seems to work. 
+  // See: https://github.com/electron/electron/issues/7779
+  win.on('ready-to-show', function () {
     win.show();
     win.focus();
   });
@@ -75,7 +71,7 @@ function createWindow() {
 }
 
 try {
-  log.info(`+++ Starting ${Constants.applicationName} (${Constants.applicationVersion}) +++`);
+  log.info(`+++ Starting +++`);
 
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
@@ -84,7 +80,7 @@ try {
 
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
-    log.info(`+++ Stopping ${Constants.applicationName} (${Constants.applicationVersion}) +++`);
+    log.info(`+++ Stopping +++`);
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {

@@ -1,6 +1,6 @@
 export class Constants {
-    static readonly applicationName: string = "Knowte";
-    static readonly applicationVersion: any = require("../../../package.json").version;
+    static readonly applicationName: string = require("../../../package.json").name;
+    static readonly applicationVersion: string = require("../../../package.json").version;
     static readonly applicationCopyright: string = "Copyright Digimezzo Ⓒ 2013 - 2018";
     static readonly donateUrl = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MQALEWTEZ7HX8";
     static readonly websiteUrl = "https://www.digimezzo.com";
