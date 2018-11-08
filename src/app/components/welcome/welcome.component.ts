@@ -6,7 +6,6 @@ import { Constants } from '../../core/constants';
 import { CollectionService } from '../../services/collection.service';
 import { MatDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
-import { OperationResult } from '../../services/operationResult';
 
 @Component({
     selector: 'welcome-page',
@@ -33,15 +32,15 @@ export class WelcomeComponent implements OnInit {
                 return;
             }
 
-            let selectedParentPath: string = folderPath[0];
-            log.info(`Selected directory: '${selectedParentPath}'`);
+            let selectedParentDirectory: string = folderPath[0];
+            log.info(`Selected directory: '${selectedParentDirectory}'`);
 
-            let initializeStorageDirectory: OperationResult = this.collectionService.initializeStorage(selectedParentPath);
-
-            if (!initializeStorageDirectory.isSuccess) {
+            if (this.collectionService.initializeStorageDirectory(selectedParentDirectory)) {
+                // TODO: create database and start indexing
+            } else {
                 this.zone.run(() => {
                     this.dialog.open(ErrorDialogComponent, {
-                        width: '450px', data: { errorText: this.translate.instant('ErrorTexts.StorageDirectoryCreationError').replace("{storageDirectory}", `'${initializeStorageDirectory.message}'`) }
+                        width: '450px', data: { errorText: this.translate.instant('ErrorTexts.StorageDirectoryCreationError').replace("{storageDirectory}", `'${selectedParentDirectory}'`) }
                     });
                 });
             }

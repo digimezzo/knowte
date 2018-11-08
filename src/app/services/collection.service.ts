@@ -6,92 +6,117 @@ import * as fs from 'fs';
 import { Constants } from '../core/constants';
 import * as path from 'path';
 import { Subject } from 'rxjs';
-import { OperationResult } from './operationResult';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionService {
-  constructor(private noteStore: NoteStore) {
-  }
-
+  private settings: Store = new Store();
   private storageDirectoryInitializedSubject = new Subject<boolean>();
   storageDirectoryInitialized$ = this.storageDirectoryInitializedSubject.asObservable();
 
-  private store: Store = new Store();
-
-  public hasCollections: boolean = this.hasStorageDirectory();
-  private generateStorageDirectoryPath(parentDirectory: string): string {
-    return path.join(parentDirectory, Constants.collectionsSubDirectory);
+  constructor(private noteStore: NoteStore) {
+    this.createDefaultCollectionDirectory();
   }
 
-  private createStorageDirectoryOnDisk(storageDirectory: string): void {
+  public hasStorageDirectory: boolean = this.checkStorageDirectory();
 
-    // Create storage directory
-    if (!fs.existsSync(storageDirectory)) {
-      fs.mkdirSync(storageDirectory);
-      log.info(`Created storageDirectory '${storageDirectory}' on disk`);
-    } else {
-      log.info(`StorageDirectory '${storageDirectory}' already exists on disk. No need to create it.`);
-    }
+  private checkStorageDirectory(): boolean {
+    // If we have a storage directory in the settings and it exists on disk, we assume that it can be used to store collections.
+    let storageDirectoryFoundInSettings: boolean = this.settings.has('storageDirectory');
+    let settingsStorageDirectory: string = "";
 
-    // If there are no collections, create a default collection.
-    let directories: string[] = fs.readdirSync(storageDirectory).filter(file => fs.statSync(path.join(storageDirectory, file)).isDirectory());
+    if (storageDirectoryFoundInSettings) {
+      settingsStorageDirectory = this.settings.get('storageDirectory');
 
-    if (directories.length === 0 || !directories.some(directory => directory.includes(Constants.collectionFoldersSuffix))) {
-      fs.mkdirSync(path.join(storageDirectory, `${Constants.defaultCollectionName} ${Constants.collectionFoldersSuffix}`));
-    }
-  }
+      if (fs.existsSync(settingsStorageDirectory)) {
+        log.info("Storage directory was found in the settings and on disk");
 
-  private saveStorageDirectoryInSettings(storageDirectory: string): void {
-    this.store.set('storageDirectory', storageDirectory);
-    log.info(`Saved storageDirectory '${storageDirectory}'`);
-  }
-
-  private updateIndexDatabase(): void {
-    // For now, we're just resetting the database. Ultimately it would be 
-    // better not to delete it and to check and udate the contents instead.
-    this.noteStore.resetDatabase();
-  }
-
-  public initializeStorage(parentDirectory: string): OperationResult {
-
-    let storageDirectory: string = "";
-
-    try {
-      // We don't need to create the storage directory if it already exists.
-      if (!this.hasStorageDirectory()) {
-        storageDirectory = this.generateStorageDirectoryPath(parentDirectory);
-
-        // 1. Create the storage directory on disk
-        this.createStorageDirectoryOnDisk(storageDirectory);
-
-        // 2. If storage directory creation succeeded, save the selected directory in the settings.
-        this.saveStorageDirectoryInSettings(storageDirectory);
-
-        // 3. Update the index database.
-        this.updateIndexDatabase();
+        return true;
       }
-    } catch (error) {
-      log.error(`Could not create storage directory. Cause: ${error}`);
-      return new OperationResult(false, storageDirectory);
     }
 
-    this.storageDirectoryInitializedSubject.next(true);
-    return new OperationResult(true, storageDirectory);
-  }
+    log.info(`Storage directory was not found in the settings or on disk: storageDirectoryFoundInSettings=${storageDirectoryFoundInSettings}, storageDirectoryValueInSettings=${settingsStorageDirectory}.`);
 
-  public hasStorageDirectory(): boolean {
-    // If we have a storage directory and it exists on disk, we assume that it can be used to store collections.
-    let storageDirectoryFoundInSettings: boolean = this.store.has('storageDirectory');
-    let storageDirectoryFoundOnDisk: boolean = fs.existsSync(this.store.get('storageDirectory'));
-
-    if (storageDirectoryFoundInSettings && storageDirectoryFoundOnDisk) {
-      log.info("Storage directory was found in the settings and on disk");
-      return true;
-    }
-
-    log.info(`Storage directory was not found in the settings or on disk: storageDirectoryFoundInSettings=${storageDirectoryFoundInSettings}, storageDirectoryFoundOnDisk=${storageDirectoryFoundOnDisk}.`);
     return false;
   }
+
+  private createDefaultCollectionDirectory(): void {
+    // If no storage directory is found, don't try to create a default collection directory.
+    if (!this.hasStorageDirectory) {
+      return;
+    }
+
+    let settingsStorageDirectory: string = this.settings.get('storageDirectory');
+
+    // If there are no collections, create a default collection.
+    let directories: string[] = fs.readdirSync(settingsStorageDirectory).filter(file => fs.statSync(path.join(settingsStorageDirectory, file)).isDirectory());
+
+    if (directories.length === 0 || !directories.some(directory => directory.includes(Constants.collectionFoldersSuffix))) {
+      let defaultCollectionName: string = `${Constants.defaultCollectionName} ${Constants.collectionFoldersSuffix}`;
+      fs.mkdirSync(path.join(settingsStorageDirectory, defaultCollectionName));
+      log.info(`No collections were found. Created new collection '${defaultCollectionName}'.`);
+    }
+  }
+
+  // private updateIndexDatabase(): void {
+  //   // For now, we're just resetting the database. Ultimately it would be 
+  //   // better not to delete it and to check and udate the contents instead.
+  //   this.noteStore.resetDatabase();
+  // }
+
+  public initializeStorageDirectory(parentDirectory: string): boolean {
+    try {
+      // Generate storage directory path based on parent directory
+      let storageDirectory: string = path.join(parentDirectory, Constants.collectionsSubDirectory);
+
+      // Create storage directory if it doesn't exist
+      if (!fs.existsSync(storageDirectory)) {
+        fs.mkdirSync(storageDirectory);
+        log.info(`Created storageDirectory '${storageDirectory}' on disk`);
+      } else {
+        log.info(`StorageDirectory '${storageDirectory}' already exists on disk. No need to create it.`);
+      }
+
+      // Save storage directory in the settings
+      this.settings.set('storageDirectory', storageDirectory);
+      log.info(`Saved storageDirectory in settings'${storageDirectory}'`);
+
+      // Create a default collection
+      this.createDefaultCollectionDirectory();
+    } catch (error) {
+      log.error(`Could not create storage directory on disk. Cause: ${error}`);
+
+      return false;
+    }
+
+    return false;
+  }
+
+  // public initializeIndexDatabase(parentDirectory: string): boolean {
+
+  //   let storageDirectory: string = "";
+
+  //   try {
+  //     // We don't need to create the storage directory if it already exists.
+  //     if (!this.hasStorageDirectory()) {
+  //       storageDirectory = this.generateStorageDirectoryPath(parentDirectory);
+
+  //       // 1. Create the storage directory on disk
+  //       this.createStorageDirectory(storageDirectory);
+
+  //       // 2. If storage directory creation succeeded, save the selected directory in the settings.
+  //       this.saveStorageDirectoryInSettings(storageDirectory);
+
+  //       // 3. Update the index database.
+  //       this.updateIndexDatabase();
+  //     }
+  //   } catch (error) {
+  //     log.error(`Could not create storage directory. Cause: ${error}`);
+  //     return false;
+  //   }
+
+  //   this.storageDirectoryInitializedSubject.next(true);
+  //   return true;
+  // }
 }

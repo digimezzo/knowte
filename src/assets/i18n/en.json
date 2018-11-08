@@ -66,6 +66,6 @@
         "Error": "Error"
     },
     "ErrorTexts": {
-        "StorageDirectoryCreationError": "I could not create the directory {storageDirectory}. The directory might already exist or you don't have the required permissions to create it. Please verify the log for more information."
+        "StorageDirectoryCreationError": "The directory {storageDirectory} cannot be used to save your notes. You might not have sufficient permissions to create items in it. Please verify the log if you need more information."
     }
 }

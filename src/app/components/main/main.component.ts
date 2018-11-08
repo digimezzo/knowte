@@ -13,12 +13,12 @@ export class MainComponent implements OnInit {
     private subscription: Subscription;
 
     constructor(private collectionService: CollectionService) {
-        this.subscription = collectionService.storageDirectoryInitialized$.subscribe((hasCollections) => this.hasCollections = hasCollections);
-        this.hasCollections = collectionService.hasCollections;
+        this.subscription = collectionService.storageDirectoryInitialized$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
+        this.hasStorageDirectory = collectionService.hasStorageDirectory;
         log.info(`+++ Showing ${Constants.applicationName} (${Constants.applicationVersion}) main page +++`);
     }
 
-    public hasCollections: boolean;
+    public hasStorageDirectory: boolean;
 
     ngOnInit() {
     }

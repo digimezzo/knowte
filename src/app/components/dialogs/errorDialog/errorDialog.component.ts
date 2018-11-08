@@ -1,5 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material';
+import { remote } from 'electron';
+import { Constants } from '../../../core/constants';
+import * as path from 'path';
 
 @Component({
     selector: 'error-dialog',
@@ -14,13 +17,7 @@ export class ErrorDialogComponent implements OnInit {
     }
 
     public onViewLogClick(): void {
-        // TODO
         // See: https://stackoverflow.com/questions/30381450/open-external-file-with-electron
-        const { shell } = require('electron');
-        // Open a local file in the default app
-        shell.openItem('c:\\example.txt');
-
-        // Open a URL in the default way
-        shell.openExternal('https://github.com');
+        remote.shell.openItem(remote.app.getPath("userData"));
     }
 }
