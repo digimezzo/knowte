@@ -21,13 +21,26 @@ export class CollectionService {
   private store: Store = new Store();
 
   public hasCollections: boolean = this.hasStorageDirectory();
-  private generarteStorageDirectoryPath(parentDirectory: string): string {
+  private generateStorageDirectoryPath(parentDirectory: string): string {
     return path.join(parentDirectory, Constants.collectionsSubDirectory);
   }
 
   private createStorageDirectoryOnDisk(storageDirectory: string): void {
-    fs.mkdirSync(storageDirectory);
-    log.info(`Created storageDirectory '${storageDirectory}' on disk`);
+
+    // Create storage directory
+    if (!fs.existsSync(storageDirectory)) {
+      fs.mkdirSync(storageDirectory);
+      log.info(`Created storageDirectory '${storageDirectory}' on disk`);
+    } else {
+      log.info(`StorageDirectory '${storageDirectory}' already exists on disk. No need to create it.`);
+    }
+
+    // If there are no collections, create a default collection.
+    let directories: string[] = fs.readdirSync(storageDirectory).filter(file => fs.statSync(path.join(storageDirectory, file)).isDirectory());
+
+    if (directories.length === 0 || !directories.some(directory => directory.includes(Constants.collectionFoldersSuffix))) {
+      fs.mkdirSync(path.join(storageDirectory, `${Constants.defaultCollectionName} ${Constants.collectionFoldersSuffix}`));
+    }
   }
 
   private saveStorageDirectoryInSettings(storageDirectory: string): void {
@@ -41,10 +54,6 @@ export class CollectionService {
     this.noteStore.resetDatabase();
   }
 
-  private createDefaultCollectionIfRequired(): void {
-    // TODO: if there are no collections yet, create a default collection.
-  }
-
   public initializeStorage(parentDirectory: string): OperationResult {
 
     let storageDirectory: string = "";
@@ -52,7 +61,7 @@ export class CollectionService {
     try {
       // We don't need to create the storage directory if it already exists.
       if (!this.hasStorageDirectory()) {
-        storageDirectory = this.generarteStorageDirectoryPath(parentDirectory);
+        storageDirectory = this.generateStorageDirectoryPath(parentDirectory);
 
         // 1. Create the storage directory on disk
         this.createStorageDirectoryOnDisk(storageDirectory);
@@ -62,10 +71,6 @@ export class CollectionService {
 
         // 3. Update the index database.
         this.updateIndexDatabase();
-
-        // 4. Create a default collection if required
-        this.createDefaultCollectionIfRequired();
-
       }
     } catch (error) {
       log.error(`Could not create storage directory. Cause: ${error}`);

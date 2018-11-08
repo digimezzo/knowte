@@ -11,6 +11,7 @@ export class Constants {
     static readonly databaseFile: string = `${Constants.applicationName}.db`;
     static readonly collectionFoldersSuffix: string = "collection";
     static readonly notebookFoldersSuffix: string = "notebook";
+    static readonly defaultCollectionName: string = "Default";
 
     static readonly externalComponents: any[] = [
         { name: "Angular", description: "Angular is a development platform for building mobile and desktop web applications using Typescript/JavaScript and other languages.", url: "https://angular.io/", licenseUrl: "https://github.com/angular/angular/blob/master/LICENSE" },
