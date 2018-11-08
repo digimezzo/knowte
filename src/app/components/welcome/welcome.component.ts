@@ -36,7 +36,7 @@ export class WelcomeComponent implements OnInit {
             let selectedParentPath: string = folderPath[0];
             log.info(`Selected directory: '${selectedParentPath}'`);
 
-            let initializeStorageDirectory: OperationResult = this.collectionService.initializeStorageDirectory(selectedParentPath);
+            let initializeStorageDirectory: OperationResult = this.collectionService.initializeStorage(selectedParentPath);
 
             if (!initializeStorageDirectory.isSuccess) {
                 this.zone.run(() => {

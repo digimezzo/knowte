@@ -21,7 +21,7 @@ export class CollectionService {
   private store: Store = new Store();
 
   public hasCollections: boolean = this.hasStorageDirectory();
-  private generarteStorageDirectoryPath(parentDirectory: string): string{
+  private generarteStorageDirectoryPath(parentDirectory: string): string {
     return path.join(parentDirectory, Constants.collectionsSubDirectory);
   }
 
@@ -35,7 +35,17 @@ export class CollectionService {
     log.info(`Saved storageDirectory '${storageDirectory}'`);
   }
 
-  public initializeStorageDirectory(parentDirectory: string): OperationResult {
+  private updateIndexDatabase(): void {
+    // For now, we're just resetting the database. Ultimately it would be 
+    // better not to delete it and to check and udate the contents instead.
+    this.noteStore.resetDatabase();
+  }
+
+  private createDefaultCollectionIfRequired(): void {
+    // TODO: if there are no collections yet, create a default collection.
+  }
+
+  public initializeStorage(parentDirectory: string): OperationResult {
 
     let storageDirectory: string = "";
 
@@ -50,9 +60,12 @@ export class CollectionService {
         // 2. If storage directory creation succeeded, save the selected directory in the settings.
         this.saveStorageDirectoryInSettings(storageDirectory);
 
-        // 3. Delete the old index database, if it exists, and create a new database.
+        // 3. Update the index database.
+        this.updateIndexDatabase();
 
-        // 4. Create a default collection
+        // 4. Create a default collection if required
+        this.createDefaultCollectionIfRequired();
+
       }
     } catch (error) {
       log.error(`Could not create storage directory. Cause: ${error}`);
