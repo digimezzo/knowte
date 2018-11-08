@@ -1,5 +1,5 @@
 {
-  "productName": "angular-electron",
+  "productName": "Knowte",
   "directories": {
     "output": "release/"
   },
@@ -20,19 +20,19 @@
         "!tslint.json"
     ],
   "win": {
-    "icon": "dist",
+    "icon": "build/icons",
     "target": [
       "portable"
     ]
   },
   "mac": {
-    "icon": "dist",
+    "icon": "build/icons",
     "target": [
       "dmg"
     ]
   },
   "linux": {
-    "icon": "dist",
+    "icon": "build/icons",
     "target": [
       "AppImage"
     ]
