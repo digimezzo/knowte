@@ -12,19 +12,19 @@
     "LICENSE"
   ],
   "win": {
-    "icon": "build/icon.ico",
+    "icon": "resources/icon.ico",
     "target": [
       "portable"
     ]
   },
   "mac": {
-    "icon": "build/icon.icns",
+    "icon": "resources/icon.icns",
     "target": [
       "dmg"
     ]
   },
   "linux": {
-    "icon": "build/icon.png",
+    "icon": "resources/icon.png",
     "target": [
       "AppImage"
     ]
