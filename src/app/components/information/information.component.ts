@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Constants } from '../../core/constants';
 import { LicenseDialogComponent } from '../dialogs/licenseDialog/licenseDialog.component';
+import log from 'electron-log';
 
 @Component({
   selector: 'information-page',
@@ -17,6 +18,7 @@ export class InformationComponent implements OnInit {
     this.facebookUrl = Constants.facebookUrl;
     this.twitterUrl = Constants.twitterUrl;
     this.externalComponents = Constants.externalComponents;
+    log.info("Showing information page");
   }
 
   public applicationVersion: string;

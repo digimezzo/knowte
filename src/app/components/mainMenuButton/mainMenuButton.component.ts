@@ -18,8 +18,10 @@ export class MainMenuButtonComponent implements OnInit {
   }
 
   public hasStorageDirectory: boolean;
+  public collections: string[];
 
   ngOnInit() {
+    this.collections = this.collectionService.getCollections();
   }
 
   public addCollection(): void {

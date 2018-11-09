@@ -18,7 +18,7 @@ export class NoteStore {
     private app = remote.app;
     private databaseFileFullPath: string;
     private db;
-   
+
     private deleteDatabase(): void {
         if (fs.existsSync(this.databaseFileFullPath)) {
             log.info(`Database already exist at '${this.databaseFileFullPath}'. Deleting.`);
@@ -32,7 +32,7 @@ export class NoteStore {
         this.databaseFileFullPath = path.join(this.app.getPath("userData"), Constants.databaseFile);
         let adapter: FileSync = new FileSync(this.databaseFileFullPath);
         this.db = low(adapter);
-        
+
         log.info(`Loaded database '${this.databaseFileFullPath}'`);
     }
 
@@ -44,5 +44,9 @@ export class NoteStore {
 
         // 2. Create a new database
         this.loadOrCreateDatabase();
+    }
+
+    public addCollection(collectionName: string) {
+        // TODO
     }
 }

@@ -22,12 +22,11 @@
         {{ 'MainMenu.AddCollection' | translate }}
     </button>
     <mat-divider></mat-divider>
-    <button class="mainMenuButton" mat-menu-item>
-        <span class="mainMenuIcon">&#xE02F;</span>
-        Work notes
-    </button>
-    <button class="mainMenuButton" mat-menu-item>
+
+    <div *ngFor="let collection of collections">
+        <button class="mainMenuButton" mat-menu-item>
             <span class="mainMenuIcon">&#xE02F;</span>
-            Home notes
+            {{ collection }}
         </button>
+    </div>
 </mat-menu>

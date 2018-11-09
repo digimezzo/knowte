@@ -11,7 +11,7 @@ import { Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class CollectionService {
-  private _hasStorageDirectory : boolean;
+  private _hasStorageDirectory: boolean;
   private settings: Store = new Store();
 
   private storageDirectoryInitializedSubject = new Subject<boolean>();
@@ -21,7 +21,7 @@ export class CollectionService {
     this.createDefaultCollectionDirectory();
   }
 
-  public get hasStorageDirectory() : boolean {
+  public get hasStorageDirectory(): boolean {
     return this.checkStorageDirectory();
   }
 
@@ -90,6 +90,8 @@ export class CollectionService {
       // Create a default collection
       this.createDefaultCollectionDirectory();
 
+      // Import notes, if found.
+      this.importNotes();
     } catch (error) {
       log.error(`Could not create storage directory on disk. Cause: ${error}`);
 
@@ -100,30 +102,13 @@ export class CollectionService {
     return true;
   }
 
-  // public initializeIndexDatabase(parentDirectory: string): boolean {
+  public importNotes(): void {
+    this.noteStore.resetDatabase();
+    // TODO: write import logic
+  }
 
-  //   let storageDirectory: string = "";
-
-  //   try {
-  //     // We don't need to create the storage directory if it already exists.
-  //     if (!this.hasStorageDirectory()) {
-  //       storageDirectory = this.generateStorageDirectoryPath(parentDirectory);
-
-  //       // 1. Create the storage directory on disk
-  //       this.createStorageDirectory(storageDirectory);
-
-  //       // 2. If storage directory creation succeeded, save the selected directory in the settings.
-  //       this.saveStorageDirectoryInSettings(storageDirectory);
-
-  //       // 3. Update the index database.
-  //       this.updateIndexDatabase();
-  //     }
-  //   } catch (error) {
-  //     log.error(`Could not create storage directory. Cause: ${error}`);
-  //     return false;
-  //   }
-
-  //   this.storageDirectoryInitializedSubject.next(true);
-  //   return true;
-  // }
+  public getCollections(): string[] {
+    // TODO: write actual logic
+    return ["Home notes", "Work notes"];
+  }
 }
