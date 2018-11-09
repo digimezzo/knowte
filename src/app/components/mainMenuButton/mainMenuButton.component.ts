@@ -3,6 +3,7 @@ import { CollectionService } from '../../services/collection.service';
 import { AddCollectionDialogComponent } from '../dialogs/addCollectionDialog/addCollectionDialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
+import { Collection } from '../../data/collection';
 
 @Component({
   selector: 'main-menu-button',
@@ -18,7 +19,7 @@ export class MainMenuButtonComponent implements OnInit {
   }
 
   public hasStorageDirectory: boolean;
-  public collections: string[];
+  public collections: Collection[];
 
   ngOnInit() {
     this.collections = this.collectionService.getCollections();

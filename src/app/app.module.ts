@@ -18,7 +18,7 @@ import { ElectronService } from './services/electron.service';
 import { CollectionService } from './services/collection.service';
 
 // Stores
-import { NoteStore } from './data/noteStore';
+import { DataStore } from './data/dataStore';
 
 // Directives
 import { WebviewDirective } from './directives/webview.directive';
@@ -83,7 +83,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
     })
   ],
-  providers: [ElectronService, CollectionService, NoteStore],
+  providers: [ElectronService, CollectionService, DataStore],
   bootstrap: [AppComponent, BackButtonComponent, MainMenuButtonComponent],
   entryComponents: [
     LicenseDialogComponent, AddCollectionDialogComponent, ErrorDialogComponent

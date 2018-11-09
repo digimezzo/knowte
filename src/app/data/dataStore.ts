@@ -6,11 +6,12 @@ import * as path from 'path';
 import { Constants } from '../core/constants';
 import * as low from 'lowdb';
 import * as FileSync from 'lowdb/adapters/FileSync';
+import { Collection } from './collection';
 
 @Injectable({
     providedIn: 'root',
 })
-export class NoteStore {
+export class DataStore {
     constructor() {
         this.loadOrCreateDatabase();
     }
@@ -33,6 +34,9 @@ export class NoteStore {
         let adapter: FileSync = new FileSync(this.databaseFileFullPath);
         this.db = low(adapter);
 
+        // Add defaults
+        this.db.defaults({ collections: [], notebooks: [], notes: [] }).write();
+
         log.info(`Loaded database '${this.databaseFileFullPath}'`);
     }
 
@@ -46,7 +50,11 @@ export class NoteStore {
         this.loadOrCreateDatabase();
     }
 
-    public addCollection(collectionName: string) {
-        // TODO
+    public addCollection(collectionName: string, isActive: boolean) {
+        this.db.get('collections').push({ name: collectionName, isActive: isActive }).write();
+    }
+
+    public getCollections(): Collection[] {
+        return this.db.get('collections').value();
     }
 }

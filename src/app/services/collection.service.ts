@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import log from 'electron-log';
-import { NoteStore } from '../data/noteStore';
+import { DataStore } from '../data/dataStore';
 import * as Store from 'electron-store';
 import * as fs from 'fs';
 import { Constants } from '../core/constants';
 import * as path from 'path';
 import { Subject } from 'rxjs';
+import { Collection } from '../data/collection';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,7 @@ export class CollectionService {
   private storageDirectoryInitializedSubject = new Subject<boolean>();
   storageDirectoryInitialized$ = this.storageDirectoryInitializedSubject.asObservable();
 
-  constructor(private noteStore: NoteStore) {
+  constructor(private noteStore: DataStore) {
     this.createDefaultCollectionDirectory();
   }
 
@@ -57,18 +58,32 @@ export class CollectionService {
     // If there are no collections, create a default collection.
     let directories: string[] = fs.readdirSync(settingsStorageDirectory).filter(file => fs.statSync(path.join(settingsStorageDirectory, file)).isDirectory());
 
-    if (directories.length === 0 || !directories.some(directory => directory.includes(Constants.collectionFoldersSuffix))) {
+    if (this.getCollectionDirectories().length == 0) {
       let defaultCollectionName: string = `${Constants.defaultCollectionName} ${Constants.collectionFoldersSuffix}`;
       fs.mkdirSync(path.join(settingsStorageDirectory, defaultCollectionName));
       log.info(`No collections were found. Created new collection '${defaultCollectionName}'.`);
     }
   }
 
-  // private updateIndexDatabase(): void {
-  //   // For now, we're just resetting the database. Ultimately it would be 
-  //   // better not to delete it and to check and udate the contents instead.
-  //   this.noteStore.resetDatabase();
-  // }
+  private importNotes(): void {
+    this.noteStore.resetDatabase();
+    let collectionDirectories: string[] = this.getCollectionDirectories();
+    log.info(`Found ${collectionDirectories.length} collection directories`);
+
+    let isActive: boolean = true;
+
+    for (let collectionDirectory of collectionDirectories) {
+      this.noteStore.addCollection(collectionDirectory, isActive);
+      isActive = false; // Only the first colletion we find, must be active.
+    }
+  }
+
+  private getCollectionDirectories(): string[] {
+    let settingsStorageDirectory: string = this.settings.get('storageDirectory');
+    let collectionDirectories: string[] = fs.readdirSync(settingsStorageDirectory).filter(file => fs.statSync(path.join(settingsStorageDirectory, file)).isDirectory() && file.includes(Constants.collectionFoldersSuffix));
+
+    return collectionDirectories;
+  }
 
   public initializeStorageDirectory(parentDirectory: string): boolean {
     try {
@@ -102,13 +117,15 @@ export class CollectionService {
     return true;
   }
 
-  public importNotes(): void {
-    this.noteStore.resetDatabase();
-    // TODO: write import logic
-  }
+  public getCollections(): Collection[] {
+    let collections: Collection[];
 
-  public getCollections(): string[] {
-    // TODO: write actual logic
-    return ["Home notes", "Work notes"];
+    try {
+      collections = this.noteStore.getCollections();
+    } catch (error) {
+      log.error(`Could not get collections. Cause: ${error}`);
+    }
+
+    return collections;
   }
 }
