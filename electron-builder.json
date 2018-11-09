@@ -1,38 +1,30 @@
 {
+  "appId": "com.digimezzo.knowte",
   "productName": "Knowte",
   "directories": {
-    "output": "release/"
+    "output": "release",
+    "buildResources": "resources"
   },
-    "files": [
-        "**/*",
-        "!*.ts",
-        "!*.code-workspace",
-        "!LICENSE.md",
-        "!package.json",
-        "!package-lock.json",
-        "!src/",
-        "!e2e/",
-        "!hooks/",
-        "!.angular-cli.json",
-        "!_config.yml",
-        "!karma.conf.js",
-        "!tsconfig.json",
-        "!tslint.json"
-    ],
+  "files": [
+    "**/*"
+  ],
+  "extraResources": [
+    "LICENSE"
+  ],
   "win": {
-    "icon": "src/assets/icons/win",
+    "icon": "build/icon.ico",
     "target": [
       "portable"
     ]
   },
   "mac": {
-    "icon": "src/assets/icons/mac",
+    "icon": "build/icon.icns",
     "target": [
       "dmg"
     ]
   },
   "linux": {
-    "icon": "src/assets/icons/png",
+    "icon": "build/icon.png",
     "target": [
       "AppImage"
     ]

@@ -26,7 +26,6 @@ function createWindow() {
     height: 600,
     backgroundColor: '#fff',
     frame: false,
-    icon: path.join(__dirname, 'src/assets/icons/png/64x64.png'),
     show: false
   });
 
