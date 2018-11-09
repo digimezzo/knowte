@@ -11,7 +11,9 @@ import { Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class CollectionService {
+  private _hasStorageDirectory : boolean;
   private settings: Store = new Store();
+
   private storageDirectoryInitializedSubject = new Subject<boolean>();
   storageDirectoryInitialized$ = this.storageDirectoryInitializedSubject.asObservable();
 
@@ -19,7 +21,9 @@ export class CollectionService {
     this.createDefaultCollectionDirectory();
   }
 
-  public hasStorageDirectory: boolean = this.checkStorageDirectory();
+  public get hasStorageDirectory() : boolean {
+    return this.checkStorageDirectory();
+  }
 
   private checkStorageDirectory(): boolean {
     // If we have a storage directory in the settings and it exists on disk, we assume that it can be used to store collections.
@@ -30,13 +34,13 @@ export class CollectionService {
       settingsStorageDirectory = this.settings.get('storageDirectory');
 
       if (fs.existsSync(settingsStorageDirectory)) {
-        log.info("Storage directory was found in the settings and on disk");
+        log.info(`Storage directory was found in the settings or on disk: storageDirectoryFoundInSettings='${storageDirectoryFoundInSettings}', storageDirectoryValueInSettings='${settingsStorageDirectory}'.`);
 
         return true;
       }
     }
 
-    log.info(`Storage directory was not found in the settings or on disk: storageDirectoryFoundInSettings=${storageDirectoryFoundInSettings}, storageDirectoryValueInSettings=${settingsStorageDirectory}.`);
+    log.info(`Storage directory was not found in the settings or on disk: storageDirectoryFoundInSettings='${storageDirectoryFoundInSettings}', storageDirectoryValueInSettings='${settingsStorageDirectory}'.`);
 
     return false;
   }
@@ -44,6 +48,7 @@ export class CollectionService {
   private createDefaultCollectionDirectory(): void {
     // If no storage directory is found, don't try to create a default collection directory.
     if (!this.hasStorageDirectory) {
+      log.info("Not creating default collection, because there is no storage directory.");
       return;
     }
 
@@ -80,17 +85,19 @@ export class CollectionService {
 
       // Save storage directory in the settings
       this.settings.set('storageDirectory', storageDirectory);
-      log.info(`Saved storageDirectory in settings'${storageDirectory}'`);
+      log.info(`Saved storageDirectory '${storageDirectory}' in settings`);
 
       // Create a default collection
       this.createDefaultCollectionDirectory();
+
     } catch (error) {
       log.error(`Could not create storage directory on disk. Cause: ${error}`);
 
       return false;
     }
 
-    return false;
+    this.storageDirectoryInitializedSubject.next(true);
+    return true;
   }
 
   // public initializeIndexDatabase(parentDirectory: string): boolean {
