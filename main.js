@@ -23,7 +23,7 @@ function createWindow() {
         height: 600,
         backgroundColor: '#fff',
         frame: false,
-        icon: path.join(__dirname, 'resources/icon.png'),
+        icon: path.join(__dirname, 'build/icon/icon.png'),
         show: false
     });
     if (serve) {

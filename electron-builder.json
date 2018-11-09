@@ -2,8 +2,7 @@
   "appId": "com.digimezzo.knowte",
   "productName": "Knowte",
   "directories": {
-    "output": "release",
-    "buildResources": "resources"
+    "output": "release"
   },
   "files": [
     "**/*"
@@ -12,19 +11,16 @@
     "LICENSE"
   ],
   "win": {
-    "icon": "resources/icon.ico",
     "target": [
       "portable"
     ]
   },
   "mac": {
-    "icon": "resources/icon.icns",
     "target": [
       "dmg"
     ]
   },
   "linux": {
-    "icon": "resources/icon.png",
     "target": [
       "AppImage"
     ]
