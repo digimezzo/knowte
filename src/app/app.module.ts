@@ -2,7 +2,7 @@ import 'zone.js/dist/zone-mix';
 import 'reflect-metadata';
 import '../polyfills';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { HttpClientModule, HttpClient } from '@angular/common/http';
@@ -38,8 +38,9 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
 import { NotesComponent } from './components/notes/notes.component';
 
 // Modules
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, MatTooltipModule, MatDialogModule} from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, MatTooltipModule, MatDialogModule } from '@angular/material';
+import { GlobalErrorHandler } from './globalErrorHandler';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -83,7 +84,15 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
     })
   ],
-  providers: [ElectronService, CollectionService, DataStore],
+  providers: [
+    ElectronService,
+    CollectionService,
+    DataStore,
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandler
+    }
+  ],
   bootstrap: [AppComponent, BackButtonComponent, MainMenuButtonComponent],
   entryComponents: [
     LicenseDialogComponent, AddCollectionDialogComponent, ErrorDialogComponent

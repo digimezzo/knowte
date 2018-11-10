@@ -5,7 +5,7 @@ import * as Store from 'electron-store';
 import * as fs from 'fs';
 import { Constants } from '../core/constants';
 import * as path from 'path';
-import { Subject } from 'rxjs';
+import { Subject, throwError } from 'rxjs';
 import { Collection } from '../data/collection';
 
 @Injectable({
@@ -124,6 +124,8 @@ export class CollectionService {
       collections = this.noteStore.getCollections();
     } catch (error) {
       log.error(`Could not get collections. Cause: ${error}`);
+      // This is a fatal error. Throw the error so the global error handler catches it.
+      throw error;
     }
 
     return collections;
