@@ -15,12 +15,20 @@
     color: $color-primary;
 }
 
-
 .mainMenuCommandIcon{
     font-family: Material;
     font-size: 22px;
     color: $color-grey-icon;
-    opacity: 0.4;
+    opacity: 0.3;
+}
+
+.mainMenuItemText{
+    margin-right: 64px;
+}
+
+.mainMenuCommandIconContainer{
+    position: absolute;
+    right: 8px;
 }
 
 .mainMenuCommandIcon:hover{

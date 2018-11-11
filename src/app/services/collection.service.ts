@@ -7,6 +7,8 @@ import { Constants } from '../core/constants';
 import * as path from 'path';
 import { Subject, throwError } from 'rxjs';
 import { Collection } from '../data/collection';
+import { CollectionOperation } from './collectionOperation';
+import { createHostListener } from '@angular/compiler/src/core';
 
 @Injectable({
   providedIn: 'root',
@@ -18,8 +20,8 @@ export class CollectionService {
   private storageDirectoryInitializedSubject = new Subject<boolean>();
   storageDirectoryInitialized$ = this.storageDirectoryInitializedSubject.asObservable();
 
-  private collectionChangedSubject = new Subject();
-  collectionChanged$ = this.collectionChangedSubject.asObservable();
+  private collectionsChangedSubject = new Subject();
+  collectionsChanged$ = this.collectionsChangedSubject.asObservable();
 
   constructor(private noteStore: DataStore) {
     this.createDefaultCollectionDirectory();
@@ -77,10 +79,12 @@ export class CollectionService {
 
     for (let collectionDirectory of collectionDirectories) {
       this.noteStore.addCollection(collectionDirectory, isActive);
-      isActive = false; // Only the first colletion we find, must be active.
+      isActive = false; // Only the first collection we find, must be active.
     }
 
-    this.collectionChangedSubject.next();
+    // TODO: import notes
+
+    this.collectionsChangedSubject.next();
   }
 
   private getCollectionDirectories(): string[] {
@@ -134,5 +138,24 @@ export class CollectionService {
     }
 
     return collections;
+  }
+
+  public addCollection(name: string): CollectionOperation {
+
+    // Check if there is already a collection with that name
+    if (this.noteStore.getCollectionsByName(name).length > 0) {
+      return CollectionOperation.Duplicate;
+    }
+
+    // Add the collection
+    try {
+      this.noteStore.addCollection(name, false);
+      log.info(`Added collection '${name}'`);
+    } catch (error) {
+      log.error(`Could not add collection '${name}'. Cause: ${error}`);
+      return CollectionOperation.Error;
+    }
+
+    return CollectionOperation.Success;
   }
 }

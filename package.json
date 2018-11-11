@@ -41,7 +41,8 @@
     "@angular/material": "^7.0.3",
     "electron-log": "^2.2.17",
     "electron-store": "^2.0.0",
-    "lowdb": "^1.0.0"
+    "lowdb": "^1.0.0",
+    "nanoid": "^2.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.10.4",

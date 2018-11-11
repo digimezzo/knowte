@@ -55,6 +55,12 @@ export class DataStore {
         this.db.get('collections').push(newCollection).write();
     }
 
+    public getCollectionsByName(name: string): Collection[] {
+        let nameLower: string = name.toLowerCase();
+
+        return this.db.get('collections').filter({ nameLower: nameLower }).value();
+    }
+
     public getCollections(): Collection[] {
         return this.db.get('collections').value();
     }

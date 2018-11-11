@@ -16,7 +16,7 @@ export class MainMenuButtonComponent implements OnInit {
 
   constructor(private dialog: MatDialog, private collectionService: CollectionService) {
     this.subscription = collectionService.storageDirectoryInitialized$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
-    this.subscription.add(collectionService.collectionChanged$.subscribe(() => this.collections = this.collectionService.getCollections()));
+    this.subscription.add(collectionService.collectionsChanged$.subscribe(() => this.collections = this.collectionService.getCollections()));
     this.hasStorageDirectory = collectionService.hasStorageDirectory;
   }
 
@@ -32,22 +32,21 @@ export class MainMenuButtonComponent implements OnInit {
       width: '450px'
     });
 
-    // dialogRef.afterClosed().subscribe(result => {
-    //   console.log('The dialog was closed');
-    //   this.animal = result;
-    // });
+    dialogRef.afterClosed().subscribe(result => {
+      // this.collectionService.addCollection("defaultdd collection");
+    });
   }
 
   public activateCollection(collectionId: string) {
-    log.info("user pressed activateCollection()");
+    log.info(`user pressed activateCollection(${collectionId})`);
   }
 
   public renameCollection(collectionId: string) {
-    log.info("user pressed renameCollection()");
+    log.info(`user pressed renameCollection(${collectionId})`);
   }
 
   public deleteCollection(collectionId: string) {
-    log.info("user pressed deleteCollection()");
+    log.info(`user pressed deleteCollection(${collectionId})`);
   }
 
   ngOnDestroy() {
