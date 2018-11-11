@@ -18,6 +18,9 @@ export class CollectionService {
   private storageDirectoryInitializedSubject = new Subject<boolean>();
   storageDirectoryInitialized$ = this.storageDirectoryInitializedSubject.asObservable();
 
+  private collectionChangedSubject = new Subject();
+  collectionChanged$ = this.collectionChangedSubject.asObservable();
+
   constructor(private noteStore: DataStore) {
     this.createDefaultCollectionDirectory();
   }
@@ -76,6 +79,8 @@ export class CollectionService {
       this.noteStore.addCollection(collectionDirectory, isActive);
       isActive = false; // Only the first colletion we find, must be active.
     }
+
+    this.collectionChangedSubject.next();
   }
 
   private getCollectionDirectories(): string[] {

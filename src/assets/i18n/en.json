@@ -46,7 +46,10 @@
         "Information": "Information"
     },
     "Tooltips": {
-        "Back": "Back"
+        "Back": "Back",
+        "Rename": "Rename",
+        "Delete": "Delete",
+        "Activate": "Activate"
     },
     "LicenseDialog": {
         "License": "License"

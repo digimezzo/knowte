@@ -10,3 +10,19 @@
     color: $color-grey-icon;
     margin: 0 8px 0 0;
 }
+
+.mainMenuIcon.isActive{
+    color: $color-primary;
+}
+
+
+.mainMenuCommandIcon{
+    font-family: Material;
+    font-size: 22px;
+    color: $color-grey-icon;
+    opacity: 0.4;
+}
+
+.mainMenuCommandIcon:hover{
+    opacity: 1.0;
+}

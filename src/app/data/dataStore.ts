@@ -50,8 +50,9 @@ export class DataStore {
         this.loadOrCreateDatabase();
     }
 
-    public addCollection(collectionName: string, isActive: boolean) {
-        this.db.get('collections').push({ name: collectionName, isActive: isActive }).write();
+    public addCollection(name: string, isActive: boolean) {
+        let newCollection: Collection = new Collection(name, isActive);
+        this.db.get('collections').push(newCollection).write();
     }
 
     public getCollections(): Collection[] {

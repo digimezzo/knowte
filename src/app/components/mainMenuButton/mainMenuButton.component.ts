@@ -4,6 +4,7 @@ import { AddCollectionDialogComponent } from '../dialogs/addCollectionDialog/add
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
 import { Collection } from '../../data/collection';
+import log from 'electron-log';
 
 @Component({
   selector: 'main-menu-button',
@@ -15,6 +16,7 @@ export class MainMenuButtonComponent implements OnInit {
 
   constructor(private dialog: MatDialog, private collectionService: CollectionService) {
     this.subscription = collectionService.storageDirectoryInitialized$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
+    this.subscription.add(collectionService.collectionChanged$.subscribe(() => this.collections = this.collectionService.getCollections()));
     this.hasStorageDirectory = collectionService.hasStorageDirectory;
   }
 
@@ -34,6 +36,18 @@ export class MainMenuButtonComponent implements OnInit {
     //   console.log('The dialog was closed');
     //   this.animal = result;
     // });
+  }
+
+  public activateCollection(collectionId: string) {
+    log.info("user pressed activateCollection()");
+  }
+
+  public renameCollection(collectionId: string) {
+    log.info("user pressed renameCollection()");
+  }
+
+  public deleteCollection(collectionId: string) {
+    log.info("user pressed deleteCollection()");
   }
 
   ngOnDestroy() {
