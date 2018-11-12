@@ -1,7 +1,12 @@
 <h2 mat-dialog-title>{{ 'AddCollectionDialog.AddCollection' | translate }}</h2>
 <mat-dialog-content>
-    <p></p>
+    <mat-form-field>
+        <input matInput [(ngModel)]="collectionName" placeholder="{{ 'Input.CollectionName' | translate }}"
+        (keyup.enter)="addCollectionAndClose()">
+    </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-raised-button color="primary" [mat-dialog-close]="true">{{ 'Buttons.Ok' | translate }}</button>
+    <button [disabled]="!collectionName" mat-raised-button color="primary" [mat-dialog-close]="true" 
+    (click)="addCollection()">{{ 'Buttons.Ok' | translate }}</button>
+    <button mat-raised-button [mat-dialog-close]="true" >{{ 'Buttons.Cancel' | translate }}</button>
 </mat-dialog-actions>

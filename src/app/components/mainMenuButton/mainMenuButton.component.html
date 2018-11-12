@@ -27,7 +27,7 @@
         <button class="mainMenuButton" mat-menu-item>
             <span class="mainMenuIcon" [ngClass]="{'isActive' : collection.isActive}">&#xE02F;</span>
             <span class="mainMenuItemText" (click)="activateCollection(collection.id)" matTooltip="{{ 'Tooltips.Activate' | translate }}">{{ collection.name }}</span>
-            <span class="mainMenuCommandIconContainer">
+            <span class="mainMenuCommandIconContainer mr-1">
                 <span class="mainMenuCommandIcon" matTooltip="{{ 'Tooltips.Rename' | translate }}" (click)="renameCollection(collection.id)">&#xE254;</span>
             </span>
         </button>

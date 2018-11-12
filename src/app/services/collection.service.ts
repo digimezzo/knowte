@@ -13,6 +13,10 @@ import { CollectionOperation } from './collectionOperation';
   providedIn: 'root',
 })
 export class CollectionService {
+  constructor(private dataStore: DataStore) {
+    this.createDefaultCollectionDirectory();
+  }
+
   // private settings: Store = new Store();
 
   private storageDirectoryChanged = new Subject<boolean>();
@@ -20,10 +24,6 @@ export class CollectionService {
 
   private collectionsChanged = new Subject();
   collectionsChanged$ = this.collectionsChanged.asObservable();
-
-  constructor(private dataStore: DataStore) {
-    this.createDefaultCollectionDirectory();
-  }
 
   public get hasStorageDirectory(): boolean {
     return this.checkStorageDirectory();
@@ -144,20 +144,32 @@ export class CollectionService {
   }
 
   public addCollection(name: string): CollectionOperation {
+    // Check if a collection name was provided
+    if (!name) {
+      return CollectionOperation.Error;
+    }
 
     // Check if there is already a collection with that name
     if (this.dataStore.getCollectionsByName(name).length > 0) {
       return CollectionOperation.Duplicate;
     }
 
-    // Add the collection
     try {
+      // Add the collection to disk
+      let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
+      let collectionName: string = `${name} ${Constants.collectionFoldersSuffix}`;
+      fs.mkdirSync(path.join(settingsStorageDirectory, collectionName));
+      log.info(`Added collection '${name}' to disk`);
+
+      // Add the collection to the data store
       this.dataStore.addCollection(name, false);
-      log.info(`Added collection '${name}'`);
+      log.info(`Added collection '${name}' to data store`);
     } catch (error) {
       log.error(`Could not add collection '${name}'. Cause: ${error}`);
       return CollectionOperation.Error;
     }
+
+    this.collectionsChanged.next();
 
     return CollectionOperation.Success;
   }
