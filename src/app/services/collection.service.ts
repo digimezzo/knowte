@@ -2,19 +2,22 @@ import { Injectable } from '@angular/core';
 import log from 'electron-log';
 import { DataStore } from '../data/dataStore';
 import * as Store from 'electron-store';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import { Constants } from '../core/constants';
 import * as path from 'path';
 import { Subject } from 'rxjs';
 import { Collection } from '../data/collection';
 import { CollectionOperation } from './collectionOperation';
+import { Utils } from '../core/utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionService {
   constructor(private dataStore: DataStore) {
-    this.createDefaultCollectionDirectory();
+    // All calls are awaited inside this function. 
+    // So the fact that we can't await it here should pose no problem.
+    this.createDefaultCollectionDirectoryAsync();
   }
 
   // private settings: Store = new Store();
@@ -29,14 +32,24 @@ export class CollectionService {
     return this.checkStorageDirectory();
   }
 
-  private getCollectionDirectories(): string[] {
+  private async getCollectionDirectoriesAsync(): Promise<string[]> {
     let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
-    let collectionDirectories: string[] = fs.readdirSync(settingsStorageDirectory).filter(file => fs.statSync(path.join(settingsStorageDirectory, file)).isDirectory() && file.includes(Constants.collectionFoldersSuffix));
+    let fileNames: string[] = await fs.readdir(settingsStorageDirectory);
+    let collectionDirectories: string[] = [];
+
+    for (let fileName of fileNames) {
+      let absoluteFilePath: string = path.join(settingsStorageDirectory, fileName);
+      let stat: any = await fs.stat(absoluteFilePath);
+
+      if (stat.isDirectory() && fileName.includes(Constants.collectionFoldersSuffix)) {
+        collectionDirectories.push(fileName);
+      }
+    }
 
     return collectionDirectories;
   }
 
-  private createDefaultCollectionDirectory(): void {
+  private async createDefaultCollectionDirectoryAsync(): Promise<void> {
     // If no storage directory is found, don't try to create a default collection directory.
     if (!this.hasStorageDirectory) {
       log.info("Not creating default collection, because there is no storage directory.");
@@ -44,13 +57,12 @@ export class CollectionService {
     }
 
     let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
+    let collectionDirectories: string[] = await this.getCollectionDirectoriesAsync();
 
     // If there are no collections, create a default collection.
-    let directories: string[] = fs.readdirSync(settingsStorageDirectory).filter(file => fs.statSync(path.join(settingsStorageDirectory, file)).isDirectory());
-
-    if (this.getCollectionDirectories().length == 0) {
+    if (collectionDirectories.length == 0) {
       let defaultCollectionName: string = `${Constants.defaultCollectionName} ${Constants.collectionFoldersSuffix}`;
-      fs.mkdirSync(path.join(settingsStorageDirectory, defaultCollectionName));
+      await fs.mkdir(path.join(settingsStorageDirectory, defaultCollectionName));
       log.info(`No collections were found. Created new collection '${defaultCollectionName}'.`);
     }
   }
@@ -77,11 +89,11 @@ export class CollectionService {
     return true;
   }
 
-  private importNotes(): void {
+  private async importNotesAsync(): Promise<void> {
     // Make sure we start from scratch
     this.dataStore.clearDataStore();
 
-    let collectionDirectories: string[] = this.getCollectionDirectories();
+    let collectionDirectories: string[] = await this.getCollectionDirectoriesAsync();
     log.info(`Found ${collectionDirectories.length} collection directories`);
 
     let isActive: boolean = true;
@@ -96,14 +108,16 @@ export class CollectionService {
     this.collectionsChanged.next();
   }
 
-  public initializeStorageDirectory(parentDirectory: string): boolean {
+
+
+  public async initializeStorageDirectoryAsync(parentDirectory: string): Promise<boolean> {
     try {
       // Generate storage directory path based on parent directory
       let storageDirectory: string = path.join(parentDirectory, Constants.collectionsSubDirectory);
 
       // Create storage directory if it doesn't exist
-      if (!fs.existsSync(storageDirectory)) {
-        fs.mkdirSync(storageDirectory);
+      if (!await fs.exists(storageDirectory)) {
+        await fs.mkdir(storageDirectory);
         log.info(`Created storageDirectory '${storageDirectory}' on disk`);
       } else {
         log.info(`StorageDirectory '${storageDirectory}' already exists on disk. No need to create it.`);
@@ -114,10 +128,10 @@ export class CollectionService {
       log.info(`Saved storage directory '${storageDirectory}' in data store`);
 
       // Create a default collection
-      this.createDefaultCollectionDirectory();
+      await this.createDefaultCollectionDirectoryAsync();
 
       // Import notes, if found.
-      this.importNotes();
+      await this.importNotesAsync();
     } catch (error) {
       log.error(`Could not create storage directory on disk. Cause: ${error}`);
 

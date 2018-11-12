@@ -19,6 +19,7 @@ export class WelcomeComponent implements OnInit {
     }
 
     public applicationName: string = Constants.applicationName.toUpperCase();
+    public isBusy: boolean = false;
 
     ngOnInit() {
     }
@@ -35,15 +36,21 @@ export class WelcomeComponent implements OnInit {
             let selectedParentDirectory: string = folderPath[0];
             log.info(`Selected directory: '${selectedParentDirectory}'`);
 
-            if (this.collectionService.initializeStorageDirectory(selectedParentDirectory)) {
-                // TODO: create database and start indexing
-            } else {
-                this.zone.run(() => {
+            this.zone.run(async () => {
+                this.isBusy = true;
+
+                if (await this.collectionService.initializeStorageDirectoryAsync(selectedParentDirectory)) {
+                    // TODO: create database and start indexing
+                } else {
+
                     this.dialog.open(ErrorDialogComponent, {
                         width: '450px', data: { errorText: this.translate.instant('ErrorTexts.StorageDirectoryCreationError').replace("{storageDirectory}", `'${selectedParentDirectory}'`) }
                     });
-                });
-            }
+
+                }
+
+                this.isBusy = false;
+            });
         });
     }
 }
