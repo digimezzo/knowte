@@ -5,25 +5,23 @@ import * as Store from 'electron-store';
 import * as fs from 'fs';
 import { Constants } from '../core/constants';
 import * as path from 'path';
-import { Subject, throwError } from 'rxjs';
+import { Subject } from 'rxjs';
 import { Collection } from '../data/collection';
 import { CollectionOperation } from './collectionOperation';
-import { createHostListener } from '@angular/compiler/src/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionService {
-  private _hasStorageDirectory: boolean;
-  private settings: Store = new Store();
+  // private settings: Store = new Store();
 
-  private storageDirectoryInitializedSubject = new Subject<boolean>();
-  storageDirectoryInitialized$ = this.storageDirectoryInitializedSubject.asObservable();
+  private storageDirectoryChanged = new Subject<boolean>();
+  storageDirectoryChanged$ = this.storageDirectoryChanged.asObservable();
 
-  private collectionsChangedSubject = new Subject();
-  collectionsChanged$ = this.collectionsChangedSubject.asObservable();
+  private collectionsChanged = new Subject();
+  collectionsChanged$ = this.collectionsChanged.asObservable();
 
-  constructor(private noteStore: DataStore) {
+  constructor(private dataStore: DataStore) {
     this.createDefaultCollectionDirectory();
   }
 
@@ -31,24 +29,11 @@ export class CollectionService {
     return this.checkStorageDirectory();
   }
 
-  private checkStorageDirectory(): boolean {
-    // If we have a storage directory in the settings and it exists on disk, we assume that it can be used to store collections.
-    let storageDirectoryFoundInSettings: boolean = this.settings.has('storageDirectory');
-    let settingsStorageDirectory: string = "";
+  private getCollectionDirectories(): string[] {
+    let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
+    let collectionDirectories: string[] = fs.readdirSync(settingsStorageDirectory).filter(file => fs.statSync(path.join(settingsStorageDirectory, file)).isDirectory() && file.includes(Constants.collectionFoldersSuffix));
 
-    if (storageDirectoryFoundInSettings) {
-      settingsStorageDirectory = this.settings.get('storageDirectory');
-
-      if (fs.existsSync(settingsStorageDirectory)) {
-        log.info(`Storage directory was found in the settings or on disk: storageDirectoryFoundInSettings='${storageDirectoryFoundInSettings}', storageDirectoryValueInSettings='${settingsStorageDirectory}'.`);
-
-        return true;
-      }
-    }
-
-    log.info(`Storage directory was not found in the settings or on disk: storageDirectoryFoundInSettings='${storageDirectoryFoundInSettings}', storageDirectoryValueInSettings='${settingsStorageDirectory}'.`);
-
-    return false;
+    return collectionDirectories;
   }
 
   private createDefaultCollectionDirectory(): void {
@@ -58,7 +43,7 @@ export class CollectionService {
       return;
     }
 
-    let settingsStorageDirectory: string = this.settings.get('storageDirectory');
+    let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
 
     // If there are no collections, create a default collection.
     let directories: string[] = fs.readdirSync(settingsStorageDirectory).filter(file => fs.statSync(path.join(settingsStorageDirectory, file)).isDirectory());
@@ -70,28 +55,45 @@ export class CollectionService {
     }
   }
 
+  private checkStorageDirectory(): boolean {
+    // 1. Get the storage directory from the data store
+    let storageDirectory: string = this.dataStore.getStorageDirectory();
+
+    if (!storageDirectory) {
+      // Storage directory is empty
+      log.info("Storage directory is empty");
+      return false;
+    }
+
+    // 2. If a storage directory was found in the data store, check if it exists on disk.
+    if (!fs.existsSync(storageDirectory)) {
+      // Storage directory is not found on disk
+      log.info(`Storage directory '${storageDirectory}' is not found on disk`);
+      return false;
+    }
+
+    // Storage directory is OK.
+    log.info(`Storage directory '${storageDirectory}' is OK`);
+    return true;
+  }
+
   private importNotes(): void {
-    this.noteStore.resetDatabase();
+    // Make sure we start from scratch
+    this.dataStore.clearDataStore();
+
     let collectionDirectories: string[] = this.getCollectionDirectories();
     log.info(`Found ${collectionDirectories.length} collection directories`);
 
     let isActive: boolean = true;
 
     for (let collectionDirectory of collectionDirectories) {
-      this.noteStore.addCollection(collectionDirectory, isActive);
+      this.dataStore.addCollection(collectionDirectory, isActive);
       isActive = false; // Only the first collection we find, must be active.
     }
 
     // TODO: import notes
 
-    this.collectionsChangedSubject.next();
-  }
-
-  private getCollectionDirectories(): string[] {
-    let settingsStorageDirectory: string = this.settings.get('storageDirectory');
-    let collectionDirectories: string[] = fs.readdirSync(settingsStorageDirectory).filter(file => fs.statSync(path.join(settingsStorageDirectory, file)).isDirectory() && file.includes(Constants.collectionFoldersSuffix));
-
-    return collectionDirectories;
+    this.collectionsChanged.next();
   }
 
   public initializeStorageDirectory(parentDirectory: string): boolean {
@@ -107,9 +109,9 @@ export class CollectionService {
         log.info(`StorageDirectory '${storageDirectory}' already exists on disk. No need to create it.`);
       }
 
-      // Save storage directory in the settings
-      this.settings.set('storageDirectory', storageDirectory);
-      log.info(`Saved storageDirectory '${storageDirectory}' in settings`);
+      // Save storage directory in the data store
+      this.dataStore.setStorageDirectory(storageDirectory);
+      log.info(`Saved storage directory '${storageDirectory}' in data store`);
 
       // Create a default collection
       this.createDefaultCollectionDirectory();
@@ -122,7 +124,8 @@ export class CollectionService {
       return false;
     }
 
-    this.storageDirectoryInitializedSubject.next(true);
+    this.storageDirectoryChanged.next(true);
+
     return true;
   }
 
@@ -130,7 +133,7 @@ export class CollectionService {
     let collections: Collection[];
 
     try {
-      collections = this.noteStore.getCollections();
+      collections = this.dataStore.getAllCollections();
     } catch (error) {
       log.error(`Could not get collections. Cause: ${error}`);
       // This is a fatal error. Throw the error so the global error handler catches it.
@@ -143,13 +146,13 @@ export class CollectionService {
   public addCollection(name: string): CollectionOperation {
 
     // Check if there is already a collection with that name
-    if (this.noteStore.getCollectionsByName(name).length > 0) {
+    if (this.dataStore.getCollectionsByName(name).length > 0) {
       return CollectionOperation.Duplicate;
     }
 
     // Add the collection
     try {
-      this.noteStore.addCollection(name, false);
+      this.dataStore.addCollection(name, false);
       log.info(`Added collection '${name}'`);
     } catch (error) {
       log.error(`Could not add collection '${name}'. Cause: ${error}`);

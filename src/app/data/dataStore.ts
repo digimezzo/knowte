@@ -12,42 +12,51 @@ import { Collection } from './collection';
     providedIn: 'root',
 })
 export class DataStore {
-    constructor() {
-        this.loadOrCreateDatabase();
-    }
-
     private app = remote.app;
-    private databaseFileFullPath: string;
     private db;
 
-    private deleteDatabase(): void {
-        if (fs.existsSync(this.databaseFileFullPath)) {
-            log.info(`Database already exist at '${this.databaseFileFullPath}'. Deleting.`);
+    constructor() {
+        this.ensureDataStore();
+    }
 
-            fs.unlinkSync(this.databaseFileFullPath);
-            log.info(`Database file at '${this.databaseFileFullPath}' deleted`);
+    public dataStorePath: string = path.join(this.app.getPath("userData"), Constants.databaseFile);
+
+    private ensureDataStore(): void {
+        let isNewDataStore: boolean = false;
+
+        isNewDataStore = !fs.existsSync(this.dataStorePath);
+
+        // This loads the data store (the data store file is created if it doesn't yet exist)
+        let adapter: FileSync = new FileSync(this.dataStorePath);
+        this.db = low(adapter);
+        log.info(`Loaded data store '${this.dataStorePath}'`);
+
+        // If this is a new data store file, we need to add some defaults.
+        if (isNewDataStore) {
+            this.db.defaults({ storageDirectory: "", collections: [], notebooks: [], notes: [] }).write();
+            log.info("Added defaults to data store");
         }
     }
 
-    private loadOrCreateDatabase(): void {
-        this.databaseFileFullPath = path.join(this.app.getPath("userData"), Constants.databaseFile);
-        let adapter: FileSync = new FileSync(this.databaseFileFullPath);
-        this.db = low(adapter);
-
-        // Add defaults
-        this.db.defaults({ collections: [], notebooks: [], notes: [] }).write();
-
-        log.info(`Loaded database '${this.databaseFileFullPath}'`);
+    private deleteDataStore(): void {
+        if (fs.existsSync(this.dataStorePath)) {
+            fs.unlinkSync(this.dataStorePath);
+            log.info(`Deleted database file '${this.dataStorePath}'`);
+        }
     }
 
-    public resetDatabase(): void {
-        log.info("Resetting database");
+    public clearDataStore(): void{
+        this.db.get('collections').remove().write();
+        this.db.get('notebooks').remove().write();
+        this.db.get('notes').remove().write();
+    }
 
-        // 1. Delete the existing database
-        this.deleteDatabase();
+    public getStorageDirectory(): string {
+        return this.db.get('storageDirectory').value();
+    }
 
-        // 2. Create a new database
-        this.loadOrCreateDatabase();
+    public setStorageDirectory(storageDirectory: string): void {
+        this.db.set('storageDirectory', storageDirectory).write();
     }
 
     public addCollection(name: string, isActive: boolean) {
@@ -55,13 +64,13 @@ export class DataStore {
         this.db.get('collections').push(newCollection).write();
     }
 
+    public getAllCollections(): Collection[] {
+        return this.db.get('collections').value();
+    }
+
     public getCollectionsByName(name: string): Collection[] {
         let nameLower: string = name.toLowerCase();
 
         return this.db.get('collections').filter({ nameLower: nameLower }).value();
-    }
-
-    public getCollections(): Collection[] {
-        return this.db.get('collections').value();
     }
 }

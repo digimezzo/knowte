@@ -15,7 +15,7 @@ export class MainMenuButtonComponent implements OnInit {
   private subscription: Subscription;
 
   constructor(private dialog: MatDialog, private collectionService: CollectionService) {
-    this.subscription = collectionService.storageDirectoryInitialized$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
+    this.subscription = collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
     this.subscription.add(collectionService.collectionsChanged$.subscribe(() => this.collections = this.collectionService.getCollections()));
     this.hasStorageDirectory = collectionService.hasStorageDirectory;
   }
@@ -43,10 +43,6 @@ export class MainMenuButtonComponent implements OnInit {
 
   public renameCollection(collectionId: string) {
     log.info(`user pressed renameCollection(${collectionId})`);
-  }
-
-  public deleteCollection(collectionId: string) {
-    log.info(`user pressed deleteCollection(${collectionId})`);
   }
 
   ngOnDestroy() {

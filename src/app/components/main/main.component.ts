@@ -13,7 +13,7 @@ export class MainComponent implements OnInit {
     private subscription: Subscription;
 
     constructor(private collectionService: CollectionService) {
-        this.subscription = collectionService.storageDirectoryInitialized$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
+        this.subscription = collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
         this.hasStorageDirectory = collectionService.hasStorageDirectory;
         log.info(`+++ Showing ${Constants.applicationName} (${Constants.applicationVersion}) main page +++`);
     }
