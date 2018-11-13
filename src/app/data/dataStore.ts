@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import log from 'electron-log';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import { remote } from 'electron';
 import * as path from 'path';
 import { Constants } from '../core/constants';
-import * as low from 'lowdb';
-import * as FileSync from 'lowdb/adapters/FileSync';
+import * as lowdb from 'lowdb';
+import * as FileAsync from 'lowdb/adapters/FileSync';
 import { Collection } from './collection';
 
 @Injectable({
@@ -27,8 +27,8 @@ export class DataStore {
         isNewDataStore = !fs.existsSync(this.dataStorePath);
 
         // This loads the data store (the data store file is created if it doesn't yet exist)
-        let adapter: FileSync = new FileSync(this.dataStorePath);
-        this.db = low(adapter);
+        let adapter: FileAsync = new FileAsync(this.dataStorePath);
+        this.db = lowdb(adapter);
         log.info(`Loaded data store '${this.dataStorePath}'`);
 
         // If this is a new data store file, we need to add some defaults.
@@ -45,7 +45,7 @@ export class DataStore {
         }
     }
 
-    public clearDataStore(): void{
+    public clearDataStore(): void {
         this.db.get('collections').remove().write();
         this.db.get('notebooks').remove().write();
         this.db.get('notes').remove().write();
@@ -59,7 +59,7 @@ export class DataStore {
         this.db.set('storageDirectory', storageDirectory).write();
     }
 
-    public addCollection(name: string, isActive: boolean) {
+    public addCollection(name: string, isActive: number): void {
         let newCollection: Collection = new Collection(name, isActive);
         this.db.get('collections').push(newCollection).write();
     }
@@ -72,5 +72,10 @@ export class DataStore {
         let nameLower: string = name.toLowerCase();
 
         return this.db.get('collections').filter({ nameLower: nameLower }).value();
+    }
+
+    public activateCollection(id: string): void {
+        this.db.get('collections').each(coll => coll.isActive = 0).write();
+        this.db.get('collections').find({ id: id }).assign({ isActive: 1 }).write();
     }
 }

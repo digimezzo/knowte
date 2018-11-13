@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { AddCollectionDialogComponent } from '../dialogs/addCollectionDialog/addCollectionDialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material';
@@ -16,15 +16,15 @@ export class MainMenuButtonComponent implements OnInit {
 
   constructor(private dialog: MatDialog, private collectionService: CollectionService) {
     this.subscription = collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
-    this.subscription.add(collectionService.collectionsChanged$.subscribe(() => this.collections = this.collectionService.getCollections()));
-    this.hasStorageDirectory = collectionService.hasStorageDirectory;
+    this.subscription.add(collectionService.collectionsChanged$.subscribe(async() => this.collections = await this.collectionService.getCollectionsAsync()));
+    this.hasStorageDirectory = this.collectionService.hasStorageDirectory();
   }
 
   public hasStorageDirectory: boolean;
   public collections: Collection[];
 
   ngOnInit() {
-    this.collections = this.collectionService.getCollections();
+    this.collectionService.getCollectionsAsync().then(collections => this.collections = collections);
   }
 
   public addCollection(): void {
@@ -37,12 +37,18 @@ export class MainMenuButtonComponent implements OnInit {
     });
   }
 
-  public activateCollection(collectionId: string) {
-    log.info(`user pressed activateCollection(${collectionId})`);
+  public async activateCollection(collectionId: string) {
+    log.info(`Pressed activateCollection(${collectionId})`);
+    this.collectionService.activateCollection(collectionId);
+    // this.collections = await this.collectionService.getCollectionsAsync();
   }
 
   public renameCollection(collectionId: string) {
-    log.info(`user pressed renameCollection(${collectionId})`);
+    log.info(`Pressed renameCollection(${collectionId})`);
+  }
+
+  public deleteCollection(collectionId: string) {
+    log.info(`Pressed deleteCollection(${collectionId})`);
   }
 
   ngOnDestroy() {

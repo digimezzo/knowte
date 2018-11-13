@@ -14,12 +14,12 @@ export class AddCollectionDialogComponent implements OnInit {
 
     public collectionName: string;
 
-    public addCollection(): void {
-        this.collectionService.addCollection(this.collectionName);
+    public async addCollectionAsync(): Promise<void> {
+        await this.collectionService.addCollectionAsync(this.collectionName);
     }
 
-    public addCollectionAndClose(): void{
-        this.addCollection();
+    public async addCollectionAndCloseAsync(): Promise<void> {
+        await this.addCollectionAsync();
         this.dialogRef.close();
     }
 

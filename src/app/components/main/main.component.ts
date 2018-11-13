@@ -14,7 +14,7 @@ export class MainComponent implements OnInit {
 
     constructor(private collectionService: CollectionService) {
         this.subscription = collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
-        this.hasStorageDirectory = collectionService.hasStorageDirectory;
+        this.hasStorageDirectory = this.collectionService.hasStorageDirectory();
         log.info(`+++ Showing ${Constants.applicationName} (${Constants.applicationVersion}) main page +++`);
     }
 
