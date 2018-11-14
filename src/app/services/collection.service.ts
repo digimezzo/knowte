@@ -33,6 +33,9 @@ export class CollectionService {
   private collectionAdded = new Subject<string>();
   collectionAdded$ = this.collectionAdded.asObservable();
 
+  private collectionRenamed = new Subject<string>();
+  collectionRenamed$ = this.collectionRenamed.asObservable();
+
   private getCollectionDirectories(): string[] {
     let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
     let fileNames: string[] = fs.readdirSync(settingsStorageDirectory);
@@ -50,6 +53,13 @@ export class CollectionService {
     return collectionDirectories;
   }
 
+  private generateCollectionDirectoryPath(collectionName: string): string {
+    let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
+    let collectionDirectoryName: string = `${collectionName} ${Constants.collectionFoldersSuffix}`;
+
+    return path.join(settingsStorageDirectory, collectionDirectoryName);
+  }
+
   private createDefaultCollectionDirectory(): void {
     // If no storage directory is found, don't try to create a default collection directory.
     if (!this.hasStorageDirectory()) {
@@ -57,14 +67,12 @@ export class CollectionService {
       return;
     }
 
-    let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
     let collectionDirectories: string[] = this.getCollectionDirectories();
 
     // If there are no collections, create a default collection.
     if (collectionDirectories.length == 0) {
-      let defaultCollectionName: string = `${Constants.defaultCollectionName} ${Constants.collectionFoldersSuffix}`;
-      fs.mkdirSync(path.join(settingsStorageDirectory, defaultCollectionName));
-      log.info(`No collections were found. Created new collection '${defaultCollectionName}'.`);
+      fs.mkdirSync(path.join(this.generateCollectionDirectoryPath(Constants.defaultCollectionName)));
+      log.info(`No collections were found. Created new collection '${Constants.defaultCollectionName}'.`);
     }
   }
 
@@ -156,45 +164,50 @@ export class CollectionService {
     return collections;
   }
 
-  public async addCollectionAsync(name: string): Promise<CollectionOperation> {
+  private collectionExists(collectionName: string): boolean {
+    let collections: Collection[] = this.dataStore.getCollectionsByName(collectionName);
+
+    return collections.length > 0;
+  }
+
+  public async addCollectionAsync(collectionName: string): Promise<CollectionOperation> {
     // Check if a collection name was provided
-    if (!name) {
+    if (!collectionName) {
+      log.error("addCollectionAsync: name is null");
       return CollectionOperation.Error;
     }
 
     // Sanitize for filename
-    let sanitizedName: string = sanitize(name);
-    log.info(`Sanitized proposed collection name '${name}' to '${sanitizedName}'`);
+    let sanitizedCollectionName: string = sanitize(collectionName);
+    log.info(`Sanitized proposed collection name '${collectionName}' to '${sanitizedCollectionName}'`);
 
-    if (!sanitizedName) {
-      log.error(`Collection name '${name}' after sanitize is '${sanitizedName}' and cannot be empty.`);
+    if (!sanitizedCollectionName) {
+      log.error(`Collection name '${collectionName}' after sanitize is '${sanitizedCollectionName}' and cannot be empty.`);
       return CollectionOperation.Error;
     }
 
     // Check if there is already a collection with that name
-    let collections: Collection[] = this.dataStore.getCollectionsByName(sanitizedName);
-
-    if (collections.length > 0) {
+    if (this.collectionExists(collectionName)) {
       return CollectionOperation.Duplicate;
     }
 
     try {
       // Add the collection to disk
       let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
-      let collectionName: string = `${sanitizedName} ${Constants.collectionFoldersSuffix}`;
+      let collectionName: string = `${sanitizedCollectionName} ${Constants.collectionFoldersSuffix}`;
       await fs.mkdir(path.join(settingsStorageDirectory, collectionName));
-      log.info(`Added collection '${sanitizedName}' to disk`);
+      log.info(`Added collection '${sanitizedCollectionName}' to disk`);
 
       // Add the collection to the data store
-      this.dataStore.addCollection(sanitizedName, 0);
-      log.info(`Added collection '${sanitizedName}' to data store`);
+      this.dataStore.addCollection(sanitizedCollectionName, 0);
+      log.info(`Added collection '${sanitizedCollectionName}' to data store`);
     } catch (error) {
-      log.error(`Could not add collection '${sanitizedName}'. Cause: ${error}`);
+      log.error(`Could not add collection '${sanitizedCollectionName}'. Cause: ${error}`);
 
       return CollectionOperation.Error;
     }
 
-    this.collectionAdded.next(sanitizedName);
+    this.collectionAdded.next(sanitizedCollectionName);
 
     return CollectionOperation.Success;
   }
@@ -202,5 +215,41 @@ export class CollectionService {
   public activateCollection(collectionId: string): void {
     let collectionName: string = this.dataStore.activateCollection(collectionId);
     this.collectionActivated.next(collectionName);
+  }
+
+  public getCollectionName(collectionId: string): string {
+    return this.dataStore.getCollection(collectionId).name;
+  }
+
+  public async renameCollectionAsync(collectionId: string, newCollectionName: string): Promise<CollectionOperation> {
+    if (!collectionId || !newCollectionName) {
+      log.error("renameCollectionAsync: collectionId or newCollectionName is null");
+      return CollectionOperation.Error;
+    }
+
+    let sanitizedNewCollectionName: string = sanitize(newCollectionName);
+    log.info(`Sanitized proposed collection name '${newCollectionName}' to '${sanitizedNewCollectionName}'`);
+
+    try {
+      // 1. Check if there is already a collection with that name
+      if (this.collectionExists(newCollectionName)) {
+        return CollectionOperation.Duplicate;
+      }
+      // 2. Rename collection on disk
+      let oldCollectionName: string = this.dataStore.getCollection(collectionId).name;
+      let oldCollectionDirectoryPath: string = this.generateCollectionDirectoryPath(oldCollectionName);
+      let newCollectionDirectoryPath: string = this.generateCollectionDirectoryPath(sanitizedNewCollectionName);
+      await fs.move(oldCollectionDirectoryPath, newCollectionDirectoryPath);
+
+      // 3. If rename on disk is success, rename in database
+      this.dataStore.setCollectionName(collectionId, sanitizedNewCollectionName);
+    } catch (error) {
+      log.error(`Could not rename the collection with id='${collectionId}' to '${sanitizedNewCollectionName}'. Cause: ${error}`);
+      return CollectionOperation.Error;
+    }
+
+    this.collectionRenamed.next(sanitizedNewCollectionName);
+
+    return CollectionOperation.Success;
   }
 }

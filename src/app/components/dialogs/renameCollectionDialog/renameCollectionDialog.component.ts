@@ -9,17 +9,17 @@ import { Collection } from '../../../data/collection';
     styleUrls: ['./renameCollectionDialog.component.scss']
 })
 export class RenameCollectionDialogComponent implements OnInit {
-    constructor(private collectionService: CollectionService, private dialogRef:MatDialogRef<RenameCollectionDialogComponent>,
+    constructor(private collectionService: CollectionService, private dialogRef: MatDialogRef<RenameCollectionDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any) {
+        this.collectionId = data.collectionId;
+        this.collectionName = this.collectionService.getCollectionName(data.collectionId);
     }
 
-    public collection: Collection;
-
     public collectionName: string;
+    public collectionId: string;
 
     public async renameCollectionAsync(): Promise<void> {
-        // this.collection = this.collectionService.getCollectionAsync(this.data.collectionId);
-        // await this.collectionService.addCollectionAsync(this.collectionName);
+        await this.collectionService.renameCollectionAsync(this.collectionId, this.collectionName);
     }
 
     public async renameCollectionAndCloseAsync(): Promise<void> {

@@ -29,7 +29,7 @@ export class GlobalErrorHandler implements ErrorHandler {
                 // Quit the application
                 log.info("Closing application");
                 let win: BrowserWindow = remote.getCurrentWindow();
-                // win.close();
+                win.close();
             });
         });
       }

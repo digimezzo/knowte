@@ -30,6 +30,11 @@ export class MainMenuButtonComponent implements OnInit {
       this.snackBarService.collectionAdded(collectionName);
     }));
 
+    this.subscription.add(collectionService.collectionRenamed$.subscribe(async (newCollectionName) => {
+      this.collections = await this.collectionService.getCollectionsAsync();
+      this.snackBarService.collectionRenamed(newCollectionName);
+    }));
+
     this.hasStorageDirectory = this.collectionService.hasStorageDirectory();
   }
 

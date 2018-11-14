@@ -24,4 +24,9 @@ export class SnackBarService {
         let message: string = this.translate.instant('SnackBarMessages.CollectionActivated').replace("{collectionName}", `"${collectionName}"`);
         this.showActionLessSnackBar(message, 2000);
     }
+
+    public collectionRenamed(collectionName: string) {
+        let message: string = this.translate.instant('SnackBarMessages.CollectionRenamed').replace("{collectionName}", `"${collectionName}"`);
+        this.showActionLessSnackBar(message, 2000);
+    }
 }

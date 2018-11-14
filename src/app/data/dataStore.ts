@@ -59,8 +59,8 @@ export class DataStore {
         this.db.set('storageDirectory', storageDirectory).write();
     }
 
-    public addCollection(name: string, isActive: number): void {
-        let newCollection: Collection = new Collection(name, isActive);
+    public addCollection(collectionName: string, isActive: number): void {
+        let newCollection: Collection = new Collection(collectionName, isActive);
         this.db.get('collections').push(newCollection).write();
     }
 
@@ -68,17 +68,25 @@ export class DataStore {
         return this.db.get('collections').value();
     }
 
-    public getCollectionsByName(name: string): Collection[] {
-        let nameLower: string = name.toLowerCase();
+    public getCollectionsByName(collectionName: string): Collection[] {
+        let nameLower: string = collectionName.toLowerCase();
 
         return this.db.get('collections').filter({ nameLower: nameLower }).value();
     }
 
-    public activateCollection(id: string): string {
+    public getCollection(collectionId: string): Collection {
+        return this.db.get('collections').find({ id: collectionId }).value();
+    }
+
+    public activateCollection(collectionId: string): string {
         this.db.get('collections').each(coll => coll.isActive = 0).write();
-        let collectionRef: any = this.db.get('collections').find({ id: id });
+        let collectionRef: any = this.db.get('collections').find({ id: collectionId });
         collectionRef.assign({ isActive: 1 }).write();
 
         return collectionRef.value().name;
+    }
+
+    public setCollectionName(collectionId: string, collectionName: string){
+        this.db.get('collections').find({ id: collectionId }).assign({ name: collectionName }).write();
     }
 }

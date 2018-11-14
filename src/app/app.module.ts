@@ -36,6 +36,7 @@ import { ErrorDialogComponent } from './components/dialogs/errorDialog/errorDial
 import { MainComponent } from './components/main/main.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { NotesComponent } from './components/notes/notes.component';
+import { RenameCollectionDialogComponent } from './components/dialogs/renameCollectionDialog/renameCollectionDialog.component';
 
 // Modules
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -60,6 +61,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     InformationComponent,
     LicenseDialogComponent,
     AddCollectionDialogComponent,
+    RenameCollectionDialogComponent,
     ErrorDialogComponent,
     LogoFullComponent,
     WebviewDirective
@@ -100,7 +102,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   bootstrap: [AppComponent, BackButtonComponent, MainMenuButtonComponent],
   entryComponents: [
-    LicenseDialogComponent, AddCollectionDialogComponent, ErrorDialogComponent
+    LicenseDialogComponent, AddCollectionDialogComponent, ErrorDialogComponent, RenameCollectionDialogComponent
   ],
 })
 export class AppModule { }

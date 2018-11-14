@@ -78,6 +78,6 @@
         "CollectionActivated": "Collection {collectionName} was activated",
         "CollectionAdded": "Collection {collectionName} was added",
         "CollectionDeleted": "Collection {collectionName} was deleted",
-        "CollectionRenamed": "Collection {oldCollectionName} was renamed to {newCollectionName}"
+        "CollectionRenamed": "Collection was renamed to {collectionName}"
     }
 }
