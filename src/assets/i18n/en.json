@@ -61,10 +61,9 @@
         "Donate": "DONATE",
         "ViewLog": "VIEW LOG"
     },
-    "AddCollectionDialog": {
-        "AddCollection": "Add collection"
-    },
     "DialogTitles": {
+        "AddCollection": "Add collection",
+        "RenameCollection": "Rename collection",
         "SelectFolder": "Select a folder",
         "Error": "Error"
     },

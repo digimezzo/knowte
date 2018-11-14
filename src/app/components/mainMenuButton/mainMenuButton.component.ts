@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { AddCollectionDialogComponent } from '../dialogs/addCollectionDialog/addCollectionDialog.component';
-import { MatDialog, MatDialogRef, MatSnackBarModule, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
 import { Collection } from '../../data/collection';
 import log from 'electron-log';
-import { TranslateService } from '@ngx-translate/core';
+import { RenameCollectionDialogComponent } from '../dialogs/renameCollectionDialog/renameCollectionDialog.component';
+import { SnackBarService } from '../../services/snackBar.service';
 
 @Component({
   selector: 'main-menu-button',
@@ -16,20 +17,18 @@ export class MainMenuButtonComponent implements OnInit {
   private subscription: Subscription;
 
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
-    private snackBar: MatSnackBar, private translate: TranslateService) {
+    private snackBarService: SnackBarService) {
     this.subscription = collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
     this.subscription.add(collectionService.collectionsChanged$.subscribe(async () => this.collections = await this.collectionService.getCollectionsAsync()));
-    
-    this.subscription.add(collectionService.collectionActivated$.subscribe(async(collectionName) => {
-      this.collections = await this.collectionService.getCollectionsAsync();
-      let message: string = this.translate.instant('SnackBarMessages.CollectionActivated').replace("{collectionName}",`'${collectionName}'`);
-      this.snackBar.open(message, "", { duration: 2000 });
-    })); 
 
-    this.subscription.add(collectionService.collectionAdded$.subscribe(async(collectionName) => {
-      let message: string = this.translate.instant('SnackBarMessages.CollectionAdded').replace("{collectionName}",`'${collectionName}'`);
-      this.snackBar.open(message, "", { duration: 2000 });
-    })); 
+    this.subscription.add(collectionService.collectionActivated$.subscribe(async (collectionName) => {
+      this.collections = await this.collectionService.getCollectionsAsync();
+      this.snackBarService.collectionActivated(collectionName);
+    }));
+
+    this.subscription.add(collectionService.collectionAdded$.subscribe(async (collectionName) => {
+      this.snackBarService.collectionAdded(collectionName);
+    }));
 
     this.hasStorageDirectory = this.collectionService.hasStorageDirectory();
   }
@@ -42,12 +41,10 @@ export class MainMenuButtonComponent implements OnInit {
   }
 
   public addCollection(): void {
+    log.info("Pressed addCollection()");
+
     let dialogRef: MatDialogRef<AddCollectionDialogComponent> = this.dialog.open(AddCollectionDialogComponent, {
       width: '450px'
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      // this.collectionService.addCollection("defaultdd collection");
     });
   }
 
@@ -58,6 +55,10 @@ export class MainMenuButtonComponent implements OnInit {
 
   public renameCollection(collectionId: string) {
     log.info(`Pressed renameCollection(${collectionId})`);
+
+    let dialogRef: MatDialogRef<RenameCollectionDialogComponent> = this.dialog.open(RenameCollectionDialogComponent, {
+      width: '450px', data: { collectionId: collectionId }
+    });
   }
 
   public deleteCollection(collectionId: string) {
