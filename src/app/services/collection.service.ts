@@ -9,6 +9,7 @@ import { Subject } from 'rxjs';
 import { Collection } from '../data/collection';
 import { CollectionOperation } from './collectionOperation';
 import { Utils } from '../core/utils';
+import * as sanitize from 'sanitize-filename';
 
 @Injectable({
   providedIn: 'root',
@@ -26,40 +27,11 @@ export class CollectionService {
   private collectionsChanged = new Subject();
   collectionsChanged$ = this.collectionsChanged.asObservable();
 
-  // private async getCollectionDirectoriesAsync(): Promise<string[]> {
-  //   let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
-  //   let fileNames: string[] = await fs.readdir(settingsStorageDirectory);
-  //   let collectionDirectories: string[] = [];
+  private collectionActivated = new Subject<string>();
+  collectionActivated$ = this.collectionActivated.asObservable();
 
-  //   for (let fileName of fileNames) {
-  //     let absoluteFilePath: string = path.join(settingsStorageDirectory, fileName);
-  //     let stat: any = await fs.stat(absoluteFilePath);
-
-  //     if (stat.isDirectory() && fileName.includes(Constants.collectionFoldersSuffix)) {
-  //       collectionDirectories.push(fileName);
-  //     }
-  //   }
-
-  //   return collectionDirectories;
-  // }
-
-  // private async createDefaultCollectionDirectoryAsync(): Promise<void> {
-  //   // If no storage directory is found, don't try to create a default collection directory.
-  //   if (!await this.hasStorageDirectoryAsync()) {
-  //     log.info("Not creating default collection, because there is no storage directory.");
-  //     return;
-  //   }
-
-  //   let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
-  //   let collectionDirectories: string[] = await this.getCollectionDirectoriesAsync();
-
-  //   // If there are no collections, create a default collection.
-  //   if (collectionDirectories.length == 0) {
-  //     let defaultCollectionName: string = `${Constants.defaultCollectionName} ${Constants.collectionFoldersSuffix}`;
-  //     await fs.mkdir(path.join(settingsStorageDirectory, defaultCollectionName));
-  //     log.info(`No collections were found. Created new collection '${defaultCollectionName}'.`);
-  //   }
-  // }
+  private collectionAdded = new Subject<string>();
+  collectionAdded$ = this.collectionAdded.asObservable();
 
   private getCollectionDirectories(): string[] {
     let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
@@ -190,8 +162,17 @@ export class CollectionService {
       return CollectionOperation.Error;
     }
 
+    // Sanitize for filename
+    let sanitizedName: string = sanitize(name);
+    log.info(`Sanitized proposed collection name '${name}' to '${sanitizedName}'`);
+
+    if (!sanitizedName) {
+      log.error(`Collection name '${name}' after sanitize is '${sanitizedName}' and cannot be empty.`);
+      return CollectionOperation.Error;
+    }
+
     // Check if there is already a collection with that name
-    let collections: Collection[] = this.dataStore.getCollectionsByName(name);
+    let collections: Collection[] = this.dataStore.getCollectionsByName(sanitizedName);
 
     if (collections.length > 0) {
       return CollectionOperation.Duplicate;
@@ -200,26 +181,26 @@ export class CollectionService {
     try {
       // Add the collection to disk
       let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
-      let collectionName: string = `${name} ${Constants.collectionFoldersSuffix}`;
+      let collectionName: string = `${sanitizedName} ${Constants.collectionFoldersSuffix}`;
       await fs.mkdir(path.join(settingsStorageDirectory, collectionName));
-      log.info(`Added collection '${name}' to disk`);
+      log.info(`Added collection '${sanitizedName}' to disk`);
 
       // Add the collection to the data store
-      this.dataStore.addCollection(name, 0);
-      log.info(`Added collection '${name}' to data store`);
+      this.dataStore.addCollection(sanitizedName, 0);
+      log.info(`Added collection '${sanitizedName}' to data store`);
     } catch (error) {
-      log.error(`Could not add collection '${name}'. Cause: ${error}`);
+      log.error(`Could not add collection '${sanitizedName}'. Cause: ${error}`);
 
       return CollectionOperation.Error;
     }
 
-    this.collectionsChanged.next();
+    this.collectionAdded.next(sanitizedName);
 
     return CollectionOperation.Success;
   }
 
   public activateCollection(collectionId: string): void {
-    this.dataStore.activateCollection(collectionId);
-    this.collectionsChanged.next();
+    let collectionName: string = this.dataStore.activateCollection(collectionId);
+    this.collectionActivated.next(collectionName);
   }
 }

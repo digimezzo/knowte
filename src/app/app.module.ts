@@ -40,7 +40,7 @@ import { NotesComponent } from './components/notes/notes.component';
 // Modules
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, MatTooltipModule, 
-  MatDialogModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule } from '@angular/material';
+  MatDialogModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatSnackBarModule } from '@angular/material';
 import { GlobalErrorHandler } from './globalErrorHandler';
 
 // AoT requires an exported function for factories
@@ -75,6 +75,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    MatSnackBarModule,
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,

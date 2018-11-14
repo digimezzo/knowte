@@ -43,7 +43,8 @@
     "electron-store": "^2.0.0",
     "fs-extra": "^7.0.1",
     "lowdb": "^1.0.0",
-    "nanoid": "^2.0.0"
+    "nanoid": "^2.0.0",
+    "sanitize-filename": "^1.6.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.10.4",

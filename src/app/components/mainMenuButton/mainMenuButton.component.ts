@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { AddCollectionDialogComponent } from '../dialogs/addCollectionDialog/addCollectionDialog.component';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBarModule, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Subscription } from 'rxjs';
 import { Collection } from '../../data/collection';
 import log from 'electron-log';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'main-menu-button',
@@ -14,9 +15,22 @@ import log from 'electron-log';
 export class MainMenuButtonComponent implements OnInit {
   private subscription: Subscription;
 
-  constructor(private dialog: MatDialog, private collectionService: CollectionService) {
+  constructor(private dialog: MatDialog, private collectionService: CollectionService,
+    private snackBar: MatSnackBar, private translate: TranslateService) {
     this.subscription = collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
-    this.subscription.add(collectionService.collectionsChanged$.subscribe(async() => this.collections = await this.collectionService.getCollectionsAsync()));
+    this.subscription.add(collectionService.collectionsChanged$.subscribe(async () => this.collections = await this.collectionService.getCollectionsAsync()));
+    
+    this.subscription.add(collectionService.collectionActivated$.subscribe(async(collectionName) => {
+      this.collections = await this.collectionService.getCollectionsAsync();
+      let message: string = this.translate.instant('SnackBarMessages.CollectionActivated').replace("{collectionName}",`'${collectionName}'`);
+      this.snackBar.open(message, "", { duration: 2000 });
+    })); 
+
+    this.subscription.add(collectionService.collectionAdded$.subscribe(async(collectionName) => {
+      let message: string = this.translate.instant('SnackBarMessages.CollectionAdded').replace("{collectionName}",`'${collectionName}'`);
+      this.snackBar.open(message, "", { duration: 2000 });
+    })); 
+
     this.hasStorageDirectory = this.collectionService.hasStorageDirectory();
   }
 
@@ -40,7 +54,6 @@ export class MainMenuButtonComponent implements OnInit {
   public async activateCollection(collectionId: string) {
     log.info(`Pressed activateCollection(${collectionId})`);
     this.collectionService.activateCollection(collectionId);
-    // this.collections = await this.collectionService.getCollectionsAsync();
   }
 
   public renameCollection(collectionId: string) {

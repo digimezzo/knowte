@@ -74,8 +74,11 @@ export class DataStore {
         return this.db.get('collections').filter({ nameLower: nameLower }).value();
     }
 
-    public activateCollection(id: string): void {
+    public activateCollection(id: string): string {
         this.db.get('collections').each(coll => coll.isActive = 0).write();
-        this.db.get('collections').find({ id: id }).assign({ isActive: 1 }).write();
+        let collectionRef: any = this.db.get('collections').find({ id: id });
+        collectionRef.assign({ isActive: 1 }).write();
+
+        return collectionRef.value().name;
     }
 }

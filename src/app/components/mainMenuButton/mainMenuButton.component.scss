@@ -22,7 +22,9 @@
     opacity: 0.3;
 }
 
-.mainMenuItemText{
+.mainMenuItemContainer{
+    display: flex;
+    width: 100%;
     margin-right: 80px;
 }
 
