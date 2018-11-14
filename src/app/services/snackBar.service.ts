@@ -16,12 +16,12 @@ export class SnackBarService {
     }
 
     public collectionAdded(collectionName: string) {
-        let message: string = this.translate.instant('SnackBarMessages.CollectionAdded').replace("{collectionName}", `'${collectionName}'`);
+        let message: string = this.translate.instant('SnackBarMessages.CollectionAdded').replace("{collectionName}", `"${collectionName}"`);
         this.showActionLessSnackBar(message, 2000);
     }
 
     public collectionActivated(collectionName: string) {
-        let message: string = this.translate.instant('SnackBarMessages.CollectionActivated').replace("{collectionName}", `'${collectionName}'`);
+        let message: string = this.translate.instant('SnackBarMessages.CollectionActivated').replace("{collectionName}", `"${collectionName}"`);
         this.showActionLessSnackBar(message, 2000);
     }
 }
