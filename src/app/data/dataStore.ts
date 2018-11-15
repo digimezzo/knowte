@@ -86,7 +86,13 @@ export class DataStore {
         return collectionRef.value().name;
     }
 
-    public setCollectionName(collectionId: string, collectionName: string){
+    public setCollectionName(collectionId: string, collectionName: string) {
         this.db.get('collections').find({ id: collectionId }).assign({ name: collectionName }).write();
+    }
+
+    public deleteCollection(collectionId: string) {
+        this.db.get('collections').remove({ id: collectionId }).write();
+        this.db.get('notebooks').remove({ collectionId: collectionId }).write();
+        this.db.get('notes').remove({ collectionId: collectionId }).write();
     }
 }

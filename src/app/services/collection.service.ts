@@ -36,6 +36,9 @@ export class CollectionService {
   private collectionRenamed = new Subject<string>();
   collectionRenamed$ = this.collectionRenamed.asObservable();
 
+  private collectionDeleted = new Subject<string>();
+  collectionDeleted$ = this.collectionDeleted.asObservable();
+
   private getCollectionDirectories(): string[] {
     let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
     let fileNames: string[] = fs.readdirSync(settingsStorageDirectory);
@@ -202,8 +205,8 @@ export class CollectionService {
     try {
       // Add the collection to disk
       let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
-      let collectionName: string = this.collectionName2CollectionDirectory(sanitizedCollectionName);
-      await fs.mkdir(path.join(settingsStorageDirectory, collectionName));
+      let collectionDirectory: string = this.collectionName2CollectionDirectory(sanitizedCollectionName);
+      await fs.mkdir(path.join(settingsStorageDirectory, collectionDirectory));
       log.info(`Added collection '${sanitizedCollectionName}' to disk`);
 
       // Add the collection to the data store
@@ -257,6 +260,33 @@ export class CollectionService {
     }
 
     this.collectionRenamed.next(sanitizedNewCollectionName);
+
+    return CollectionOperation.Success;
+  }
+
+  public async deleteCollectionAsync(collectionId: string): Promise<CollectionOperation> {
+    if (!collectionId) {
+      log.error("deleteCollectionAsync: collectionId is null");
+      return CollectionOperation.Error;
+    }
+
+    let collectionName: string = ""; 
+
+    try {
+      // 1. Delete collection folder from disk
+      collectionName = this.dataStore.getCollection(collectionId).name;
+      let collectionDirectoryPath: string = this.generateCollectionDirectoryPath(collectionName);
+      await fs.remove(collectionDirectoryPath);
+
+      // 2. Delete collection from database (including its notebooks and notes)
+      this.dataStore.deleteCollection(collectionId);
+    } catch (error) {
+      log.error(`Could not delete the collection with id='${collectionId}'. Cause: ${error}`);
+
+      return CollectionOperation.Error;
+    }
+
+    this.collectionDeleted.next(collectionName);
 
     return CollectionOperation.Success;
   }

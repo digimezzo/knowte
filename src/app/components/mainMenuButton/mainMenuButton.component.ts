@@ -7,6 +7,8 @@ import { Collection } from '../../data/collection';
 import log from 'electron-log';
 import { RenameCollectionDialogComponent } from '../dialogs/renameCollectionDialog/renameCollectionDialog.component';
 import { SnackBarService } from '../../services/snackBar.service';
+import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'main-menu-button',
@@ -17,7 +19,7 @@ export class MainMenuButtonComponent implements OnInit {
   private subscription: Subscription;
 
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
-    private snackBarService: SnackBarService) {
+    private snackBarService: SnackBarService, private translateService: TranslateService) {
     this.subscription = collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
     this.subscription.add(collectionService.collectionsChanged$.subscribe(async () => this.collections = await this.collectionService.getCollectionsAsync()));
 
@@ -34,6 +36,11 @@ export class MainMenuButtonComponent implements OnInit {
     this.subscription.add(collectionService.collectionRenamed$.subscribe(async (newCollectionName) => {
       this.collections = await this.collectionService.getCollectionsAsync();
       this.snackBarService.collectionRenamed(newCollectionName);
+    }));
+
+    this.subscription.add(collectionService.collectionDeleted$.subscribe(async (collectionName) => {
+      this.collections = await this.collectionService.getCollectionsAsync();
+      this.snackBarService.collectionDeleted(collectionName);
     }));
 
     this.hasStorageDirectory = this.collectionService.hasStorageDirectory();
@@ -69,6 +76,21 @@ export class MainMenuButtonComponent implements OnInit {
 
   public deleteCollection(collectionId: string) {
     log.info(`Pressed deleteCollection(${collectionId})`);
+
+    let collectionName: string = this.collectionService.getCollectionName(collectionId);
+    let title: string = this.translateService.instant('DialogTitles.ConfirmDeleteCollection');
+    let text: string = this.translateService.instant('DialogTexts.ConfirmDeleteCollection').replace("{collectionName}", `"${collectionName}"`);
+
+    let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
+      
+      width: '450px', data: { dialogTitle: title, dialogText: text }
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        await this.collectionService.deleteCollectionAsync(collectionId);
+      }
+    });
   }
 
   ngOnDestroy() {

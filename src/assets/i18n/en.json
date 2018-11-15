@@ -59,13 +59,19 @@
         "Cancel": "CANCEL",
         "License": "LICENSE",
         "Donate": "DONATE",
-        "ViewLog": "VIEW LOG"
+        "ViewLog": "VIEW LOG",
+        "Yes": "YES",
+        "No": "NO"
     },
     "DialogTitles": {
         "AddCollection": "Add collection",
         "RenameCollection": "Rename collection",
         "SelectFolder": "Select a folder",
-        "Error": "Error"
+        "Error": "Error",
+        "ConfirmDeleteCollection": "Delete collection?"
+    },
+    "DialogTexts": {
+        "ConfirmDeleteCollection": "Are you sure you want to delete the collection {collectionName}? If you continue, its notebooks and notes will be lost."
     },
     "Input": {
         "CollectionName": "Collection name"
