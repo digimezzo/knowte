@@ -1,8 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material';
 import { remote } from 'electron';
-import { Constants } from '../../../core/constants';
-import * as path from 'path';
 
 @Component({
     selector: 'error-dialog',
