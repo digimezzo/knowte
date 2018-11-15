@@ -1,9 +1,0 @@
-<h2 mat-dialog-title>{{ 'DialogTitles.Error' | translate }}</h2>
-<mat-dialog-content>
-    <p *ngIf="!data.isGlobalError">{{ data.errorText }}</p>
-    <p *ngIf="data.isGlobalError">{{ 'ErrorTexts.GlobalError' | translate }}</p>
-</mat-dialog-content>
-<mat-dialog-actions>
-    <button mat-raised-button color="primary" [mat-dialog-close]="true">{{ 'Buttons.Ok' | translate }}</button>
-    <button mat-raised-button [mat-dialog-close]="true" (click)=viewLog()>{{ 'Buttons.ViewLog' | translate }}</button>
-</mat-dialog-actions>

@@ -27,6 +27,7 @@ export class MainMenuButtonComponent implements OnInit {
     }));
 
     this.subscription.add(collectionService.collectionAdded$.subscribe(async (collectionName) => {
+      this.collections = await this.collectionService.getCollectionsAsync();
       this.snackBarService.collectionAdded(collectionName);
     }));
 

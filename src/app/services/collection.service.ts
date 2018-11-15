@@ -98,6 +98,14 @@ export class CollectionService {
     return true;
   }
 
+  private collectionDirectory2CollectionName(collectionDirectory: string): string {
+    return collectionDirectory.substring(0, collectionDirectory.lastIndexOf(Constants.collectionFoldersSuffix) - 1);
+  }
+
+  private collectionName2CollectionDirectory(collectionName: string): string {
+    return `${collectionName} ${Constants.collectionFoldersSuffix}`;
+  }
+
   private async importNotesAsync(): Promise<void> {
     // Make sure we start from scratch
     this.dataStore.clearDataStore();
@@ -108,7 +116,7 @@ export class CollectionService {
     let isActive: number = 1;
 
     for (let collectionDirectory of collectionDirectories) {
-      this.dataStore.addCollection(collectionDirectory, isActive);
+      this.dataStore.addCollection(this.collectionDirectory2CollectionName(collectionDirectory), isActive);
       isActive = 0; // Only the first collection we find, must be active.
     }
 
@@ -194,7 +202,7 @@ export class CollectionService {
     try {
       // Add the collection to disk
       let settingsStorageDirectory: string = this.dataStore.getStorageDirectory();
-      let collectionName: string = `${sanitizedCollectionName} ${Constants.collectionFoldersSuffix}`;
+      let collectionName: string = this.collectionName2CollectionDirectory(sanitizedCollectionName);
       await fs.mkdir(path.join(settingsStorageDirectory, collectionName));
       log.info(`Added collection '${sanitizedCollectionName}' to disk`);
 
