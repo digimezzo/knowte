@@ -7,6 +7,7 @@ import { Constants } from '../core/constants';
 import * as lowdb from 'lowdb';
 import * as FileAsync from 'lowdb/adapters/FileSync';
 import { Collection } from './collection';
+import * as nanoid from 'nanoid';
 
 @Injectable({
     providedIn: 'root',
@@ -60,7 +61,7 @@ export class DataStore {
     }
 
     public addCollection(collectionName: string, isActive: number): void {
-        let newCollection: Collection = new Collection(collectionName, isActive);
+        let newCollection: Collection = new Collection(collectionName, nanoid(), isActive);
         this.db.get('collections').push(newCollection).write();
     }
 

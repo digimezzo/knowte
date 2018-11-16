@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Constants = /** @class */ (function () {
     function Constants() {
     }
-    Constants.applicationName = "Knowte";
+    Constants.applicationName = require("../../../package.json").name;
     Constants.applicationVersion = require("../../../package.json").version;
     Constants.applicationCopyright = "Copyright Digimezzo Ⓒ 2013 - 2018";
     Constants.donateUrl = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MQALEWTEZ7HX8";
@@ -15,6 +15,7 @@ var Constants = /** @class */ (function () {
     Constants.databaseFile = Constants.applicationName + ".db";
     Constants.collectionFoldersSuffix = "collection";
     Constants.notebookFoldersSuffix = "notebook";
+    Constants.defaultCollectionName = "Default";
     Constants.externalComponents = [
         { name: "Angular", description: "Angular is a development platform for building mobile and desktop web applications using Typescript/JavaScript and other languages.", url: "https://angular.io/", licenseUrl: "https://github.com/angular/angular/blob/master/LICENSE" },
         { name: "Electron", description: "The Electron framework lets you write cross-platform desktop applications using JavaScript, HTML and CSS. It is based on Node.js and Chromium.", url: "https://electronjs.org/", licenseUrl: "https://github.com/electron/electron/blob/master/LICENSE" },

@@ -10,6 +10,10 @@ import { Collection } from '../data/collection';
 import { CollectionOperation } from './collectionOperation';
 import { Utils } from '../core/utils';
 import * as sanitize from 'sanitize-filename';
+import { remote } from 'electron';
+import { CollectionStore } from '../data/collectionStore';
+import { NotebookStore } from '../data/notebookStore';
+import { NoteStore } from '../data/noteStore';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +22,10 @@ export class CollectionService {
   constructor(private dataStore: DataStore) {
     this.createDefaultCollectionDirectory();
   }
+
+  private collectionStore: CollectionStore = remote.getGlobal('collectionStore');
+  private notebookStore: NotebookStore = remote.getGlobal('NotebookStore');
+  private noteStore: NoteStore = remote.getGlobal('noteStore');
 
   // private settings: Store = new Store();
 

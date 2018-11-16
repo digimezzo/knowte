@@ -3,6 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var electron_1 = require("electron");
 var path = require("path");
 var url = require("url");
+var collectionStore_1 = require("./src/app/data/collectionStore");
+var notebookStore_1 = require("./src/app/data/notebookStore");
+var noteStore_1 = require("./src/app/data/noteStore");
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
@@ -10,6 +13,13 @@ var electron_log_1 = require("electron-log");
 var win, serve;
 var args = process.argv.slice(1);
 serve = args.some(function (val) { return val === '--serve'; });
+// Because of TypeScript, we need to cast "global" to type "any".
+var globalAny = global;
+// nedb store need to work from the main process. Outside the main process, 
+// it is not possible to work with real db files and nedb will default to IndexedDB.
+globalAny.collectionStore = new collectionStore_1.CollectionStore();
+globalAny.notebookStore = new notebookStore_1.NotebookStore();
+globalAny.noteStore = new noteStore_1.NoteStore();
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 electron_log_1.default.transports.file.level = 'info';
 function createWindow() {
