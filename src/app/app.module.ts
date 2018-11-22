@@ -19,6 +19,9 @@ import { CollectionService } from './services/collection.service';
 
 // Stores
 import { DataStore } from './data/dataStore';
+import { CollectionStore } from './data/collectionStore';
+import { NotebookStore } from './data/notebookStore';
+import { NoteStore } from './data/noteStore';
 
 // Directives
 import { WebviewDirective } from './directives/webview.directive';
@@ -97,6 +100,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     ElectronService,
     CollectionService,
     DataStore,
+    CollectionStore,
+    NotebookStore,
+    NoteStore,
     {
       provide: ErrorHandler,
       useClass: GlobalErrorHandler

@@ -19,13 +19,9 @@ import { NoteStore } from '../data/noteStore';
   providedIn: 'root',
 })
 export class CollectionService {
-  constructor(private dataStore: DataStore) {
+  constructor(private dataStore: DataStore, private collectionStore: CollectionStore, private notebookStore: NotebookStore, private noteStore: NoteStore) {
     this.createDefaultCollectionDirectory();
   }
-
-  private collectionStore: CollectionStore = remote.getGlobal('collectionStore');
-  private notebookStore: NotebookStore = remote.getGlobal('NotebookStore');
-  private noteStore: NoteStore = remote.getGlobal('noteStore');
 
   // private settings: Store = new Store();
 

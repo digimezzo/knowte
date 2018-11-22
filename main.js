@@ -3,9 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var electron_1 = require("electron");
 var path = require("path");
 var url = require("url");
-var collectionStore_1 = require("./src/app/data/collectionStore");
-var notebookStore_1 = require("./src/app/data/notebookStore");
-var noteStore_1 = require("./src/app/data/noteStore");
+var Datastore = require("nedb");
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
@@ -14,12 +12,18 @@ var win, serve;
 var args = process.argv.slice(1);
 serve = args.some(function (val) { return val === '--serve'; });
 // Because of TypeScript, we need to cast "global" to type "any".
+// Otherwise it is not possible to add custom properties to "global".
+// We get the error: Property '...' does not exist on type 'Global'.
 var globalAny = global;
-// nedb store need to work from the main process. Outside the main process, 
-// it is not possible to work with real db files and nedb will default to IndexedDB.
-globalAny.collectionStore = new collectionStore_1.CollectionStore();
-globalAny.notebookStore = new notebookStore_1.NotebookStore();
-globalAny.noteStore = new noteStore_1.NoteStore();
+// nedb can only work with database files when they are created and accessed from the main process.
+// If we try these calls from the renderer process, nedb uses IndexedDB Instead. 
+// Figuring this out, has been a tremendous waste of time. A developer shouldn't have to waste time on such crap.
+var collectionsDb = new Datastore({ filename: path.join(electron_1.app.getPath("userData"), "Collections.db"), autoload: true });
+var notebooksDb = new Datastore({ filename: path.join(electron_1.app.getPath("userData"), "Notebooks.db"), autoload: true });
+var notesDb = new Datastore({ filename: path.join(electron_1.app.getPath("userData"), "Notes.db"), autoload: true });
+globalAny.collectionsDb = collectionsDb;
+globalAny.notebooksDb = notebooksDb;
+globalAny.notesDb = notesDb;
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 electron_log_1.default.transports.file.level = 'info';
 function createWindow() {
