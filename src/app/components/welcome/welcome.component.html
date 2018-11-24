@@ -5,14 +5,9 @@
             <div class="welcomeTitle mt-4">{{ 'WelcomePage.Title' | translate }}</div>
             <div class="welcomeText mt-4">{{ 'WelcomePage.Text' | translate }}</div>
             <div class="mt-4">
-                <div *ngIf="!isBusy">
-                    <button mat-raised-button color="primary" (click)="openDirectoryChooser()">
-                        {{ 'WelcomePage.SelectButton' | translate }}
-                    </button>
-                    <button class="useDefaultButton ml-1" mat-button (click)="openDirectoryChooser()">
-                        {{ 'WelcomePage.UseDefaultButton' | translate }}
-                    </button>
-                </div>
+                <button mat-raised-button color="primary" (click)="openDirectoryChooser()" *ngIf="!isBusy">
+                    {{ 'WelcomePage.SelectButton' | translate }}
+                </button>
                 <mat-spinner *ngIf="isBusy" [diameter]="40"></mat-spinner>
             </div>
         </div>

@@ -1,9 +1,8 @@
 {
     "WelcomePage": {
         "Title": "Welcome to Knowte!",
-        "Text": "Before using Knowte, please choose where you would like to store your notes. If you are not sure, you can safely use the default location. You can still change this later if you wish.",
-        "SelectButton": "SELECT...",
-        "UseDefaultButton": "USE DEFAULT"
+        "Text": "To begin using Knowte, please select a directory in which you want your notes to be saved. If you would like to import notes which you already have, just select the directory that thas them and Knowte will import them for you.",
+        "SelectButton": "SELECT..."
     },
     "Pages": {
         "Notes": "Notes",
