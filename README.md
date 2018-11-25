@@ -10,14 +10,12 @@ Knowte is a note taking application that allows you to quickly and easily organi
 
 ## Build instructions
 
-`
-git clone hhttps://github.com/digimezzo/knowte-electron.git
-
-cd knowte-electron
-
-npm install            # download dependencies
-npm start              # start Knowte
-npm electron:windows   # Build for Windows
-npm electron:linux     # Build for Linux
-npm electron:mac       # Build for Linux
-`
+```bash
+$ git clone hhttps://github.com/digimezzo/knowte-electron.git
+$ cd knowte-electron
+$ npm install            # download dependencies
+$ npm start              # start Knowte
+$ npm electron:windows   # Build for Windows
+$ npm electron:linux     # Build for Linux
+$ npm electron:mac       # Build for Linux
+```
