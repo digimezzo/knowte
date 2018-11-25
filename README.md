@@ -1,6 +1,6 @@
 ![Knowte](Knowte.full.png)
 
-# Knowte 2
+# Knowte
 
 Knowte is a note taking application that allows you to quickly and easily organize and find your notes. This version is written using Electron, Angular and Typescript. The original Knowte, which is written in WPF and C#, remains available <a href="https://github.com/digimezzo/Knowte">here</a>.
 
