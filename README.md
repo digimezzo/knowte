@@ -11,7 +11,7 @@ Knowte is a note taking application that allows you to quickly and easily organi
 ## Build instructions
 
 ```bash
-$ git clone hhttps://github.com/digimezzo/knowte-electron.git
+$ git clone https://github.com/digimezzo/knowte-electron.git
 $ cd knowte-electron
 $ npm install            # download dependencies
 $ npm start              # start Knowte
