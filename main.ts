@@ -1,7 +1,6 @@
 import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import * as Datastore from 'nedb';
 
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
@@ -12,22 +11,6 @@ import log from 'electron-log';
 let win, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
-
-// Because of TypeScript, we need to cast "global" to type "any".
-// Otherwise it is not possible to add custom properties to "global".
-// We get the error: Property '...' does not exist on type 'Global'.
-const globalAny:any = global;
-
-// nedb can only work with database files when they are created and accessed from the main process.
-// If we try these calls from the renderer process, nedb uses IndexedDB Instead. 
-// Figuring this out, has been a tremendous waste of time. A developer shouldn't have to waste time on such crap.
-let collectionsDb: Datastore = new Datastore({ filename: path.join(app.getPath("userData"), "Collections.db"), autoload: true });
-let notebooksDb: Datastore = new Datastore({ filename: path.join(app.getPath("userData"), "Notebooks.db"), autoload: true });
-let notesDb: Datastore = new Datastore({ filename: path.join(app.getPath("userData"), "Notes.db"), autoload: true });
-
-globalAny.collectionsDb = collectionsDb;
-globalAny.notebooksDb = notebooksDb;
-globalAny.notesDb = notesDb;
 
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 log.transports.file.level = 'info';

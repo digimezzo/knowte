@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
-import log from 'electron-log';
-import * as fs from 'fs-extra';
-import { remote } from 'electron';
+import * as Store from 'electron-store';
+import * as loki from 'lokijs';
 import * as path from 'path';
 import { Constants } from '../core/constants';
-import * as lowdb from 'lowdb';
-import * as FileAsync from 'lowdb/adapters/FileSync';
 import { Collection } from './collection';
 import * as nanoid from 'nanoid';
 
@@ -13,87 +10,65 @@ import * as nanoid from 'nanoid';
     providedIn: 'root',
 })
 export class DataStore {
-    private app = remote.app;
-    private db;
+    private settings: Store = new Store();
 
     constructor() {
-        this.ensureDataStore();
+        this.initialize();
     }
 
-    public dataStorePath: string = path.join(this.app.getPath("userData"), Constants.databaseFile);
+    private db: loki;
+    private collections: any;
+    private notebooks: any;
+    private notes: any;
 
-    private ensureDataStore(): void {
-        let isNewDataStore: boolean = false;
+    public initialize(): void {
+        let storageDirectory: string = this.settings.get('storageDirectory');
 
-        isNewDataStore = !fs.existsSync(this.dataStorePath);
-
-        // This loads the data store (the data store file is created if it doesn't yet exist)
-        let adapter: FileAsync = new FileAsync(this.dataStorePath);
-        this.db = lowdb(adapter);
-        log.info(`Loaded data store '${this.dataStorePath}'`);
-
-        // If this is a new data store file, we need to add some defaults.
-        if (isNewDataStore) {
-            this.db.defaults({ storageDirectory: "", collections: [], notebooks: [], notes: [] }).write();
-            log.info("Added defaults to data store");
+        if (!storageDirectory) {
+            return;
         }
-    }
 
-    private deleteDataStore(): void {
-        if (fs.existsSync(this.dataStorePath)) {
-            fs.unlinkSync(this.dataStorePath);
-            log.info(`Deleted database file '${this.dataStorePath}'`);
+        this.db = new loki(path.join(storageDirectory, Constants.dataStoreFile), {autoload: true});
+
+        let mustSaveDatabase: boolean = false;
+
+        this.collections = this.db.getCollection('collections');
+
+        if (!this.collections) {
+            this.collections = this.db.addCollection('collections');
+            this.collections.insert(new Collection(Constants.defaultCollectionName, nanoid(), true));
+            mustSaveDatabase = true;
         }
-    }
 
-    public clearDataStore(): void {
-        this.db.get('collections').remove().write();
-        this.db.get('notebooks').remove().write();
-        this.db.get('notes').remove().write();
-    }
+        this.notebooks = this.db.getCollection('notebooks');
 
-    public getStorageDirectory(): string {
-        return this.db.get('storageDirectory').value();
-    }
+        if (!this.notebooks) {
+            this.notebooks = this.db.addCollection('notebooks');
+            mustSaveDatabase = true;
+        }
 
-    public setStorageDirectory(storageDirectory: string): void {
-        this.db.set('storageDirectory', storageDirectory).write();
-    }
+        this.notes = this.db.getCollection('notes');
 
-    public addCollection(collectionName: string, isActive: number): void {
-        let newCollection: Collection = new Collection(collectionName, nanoid(), isActive);
-        this.db.get('collections').push(newCollection).write();
+        if (!this.notes) {
+            this.notes = this.db.addCollection('notes');
+            mustSaveDatabase = true;
+        }
+
+        if (mustSaveDatabase) {
+            this.db.saveDatabase();
+        }
     }
 
     public getAllCollections(): Collection[] {
-        return this.db.get('collections').value();
+        return this.collections.chain().simplesort("name").data();
     }
 
-    public getCollectionsByName(collectionName: string): Collection[] {
-        let nameLower: string = collectionName.toLowerCase();
-
-        return this.db.get('collections').filter({ nameLower: nameLower }).value();
+    public getCollectionByName(collectionName: string): Collection {
+        return this.collections.findOne({ 'name': collectionName });
     }
 
-    public getCollection(collectionId: string): Collection {
-        return this.db.get('collections').find({ id: collectionId }).value();
-    }
-
-    public activateCollection(collectionId: string): string {
-        this.db.get('collections').each(coll => coll.isActive = 0).write();
-        let collectionRef: any = this.db.get('collections').find({ id: collectionId });
-        collectionRef.assign({ isActive: 1 }).write();
-
-        return collectionRef.value().name;
-    }
-
-    public setCollectionName(collectionId: string, collectionName: string) {
-        this.db.get('collections').find({ id: collectionId }).assign({ name: collectionName }).write();
-    }
-
-    public deleteCollection(collectionId: string) {
-        this.db.get('collections').remove({ id: collectionId }).write();
-        this.db.get('notebooks').remove({ collectionId: collectionId }).write();
-        this.db.get('notes').remove({ collectionId: collectionId }).write();
+    public addCollection(collectionName: string, isActive: boolean) {
+        this.collections.insert(new Collection(collectionName, nanoid(), isActive));
+        this.db.saveDatabase();
     }
 }

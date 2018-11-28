@@ -39,14 +39,10 @@ export class WelcomeComponent implements OnInit {
             this.zone.run(async () => {
                 this.isBusy = true;
 
-                if (await this.collectionService.initializeStorageDirectoryAsync(selectedParentDirectory)) {
-                    // TODO: create database and start indexing
-                } else {
-
+                if (!await this.collectionService.initializeStorageDirectoryAsync(selectedParentDirectory)) {
                     this.dialog.open(ErrorDialogComponent, {
                         width: '450px', data: { errorText: this.translate.instant('ErrorTexts.StorageDirectoryCreationError').replace("{storageDirectory}", `'${selectedParentDirectory}'`) }
                     });
-
                 }
 
                 this.isBusy = false;

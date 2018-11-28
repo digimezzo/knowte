@@ -2,11 +2,11 @@
 <mat-dialog-content>
     <mat-form-field>
         <input matInput [(ngModel)]="collectionName" placeholder="{{ 'Input.CollectionName' | translate }}"
-        (keyup.enter)="addCollectionAndCloseAsync()">
+        (keyup.enter)="addCollectionAndClose()">
     </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions>
     <button [disabled]="!collectionName" mat-raised-button color="primary" [mat-dialog-close]
-    (click)="addCollectionAsync()">{{ 'Buttons.Ok' | translate }}</button>
+    (click)="addCollection()">{{ 'Buttons.Ok' | translate }}</button>
     <button mat-raised-button [mat-dialog-close] >{{ 'Buttons.Cancel' | translate }}</button>
 </mat-dialog-actions>

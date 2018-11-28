@@ -34,4 +34,9 @@ export class SnackBarService {
         let message: string = this.translate.instant('SnackBarMessages.CollectionDeleted').replace("{collectionName}", `"${collectionName}"`);
         this.showActionLessSnackBar(message, 2000);
     }
+
+    public duplicateCollection(collectionName: string) {
+        let message: string = this.translate.instant('SnackBarMessages.DuplicateCollection').replace("{collectionName}", `"${collectionName}"`);
+        this.showActionLessSnackBar(message, 2000);
+    }
 }

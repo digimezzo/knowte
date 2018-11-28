@@ -21,25 +21,25 @@ export class MainMenuButtonComponent implements OnInit {
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
     private snackBarService: SnackBarService, private translateService: TranslateService) {
     this.subscription = collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
-    this.subscription.add(collectionService.collectionsChanged$.subscribe(async () => this.collections = await this.collectionService.getCollectionsAsync()));
+    this.subscription.add(collectionService.collectionsChanged$.subscribe(() => this.collections = this.collectionService.getCollections()));
 
     this.subscription.add(collectionService.collectionActivated$.subscribe(async (collectionName) => {
-      this.collections = await this.collectionService.getCollectionsAsync();
+      this.collections = await this.collectionService.getCollections();
       this.snackBarService.collectionActivated(collectionName);
     }));
 
     this.subscription.add(collectionService.collectionAdded$.subscribe(async (collectionName) => {
-      this.collections = await this.collectionService.getCollectionsAsync();
+      this.collections = await this.collectionService.getCollections();
       this.snackBarService.collectionAdded(collectionName);
     }));
 
     this.subscription.add(collectionService.collectionRenamed$.subscribe(async (newCollectionName) => {
-      this.collections = await this.collectionService.getCollectionsAsync();
+      this.collections = await this.collectionService.getCollections();
       this.snackBarService.collectionRenamed(newCollectionName);
     }));
 
     this.subscription.add(collectionService.collectionDeleted$.subscribe(async (collectionName) => {
-      this.collections = await this.collectionService.getCollectionsAsync();
+      this.collections = this.collectionService.getCollections();
       this.snackBarService.collectionDeleted(collectionName);
     }));
 
@@ -50,7 +50,7 @@ export class MainMenuButtonComponent implements OnInit {
   public collections: Collection[];
 
   ngOnInit() {
-    this.collectionService.getCollectionsAsync().then(collections => this.collections = collections);
+    this.collections = this.collectionService.getCollections();
   }
 
   public addCollection(): void {

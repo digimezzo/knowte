@@ -7,11 +7,10 @@ export class Constants {
     static readonly emailAddress = "https://www.digimezzo.com/contact";
     static readonly facebookUrl = "https://www.facebook.com/Digimezzo" ;
     static readonly twitterUrl = "https://twitter.com/Digimezzo";
-    static readonly collectionsSubDirectory: string = `${Constants.applicationName} collections`;
-    static readonly databaseFile: string = `${Constants.applicationName}.db`;
-    static readonly collectionFoldersSuffix: string = "collection";
-    static readonly notebookFoldersSuffix: string = "notebook";
+    static readonly collectionsDirectory: string = `${Constants.applicationName} collections`;
+    static readonly dataStoreFile: string = `${Constants.applicationName}.json`;
     static readonly defaultCollectionName: string = "Default";
+    static readonly unfiledNotebookName: string = "Unfiled";
 
     static readonly externalComponents: any[] = [
         { name: "Angular", description: "Angular is a development platform for building mobile and desktop web applications using Typescript/JavaScript and other languages.", url: "https://angular.io/", licenseUrl: "https://github.com/angular/angular/blob/master/LICENSE" },
