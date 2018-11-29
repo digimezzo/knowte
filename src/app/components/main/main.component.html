@@ -1,4 +1,7 @@
 <div class="mainContainer">
-    <welcome-page *ngIf="!hasStorageDirectory"></welcome-page>
-    <notes-page *ngIf="hasStorageDirectory"></notes-page>
+    <welcome-page *ngIf="showWelcome"></welcome-page>
+    <div *ngIf="!showWelcome">
+        <notes-page *ngIf="showNotes"></notes-page>
+        <notes-page *ngIf="!showNotes"></notes-page>
+    </div>
 </div>

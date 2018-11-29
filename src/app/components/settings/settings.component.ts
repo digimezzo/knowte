@@ -8,9 +8,9 @@ import log from 'electron-log';
 })
 export class SettingsComponent implements OnInit {
   constructor() {
-    log.info("Showing settings page");
   }
 
   ngOnInit() {
+    log.info("Showing settings page");
   }
 }

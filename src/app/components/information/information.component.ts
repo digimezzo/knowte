@@ -11,25 +11,18 @@ import log from 'electron-log';
 })
 export class InformationComponent implements OnInit {
   constructor(private dialog: MatDialog) {
-    this.applicationVersion = Constants.applicationVersion;
-    this.applicationCopyright = Constants.applicationCopyright;
-    this.websiteUrl = Constants.websiteUrl;
-    this.emailAddress = Constants.emailAddress;
-    this.facebookUrl = Constants.facebookUrl;
-    this.twitterUrl = Constants.twitterUrl;
-    this.externalComponents = Constants.externalComponents;
-    log.info("Showing information page");
   }
 
-  public applicationVersion: string;
-  public applicationCopyright: string;
-  public websiteUrl: string;
-  public emailAddress: string;
-  public facebookUrl: string;
-  public twitterUrl: string;
-  public externalComponents: any[];
+  public applicationVersion: string = Constants.applicationVersion;
+  public applicationCopyright: string = Constants.applicationCopyright;
+  public websiteUrl: string = Constants.websiteUrl;
+  public emailAddress: string = Constants.emailAddress;
+  public facebookUrl: string  = Constants.facebookUrl;
+  public twitterUrl: string = Constants.twitterUrl;
+  public externalComponents: any[] = Constants.externalComponents;
 
   ngOnInit() {
+    log.info("Showing information page");
   }
 
   openLicenseDialog(): void {

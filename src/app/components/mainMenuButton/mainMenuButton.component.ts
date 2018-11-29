@@ -20,36 +20,36 @@ export class MainMenuButtonComponent implements OnInit {
 
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
     private snackBarService: SnackBarService, private translateService: TranslateService) {
-    this.subscription = collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
-    this.subscription.add(collectionService.collectionsChanged$.subscribe(() => this.collections = this.collectionService.getCollections()));
-
-    this.subscription.add(collectionService.collectionActivated$.subscribe(async (collectionName) => {
-      this.collections = await this.collectionService.getCollections();
-      this.snackBarService.collectionActivated(collectionName);
-    }));
-
-    this.subscription.add(collectionService.collectionAdded$.subscribe(async (collectionName) => {
-      this.collections = await this.collectionService.getCollections();
-      this.snackBarService.collectionAdded(collectionName);
-    }));
-
-    this.subscription.add(collectionService.collectionRenamed$.subscribe(async (newCollectionName) => {
-      this.collections = await this.collectionService.getCollections();
-      this.snackBarService.collectionRenamed(newCollectionName);
-    }));
-
-    this.subscription.add(collectionService.collectionDeleted$.subscribe(async (collectionName) => {
-      this.collections = this.collectionService.getCollections();
-      this.snackBarService.collectionDeleted(collectionName);
-    }));
-
-    this.hasStorageDirectory = this.collectionService.hasStorageDirectory();
   }
 
   public hasStorageDirectory: boolean;
   public collections: Collection[];
 
   ngOnInit() {
+    this.subscription = this.collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
+    this.subscription.add(this.collectionService.collectionsChanged$.subscribe(() => this.collections = this.collectionService.getCollections()));
+
+    this.subscription.add(this.collectionService.collectionActivated$.subscribe(async (collectionName) => {
+      this.collections = await this.collectionService.getCollections();
+      this.snackBarService.collectionActivated(collectionName);
+    }));
+
+    this.subscription.add(this.collectionService.collectionAdded$.subscribe(async (collectionName) => {
+      this.collections = await this.collectionService.getCollections();
+      this.snackBarService.collectionAdded(collectionName);
+    }));
+
+    this.subscription.add(this.collectionService.collectionRenamed$.subscribe(async (newCollectionName) => {
+      this.collections = await this.collectionService.getCollections();
+      this.snackBarService.collectionRenamed(newCollectionName);
+    }));
+
+    this.subscription.add(this.collectionService.collectionDeleted$.subscribe(async (collectionName) => {
+      this.collections = this.collectionService.getCollections();
+      this.snackBarService.collectionDeleted(collectionName);
+    }));
+
+    this.hasStorageDirectory = this.collectionService.hasStorageDirectory();
     this.collections = this.collectionService.getCollections();
   }
 

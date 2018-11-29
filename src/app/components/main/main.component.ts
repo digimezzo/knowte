@@ -13,14 +13,14 @@ export class MainComponent implements OnInit {
     private subscription: Subscription;
 
     constructor(private collectionService: CollectionService) {
-        this.subscription = collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
-        this.hasStorageDirectory = this.collectionService.hasStorageDirectory();
-        log.info(`+++ Showing ${Constants.applicationName} (${Constants.applicationVersion}) main page +++`);
     }
 
-    public hasStorageDirectory: boolean;
+    public showWelcome: boolean;
 
     ngOnInit() {
+        this.subscription = this.collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.showWelcome = !hasStorageDirectory);
+        this.showWelcome = !this.collectionService.hasStorageDirectory();
+        log.info(`+++ Showing ${Constants.applicationName} (${Constants.applicationVersion}) main page +++`);
     }
 
     ngOnDestroy() {

@@ -8,10 +8,9 @@ import { Constants } from '../../core/constants';
 })
 export class LogoFullComponent implements OnInit {
   constructor() {
-    this.applicationName = Constants.applicationName.toUpperCase();
   }
 
-  public applicationName: string;
+  public applicationName: string = Constants.applicationName.toUpperCase();
   @Input() textColor: string;
 
   ngOnInit() {

@@ -13,15 +13,14 @@ import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.compone
     styleUrls: ['./welcome.component.scss']
 })
 export class WelcomeComponent implements OnInit {
-
     constructor(private translate: TranslateService, private collectionService: CollectionService, private dialog: MatDialog, private zone: NgZone) {
-        log.info("Showing welcome page");
     }
 
     public applicationName: string = Constants.applicationName.toUpperCase();
     public isBusy: boolean = false;
 
     ngOnInit() {
+        log.info("Showing welcome page");
     }
 
     public openDirectoryChooser(): void {

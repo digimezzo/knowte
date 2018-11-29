@@ -11,12 +11,10 @@ import { Collection } from '../../../data/collection';
 export class RenameCollectionDialogComponent implements OnInit {
     constructor(private collectionService: CollectionService, private dialogRef: MatDialogRef<RenameCollectionDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any) {
-        this.collectionId = data.collectionId;
-        this.collectionName = this.collectionService.getCollectionName(data.collectionId);
     }
 
-    public collectionName: string;
-    public collectionId: string;
+    public collectionName: string = this.data.collectionId;
+    public collectionId: string = this.collectionService.getCollectionName(this.data.collectionId);
 
     public async renameCollectionAsync(): Promise<void> {
         await this.collectionService.renameCollectionAsync(this.collectionId, this.collectionName);

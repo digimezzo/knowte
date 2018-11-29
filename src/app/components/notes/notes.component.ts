@@ -10,7 +10,6 @@ import log from 'electron-log';
 })
 export class NotesComponent implements OnInit {
   constructor(private collectionService: CollectionService) {
-    log.info("Showing notes page");
   }
 
   public allNotesCount: number = 0;
@@ -20,5 +19,6 @@ export class NotesComponent implements OnInit {
   public markedNotesCount: number = 0;
 
   ngOnInit() {
+    log.info("Showing notes page");
   }
 }

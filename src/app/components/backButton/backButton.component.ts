@@ -12,13 +12,13 @@ export class BackButtonComponent implements OnInit {
   private subscription: Subscription;
 
   constructor(public router: Router, private collectionService: CollectionService) {
-    this.subscription = this.collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
-    this.hasStorageDirectory = this.collectionService.hasStorageDirectory();
   }
 
   public hasStorageDirectory: boolean;
 
   ngOnInit() {
+    this.subscription = this.collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
+    this.hasStorageDirectory = this.collectionService.hasStorageDirectory();
   }
 
   public goToMain(): void {
