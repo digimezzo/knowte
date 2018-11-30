@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DataStore } from '../../data/dataStore';
-import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { Utils } from '../../core/utils';
+import { CollectionService } from '../../services/collection.service';
 
 @Component({
   selector: 'loading-page',
@@ -10,15 +8,15 @@ import { Utils } from '../../core/utils';
   styleUrls: ['./loading.component.scss']
 })
 export class LoadingComponent implements OnInit {
-  constructor(private dataStore: DataStore, public router: Router) {
+  constructor(private collectionService: CollectionService, public router: Router) {
   }
 
   ngOnInit() {
-    this.dataStore.initialize(this.showMain.bind(this));
+    this.showMain();
   }
 
   private async showMain(): Promise<void> {
-    //await Utils.sleep(5000);
+    await this.collectionService.initializeDataStoreAsync();
     this.router.navigate(['/main']);
   }
 }

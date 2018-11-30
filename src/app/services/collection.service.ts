@@ -20,8 +20,8 @@ export class CollectionService {
 
   private settings: Store = new Store();
 
-  private storageDirectoryChanged = new Subject<boolean>();
-  storageDirectoryChanged$ = this.storageDirectoryChanged.asObservable();
+  private dataStoreInitialized = new Subject<boolean>();
+  dataStoreInitialized$ = this.dataStoreInitialized.asObservable();
 
   private collectionsChanged = new Subject();
   collectionsChanged$ = this.collectionsChanged.asObservable();
@@ -85,11 +85,20 @@ export class CollectionService {
       return false;
     }
 
-    //await Utils.sleep(5000);
-
-    this.storageDirectoryChanged.next(true);
+    //await Utils.sleep(2000);
 
     return true;
+  }
+
+  public async initializeDataStoreAsync(): Promise<void> {
+    this.dataStore.initialize();
+
+    while(!this.dataStore.isReady){
+      await Utils.sleep(100);
+    }
+
+    //await Utils.sleep(2000);
+    this.dataStoreInitialized.next();
   }
 
   private collectionExists(collectionName: string): boolean {

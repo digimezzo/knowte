@@ -17,11 +17,10 @@ export class BackButtonComponent implements OnInit, OnDestroy {
 
   public applicationName: string = Constants.applicationName.toUpperCase();
 
-  public hasStorageDirectory: boolean;
+  public canShow: boolean = false;
 
   ngOnInit() {
-    this.subscription = this.collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
-    this.hasStorageDirectory = this.collectionService.hasStorageDirectory;
+    this.subscription = this.collectionService.dataStoreInitialized$.subscribe(() => this.canShow = true);
   }
 
   public goToMain(): void {

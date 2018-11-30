@@ -22,13 +22,13 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
     private snackBarService: SnackBarService, private translateService: TranslateService) {
   }
 
-  public hasStorageDirectory: boolean;
+  public canShow: boolean = false;
   public collections: Collection[];
 
   ngOnInit() {
-    this.subscription = this.collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => {
-      // this.hasStorageDirectory = hasStorageDirectory;
-      // this.collections = this.collectionService.getCollections();
+    this.subscription = this.collectionService.dataStoreInitialized$.subscribe(() => {
+      this.canShow = true; 
+      this.collections = this.collectionService.getCollections();
     });
 
     this.subscription.add(this.collectionService.collectionsChanged$.subscribe(() => this.collections = this.collectionService.getCollections()));
@@ -52,9 +52,6 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
       this.collections = this.collectionService.getCollections();
       this.snackBarService.collectionDeleted(collectionName);
     }));
-
-    // this.hasStorageDirectory = this.collectionService.hasStorageDirectory;
-    // this.collections = this.collectionService.getCollections();
   }
 
   public addCollection(): void {

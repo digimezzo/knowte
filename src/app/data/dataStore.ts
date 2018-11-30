@@ -16,17 +16,12 @@ export class DataStore {
     constructor() {
     }
 
-    public isReady: boolean = false;
-
     private db: loki;
     private collections: any;
     private notebooks: any;
     private notes: any;
 
-    public initialize(callback: any): void {
-        this.loadDatabase();
-        callback();
-    }
+    public isReady: boolean = false;
 
     private databaseLoaded(): void {
         let mustSaveDatabase: boolean = false;
@@ -60,7 +55,7 @@ export class DataStore {
         this.isReady = true;
     }
 
-    private loadDatabase(): void {
+    public initialize(): void {
         let storageDirectory: string = this.settings.get('storageDirectory');
 
         if (!storageDirectory) {

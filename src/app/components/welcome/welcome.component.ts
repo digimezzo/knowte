@@ -46,10 +46,12 @@ export class WelcomeComponent implements OnInit {
                     });
                 }
 
+                await this.collectionService.initializeDataStoreAsync();
+
                 this.isBusy = false;
 
-                this.router.navigate(['/loading']);
-            }); 
+                this.router.navigate(['/main']);
+            });
         });
     }
 }
