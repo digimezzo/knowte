@@ -3,12 +3,22 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { InformationComponent } from './components/information/information.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { WelcomeComponent } from './components/welcome/welcome.component';
+import { LoadingComponent } from './components/loading/loading.component';
 
 const routes: Routes = [
-    { 
-        path: '', 
-        redirectTo: '/main', 
-        pathMatch: 'full' 
+    // { 
+    //     path: '', 
+    //     redirectTo: '/main', 
+    //     pathMatch: 'full' 
+    // },
+    {
+        path: 'welcome',
+        component: WelcomeComponent
+    },
+    {
+        path: 'loading',
+        component: LoadingComponent
     },
     {
         path: 'main',

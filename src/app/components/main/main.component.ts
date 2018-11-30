@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CollectionService } from '../../services/collection.service';
-import { Subscription } from "rxjs";
 import log from 'electron-log';
 import { Constants } from '../../core/constants';
 
@@ -10,20 +8,10 @@ import { Constants } from '../../core/constants';
     styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
-    private subscription: Subscription;
-
-    constructor(private collectionService: CollectionService) {
+    constructor() {
     }
-
-    public showWelcome: boolean;
 
     ngOnInit() {
-        this.subscription = this.collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.showWelcome = !hasStorageDirectory);
-        this.showWelcome = !this.collectionService.hasStorageDirectory();
         log.info(`+++ Showing ${Constants.applicationName} (${Constants.applicationVersion}) main page +++`);
-    }
-
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
     }
 }

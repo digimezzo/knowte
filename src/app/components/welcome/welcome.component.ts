@@ -6,6 +6,7 @@ import { Constants } from '../../core/constants';
 import { CollectionService } from '../../services/collection.service';
 import { MatDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'welcome-page',
@@ -13,7 +14,8 @@ import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.compone
     styleUrls: ['./welcome.component.scss']
 })
 export class WelcomeComponent implements OnInit {
-    constructor(private translate: TranslateService, private collectionService: CollectionService, private dialog: MatDialog, private zone: NgZone) {
+    constructor(private translate: TranslateService, private collectionService: CollectionService, private dialog: MatDialog, private zone: NgZone,
+        public router: Router) {
     }
 
     public applicationName: string = Constants.applicationName.toUpperCase();
@@ -45,7 +47,9 @@ export class WelcomeComponent implements OnInit {
                 }
 
                 this.isBusy = false;
-            });
+
+                this.router.navigate(['/loading']);
+            }); 
         });
     }
 }

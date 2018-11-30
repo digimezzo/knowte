@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { AddCollectionDialogComponent } from '../dialogs/addCollectionDialog/addCollectionDialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material';
@@ -15,7 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './mainMenuButton.component.html',
   styleUrls: ['./mainMenuButton.component.scss']
 })
-export class MainMenuButtonComponent implements OnInit {
+export class MainMenuButtonComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
@@ -26,7 +26,11 @@ export class MainMenuButtonComponent implements OnInit {
   public collections: Collection[];
 
   ngOnInit() {
-    this.subscription = this.collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => this.hasStorageDirectory = hasStorageDirectory);
+    this.subscription = this.collectionService.storageDirectoryChanged$.subscribe((hasStorageDirectory) => {
+      // this.hasStorageDirectory = hasStorageDirectory;
+      // this.collections = this.collectionService.getCollections();
+    });
+
     this.subscription.add(this.collectionService.collectionsChanged$.subscribe(() => this.collections = this.collectionService.getCollections()));
 
     this.subscription.add(this.collectionService.collectionActivated$.subscribe(async (collectionName) => {
@@ -49,8 +53,8 @@ export class MainMenuButtonComponent implements OnInit {
       this.snackBarService.collectionDeleted(collectionName);
     }));
 
-    this.hasStorageDirectory = this.collectionService.hasStorageDirectory();
-    this.collections = this.collectionService.getCollections();
+    // this.hasStorageDirectory = this.collectionService.hasStorageDirectory;
+    // this.collections = this.collectionService.getCollections();
   }
 
   public addCollection(): void {
@@ -82,7 +86,7 @@ export class MainMenuButtonComponent implements OnInit {
     let text: string = this.translateService.instant('DialogTexts.ConfirmDeleteCollection').replace("{collectionName}", `"${collectionName}"`);
 
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
-      
+
       width: '450px', data: { dialogTitle: title, dialogText: text }
     });
 

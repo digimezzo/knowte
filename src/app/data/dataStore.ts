@@ -5,6 +5,7 @@ import * as path from 'path';
 import { Constants } from '../core/constants';
 import { Collection } from './collection';
 import * as nanoid from 'nanoid';
+import { Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -13,23 +14,21 @@ export class DataStore {
     private settings: Store = new Store();
 
     constructor() {
-        this.initialize();
     }
+
+    public isReady: boolean = false;
 
     private db: loki;
     private collections: any;
     private notebooks: any;
     private notes: any;
 
-    public initialize(): void {
-        let storageDirectory: string = this.settings.get('storageDirectory');
+    public initialize(callback: any): void {
+        this.loadDatabase();
+        callback();
+    }
 
-        if (!storageDirectory) {
-            return;
-        }
-
-        this.db = new loki(path.join(storageDirectory, Constants.dataStoreFile), {autoload: true});
-
+    private databaseLoaded(): void {
         let mustSaveDatabase: boolean = false;
 
         this.collections = this.db.getCollection('collections');
@@ -57,6 +56,21 @@ export class DataStore {
         if (mustSaveDatabase) {
             this.db.saveDatabase();
         }
+
+        this.isReady = true;
+    }
+
+    private loadDatabase(): void {
+        let storageDirectory: string = this.settings.get('storageDirectory');
+
+        if (!storageDirectory) {
+            return;
+        }
+
+        this.db = new loki(path.join(storageDirectory, Constants.dataStoreFile), {
+            autoload: true,
+            autoloadCallback: this.databaseLoaded.bind(this)
+        });
     }
 
     public getAllCollections(): Collection[] {

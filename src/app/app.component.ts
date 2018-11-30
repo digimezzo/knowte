@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { ElectronService } from './services/electron.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AppConfig } from '../environments/environment';
+import { CollectionService } from './services/collection.service';
+import { DataStore } from './data/dataStore';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -9,8 +12,8 @@ import { AppConfig } from '../environments/environment';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(public electronService: ElectronService,
-    private translate: TranslateService) {
+  constructor(public electronService: ElectronService, public router: Router,
+    private translate: TranslateService, private collectionService: CollectionService) {
 
     translate.setDefaultLang('en');translate.setDefaultLang('en');
     console.log('AppConfig', AppConfig);
@@ -22,5 +25,18 @@ export class AppComponent {
     } else {
       console.log('Mode web');
     }
+  }
+
+  ngOnInit() {
+    let showWelcome: boolean = !this.collectionService.hasStorageDirectory;
+
+    if(showWelcome){
+      this.router.navigate(['/welcome']);
+    }else{
+      this.router.navigate(['/loading']);
+    }
+  }
+
+  ngOnDestroy() {
   }
 }

@@ -8,13 +8,14 @@ import * as Store from 'electron-store';
 import { Subject } from 'rxjs';
 import { CollectionOperation } from './collectionOperation';
 import { Collection } from '../data/collection';
+import { Utils } from '../core/utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionService {
   constructor(private dataStore: DataStore) {
-   
+
   }
 
   private settings: Store = new Store();
@@ -37,7 +38,7 @@ export class CollectionService {
   private collectionDeleted = new Subject<string>();
   collectionDeleted$ = this.collectionDeleted.asObservable();
 
-  public hasStorageDirectory(): boolean {
+  public get hasStorageDirectory(): boolean {
     // 1. Get the storage directory from the data store
     let storageDirectory: string = this.settings.get('storageDirectory');
 
@@ -77,12 +78,14 @@ export class CollectionService {
       log.info(`Saved storage directory '${storageDirectory}' in settings store`);
 
       // Initialize the data store
-      this.dataStore.initialize();
+      // this.dataStore.loadDatabase();
     } catch (error) {
       log.error(`Could not create storage directory on disk. Cause: ${error}`);
 
       return false;
     }
+
+    //await Utils.sleep(5000);
 
     this.storageDirectoryChanged.next(true);
 
@@ -160,7 +163,7 @@ export class CollectionService {
       return CollectionOperation.Error;
     }
 
-    let collectionName: string = ""; 
+    let collectionName: string = "";
 
     // TODO
 
