@@ -1,5 +1,5 @@
 @import 'css/variables.scss';
-.welcomeContainer {
+.loadingContainer {
     position: absolute;
     top: $titlebar-height;
     bottom: 0;
@@ -9,13 +9,13 @@
     padding: 64px;
 }
 
-.welcomeContentContainer {
+.loadingContentContainer {
     position: relative;
     width: 100%;
     height: 100%;
 }
 
-.welcomeContentContainerForeground {
+.loadingContentContainerForeground {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -28,7 +28,7 @@
     z-index: 99;
 }
 
-.welcomeContentContainerBackground {
+.loadingContentContainerBackground {
     position: absolute;
     top: 0;
     left: 0;
@@ -37,30 +37,14 @@
     z-index: 1;
 }
 
-.welcomePenImage {
+.loadingPenImage {
     position: absolute;
     bottom: 0;
     right: 0;
     opacity: 0.025;
 }
 
-.logoContainer {
-    display: flex;
-}
-
-.logoImageContainer {
-    width: 64px;
-}
-
-.logoTextContainer {
-    flex-grow: 1;
-    margin: auto 0px auto 20px;
-    font-family: roboto-thin;
-    font-size: 48px;
-    color: white;
-}
-
-.welcomeText {
+.loadingText {
     font-size: 16px;
     color: #9fa2a5;
     max-width: 600px;
