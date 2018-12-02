@@ -6,6 +6,8 @@ import { Constants } from '../core/constants';
 import { Collection } from './collection';
 import * as nanoid from 'nanoid';
 import { Subject } from 'rxjs';
+import { Notebook } from './notebook';
+import { Note } from './note';
 
 @Injectable({
     providedIn: 'root',
@@ -72,12 +74,58 @@ export class DataStore {
         return this.collections.chain().simplesort("name").data();
     }
 
+    public getCollection(collectionId: string): Collection {
+        return this.collections.findOne({ 'id': collectionId });
+    }
+
     public getCollectionByName(collectionName: string): Collection {
         return this.collections.findOne({ 'name': collectionName });
     }
 
     public addCollection(collectionName: string, isActive: boolean) {
         this.collections.insert(new Collection(collectionName, nanoid(), isActive));
+        this.db.saveDatabase();
+    }
+
+    public setCollectionName(collectionId: string, collectionName: string) {
+        let collectionToRename: Collection = this.collections.findOne({ 'id': collectionId });
+        collectionToRename.name = collectionName;
+        this.collections.update(collectionToRename);
+        this.db.saveDatabase();
+    }
+
+    public activateCollection(collectionId: string): void {
+        // Deactivate all collections
+        let collections: Collection[] = this.collections.find();
+
+        collections.forEach(x => {
+            x.isActive = false;
+            this.collections.update(x);
+        });
+
+        // Activate the selected collection
+        let collectionToActivate: Collection = this.collections.findOne({ 'id': collectionId });
+        collectionToActivate.isActive = true;
+        this.collections.update(collectionToActivate);
+
+        // Persist
+        this.db.saveDatabase();
+    }
+
+    public deleteCollection(collectionId: string) {
+        // Remove collection
+        let collectionToRemove: Collection = this.collections.findOne({ 'id': collectionId });
+        this.collections.remove(collectionToRemove);
+
+        // Remove Notebooks
+        let notebooksToRemove: Notebook[] = this.notebooks.find({ 'collectionId': collectionId });
+        notebooksToRemove.forEach(x => this.notebooks.remove(x));
+
+        // Remove Notes
+        let notesToRemove: Note[] = this.notes.find({ 'collectionId': collectionId });
+        notesToRemove.forEach(x => this.notes.remove(x));
+
+        // Persist
         this.db.saveDatabase();
     }
 }

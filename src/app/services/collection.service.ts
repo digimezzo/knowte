@@ -76,9 +76,6 @@ export class CollectionService {
       // Save storage directory in the settings store
       this.settings.set('storageDirectory', storageDirectory);
       log.info(`Saved storage directory '${storageDirectory}' in settings store`);
-
-      // Initialize the data store
-      // this.dataStore.loadDatabase();
     } catch (error) {
       log.error(`Could not create storage directory on disk. Cause: ${error}`);
 
@@ -93,7 +90,7 @@ export class CollectionService {
   public async initializeDataStoreAsync(): Promise<void> {
     this.dataStore.initialize();
 
-    while(!this.dataStore.isReady){
+    while (!this.dataStore.isReady) {
       await Utils.sleep(100);
     }
 
@@ -136,7 +133,23 @@ export class CollectionService {
   }
 
   public async renameCollectionAsync(collectionId: string, newCollectionName: string): Promise<CollectionOperation> {
-    // TODO
+    if (!collectionId || !newCollectionName) {
+      log.error("renameCollectionAsync: collectionId or newCollectionName is null");
+      return CollectionOperation.Error;
+    }
+
+    try {
+      // 1. Check if there is already a collection with that name
+      if (this.collectionExists(newCollectionName)) {
+        return CollectionOperation.Duplicate;
+      }
+
+      // 2. Rename the collection
+      this.dataStore.setCollectionName(collectionId, newCollectionName);
+    } catch (error) {
+      log.error(`Could not rename the collection with id='${collectionId}' to '${newCollectionName}'. Cause: ${error}`);
+      return CollectionOperation.Error;
+    }
 
     this.collectionRenamed.next(newCollectionName);
 
@@ -158,12 +171,11 @@ export class CollectionService {
   }
 
   public getCollectionName(collectionId: string): string {
-    // TODO
-    return "";
+    return this.dataStore.getCollection(collectionId).name;
   }
 
   public activateCollection(collectionId: string): void {
-    // TODO
+    this.dataStore.activateCollection(collectionId);
   }
 
   public async deleteCollectionAsync(collectionId: string): Promise<CollectionOperation> {
@@ -174,10 +186,21 @@ export class CollectionService {
 
     let collectionName: string = "";
 
-    // TODO
+    try {
+      // 1. Get the name of the collection
+      collectionName = this.getCollectionName(collectionId);
 
+      // 2. Delete collection from data store (including its notebooks and notes)
+      this.dataStore.deleteCollection(collectionId);
+
+      // 2. Delete the note files from disk
+      // TODO
+    } catch (error) {
+      log.error(`Could not delete the collection with id='${collectionId}'. Cause: ${error}`);
+      return CollectionOperation.Error;
+    }
+    
     this.collectionDeleted.next(collectionName);
-
     return CollectionOperation.Success;
   }
 }

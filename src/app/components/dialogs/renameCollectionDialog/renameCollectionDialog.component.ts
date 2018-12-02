@@ -13,8 +13,8 @@ export class RenameCollectionDialogComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: any) {
     }
 
-    public collectionName: string = this.data.collectionId;
-    public collectionId: string = this.collectionService.getCollectionName(this.data.collectionId);
+    public collectionId: string = this.data.collectionId;
+    public collectionName: string = this.collectionService.getCollectionName(this.data.collectionId);
 
     public async renameCollectionAsync(): Promise<void> {
         await this.collectionService.renameCollectionAsync(this.collectionId, this.collectionName);
