@@ -6,7 +6,9 @@
         </div>
         <div class="notebooksListContainer">
             <div class="notebooksListContainerList">
-
+                <div *ngFor="let notebook of notebooks">
+                    <p [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }">{{ notebook.name }}</p>
+                </div>
             </div>
             <button class="notebooksListContainerButton" mat-fab color="primary">
                 <span class="newNotebookIcon" matTooltip="{{ 'MainPage.AddNotebook' | translate }}">&#xE145;</span>

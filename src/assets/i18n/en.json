@@ -94,6 +94,8 @@
     },
     "MainPage": {
         "Notebooks": "Notebooks",
-        "AddNotebook": "Add notebook..."
+        "AddNotebook": "Add notebook...",
+        "AllNotes": "All notes",
+        "UnfiledNotes": "Unfiled notes"
     }
 }

@@ -128,4 +128,10 @@ export class DataStore {
         // Persist
         this.db.saveDatabase();
     }
+
+    public getActiveCollection(): Collection {
+        let activeCollection: Collection = this.collections.findOne({ 'isActive': true });
+
+        return activeCollection;
+    }
 }

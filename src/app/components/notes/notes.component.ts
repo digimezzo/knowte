@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import log from 'electron-log';
+import { Notebook } from '../../data/notebook';
 
 @Component({
   selector: 'notes-page',
@@ -18,7 +19,11 @@ export class NotesComponent implements OnInit {
   public thisWeekNotesCount: number = 0;
   public markedNotesCount: number = 0;
 
+  public notebooks: Notebook[];
+
   ngOnInit() {
     log.info("Showing notes page");
+
+    this.notebooks = this.collectionService.getNotebooks();
   }
 }

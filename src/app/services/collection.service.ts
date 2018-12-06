@@ -9,12 +9,15 @@ import { Subject } from 'rxjs';
 import { CollectionOperation } from './collectionOperation';
 import { Collection } from '../data/collection';
 import { Utils } from '../core/utils';
+import { Notebook } from '../data/notebook';
+import { Note } from '../data/note';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionService {
-  constructor(private dataStore: DataStore) {
+  constructor(private dataStore: DataStore, private translateService: TranslateService) {
 
   }
 
@@ -199,8 +202,41 @@ export class CollectionService {
       log.error(`Could not delete the collection with id='${collectionId}'. Cause: ${error}`);
       return CollectionOperation.Error;
     }
-    
+
     this.collectionDeleted.next(collectionName);
     return CollectionOperation.Success;
+  }
+
+  public getNotebooks(): Notebook[] {
+    let notebooks: Notebook[] = [];
+
+    try {
+      // 1. Get the active collection. If none is found, return an empty array.
+      let activeCollection: Collection = this.dataStore.getActiveCollection();
+
+      if (!activeCollection) {
+        return notebooks;
+      }
+
+      // 2. Get the id of the active collection
+      let activeCollectionId: string = activeCollection.id;
+
+      // 3. Add the default notebooks
+      let allNotesNotebook: Notebook = new Notebook(this.translateService.instant('MainPage.AllNotes'), Constants.allNotesNotebookId, activeCollectionId);
+      allNotesNotebook.isDefault = true;
+
+      let unfiledNotesNotebook: Notebook = new Notebook(this.translateService.instant('MainPage.UnfiledNotes'), Constants.unfiledNotesNotebookId, activeCollectionId);
+      unfiledNotesNotebook.isDefault = true;
+
+      notebooks.push(allNotesNotebook);
+      notebooks.push(unfiledNotesNotebook);
+
+      // 4. Add the notebooks for this collection
+      // notebooks = this.dataStore.getAllNotebooks(activeCollectionId);
+    } catch (error) {
+      log.error(`Could not get notebooks. Cause: ${error}`);
+    }
+
+    return notebooks;
   }
 }
