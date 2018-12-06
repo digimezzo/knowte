@@ -20,15 +20,48 @@
     height: calc(100% - 48px);
     width: 351px;
     z-index: 99;
+    display: flex;
+    flex-direction: column;
 }
 
-.noteCount {
+.countLabel {
     margin: 0 0 10px 10px;
     min-width: 22px;
     height: 22px;
-    border-radius: 11px;
-    padding: 1px 6px 1px 6px;
+    border-radius: 12px;
+    padding: 1px 7px 1px 7px;
     background-color: $color-primary;
+    color: #fff;
     font-size: 12px;
     font-weight: bold;
+}
+
+.notebooksTitleContainer{
+    display: flex;
+}
+
+.notebooksListContainer{
+    background-color: red;
+    flex: 1;
+    position: relative;
+}
+
+.notebooksListContainerList{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 0;
+}
+
+.notebooksListContainerButton{
+    position: absolute !important;
+    right: 0px !important;
+    bottom: 0px !important;
+    z-index: 1;
+}
+
+.newNotebookIcon {
+    font-family: Material;
+    font-size: 28px;
+    color: #fff;
 }

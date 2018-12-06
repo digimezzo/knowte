@@ -1,6 +1,12 @@
 @import 'variables.scss';
 h1 {
     color: $color-primary;
+    font-size: 24px !important;
+}
+
+h2 {
+    color: #748393;
+    font-size: 24px !important;
 }
 
 a {
