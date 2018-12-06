@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
-import { AddCollectionDialogComponent } from '../dialogs/addCollectionDialog/addCollectionDialog.component';
+import { InputDialogComponent } from '../dialogs/inputDialog/inputDialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
 import { Collection } from '../../data/collection';
@@ -9,6 +9,8 @@ import { RenameCollectionDialogComponent } from '../dialogs/renameCollectionDial
 import { SnackBarService } from '../../services/snackBar.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { CollectionOperation } from '../../services/collectionOperation';
+import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 
 @Component({
   selector: 'main-menu-button',
@@ -27,7 +29,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription = this.collectionService.dataStoreInitialized$.subscribe(() => {
-      this.canShow = true; 
+      this.canShow = true;
       this.collections = this.collectionService.getCollections();
     });
 
@@ -57,8 +59,36 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
   public addCollection(): void {
     log.info("Pressed addCollection()");
 
-    let dialogRef: MatDialogRef<AddCollectionDialogComponent> = this.dialog.open(AddCollectionDialogComponent, {
-      width: '450px'
+    let titleText: string = this.translateService.instant('DialogTitles.AddCollection');
+    let placeholderText: string = this.translateService.instant('Input.CollectionName');
+
+    let dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
+      width: '450px', data: { titleText: titleText, placeholderText: placeholderText }
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        let collectionName: string = dialogRef.componentInstance.inputText;
+
+        let operation: CollectionOperation = this.collectionService.addCollection(collectionName);
+
+        switch (operation) {
+          case CollectionOperation.Duplicate: {
+            this.snackBarService.duplicateCollection(collectionName);
+            break;
+          }
+          case CollectionOperation.Error: {
+            this.dialog.open(ErrorDialogComponent, {
+              width: '450px', data: { errorText: this.translateService.instant('ErrorTexts.AddCollectionError').replace("{collectionName}", `'${collectionName}'`) }
+            });
+            break;
+          }
+          default: {
+            // Other cases don't need handling
+            break;
+          }
+        }
+      }
     });
   }
 

@@ -31,7 +31,7 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { InformationComponent } from './components/information/information.component';
 import { LicenseDialogComponent } from './components/dialogs/licenseDialog/licenseDialog.component';
 import { LogoFullComponent } from './components/logoFull/logoFull.component';
-import { AddCollectionDialogComponent } from './components/dialogs/addCollectionDialog/addCollectionDialog.component';
+import { InputDialogComponent } from './components/dialogs/inputDialog/inputDialog.component';
 import { ErrorDialogComponent } from './components/dialogs/errorDialog/errorDialog.component';
 import { MainComponent } from './components/main/main.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
@@ -63,9 +63,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     SettingsComponent,
     InformationComponent,
     LicenseDialogComponent,
-    AddCollectionDialogComponent,
     RenameCollectionDialogComponent,
     ErrorDialogComponent,
+    InputDialogComponent,
     ConfirmationDialogComponent,
     LogoFullComponent,
     WebviewDirective
@@ -106,7 +106,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   bootstrap: [AppComponent, BackButtonComponent, MainMenuButtonComponent],
   entryComponents: [
-    LicenseDialogComponent, AddCollectionDialogComponent, ErrorDialogComponent, RenameCollectionDialogComponent,
+    LicenseDialogComponent, InputDialogComponent, ErrorDialogComponent, RenameCollectionDialogComponent,
     ConfirmationDialogComponent
   ],
 })

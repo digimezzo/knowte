@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>{{ data.titleText }}</h2>
+<mat-dialog-content>
+    <mat-form-field>
+        <input matInput [(ngModel)]="inputText" placeholder="{{ data.placeholderText }}"
+        (keyup.enter)="closeDialog()">
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button [disabled]="!inputText" mat-raised-button color="primary" [mat-dialog-close]="true">{{ 'Buttons.Ok' | translate }}</button>
+    <button mat-raised-button [mat-dialog-close]="false">{{ 'Buttons.Cancel' | translate }}</button>
+</mat-dialog-actions>
