@@ -5,11 +5,12 @@
             <div class="countLabel">{{allNotesCount}}</div>
         </div>
         <div class="notebooksListContainer">
-            <div class="notebooksListContainerList">
-                <div *ngFor="let notebook of notebooks">
-                    <p [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }">{{ notebook.name }}</p>
-                </div>
-            </div>
+            <mat-selection-list dense class="notebooksListContainerList">
+                <mat-list-option class="notebook" *ngFor="let notebook of notebooks" role="option"> 
+                    <p class="notebookName" [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }" (click)="setSelectedNotebook(notebook)">
+                        {{ notebook.name }}</p>
+                </mat-list-option>
+            </mat-selection-list>
             <button class="notebooksListContainerButton" mat-fab color="primary">
                 <span class="newNotebookIcon" matTooltip="{{ 'MainPage.AddNotebook' | translate }}">&#xE145;</span>
             </button>

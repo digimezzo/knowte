@@ -36,24 +36,25 @@
     font-weight: bold;
 }
 
-.notebooksTitleContainer{
+.notebooksTitleContainer {
     display: flex;
 }
 
-.notebooksListContainer{
-    background-color: red;
+.notebooksListContainer {
+    //background-color: red;
     flex: 1;
     position: relative;
 }
 
-.notebooksListContainerList{
+.notebooksListContainerList {
     position: absolute;
     left: 0px;
     top: 0px;
+    width: 100%;
     z-index: 0;
 }
 
-.notebooksListContainerButton{
+.notebooksListContainerButton {
     position: absolute !important;
     right: 0px !important;
     bottom: 0px !important;
@@ -64,4 +65,31 @@
     font-family: Material;
     font-size: 28px;
     color: #fff;
+}
+
+.notebook {
+    font-size: $fontsize-normal !important;
+}
+
+.mat-pseudo-checkbox {
+    display: none !important;
+}
+
+.mat-list-text {
+    padding: 0px !important;
+}
+
+.mat-list-item-content {
+    padding: 0px !important;
+    line-height: 40px !important;
+}
+
+.mat-list-item-content-reverse {
+    padding: 0px !important;
+    line-height: 40px !important;
+}
+
+.notebookName{
+    padding-left: 8px !important;
+    padding-right: 8px !important;
 }

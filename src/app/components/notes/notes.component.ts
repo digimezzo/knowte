@@ -20,10 +20,16 @@ export class NotesComponent implements OnInit {
   public markedNotesCount: number = 0;
 
   public notebooks: Notebook[];
+  public selectedNotebook: Notebook;
 
   ngOnInit() {
     log.info("Showing notes page");
 
     this.notebooks = this.collectionService.getNotebooks();
+  }
+
+  public setSelectedNotebook(notebook: Notebook) {
+    this.selectedNotebook = notebook;
+    log.info(`Selected notebook: ${notebook.name}`);
   }
 }
