@@ -70,8 +70,12 @@ export class DataStore {
         });
     }
 
+    private caseInsensitiveNameSort(object1: any, object2: any) {
+        return object1.name.toLowerCase().localeCompare(object2.name.toLowerCase());
+    }
+
     public getAllCollections(): Collection[] {
-        return this.collections.chain().simplesort("name").data();
+        return this.collections.chain().sort(this.caseInsensitiveNameSort).data();
     }
 
     public getCollection(collectionId: string): Collection {
@@ -133,5 +137,21 @@ export class DataStore {
         let activeCollection: Collection = this.collections.findOne({ 'isActive': true });
 
         return activeCollection;
+    }
+
+    public getNotebookByName(notebookName: string): Notebook {
+        return this.notebooks.findOne({ 'name': notebookName });
+    }
+
+    public addNotebook(notebookName: string) {
+        let activeCollection: Collection = this.getActiveCollection();
+        this.notebooks.insert(new Notebook(notebookName, nanoid(), activeCollection.id));
+        this.db.saveDatabase();
+    }
+
+    public getNotebooks(activeCollectionId: string): Notebook[] {
+        let notebooks: Notebook[] = this.notebooks.chain().find({ 'collectionId': activeCollectionId }).sort(this.caseInsensitiveNameSort).data();
+
+        return notebooks;
     }
 }

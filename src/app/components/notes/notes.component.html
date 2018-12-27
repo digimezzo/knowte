@@ -11,8 +11,8 @@
                         {{ notebook.name }}</p>
                 </mat-list-option>
             </mat-selection-list>
-            <button class="notebooksListContainerButton" mat-fab color="primary">
-                <span class="newNotebookIcon" matTooltip="{{ 'MainPage.AddNotebook' | translate }}">&#xE145;</span>
+            <button class="notebooksListContainerButton" mat-fab color="primary" (click)="addNotebook()" matTooltip="{{ 'MainPage.AddNotebook' | translate }}">
+                <span class="newNotebookIcon">&#xE145;</span>
             </button>
         </div>
     </div>

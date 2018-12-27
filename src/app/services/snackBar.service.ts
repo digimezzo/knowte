@@ -39,4 +39,24 @@ export class SnackBarService {
         let message: string = this.translate.instant('SnackBarMessages.DuplicateCollection').replace("{collectionName}", `"${collectionName}"`);
         this.showActionLessSnackBar(message, 2000);
     }
+
+    public duplicateNotebook(notebookName: string) {
+        let message: string = this.translate.instant('SnackBarMessages.DuplicateNotebook').replace("{notebookName}", `"${notebookName}"`);
+        this.showActionLessSnackBar(message, 2000);
+    }
+
+    public notebookAdded(notebookName: string) {
+        let message: string = this.translate.instant('SnackBarMessages.NotebookAdded').replace("{notebookName}", `"${notebookName}"`);
+        this.showActionLessSnackBar(message, 2000);
+    }
+
+    public notebookDeleted(notebookName: string) {
+        let message: string = this.translate.instant('SnackBarMessages.NotebookDeleted').replace("{notebookName}", `"${notebookName}"`);
+        this.showActionLessSnackBar(message, 2000);
+    }
+
+    public notebookRenamed(notebookName: string) {
+        let message: string = this.translate.instant('SnackBarMessages.NotebookRenamed').replace("{notebookName}", `"${notebookName}"`);
+        this.showActionLessSnackBar(message, 2000);
+    }
 }

@@ -12,6 +12,7 @@ import { Utils } from '../core/utils';
 import { Notebook } from '../data/notebook';
 import { Note } from '../data/note';
 import { TranslateService } from '@ngx-translate/core';
+import { NotebookOperation } from './notebookOperation';
 
 @Injectable({
   providedIn: 'root',
@@ -40,6 +41,15 @@ export class CollectionService {
 
   private collectionDeleted = new Subject<string>();
   collectionDeleted$ = this.collectionDeleted.asObservable();
+
+  private notebookAdded = new Subject<string>();
+  notebookAdded$ = this.notebookAdded.asObservable();
+
+  private notebookRenamed = new Subject<string>();
+  notebookRenamed$ = this.notebookRenamed.asObservable();
+
+  private notebookDeleted = new Subject<string>();
+  notebookDeleted$ = this.notebookDeleted.asObservable();
 
   public get hasStorageDirectory(): boolean {
     // 1. Get the storage directory from the data store
@@ -110,7 +120,7 @@ export class CollectionService {
   public addCollection(collectionName: string): CollectionOperation {
     // Check if a collection name was provided
     if (!collectionName) {
-      log.error("addCollectionAsync: name is null");
+      log.error("collectionName is null");
       return CollectionOperation.Error;
     }
 
@@ -231,12 +241,49 @@ export class CollectionService {
       notebooks.push(allNotesNotebook);
       notebooks.push(unfiledNotesNotebook);
 
-      // 4. Add the notebooks for this collection
-      // notebooks = this.dataStore.getAllNotebooks(activeCollectionId);
+      // 4. Get the user defined notebooks
+      let userNotebooks: Notebook[] = this.dataStore.getNotebooks(activeCollectionId);
+     
+      // 5. Add the user defined notebooks to the notebooks
+      notebooks.push.apply(notebooks, userNotebooks);
     } catch (error) {
       log.error(`Could not get notebooks. Cause: ${error}`);
     }
 
     return notebooks;
+  }
+
+  private notebookExists(notebookName: string): boolean {
+    let notebook: Notebook = this.dataStore.getNotebookByName(notebookName);
+
+    return notebook != null;
+  }
+
+  public addNotebook(notebookName: string): NotebookOperation {
+    // Check if a notebook name was provided
+    if (!notebookName) {
+      log.error("notebookName is null");
+      return NotebookOperation.Error;
+    }
+
+    // Check if there is already a notebook with that name
+    if (this.notebookExists(notebookName)) {
+      log.info(`Not adding notebook '${notebookName}' to the data store because it already exists`);
+      return NotebookOperation.Duplicate;
+    }
+
+    try {
+      // Add the notebook to the data store
+      this.dataStore.addNotebook(notebookName);
+      log.info(`Added notebook '${notebookName}' to the data store`);
+    } catch (error) {
+      log.error(`Could not add notebook '${notebookName}'. Cause: ${error}`);
+
+      return NotebookOperation.Error;
+    }
+
+    this.notebookAdded.next(notebookName);
+
+    return NotebookOperation.Success;
   }
 }
