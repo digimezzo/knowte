@@ -11,9 +11,19 @@
                         {{ notebook.name }}</p>
                 </mat-list-option>
             </mat-selection-list>
-            <button class="notebooksListContainerButton" mat-fab color="primary" (click)="addNotebook()" matTooltip="{{ 'MainPage.AddNotebook' | translate }}">
-                <span class="newNotebookIcon">&#xE145;</span>
-            </button>
+            <div class="notebooksListButtonContainer">
+                <button class="notebooksListButton" mat-mini-fab color="" (click)="renameNotebook()" 
+                matTooltip="{{ 'MainPage.RenameNotebook' | translate }}" *ngIf=canEditSelectedNotebook>
+                    <span class="renameNotebookIcon">&#xE254;</span>
+                </button>
+                <button class="notebooksListButton" mat-mini-fab color="" (click)="deleteNotebook()" 
+                matTooltip="{{ 'MainPage.DeleteNotebook' | translate }}" *ngIf=canEditSelectedNotebook>
+                    <span class="deleteNotebookIcon">&#xE872;</span>
+                </button>
+                <button class="notebooksListButton" mat-fab color="primary" (click)="addNotebook()" matTooltip="{{ 'MainPage.AddNotebook' | translate }}">
+                    <span class="newNotebookIcon">&#xE145;</span>
+                </button>
+            </div>
         </div>
     </div>
     <mat-tab-group>

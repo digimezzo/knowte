@@ -101,6 +101,8 @@
     "MainPage": {
         "Notebooks": "Notebooks",
         "AddNotebook": "Add notebook...",
+        "RenameNotebook": "Rename notebook...",
+        "DeleteNotebook": "Delete notebook...",
         "AllNotes": "All notes",
         "UnfiledNotes": "Unfiled notes"
     }

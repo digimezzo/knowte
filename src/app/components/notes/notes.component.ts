@@ -32,6 +32,8 @@ export class NotesComponent implements OnInit {
   public notebooks: Notebook[];
   public selectedNotebook: Notebook;
 
+  public canEditSelectedNotebook: boolean = false;
+
   ngOnInit() {
     log.info("Showing notes page");
 
@@ -59,6 +61,7 @@ export class NotesComponent implements OnInit {
 
   public setSelectedNotebook(notebook: Notebook) {
     this.selectedNotebook = notebook;
+    this.canEditSelectedNotebook = this.selectedNotebook != null && !this.selectedNotebook.isDefault;
     log.info(`Selected notebook: ${notebook.name}`);
   }
 
@@ -94,5 +97,12 @@ export class NotesComponent implements OnInit {
         }
       }
     });
+  }
+
+  public renameNotebook(): void {
+  }
+
+  public deleteNotebook(): void {
+
   }
 }

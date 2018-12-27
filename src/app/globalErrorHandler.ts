@@ -28,8 +28,8 @@ export class GlobalErrorHandler implements ErrorHandler {
             dialogRef.afterClosed().subscribe(result => {
                 // Quit the application
                 log.info("Closing application");
-                let win: BrowserWindow = remote.getCurrentWindow();
-                win.close();
+                //let win: BrowserWindow = remote.getCurrentWindow();
+                //win.close();
             });
         });
       }
