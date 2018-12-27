@@ -1,6 +1,6 @@
 <div class="notesContainer">
-    <div class="notebooksContainer p-2">
-        <div class="notebooksTitleContainer">
+    <div class="notebooksContainer">
+        <div class="notebooksTitleContainer p-2">
             <h2>{{ 'MainPage.Notebooks' | translate }}</h2>
             <div class="countLabel">{{allNotesCount}}</div>
         </div>
@@ -11,7 +11,7 @@
                         {{ notebook.name }}</p>
                 </mat-list-option>
             </mat-selection-list>
-            <div class="notebooksListButtonContainer">
+            <div class="notebooksListButtonContainer p-2">
                 <button class="notebooksListButton" mat-mini-fab color="" (click)="renameNotebook()" 
                 matTooltip="{{ 'MainPage.RenameNotebook' | translate }}" *ngIf=canEditSelectedNotebook>
                     <span class="renameNotebookIcon">&#xE254;</span>
