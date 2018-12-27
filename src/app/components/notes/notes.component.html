@@ -32,35 +32,65 @@
                 {{ 'NotesTabs.All' | translate }}
                 <div class="countLabel">{{allNotesCount}}</div>
             </ng-template>
-            <p class="m-3">Work in progress</p>
+            <div *ngIf="selectedNotebook">
+                <div class="notebooksTitleContainer p-2">
+                    <h2>{{ selectedNotebook.name }}</h2>
+                    <div class="countLabel">{{selectedNotesCount}}</div>
+                </div>
+                <p>Work in progress</p>
+            </div>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Today' | translate }}
                 <div class="countLabel">{{todayNotesCount}}</div>
             </ng-template>
-            <p class="m-3">Work in progress</p>
+            <div *ngIf="selectedNotebook">
+                <div class="notebooksTitleContainer p-2">
+                    <h2>{{ selectedNotebook.name }}</h2>
+                    <div class="countLabel">{{selectedNotesCount}}</div>
+                </div>
+                <p>Work in progress</p>
+            </div>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Yesterday' | translate }}
                 <div class="countLabel">{{yesterdayNotesCount}}</div>
             </ng-template>
-            <p class="m-3">Work in progress</p>
+            <div *ngIf="selectedNotebook">
+                <div class="notebooksTitleContainer p-2">
+                    <h2>{{ selectedNotebook.name }}</h2>
+                    <div class="countLabel">{{selectedNotesCount}}</div>
+                </div>
+                <p>Work in progress</p>
+            </div>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.ThisWeek' | translate }}
                 <div class="countLabel">{{thisWeekNotesCount}}</div>
             </ng-template>
-            <p class="m-3">Work in progress</p>
+            <div *ngIf="selectedNotebook">
+                <div class="notebooksTitleContainer p-2">
+                    <h2>{{ selectedNotebook.name }}</h2>
+                    <div class="countLabel">{{selectedNotesCount}}</div>
+                </div>
+                <p>Work in progress</p>
+            </div>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Marked' | translate }}
                 <div class="countLabel">{{markedNotesCount}}</div>
             </ng-template>
-            <p class="m-3">Work in progress</p>
+            <div *ngIf="selectedNotebook">
+                <div class="notebooksTitleContainer p-2">
+                    <h2>{{ selectedNotebook.name }}</h2>
+                    <div class="countLabel">{{selectedNotesCount}}</div>
+                </div>
+                <p>Work in progress</p>
+            </div>
         </mat-tab>
     </mat-tab-group>
 </div>

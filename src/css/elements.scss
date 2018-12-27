@@ -11,9 +11,13 @@ h2 {
 
 a {
     color: $color-primary;
-    outline: none;
+    outline: none; // Removes yellow outline on links
 }
 
 hr {
     border-bottom: 1px solid #DEDEDE;
+}
+
+* {
+    outline: none; // Removes yellow outline on elements
 }

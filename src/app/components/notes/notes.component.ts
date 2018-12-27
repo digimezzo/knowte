@@ -28,6 +28,7 @@ export class NotesComponent implements OnInit {
   public yesterdayNotesCount: number = 0;
   public thisWeekNotesCount: number = 0;
   public markedNotesCount: number = 0;
+  public selectedNotesCount: number = 0;
 
   public notebooks: Notebook[];
   public selectedNotebook: Notebook;
@@ -38,6 +39,7 @@ export class NotesComponent implements OnInit {
     log.info("Showing notes page");
 
     this.notebooks = this.collectionService.getNotebooks();
+    this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
 
     this.subscription = this.collectionService.notebookAdded$.subscribe(async (notebookName) => {
       this.notebooks = await this.collectionService.getNotebooks();
