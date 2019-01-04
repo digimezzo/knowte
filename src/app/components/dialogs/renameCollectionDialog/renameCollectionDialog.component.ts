@@ -1,7 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { CollectionService } from '../../../services/collection.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Collection } from '../../../data/collection';
 
 @Component({
     selector: 'rename-collection-dialog',

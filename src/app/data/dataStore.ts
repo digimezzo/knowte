@@ -92,7 +92,7 @@ export class DataStore {
     }
 
     public setCollectionName(collectionId: string, collectionName: string) {
-        let collectionToRename: Collection = this.collections.findOne({ 'id': collectionId });
+        let collectionToRename: Collection = this.getCollection(collectionId);
         collectionToRename.name = collectionName;
         this.collections.update(collectionToRename);
         this.db.saveDatabase();
@@ -108,7 +108,7 @@ export class DataStore {
         });
 
         // Activate the selected collection
-        let collectionToActivate: Collection = this.collections.findOne({ 'id': collectionId });
+        let collectionToActivate: Collection = this.getCollection(collectionId);
         collectionToActivate.isActive = true;
         this.collections.update(collectionToActivate);
 
@@ -118,7 +118,7 @@ export class DataStore {
 
     public deleteCollection(collectionId: string) {
         // Remove collection
-        let collectionToRemove: Collection = this.collections.findOne({ 'id': collectionId });
+        let collectionToRemove: Collection = this.getCollection(collectionId);
         this.collections.remove(collectionToRemove);
 
         // Remove Notebooks
@@ -153,5 +153,25 @@ export class DataStore {
         let notebooks: Notebook[] = this.notebooks.chain().find({ 'collectionId': activeCollectionId }).sort(this.caseInsensitiveNameSort).data();
 
         return notebooks;
+    }
+
+    public getNotebook(notebookId: string): Notebook {
+        return this.notebooks.findOne({ 'id': notebookId });
+    }
+
+    public setNotebookName(notebookId: string, notebookName: string) {
+        let notebookToRename: Notebook = this.getNotebook(notebookId);
+        notebookToRename.name = notebookName;
+        this.notebooks.update(notebookToRename);
+        this.db.saveDatabase();
+    }
+
+    public deleteNotebook(notebookId: string) {
+        // Remove notebook
+        let notebookToRemove: Notebook = this.getNotebook(notebookId);
+        this.notebooks.remove(notebookToRemove);
+
+        // Persist
+        this.db.saveDatabase();
     }
 }

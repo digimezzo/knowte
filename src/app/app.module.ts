@@ -38,6 +38,7 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { NotesComponent } from './components/notes/notes.component';
 import { RenameCollectionDialogComponent } from './components/dialogs/renameCollectionDialog/renameCollectionDialog.component';
+import { RenameNotebookDialogComponent } from './components/dialogs/renameNotebookDialog/renameNotebookDialog.component';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmationDialog/confirmationDialog.component';
 import { DialogHeaderComponent } from './components/dialogs/dialogHeader/dialogHeader.component';
 
@@ -66,6 +67,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     InformationComponent,
     LicenseDialogComponent,
     RenameCollectionDialogComponent,
+    RenameNotebookDialogComponent,
     ErrorDialogComponent,
     InputDialogComponent,
     ConfirmationDialogComponent,
@@ -110,7 +112,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   bootstrap: [AppComponent, BackButtonComponent, MainMenuButtonComponent],
   entryComponents: [
-    LicenseDialogComponent, InputDialogComponent, ErrorDialogComponent, RenameCollectionDialogComponent,
+    LicenseDialogComponent, InputDialogComponent, ErrorDialogComponent, RenameCollectionDialogComponent, RenameNotebookDialogComponent,
     ConfirmationDialogComponent
   ],
 })

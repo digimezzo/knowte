@@ -72,10 +72,13 @@
         "SelectFolder": "Select a folder",
         "Error": "Error",
         "ConfirmDeleteCollection": "Delete collection?",
-        "AddNotebook": "Add notebook"
+        "AddNotebook": "Add notebook",
+        "RenameNotebook": "Rename notebook",
+        "ConfirmDeleteNotebook": "Delete notebook?"
     },
     "DialogTexts": {
-        "ConfirmDeleteCollection": "Are you sure you want to delete the collection {collectionName}? If you continue, its notebooks and notes will be lost."
+        "ConfirmDeleteCollection": "Are you sure you want to delete the collection {collectionName}? If you continue, its notebooks and notes will be lost.",
+        "ConfirmDeleteNotebook": "Are you sure you want to delete the notebook {notebookName}? If you continue, its notes will be unfiled."
     },
     "Input": {
         "CollectionName": "Collection name",

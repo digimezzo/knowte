@@ -9,6 +9,8 @@ import { InputDialogComponent } from '../dialogs/inputDialog/inputDialog.compone
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { SnackBarService } from '../../services/snackBar.service';
 import { Subscription } from 'rxjs';
+import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
+import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/renameNotebookDialog.component';
 
 @Component({
   selector: 'notes-page',
@@ -102,9 +104,25 @@ export class NotesComponent implements OnInit {
   }
 
   public renameNotebook(): void {
+    let dialogRef: MatDialogRef<RenameNotebookDialogComponent> = this.dialog.open(RenameNotebookDialogComponent, {
+      width: '450px', data: { notebookId: this.selectedNotebook.id }
+    });
   }
 
   public deleteNotebook(): void {
+    let notebookName: string = this.collectionService.getNotebookName(this.selectedNotebook.id);
+    let title: string = this.translateService.instant('DialogTitles.ConfirmDeleteNotebook');
+    let text: string = this.translateService.instant('DialogTexts.ConfirmDeleteNotebook').replace("{notebookName}", `"${notebookName}"`);
 
+    let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
+
+      width: '450px', data: { dialogTitle: title, dialogText: text }
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        await this.collectionService.deleteNotebookAsync(this.selectedNotebook.id);
+      }
+    });
   }
 }

@@ -286,4 +286,55 @@ export class CollectionService {
 
     return NotebookOperation.Success;
   }
+
+  public getNotebookName(notebookId: string): string {
+    return this.dataStore.getNotebook(notebookId).name;
+  }
+
+  public async renameNotebookAsync(notebookId: string, newNotebookName: string): Promise<NotebookOperation> {
+    if (!notebookId || !newNotebookName) {
+      log.error("renameNotebookAsync: notebookId or newNotebookName is null");
+      return NotebookOperation.Error;
+    }
+
+    try {
+      // 1. Check if there is already a notebook with that name
+      if (this.notebookExists(newNotebookName)) {
+        return NotebookOperation.Duplicate;
+      }
+
+      // 2. Rename the notebook
+      this.dataStore.setNotebookName(notebookId, newNotebookName);
+    } catch (error) {
+      log.error(`Could not rename the notebook with id='${notebookId}' to '${newNotebookName}'. Cause: ${error}`);
+      return NotebookOperation.Error;
+    }
+
+    this.notebookRenamed.next(newNotebookName);
+
+    return NotebookOperation.Success;
+  }
+
+  public async deleteNotebookAsync(notebookId: string): Promise<NotebookOperation> {
+    if (!notebookId) {
+      log.error("deleteNotebookAsync: notebookId is null");
+      return NotebookOperation.Error;
+    }
+
+    let notebookName: string = "";
+
+    try {
+      // 1. Get the name of the notebook
+      notebookName = this.getNotebookName(notebookId);
+
+      // 2. Delete notebook from data store
+      this.dataStore.deleteNotebook(notebookId);
+    } catch (error) {
+      log.error(`Could not delete the notebook with id='${notebookId}'. Cause: ${error}`);
+      return NotebookOperation.Error;
+    }
+
+    this.notebookDeleted.next(notebookName);
+    return NotebookOperation.Success;
+  }
 }

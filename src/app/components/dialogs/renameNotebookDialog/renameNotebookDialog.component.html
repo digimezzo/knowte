@@ -1,0 +1,12 @@
+<dialog-header titleText="{{ 'DialogTitles.RenameNotebook' | translate }}"></dialog-header>
+<mat-dialog-content>
+    <mat-form-field>
+        <input matInput [(ngModel)]="notebookName" placeholder="{{ 'Input.NotebookName' | translate }}"
+        (keyup.enter)="renameNotebookAndCloseAsync()">
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button [disabled]="!notebookName" mat-raised-button color="primary" [mat-dialog-close]
+    (click)="renameNotebookAsync()">{{ 'Buttons.Ok' | translate }}</button>
+    <button mat-raised-button [mat-dialog-close]>{{ 'Buttons.Cancel' | translate }}</button>
+</mat-dialog-actions>
