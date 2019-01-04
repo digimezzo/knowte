@@ -1,6 +1,4 @@
-<div class="matDialogHeader">
-    <p>{{ 'DialogTitles.RenameCollection' | translate }}</p>
-</div>
+<dialog-header titleText="{{ 'DialogTitles.RenameCollection' | translate }}"></dialog-header>
 <mat-dialog-content>
     <mat-form-field>
         <input matInput [(ngModel)]="collectionName" placeholder="{{ 'Input.CollectionName' | translate }}"

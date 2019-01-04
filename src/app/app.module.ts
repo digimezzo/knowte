@@ -39,6 +39,7 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { NotesComponent } from './components/notes/notes.component';
 import { RenameCollectionDialogComponent } from './components/dialogs/renameCollectionDialog/renameCollectionDialog.component';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmationDialog/confirmationDialog.component';
+import { DialogHeaderComponent } from './components/dialogs/dialogHeader/dialogHeader.component';
 
 // Modules
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -68,6 +69,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ErrorDialogComponent,
     InputDialogComponent,
     ConfirmationDialogComponent,
+    DialogHeaderComponent,
     LogoFullComponent,
     WebviewDirective
   ],

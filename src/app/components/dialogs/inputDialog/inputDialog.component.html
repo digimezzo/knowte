@@ -1,6 +1,4 @@
-<div class="matDialogHeader">
-    <p>{{ data.titleText }}</p>
-</div>
+<dialog-header [titleText]=data.titleText></dialog-header>
 <mat-dialog-content>
     <mat-form-field>
         <input matInput [(ngModel)]="inputText" placeholder="{{ data.placeholderText }}"

@@ -1,0 +1,11 @@
+@import 'css/variables.scss';
+.dialogHeader{
+    background-color: $color-darkgrey;
+    margin: -24px -24px 24px -24px ! important;
+    padding-left: 24px;
+    padding-right: 24px;
+    height: 64px;
+    line-height: 64px;
+    color: white;
+    font-size: 20px;
+}
