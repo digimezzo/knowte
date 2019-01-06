@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -8,7 +8,7 @@ import * as url from 'url';
 import log from 'electron-log';
 
 
-let win, serve;
+let mainWindow, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
 
@@ -20,7 +20,7 @@ function createWindow() {
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
 
   // Create the browser window.
-  win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     x: 50,
     y: 50,
     width: 850,
@@ -35,9 +35,9 @@ function createWindow() {
     require('electron-reload')(__dirname, {
       electron: require(`${__dirname}/node_modules/electron`)
     });
-    win.loadURL('http://localhost:4200');
+    mainWindow.loadURL('http://localhost:4200');
   } else {
-    win.loadURL(url.format({
+    mainWindow.loadURL(url.format({
       pathname: path.join(__dirname, 'dist/index.html'),
       protocol: 'file:',
       slashes: true
@@ -47,32 +47,63 @@ function createWindow() {
   //win.webContents.openDevTools();
 
   // Emitted when the window is closed.
-  win.on('closed', () => {
+  mainWindow.on('closed', () => {
     // Dereference the window object, usually you would store window
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    win = null;
+    mainWindow = null;
   });
 
   // 'ready-to-show' doesn't fire on Windows in dev mode. In prod it seems to work. 
   // See: https://github.com/electron/electron/issues/7779
-  win.on('ready-to-show', function () {
-    win.show();
-    win.focus();
+  mainWindow.on('ready-to-show', function () {
+    mainWindow.show();
+    mainWindow.focus();
   });
 
   // Makes links open in external browser
-  win.webContents.on('will-navigate', function (e, url) {
+  mainWindow.webContents.on('will-navigate', function (e, url) {
     // Check that the requested url is not the current page
-    if (url != win.webContents.getURL()) {
+    if (url != mainWindow.webContents.getURL()) {
       e.preventDefault();
       require('electron').shell.openExternal(url);
     }
   });
 }
 
+function createNoteWindow() {
+  let noteWindow: BrowserWindow = new BrowserWindow({
+    x: 50,
+    y: 50,
+    width: 400,
+    height: 500,
+    backgroundColor: '#fff',
+    frame: true,
+    show: true
+  });
+
+  if (serve) {
+    noteWindow.loadURL(url.format({
+      pathname: path.join(__dirname, 'src/note.html'),
+      protocol: 'file:',
+      slashes: true
+    }));
+  } else {
+    noteWindow.loadURL(url.format({
+      pathname: path.join(__dirname, 'dist/note.html'),
+      protocol: 'file:',
+      slashes: true
+    }));
+  }
+}
+
 try {
   log.info(`+++ Starting +++`);
+
+  // OPen note windows
+  ipcMain.on('open-note-window', (event, arg) => {
+    createNoteWindow();
+  });
 
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
@@ -92,7 +123,7 @@ try {
   app.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (win === null) {
+    if (mainWindow === null) {
       createWindow();
     }
   });
