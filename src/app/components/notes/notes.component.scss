@@ -55,7 +55,7 @@
     z-index: 1;
 }
 
-.notebooksListButton{
+.listButton{
     margin-top: 8px !important;
     margin-left: auto !important;
     margin-right: auto !important;  
@@ -71,19 +71,13 @@
     overflow: auto;
 }
 
-.newNotebookIcon {
+.addItemIcon {
     font-family: Material;
     font-size: 28px;
     color: #fff;
 }
 
-.renameNotebookIcon {
-    font-family: Material;
-    font-size: 20px;
-    color: $color-primary;
-}
-
-.deleteNotebookIcon {
+.editItemIcon {
     font-family: Material;
     font-size: 20px;
     color: $color-primary;
