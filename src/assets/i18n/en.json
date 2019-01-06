@@ -107,6 +107,8 @@
         "RenameNotebook": "Rename notebook...",
         "DeleteNotebook": "Delete notebook...",
         "AllNotes": "All notes",
-        "UnfiledNotes": "Unfiled notes"
+        "UnfiledNotes": "Unfiled notes",
+        "AddNote": "Add note",
+        "DeleteNote": "Delete note..."
     }
 }

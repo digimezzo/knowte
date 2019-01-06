@@ -1,96 +1,108 @@
 <div class="notesContainer">
-    <div class="notebooksContainer">
-        <div class="notebooksTitleContainer p-2">
-            <h2>{{ 'MainPage.Notebooks' | translate }}</h2>
-            <div class="countLabel">{{allNotesCount}}</div>
-        </div>
-        <div class="notebooksListContainer">
-            <mat-selection-list dense class="notebooksListContainerList">
-                <mat-list-option class="notebook" *ngFor="let notebook of notebooks" role="option"> 
-                    <p class="notebookName" [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }" (click)="setSelectedNotebook(notebook)">
-                        {{ notebook.name }}</p>
-                </mat-list-option>
-            </mat-selection-list>
-            <div class="notebooksListButtonContainer p-2">
-                <button class="listButton" mat-mini-fab color="" (click)="renameNotebook()" 
-                matTooltip="{{ 'MainPage.RenameNotebook' | translate }}" *ngIf=canEditSelectedNotebook>
-                    <span class="editItemIcon">&#xE254;</span>
-                </button>
-                <button class="listButton" mat-mini-fab color="" (click)="deleteNotebook()" 
-                matTooltip="{{ 'MainPage.DeleteNotebook' | translate }}" *ngIf=canEditSelectedNotebook>
-                    <span class="editItemIcon">&#xE872;</span>
-                </button>
-                <button class="listButton" mat-fab color="primary" (click)="addNotebook()" matTooltip="{{ 'MainPage.AddNotebook' | translate }}">
-                    <span class="addItemIcon">&#xE145;</span>
-                </button>
-            </div>
-        </div>
+    <div class="notesContainerButtons p-2">
+        <button class="listButton" mat-mini-fab color="" (click)="deleteNote()" matTooltip="{{ 'MainPage.DeleteNote' | translate }}"
+            *ngIf=canEditSelectedNote>
+            <span class="editItemIcon">&#xE872;</span>
+        </button>
+        <button class="listButton" mat-fab color="primary" (click)="addNote()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
+            <span class="addItemIcon">&#xE145;</span>
+        </button>
     </div>
-    <mat-tab-group>
-        <mat-tab>
-            <ng-template mat-tab-label>
-                {{ 'NotesTabs.All' | translate }}
+    <div class="notesContainerContent">
+        <div class="notebooksContainer">
+            <div class="notebooksTitleContainer p-2">
+                <h2>{{ 'MainPage.Notebooks' | translate }}</h2>
                 <div class="countLabel">{{allNotesCount}}</div>
-            </ng-template>
-            <div *ngIf="selectedNotebook">
-                <div class="notebooksTitleContainer p-2">
-                    <h2>{{ selectedNotebook.name }}</h2>
-                    <div class="countLabel">{{selectedNotesCount}}</div>
-                </div>
-                <p>Work in progress</p>
             </div>
-        </mat-tab>
-        <mat-tab>
-            <ng-template mat-tab-label>
-                {{ 'NotesTabs.Today' | translate }}
-                <div class="countLabel">{{todayNotesCount}}</div>
-            </ng-template>
-            <div *ngIf="selectedNotebook">
-                <div class="notebooksTitleContainer p-2">
-                    <h2>{{ selectedNotebook.name }}</h2>
-                    <div class="countLabel">{{selectedNotesCount}}</div>
+            <div class="notebooksListContainer">
+                <mat-selection-list dense class="notebooksListContainerList">
+                    <mat-list-option class="notebook" *ngFor="let notebook of notebooks" role="option">
+                        <p class="notebookName" [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
+                            (click)="setSelectedNotebook(notebook)">
+                            {{ notebook.name }}</p>
+                    </mat-list-option>
+                </mat-selection-list>
+                <div class="notebooksListButtonContainer p-2">
+                    <button class="listButton" mat-mini-fab color="" (click)="renameNotebook()" matTooltip="{{ 'MainPage.RenameNotebook' | translate }}"
+                        *ngIf=canEditSelectedNotebook>
+                        <span class="editItemIcon">&#xE254;</span>
+                    </button>
+                    <button class="listButton" mat-mini-fab color="" (click)="deleteNotebook()" matTooltip="{{ 'MainPage.DeleteNotebook' | translate }}"
+                        *ngIf=canEditSelectedNotebook>
+                        <span class="editItemIcon">&#xE872;</span>
+                    </button>
+                    <button class="listButton" mat-fab color="primary" (click)="addNotebook()" matTooltip="{{ 'MainPage.AddNotebook' | translate }}">
+                        <span class="addItemIcon">&#xE145;</span>
+                    </button>
                 </div>
-                <p>Work in progress</p>
             </div>
-        </mat-tab>
-        <mat-tab>
-            <ng-template mat-tab-label>
-                {{ 'NotesTabs.Yesterday' | translate }}
-                <div class="countLabel">{{yesterdayNotesCount}}</div>
-            </ng-template>
-            <div *ngIf="selectedNotebook">
-                <div class="notebooksTitleContainer p-2">
-                    <h2>{{ selectedNotebook.name }}</h2>
-                    <div class="countLabel">{{selectedNotesCount}}</div>
+        </div>
+        <mat-tab-group>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    {{ 'NotesTabs.All' | translate }}
+                    <div class="countLabel">{{allNotesCount}}</div>
+                </ng-template>
+                <div *ngIf="selectedNotebook">
+                    <div class="notebooksTitleContainer p-2">
+                        <h2>{{ selectedNotebook.name }}</h2>
+                        <div class="countLabel">{{selectedNotesCount}}</div>
+                    </div>
+                    <p>Work in progress</p>
                 </div>
-                <p>Work in progress</p>
-            </div>
-        </mat-tab>
-        <mat-tab>
-            <ng-template mat-tab-label>
-                {{ 'NotesTabs.ThisWeek' | translate }}
-                <div class="countLabel">{{thisWeekNotesCount}}</div>
-            </ng-template>
-            <div *ngIf="selectedNotebook">
-                <div class="notebooksTitleContainer p-2">
-                    <h2>{{ selectedNotebook.name }}</h2>
-                    <div class="countLabel">{{selectedNotesCount}}</div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    {{ 'NotesTabs.Today' | translate }}
+                    <div class="countLabel">{{todayNotesCount}}</div>
+                </ng-template>
+                <div *ngIf="selectedNotebook">
+                    <div class="notebooksTitleContainer p-2">
+                        <h2>{{ selectedNotebook.name }}</h2>
+                        <div class="countLabel">{{selectedNotesCount}}</div>
+                    </div>
+                    <p>Work in progress</p>
                 </div>
-                <p>Work in progress</p>
-            </div>
-        </mat-tab>
-        <mat-tab>
-            <ng-template mat-tab-label>
-                {{ 'NotesTabs.Marked' | translate }}
-                <div class="countLabel">{{markedNotesCount}}</div>
-            </ng-template>
-            <div *ngIf="selectedNotebook">
-                <div class="notebooksTitleContainer p-2">
-                    <h2>{{ selectedNotebook.name }}</h2>
-                    <div class="countLabel">{{selectedNotesCount}}</div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    {{ 'NotesTabs.Yesterday' | translate }}
+                    <div class="countLabel">{{yesterdayNotesCount}}</div>
+                </ng-template>
+                <div *ngIf="selectedNotebook">
+                    <div class="notebooksTitleContainer p-2">
+                        <h2>{{ selectedNotebook.name }}</h2>
+                        <div class="countLabel">{{selectedNotesCount}}</div>
+                    </div>
+                    <p>Work in progress</p>
                 </div>
-                <p>Work in progress</p>
-            </div>
-        </mat-tab>
-    </mat-tab-group>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    {{ 'NotesTabs.ThisWeek' | translate }}
+                    <div class="countLabel">{{thisWeekNotesCount}}</div>
+                </ng-template>
+                <div *ngIf="selectedNotebook">
+                    <div class="notebooksTitleContainer p-2">
+                        <h2>{{ selectedNotebook.name }}</h2>
+                        <div class="countLabel">{{selectedNotesCount}}</div>
+                    </div>
+                    <p>Work in progress</p>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    {{ 'NotesTabs.Marked' | translate }}
+                    <div class="countLabel">{{markedNotesCount}}</div>
+                </ng-template>
+                <div *ngIf="selectedNotebook">
+                    <div class="notebooksTitleContainer p-2">
+                        <h2>{{ selectedNotebook.name }}</h2>
+                        <div class="countLabel">{{selectedNotesCount}}</div>
+                    </div>
+                    <p>Work in progress</p>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
 </div>

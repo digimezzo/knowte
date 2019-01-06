@@ -11,6 +11,7 @@ import { SnackBarService } from '../../services/snackBar.service';
 import { Subscription } from 'rxjs';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/renameNotebookDialog.component';
+import { ipcRenderer } from 'electron';
 
 @Component({
   selector: 'notes-page',
@@ -36,6 +37,7 @@ export class NotesComponent implements OnInit {
   public selectedNotebook: Notebook;
 
   public canEditSelectedNotebook: boolean = false;
+  public canEditSelectedNote: boolean = false;
 
   ngOnInit() {
     log.info("Showing notes page");
@@ -124,5 +126,12 @@ export class NotesComponent implements OnInit {
         await this.collectionService.deleteNotebookAsync(this.selectedNotebook.id);
       }
     });
+  }
+
+  public deleteNote(): void {
+  }
+
+  public addNote(): void {
+    ipcRenderer.send('open-note-window', 'an-argument');
   }
 }
