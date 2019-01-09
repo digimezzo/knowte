@@ -3,7 +3,7 @@ import { ElectronService } from './services/electron.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AppConfig } from '../environments/environment';
 import { CollectionService } from './services/collection.service';
-import { DataStore } from './data/dataStore';
+import log from 'electron-log';
 import { Router } from '@angular/router';
 
 @Component({
@@ -30,10 +30,10 @@ export class AppComponent {
   ngOnInit() {
     let showWelcome: boolean = !this.collectionService.hasStorageDirectory;
 
+    log.info(`URL: '${this.router.url}'`);
+
     if(showWelcome){
       this.router.navigate(['/welcome']);
-    }else{
-      this.router.navigate(['/loading']);
     }
   }
 

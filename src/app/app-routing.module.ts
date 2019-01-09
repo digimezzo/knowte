@@ -7,11 +7,15 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
 import { LoadingComponent } from './components/loading/loading.component';
 
 const routes: Routes = [
-    // { 
-    //     path: '', 
-    //     redirectTo: '/main', 
-    //     pathMatch: 'full' 
-    // },
+    { 
+        path: '', 
+        redirectTo: '/loading', 
+        pathMatch: 'full' 
+    },
+    {
+        path: 'note',
+        component: InformationComponent
+    },
     {
         path: 'welcome',
         component: WelcomeComponent

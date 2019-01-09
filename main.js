@@ -69,19 +69,18 @@ function createNoteWindow() {
         width: 400,
         height: 300,
         backgroundColor: '#fff',
-        frame: true,
+        frame: false,
         show: true
     });
     if (serve) {
-        noteWindow.loadURL(url.format({
-            pathname: path.join(__dirname, 'src/note.html'),
-            protocol: 'file:',
-            slashes: true
-        }));
+        require('electron-reload')(__dirname, {
+            electron: require(__dirname + "/node_modules/electron")
+        });
+        noteWindow.loadURL('http://localhost:4200#/note');
     }
     else {
         noteWindow.loadURL(url.format({
-            pathname: path.join(__dirname, 'dist/note.html'),
+            pathname: path.join(__dirname, 'dist/index.html#/note'),
             protocol: 'file:',
             slashes: true
         }));
