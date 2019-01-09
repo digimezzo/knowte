@@ -88,11 +88,7 @@ function createNoteWindow() {
     });
     noteWindow.loadURL('http://localhost:4200#/note');
   } else {
-    noteWindow.loadURL(url.format({
-      pathname: path.join(__dirname, 'dist/index.html#/note'),
-      protocol: 'file:',
-      slashes: true
-    }));
+    noteWindow.loadURL(`file://${__dirname}/dist/index.html#/note`);
   }
 }
 

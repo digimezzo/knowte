@@ -29,6 +29,7 @@ import { BackButtonComponent } from './components/backButton/backButton.componen
 import { MainMenuButtonComponent } from './components/mainMenuButton/mainMenuButton.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { InformationComponent } from './components/information/information.component';
+import { NoteComponent } from './components/note/note.component';
 import { LicenseDialogComponent } from './components/dialogs/licenseDialog/licenseDialog.component';
 import { LogoFullComponent } from './components/logoFull/logoFull.component';
 import { InputDialogComponent } from './components/dialogs/inputDialog/inputDialog.component';
@@ -73,6 +74,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ConfirmationDialogComponent,
     DialogHeaderComponent,
     LogoFullComponent,
+    NoteComponent,
     WebviewDirective
   ],
   imports: [

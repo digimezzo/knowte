@@ -30,8 +30,6 @@ export class AppComponent {
   ngOnInit() {
     let showWelcome: boolean = !this.collectionService.hasStorageDirectory;
 
-    log.info(`URL: '${this.router.url}'`);
-
     if(showWelcome){
       this.router.navigate(['/welcome']);
     }
