@@ -52,6 +52,11 @@ function createWindow() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
+
+    log.info(`+++ Stopping +++`);
+
+    // When the main window is closed, quit the app (This also closes all other windows)
+    app.quit();
   });
 
   // 'ready-to-show' doesn't fire on Windows in dev mode. In prod it seems to work. 
@@ -110,9 +115,10 @@ try {
     log.info(`+++ Stopping +++`);
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
-      app.quit();
-    }
+    // if (process.platform !== 'darwin') {
+    //   app.quit();
+    // }
+    app.quit();
   });
 
   app.on('activate', () => {
