@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CollectionService } from '../../services/collection.service';
+import log from 'electron-log';
 
 @Component({
   selector: 'loading-page',
@@ -12,6 +13,7 @@ export class LoadingComponent implements OnInit {
   }
 
   ngOnInit() {
+    log.info(`Loading`);
     this.showMain();
   }
 

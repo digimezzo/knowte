@@ -12,6 +12,6 @@ export class MainComponent implements OnInit {
     }
 
     ngOnInit() {
-        log.info(`+++ Showing ${Constants.applicationName} (${Constants.applicationVersion}) main page +++`);
+        log.info(`Main`);
     }
 }

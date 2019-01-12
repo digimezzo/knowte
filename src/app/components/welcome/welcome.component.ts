@@ -22,7 +22,7 @@ export class WelcomeComponent implements OnInit {
     public isBusy: boolean = false;
 
     ngOnInit() {
-        log.info("Showing welcome page");
+        log.info(`Welcome`);
     }
 
     public openDirectoryChooser(): void {

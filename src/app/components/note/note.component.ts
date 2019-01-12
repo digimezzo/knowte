@@ -14,4 +14,8 @@ export class NoteComponent implements OnInit {
     ngOnInit() {
         log.info("Opening note");
     }
+
+    public performAction(): void {
+
+    }
 }

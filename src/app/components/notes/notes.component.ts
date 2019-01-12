@@ -40,7 +40,7 @@ export class NotesComponent implements OnInit {
   public canEditSelectedNote: boolean = false;
 
   ngOnInit() {
-    log.info("Showing notes page");
+    log.info(`Notes`);
 
     this.notebooks = this.collectionService.getNotebooks();
     this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
