@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import log from 'electron-log';
+import { CollectionService } from '../../services/collection.service';
 
 @Component({
     selector: 'note-content',
@@ -8,11 +9,12 @@ import log from 'electron-log';
     encapsulation: ViewEncapsulation.None
 })
 export class NoteComponent implements OnInit {
-    constructor() {
+    constructor(private collectionService: CollectionService) {
     }
 
     ngOnInit() {
-        log.info("Opening note");
+        log.info("Note");
+        this.collectionService.initializeDataStoreAsync();
     }
 
     public performAction(): void {

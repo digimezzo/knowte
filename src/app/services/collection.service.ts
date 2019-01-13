@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { DataStore } from '../data/dataStore';
 import { Constants } from '../core/constants';
 import * as path from 'path';
 import * as fs from 'fs-extra';
@@ -10,18 +9,19 @@ import { CollectionOperation } from './collectionOperation';
 import { Collection } from '../data/collection';
 import { Utils } from '../core/utils';
 import { Notebook } from '../data/notebook';
-import { Note } from '../data/note';
 import { TranslateService } from '@ngx-translate/core';
 import { NotebookOperation } from './notebookOperation';
+import { remote } from 'electron';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionService {
-  constructor(private dataStore: DataStore, private translateService: TranslateService) {
+  constructor(private translateService: TranslateService) {
     log.info("CollectionService");
   }
 
+  private dataStore = remote.getGlobal('dataStore');
   private settings: Store = new Store();
 
   private dataStoreInitialized = new Subject<boolean>();
@@ -105,10 +105,12 @@ export class CollectionService {
   }
 
   public async initializeDataStoreAsync(): Promise<void> {
-    this.dataStore.initialize();
+    if (!this.dataStore.isReady) {
+      this.dataStore.initialize();
 
-    while (!this.dataStore.isReady) {
-      await Utils.sleep(100);
+      while (!this.dataStore.isReady) {
+        await Utils.sleep(100);
+      }
     }
 
     //await Utils.sleep(2000);

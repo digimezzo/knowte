@@ -6,11 +6,16 @@ import * as url from 'url';
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
 import log from 'electron-log';
-
+import { DataStore } from './src/app/data/dataStore';
 
 let mainWindow, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
+
+// Global dataStore so all windows use the same dataStore
+const globalAny:any = global;
+let dataStore: DataStore = new DataStore();
+globalAny.dataStore = dataStore;
 
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 log.transports.file.level = 'info';
