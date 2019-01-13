@@ -34,7 +34,6 @@ import { LicenseDialogComponent } from './components/dialogs/licenseDialog/licen
 import { LogoFullComponent } from './components/logoFull/logoFull.component';
 import { InputDialogComponent } from './components/dialogs/inputDialog/inputDialog.component';
 import { ErrorDialogComponent } from './components/dialogs/errorDialog/errorDialog.component';
-import { MainComponent } from './components/main/main.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { NotesComponent } from './components/notes/notes.component';
@@ -60,7 +59,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppComponent,
     BackButtonComponent,
     MainMenuButtonComponent,
-    MainComponent,
     WelcomeComponent,
     LoadingComponent,
     NotesComponent,

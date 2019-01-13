@@ -50,7 +50,7 @@ export class WelcomeComponent implements OnInit {
 
                 this.isBusy = false;
 
-                this.router.navigate(['/main']);
+                this.router.navigate(['/notes']);
             });
         });
     }

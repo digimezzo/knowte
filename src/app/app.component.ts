@@ -32,6 +32,9 @@ export class AppComponent {
 
     if(showWelcome){
       this.router.navigate(['/welcome']);
+    }else if(!this.collectionService.hasDataStore){
+      log.info("Got no data store");
+      this.router.navigate(['/loading']);
     }
   }
 

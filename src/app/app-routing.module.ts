@@ -1,4 +1,4 @@
-import { MainComponent } from './components/main/main.component';
+import { NotesComponent } from './components/notes/notes.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { InformationComponent } from './components/information/information.component';
 import { NgModule } from '@angular/core';
@@ -18,16 +18,16 @@ const routes: Routes = [
         component: NoteComponent
     },
     {
+        path: 'notes',
+        component: NotesComponent
+    },
+    {
         path: 'welcome',
         component: WelcomeComponent
     },
     {
         path: 'loading',
         component: LoadingComponent
-    },
-    {
-        path: 'main',
-        component: MainComponent
     },
     {
         path: 'settings',

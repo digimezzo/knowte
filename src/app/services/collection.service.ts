@@ -19,7 +19,7 @@ import { NotebookOperation } from './notebookOperation';
 })
 export class CollectionService {
   constructor(private dataStore: DataStore, private translateService: TranslateService) {
-
+    log.info("CollectionService");
   }
 
   private settings: Store = new Store();
@@ -50,6 +50,10 @@ export class CollectionService {
 
   private notebookDeleted = new Subject<string>();
   notebookDeleted$ = this.notebookDeleted.asObservable();
+
+  public get hasDataStore(): boolean {
+    return this.dataStore.isReady;
+  }
 
   public get hasStorageDirectory(): boolean {
     // 1. Get the storage directory from the data store
@@ -243,7 +247,7 @@ export class CollectionService {
 
       // 4. Get the user defined notebooks
       let userNotebooks: Notebook[] = this.dataStore.getNotebooks(activeCollectionId);
-     
+
       // 5. Add the user defined notebooks to the notebooks
       notebooks.push.apply(notebooks, userNotebooks);
     } catch (error) {

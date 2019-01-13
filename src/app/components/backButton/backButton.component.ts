@@ -23,8 +23,8 @@ export class BackButtonComponent implements OnInit, OnDestroy {
     this.subscription = this.collectionService.dataStoreInitialized$.subscribe(() => this.canShow = true);
   }
 
-  public goToMain(): void {
-    this.router.navigate(['/main']);
+  public goToNotes(): void {
+    this.router.navigate(['/notes']);
   }
 
   ngOnDestroy() {

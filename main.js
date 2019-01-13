@@ -30,7 +30,7 @@ function createWindow() {
         require('electron-reload')(__dirname, {
             electron: require(__dirname + "/node_modules/electron")
         });
-        mainWindow.loadURL('http://localhost:4200#/loading');
+        mainWindow.loadURL('http://localhost:4200');
     }
     else {
         mainWindow.loadURL(url.format({
