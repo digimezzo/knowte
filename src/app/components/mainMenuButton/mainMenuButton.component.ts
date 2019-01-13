@@ -11,6 +11,7 @@ import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confi
 import { TranslateService } from '@ngx-translate/core';
 import { CollectionOperation } from '../../services/collectionOperation';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'main-menu-button',
@@ -21,7 +22,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
-    private snackBarService: SnackBarService, private translateService: TranslateService) {
+    private snackBarService: SnackBarService, private translateService: TranslateService, public router: Router) {
   }
 
   public canShow: boolean = false;

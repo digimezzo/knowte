@@ -17,10 +17,7 @@ export class BackButtonComponent implements OnInit, OnDestroy {
 
   public applicationName: string = Constants.applicationName.toUpperCase();
 
-  public canShow: boolean = false;
-
   ngOnInit() {
-    this.subscription = this.collectionService.dataStoreInitialized$.subscribe(() => this.canShow = true);
   }
 
   public goToNotes(): void {
@@ -28,6 +25,5 @@ export class BackButtonComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 }
