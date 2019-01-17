@@ -1,8 +1,12 @@
 <div class="noteContent">
-    <div class="noteTitle">
-        New Note 1
+    <div class="noteTitleBox">
+        <div class="noteTitle">
+            New Note 1
+        </div>
+        <div class="performActionButtonBox p-2">
+            <button class="performActionButton" mat-fab color="primary" (click)="performAction()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
+                <span class="performActionIcon">&#xE5D2;</span>
+            </button>
+        </div>
     </div>
-    <button class="performActionButton" mat-fab color="primary" (click)="performAction()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
-        <span class="performActionIcon">&#xE5D2;</span>
-    </button>
 </div>

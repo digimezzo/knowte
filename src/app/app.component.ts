@@ -35,9 +35,11 @@ export class AppComponent {
       // }else if(!this.collectionService.hasDataStore){
       //   log.info("Got no data store");
       //   this.router.navigate(['/loading']);
-      }
-    }
-
-    ngOnDestroy() {
+    } else {
+      this.router.navigate(['/loading']);
     }
   }
+
+  ngOnDestroy() {
+  }
+}
