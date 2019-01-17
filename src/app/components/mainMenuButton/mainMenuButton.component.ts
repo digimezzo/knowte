@@ -29,6 +29,14 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
   public collections: Collection[];
 
   ngOnInit() {
+    // Workaround for auto reload
+    this.canShow = this.collectionService.hasDataStore;
+
+    if (this.collectionService.hasDataStore) {
+      this.collections = this.collectionService.getCollections();
+    }
+    // End of workaround for auto reload
+
     this.subscription = this.collectionService.dataStoreInitialized$.subscribe(() => {
       this.canShow = true;
       this.collections = this.collectionService.getCollections();
