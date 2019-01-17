@@ -28,15 +28,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
   public canShow: boolean = false;
   public collections: Collection[];
 
-  ngOnInit() {
-    // Workaround for auto reload
-    this.canShow = this.collectionService.hasDataStore;
-
-    if (this.collectionService.hasDataStore) {
-      this.collections = this.collectionService.getCollections();
-    }
-    // End of workaround for auto reload
-
+  async ngOnInit() {
     this.subscription = this.collectionService.dataStoreInitialized$.subscribe(() => {
       this.canShow = true;
       this.collections = this.collectionService.getCollections();
@@ -63,6 +55,9 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
       this.collections = this.collectionService.getCollections();
       this.snackBarService.collectionDeleted(collectionName);
     }));
+
+     // Workaround for auto reload
+     await this.collectionService.initializeDataStoreAsync();
   }
 
   public addCollection(): void {
