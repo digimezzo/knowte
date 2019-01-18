@@ -15,7 +15,7 @@ export class AppComponent {
   constructor(public electronService: ElectronService, public router: Router,
     private translate: TranslateService, private collectionService: CollectionService) {
 
-    translate.setDefaultLang('en'); translate.setDefaultLang('en');
+    translate.setDefaultLang('en');
     console.log('AppConfig', AppConfig);
 
     if (electronService.isElectron()) {
@@ -32,9 +32,6 @@ export class AppComponent {
 
     if (showWelcome) {
       this.router.navigate(['/welcome']);
-      // }else if(!this.collectionService.hasDataStore){
-      //   log.info("Got no data store");
-      //   this.router.navigate(['/loading']);
     }
   }
 
