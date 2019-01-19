@@ -77,15 +77,15 @@
         "ConfirmDeleteNotebook": "Delete notebook?"
     },
     "DialogTexts": {
-        "ConfirmDeleteCollection": "Are you sure you want to delete the collection {collectionName}? If you continue, its notebooks and notes will be lost.",
-        "ConfirmDeleteNotebook": "Are you sure you want to delete the notebook {notebookName}? If you continue, its notes will be unfiled."
+        "ConfirmDeleteCollection": "Are you sure you want to delete the collection {{collectionName}}? If you continue, its notebooks and notes will be lost.",
+        "ConfirmDeleteNotebook": "Are you sure you want to delete the notebook {{notebookName}}? If you continue, its notes will be unfiled."
     },
     "Input": {
         "CollectionName": "Collection name",
         "NotebookName": "Notebook name"
     },
     "ErrorTexts": {
-        "StorageDirectoryCreationError": "The directory {storageDirectory} cannot be used to save your notes. You might not have sufficient permissions to create items in it. Please verify the log if you need more information.",
+        "StorageDirectoryCreationError": "The directory {{storageDirectory}} cannot be used to save your notes. You might not have sufficient permissions to create items in it. Please verify the log if you need more information.",
         "GlobalError": "An error has occurred which will cause the application to close. Please verify the log if you need more information.",
         "AddCollectionError": "An error occurred while adding the collection {collectionName}. Please verify the log if you need more information.",
         "AddNotebookError": "An error occurred while adding the notebook {notebookName}. Please verify the log if you need more information."

@@ -25,10 +25,12 @@ export class WelcomeComponent implements OnInit {
         log.info(`Welcome`);
     }
 
-    public openDirectoryChooser(): void {
+    public async openDirectoryChooserAsync(): Promise<void> {
         log.info("Opening directory chooser");
 
-        remote.dialog.showOpenDialog({ title: this.translate.instant('DialogTitles.SelectFolder'), properties: ['openDirectory'] }, (folderPath) => {
+        let selectFolderText: string = await this.translate.get('DialogTitles.SelectFolder').toPromise();
+
+        remote.dialog.showOpenDialog({ title: selectFolderText, properties: ['openDirectory'] }, (folderPath) => {
             if (folderPath === undefined) {
                 log.warn("No folder was selected");
                 return;
@@ -41,8 +43,9 @@ export class WelcomeComponent implements OnInit {
                 this.isBusy = true;
 
                 if (!await this.collectionService.initializeStorageDirectoryAsync(selectedParentDirectory)) {
+                    let errorText: string = await this.translate.get('ErrorTexts.StorageDirectoryCreationError', {storageDirectory: selectedParentDirectory}).toPromise();
                     this.dialog.open(ErrorDialogComponent, {
-                        width: '450px', data: { errorText: this.translate.instant('ErrorTexts.StorageDirectoryCreationError').replace("{storageDirectory}", `'${selectedParentDirectory}'`) }
+                        width: '450px', data: { errorText: errorText }
                     });
                 }
 

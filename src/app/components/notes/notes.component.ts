@@ -115,7 +115,7 @@ export class NotesComponent implements OnInit {
   public async deleteNotebookAsync(): Promise<void> {
     let notebookName: string = this.collectionService.getNotebookName(this.selectedNotebook.id);
     let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNotebook').toPromise();
-    let text: string = (await this.translateService.get('DialogTexts.ConfirmDeleteNotebook').toPromise()).replace("{notebookName}", `"${notebookName}"`);
+    let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNotebook', {notebookName: notebookName}).toPromise();
 
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
 

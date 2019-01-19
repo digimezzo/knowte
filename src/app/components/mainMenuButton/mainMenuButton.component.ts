@@ -115,7 +115,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
     let collectionName: string = this.collectionService.getCollectionName(collectionId);
     let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteCollection').toPromise();
-    let text: string = (await this.translateService.get('DialogTexts.ConfirmDeleteCollection').toPromise()).replace("{collectionName}", `"${collectionName}"`);
+    let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteCollection', {collectionName: collectionName}).toPromise();
 
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
 
