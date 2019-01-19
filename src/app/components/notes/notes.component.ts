@@ -39,24 +39,24 @@ export class NotesComponent implements OnInit {
   public canEditSelectedNotebook: boolean = false;
   public canEditSelectedNote: boolean = false;
 
-  ngOnInit() {
+  async ngOnInit() {
     log.info(`Notes`);
 
-    this.notebooks = this.collectionService.getNotebooks();
+    this.notebooks = await this.collectionService.getNotebooksAsync();
     this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
 
     this.subscription = this.collectionService.notebookAdded$.subscribe(async (notebookName) => {
-      this.notebooks = await this.collectionService.getNotebooks();
+      this.notebooks = await this.collectionService.getNotebooksAsync();
       this.snackBarService.notebookAdded(notebookName);
     });
 
     this.subscription.add(this.collectionService.notebookRenamed$.subscribe(async (newNotebookName) => {
-      this.notebooks = await this.collectionService.getNotebooks();
+      this.notebooks = await this.collectionService.getNotebooksAsync();
       this.snackBarService.notebookRenamed(newNotebookName);
     }));
 
     this.subscription.add(this.collectionService.notebookDeleted$.subscribe(async (notebookName) => {
-      this.notebooks = this.collectionService.getNotebooks();
+      this.notebooks = await this.collectionService.getNotebooksAsync();
       this.snackBarService.notebookDeleted(notebookName);
     }));
   }
@@ -71,9 +71,9 @@ export class NotesComponent implements OnInit {
     log.info(`Selected notebook: ${notebook.name}`);
   }
 
-  public addNotebook(): void {
-    let titleText: string = this.translateService.instant('DialogTitles.AddNotebook');
-    let placeholderText: string = this.translateService.instant('Input.NotebookName');
+  public async addNotebookAsync(): Promise<void> {
+    let titleText: string = await this.translateService.get('DialogTitles.AddNotebook').toPromise();
+    let placeholderText: string = await this.translateService.get('Input.NotebookName').toPromise();
 
     let dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
       width: '450px', data: { titleText: titleText, placeholderText: placeholderText }
@@ -91,8 +91,9 @@ export class NotesComponent implements OnInit {
             break;
           }
           case NotebookOperation.Error: {
+            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.AddNotebookError').toPromise()).replace("{notebookName}", `'${notebookName}'`);
             this.dialog.open(ErrorDialogComponent, {
-              width: '450px', data: { errorText: this.translateService.instant('ErrorTexts.AddNotebookError').replace("{notebookName}", `'${notebookName}'`) }
+              width: '450px', data: { errorText: generatedErrorText }
             });
             break;
           }
@@ -111,10 +112,10 @@ export class NotesComponent implements OnInit {
     });
   }
 
-  public deleteNotebook(): void {
+  public async deleteNotebookAsync(): Promise<void> {
     let notebookName: string = this.collectionService.getNotebookName(this.selectedNotebook.id);
-    let title: string = this.translateService.instant('DialogTitles.ConfirmDeleteNotebook');
-    let text: string = this.translateService.instant('DialogTexts.ConfirmDeleteNotebook').replace("{notebookName}", `"${notebookName}"`);
+    let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNotebook').toPromise();
+    let text: string = (await this.translateService.get('DialogTexts.ConfirmDeleteNotebook').toPromise()).replace("{notebookName}", `"${notebookName}"`);
 
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
 

@@ -17,7 +17,7 @@
     </button>
 </mat-menu>
 <mat-menu #subMenu="matMenu">
-    <button class="mainMenuButton" mat-menu-item (click)="addCollection()">
+    <button class="mainMenuButton" mat-menu-item (click)="addCollectionAsync()">
         <span class="mainMenuIcon">&#xE145;</span>
         {{ 'MainMenu.AddCollection' | translate }}
     </button>
@@ -31,7 +31,7 @@
             </span>
             <span class="mainMenuCommandIconContainer mr-1">
                 <span class="mainMenuCommandIcon mr-1" matTooltip="{{ 'Tooltips.Rename' | translate }}" (click)="renameCollection(collection.id)">&#xE254;</span>
-                <span class="mainMenuCommandIcon" matTooltip="{{ 'Tooltips.Delete' | translate }}" (click)="deleteCollection(collection.id)">&#xE872;</span>
+                <span class="mainMenuCommandIcon" matTooltip="{{ 'Tooltips.Delete' | translate }}" (click)="deleteCollectionAsync(collection.id)">&#xE872;</span>
             </span>
         </button>
     </div>

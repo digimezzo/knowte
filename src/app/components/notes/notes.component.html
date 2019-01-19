@@ -27,11 +27,11 @@
                         *ngIf=canEditSelectedNotebook>
                         <span class="editItemIcon">&#xE254;</span>
                     </button>
-                    <button class="listButton" mat-mini-fab color="" (click)="deleteNotebook()" matTooltip="{{ 'MainPage.DeleteNotebook' | translate }}"
+                    <button class="listButton" mat-mini-fab color="" (click)="deleteNotebookAsync()" matTooltip="{{ 'MainPage.DeleteNotebook' | translate }}"
                         *ngIf=canEditSelectedNotebook>
                         <span class="editItemIcon">&#xE872;</span>
                     </button>
-                    <button class="listButton" mat-fab color="primary" (click)="addNotebook()" matTooltip="{{ 'MainPage.AddNotebook' | translate }}">
+                    <button class="listButton" mat-fab color="primary" (click)="addNotebookAsync()" matTooltip="{{ 'MainPage.AddNotebook' | translate }}">
                         <span class="addItemIcon">&#xE145;</span>
                     </button>
                 </div>

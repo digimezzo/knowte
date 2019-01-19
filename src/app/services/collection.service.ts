@@ -223,7 +223,7 @@ export class CollectionService {
     return CollectionOperation.Success;
   }
 
-  public getNotebooks(): Notebook[] {
+  public async getNotebooksAsync(): Promise<Notebook[]> {
     let notebooks: Notebook[] = [];
 
     try {
@@ -238,10 +238,10 @@ export class CollectionService {
       let activeCollectionId: string = activeCollection.id;
 
       // 3. Add the default notebooks
-      let allNotesNotebook: Notebook = new Notebook(this.translateService.instant('MainPage.AllNotes'), Constants.allNotesNotebookId, activeCollectionId);
+      let allNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.AllNotes').toPromise(), Constants.allNotesNotebookId, activeCollectionId);
       allNotesNotebook.isDefault = true;
 
-      let unfiledNotesNotebook: Notebook = new Notebook(this.translateService.instant('MainPage.UnfiledNotes'), Constants.unfiledNotesNotebookId, activeCollectionId);
+      let unfiledNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.UnfiledNotes').toPromise(), Constants.unfiledNotesNotebookId, activeCollectionId);
       unfiledNotesNotebook.isDefault = true;
 
       notebooks.push(allNotesNotebook);

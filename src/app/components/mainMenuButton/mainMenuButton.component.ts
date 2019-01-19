@@ -60,11 +60,11 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
      await this.collectionService.initializeDataStoreAsync();
   }
 
-  public addCollection(): void {
+  public async addCollectionAsync(): Promise<void> {
     log.info("Pressed addCollection()");
 
-    let titleText: string = this.translateService.instant('DialogTitles.AddCollection');
-    let placeholderText: string = this.translateService.instant('Input.CollectionName');
+    let titleText: string = await this.translateService.get('DialogTitles.AddCollection').toPromise();
+    let placeholderText: string = await this.translateService.get('Input.CollectionName').toPromise();
 
     let dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
       width: '450px', data: { titleText: titleText, placeholderText: placeholderText }
@@ -82,8 +82,9 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
             break;
           }
           case CollectionOperation.Error: {
+            let generatedErrorText:string = (await this.translateService.get('ErrorTexts.AddCollectionError').toPromise()).replace("{collectionName}", `'${collectionName}'`);
             this.dialog.open(ErrorDialogComponent, {
-              width: '450px', data: { errorText: this.translateService.instant('ErrorTexts.AddCollectionError').replace("{collectionName}", `'${collectionName}'`) }
+              width: '450px', data: { errorText: generatedErrorText }
             });
             break;
           }
@@ -109,12 +110,12 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
     });
   }
 
-  public deleteCollection(collectionId: string) {
+  public async deleteCollectionAsync(collectionId: string): Promise<void> {
     log.info(`Pressed deleteCollection(${collectionId})`);
 
     let collectionName: string = this.collectionService.getCollectionName(collectionId);
-    let title: string = this.translateService.instant('DialogTitles.ConfirmDeleteCollection');
-    let text: string = this.translateService.instant('DialogTexts.ConfirmDeleteCollection').replace("{collectionName}", `"${collectionName}"`);
+    let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteCollection').toPromise();
+    let text: string = (await this.translateService.get('DialogTexts.ConfirmDeleteCollection').toPromise()).replace("{collectionName}", `"${collectionName}"`);
 
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
 
