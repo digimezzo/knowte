@@ -44,6 +44,7 @@
     "fs-extra": "^7.0.1",
     "lokijs": "^1.5.5",
     "nanoid": "^2.0.0",
+    "quill": "^1.3.6",
     "sanitize-filename": "^1.6.1",
     "simplebar": "^3.1.1"
   },

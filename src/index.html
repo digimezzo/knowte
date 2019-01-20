@@ -7,6 +7,8 @@
   <base href="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- Include stylesheet -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 
 <body class="mat-typography">
@@ -35,5 +37,14 @@
     <app-root></app-root>
   </div>
 </body>
+
+<!-- Include the Quill library -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+<script>
+  var quill = new Quill('#editor', {
+    theme: 'snow'
+  });
+</script>
 
 </html>
