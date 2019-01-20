@@ -82,7 +82,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
             break;
           }
           case CollectionOperation.Error: {
-            let generatedErrorText:string = (await this.translateService.get('ErrorTexts.AddCollectionError').toPromise()).replace("{collectionName}", `'${collectionName}'`);
+            let generatedErrorText:string = (await this.translateService.get('ErrorTexts.AddCollectionError', {collectionName: collectionName}).toPromise());
             this.dialog.open(ErrorDialogComponent, {
               width: '450px', data: { errorText: generatedErrorText }
             });

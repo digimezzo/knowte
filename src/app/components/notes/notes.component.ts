@@ -91,7 +91,7 @@ export class NotesComponent implements OnInit {
             break;
           }
           case NotebookOperation.Error: {
-            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.AddNotebookError').toPromise()).replace("{notebookName}", `'${notebookName}'`);
+            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.AddNotebookError', { notebookName: notebookName }).toPromise());
             this.dialog.open(ErrorDialogComponent, {
               width: '450px', data: { errorText: generatedErrorText }
             });
@@ -115,7 +115,7 @@ export class NotesComponent implements OnInit {
   public async deleteNotebookAsync(): Promise<void> {
     let notebookName: string = this.collectionService.getNotebookName(this.selectedNotebook.id);
     let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNotebook').toPromise();
-    let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNotebook', {notebookName: notebookName}).toPromise();
+    let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNotebook', { notebookName: notebookName }).toPromise();
 
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
 
