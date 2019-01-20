@@ -1,17 +1,17 @@
 <div class="noteContent">
-    <div class="noteTitleBox">
+    <div class="noteContentFixed">
         <div class="noteTitle">
             New Note 1
         </div>
-        <div class="performActionButtonBox p-2">
-            <button class="performActionButton" mat-fab color="primary" (click)="performAction()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
-                <span class="performActionIcon">&#xE5D2;</span>
-            </button>
+        <div class="noteEditor" id="editor">
+            <p>Hello World!</p>
+            <p>Some initial <strong>bold</strong> text</p>
+            <p><br></p>
         </div>
     </div>
-    <div id="editor">
-        <p>Hello World!</p>
-        <p>Some initial <strong>bold</strong> text</p>
-        <p><br></p>
-      </div>
+    <div class="noteContentFloating">
+        <button mat-fab color="primary" (click)="performAction()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
+            <span class="performActionIcon">&#xE5D2;</span>
+        </button>
+    </div>
 </div>
