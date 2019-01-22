@@ -16,7 +16,7 @@
             </div>
             <div class="notebooksListContainer">
                 <mat-selection-list dense class="notebooksListContainerList">
-                    <mat-list-option class="notebook" *ngFor="let notebook of notebooks" role="option">
+                    <mat-list-option [ngClass]="{'selectedItem':notebook === selectedNotebook }" class="notebook" *ngFor="let notebook of notebooks" role="option">
                         <p class="notebookName" [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
                             (click)="setSelectedNotebook(notebook)">
                             {{ notebook.name }}</p>

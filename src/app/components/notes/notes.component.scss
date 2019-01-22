@@ -1,133 +1,137 @@
-@import 'css/variables.scss';
+@import "css/variables.scss";
 // Couldn't find a better way to force the main container to fill the screen
 .notesContainer {
-    position: absolute;
-    top: $titlebar-height;
-    bottom: 0;
-    left: 0;
-    right: 0;
+  position: absolute;
+  top: $titlebar-height;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .notesContainerContent {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
 .notesContainerButtons {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .notesContainer .mat-tab-body-wrapper {
-    margin: 0 0 0 350px;
+  margin: 0 0 0 350px;
 }
 
 .notebooksContainer {
-    position: absolute;
-    background-color: $color-lightgrey;
-    border-right: 1px solid $color-lightgrey-border;
-    border-bottom: 1px solid $color-lightgrey-border;
-    border-left: 1px solid $color-lightgrey-border;
-    top: 0;
-    left: 0;
-    margin: 48px 0 0 0;
-    height: calc(100% - 48px);
-    width: 351px;
-    z-index: 99;
-    display: flex;
-    flex-direction: column;
+  position: absolute;
+  background-color: $color-lightgrey;
+  border-right: 1px solid $color-lightgrey-border;
+  border-bottom: 1px solid $color-lightgrey-border;
+  border-left: 1px solid $color-lightgrey-border;
+  top: 0;
+  left: 0;
+  margin: 48px 0 0 0;
+  height: calc(100% - 48px);
+  width: 351px;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
 }
 
 .countLabel {
-    margin: 0 0 10px 10px;
-    min-width: 22px;
-    height: 22px;
-    border-radius: 12px;
-    padding: 1px 7px 1px 7px;
-    background-color: $color-primary;
-    color: #fff;
-    font-size: 12px;
-    font-weight: bold;
+  margin: 0 0 10px 10px;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 12px;
+  padding: 1px 7px 1px 7px;
+  background-color: $color-primary;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .notebooksTitleContainer {
-    display: flex;
+  display: flex;
 }
 
 .notebooksListContainer {
-    //background-color: red;
-    flex: 1;
-    position: relative;
+  //background-color: red;
+  flex: 1;
+  position: relative;
 }
 
 .notebooksListButtonContainer {
-    display: flex;
-    flex-direction: column;
-    position: absolute !important;
-    right: 0px !important;
-    bottom: 0px !important;
-    z-index: 1;
+  display: flex;
+  flex-direction: column;
+  position: absolute !important;
+  right: 0px !important;
+  bottom: 0px !important;
+  z-index: 1;
 }
 
-.listButton{
-    margin-top: 8px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;  
+.listButton {
+  margin-top: 8px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 .notebooksListContainerList {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    overflow: auto;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: auto;
 }
 
 .addItemIcon {
-    font-family: Material;
-    font-size: 28px;
-    color: #fff;
+  font-family: Material;
+  font-size: 28px;
+  color: #fff;
 }
 
 .editItemIcon {
-    font-family: Material;
-    font-size: 20px;
-    color: $color-primary;
+  font-family: Material;
+  font-size: 20px;
+  color: $color-primary;
 }
 
 .notebook {
-    font-size: $fontsize-normal !important;
+  font-size: $fontsize-normal !important;
 }
 
 .mat-pseudo-checkbox {
-    display: none !important;
+  display: none !important;
 }
 
 .mat-list-text {
-    padding: 0px !important;
+  padding: 0px !important;
 }
 
 .mat-list-item-content {
-    padding: 0px !important;
-    line-height: 40px !important;
+  padding: 0px !important;
+  line-height: 40px !important;
 }
 
 .mat-list-item-content-reverse {
-    padding: 0px !important;
-    line-height: 40px !important;
+  padding: 0px !important;
+  line-height: 40px !important;
 }
 
-.notebookName{
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+.notebookName {
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+}
+
+.selectedItem {
+  background-color: #e6e7e7;
 }
