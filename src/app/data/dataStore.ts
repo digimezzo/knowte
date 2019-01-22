@@ -174,4 +174,23 @@ export class DataStore {
         // Persist
         this.db.saveDatabase();
     }
+
+    public getNotes(notebookId: string): Note[] {
+        let notes: Note[] = this.notes.chain().find({ 'notebookId': notebookId }).data();
+
+        return notes;
+    }
+
+    public getSimilarTitles(baseTitle: string): string[] {
+        let similarTitles: string[] = this.notes.chain().where(function (obj) {
+            return obj.title.startsWith(baseTitle);
+        }).data();
+
+        return similarTitles;
+    }
+
+    public addNote(noteTitle: string, notebookId: string, collectionId: string) {
+        this.notes.insert(new Note(noteTitle, nanoid(), notebookId, collectionId));
+        this.db.saveDatabase();
+    }
 }

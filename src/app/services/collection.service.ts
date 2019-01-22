@@ -12,6 +12,8 @@ import { Notebook } from '../data/notebook';
 import { TranslateService } from '@ngx-translate/core';
 import { NotebookOperation } from './notebookOperation';
 import { remote } from 'electron';
+import { Note } from '../data/note';
+import { NoteOperation } from './noteOperation';
 
 @Injectable({
   providedIn: 'root',
@@ -50,6 +52,9 @@ export class CollectionService {
 
   private notebookDeleted = new Subject<string>();
   notebookDeleted$ = this.notebookDeleted.asObservable();
+
+  private noteAdded = new Subject<string>();
+  noteAdded$ = this.noteAdded.asObservable();
 
   public get hasDataStore(): boolean {
     return this.dataStore.isReady;
@@ -342,5 +347,53 @@ export class CollectionService {
 
     this.notebookDeleted.next(notebookName);
     return NotebookOperation.Success;
+  }
+
+  public async getNotesAsync(notebookId: string): Promise<Note[]> {
+    let notes: Note[] = [];
+
+    try {
+      // 4. Get the user defined notebooks
+      notes = this.dataStore.getNotes(notebookId);
+
+    } catch (error) {
+      log.error(`Could not get notes. Cause: ${error}`);
+    }
+
+    return notes;
+  }
+
+  private getUniqueNoteTitle(baseTitle: string): string {
+    let similarTitles: string[] = [];
+    let counter: number = 1;
+    let uniqueTitle: string = `{proposedTitle} {counter}`;
+
+    similarTitles = this.dataStore.getSimilarTitles(baseTitle);
+
+    while (similarTitles.includes(uniqueTitle)) {
+      counter++;
+      uniqueTitle = `{proposedTitle} {counter}`;
+    }
+
+    return uniqueTitle;
+  }
+
+  public addNote(notebookId: string) {
+    let baseTitle: string = "New note";
+    let uniqueTitle: string = "";
+
+    try {
+      uniqueTitle = this.getUniqueNoteTitle(baseTitle);
+      let activeCollection: Collection = this.dataStore.getActiveCollection();
+      this.dataStore.addNote(uniqueTitle, notebookId, activeCollection.id);
+
+    } catch (error) {
+      log.error(`Could not add note '${uniqueTitle}'. Cause: ${error}`);
+      return NoteOperation.Error;
+    }
+
+    this.noteAdded.next(uniqueTitle);
+
+    return NoteOperation.Success;
   }
 }
