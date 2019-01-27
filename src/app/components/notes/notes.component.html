@@ -16,7 +16,8 @@
             </div>
             <div class="notebooksListContainer">
                 <mat-selection-list dense class="notebooksListContainerList">
-                    <mat-list-option [ngClass]="{'selectedItem':notebook === selectedNotebook }" class="notebook" *ngFor="let notebook of notebooks" role="option">
+                    <mat-list-option [ngClass]="{'selectedItem':notebook === selectedNotebook }" class="notebook"
+                        *ngFor="let notebook of notebooks" role="option">
                         <p class="notebookName" [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
                             (click)="setSelectedNotebook(notebook)">
                             {{ notebook.name }}</p>
@@ -48,7 +49,12 @@
                         <h2>{{ selectedNotebook.name }}</h2>
                         <div class="countLabel">{{selectedNotesCount}}</div>
                     </div>
-                    <p>Work in progress</p>
+                    <mat-selection-list dense>
+                        <mat-list-option [ngClass]="{'selectedItem':note === selectedNote }" *ngFor="let note of notes"
+                            role="option">
+                            <p class="notebookName">{{ note.title }}</p>
+                        </mat-list-option>
+                    </mat-selection-list>
                 </div>
             </mat-tab>
             <mat-tab>

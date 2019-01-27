@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/renameNotebookDialog.component';
 import { ipcRenderer } from 'electron';
+import { Note } from '../../data/note';
 
 @Component({
   selector: 'notes-page',
@@ -35,6 +36,8 @@ export class NotesComponent implements OnInit {
 
   public notebooks: Notebook[];
   public selectedNotebook: Notebook;
+  public notes: Note[];
+  public selectedNote: Note;
 
   public canEditSelectedNotebook: boolean = false;
   public canEditSelectedNote: boolean = false;
