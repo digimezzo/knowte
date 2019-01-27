@@ -17,6 +17,7 @@ var constants_1 = require("../core/constants");
 var collection_1 = require("./collection");
 var nanoid = require("nanoid");
 var notebook_1 = require("./notebook");
+var note_1 = require("./note");
 var DataStore = /** @class */ (function () {
     function DataStore() {
         this.settings = new Store();
@@ -136,6 +137,20 @@ var DataStore = /** @class */ (function () {
         var notebookToRemove = this.getNotebook(notebookId);
         this.notebooks.remove(notebookToRemove);
         // Persist
+        this.db.saveDatabase();
+    };
+    DataStore.prototype.getNotes = function (notebookId) {
+        var notes = this.notes.chain().find({ 'notebookId': notebookId }).data();
+        return notes;
+    };
+    DataStore.prototype.getSimilarTitles = function (baseTitle) {
+        var similarTitles = this.notes.chain().where(function (obj) {
+            return obj.title.startsWith(baseTitle);
+        }).data();
+        return similarTitles;
+    };
+    DataStore.prototype.addNote = function (noteTitle, notebookId, collectionId) {
+        this.notes.insert(new note_1.Note(noteTitle, nanoid(), notebookId, collectionId));
         this.db.saveDatabase();
     };
     DataStore = __decorate([
