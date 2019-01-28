@@ -4,7 +4,7 @@
             *ngIf=canEditSelectedNote>
             <span class="editItemIcon">&#xE872;</span>
         </button>
-        <button class="listButton" mat-fab color="primary" (click)="addNote()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
+        <button class="listButton" mat-fab color="primary" (click)="addNoteAsync()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
             <span class="addItemIcon">&#xE145;</span>
         </button>
     </div>
@@ -52,7 +52,7 @@
                     <mat-selection-list dense>
                         <mat-list-option [ngClass]="{'selectedItem':note === selectedNote }" *ngFor="let note of notes"
                             role="option">
-                            <p class="notebookName">{{ note.title }}</p>
+                            <p class="noteTitle">{{ note.title }}</p>
                         </mat-list-option>
                     </mat-selection-list>
                 </div>

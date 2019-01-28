@@ -353,9 +353,13 @@ export class CollectionService {
     let notes: Note[] = [];
 
     try {
-      // 4. Get the user defined notebooks
-      notes = this.dataStore.getNotes(notebookId);
-
+      if (notebookId === Constants.allNotesNotebookId) {
+        notes = this.dataStore.getAllNotes();
+      } else if (notebookId === Constants.unfiledNotesNotebookId) {
+        notes = this.dataStore.getUnfiledNotes();
+      } else {
+        notes = this.dataStore.getNotes(notebookId);
+      }
     } catch (error) {
       log.error(`Could not get notes. Cause: ${error}`);
     }
@@ -366,20 +370,19 @@ export class CollectionService {
   private getUniqueNoteTitle(baseTitle: string): string {
     let similarTitles: string[] = [];
     let counter: number = 1;
-    let uniqueTitle: string = `{proposedTitle} {counter}`;
+    let uniqueTitle: string = `${baseTitle} ${counter}`;
 
     similarTitles = this.dataStore.getSimilarTitles(baseTitle);
 
     while (similarTitles.includes(uniqueTitle)) {
       counter++;
-      uniqueTitle = `{proposedTitle} {counter}`;
+      uniqueTitle = `${baseTitle} ${counter}`;
     }
 
     return uniqueTitle;
   }
 
-  public addNote(notebookId: string) {
-    let baseTitle: string = "New note";
+  public addNote(baseTitle: string, notebookId: string) {
     let uniqueTitle: string = "";
 
     try {

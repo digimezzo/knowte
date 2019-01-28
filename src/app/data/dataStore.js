@@ -139,14 +139,27 @@ var DataStore = /** @class */ (function () {
         // Persist
         this.db.saveDatabase();
     };
+    DataStore.prototype.getAllNotes = function () {
+        // TODO: sort
+        var notes = this.notes.find();
+        // let notes: Note[] = this.notes.chain().data();
+        return notes;
+    };
+    DataStore.prototype.getUnfiledNotes = function () {
+        // TODO: sort + correct implementation
+        var notes = this.notes.find();
+        // let notes: Note[] = this.notes.chain().data();
+        return notes;
+    };
     DataStore.prototype.getNotes = function (notebookId) {
+        // TODO: sort
         var notes = this.notes.chain().find({ 'notebookId': notebookId }).data();
         return notes;
     };
     DataStore.prototype.getSimilarTitles = function (baseTitle) {
         var similarTitles = this.notes.chain().where(function (obj) {
             return obj.title.startsWith(baseTitle);
-        }).data();
+        }).data().map(function (x) { return x.title; });
         return similarTitles;
     };
     DataStore.prototype.addNote = function (noteTitle, notebookId, collectionId) {

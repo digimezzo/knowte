@@ -59,4 +59,9 @@ export class SnackBarService {
         let message: string = this.translate.instant('SnackBarMessages.NotebookRenamed', { notebookName: notebookName });
         this.showActionLessSnackBar(message, 2000);
     }
+
+    public noteAdded(noteTitle: string) {
+        let message: string = this.translate.instant('SnackBarMessages.NoteAdded', { noteTitle: noteTitle });
+        this.showActionLessSnackBar(message, 2000);
+    }
 }

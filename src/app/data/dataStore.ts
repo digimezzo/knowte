@@ -175,7 +175,24 @@ export class DataStore {
         this.db.saveDatabase();
     }
 
+    public getAllNotes(): Note[] {
+        // TODO: sort
+        let notes: Note[] = this.notes.find();
+        // let notes: Note[] = this.notes.chain().data();
+
+        return notes;
+    }
+
+    public getUnfiledNotes(): Note[] {
+        // TODO: sort + correct implementation
+        let notes: Note[] = this.notes.find();
+        // let notes: Note[] = this.notes.chain().data();
+
+        return notes;
+    }
+
     public getNotes(notebookId: string): Note[] {
+        // TODO: sort
         let notes: Note[] = this.notes.chain().find({ 'notebookId': notebookId }).data();
 
         return notes;
@@ -184,7 +201,7 @@ export class DataStore {
     public getSimilarTitles(baseTitle: string): string[] {
         let similarTitles: string[] = this.notes.chain().where(function (obj) {
             return obj.title.startsWith(baseTitle);
-        }).data();
+        }).data().map(x => x.title);
 
         return similarTitles;
     }

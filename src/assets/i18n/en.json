@@ -99,7 +99,8 @@
         "DuplicateNotebook": "There is already a notebook with the name {{notebookName}}",
         "NotebookAdded": "Notebook {{notebookName}} was added",
         "NotebookDeleted": "Notebook {{notebookName}} was deleted",
-        "NotebookRenamed": "Notebook was renamed to {{notebookName}}"
+        "NotebookRenamed": "Notebook was renamed to {{notebookName}}",
+        "NoteAdded": "Note {{noteTitle}} was added"
     },
     "MainPage": {
         "Notebooks": "Notebooks",
@@ -110,5 +111,8 @@
         "UnfiledNotes": "Unfiled notes",
         "AddNote": "Add note",
         "DeleteNote": "Delete note..."
+    },
+    "Notes": {
+        "NewNote": "New note"
     }
 }

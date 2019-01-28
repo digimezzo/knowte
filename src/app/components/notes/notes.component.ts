@@ -45,6 +45,7 @@ export class NotesComponent implements OnInit {
   async ngOnInit() {
     log.info(`Notes`);
 
+    // Notebooks
     this.notebooks = await this.collectionService.getNotebooksAsync();
     this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
 
@@ -62,6 +63,14 @@ export class NotesComponent implements OnInit {
       this.notebooks = await this.collectionService.getNotebooksAsync();
       this.snackBarService.notebookDeleted(notebookName);
     }));
+
+    // Notes
+    this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id);
+
+    this.subscription = this.collectionService.noteAdded$.subscribe(async (noteTitle) => {
+      this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id);
+      this.snackBarService.noteAdded(noteTitle);
+    });
   }
 
   ngOnDestroy() {
@@ -135,7 +144,13 @@ export class NotesComponent implements OnInit {
   public deleteNote(): void {
   }
 
-  public addNote(): void {
+  public async addNoteAsync(): Promise<void> {
+    let baseTitle: string = await this.translateService.get('Notes.NewNote').toPromise();
+
+    // Create a new note
+    this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
+
+    // Show the note window
     ipcRenderer.send('open-note-window', 'an-argument');
   }
 }
