@@ -1,4 +1,4 @@
-<div *ngIf="canShow && router.url != '/note'" class="button" mat-icon-button [matMenuTriggerFor]="menu">
+<div *ngIf="canShow && !router.url.includes('/note')" class="button" mat-icon-button [matMenuTriggerFor]="menu">
     &#xE700;
 </div>
 <mat-menu #menu="matMenu">

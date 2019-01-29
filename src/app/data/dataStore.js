@@ -69,8 +69,10 @@ var DataStore = /** @class */ (function () {
         return this.collections.findOne({ 'name': collectionName });
     };
     DataStore.prototype.addCollection = function (collectionName, isActive) {
-        this.collections.insert(new collection_1.Collection(collectionName, nanoid(), isActive));
+        var collectionId = nanoid();
+        this.collections.insert(new collection_1.Collection(collectionName, collectionId, isActive));
         this.db.saveDatabase();
+        return collectionId;
     };
     DataStore.prototype.setCollectionName = function (collectionId, collectionName) {
         var collectionToRename = this.getCollection(collectionId);
@@ -115,9 +117,11 @@ var DataStore = /** @class */ (function () {
         return this.notebooks.findOne({ 'name': notebookName });
     };
     DataStore.prototype.addNotebook = function (notebookName) {
+        var notebookId = nanoid();
         var activeCollection = this.getActiveCollection();
-        this.notebooks.insert(new notebook_1.Notebook(notebookName, nanoid(), activeCollection.id));
+        this.notebooks.insert(new notebook_1.Notebook(notebookName, notebookId, activeCollection.id));
         this.db.saveDatabase();
+        return notebookId;
     };
     DataStore.prototype.getNotebooks = function (activeCollectionId) {
         var notebooks = this.notebooks.chain().find({ 'collectionId': activeCollectionId }).sort(this.caseInsensitiveNameSort).data();
@@ -169,8 +173,10 @@ var DataStore = /** @class */ (function () {
         return notesWithIdenticalBaseTitle;
     };
     DataStore.prototype.addNote = function (noteTitle, notebookId, collectionId) {
-        this.notes.insert(new note_1.Note(noteTitle, nanoid(), notebookId, collectionId));
+        var noteId = nanoid();
+        this.notes.insert(new note_1.Note(noteTitle, noteId, notebookId, collectionId));
         this.db.saveDatabase();
+        return noteId;
     };
     DataStore = __decorate([
         core_1.Injectable({

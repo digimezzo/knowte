@@ -70,7 +70,7 @@ function createWindow() {
         }
     });
 }
-function createNoteWindow() {
+function createNoteWindow(noteId) {
     var noteWindow = new electron_1.BrowserWindow({
         x: 50,
         y: 50,
@@ -84,17 +84,17 @@ function createNoteWindow() {
         require('electron-reload')(__dirname, {
             electron: require(__dirname + "/node_modules/electron")
         });
-        noteWindow.loadURL('http://localhost:4200#/note');
+        noteWindow.loadURL("http://localhost:4200#/note?id=" + noteId);
     }
     else {
-        noteWindow.loadURL("file://" + __dirname + "/dist/index.html#/note");
+        noteWindow.loadURL("file://" + __dirname + "/dist/index.html#/note?id=" + noteId);
     }
 }
 try {
     electron_log_1.default.info("+++ Starting +++");
     // OPen note windows
     electron_1.ipcMain.on('open-note-window', function (event, arg) {
-        createNoteWindow();
+        createNoteWindow(arg);
     });
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.

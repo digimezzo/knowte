@@ -14,6 +14,7 @@ import { NotebookOperation } from './notebookOperation';
 import { remote } from 'electron';
 import { Note } from '../data/note';
 import { NoteOperation } from './noteOperation';
+import { AddNoteResult } from './addNoteResult';
 
 @Injectable({
   providedIn: 'root',
@@ -367,7 +368,7 @@ export class CollectionService {
     return notes;
   }
 
-  public getSimilarTitles(baseTitle: string): string[] {
+  private getSimilarTitles(baseTitle: string): string[] {
     let notesWithIdenticalBaseTitle: Note[] = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
     return notesWithIdenticalBaseTitle.map(x => x.title);
   }
@@ -387,21 +388,22 @@ export class CollectionService {
     return uniqueTitle;
   }
 
-  public addNote(baseTitle: string, notebookId: string) {
+  public addNote(baseTitle: string, notebookId: string): AddNoteResult {
     let uniqueTitle: string = "";
-
+    let addNoteResult: AddNoteResult = new AddNoteResult();
+    
     try {
       uniqueTitle = this.getUniqueNoteTitle(baseTitle);
       let activeCollection: Collection = this.dataStore.getActiveCollection();
-      this.dataStore.addNote(uniqueTitle, notebookId, activeCollection.id);
+      addNoteResult.noteId = this.dataStore.addNote(uniqueTitle, notebookId, activeCollection.id);
+      addNoteResult.noteTitle = uniqueTitle;
 
+      this.noteAdded.next(uniqueTitle);
     } catch (error) {
       log.error(`Could not add note '${uniqueTitle}'. Cause: ${error}`);
-      return NoteOperation.Error;
+      addNoteResult.operation = NoteOperation.Error;
     }
 
-    this.noteAdded.next(uniqueTitle);
-
-    return NoteOperation.Success;
+    return addNoteResult;
   }
 }

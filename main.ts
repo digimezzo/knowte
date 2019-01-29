@@ -13,7 +13,7 @@ const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
 
 // Global dataStore so all windows use the same dataStore
-const globalAny:any = global;
+const globalAny: any = global;
 let dataStore: DataStore = new DataStore();
 globalAny.dataStore = dataStore;
 
@@ -81,7 +81,7 @@ function createWindow() {
   });
 }
 
-function createNoteWindow() {
+function createNoteWindow(noteId: string) {
   let noteWindow: BrowserWindow = new BrowserWindow({
     x: 50,
     y: 50,
@@ -96,9 +96,9 @@ function createNoteWindow() {
     require('electron-reload')(__dirname, {
       electron: require(`${__dirname}/node_modules/electron`)
     });
-    noteWindow.loadURL('http://localhost:4200#/note');
+    noteWindow.loadURL(`http://localhost:4200#/note?id=${noteId}`);
   } else {
-    noteWindow.loadURL(`file://${__dirname}/dist/index.html#/note`);
+    noteWindow.loadURL(`file://${__dirname}/dist/index.html#/note?id=${noteId}`);
   }
 }
 
@@ -107,7 +107,7 @@ try {
 
   // OPen note windows
   ipcMain.on('open-note-window', (event, arg) => {
-    createNoteWindow();
+    createNoteWindow(arg);
   });
 
   // This method will be called when Electron has finished

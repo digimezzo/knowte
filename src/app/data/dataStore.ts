@@ -87,8 +87,11 @@ export class DataStore {
     }
 
     public addCollection(collectionName: string, isActive: boolean) {
-        this.collections.insert(new Collection(collectionName, nanoid(), isActive));
+        let collectionId: string = nanoid();
+        this.collections.insert(new Collection(collectionName, collectionId, isActive));
         this.db.saveDatabase();
+
+        return collectionId;
     }
 
     public setCollectionName(collectionId: string, collectionName: string) {
@@ -143,10 +146,13 @@ export class DataStore {
         return this.notebooks.findOne({ 'name': notebookName });
     }
 
-    public addNotebook(notebookName: string) {
+    public addNotebook(notebookName: string): string {
+        let notebookId: string = nanoid();
         let activeCollection: Collection = this.getActiveCollection();
-        this.notebooks.insert(new Notebook(notebookName, nanoid(), activeCollection.id));
+        this.notebooks.insert(new Notebook(notebookName, notebookId, activeCollection.id));
         this.db.saveDatabase();
+
+        return notebookId;
     }
 
     public getNotebooks(activeCollectionId: string): Notebook[] {
@@ -214,8 +220,11 @@ export class DataStore {
         return notesWithIdenticalBaseTitle;
     }
 
-    public addNote(noteTitle: string, notebookId: string, collectionId: string) {
-        this.notes.insert(new Note(noteTitle, nanoid(), notebookId, collectionId));
+    public addNote(noteTitle: string, notebookId: string, collectionId: string): string {
+        let noteId: string = nanoid();
+        this.notes.insert(new Note(noteTitle, noteId, notebookId, collectionId));
         this.db.saveDatabase();
+
+        return noteId;
     }
 }

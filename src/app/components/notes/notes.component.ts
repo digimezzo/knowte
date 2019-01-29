@@ -13,6 +13,8 @@ import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confi
 import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/renameNotebookDialog.component';
 import { ipcRenderer } from 'electron';
 import { Note } from '../../data/note';
+import { AddNoteResult } from '../../services/addNoteResult';
+import { NoteOperation } from '../../services/noteOperation';
 
 @Component({
   selector: 'notes-page',
@@ -148,9 +150,15 @@ export class NotesComponent implements OnInit {
     let baseTitle: string = await this.translateService.get('Notes.NewNote').toPromise();
 
     // Create a new note
-    this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
+    let addNoteResult: AddNoteResult = this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
 
-    // Show the note window
-    ipcRenderer.send('open-note-window', 'an-argument');
+    if (addNoteResult.operation === NoteOperation.Success) {
+      // Show the note window
+      ipcRenderer.send('open-note-window', addNoteResult.noteId);
+    }
+  }
+
+  public openNote(): void{
+    ipcRenderer.send('open-note-window', "TODO");
   }
 }
