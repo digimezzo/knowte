@@ -156,11 +156,17 @@ var DataStore = /** @class */ (function () {
         var notes = this.notes.chain().find({ 'notebookId': notebookId }).data();
         return notes;
     };
-    DataStore.prototype.getSimilarTitles = function (baseTitle) {
-        var similarTitles = this.notes.chain().where(function (obj) {
+    // public getSimilarTitles(baseTitle: string): string[] {
+    //     let similarTitles: string[] = this.notes.chain().where(function (obj) {
+    //         return obj.title.startsWith(baseTitle);
+    //     }).data().map(x => x.title);
+    //     return similarTitles;
+    // }
+    DataStore.prototype.getNotesWithIdenticalBaseTitle = function (baseTitle) {
+        var notesWithIdenticalBaseTitle = this.notes.chain().where(function (obj) {
             return obj.title.startsWith(baseTitle);
-        }).data().map(function (x) { return x.title; });
-        return similarTitles;
+        }).data();
+        return notesWithIdenticalBaseTitle;
     };
     DataStore.prototype.addNote = function (noteTitle, notebookId, collectionId) {
         this.notes.insert(new note_1.Note(noteTitle, nanoid(), notebookId, collectionId));

@@ -367,12 +367,17 @@ export class CollectionService {
     return notes;
   }
 
+  public getSimilarTitles(baseTitle: string): string[] {
+    let notesWithIdenticalBaseTitle: Note[] = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
+    return notesWithIdenticalBaseTitle.map(x => x.title);
+  }
+
   private getUniqueNoteTitle(baseTitle: string): string {
     let similarTitles: string[] = [];
     let counter: number = 1;
     let uniqueTitle: string = `${baseTitle} ${counter}`;
 
-    similarTitles = this.dataStore.getSimilarTitles(baseTitle);
+    similarTitles = this.getSimilarTitles(baseTitle);
 
     while (similarTitles.includes(uniqueTitle)) {
       counter++;

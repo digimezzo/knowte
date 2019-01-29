@@ -198,12 +198,20 @@ export class DataStore {
         return notes;
     }
 
-    public getSimilarTitles(baseTitle: string): string[] {
-        let similarTitles: string[] = this.notes.chain().where(function (obj) {
-            return obj.title.startsWith(baseTitle);
-        }).data().map(x => x.title);
+    // public getSimilarTitles(baseTitle: string): string[] {
+    //     let similarTitles: string[] = this.notes.chain().where(function (obj) {
+    //         return obj.title.startsWith(baseTitle);
+    //     }).data().map(x => x.title);
 
-        return similarTitles;
+    //     return similarTitles;
+    // }
+
+    public getNotesWithIdenticalBaseTitle(baseTitle: string): Note[] {
+        let notesWithIdenticalBaseTitle: Note[] = this.notes.chain().where(function (obj) {
+            return obj.title.startsWith(baseTitle);
+        }).data();
+
+        return notesWithIdenticalBaseTitle;
     }
 
     public addNote(noteTitle: string, notebookId: string, collectionId: string) {
