@@ -82,7 +82,6 @@ export class NotesComponent implements OnInit {
   public setSelectedNotebook(notebook: Notebook) {
     this.selectedNotebook = notebook;
     this.canEditSelectedNotebook = this.selectedNotebook != null && !this.selectedNotebook.isDefault;
-    log.info(`Selected notebook: ${notebook.name}`);
   }
 
   public async addNotebookAsync(): Promise<void> {
@@ -143,6 +142,10 @@ export class NotesComponent implements OnInit {
     });
   }
 
+  public setSelectedNote(note: Note) {
+    this.selectedNote = note;
+  }
+
   public deleteNote(): void {
   }
 
@@ -159,6 +162,6 @@ export class NotesComponent implements OnInit {
   }
 
   public openNote(): void{
-    ipcRenderer.send('open-note-window', "TODO");
+    ipcRenderer.send('open-note-window', this.selectedNote.id);
   }
 }
