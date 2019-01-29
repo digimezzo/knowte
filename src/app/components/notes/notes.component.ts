@@ -79,9 +79,12 @@ export class NotesComponent implements OnInit {
     this.subscription.unsubscribe();
   }
 
-  public setSelectedNotebook(notebook: Notebook) {
+  public async setSelectedNotebookAsync(notebook: Notebook) {
     this.selectedNotebook = notebook;
     this.canEditSelectedNotebook = this.selectedNotebook != null && !this.selectedNotebook.isDefault;
+
+    // Fetch the notes for the newly selected notebook
+    this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id);
   }
 
   public async addNotebookAsync(): Promise<void> {

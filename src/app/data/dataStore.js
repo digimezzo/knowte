@@ -178,6 +178,10 @@ var DataStore = /** @class */ (function () {
         this.db.saveDatabase();
         return noteId;
     };
+    DataStore.prototype.getNote = function (noteId) {
+        var note = this.notes.findOne({ 'id': noteId });
+        return note;
+    };
     DataStore = __decorate([
         core_1.Injectable({
             providedIn: 'root',

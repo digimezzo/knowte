@@ -391,7 +391,7 @@ export class CollectionService {
   public addNote(baseTitle: string, notebookId: string): AddNoteResult {
     let uniqueTitle: string = "";
     let addNoteResult: AddNoteResult = new AddNoteResult();
-    
+
     try {
       uniqueTitle = this.getUniqueNoteTitle(baseTitle);
       let activeCollection: Collection = this.dataStore.getActiveCollection();
@@ -405,5 +405,9 @@ export class CollectionService {
     }
 
     return addNoteResult;
+  }
+
+  public getNote(noteId: string): Note {
+    return this.dataStore.getNote(noteId);
   }
 }

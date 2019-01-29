@@ -227,4 +227,10 @@ export class DataStore {
 
         return noteId;
     }
+
+    public getNote(noteId: string): Note {
+        let note: Note = this.notes.findOne({ 'id': noteId });
+
+        return note;
+    }
 }

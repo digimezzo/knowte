@@ -3,6 +3,7 @@ import log from 'electron-log';
 import { CollectionService } from '../../services/collection.service';
 import * as Quill from 'quill';
 import { ActivatedRoute } from '@angular/router';
+import { Note } from '../../data/note';
 
 @Component({
     selector: 'note-content',
@@ -13,6 +14,8 @@ import { ActivatedRoute } from '@angular/router';
 export class NoteComponent implements OnInit {
     constructor(private collectionService: CollectionService, private activatedRoute: ActivatedRoute) {
     }
+
+    public noteTitle: string;
 
     ngOnInit() {
         log.info("Note");
@@ -27,7 +30,9 @@ export class NoteComponent implements OnInit {
             let noteId: string = params['id'];
             log.info(`Note id=${noteId}`);
 
-            // TODO: get note title and notebook information.
+            // Get the note from the data store
+            let note: Note = this.collectionService.getNote(noteId);
+            this.noteTitle = note.title;
         });
     }
 
