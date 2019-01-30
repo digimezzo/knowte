@@ -1,0 +1,29 @@
+.notesContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+}
+
+.notesTitleContainer {
+  display: flex;
+}
+
+.notesListContainer {
+  flex: 1;
+  position: relative;
+}
+
+.notesListContainerList {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: auto;
+}

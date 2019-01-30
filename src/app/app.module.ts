@@ -37,6 +37,7 @@ import { ErrorDialogComponent } from './components/dialogs/errorDialog/errorDial
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { CollectionComponent } from './components/collection/collection.component';
+import { NotesComponent } from './components/notes/notes.component';
 import { RenameCollectionDialogComponent } from './components/dialogs/renameCollectionDialog/renameCollectionDialog.component';
 import { RenameNotebookDialogComponent } from './components/dialogs/renameNotebookDialog/renameNotebookDialog.component';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmationDialog/confirmationDialog.component';
@@ -62,6 +63,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     WelcomeComponent,
     LoadingComponent,
     CollectionComponent,
+    NotesComponent,
     SettingsComponent,
     InformationComponent,
     LicenseDialogComponent,

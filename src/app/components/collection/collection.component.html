@@ -53,24 +53,7 @@
                     <div class="countLabel">{{allNotesCount}}</div>
                 </ng-template>
                 <!-- Notes -->
-                <div class="notesContainer" *ngIf="selectedNotebook">
-                    <!-- Notes title -->
-                    <div class="notesTitleContainer p-2">
-                        <h2>{{ selectedNotebook.name }}</h2>
-                        <div class="countLabel">{{selectedNotesCount}}</div>
-                    </div>
-                    <!-- Notes list container -->
-                    <div class="notesListContainer">
-                        <!-- Notes list -->
-                        <mat-selection-list dense class="notesListContainerList">
-                            <mat-list-option [ngClass]="{'selectedItem':note === selectedNote }" *ngFor="let note of notes"
-                                role="option">
-                                <p class="noteTitle" (dblclick)="openNote()" (click)="setSelectedNote(note)">{{
-                                    note.title }}</p>
-                            </mat-list-option>
-                        </mat-selection-list>
-                    </div>
-                </div>
+                <notes-component [selectedNotebook]="selectedNotebook"></notes-component>
             </mat-tab>
             <mat-tab>
                 <ng-template mat-tab-label>

@@ -34,19 +34,14 @@ export class CollectionComponent implements OnInit {
   public yesterdayNotesCount: number = 0;
   public thisWeekNotesCount: number = 0;
   public markedNotesCount: number = 0;
-  public selectedNotesCount: number = 0;
 
   public notebooks: Notebook[];
   public selectedNotebook: Notebook;
-  public notes: Note[];
-  public selectedNote: Note;
 
   public canEditSelectedNotebook: boolean = false;
   public canEditSelectedNote: boolean = false;
 
   async ngOnInit() {
-    log.info(`Notes`);
-
     // Notebooks
     this.notebooks = await this.collectionService.getNotebooksAsync();
     this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
@@ -65,14 +60,6 @@ export class CollectionComponent implements OnInit {
       this.notebooks = await this.collectionService.getNotebooksAsync();
       this.snackBarService.notebookDeleted(notebookName);
     }));
-
-    // Notes
-    this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id);
-
-    this.subscription = this.collectionService.noteAdded$.subscribe(async (noteTitle) => {
-      this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id);
-      this.snackBarService.noteAdded(noteTitle);
-    });
   }
 
   ngOnDestroy() {
@@ -84,7 +71,8 @@ export class CollectionComponent implements OnInit {
     this.canEditSelectedNotebook = this.selectedNotebook != null && !this.selectedNotebook.isDefault;
 
     // Fetch the notes for the newly selected notebook
-    this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id);
+    // TODO: this should trigger the fetch action on the notes component instead
+    // this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id);
   }
 
   public async addNotebookAsync(): Promise<void> {
@@ -145,13 +133,6 @@ export class CollectionComponent implements OnInit {
     });
   }
 
-  public setSelectedNote(note: Note) {
-    this.selectedNote = note;
-  }
-
-  public deleteNote(): void {
-  }
-
   public async addNoteAsync(): Promise<void> {
     let baseTitle: string = await this.translateService.get('Notes.NewNote').toPromise();
 
@@ -162,9 +143,5 @@ export class CollectionComponent implements OnInit {
       // Show the note window
       ipcRenderer.send('open-note-window', addNoteResult.noteId);
     }
-  }
-
-  public openNote(): void{
-    ipcRenderer.send('open-note-window', this.selectedNote.id);
   }
 }
