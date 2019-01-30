@@ -89,7 +89,7 @@ function createNoteWindow(noteId: string) {
     height: 300,
     backgroundColor: '#fff',
     frame: false,
-    show: true
+    show: false
   });
 
   if (serve) {
@@ -100,6 +100,11 @@ function createNoteWindow(noteId: string) {
   } else {
     noteWindow.loadURL(`file://${__dirname}/dist/index.html#/note?id=${noteId}`);
   }
+
+  noteWindow.on('ready-to-show', function () {
+    noteWindow.show();
+    noteWindow.focus();
+  });
 }
 
 try {

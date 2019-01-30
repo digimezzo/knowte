@@ -78,7 +78,7 @@ function createNoteWindow(noteId) {
         height: 300,
         backgroundColor: '#fff',
         frame: false,
-        show: true
+        show: false
     });
     if (serve) {
         require('electron-reload')(__dirname, {
@@ -89,6 +89,10 @@ function createNoteWindow(noteId) {
     else {
         noteWindow.loadURL("file://" + __dirname + "/dist/index.html#/note?id=" + noteId);
     }
+    noteWindow.on('ready-to-show', function () {
+        noteWindow.show();
+        noteWindow.focus();
+    });
 }
 try {
     electron_log_1.default.info("+++ Starting +++");

@@ -29,6 +29,8 @@ export class CollectionComponent implements OnInit {
 
   private subscription: Subscription;
 
+  public notebooksCount: number = 0;
+
   public allNotesCount: number = 0;
   public todayNotesCount: number = 0;
   public yesterdayNotesCount: number = 0;
@@ -43,23 +45,28 @@ export class CollectionComponent implements OnInit {
 
   async ngOnInit() {
     // Notebooks
-    this.notebooks = await this.collectionService.getNotebooksAsync();
+    await this.getNotebooksAsync();
     this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
 
     this.subscription = this.collectionService.notebookAdded$.subscribe(async (notebookName) => {
-      this.notebooks = await this.collectionService.getNotebooksAsync();
+      await this.getNotebooksAsync();
       this.snackBarService.notebookAdded(notebookName);
     });
 
     this.subscription.add(this.collectionService.notebookRenamed$.subscribe(async (newNotebookName) => {
-      this.notebooks = await this.collectionService.getNotebooksAsync();
+      await this.getNotebooksAsync();
       this.snackBarService.notebookRenamed(newNotebookName);
     }));
 
     this.subscription.add(this.collectionService.notebookDeleted$.subscribe(async (notebookName) => {
-      this.notebooks = await this.collectionService.getNotebooksAsync();
+      await this.getNotebooksAsync();
       this.snackBarService.notebookDeleted(notebookName);
     }));
+  }
+
+  private async getNotebooksAsync(): Promise<void> {
+    this.notebooks = await this.collectionService.getNotebooksAsync();
+    this.notebooksCount = this.notebooks.length;
   }
 
   ngOnDestroy() {

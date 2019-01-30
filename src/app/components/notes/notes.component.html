@@ -9,7 +9,7 @@
         <!-- Notes list -->
         <mat-selection-list dense class="notesListContainerList">
             <mat-list-option [ngClass]="{'selectedItem':note === selectedNote }" *ngFor="let note of notes" role="option">
-                <p class="noteTitle" (dblclick)="openNote()" (click)="setSelectedNote(note)">{{ note.title }}</p>
+                <p class="noteTitle noselect" (dblclick)="openNote()" (click)="setSelectedNote(note)">{{ note.title }}</p>
             </mat-list-option>
         </mat-selection-list>
     </div>

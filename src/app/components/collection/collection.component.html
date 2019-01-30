@@ -16,7 +16,7 @@
             <!-- Notebooks title -->
             <div class="notebooksTitleContainer p-2">
                 <h2>{{ 'MainPage.Notebooks' | translate }}</h2>
-                <div class="countLabel">{{allNotesCount}}</div>
+                <div class="countLabel">{{notebooksCount}}</div>
             </div>
             <!-- Notebooks list container -->
             <div class="notebooksListContainer">
@@ -24,7 +24,7 @@
                 <mat-selection-list dense class="notebooksListContainerList">
                     <mat-list-option [ngClass]="{'selectedItem':notebook === selectedNotebook }" class="notebook"
                         *ngFor="let notebook of notebooks" role="option">
-                        <p class="notebookName" [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
+                        <p class="notebookName noselect" [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
                             (click)="setSelectedNotebookAsync(notebook)">
                             {{ notebook.name }}</p>
                     </mat-list-option>
