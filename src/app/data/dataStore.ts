@@ -185,8 +185,7 @@ export class DataStore {
 
     public getUnfiledNotes(): Note[] {
         // TODO: sort + correct implementation
-        let notes: Note[] = this.notes.find();
-        // let notes: Note[] = this.notes.chain().data();
+        let notes: Note[] = this.notes.chain().find({ 'notebookId': "" }).data();
 
         return notes;
     }

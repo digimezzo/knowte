@@ -46,11 +46,7 @@ var DataStore = /** @class */ (function () {
         }
         this.isReady = true;
     };
-    DataStore.prototype.initialize = function () {
-        var storageDirectory = this.settings.get('storageDirectory');
-        if (!storageDirectory) {
-            return;
-        }
+    DataStore.prototype.initialize = function (storageDirectory) {
         this.db = new loki(path.join(storageDirectory, constants_1.Constants.dataStoreFile), {
             autoload: true,
             autoloadCallback: this.databaseLoaded.bind(this)
@@ -151,8 +147,7 @@ var DataStore = /** @class */ (function () {
     };
     DataStore.prototype.getUnfiledNotes = function () {
         // TODO: sort + correct implementation
-        var notes = this.notes.find();
-        // let notes: Note[] = this.notes.chain().data();
+        var notes = this.notes.chain().find({ 'notebookId': "" }).data();
         return notes;
     };
     DataStore.prototype.getNotes = function (notebookId) {

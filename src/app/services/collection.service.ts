@@ -402,6 +402,11 @@ export class CollectionService {
     let uniqueTitle: string = "";
     let addNoteResult: AddNoteResult = new AddNoteResult();
 
+    // If a default notebook was selected, make sure the note is added as unfiled.
+    if(notebookId === Constants.allNotesNotebookId || notebookId === Constants.unfiledNotesNotebookId){
+      notebookId = "";
+    }
+
     try {
       uniqueTitle = this.getUniqueNoteTitle(baseTitle);
       let activeCollection: Collection = this.dataStore.getActiveCollection();
