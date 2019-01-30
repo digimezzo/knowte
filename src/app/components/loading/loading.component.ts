@@ -19,6 +19,6 @@ export class LoadingComponent implements OnInit {
 
   private async showMain(): Promise<void> {
     await this.collectionService.initializeDataStoreAsync();
-    this.router.navigate(['/notes']);
+    this.router.navigate(['/collection']);
   }
 }

@@ -53,7 +53,7 @@ export class WelcomeComponent implements OnInit {
 
                 this.isBusy = false;
 
-                this.router.navigate(['/notes']);
+                this.router.navigate(['/collection']);
             });
         });
     }

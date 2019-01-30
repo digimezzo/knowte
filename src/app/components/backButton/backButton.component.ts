@@ -15,13 +15,13 @@ export class BackButtonComponent implements OnInit, OnDestroy {
   constructor(public router: Router, private collectionService: CollectionService) {
   }
 
-  public applicationName: string = Constants.applicationName.toUpperCase();
+  public applicationName: string = Constants.applicationName;
 
   ngOnInit() {
   }
 
   public goToNotes(): void {
-    this.router.navigate(['/notes']);
+    this.router.navigate(['/collection']);
   }
 
   ngOnDestroy() {

@@ -3,7 +3,7 @@
         <span>&#xE72B;</span>
     </div>
     <div class="title-container">
-        <div *ngIf="router.url == '/notes'">{{ 'Pages.Notes' | translate }}</div>
+        <div *ngIf="router.url == '/collection'">{{ applicationName }}</div>
         <div *ngIf="router.url == '/settings'">{{ 'Pages.Settings' | translate }}</div>
         <div *ngIf="router.url == '/information'">{{ 'Pages.Information' | translate }}</div>
     </div>

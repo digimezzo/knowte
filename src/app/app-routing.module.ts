@@ -18,7 +18,7 @@ const routes: Routes = [
         component: NoteComponent
     },
     {
-        path: 'notes',
+        path: 'collection',
         component: CollectionComponent
     },
     {

@@ -57,13 +57,7 @@ export class DataStore {
         this.isReady = true;
     }
 
-    public initialize(): void {
-        let storageDirectory: string = this.settings.get('storageDirectory');
-
-        if (!storageDirectory) {
-            return;
-        }
-
+    public initialize(storageDirectory: string): void {
         this.db = new loki(path.join(storageDirectory, Constants.dataStoreFile), {
             autoload: true,
             autoloadCallback: this.databaseLoaded.bind(this)

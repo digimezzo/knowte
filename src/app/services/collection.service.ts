@@ -111,8 +111,18 @@ export class CollectionService {
   }
 
   public async initializeDataStoreAsync(): Promise<void> {
+    // First we get the storage directory from the settings.
+    let storageDirectory: string = this.settings.get('storageDirectory');
+
+    // We can only initialize the data store if a storage directory was
+    // found in the settings, AND the storage directory exists on disk.
+    if (!storageDirectory || !fs.existsSync(storageDirectory)) {
+      return;
+    }
+
+    // We found all we need: we can now initialize the data store.
     if (!this.dataStore.isReady) {
-      this.dataStore.initialize();
+      this.dataStore.initialize(storageDirectory);
 
       while (!this.dataStore.isReady) {
         await Utils.sleep(100);
