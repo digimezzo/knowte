@@ -17,12 +17,12 @@ import { AddNoteResult } from '../../services/addNoteResult';
 import { NoteOperation } from '../../services/noteOperation';
 
 @Component({
-  selector: 'notes-page',
-  templateUrl: './notes.component.html',
-  styleUrls: ['./notes.component.scss'],
+  selector: 'collection-page',
+  templateUrl: './collection.component.html',
+  styleUrls: ['./collection.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class NotesComponent implements OnInit {
+export class CollectionComponent implements OnInit {
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
     private translateService: TranslateService, private snackBarService: SnackBarService) {
   }

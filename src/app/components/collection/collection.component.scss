@@ -1,6 +1,6 @@
 @import "css/variables.scss";
 // Couldn't find a better way to force the main container to fill the screen
-.notesContainer {
+.collectionContainer {
   position: absolute;
   top: $titlebar-height;
   bottom: 0;
@@ -8,7 +8,7 @@
   right: 0;
 }
 
-.notesContainerContent {
+.collectionContainerContent {
   position: absolute;
   top: 0;
   left: 0;
@@ -17,7 +17,7 @@
   z-index: 0;
 }
 
-.notesContainerButtons {
+.collectionContainerButtons {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -26,8 +26,20 @@
   flex-direction: column;
 }
 
-.notesContainer .mat-tab-body-wrapper {
+.collectionContainer .mat-tab-body-wrapper {
   margin: 0 0 0 350px;
+}
+
+.countLabel {
+  margin: 0 0 10px 10px;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 12px;
+  padding: 1px 7px 1px 7px;
+  background-color: $color-primary;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .notebooksContainer {
@@ -46,26 +58,53 @@
   flex-direction: column;
 }
 
-.countLabel {
-  margin: 0 0 10px 10px;
-  min-width: 22px;
-  height: 22px;
-  border-radius: 12px;
-  padding: 1px 7px 1px 7px;
-  background-color: $color-primary;
-  color: #fff;
-  font-size: 12px;
-  font-weight: bold;
-}
-
 .notebooksTitleContainer {
   display: flex;
 }
 
 .notebooksListContainer {
-  //background-color: red;
   flex: 1;
   position: relative;
+}
+
+.notebooksListContainerList {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: auto;
+}
+
+.notesContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+}
+
+.notesTitleContainer {
+  display: flex;
+}
+
+.notesListContainer {
+  flex: 1;
+  position: relative;
+}
+
+.notesListContainerList {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: auto;
 }
 
 .notebooksListButtonContainer {
@@ -81,16 +120,6 @@
   margin-top: 8px !important;
   margin-left: auto !important;
   margin-right: auto !important;
-}
-
-.notebooksListContainerList {
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  overflow: auto;
 }
 
 .addItemIcon {
