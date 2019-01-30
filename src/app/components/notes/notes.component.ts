@@ -24,7 +24,7 @@ export class NotesComponent implements OnInit {
     }
 
     @Input()
-    set selectedNotebook(val: Notebook){
+    set selectedNotebook(val: Notebook) {
         this._selectedNotebook = val;
         this.getNotesAsync();
     }
@@ -39,7 +39,10 @@ export class NotesComponent implements OnInit {
     }
 
     async ngOnInit() {
-        // Notes
+        // In case we crashed on a previous run, make sure all notes are closed.
+        this.collectionService.closeAllNotes();
+
+        // Get notes
         await this.getNotesAsync();
 
         this.subscription = this.collectionService.noteAdded$.subscribe(async (noteTitle) => {
@@ -60,6 +63,10 @@ export class NotesComponent implements OnInit {
     }
 
     public openNote(): void {
-        ipcRenderer.send('open-note-window', this.selectedNote.id);
+        if (this.collectionService.canOpenNote(this.selectedNote.id)) {
+            ipcRenderer.send('open-note-window', this.selectedNote.id);
+        } else {
+            this.snackBarService.noteAlreadyOpen();
+        }
     }
 }

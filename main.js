@@ -90,8 +90,14 @@ function createNoteWindow(noteId) {
         noteWindow.loadURL("file://" + __dirname + "/dist/index.html#/note?id=" + noteId);
     }
     noteWindow.on('ready-to-show', function () {
+        electron_log_1.default.info("Opening note with id=" + noteId);
+        dataStore.setNoteIsOpen(noteId, true);
         noteWindow.show();
         noteWindow.focus();
+    });
+    noteWindow.on('close', function () {
+        electron_log_1.default.info("Closing note with id=" + noteId);
+        dataStore.setNoteIsOpen(noteId, false);
     });
 }
 try {

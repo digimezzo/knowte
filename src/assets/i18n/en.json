@@ -100,7 +100,8 @@
         "NotebookAdded": "Notebook {{notebookName}} was added",
         "NotebookDeleted": "Notebook {{notebookName}} was deleted",
         "NotebookRenamed": "Notebook was renamed to {{notebookName}}",
-        "NoteAdded": "Note {{noteTitle}} was added"
+        "NoteAdded": "Note {{noteTitle}} was added",
+        "NoteAlreadyOpen": "This note is already open"
     },
     "MainPage": {
         "Notebooks": "Notebooks",

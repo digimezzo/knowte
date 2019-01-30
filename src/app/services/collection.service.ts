@@ -410,4 +410,18 @@ export class CollectionService {
   public getNote(noteId: string): Note {
     return this.dataStore.getNote(noteId);
   }
+
+  public canOpenNote(noteId: string) {
+    let openNotes: Note[] = this.dataStore.getOpenNotes();
+
+    if (openNotes.map(x => x.id).includes(noteId)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  public closeAllNotes(): void {
+    this.dataStore.closeAllNotes();
+  }
 }

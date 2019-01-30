@@ -18,7 +18,6 @@ export class NoteComponent implements OnInit {
     public noteTitle: string;
 
     ngOnInit() {
-        log.info("Note");
         this.collectionService.initializeDataStoreAsync();
 
         var quill = new Quill('#editor', {
@@ -28,7 +27,7 @@ export class NoteComponent implements OnInit {
         // Get note id from url
         this.activatedRoute.queryParams.subscribe(params => {
             let noteId: string = params['id'];
-            log.info(`Note id=${noteId}`);
+            log.info(`Displaying note with id=${noteId}`);
 
             // Get the note from the data store
             let note: Note = this.collectionService.getNote(noteId);

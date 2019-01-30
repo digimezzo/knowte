@@ -64,4 +64,9 @@ export class SnackBarService {
         let message: string = this.translate.instant('SnackBarMessages.NoteAdded', { noteTitle: noteTitle });
         this.showActionLessSnackBar(message, 2000);
     }
+
+    public noteAlreadyOpen() {
+        let message: string = this.translate.instant('SnackBarMessages.NoteAlreadyOpen');
+        this.showActionLessSnackBar(message, 2000);
+    }
 }

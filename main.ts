@@ -102,8 +102,15 @@ function createNoteWindow(noteId: string) {
   }
 
   noteWindow.on('ready-to-show', function () {
+    log.info(`Opening note with id=${noteId}`);
+    dataStore.setNoteIsOpen(noteId, true);
     noteWindow.show();
     noteWindow.focus();
+  });
+
+  noteWindow.on('close', function () {
+    log.info(`Closing note with id=${noteId}`);
+    dataStore.setNoteIsOpen(noteId, false);
   });
 }
 
