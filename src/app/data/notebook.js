@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var nanoid = require("nanoid");
 var Notebook = /** @class */ (function () {
-    function Notebook(name, id, collectionId) {
+    function Notebook(name, collectionId) {
         this.name = name;
-        this.id = id;
         this.collectionId = collectionId;
+        this.id = nanoid();
         this.isDefault = false;
     }
     return Notebook;

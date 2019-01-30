@@ -254,10 +254,12 @@ export class CollectionService {
       let activeCollectionId: string = activeCollection.id;
 
       // 3. Add the default notebooks
-      let allNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.AllNotes').toPromise(), Constants.allNotesNotebookId, activeCollectionId);
+      let allNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.AllNotes').toPromise(), activeCollectionId);
+      allNotesNotebook.id = Constants.allNotesNotebookId;
       allNotesNotebook.isDefault = true;
 
-      let unfiledNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.UnfiledNotes').toPromise(), Constants.unfiledNotesNotebookId, activeCollectionId);
+      let unfiledNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.UnfiledNotes').toPromise(), activeCollectionId);
+      unfiledNotesNotebook.id = Constants.unfiledNotesNotebookId;
       unfiledNotesNotebook.isDefault = true;
 
       notebooks.push(allNotesNotebook);

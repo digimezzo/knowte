@@ -141,12 +141,12 @@ export class DataStore {
     }
 
     public addNotebook(notebookName: string): string {
-        let notebookId: string = nanoid();
         let activeCollection: Collection = this.getActiveCollection();
-        this.notebooks.insert(new Notebook(notebookName, notebookId, activeCollection.id));
+        let newNotebook: Notebook = new Notebook(notebookName, activeCollection.id);
+        this.notebooks.insert(newNotebook);
         this.db.saveDatabase();
 
-        return notebookId;
+        return newNotebook.id;
     }
 
     public getNotebooks(activeCollectionId: string): Notebook[] {
@@ -176,23 +176,19 @@ export class DataStore {
     }
 
     public getAllNotes(): Note[] {
-        // TODO: sort
-        let notes: Note[] = this.notes.find();
-        // let notes: Note[] = this.notes.chain().data();
+        let notes: Note[] = this.notes.chain().simplesort('modificationDate', true).data();
 
         return notes;
     }
 
     public getUnfiledNotes(): Note[] {
-        // TODO: sort + correct implementation
-        let notes: Note[] = this.notes.chain().find({ 'notebookId': "" }).data();
+        let notes: Note[] = this.notes.chain().find({ 'notebookId': "" }).simplesort('modificationDate', true).data();
 
         return notes;
     }
 
     public getNotes(notebookId: string): Note[] {
-        // TODO: sort
-        let notes: Note[] = this.notes.chain().find({ 'notebookId': notebookId }).data();
+        let notes: Note[] = this.notes.chain().find({ 'notebookId': notebookId }).simplesort('modificationDate', true).data();
 
         return notes;
     }
@@ -206,11 +202,11 @@ export class DataStore {
     }
 
     public addNote(noteTitle: string, notebookId: string, collectionId: string): string {
-        let noteId: string = nanoid();
-        this.notes.insert(new Note(noteTitle, noteId, notebookId, collectionId));
+        let newNote: Note = new Note(noteTitle, notebookId, collectionId);
+        this.notes.insert(newNote);
         this.db.saveDatabase();
 
-        return noteId;
+        return newNote.id;
     }
 
     public getNote(noteId: string): Note {

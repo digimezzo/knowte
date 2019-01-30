@@ -1,6 +1,12 @@
+import * as moment from 'moment'
+import * as nanoid from 'nanoid';
+
 export class Note{
-    constructor(public title: string, public id: string, public notebookId: string, public collectionId: string) {
+    constructor(public title: string, public notebookId: string, public collectionId: string) {
     }
 
-    public isOpen: boolean;
+    public id: string = nanoid();
+    public isOpen: boolean = false;
+    public creationDate: number = moment().valueOf();
+    public modificationDate: number = moment().valueOf();
 }

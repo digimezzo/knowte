@@ -1,11 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var moment = require("moment");
+var nanoid = require("nanoid");
 var Note = /** @class */ (function () {
-    function Note(title, id, notebookId, collectionId) {
+    function Note(title, notebookId, collectionId) {
         this.title = title;
-        this.id = id;
         this.notebookId = notebookId;
         this.collectionId = collectionId;
+        this.id = nanoid();
+        this.isOpen = false;
+        this.creationDate = moment().valueOf();
+        this.modificationDate = moment().valueOf();
     }
     return Note;
 }());

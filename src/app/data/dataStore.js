@@ -113,11 +113,11 @@ var DataStore = /** @class */ (function () {
         return this.notebooks.findOne({ 'name': notebookName });
     };
     DataStore.prototype.addNotebook = function (notebookName) {
-        var notebookId = nanoid();
         var activeCollection = this.getActiveCollection();
-        this.notebooks.insert(new notebook_1.Notebook(notebookName, notebookId, activeCollection.id));
+        var newNotebook = new notebook_1.Notebook(notebookName, activeCollection.id);
+        this.notebooks.insert(newNotebook);
         this.db.saveDatabase();
-        return notebookId;
+        return newNotebook.id;
     };
     DataStore.prototype.getNotebooks = function (activeCollectionId) {
         var notebooks = this.notebooks.chain().find({ 'collectionId': activeCollectionId }).sort(this.caseInsensitiveNameSort).data();
@@ -140,27 +140,17 @@ var DataStore = /** @class */ (function () {
         this.db.saveDatabase();
     };
     DataStore.prototype.getAllNotes = function () {
-        // TODO: sort
-        var notes = this.notes.find();
-        // let notes: Note[] = this.notes.chain().data();
+        var notes = this.notes.chain().simplesort('modificationDate', true).data();
         return notes;
     };
     DataStore.prototype.getUnfiledNotes = function () {
-        // TODO: sort + correct implementation
-        var notes = this.notes.chain().find({ 'notebookId': "" }).data();
+        var notes = this.notes.chain().find({ 'notebookId': "" }).simplesort('modificationDate', true).data();
         return notes;
     };
     DataStore.prototype.getNotes = function (notebookId) {
-        // TODO: sort
-        var notes = this.notes.chain().find({ 'notebookId': notebookId }).data();
+        var notes = this.notes.chain().find({ 'notebookId': notebookId }).simplesort('modificationDate', true).data();
         return notes;
     };
-    // public getSimilarTitles(baseTitle: string): string[] {
-    //     let similarTitles: string[] = this.notes.chain().where(function (obj) {
-    //         return obj.title.startsWith(baseTitle);
-    //     }).data().map(x => x.title);
-    //     return similarTitles;
-    // }
     DataStore.prototype.getNotesWithIdenticalBaseTitle = function (baseTitle) {
         var notesWithIdenticalBaseTitle = this.notes.chain().where(function (obj) {
             return obj.title.startsWith(baseTitle);
@@ -168,10 +158,10 @@ var DataStore = /** @class */ (function () {
         return notesWithIdenticalBaseTitle;
     };
     DataStore.prototype.addNote = function (noteTitle, notebookId, collectionId) {
-        var noteId = nanoid();
-        this.notes.insert(new note_1.Note(noteTitle, noteId, notebookId, collectionId));
+        var newNote = new note_1.Note(noteTitle, notebookId, collectionId);
+        this.notes.insert(newNote);
         this.db.saveDatabase();
-        return noteId;
+        return newNote.id;
     };
     DataStore.prototype.getNote = function (noteId) {
         var note = this.notes.findOne({ 'id': noteId });
