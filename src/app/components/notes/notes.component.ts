@@ -53,7 +53,7 @@ export class NotesComponent implements OnInit {
 
     private async getNotesAsync(): Promise<void> {
         if (this.selectedNotebook) {
-            this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id);
+            this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, true);
             this.notesCount = this.notes.length;
         }
     }

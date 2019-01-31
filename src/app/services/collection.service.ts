@@ -15,6 +15,8 @@ import { remote } from 'electron';
 import { Note } from '../data/note';
 import { NoteOperation } from './noteOperation';
 import { AddNoteResult } from './addNoteResult';
+import * as moment from 'moment'
+import { Moment, Duration } from 'moment';
 
 @Injectable({
   providedIn: 'root',
@@ -362,16 +364,81 @@ export class CollectionService {
     return NotebookOperation.Success;
   }
 
-  public async getNotesAsync(notebookId: string): Promise<Note[]> {
+  private getFormattedDate(millisecondsSinceEpoch: number, useFuzzyDates: boolean): string {
+    if (useFuzzyDates) {
+      let nowDateonly: Moment = moment().startOf('day');
+      let modificationDateOnly: Moment = moment(millisecondsSinceEpoch).startOf('day');
+      let duration: Duration = moment.duration(nowDateonly.diff(modificationDateOnly));
+
+      if (duration.asMonths() >= 12) {
+        return "Long ago";
+      } else if (duration.asMonths() >= 11) {
+        return "11 months ago";
+      } else if (duration.asMonths() >= 10) {
+        return "10 months ago";
+      } else if (duration.asMonths() >= 9) {
+        return "9 months ago";
+      } else if (duration.asMonths() >= 8) {
+        return "8 months ago";
+      } else if (duration.asMonths() >= 7) {
+        return "7 months ago";
+      } else if (duration.asMonths() >= 6) {
+        return "6 months ago";
+      } else if (duration.asMonths() >= 5) {
+        return "5 months ago";
+      } else if (duration.asMonths() >= 4) {
+        return "4 months ago";
+      } else if (duration.asMonths() >= 3) {
+        return "3 months ago";
+      } else if (duration.asMonths() >= 2) {
+        return "2 months ago";
+      } else if (duration.asMonths() >= 1) {
+        return "1 months ago";
+      } else if (duration.asDays() >= 21) {
+        return "3 weeks ago";
+      } else if (duration.asDays() >= 14) {
+        return "2 weeks ago";
+      } else if (duration.asDays() >= 7) {
+        return "Last week";
+      } else if (duration.asDays() >= 6) {
+        return "6 days ago";
+      } else if (duration.asDays() >= 5) {
+        return "5 days ago";
+      } else if (duration.asDays() >= 4) {
+        return "4 days ago";
+      } else if (duration.asDays() >= 3) {
+        return "3 days ago";
+      } else if (duration.asDays() >= 2) {
+        return "2 days ago";
+      } else if (duration.asDays() >= 1) {
+        return "Yesterday";
+      } else if (duration.asDays() >= 0) {
+        return "Today";
+      }
+    }
+
+    let m: Moment = moment(millisecondsSinceEpoch);
+    let dateString: string = m.format("MMMM D, YYYY HH:mm");
+
+    return dateString;
+  }
+
+  public async getNotesAsync(notebookId: string, useFuzzyDates: boolean): Promise<Note[]> {
     let notes: Note[] = [];
 
     try {
+      // Get the notes from the data store
       if (notebookId === Constants.allNotesNotebookId) {
         notes = this.dataStore.getAllNotes();
       } else if (notebookId === Constants.unfiledNotesNotebookId) {
         notes = this.dataStore.getUnfiledNotes();
       } else {
         notes = this.dataStore.getNotes(notebookId);
+      }
+
+      // Fill in the display date
+      for (let note of notes) {
+        note.displayModificationDate = this.getFormattedDate(note.modificationDate, useFuzzyDates);
       }
     } catch (error) {
       log.error(`Could not get notes. Cause: ${error}`);
@@ -405,7 +472,7 @@ export class CollectionService {
     let addNoteResult: AddNoteResult = new AddNoteResult();
 
     // If a default notebook was selected, make sure the note is added as unfiled.
-    if(notebookId === Constants.allNotesNotebookId || notebookId === Constants.unfiledNotesNotebookId){
+    if (notebookId === Constants.allNotesNotebookId || notebookId === Constants.unfiledNotesNotebookId) {
       notebookId = "";
     }
 

@@ -20,6 +20,7 @@ electron_log_1.default.transports.file.level = 'info';
 function createWindow() {
     var electronScreen = electron_1.screen;
     var size = electronScreen.getPrimaryDisplay().workAreaSize;
+    electron_log_1.default.info(electron_1.app.getLocale());
     // Create the browser window.
     mainWindow = new electron_1.BrowserWindow({
         x: 50,

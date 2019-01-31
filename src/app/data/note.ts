@@ -9,4 +9,5 @@ export class Note{
     public isOpen: boolean = false;
     public creationDate: number = moment().valueOf();
     public modificationDate: number = moment().valueOf();
+    public displayModificationDate: string;
 }
