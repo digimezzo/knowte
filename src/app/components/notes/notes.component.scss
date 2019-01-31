@@ -53,21 +53,27 @@
 }
 
 .noteItemTitle {
-  height: 24px;
-  line-height: 24px;
+  margin-top: 4px;
+  height: 20px;
+  line-height: 20px;
   width: 100%;
   font-size: $fontsize-normal !important;
 }
 
 .noteItemDate {
-  height: 24px;
-  line-height: 24px;
+  margin-bottom: 4px;
+  height: 20px;
+  line-height: 20px;
   width: 100%;
   font-size: $fontsize-normal !important;
   color: #AAAAAA;
 }
 
-// .noteTitle {
-//   padding-left: 16px !important;
-//   padding-right: 16px !important;
-// }
+.notePenImage {
+  width: 20px;
+  height: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 9px;
+}

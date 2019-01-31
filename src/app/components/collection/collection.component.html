@@ -1,6 +1,6 @@
 <div class="collectionContainer">
     <!-- Buttons-->
-    <div class="collectionContainerButtons p-2">
+    <div class="collectionContainerButtons m-2">
         <button class="listButton" mat-mini-fab color="" (click)="deleteNote()" matTooltip="{{ 'MainPage.DeleteNote' | translate }}"
             *ngIf=canEditSelectedNote>
             <span class="editItemIcon">&#xE872;</span>
@@ -14,7 +14,7 @@
         <!-- Notebooks -->
         <div class="notebooksContainer">
             <!-- Notebooks title -->
-            <div class="notebooksTitleContainer p-2">
+            <div class="notebooksTitleContainer p-2 noselect">
                 <h2>{{ 'MainPage.Notebooks' | translate }}</h2>
                 <div class="countLabel">{{notebooksCount}}</div>
             </div>
@@ -30,7 +30,7 @@
                     </mat-list-option>
                 </mat-selection-list>
                 <!-- Notebooks buttons -->
-                <div class="notebooksListButtonContainer p-2">
+                <div class="notebooksListButtonContainer m-2">
                     <button class="listButton" mat-mini-fab color="" (click)="renameNotebook()" matTooltip="{{ 'MainPage.RenameNotebook' | translate }}"
                         *ngIf=canEditSelectedNotebook>
                         <span class="editItemIcon">&#xE254;</span>

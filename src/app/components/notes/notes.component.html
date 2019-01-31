@@ -1,6 +1,6 @@
 <div class="notesContainer">
     <!-- Notes title -->
-    <div class="notesTitleContainer p-2">
+    <div class="notesTitleContainer p-2 noselect">
         <h2>{{ selectedNotebook?.name }}</h2>
         <div class="countLabel">{{notesCount}}</div>
     </div>
@@ -12,7 +12,7 @@
                 <div class="noselect" (dblclick)="openNote()" (click)="setSelectedNote(note)">
                     <div class="noteItem px-2">
                         <div class="noteItemIcon">
-
+                            <img class="notePenImage" src="./assets/images/pencil_256x256.svg">
                         </div>
                         <div class="noteItemInfo pl-1">
                             <div class="noteItemTitle">
