@@ -7,9 +7,23 @@
     <!-- Notes list container -->
     <div class="notesListContainer">
         <!-- Notes list -->
-        <mat-selection-list dense class="notesListContainerList">
+        <mat-selection-list class="notesListContainerList">
             <mat-list-option [ngClass]="{'selectedItem':note === selectedNote }" *ngFor="let note of notes" role="option">
-                <p class="noteTitle noselect" (dblclick)="openNote()" (click)="setSelectedNote(note)">{{ note.title }}</p>
+                <div class="noselect" (dblclick)="openNote()" (click)="setSelectedNote(note)">
+                    <div class="noteItem px-2">
+                        <div class="noteItemIcon">
+
+                        </div>
+                        <div class="noteItemInfo pl-1">
+                            <div class="noteItemTitle">
+                                {{ note.title }}
+                            </div>
+                            <div class="noteItemDate">
+                                {{ note.modificationDate }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </mat-list-option>
         </mat-selection-list>
     </div>

@@ -1,3 +1,5 @@
+@import "css/variables.scss";
+
 .notesContainer {
   position: absolute;
   top: 0;
@@ -14,6 +16,7 @@
 }
 
 .notesListContainer {
+  margin-top: -4px;
   flex: 1;
   position: relative;
 }
@@ -27,3 +30,44 @@
   z-index: 0;
   overflow: auto;
 }
+
+.noteItem {
+  height: 48px;
+  display: flex;
+  flex-direction: row;
+}
+
+.noteItemIcon {
+  margin: 4px;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: $color-primary;
+}
+
+.noteItemInfo{
+  height: 48px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.noteItemTitle {
+  height: 24px;
+  line-height: 24px;
+  width: 100%;
+  font-size: $fontsize-normal !important;
+}
+
+.noteItemDate {
+  height: 24px;
+  line-height: 24px;
+  width: 100%;
+  font-size: $fontsize-normal !important;
+  color: #AAAAAA;
+}
+
+// .noteTitle {
+//   padding-left: 16px !important;
+//   padding-right: 16px !important;
+// }
