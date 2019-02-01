@@ -9,6 +9,7 @@ var Note = /** @class */ (function () {
         this.collectionId = collectionId;
         this.id = nanoid();
         this.isOpen = false;
+        this.isMarked = false;
         this.creationDate = moment().valueOf();
         this.modificationDate = moment().valueOf();
     }

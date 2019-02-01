@@ -7,6 +7,7 @@ export class Note{
 
     public id: string = nanoid();
     public isOpen: boolean = false;
+    public isMarked: boolean = false;
     public creationDate: number = moment().valueOf();
     public modificationDate: number = moment().valueOf();
     public displayModificationDate: string;

@@ -17,6 +17,8 @@ import { NoteOperation } from './noteOperation';
 import { AddNoteResult } from './addNoteResult';
 import * as moment from 'moment'
 import { Moment, Duration } from 'moment';
+import { NoteDateFormatResult } from './noteDateFormatResult';
+import { NoteCounters } from './noteCounters';
 
 @Injectable({
   providedIn: 'root',
@@ -59,9 +61,11 @@ export class CollectionService {
   private noteAdded = new Subject<string>();
   noteAdded$ = this.noteAdded.asObservable();
 
-
   private noteDeleted = new Subject<string>();
   noteDeleted$ = this.noteDeleted.asObservable();
+
+  private noteCountersChanged = new Subject<NoteCounters>();
+  noteCountersChanged$ = this.noteCountersChanged.asObservable();
 
   public get hasDataStore(): boolean {
     return this.dataStore.isReady;
@@ -399,67 +403,83 @@ export class CollectionService {
     return NoteOperation.Success;
   }
 
-  private async getFormattedDateAsync(millisecondsSinceEpoch: number, useFuzzyDates: boolean): Promise<string> {
-    if (useFuzzyDates) {
-      let nowDateonly: Moment = moment().startOf('day');
-      let modificationDateOnly: Moment = moment(millisecondsSinceEpoch).startOf('day');
-      let duration: Duration = moment.duration(nowDateonly.diff(modificationDateOnly));
+  private async getNoteDateFormatResultAsync(millisecondsSinceEpoch: number, useFuzzyDates: boolean): Promise<NoteDateFormatResult> {
+    let result: NoteDateFormatResult = new NoteDateFormatResult();
+    let nowDateonly: Moment = moment().startOf('day');
+    let modificationDateOnly: Moment = moment(millisecondsSinceEpoch).startOf('day');
+    let duration: Duration = moment.duration(nowDateonly.diff(modificationDateOnly));
 
-      if (duration.asMonths() >= 12) {
-        return await this.translateService.get('NoteDates.LongAgo').toPromise();
-      } else if (duration.asMonths() >= 11) {
-        return await this.translateService.get('NoteDates.MonthsAgo', { count: 11 }).toPromise();
-      } else if (duration.asMonths() >= 10) {
-        return await this.translateService.get('NoteDates.MonthsAgo', { count: 10 }).toPromise();
-      } else if (duration.asMonths() >= 9) {
-        return await this.translateService.get('NoteDates.MonthsAgo', { count: 9 }).toPromise();
-      } else if (duration.asMonths() >= 8) {
-        return await this.translateService.get('NoteDates.MonthsAgo', { count: 8 }).toPromise();
-      } else if (duration.asMonths() >= 7) {
-        return await this.translateService.get('NoteDates.MonthsAgo', { count: 7 }).toPromise();
-      } else if (duration.asMonths() >= 6) {
-        return await this.translateService.get('NoteDates.MonthsAgo', { count: 6 }).toPromise();
-      } else if (duration.asMonths() >= 5) {
-        return await this.translateService.get('NoteDates.MonthsAgo', { count: 5 }).toPromise();
-      } else if (duration.asMonths() >= 4) {
-        return await this.translateService.get('NoteDates.MonthsAgo', { count: 4 }).toPromise();
-      } else if (duration.asMonths() >= 3) {
-        return await this.translateService.get('NoteDates.MonthsAgo', { count: 3 }).toPromise();
-      } else if (duration.asMonths() >= 2) {
-        return await this.translateService.get('NoteDates.MonthsAgo', { count: 2 }).toPromise();
-      } else if (duration.asMonths() >= 1) {
-        return await this.translateService.get('NoteDates.MonthsAgo', { count: 1 }).toPromise();
-      } else if (duration.asDays() >= 21) {
-        return await this.translateService.get('NoteDates.WeeksAgo', { count: 3 }).toPromise();
-      } else if (duration.asDays() >= 14) {
-        return await this.translateService.get('NoteDates.WeeksAgo', { count: 2 }).toPromise();
-      } else if (duration.asDays() >= 7) {
-        return await this.translateService.get('NoteDates.LastWeek').toPromise();
-      } else if (duration.asDays() >= 6) {
-        return await this.translateService.get('NoteDates.DaysAgo', { count: 6 }).toPromise();
-      } else if (duration.asDays() >= 5) {
-        return await this.translateService.get('NoteDates.DaysAgo', { count: 5 }).toPromise();
-      } else if (duration.asDays() >= 4) {
-        return await this.translateService.get('NoteDates.DaysAgo', { count: 4 }).toPromise();
-      } else if (duration.asDays() >= 3) {
-        return await this.translateService.get('NoteDates.DaysAgo', { count: 3 }).toPromise();
-      } else if (duration.asDays() >= 2) {
-        return await this.translateService.get('NoteDates.DaysAgo', { count: 2 }).toPromise();
-      } else if (duration.asDays() >= 1) {
-        return await this.translateService.get('NoteDates.Yesterday').toPromise();
-      } else if (duration.asDays() >= 0) {
-        return await this.translateService.get('NoteDates.Today').toPromise();
-      }
+    if (duration.asMonths() >= 12) {
+      result.dateText = await this.translateService.get('NoteDates.LongAgo').toPromise();
+    } else if (duration.asMonths() >= 11) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 11 }).toPromise();
+    } else if (duration.asMonths() >= 10) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 10 }).toPromise();
+    } else if (duration.asMonths() >= 9) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 9 }).toPromise();
+    } else if (duration.asMonths() >= 8) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 8 }).toPromise();
+    } else if (duration.asMonths() >= 7) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 7 }).toPromise();
+    } else if (duration.asMonths() >= 6) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 6 }).toPromise();
+    } else if (duration.asMonths() >= 5) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 5 }).toPromise();
+    } else if (duration.asMonths() >= 4) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 4 }).toPromise();
+    } else if (duration.asMonths() >= 3) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 3 }).toPromise();
+    } else if (duration.asMonths() >= 2) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 2 }).toPromise();
+    } else if (duration.asMonths() >= 1) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 1 }).toPromise();
+    } else if (duration.asDays() >= 21) {
+      result.dateText = await this.translateService.get('NoteDates.WeeksAgo', { count: 3 }).toPromise();
+    } else if (duration.asDays() >= 14) {
+      result.dateText = await this.translateService.get('NoteDates.WeeksAgo', { count: 2 }).toPromise();
+    } else if (duration.asDays() >= 8) {
+      result.dateText = await this.translateService.get('NoteDates.LastWeek').toPromise();
+    } else if (duration.asDays() >= 7) {
+      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 7 }).toPromise();
+      result.isThisWeekNote = true;
+    } else if (duration.asDays() >= 6) {
+      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 6 }).toPromise();
+      result.isThisWeekNote = true;
+    } else if (duration.asDays() >= 5) {
+      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 5 }).toPromise();
+      result.isThisWeekNote = true;
+    } else if (duration.asDays() >= 4) {
+      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 4 }).toPromise();
+      result.isThisWeekNote = true;
+    } else if (duration.asDays() >= 3) {
+      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 3 }).toPromise();
+      result.isThisWeekNote = true;
+    } else if (duration.asDays() >= 2) {
+      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 2 }).toPromise();
+      result.isThisWeekNote = true;
+    } else if (duration.asDays() >= 1) {
+      result.dateText = await this.translateService.get('NoteDates.Yesterday').toPromise();
+      result.isYesterdayNote = true;
+      result.isThisWeekNote = true;
+    } else if (duration.asDays() >= 0) {
+      result.dateText = await this.translateService.get('NoteDates.Today').toPromise();
+      result.isTodayNote = true;
+      result.isThisWeekNote = true;
     }
 
-    let m: Moment = moment(millisecondsSinceEpoch);
-    let dateString: string = m.format("MMMM D, YYYY HH:mm");
+    if (!useFuzzyDates) {
+      let m: Moment = moment(millisecondsSinceEpoch);
+      let dateText: string = m.format("MMMM D, YYYY HH:mm");
+      result.dateText = dateText;
+    }
 
-    return dateString;
+    return result;
   }
 
   public async getNotesAsync(notebookId: string, useFuzzyDates: boolean): Promise<Note[]> {
     let notes: Note[] = [];
+
+    let counters: NoteCounters = new NoteCounters();
 
     try {
       // Get the notes from the data store
@@ -471,10 +491,32 @@ export class CollectionService {
         notes = this.dataStore.getNotes(notebookId);
       }
 
+      // Fill in counters
+      counters.allNotesCount = notes.length;
+      counters.markedNotesCount = notes.filter(x => x.isMarked).length;
+
       // Fill in the display date
       for (let note of notes) {
-        note.displayModificationDate = await this.getFormattedDateAsync(note.modificationDate, useFuzzyDates);
+        let result: NoteDateFormatResult = await this.getNoteDateFormatResultAsync(note.modificationDate, useFuzzyDates);
+
+        // More counters
+        if (result.isTodayNote) {
+          counters.todayNotesCount++;
+        }
+
+        if (result.isYesterdayNote) {
+          counters.yesterdayNotesCount++;
+        }
+
+        if (result.isThisWeekNote) {
+          counters.thisWeekNotesCount++;
+        }
+
+        // Date text
+        note.displayModificationDate = result.dateText;
       }
+
+      this.noteCountersChanged.next(counters);
     } catch (error) {
       log.error(`Could not get notes. Cause: ${error}`);
     }

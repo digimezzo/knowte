@@ -61,6 +61,15 @@ export class CollectionComponent implements OnInit {
       await this.getNotebooksAsync();
       this.snackBarService.notebookDeletedAsync(notebookName);
     }));
+
+    // Note counters
+    this.subscription.add(this.collectionService.noteCountersChanged$.subscribe(async (counters) => {
+      this.allNotesCount = counters.allNotesCount;
+      this.todayNotesCount = counters.todayNotesCount;
+      this.yesterdayNotesCount = counters.yesterdayNotesCount;
+      this.thisWeekNotesCount = counters.thisWeekNotesCount;
+      this.markedNotesCount = counters.markedNotesCount;
+    }));
   }
 
   private async getNotebooksAsync(): Promise<void> {
