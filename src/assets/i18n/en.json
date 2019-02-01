@@ -74,11 +74,13 @@
         "ConfirmDeleteCollection": "Delete collection?",
         "AddNotebook": "Add notebook",
         "RenameNotebook": "Rename notebook",
-        "ConfirmDeleteNotebook": "Delete notebook?"
+        "ConfirmDeleteNotebook": "Delete notebook?",
+        "ConfirmDeleteNote": "Delete note?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Are you sure you want to delete the collection {{collectionName}}? If you continue, its notebooks and notes will be lost.",
-        "ConfirmDeleteNotebook": "Are you sure you want to delete the notebook {{notebookName}}? If you continue, its notes will be unfiled."
+        "ConfirmDeleteNote": "Are you sure you want to delete the note {{noteTitle}}?"
+        
     },
     "Input": {
         "CollectionName": "Collection name",
@@ -101,6 +103,7 @@
         "NotebookDeleted": "Notebook {{notebookName}} was deleted",
         "NotebookRenamed": "Notebook was renamed to {{notebookName}}",
         "NoteAdded": "Note {{noteTitle}} was added",
+        "NoteDeleted": "Note {{noteTitle}} was deleted",
         "NoteAlreadyOpen": "This note is already open"
     },
     "MainPage": {

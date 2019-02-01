@@ -238,4 +238,13 @@ export class DataStore {
 
         this.db.saveDatabase();
     }
+
+    public deleteNote(noteId: string) {
+        // Remove note
+        let noteToRemove: Note = this.getNote(noteId);
+        this.notes.remove(noteToRemove);
+
+        // Persist
+        this.db.saveDatabase();
+    }
 }

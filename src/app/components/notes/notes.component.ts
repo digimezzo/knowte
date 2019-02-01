@@ -10,6 +10,8 @@ import { Notebook } from '../../data/notebook';
 import { AddNoteResult } from '../../services/addNoteResult';
 import { NoteOperation } from '../../services/noteOperation';
 import { TranslateService } from '@ngx-translate/core';
+import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
+import { MatDialogRef, MatDialog } from '@angular/material';
 
 @Component({
     selector: 'notes-component',
@@ -17,7 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
     styleUrls: ['./notes.component.scss']
 })
 export class NotesComponent implements OnInit {
-    constructor(private collectionService: CollectionService, private snackBarService: SnackBarService, private translateService: TranslateService) {
+    constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService, private translateService: TranslateService) {
     }
 
     private _selectedNotebook: Notebook;
@@ -53,6 +55,11 @@ export class NotesComponent implements OnInit {
             await this.getNotesAsync();
             this.snackBarService.noteAddedAsync(noteTitle);
         });
+
+        this.subscription = this.collectionService.noteDeleted$.subscribe(async (noteTitle) => {
+            await this.getNotesAsync();
+            this.snackBarService.noteDeletedAsync(noteTitle);
+        });
     }
 
     private async getNotesAsync(): Promise<void> {
@@ -79,8 +86,20 @@ export class NotesComponent implements OnInit {
         }
     }
 
-    public deleteNote(): void {
+    public async deleteNoteAsync(): Promise<void> {
+        let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNote').toPromise();
+        let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNote', { noteTitle: this.selectedNote.title }).toPromise();
 
+        let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
+
+            width: '450px', data: { dialogTitle: title, dialogText: text }
+        });
+
+        dialogRef.afterClosed().subscribe(async (result) => {
+            if (result) {
+                await this.collectionService.deleteNoteAsync(this.selectedNote.id);
+            }
+        });
     }
 
     public openNote(): void {

@@ -1,7 +1,7 @@
 <div class="notesContainer">
     <!-- Note buttons-->
     <div class="collectionContainerButtons m-2">
-        <button class="listButton" mat-mini-fab color="" (click)="deleteNote()" matTooltip="{{ 'MainPage.DeleteNote' | translate }}"
+        <button class="listButton" mat-mini-fab color="" (click)="deleteNoteAsync()" matTooltip="{{ 'MainPage.DeleteNote' | translate }}"
             *ngIf=canEditNote>
             <span class="editItemIcon">&#xE872;</span>
         </button>

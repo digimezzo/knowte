@@ -186,6 +186,13 @@ var DataStore = /** @class */ (function () {
         }
         this.db.saveDatabase();
     };
+    DataStore.prototype.deleteNote = function (noteId) {
+        // Remove note
+        var noteToRemove = this.getNote(noteId);
+        this.notes.remove(noteToRemove);
+        // Persist
+        this.db.saveDatabase();
+    };
     DataStore = __decorate([
         core_1.Injectable({
             providedIn: 'root',

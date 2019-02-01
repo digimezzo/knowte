@@ -59,6 +59,10 @@ export class CollectionService {
   private noteAdded = new Subject<string>();
   noteAdded$ = this.noteAdded.asObservable();
 
+
+  private noteDeleted = new Subject<string>();
+  noteDeleted$ = this.noteDeleted.asObservable();
+
   public get hasDataStore(): boolean {
     return this.dataStore.isReady;
   }
@@ -317,6 +321,11 @@ export class CollectionService {
     return this.dataStore.getNotebook(notebookId).name;
   }
 
+  public getNoteTitle(noteId: string): string {
+    return this.dataStore.getNote(noteId).title;
+  }
+
+
   public async renameNotebookAsync(notebookId: string, newNotebookName: string): Promise<NotebookOperation> {
     if (!notebookId || !newNotebookName) {
       log.error("renameNotebookAsync: notebookId or newNotebookName is null");
@@ -362,6 +371,32 @@ export class CollectionService {
 
     this.notebookDeleted.next(notebookName);
     return NotebookOperation.Success;
+  }
+
+  public async deleteNoteAsync(noteId: string): Promise<NoteOperation> {
+    if (!noteId) {
+      log.error("deleteNoteAsync: noteId is null");
+      return NoteOperation.Error;
+    }
+
+    let noteTitle: string = "";
+
+    try {
+      // 1. Get the title of the note
+      noteTitle = this.getNoteTitle(noteId);
+
+      // 2. Delete note from data store
+      this.dataStore.deleteNote(noteId);
+
+      // 3. Delete all files from disk, which are related to the note.
+      // TODO
+    } catch (error) {
+      log.error(`Could not delete the note with id='${noteId}'. Cause: ${error}`);
+      return NoteOperation.Error;
+    }
+
+    this.noteDeleted.next(noteTitle);
+    return NoteOperation.Success;
   }
 
   private async getFormattedDateAsync(millisecondsSinceEpoch: number, useFuzzyDates: boolean): Promise<string> {
