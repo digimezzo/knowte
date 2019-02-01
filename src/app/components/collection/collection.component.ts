@@ -41,7 +41,6 @@ export class CollectionComponent implements OnInit {
   public selectedNotebook: Notebook;
 
   public canEditSelectedNotebook: boolean = false;
-  public canEditSelectedNote: boolean = false;
 
   async ngOnInit() {
     // Notebooks
@@ -138,17 +137,5 @@ export class CollectionComponent implements OnInit {
         await this.collectionService.deleteNotebookAsync(this.selectedNotebook.id);
       }
     });
-  }
-
-  public async addNoteAsync(): Promise<void> {
-    let baseTitle: string = await this.translateService.get('Notes.NewNote').toPromise();
-
-    // Create a new note
-    let addNoteResult: AddNoteResult = this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
-
-    if (addNoteResult.operation === NoteOperation.Success) {
-      // Show the note window
-      ipcRenderer.send('open-note-window', addNoteResult.noteId);
-    }
   }
 }

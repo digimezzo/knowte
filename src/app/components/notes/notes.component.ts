@@ -7,6 +7,9 @@ import { Subscription } from 'rxjs';
 import { SnackBarService } from '../../services/snackBar.service';
 import { ipcRenderer } from 'electron';
 import { Notebook } from '../../data/notebook';
+import { AddNoteResult } from '../../services/addNoteResult';
+import { NoteOperation } from '../../services/noteOperation';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'notes-component',
@@ -14,7 +17,7 @@ import { Notebook } from '../../data/notebook';
     styleUrls: ['./notes.component.scss']
 })
 export class NotesComponent implements OnInit {
-    constructor(private collectionService: CollectionService, private snackBarService: SnackBarService) {
+    constructor(private collectionService: CollectionService, private snackBarService: SnackBarService, private translateService: TranslateService) {
     }
 
     private _selectedNotebook: Notebook;
@@ -33,6 +36,7 @@ export class NotesComponent implements OnInit {
     public notes: Note[];
     public selectedNote: Note;
     public notesCount: number = 0;
+    public canEditNote: boolean = false;
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
@@ -61,6 +65,18 @@ export class NotesComponent implements OnInit {
     public setSelectedNote(note: Note) {
         this.selectedNote = note;
     }
+
+    public async addNoteAsync(): Promise<void> {
+        let baseTitle: string = await this.translateService.get('Notes.NewNote').toPromise();
+    
+        // Create a new note
+        let addNoteResult: AddNoteResult = this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
+    
+        if (addNoteResult.operation === NoteOperation.Success) {
+          // Show the note window
+          ipcRenderer.send('open-note-window', addNoteResult.noteId);
+        }
+      }
 
     public openNote(): void {
         if (this.collectionService.canOpenNote(this.selectedNote.id)) {

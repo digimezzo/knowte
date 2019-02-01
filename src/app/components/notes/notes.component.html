@@ -1,30 +1,43 @@
 <div class="notesContainer">
-    <!-- Notes title -->
-    <div class="notesTitleContainer p-2 noselect">
-        <h2>{{ selectedNotebook?.name }}</h2>
-        <div class="countLabel">{{notesCount}}</div>
+    <!-- Note buttons-->
+    <div class="collectionContainerButtons m-2">
+        <button class="listButton" mat-mini-fab color="" (click)="deleteNote()" matTooltip="{{ 'MainPage.DeleteNote' | translate }}"
+            *ngIf=canEditSelectedNote>
+            <span class="editItemIcon">&#xE872;</span>
+        </button>
+        <button class="listButton" mat-fab color="primary" (click)="addNoteAsync()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
+            <span class="addItemIcon">&#xE145;</span>
+        </button>
     </div>
-    <!-- Notes list container -->
-    <div class="notesListContainer">
-        <!-- Notes list -->
-        <mat-selection-list class="notesListContainerList">
-            <mat-list-option [ngClass]="{'selectedItem':note === selectedNote }" *ngFor="let note of notes" role="option">
-                <div class="noselect" (dblclick)="openNote()" (click)="setSelectedNote(note)">
-                    <div class="noteItem px-2">
-                        <div class="noteItemIcon">
-                            <img class="notePenImage" src="./assets/images/pencil_256x256.svg">
-                        </div>
-                        <div class="noteItemInfo pl-1">
-                            <div class="noteItemTitle">
-                                {{ note.title }}
+    <div class="notesContainerContent">
+        <!-- Notes title -->
+        <div class="notesTitleContainer p-2 noselect">
+            <h2>{{ selectedNotebook?.name }}</h2>
+            <div class="countLabel">{{notesCount}}</div>
+        </div>
+        <!-- Notes list container -->
+        <div class="notesListContainer">
+            <!-- Notes list -->
+            <mat-selection-list class="notesListContainerList">
+                <mat-list-option [ngClass]="{'selectedItem':note === selectedNote }" *ngFor="let note of notes" role="option">
+                    <div class="noselect" (dblclick)="openNote()" (click)="setSelectedNote(note)">
+                        <div class="noteItem px-2">
+                            <div class="noteItemIcon">
+                                <img class="notePenImage" src="./assets/images/pencil_256x256.svg">
                             </div>
-                            <div class="noteItemDate">
-                                {{ note.displayModificationDate }}
+                            <div class="noteItemInfo pl-1">
+                                <div class="noteItemTitle">
+                                    {{ note.title }}
+                                </div>
+                                <div class="noteItemDate">
+                                    {{ note.displayModificationDate }}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </mat-list-option>
-        </mat-selection-list>
+                </mat-list-option>
+            </mat-selection-list>
+        </div>
     </div>
+
 </div>
