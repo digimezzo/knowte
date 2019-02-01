@@ -35,9 +35,9 @@
         "Version": "Version",
         "License": "License",
         "IsKnowteUseful": "Is Knowte useful? Please consider donating. Thank you!",
-        "Website":"Website",
-        "Email":"E-mail",
-        "SocialNetworks":"Social networks"
+        "Website": "Website",
+        "Email": "E-mail",
+        "SocialNetworks": "Social networks"
     },
     "ComponentsPage": {
         "Components": "Components"
@@ -115,5 +115,14 @@
     },
     "Notes": {
         "NewNote": "New note"
+    },
+    "NoteDates": {
+        "Today": "Today",
+        "Yesterday": "Yesterday",
+        "DaysAgo": "{{count}} days ago",
+        "Last week": "Last week",
+        "WeeksAgo": "{{count}} weeks ago",
+        "MonthsAgo": "{{count}} months ago",
+        "LongAgo": "Long ago"
     }
 }

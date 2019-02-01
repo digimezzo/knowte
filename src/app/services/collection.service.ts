@@ -364,56 +364,56 @@ export class CollectionService {
     return NotebookOperation.Success;
   }
 
-  private getFormattedDate(millisecondsSinceEpoch: number, useFuzzyDates: boolean): string {
+  private async getFormattedDateAsync(millisecondsSinceEpoch: number, useFuzzyDates: boolean): Promise<string> {
     if (useFuzzyDates) {
       let nowDateonly: Moment = moment().startOf('day');
       let modificationDateOnly: Moment = moment(millisecondsSinceEpoch).startOf('day');
       let duration: Duration = moment.duration(nowDateonly.diff(modificationDateOnly));
 
       if (duration.asMonths() >= 12) {
-        return "Long ago";
+        return await this.translateService.get('NoteDates.LongAgo').toPromise();
       } else if (duration.asMonths() >= 11) {
-        return "11 months ago";
+        return await this.translateService.get('NoteDates.MonthsAgo', { count: 11 }).toPromise();
       } else if (duration.asMonths() >= 10) {
-        return "10 months ago";
+        return await this.translateService.get('NoteDates.MonthsAgo', { count: 10 }).toPromise();
       } else if (duration.asMonths() >= 9) {
-        return "9 months ago";
+        return await this.translateService.get('NoteDates.MonthsAgo', { count: 9 }).toPromise();
       } else if (duration.asMonths() >= 8) {
-        return "8 months ago";
+        return await this.translateService.get('NoteDates.MonthsAgo', { count: 8 }).toPromise();
       } else if (duration.asMonths() >= 7) {
-        return "7 months ago";
+        return await this.translateService.get('NoteDates.MonthsAgo', { count: 7 }).toPromise();
       } else if (duration.asMonths() >= 6) {
-        return "6 months ago";
+        return await this.translateService.get('NoteDates.MonthsAgo', { count: 6 }).toPromise();
       } else if (duration.asMonths() >= 5) {
-        return "5 months ago";
+        return await this.translateService.get('NoteDates.MonthsAgo', { count: 5 }).toPromise();
       } else if (duration.asMonths() >= 4) {
-        return "4 months ago";
+        return await this.translateService.get('NoteDates.MonthsAgo', { count: 4 }).toPromise();
       } else if (duration.asMonths() >= 3) {
-        return "3 months ago";
+        return await this.translateService.get('NoteDates.MonthsAgo', { count: 3 }).toPromise();
       } else if (duration.asMonths() >= 2) {
-        return "2 months ago";
+        return await this.translateService.get('NoteDates.MonthsAgo', { count: 2 }).toPromise();
       } else if (duration.asMonths() >= 1) {
-        return "1 months ago";
+        return await this.translateService.get('NoteDates.MonthsAgo', { count: 1 }).toPromise();
       } else if (duration.asDays() >= 21) {
-        return "3 weeks ago";
+        return await this.translateService.get('NoteDates.WeeksAgo', { count: 3 }).toPromise();
       } else if (duration.asDays() >= 14) {
-        return "2 weeks ago";
+        return await this.translateService.get('NoteDates.WeeksAgo', { count: 2 }).toPromise();
       } else if (duration.asDays() >= 7) {
-        return "Last week";
+        return await this.translateService.get('NoteDates.LastWeek').toPromise();
       } else if (duration.asDays() >= 6) {
-        return "6 days ago";
+        return await this.translateService.get('NoteDates.DaysAgo', { count: 6 }).toPromise();
       } else if (duration.asDays() >= 5) {
-        return "5 days ago";
+        return await this.translateService.get('NoteDates.DaysAgo', { count: 5 }).toPromise();
       } else if (duration.asDays() >= 4) {
-        return "4 days ago";
+        return await this.translateService.get('NoteDates.DaysAgo', { count: 4 }).toPromise();
       } else if (duration.asDays() >= 3) {
-        return "3 days ago";
+        return await this.translateService.get('NoteDates.DaysAgo', { count: 3 }).toPromise();
       } else if (duration.asDays() >= 2) {
-        return "2 days ago";
+        return await this.translateService.get('NoteDates.DaysAgo', { count: 2 }).toPromise();
       } else if (duration.asDays() >= 1) {
-        return "Yesterday";
+        return await this.translateService.get('NoteDates.Yesterday').toPromise();
       } else if (duration.asDays() >= 0) {
-        return "Today";
+        return await this.translateService.get('NoteDates.Today').toPromise();
       }
     }
 
@@ -438,7 +438,7 @@ export class CollectionService {
 
       // Fill in the display date
       for (let note of notes) {
-        note.displayModificationDate = this.getFormattedDate(note.modificationDate, useFuzzyDates);
+        note.displayModificationDate = await this.getFormattedDateAsync(note.modificationDate, useFuzzyDates);
       }
     } catch (error) {
       log.error(`Could not get notes. Cause: ${error}`);
