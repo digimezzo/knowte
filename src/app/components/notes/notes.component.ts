@@ -64,19 +64,24 @@ export class NotesComponent implements OnInit {
 
     public setSelectedNote(note: Note) {
         this.selectedNote = note;
+        this.canEditNote = this.selectedNote != null;
     }
 
     public async addNoteAsync(): Promise<void> {
         let baseTitle: string = await this.translateService.get('Notes.NewNote').toPromise();
-    
+
         // Create a new note
         let addNoteResult: AddNoteResult = this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
-    
+
         if (addNoteResult.operation === NoteOperation.Success) {
-          // Show the note window
-          ipcRenderer.send('open-note-window', addNoteResult.noteId);
+            // Show the note window
+            ipcRenderer.send('open-note-window', addNoteResult.noteId);
         }
-      }
+    }
+
+    public deleteNote(): void {
+
+    }
 
     public openNote(): void {
         if (this.collectionService.canOpenNote(this.selectedNote.id)) {

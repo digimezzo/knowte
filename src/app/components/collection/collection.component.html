@@ -20,11 +20,11 @@
             <!-- Notebooks buttons -->
             <div class="notebooksListButtonContainer m-2">
                 <button class="listButton" mat-mini-fab color="" (click)="renameNotebook()" matTooltip="{{ 'MainPage.RenameNotebook' | translate }}"
-                    *ngIf=canEditSelectedNotebook>
+                    *ngIf=canEditNotebook>
                     <span class="editItemIcon">&#xE254;</span>
                 </button>
                 <button class="listButton" mat-mini-fab color="" (click)="deleteNotebookAsync()" matTooltip="{{ 'MainPage.DeleteNotebook' | translate }}"
-                    *ngIf=canEditSelectedNotebook>
+                    *ngIf=canEditNotebook>
                     <span class="editItemIcon">&#xE872;</span>
                 </button>
                 <button class="listButton" mat-fab color="primary" (click)="addNotebookAsync()" matTooltip="{{ 'MainPage.AddNotebook' | translate }}">

@@ -40,7 +40,7 @@ export class CollectionComponent implements OnInit {
   public notebooks: Notebook[];
   public selectedNotebook: Notebook;
 
-  public canEditSelectedNotebook: boolean = false;
+  public canEditNotebook: boolean = false;
 
   async ngOnInit() {
     // Notebooks
@@ -74,7 +74,7 @@ export class CollectionComponent implements OnInit {
 
   public async setSelectedNotebookAsync(notebook: Notebook) {
     this.selectedNotebook = notebook;
-    this.canEditSelectedNotebook = this.selectedNotebook != null && !this.selectedNotebook.isDefault;
+    this.canEditNotebook = this.selectedNotebook != null && !this.selectedNotebook.isDefault;
 
     // Fetch the notes for the newly selected notebook
     // TODO: this should trigger the fetch action on the notes component instead
