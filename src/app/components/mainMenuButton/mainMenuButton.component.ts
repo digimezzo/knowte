@@ -38,22 +38,22 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
     this.subscription.add(this.collectionService.collectionActivated$.subscribe(async (collectionName) => {
       this.collections = await this.collectionService.getCollections();
-      this.snackBarService.collectionActivated(collectionName);
+      this.snackBarService.collectionActivatedAsync(collectionName);
     }));
 
     this.subscription.add(this.collectionService.collectionAdded$.subscribe(async (collectionName) => {
       this.collections = await this.collectionService.getCollections();
-      this.snackBarService.collectionAdded(collectionName);
+      this.snackBarService.collectionAddedAsync(collectionName);
     }));
 
     this.subscription.add(this.collectionService.collectionRenamed$.subscribe(async (newCollectionName) => {
       this.collections = await this.collectionService.getCollections();
-      this.snackBarService.collectionRenamed(newCollectionName);
+      this.snackBarService.collectionRenamedAsync(newCollectionName);
     }));
 
     this.subscription.add(this.collectionService.collectionDeleted$.subscribe(async (collectionName) => {
       this.collections = this.collectionService.getCollections();
-      this.snackBarService.collectionDeleted(collectionName);
+      this.snackBarService.collectionDeletedAsync(collectionName);
     }));
 
      // Workaround for auto reload
@@ -78,7 +78,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
         switch (operation) {
           case CollectionOperation.Duplicate: {
-            this.snackBarService.duplicateCollection(collectionName);
+            this.snackBarService.duplicateCollectionAsync(collectionName);
             break;
           }
           case CollectionOperation.Error: {

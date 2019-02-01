@@ -51,7 +51,7 @@ export class NotesComponent implements OnInit {
 
         this.subscription = this.collectionService.noteAdded$.subscribe(async (noteTitle) => {
             await this.getNotesAsync();
-            this.snackBarService.noteAdded(noteTitle);
+            this.snackBarService.noteAddedAsync(noteTitle);
         });
     }
 
@@ -87,7 +87,7 @@ export class NotesComponent implements OnInit {
         if (this.collectionService.canOpenNote(this.selectedNote.id)) {
             ipcRenderer.send('open-note-window', this.selectedNote.id);
         } else {
-            this.snackBarService.noteAlreadyOpen();
+            this.snackBarService.noteAlreadyOpenAsync();
         }
     }
 }

@@ -15,58 +15,58 @@ export class SnackBarService {
         });
     }
 
-    public collectionAdded(collectionName: string) {
-        let message: string = this.translate.instant('SnackBarMessages.CollectionAdded', { collectionName: collectionName });
+    public async collectionAddedAsync(collectionName: string) {
+        let message: string = await this.translate.get('SnackBarMessages.CollectionAdded', { collectionName: collectionName }).toPromise();
         this.showActionLessSnackBar(message, 2000);
     }
 
-    public collectionActivated(collectionName: string) {
-        let message: string = this.translate.instant('SnackBarMessages.CollectionActivated', { collectionName: collectionName });
+    public async collectionActivatedAsync(collectionName: string) {
+        let message: string = await this.translate.get('SnackBarMessages.CollectionActivated', { collectionName: collectionName }).toPromise();
         this.showActionLessSnackBar(message, 2000);
     }
 
-    public collectionRenamed(collectionName: string) {
-        let message: string = this.translate.instant('SnackBarMessages.CollectionRenamed', { collectionName: collectionName });
+    public async collectionRenamedAsync(collectionName: string) {
+        let message: string = await this.translate.get('SnackBarMessages.CollectionRenamed', { collectionName: collectionName }).toPromise();
         this.showActionLessSnackBar(message, 2000);
     }
 
-    public collectionDeleted(collectionName: string) {
-        let message: string = this.translate.instant('SnackBarMessages.CollectionDeleted', { collectionName: collectionName });
+    public async collectionDeletedAsync(collectionName: string) {
+        let message: string = await this.translate.get('SnackBarMessages.CollectionDeleted', { collectionName: collectionName }).toPromise();
         this.showActionLessSnackBar(message, 2000);
     }
 
-    public duplicateCollection(collectionName: string) {
-        let message: string = this.translate.instant('SnackBarMessages.DuplicateCollection', { collectionName: collectionName });
+    public async duplicateCollectionAsync(collectionName: string) {
+        let message: string = await this.translate.get('SnackBarMessages.DuplicateCollection', { collectionName: collectionName }).toPromise();
         this.showActionLessSnackBar(message, 2000);
     }
 
-    public duplicateNotebook(notebookName: string) {
-        let message: string = this.translate.instant('SnackBarMessages.DuplicateNotebook', { notebookName: notebookName });
+    public async duplicateNotebookAsync(notebookName: string) {
+        let message: string = await this.translate.get('SnackBarMessages.DuplicateNotebook', { notebookName: notebookName }).toPromise();
         this.showActionLessSnackBar(message, 2000);
     }
 
-    public notebookAdded(notebookName: string) {
-        let message: string = this.translate.instant('SnackBarMessages.NotebookAdded', { notebookName: notebookName });
+    public async notebookAddedAsync(notebookName: string) {
+        let message: string = await this.translate.get('SnackBarMessages.NotebookAdded', { notebookName: notebookName }).toPromise();
         this.showActionLessSnackBar(message, 2000);
     }
 
-    public notebookDeleted(notebookName: string) {
-        let message: string = this.translate.instant('SnackBarMessages.NotebookDeleted', { notebookName: notebookName });
+    public async notebookDeletedAsync(notebookName: string) {
+        let message: string = await this.translate.get('SnackBarMessages.NotebookDeleted', { notebookName: notebookName }).toPromise();
         this.showActionLessSnackBar(message, 2000);
     }
 
-    public notebookRenamed(notebookName: string) {
-        let message: string = this.translate.instant('SnackBarMessages.NotebookRenamed', { notebookName: notebookName });
+    public async notebookRenamedAsync(notebookName: string) {
+        let message: string = await this.translate.get('SnackBarMessages.NotebookRenamed', { notebookName: notebookName }).toPromise();
         this.showActionLessSnackBar(message, 2000);
     }
 
-    public noteAdded(noteTitle: string) {
-        let message: string = this.translate.instant('SnackBarMessages.NoteAdded', { noteTitle: noteTitle });
+    public async noteAddedAsync(noteTitle: string) {
+        let message: string = await this.translate.get('SnackBarMessages.NoteAdded', { noteTitle: noteTitle }).toPromise();
         this.showActionLessSnackBar(message, 2000);
     }
 
-    public noteAlreadyOpen() {
-        let message: string = this.translate.instant('SnackBarMessages.NoteAlreadyOpen');
+    public async noteAlreadyOpenAsync() {
+        let message: string = await this.translate.get('SnackBarMessages.NoteAlreadyOpen').toPromise();
         this.showActionLessSnackBar(message, 2000);
     }
 }

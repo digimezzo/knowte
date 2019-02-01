@@ -49,17 +49,17 @@ export class CollectionComponent implements OnInit {
 
     this.subscription = this.collectionService.notebookAdded$.subscribe(async (notebookName) => {
       await this.getNotebooksAsync();
-      this.snackBarService.notebookAdded(notebookName);
+      this.snackBarService.notebookAddedAsync(notebookName);
     });
 
     this.subscription.add(this.collectionService.notebookRenamed$.subscribe(async (newNotebookName) => {
       await this.getNotebooksAsync();
-      this.snackBarService.notebookRenamed(newNotebookName);
+      this.snackBarService.notebookRenamedAsync(newNotebookName);
     }));
 
     this.subscription.add(this.collectionService.notebookDeleted$.subscribe(async (notebookName) => {
       await this.getNotebooksAsync();
-      this.snackBarService.notebookDeleted(notebookName);
+      this.snackBarService.notebookDeletedAsync(notebookName);
     }));
   }
 
@@ -97,7 +97,7 @@ export class CollectionComponent implements OnInit {
 
         switch (operation) {
           case NotebookOperation.Duplicate: {
-            this.snackBarService.duplicateNotebook(notebookName);
+            this.snackBarService.duplicateNotebookAsync(notebookName);
             break;
           }
           case NotebookOperation.Error: {
