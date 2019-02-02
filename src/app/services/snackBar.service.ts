@@ -70,6 +70,11 @@ export class SnackBarService {
         this.showActionLessSnackBar(message, 2000);
     }
 
+    public async noteDeleteBlockedAsync(noteTitle: string) {
+        let message: string = await this.translate.get('SnackBarMessages.NoteDeleteBlocked', { noteTitle: noteTitle }).toPromise();
+        this.showActionLessSnackBar(message, 2000);
+    }
+
     public async noteAlreadyOpenAsync() {
         let message: string = await this.translate.get('SnackBarMessages.NoteAlreadyOpen').toPromise();
         this.showActionLessSnackBar(message, 2000);

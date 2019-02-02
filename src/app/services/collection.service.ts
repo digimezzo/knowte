@@ -321,15 +321,6 @@ export class CollectionService {
     return NotebookOperation.Success;
   }
 
-  public getNotebookName(notebookId: string): string {
-    return this.dataStore.getNotebook(notebookId).name;
-  }
-
-  public getNoteTitle(noteId: string): string {
-    return this.dataStore.getNote(noteId).title;
-  }
-
-
   public async renameNotebookAsync(notebookId: string, newNotebookName: string): Promise<NotebookOperation> {
     if (!notebookId || !newNotebookName) {
       log.error("renameNotebookAsync: notebookId or newNotebookName is null");
@@ -352,6 +343,10 @@ export class CollectionService {
     this.notebookRenamed.next(newNotebookName);
 
     return NotebookOperation.Success;
+  }
+
+  public getNotebookName(notebookId: string): string {
+    return this.dataStore.getNotebook(notebookId).name;
   }
 
   public async deleteNotebookAsync(notebookId: string): Promise<NotebookOperation> {
@@ -386,8 +381,16 @@ export class CollectionService {
     let noteTitle: string = "";
 
     try {
+      let noteToDelete: Note = this.dataStore.getNote(noteId);
+
+      if (noteToDelete.isOpen) {
+        log.warn(`Blocked delete the note with id='${noteId}', because the note is open.`);
+        // TODO: maybe add a custom event in order to notify the user why the delete was prevented.
+        return NoteOperation.Blocked;
+      }
+
       // 1. Get the title of the note
-      noteTitle = this.getNoteTitle(noteId);
+      noteTitle = noteToDelete.title;
 
       // 2. Delete note from data store
       this.dataStore.deleteNote(noteId);

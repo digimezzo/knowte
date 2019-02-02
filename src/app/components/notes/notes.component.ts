@@ -97,7 +97,11 @@ export class NotesComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(async (result) => {
             if (result) {
-                await this.collectionService.deleteNoteAsync(this.selectedNote.id);
+                let operation: NoteOperation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
+
+                if(operation === NoteOperation.Blocked){
+                    this.snackBarService.noteDeleteBlockedAsync(this.selectedNote.title);
+                }
             }
         });
     }

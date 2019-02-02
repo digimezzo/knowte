@@ -104,6 +104,7 @@
         "NotebookRenamed": "Notebook was renamed to {{notebookName}}",
         "NoteAdded": "Note {{noteTitle}} was added",
         "NoteDeleted": "Note {{noteTitle}} was deleted",
+        "NoteDeleteBlocked": "The note {{noteTitle}} was not deleted because it is open",
         "NoteAlreadyOpen": "This note is already open"
     },
     "MainPage": {
