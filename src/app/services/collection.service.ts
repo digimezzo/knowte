@@ -18,7 +18,8 @@ import { AddNoteResult } from './addNoteResult';
 import * as moment from 'moment'
 import { Moment, Duration } from 'moment';
 import { NoteDateFormatResult } from './noteDateFormatResult';
-import { NoteCounters } from './noteCounters';
+import { NoteCountersArgument } from './noteCountersArgument';
+import { NoteMarkChangedArgument } from './noteMarkChangedArgument';
 
 @Injectable({
   providedIn: 'root',
@@ -64,7 +65,10 @@ export class CollectionService {
   private noteDeleted = new Subject<string>();
   noteDeleted$ = this.noteDeleted.asObservable();
 
-  private noteCountersChanged = new Subject<NoteCounters>();
+  private noteMarkChanged = new Subject<NoteMarkChangedArgument>();
+  noteMarkChanged$ = this.noteMarkChanged.asObservable();
+
+  private noteCountersChanged = new Subject<NoteCountersArgument>();
   noteCountersChanged$ = this.noteCountersChanged.asObservable();
 
   public get hasDataStore(): boolean {
@@ -288,7 +292,8 @@ export class CollectionService {
   }
 
   private notebookExists(notebookName: string): boolean {
-    let notebook: Notebook = this.dataStore.getNotebookByName(notebookName);
+    let activeCollection: Collection = this.dataStore.getActiveCollection();
+    let notebook: Notebook = this.dataStore.getNotebookByName(activeCollection.id, notebookName);
 
     return notebook != null;
   }
@@ -308,7 +313,8 @@ export class CollectionService {
 
     try {
       // Add the notebook to the data store
-      this.dataStore.addNotebook(notebookName);
+      let activeCollection: Collection = this.dataStore.getActiveCollection();
+      this.dataStore.addNotebook(activeCollection.id, notebookName);
       log.info(`Added notebook '${notebookName}' to the data store`);
     } catch (error) {
       log.error(`Could not add notebook '${notebookName}'. Cause: ${error}`);
@@ -482,21 +488,23 @@ export class CollectionService {
   public async getNotesAsync(notebookId: string, useFuzzyDates: boolean): Promise<Note[]> {
     let notes: Note[] = [];
 
-    let counters: NoteCounters = new NoteCounters();
+    let arg: NoteCountersArgument = new NoteCountersArgument();
 
     try {
       // Get the notes from the data store
+      let activeCollection: Collection = this.dataStore.getActiveCollection();
+
       if (notebookId === Constants.allNotesNotebookId) {
-        notes = this.dataStore.getAllNotes();
+        notes = this.dataStore.getAllNotes(activeCollection.id);
       } else if (notebookId === Constants.unfiledNotesNotebookId) {
-        notes = this.dataStore.getUnfiledNotes();
+        notes = this.dataStore.getUnfiledNotes(activeCollection.id);
       } else {
         notes = this.dataStore.getNotes(notebookId);
       }
 
       // Fill in counters
-      counters.allNotesCount = notes.length;
-      counters.markedNotesCount = notes.filter(x => x.isMarked).length;
+      arg.allNotesCount = notes.length;
+      arg.markedNotesCount = notes.filter(x => x.isMarked).length;
 
       // Fill in the display date
       for (let note of notes) {
@@ -504,22 +512,22 @@ export class CollectionService {
 
         // More counters
         if (result.isTodayNote) {
-          counters.todayNotesCount++;
+          arg.todayNotesCount++;
         }
 
         if (result.isYesterdayNote) {
-          counters.yesterdayNotesCount++;
+          arg.yesterdayNotesCount++;
         }
 
         if (result.isThisWeekNote) {
-          counters.thisWeekNotesCount++;
+          arg.thisWeekNotesCount++;
         }
 
         // Date text
         note.displayModificationDate = result.dateText;
       }
 
-      this.noteCountersChanged.next(counters);
+      this.noteCountersChanged.next(arg);
     } catch (error) {
       log.error(`Could not get notes. Cause: ${error}`);
     }
@@ -587,5 +595,13 @@ export class CollectionService {
 
   public closeAllNotes(): void {
     this.dataStore.closeAllNotes();
+  }
+
+  public setNoteMark(noteId: string, isMarked: boolean): void {
+    this.dataStore.setNoteMark(noteId, isMarked);
+    let activeCollection: Collection = this.dataStore.getActiveCollection();
+    let markedNotes: Note[] = this.dataStore.getMarkedNotes(activeCollection.id);
+    let arg: NoteMarkChangedArgument = new NoteMarkChangedArgument(noteId, isMarked, markedNotes.length);
+    this.noteMarkChanged.next(arg);
   }
 }

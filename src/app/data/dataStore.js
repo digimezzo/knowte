@@ -109,18 +109,17 @@ var DataStore = /** @class */ (function () {
         var activeCollection = this.collections.findOne({ 'isActive': true });
         return activeCollection;
     };
-    DataStore.prototype.getNotebookByName = function (notebookName) {
-        return this.notebooks.findOne({ 'name': notebookName });
+    DataStore.prototype.getNotebookByName = function (collectionId, notebookName) {
+        return this.notebooks.findOne({ '$and': [{ 'collectionId': collectionId }, { 'name': notebookName }] });
     };
-    DataStore.prototype.addNotebook = function (notebookName) {
-        var activeCollection = this.getActiveCollection();
-        var newNotebook = new notebook_1.Notebook(notebookName, activeCollection.id);
+    DataStore.prototype.addNotebook = function (collectionId, notebookName) {
+        var newNotebook = new notebook_1.Notebook(notebookName, collectionId);
         this.notebooks.insert(newNotebook);
         this.db.saveDatabase();
         return newNotebook.id;
     };
-    DataStore.prototype.getNotebooks = function (activeCollectionId) {
-        var notebooks = this.notebooks.chain().find({ 'collectionId': activeCollectionId }).sort(this.caseInsensitiveNameSort).data();
+    DataStore.prototype.getNotebooks = function (collectionId) {
+        var notebooks = this.notebooks.chain().find({ 'collectionId': collectionId }).sort(this.caseInsensitiveNameSort).data();
         return notebooks;
     };
     DataStore.prototype.getNotebook = function (notebookId) {
@@ -139,12 +138,16 @@ var DataStore = /** @class */ (function () {
         // Persist
         this.db.saveDatabase();
     };
-    DataStore.prototype.getAllNotes = function () {
-        var notes = this.notes.chain().simplesort('modificationDate', true).data();
+    DataStore.prototype.getAllNotes = function (collectionId) {
+        var notes = this.notes.chain().find({ 'collectionId': collectionId }).simplesort('modificationDate', true).data();
         return notes;
     };
-    DataStore.prototype.getUnfiledNotes = function () {
-        var notes = this.notes.chain().find({ 'notebookId': "" }).simplesort('modificationDate', true).data();
+    DataStore.prototype.getUnfiledNotes = function (collectionId) {
+        var notes = this.notes.chain().find({ '$and': [{ 'collectionId': collectionId }, { 'notebookId': "" }] }).simplesort('modificationDate', true).data();
+        return notes;
+    };
+    DataStore.prototype.getMarkedNotes = function (collectionId) {
+        var notes = this.notes.chain().find({ '$and': [{ 'collectionId': collectionId }, { 'isMarked': true }] }).simplesort('modificationDate', true).data();
         return notes;
     };
     DataStore.prototype.getNotes = function (notebookId) {
@@ -191,6 +194,12 @@ var DataStore = /** @class */ (function () {
         var noteToRemove = this.getNote(noteId);
         this.notes.remove(noteToRemove);
         // Persist
+        this.db.saveDatabase();
+    };
+    DataStore.prototype.setNoteMark = function (noteId, isMarked) {
+        var note = this.getNote(noteId);
+        note.isMarked = isMarked;
+        this.notes.update(note);
         this.db.saveDatabase();
     };
     DataStore = __decorate([

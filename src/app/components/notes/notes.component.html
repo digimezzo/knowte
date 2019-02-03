@@ -33,6 +33,12 @@
                                     {{ note.displayModificationDate }}
                                 </div>
                             </div>
+                            <div class="noteItemActions">
+                                <div class="markButton" (click)="ToggleNoteMark(note.id, note.isMarked)">
+                                    <span class="isMarkedHeart" *ngIf="note.isMarked">&#xE87D;</span>
+                                    <span class="isNotMarkedHeart" *ngIf="!note.isMarked">&#xE87E;</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </mat-list-option>

@@ -62,6 +62,23 @@
   background-color: $color-primary;
 }
 
+.noteItemActions{
+  margin: 0 40px 0 0;
+  width: 48px;
+  height: 48px;
+  line-height: 48px;
+  font-size: 20px;
+  font-family: Material;
+}
+
+.isMarkedHeart{
+  color: $color-primary;
+}
+
+.isNotMarkedHeart{
+  color: #AAAAAA;
+}
+
 .noteItemInfo{
   height: 48px;
   flex: 1;

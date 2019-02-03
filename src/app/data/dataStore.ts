@@ -5,7 +5,6 @@ import * as path from 'path';
 import { Constants } from '../core/constants';
 import { Collection } from './collection';
 import * as nanoid from 'nanoid';
-import { Subject } from 'rxjs';
 import { Notebook } from './notebook';
 import { Note } from './note';
 
@@ -136,21 +135,20 @@ export class DataStore {
         return activeCollection;
     }
 
-    public getNotebookByName(notebookName: string): Notebook {
-        return this.notebooks.findOne({ 'name': notebookName });
+    public getNotebookByName(collectionId: string, notebookName: string): Notebook {
+        return this.notebooks.findOne({ '$and': [{ 'collectionId': collectionId }, { 'name': notebookName }] });
     }
 
-    public addNotebook(notebookName: string): string {
-        let activeCollection: Collection = this.getActiveCollection();
-        let newNotebook: Notebook = new Notebook(notebookName, activeCollection.id);
+    public addNotebook(collectionId: string, notebookName: string): string {
+        let newNotebook: Notebook = new Notebook(notebookName, collectionId);
         this.notebooks.insert(newNotebook);
         this.db.saveDatabase();
 
         return newNotebook.id;
     }
 
-    public getNotebooks(activeCollectionId: string): Notebook[] {
-        let notebooks: Notebook[] = this.notebooks.chain().find({ 'collectionId': activeCollectionId }).sort(this.caseInsensitiveNameSort).data();
+    public getNotebooks(collectionId: string): Notebook[] {
+        let notebooks: Notebook[] = this.notebooks.chain().find({ 'collectionId': collectionId }).sort(this.caseInsensitiveNameSort).data();
 
         return notebooks;
     }
@@ -175,14 +173,20 @@ export class DataStore {
         this.db.saveDatabase();
     }
 
-    public getAllNotes(): Note[] {
-        let notes: Note[] = this.notes.chain().simplesort('modificationDate', true).data();
+    public getAllNotes(collectionId: string): Note[] {
+        let notes: Note[] = this.notes.chain().find({ 'collectionId': collectionId }).simplesort('modificationDate', true).data();
 
         return notes;
     }
 
-    public getUnfiledNotes(): Note[] {
-        let notes: Note[] = this.notes.chain().find({ 'notebookId': "" }).simplesort('modificationDate', true).data();
+    public getUnfiledNotes(collectionId: string): Note[] {
+        let notes: Note[] = this.notes.chain().find({ '$and': [{ 'collectionId': collectionId }, { 'notebookId': "" }] }).simplesort('modificationDate', true).data();
+
+        return notes;
+    }
+
+    public getMarkedNotes(collectionId: string): Note[] {
+        let notes: Note[] = this.notes.chain().find({ '$and': [{ 'collectionId': collectionId }, { 'isMarked': true }] }).simplesort('modificationDate', true).data();
 
         return notes;
     }
@@ -245,6 +249,13 @@ export class DataStore {
         this.notes.remove(noteToRemove);
 
         // Persist
+        this.db.saveDatabase();
+    }
+
+    public setNoteMark(noteId: string, isMarked: boolean): void {
+        let note: Note = this.getNote(noteId);
+        note.isMarked = isMarked;
+        this.notes.update(note);
         this.db.saveDatabase();
     }
 }

@@ -58,13 +58,17 @@ export class CollectionComponent implements OnInit {
     }));
 
     // Note counters
-    this.subscription.add(this.collectionService.noteCountersChanged$.subscribe(async (counters) => {
-      this.allNotesCount = counters.allNotesCount;
-      this.todayNotesCount = counters.todayNotesCount;
-      this.yesterdayNotesCount = counters.yesterdayNotesCount;
-      this.thisWeekNotesCount = counters.thisWeekNotesCount;
-      this.markedNotesCount = counters.markedNotesCount;
+    this.subscription.add(this.collectionService.noteCountersChanged$.subscribe(async (noteCounterArgument) => {
+      this.allNotesCount = noteCounterArgument.allNotesCount;
+      this.todayNotesCount = noteCounterArgument.todayNotesCount;
+      this.yesterdayNotesCount = noteCounterArgument.yesterdayNotesCount;
+      this.thisWeekNotesCount = noteCounterArgument.thisWeekNotesCount;
+      this.markedNotesCount = noteCounterArgument.markedNotesCount;
     }));
+
+    this.subscription = this.collectionService.noteMarkChanged$.subscribe((noteMarkChangedArgument) => {
+      this.markedNotesCount = noteMarkChangedArgument.markedNotesCount;
+    });
   }
 
   private async getNotebooksAsync(): Promise<void> {

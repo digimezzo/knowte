@@ -60,6 +60,10 @@ export class NotesComponent implements OnInit {
             await this.getNotesAsync();
             this.snackBarService.noteDeletedAsync(noteTitle);
         });
+
+        this.subscription = this.collectionService.noteMarkChanged$.subscribe((noteMarkChangedArgument) => {
+            this.notes.find(x => x.id === noteMarkChangedArgument.noteId).isMarked = noteMarkChangedArgument.isMarked;
+        });
     }
 
     private async getNotesAsync(): Promise<void> {
@@ -99,7 +103,7 @@ export class NotesComponent implements OnInit {
             if (result) {
                 let operation: NoteOperation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
 
-                if(operation === NoteOperation.Blocked){
+                if (operation === NoteOperation.Blocked) {
                     this.snackBarService.noteDeleteBlockedAsync(this.selectedNote.title);
                 }
             }
@@ -112,5 +116,9 @@ export class NotesComponent implements OnInit {
         } else {
             this.snackBarService.noteAlreadyOpenAsync();
         }
+    }
+
+    public ToggleNoteMark(noteId: string, isMarked: boolean): void {
+        this.collectionService.setNoteMark(noteId, !isMarked);
     }
 }
