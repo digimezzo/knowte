@@ -4,6 +4,13 @@ import { CollectionService } from '../../services/collection.service';
 import * as Quill from 'quill';
 import { ActivatedRoute } from '@angular/router';
 import { Note } from '../../data/note';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from "rxjs/internal/operators";
+import { NoteOperation } from '../../services/noteOperation';
+import { SnackBarService } from '../../services/snackBar.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'note-content',
@@ -12,10 +19,16 @@ import { Note } from '../../data/note';
     encapsulation: ViewEncapsulation.None
 })
 export class NoteComponent implements OnInit {
-    constructor(private collectionService: CollectionService, private activatedRoute: ActivatedRoute) {
+    constructor(private collectionService: CollectionService, private activatedRoute: ActivatedRoute,
+        private snackBarService: SnackBarService, private translateService: TranslateService,
+        private dialog: MatDialog) {
     }
 
+    public noteTitleChanged: Subject<string> = new Subject<string>();
+
+    public noteId: string;
     public noteTitle: string;
+    private originalNoteTitle: string;
 
     ngOnInit() {
         this.collectionService.initializeDataStoreAsync();
@@ -26,13 +39,39 @@ export class NoteComponent implements OnInit {
 
         // Get note id from url
         this.activatedRoute.queryParams.subscribe(params => {
-            let noteId: string = params['id'];
-            log.info(`Displaying note with id=${noteId}`);
+            this.noteId = params['id'];
+            log.info(`Displaying note with id=${this.noteId}`);
 
             // Get the note from the data store
-            let note: Note = this.collectionService.getNote(noteId);
+            let note: Note = this.collectionService.getNote(this.noteId);
             this.noteTitle = note.title;
+            this.originalNoteTitle = note.title;
         });
+
+        this.noteTitleChanged
+            .pipe(debounceTime(5000), distinctUntilChanged())
+            .subscribe(async (newNoteTitle) => {
+                let operation: NoteOperation = this.collectionService.renameNote(this.noteId, newNoteTitle);
+
+                if (operation === NoteOperation.Error) {
+                    this.noteTitle = this.originalNoteTitle;
+                    this.snackBarService.duplicateNote(newNoteTitle);
+                } else if (operation === NoteOperation.Duplicate) {
+                    this.noteTitle = this.originalNoteTitle;
+
+                    let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.originalNoteTitle }).toPromise());
+
+                    this.dialog.open(ErrorDialogComponent, {
+                        width: '450px', data: { errorText: generatedErrorText }
+                    });
+                } else {
+                    this.originalNoteTitle = this.noteTitle;
+                }
+            });
+    }
+
+    public onNotetitleChange(newNoteTitle: string) {
+        this.noteTitleChanged.next(newNoteTitle);
     }
 
     public performAction(): void {

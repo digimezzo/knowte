@@ -202,6 +202,15 @@ var DataStore = /** @class */ (function () {
         this.notes.update(note);
         this.db.saveDatabase();
     };
+    DataStore.prototype.setNoteTitle = function (noteId, noteTitle) {
+        var noteToRename = this.getNote(noteId);
+        noteToRename.title = noteTitle;
+        this.notes.update(noteToRename);
+        this.db.saveDatabase();
+    };
+    DataStore.prototype.getNoteByTitle = function (collectionId, noteTitle) {
+        return this.notes.findOne({ '$and': [{ 'collectionId': collectionId }, { 'title': noteTitle }] });
+    };
     DataStore = __decorate([
         core_1.Injectable({
             providedIn: 'root',

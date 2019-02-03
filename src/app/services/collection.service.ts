@@ -20,6 +20,7 @@ import { Moment, Duration } from 'moment';
 import { NoteDateFormatResult } from './noteDateFormatResult';
 import { NoteCountersArgument } from './noteCountersArgument';
 import { NoteMarkChangedArgument } from './noteMarkChangedArgument';
+import { NoteRenamedArgs } from './noteRenamedArgs';
 
 @Injectable({
   providedIn: 'root',
@@ -70,6 +71,9 @@ export class CollectionService {
 
   private noteCountersChanged = new Subject<NoteCountersArgument>();
   noteCountersChanged$ = this.noteCountersChanged.asObservable();
+
+  private noteRenamed = new Subject<NoteRenamedArgs>();
+  noteRenamed$ = this.noteRenamed.asObservable();
 
   public get hasDataStore(): boolean {
     return this.dataStore.isReady;
@@ -605,5 +609,37 @@ export class CollectionService {
     let markedNotes: Note[] = this.dataStore.getMarkedNotes(activeCollection.id);
     let arg: NoteMarkChangedArgument = new NoteMarkChangedArgument(noteId, isMarked, markedNotes.length);
     this.noteMarkChanged.next(arg);
+  }
+
+  private noteExists(noteTitle: string): boolean {
+    let activeCollection: Collection = this.dataStore.getActiveCollection();
+    let note: Note = this.dataStore.getNoteByTitle(activeCollection.id, noteTitle);
+
+    return note != null;
+  }
+
+  public renameNote(noteId: string, newNoteTitle: string): NoteOperation{
+    if (!noteId || !newNoteTitle) {
+      log.error("renameNote: noteId or newNoteTitle is null");
+      return NoteOperation.Error;
+    }
+
+    try {
+      // 1. Check if there is already a note with that title
+      if (this.noteExists(newNoteTitle)) {
+        return NoteOperation.Duplicate;
+      }
+
+      // 2. Rename the note
+      this.dataStore.setNoteTitle(noteId, newNoteTitle);
+    } catch (error) {
+      log.error(`Could not rename the note with id='${noteId}' to '${newNoteTitle}'. Cause: ${error}`);
+      return NoteOperation.Error;
+    }
+
+    let args: NoteRenamedArgs = new NoteRenamedArgs(noteId, newNoteTitle);
+    this.noteRenamed.next(args);
+
+    return NoteOperation.Success;
   }
 }

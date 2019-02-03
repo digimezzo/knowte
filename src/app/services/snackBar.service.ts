@@ -79,4 +79,9 @@ export class SnackBarService {
         let message: string = await this.translate.get('SnackBarMessages.NoteAlreadyOpen').toPromise();
         this.showActionLessSnackBar(message, 2000);
     }
+
+    public async duplicateNote(noteTitle: string) {
+        let message: string = await this.translate.get('SnackBarMessages.DuplicateNote', { noteTitle: noteTitle }).toPromise();
+        this.showActionLessSnackBar(message, 2000);
+    }
 }

@@ -1,7 +1,7 @@
 <div class="noteContent">
     <div class="noteContentFixed">
-        <div class="noteTitle">
-            {{ noteTitle }}
+        <div class="noteTitleBackground">
+            <input class="noteTitle" type="text" [(ngModel)]="noteTitle" (ngModelChange)="onNotetitleChange($event)"/>
         </div>
         <div class="noteEditor" id="editor">
             <p>Hello World!</p>

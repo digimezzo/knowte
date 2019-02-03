@@ -258,4 +258,15 @@ export class DataStore {
         this.notes.update(note);
         this.db.saveDatabase();
     }
+
+    public setNoteTitle(noteId: string, noteTitle: string) {
+        let noteToRename: Note = this.getNote(noteId);
+        noteToRename.title = noteTitle;
+        this.notes.update(noteToRename);
+        this.db.saveDatabase();
+    }
+
+    public getNoteByTitle(collectionId: string, noteTitle: string): Notebook {
+        return this.notes.findOne({ '$and': [{ 'collectionId': collectionId }, { 'title': noteTitle }] });
+    }
 }
