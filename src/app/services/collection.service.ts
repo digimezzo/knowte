@@ -225,6 +225,8 @@ export class CollectionService {
 
   public activateCollection(collectionId: string): void {
     this.dataStore.activateCollection(collectionId);
+    let activeCollection: Collection = this.dataStore.getActiveCollection();
+    this.collectionActivated.next(activeCollection.name);
   }
 
   public async deleteCollectionAsync(collectionId: string): Promise<CollectionOperation> {

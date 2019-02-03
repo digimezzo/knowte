@@ -66,9 +66,16 @@ export class CollectionComponent implements OnInit {
       this.markedNotesCount = noteCounterArgument.markedNotesCount;
     }));
 
+    // Note mark changed
     this.subscription = this.collectionService.noteMarkChanged$.subscribe((noteMarkChangedArgument) => {
       this.markedNotesCount = noteMarkChangedArgument.markedNotesCount;
     });
+
+    // Collection activated
+    this.subscription.add(this.collectionService.collectionActivated$.subscribe(async (collectionName) => {
+      await this.getNotebooksAsync();
+      this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
+    }));
   }
 
   private async getNotebooksAsync(): Promise<void> {
