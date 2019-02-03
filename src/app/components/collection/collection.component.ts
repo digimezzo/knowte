@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
-import log from 'electron-log';
 import { Notebook } from '../../data/notebook';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,10 +10,6 @@ import { SnackBarService } from '../../services/snackBar.service';
 import { Subscription } from 'rxjs';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/renameNotebookDialog.component';
-import { ipcRenderer } from 'electron';
-import { Note } from '../../data/note';
-import { AddNoteResult } from '../../services/addNoteResult';
-import { NoteOperation } from '../../services/noteOperation';
 
 @Component({
   selector: 'collection-page',
