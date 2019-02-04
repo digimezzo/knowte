@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, OnDestroy, HostListener } from '@angular/core';
 import log from 'electron-log';
 import { CollectionService } from '../../services/collection.service';
 import * as Quill from 'quill';
@@ -33,6 +33,12 @@ export class NoteComponent implements OnInit {
     public noteTitle: string;
     private originalNoteTitle: string;
 
+     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
+    @HostListener('window:beforeunload', ['$event'])
+    beforeunloadHandler(event) {
+        log.info(`Opening note with id=${this.noteId}`);
+    }
+
     async ngOnInit() {
         this.collectionService.initializeDataStoreAsync();
 
@@ -46,7 +52,7 @@ export class NoteComponent implements OnInit {
         // Get note id from url
         this.activatedRoute.queryParams.subscribe(params => {
             this.noteId = params['id'];
-            log.info(`Displaying note with id=${this.noteId}`);
+            log.info(`Opening note with id=${this.noteId}`);
 
             // Get the note from the data store
             let note: Note = this.collectionService.getNote(this.noteId);
