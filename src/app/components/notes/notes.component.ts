@@ -12,6 +12,7 @@ import { NoteOperation } from '../../services/noteOperation';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
+import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 
 @Component({
     selector: 'notes-component',
@@ -105,6 +106,11 @@ export class NotesComponent implements OnInit {
 
                 if (operation === NoteOperation.Blocked) {
                     this.snackBarService.noteDeleteBlockedAsync(this.selectedNote.title);
+                } else if (operation === NoteOperation.Error) {
+                    let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteNoteError', { noteTitle: this.selectedNote.title }).toPromise());
+                    this.dialog.open(ErrorDialogComponent, {
+                        width: '450px', data: { errorText: generatedErrorText }
+                    });
                 }
             }
         });

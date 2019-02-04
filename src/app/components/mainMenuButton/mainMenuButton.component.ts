@@ -124,7 +124,14 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        await this.collectionService.deleteCollectionAsync(collectionId);
+        let operation: CollectionOperation = await this.collectionService.deleteCollectionAsync(collectionId);
+
+        if(operation === CollectionOperation.Error){
+          let generatedErrorText:string = (await this.translateService.get('ErrorTexts.DeleteCollectionError', {collectionName: collectionName}).toPromise());
+          this.dialog.open(ErrorDialogComponent, {
+            width: '450px', data: { errorText: generatedErrorText }
+          });
+        }
       }
     });
   }

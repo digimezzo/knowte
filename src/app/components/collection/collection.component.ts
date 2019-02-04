@@ -149,7 +149,14 @@ export class CollectionComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        await this.collectionService.deleteNotebookAsync(this.selectedNotebook.id);
+        let operation: NotebookOperation = await this.collectionService.deleteNotebookAsync(this.selectedNotebook.id);
+
+        if (operation === NotebookOperation.Error) {
+          let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteNotebookError', { notebookName: notebookName }).toPromise());
+          this.dialog.open(ErrorDialogComponent, {
+            width: '450px', data: { errorText: generatedErrorText }
+          });
+        }
       }
     });
   }

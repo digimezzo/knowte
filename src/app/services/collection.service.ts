@@ -18,8 +18,8 @@ import { AddNoteResult } from './addNoteResult';
 import * as moment from 'moment'
 import { Moment, Duration } from 'moment';
 import { NoteDateFormatResult } from './noteDateFormatResult';
-import { NoteCountersArgument } from './noteCountersArgument';
-import { NoteMarkChangedArgument } from './noteMarkChangedArgument';
+import { NoteCountersArgs } from './noteCountersArgs';
+import { NoteMarkChangedArgs } from './noteMarkChangedArgs';
 import { NoteRenamedArgs } from './noteRenamedArgs';
 
 @Injectable({
@@ -66,10 +66,10 @@ export class CollectionService {
   private noteDeleted = new Subject<string>();
   noteDeleted$ = this.noteDeleted.asObservable();
 
-  private noteMarkChanged = new Subject<NoteMarkChangedArgument>();
+  private noteMarkChanged = new Subject<NoteMarkChangedArgs>();
   noteMarkChanged$ = this.noteMarkChanged.asObservable();
 
-  private noteCountersChanged = new Subject<NoteCountersArgument>();
+  private noteCountersChanged = new Subject<NoteCountersArgs>();
   noteCountersChanged$ = this.noteCountersChanged.asObservable();
 
   private noteRenamed = new Subject<NoteRenamedArgs>();
@@ -494,7 +494,7 @@ export class CollectionService {
   public async getNotesAsync(notebookId: string, useFuzzyDates: boolean): Promise<Note[]> {
     let notes: Note[] = [];
 
-    let arg: NoteCountersArgument = new NoteCountersArgument();
+    let arg: NoteCountersArgs = new NoteCountersArgs();
 
     try {
       // Get the notes from the data store
@@ -607,7 +607,7 @@ export class CollectionService {
     this.dataStore.setNoteMark(noteId, isMarked);
     let activeCollection: Collection = this.dataStore.getActiveCollection();
     let markedNotes: Note[] = this.dataStore.getMarkedNotes(activeCollection.id);
-    let arg: NoteMarkChangedArgument = new NoteMarkChangedArgument(noteId, isMarked, markedNotes.length);
+    let arg: NoteMarkChangedArgs = new NoteMarkChangedArgs(noteId, isMarked, markedNotes.length);
     this.noteMarkChanged.next(arg);
   }
 
