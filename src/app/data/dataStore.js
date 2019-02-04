@@ -143,7 +143,10 @@ var DataStore = /** @class */ (function () {
         return notes;
     };
     DataStore.prototype.getUnfiledNotes = function (collectionId) {
-        var notes = this.notes.chain().find({ '$and': [{ 'collectionId': collectionId }, { 'notebookId': "" }] }).simplesort('modificationDate', true).data();
+        var notebookIds = this.notebooks.chain().data().map(function (x) { return x.id; });
+        var notes = this.notes.chain().where(function (obj) {
+            return obj.collectionId === collectionId && (obj.notebookId === "" || !notebookIds.includes(obj.notebookId));
+        }).simplesort('modificationDate', true).data();
         return notes;
     };
     DataStore.prototype.getMarkedNotes = function (collectionId) {

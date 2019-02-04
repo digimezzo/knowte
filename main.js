@@ -76,7 +76,7 @@ function createNoteWindow(noteId) {
         x: 50,
         y: 50,
         width: 450,
-        height: 350,
+        height: 400,
         backgroundColor: '#fff',
         frame: false,
         show: false

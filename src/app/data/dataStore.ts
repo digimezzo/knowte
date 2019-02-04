@@ -180,7 +180,11 @@ export class DataStore {
     }
 
     public getUnfiledNotes(collectionId: string): Note[] {
-        let notes: Note[] = this.notes.chain().find({ '$and': [{ 'collectionId': collectionId }, { 'notebookId': "" }] }).simplesort('modificationDate', true).data();
+        let notebookIds: string[] = this.notebooks.chain().data().map(x => x.id);
+
+        let notes: Note[] = this.notes.chain().where(function (obj) {
+            return obj.collectionId === collectionId && (obj.notebookId === "" || !notebookIds.includes(obj.notebookId));
+        }).simplesort('modificationDate', true).data();
 
         return notes;
     }
