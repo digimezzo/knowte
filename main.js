@@ -66,13 +66,15 @@ function createWindow() {
         mainWindow.focus();
     });
     // Makes links open in external browser
-    mainWindow.webContents.on('will-navigate', function (e, url) {
+    var handleRedirect = function (e, url) {
         // Check that the requested url is not the current page
         if (url != mainWindow.webContents.getURL()) {
             e.preventDefault();
             require('electron').shell.openExternal(url);
         }
-    });
+    };
+    mainWindow.webContents.on('will-navigate', handleRedirect);
+    mainWindow.webContents.on('new-window', handleRedirect);
 }
 function createNoteWindow(noteId) {
     var noteWindow = new electron_1.BrowserWindow({
@@ -103,6 +105,16 @@ function createNoteWindow(noteId) {
         electron_log_1.default.info("Closing note with id=" + noteId);
         dataStore.setNoteIsOpen(noteId, false);
     });
+    // Makes links open in external browser
+    var handleRedirect = function (e, url) {
+        // Check that the requested url is not the current page
+        if (url != noteWindow.webContents.getURL()) {
+            e.preventDefault();
+            require('electron').shell.openExternal(url);
+        }
+    };
+    noteWindow.webContents.on('will-navigate', handleRedirect);
+    noteWindow.webContents.on('new-window', handleRedirect);
 }
 try {
     electron_log_1.default.info("+++ Starting +++");

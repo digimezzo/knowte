@@ -28,7 +28,7 @@ function createWindow() {
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
 
-log.info(app.getLocale());
+  log.info(app.getLocale());
 
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -78,13 +78,16 @@ log.info(app.getLocale());
   });
 
   // Makes links open in external browser
-  mainWindow.webContents.on('will-navigate', function (e, url) {
+  var handleRedirect = (e, url) => {
     // Check that the requested url is not the current page
     if (url != mainWindow.webContents.getURL()) {
-      e.preventDefault();
-      require('electron').shell.openExternal(url);
+      e.preventDefault()
+      require('electron').shell.openExternal(url)
     }
-  });
+  }
+
+  mainWindow.webContents.on('will-navigate', handleRedirect)
+  mainWindow.webContents.on('new-window', handleRedirect)
 }
 
 function createNoteWindow(noteId: string) {
@@ -118,6 +121,18 @@ function createNoteWindow(noteId: string) {
     log.info(`Closing note with id=${noteId}`);
     dataStore.setNoteIsOpen(noteId, false);
   });
+
+  // Makes links open in external browser
+  var handleRedirect = (e, url) => {
+    // Check that the requested url is not the current page
+    if (url != noteWindow.webContents.getURL()) {
+      e.preventDefault()
+      require('electron').shell.openExternal(url)
+    }
+  }
+
+  noteWindow.webContents.on('will-navigate', handleRedirect)
+  noteWindow.webContents.on('new-window', handleRedirect)
 }
 
 try {
