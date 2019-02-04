@@ -57,6 +57,7 @@ export class NotesComponent implements OnInit {
         });
 
         this.subscription = this.collectionService.noteDeleted$.subscribe(async (noteTitle) => {
+            this.setSelectedNote(null);
             await this.getNotesAsync();
             this.snackBarService.noteDeletedAsync(noteTitle);
         });
@@ -77,12 +78,21 @@ export class NotesComponent implements OnInit {
         if (this.selectedNotebook) {
             this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, true);
             this.notesCount = this.notes.length;
+            this.selectFirstNote();
         }
     }
 
     public setSelectedNote(note: Note) {
         this.selectedNote = note;
         this.canEditNote = this.selectedNote != null;
+    }
+
+    public selectFirstNote(){
+        if(this.notes && this.notes.length > 0){
+            this.setSelectedNote(this.notes[0]);
+        }else{
+            this.setSelectedNote(null);
+        }
     }
 
     public async addNoteAsync(): Promise<void> {
