@@ -33,11 +33,14 @@ export class NoteComponent implements OnInit {
     public noteTitle: string;
     private originalNoteTitle: string;
 
-    ngOnInit() {
+    async ngOnInit() {
         this.collectionService.initializeDataStoreAsync();
 
+        let notePlaceHolder: string = await this.translateService.get('Notes.NotePlaceholder').toPromise();
+
         var quill = new Quill('#editor', {
-            theme: 'snow'
+            placeholder: notePlaceHolder,
+            theme: 'snow',
         });
 
         // Get note id from url
