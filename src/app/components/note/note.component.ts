@@ -11,6 +11,8 @@ import { SnackBarService } from '../../services/snackBar.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { MatDialog } from '@angular/material';
+import { remote } from 'electron';
+import { NoteRenamedArgs } from '../../services/noteRenamedArgs';
 
 @Component({
     selector: 'note-content',
@@ -24,6 +26,7 @@ export class NoteComponent implements OnInit {
         private dialog: MatDialog) {
     }
 
+    private noteService = remote.getGlobal('noteService');
     public noteTitleChanged: Subject<string> = new Subject<string>();
 
     public noteId: string;
@@ -66,6 +69,7 @@ export class NoteComponent implements OnInit {
                     });
                 } else {
                     this.originalNoteTitle = this.noteTitle;
+                    this.noteService.noteRenamed.next(new NoteRenamedArgs(this.noteId, this.noteTitle));
                 }
             });
     }

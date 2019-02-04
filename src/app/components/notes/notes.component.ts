@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
+import { Component, OnInit, Input, NgZone } from '@angular/core';
 import log from 'electron-log';
 import { CollectionService } from '../../services/collection.service';
-import { ActivatedRoute } from '@angular/router';
 import { Note } from '../../data/note';
 import { Subscription } from 'rxjs';
 import { SnackBarService } from '../../services/snackBar.service';
@@ -13,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
+import { remote } from 'electron';
 
 @Component({
     selector: 'notes-component',
@@ -20,9 +20,11 @@ import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.compone
     styleUrls: ['./notes.component.scss']
 })
 export class NotesComponent implements OnInit {
-    constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService, private translateService: TranslateService) {
+    constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService, 
+        private translateService: TranslateService, private zone: NgZone) {
     }
 
+    private noteService = remote.getGlobal('noteService');
     private _selectedNotebook: Notebook;
 
     get selectedNotebook(): Notebook {
@@ -64,6 +66,13 @@ export class NotesComponent implements OnInit {
 
         this.subscription = this.collectionService.noteMarkChanged$.subscribe((noteMarkChangedArgument) => {
             this.notes.find(x => x.id === noteMarkChangedArgument.noteId).isMarked = noteMarkChangedArgument.isMarked;
+        });
+
+        this.subscription = this.noteService.noteRenamed$.subscribe((noteRenamedArgs) => {
+            this.zone.run(async () => {
+                await this.getNotesAsync();
+            });
+
         });
     }
 
