@@ -7,9 +7,23 @@ var rxjs_1 = require("rxjs");
  */
 var NoteService = /** @class */ (function () {
     function NoteService() {
+        this.openNoteIds = [];
         this.noteRenamed = new rxjs_1.Subject();
         this.noteRenamed$ = this.noteRenamed.asObservable();
     }
+    NoteService.prototype.openNote = function (noteId) {
+        if (!this.openNoteIds.includes(noteId)) {
+            this.openNoteIds.push(noteId);
+        }
+    };
+    NoteService.prototype.closeNote = function (noteId) {
+        if (this.openNoteIds.includes(noteId)) {
+            this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);
+        }
+    };
+    NoteService.prototype.noteIsOpen = function (noteId) {
+        return this.openNoteIds.includes(noteId);
+    };
     return NoteService;
 }());
 exports.NoteService = NoteService;

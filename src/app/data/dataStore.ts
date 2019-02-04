@@ -223,30 +223,6 @@ export class DataStore {
         return note;
     }
 
-    public setNoteIsOpen(noteId: string, isOpen: boolean): void {
-        let note: Note = this.notes.findOne({ 'id': noteId });
-        note.isOpen = isOpen;
-        this.notes.update(note);
-        this.db.saveDatabase();
-    }
-
-    public getOpenNotes(): Note[] {
-        let notes: Note[] = this.notes.chain().find({ 'isOpen': true }).data();
-
-        return notes;
-    }
-
-    public closeAllNotes(): void {
-        let openNotes: Note[] = this.notes.chain().find({ 'isOpen': true }).data();
-
-        for (let openNote of openNotes) {
-            openNote.isOpen = false;
-            this.notes.update(openNote);
-        }
-
-        this.db.saveDatabase();
-    }
-
     public deleteNote(noteId: string) {
         // Remove note
         let noteToRemove: Note = this.getNote(noteId);

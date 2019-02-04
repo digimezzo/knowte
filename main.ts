@@ -111,13 +111,8 @@ function createNoteWindow(noteId: string) {
   }
 
   noteWindow.on('ready-to-show', function () {
-    dataStore.setNoteIsOpen(noteId, true);
     noteWindow.show();
     noteWindow.focus();
-  });
-
-  noteWindow.on('close', function () {
-    dataStore.setNoteIsOpen(noteId, false);
   });
 
   // Makes links open in external browser

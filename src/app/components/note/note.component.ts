@@ -36,7 +36,8 @@ export class NoteComponent implements OnInit {
      // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
-        log.info(`Opening note with id=${this.noteId}`);
+        log.info(`Closing note with id=${this.noteId}`);
+        this.noteService.closeNote(this.noteId);
     }
 
     async ngOnInit() {
@@ -53,6 +54,7 @@ export class NoteComponent implements OnInit {
         this.activatedRoute.queryParams.subscribe(params => {
             this.noteId = params['id'];
             log.info(`Opening note with id=${this.noteId}`);
+            this.noteService.openNote(this.noteId);
 
             // Get the note from the data store
             let note: Note = this.collectionService.getNote(this.noteId);

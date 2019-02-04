@@ -20,7 +20,7 @@ import { remote } from 'electron';
     styleUrls: ['./notes.component.scss']
 })
 export class NotesComponent implements OnInit {
-    constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService, 
+    constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
         private translateService: TranslateService, private zone: NgZone) {
     }
 
@@ -48,9 +48,6 @@ export class NotesComponent implements OnInit {
     }
 
     async ngOnInit() {
-        // In case we crashed on a previous run, make sure all notes are closed.
-        this.collectionService.closeAllNotes();
-
         // Get notes
         await this.getNotesAsync();
 
@@ -111,22 +108,25 @@ export class NotesComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(async (result) => {
             if (result) {
-                let operation: NoteOperation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
 
-                if (operation === NoteOperation.Blocked) {
+                if (!this.noteService.noteIsOpen(this.selectedNote.id)) {
+                    let operation: NoteOperation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
+
+                    if (operation === NoteOperation.Error) {
+                        let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteNoteError', { noteTitle: this.selectedNote.title }).toPromise());
+                        this.dialog.open(ErrorDialogComponent, {
+                            width: '450px', data: { errorText: generatedErrorText }
+                        });
+                    }
+                } else {
                     this.snackBarService.noteDeleteBlockedAsync(this.selectedNote.title);
-                } else if (operation === NoteOperation.Error) {
-                    let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteNoteError', { noteTitle: this.selectedNote.title }).toPromise());
-                    this.dialog.open(ErrorDialogComponent, {
-                        width: '450px', data: { errorText: generatedErrorText }
-                    });
                 }
             }
         });
     }
 
     public openNote(): void {
-        if (this.collectionService.canOpenNote(this.selectedNote.id)) {
+        if (!this.noteService.noteIsOpen(this.selectedNote.id)) {
             ipcRenderer.send('open-note-window', this.selectedNote.id);
         } else {
             this.snackBarService.noteAlreadyOpenAsync();

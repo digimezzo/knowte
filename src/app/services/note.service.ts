@@ -10,6 +10,24 @@ export class NoteService {
 
     }
 
+    private openNoteIds: string[] = [];
+
     private noteRenamed = new Subject<NoteRenamedArgs>();
     noteRenamed$ = this.noteRenamed.asObservable();
+
+    public openNote(noteId: string): void {
+        if (!this.openNoteIds.includes(noteId)) {
+            this.openNoteIds.push(noteId);
+        }
+    }
+
+    public closeNote(noteId: string): void {
+        if (this.openNoteIds.includes(noteId)) {
+            this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);
+        }
+    }
+
+    public noteIsOpen(noteId: string): boolean {
+        return this.openNoteIds.includes(noteId);
+    }
 }

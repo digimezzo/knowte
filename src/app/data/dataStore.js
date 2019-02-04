@@ -173,25 +173,6 @@ var DataStore = /** @class */ (function () {
         var note = this.notes.findOne({ 'id': noteId });
         return note;
     };
-    DataStore.prototype.setNoteIsOpen = function (noteId, isOpen) {
-        var note = this.notes.findOne({ 'id': noteId });
-        note.isOpen = isOpen;
-        this.notes.update(note);
-        this.db.saveDatabase();
-    };
-    DataStore.prototype.getOpenNotes = function () {
-        var notes = this.notes.chain().find({ 'isOpen': true }).data();
-        return notes;
-    };
-    DataStore.prototype.closeAllNotes = function () {
-        var openNotes = this.notes.chain().find({ 'isOpen': true }).data();
-        for (var _i = 0, openNotes_1 = openNotes; _i < openNotes_1.length; _i++) {
-            var openNote = openNotes_1[_i];
-            openNote.isOpen = false;
-            this.notes.update(openNote);
-        }
-        this.db.saveDatabase();
-    };
     DataStore.prototype.deleteNote = function (noteId) {
         // Remove note
         var noteToRemove = this.getNote(noteId);

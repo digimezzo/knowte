@@ -395,12 +395,6 @@ export class CollectionService {
     try {
       let noteToDelete: Note = this.dataStore.getNote(noteId);
 
-      if (noteToDelete.isOpen) {
-        log.warn(`Blocked delete the note with id='${noteId}', because the note is open.`);
-        // TODO: maybe add a custom event in order to notify the user why the delete was prevented.
-        return NoteOperation.Blocked;
-      }
-
       // 1. Get the title of the note
       noteTitle = noteToDelete.title;
 
@@ -589,20 +583,6 @@ export class CollectionService {
     return this.dataStore.getNote(noteId);
   }
 
-  public canOpenNote(noteId: string) {
-    let openNotes: Note[] = this.dataStore.getOpenNotes();
-
-    if (openNotes.map(x => x.id).includes(noteId)) {
-      return false;
-    }
-
-    return true;
-  }
-
-  public closeAllNotes(): void {
-    this.dataStore.closeAllNotes();
-  }
-
   public setNoteMark(noteId: string, isMarked: boolean): void {
     this.dataStore.setNoteMark(noteId, isMarked);
     let activeCollection: Collection = this.dataStore.getActiveCollection();
@@ -618,7 +598,7 @@ export class CollectionService {
     return note != null;
   }
 
-  public renameNote(noteId: string, newNoteTitle: string): NoteOperation{
+  public renameNote(noteId: string, newNoteTitle: string): NoteOperation {
     if (!noteId || !newNoteTitle) {
       log.error("renameNote: noteId or newNoteTitle is null");
       return NoteOperation.Error;
