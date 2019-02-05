@@ -29,15 +29,14 @@ export class NoteComponent implements OnInit {
     private noteService = remote.getGlobal('noteService');
     public noteTitleChanged: Subject<string> = new Subject<string>();
 
-    public noteId: string;
-    public noteTitle: string;
+    public note: Note;
     private originalNoteTitle: string;
 
-     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
+    // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
-        log.info(`Closing note with id=${this.noteId}`);
-        this.noteService.closeNote(this.noteId);
+        log.info(`Closing note with id=${this.note.id}`);
+        this.noteService.closeNote(this.note.id);
     }
 
     async ngOnInit() {
@@ -52,26 +51,25 @@ export class NoteComponent implements OnInit {
 
         // Get note id from url
         this.activatedRoute.queryParams.subscribe(params => {
-            this.noteId = params['id'];
-            log.info(`Opening note with id=${this.noteId}`);
-            this.noteService.openNote(this.noteId);
+            let noteId: string = params['id'];
 
             // Get the note from the data store
-            let note: Note = this.collectionService.getNote(this.noteId);
-            this.noteTitle = note.title;
-            this.originalNoteTitle = note.title;
+            this.note = this.collectionService.getNote(noteId);
+            log.info(`Opening note with id=${this.note.id}`);
+            this.noteService.openNote(this.note.id);
+            this.originalNoteTitle = this.note.title;
         });
 
         this.noteTitleChanged
             .pipe(debounceTime(5000), distinctUntilChanged())
             .subscribe(async (newNoteTitle) => {
-                let operation: NoteOperation = this.collectionService.renameNote(this.noteId, newNoteTitle);
+                let operation: NoteOperation = this.collectionService.renameNote(this.note.id, newNoteTitle);
 
                 if (operation === NoteOperation.Error) {
-                    this.noteTitle = this.originalNoteTitle;
+                    this.note.title = this.originalNoteTitle;
                     this.snackBarService.duplicateNote(newNoteTitle);
                 } else if (operation === NoteOperation.Duplicate) {
-                    this.noteTitle = this.originalNoteTitle;
+                    this.note.title = this.originalNoteTitle;
 
                     let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.originalNoteTitle }).toPromise());
 
@@ -79,8 +77,8 @@ export class NoteComponent implements OnInit {
                         width: '450px', data: { errorText: generatedErrorText }
                     });
                 } else {
-                    this.originalNoteTitle = this.noteTitle;
-                    this.noteService.noteRenamed.next(new NoteRenamedArgs(this.noteId, this.noteTitle));
+                    this.originalNoteTitle = this.note.title;
+                    this.noteService.noteRenamed.next(new NoteRenamedArgs(this.note.id, this.note.title));
                 }
             });
     }
