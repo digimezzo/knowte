@@ -62,8 +62,8 @@ export class NotesComponent implements OnInit {
             this.snackBarService.noteDeletedAsync(noteTitle);
         });
 
-        this.subscription = this.collectionService.noteMarkChanged$.subscribe((noteMarkChangedArgument) => {
-            this.notes.find(x => x.id === noteMarkChangedArgument.noteId).isMarked = noteMarkChangedArgument.isMarked;
+        this.subscription = this.collectionService.noteMarkChanged$.subscribe((noteMarkChangedArgs) => {
+            this.notes.find(x => x.id === noteMarkChangedArgs.noteId).isMarked = noteMarkChangedArgs.isMarked;
         });
 
         this.subscription = this.noteService.noteRenamed$.subscribe((noteRenamedArgs) => {
