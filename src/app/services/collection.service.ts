@@ -622,4 +622,15 @@ export class CollectionService {
 
     return NoteOperation.Success;
   }
+
+  public updateNote(note: Note): NoteOperation {
+    try {
+      this.dataStore.updateNote(note);
+    } catch (error) {
+      log.error(`Could not update the note with id='${note.id}' to '${note.title}'. Cause: ${error}`);
+      return NoteOperation.Error;
+    }
+
+    return NoteOperation.Success;
+  }
 }

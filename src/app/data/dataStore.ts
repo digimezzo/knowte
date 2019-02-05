@@ -217,6 +217,13 @@ export class DataStore {
         return newNote.id;
     }
 
+    public updateNote(note: Note): string {
+        this.notes.update(note);
+        this.db.saveDatabase();
+
+        return note.id;
+    }
+
     public getNote(noteId: string): Note {
         let note: Note = this.notes.findOne({ 'id': noteId });
 
