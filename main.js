@@ -109,6 +109,10 @@ function createNoteWindow(noteId) {
     };
     noteWindow.webContents.on('will-navigate', handleRedirect);
     noteWindow.webContents.on('new-window', handleRedirect);
+    // noteWindow.on('close', function (e) {
+    //   e.preventDefault();
+    //   noteWindow.hide();
+    // });
 }
 try {
     electron_log_1.default.info("+++ Starting +++");

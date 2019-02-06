@@ -96,7 +96,8 @@
         "RenameCollectionError": "An error occurred while renaming the collection '{{collectionName}}'. Please verify the log if you need more information.",
         "DeleteCollectionError": "An error occurred while deleting the collection '{{collectionName}}'. Please verify the log if you need more information.",
         "DeleteNotebookError": "An error occurred while deleting the notebook '{{notebookName}}'. Please verify the log if you need more information.",
-        "DeleteNoteError": "An error occurred while deleting the note '{{noteTitle}}'. Please verify the log if you need more information."
+        "DeleteNoteError": "An error occurred while deleting the note '{{noteTitle}}'. Please verify the log if you need more information.",
+        "SaveNoteError": "An error occurred while saving the note '{{noteTitle}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "CollectionActivated": "Collection '{{collectionName}}' was activated",

@@ -7,6 +7,7 @@ import { Collection } from './collection';
 import * as nanoid from 'nanoid';
 import { Notebook } from './notebook';
 import { Note } from './note';
+import * as moment from 'moment'
 
 @Injectable({
     providedIn: 'root',
@@ -219,6 +220,7 @@ export class DataStore {
 
     public updateNote(note: Note): string {
         this.notes.update(note);
+        note.modificationDate = moment().valueOf();
         this.db.saveDatabase();
 
         return note.id;
@@ -242,6 +244,7 @@ export class DataStore {
     public setNoteMark(noteId: string, isMarked: boolean): void {
         let note: Note = this.getNote(noteId);
         note.isMarked = isMarked;
+        note.modificationDate = moment().valueOf();
         this.notes.update(note);
         this.db.saveDatabase();
     }
@@ -249,6 +252,7 @@ export class DataStore {
     public setNoteTitle(noteId: string, noteTitle: string) {
         let noteToRename: Note = this.getNote(noteId);
         noteToRename.title = noteTitle;
+        noteToRename.modificationDate = moment().valueOf();
         this.notes.update(noteToRename);
         this.db.saveDatabase();
     }

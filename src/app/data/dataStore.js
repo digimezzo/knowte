@@ -18,6 +18,7 @@ var collection_1 = require("./collection");
 var nanoid = require("nanoid");
 var notebook_1 = require("./notebook");
 var note_1 = require("./note");
+var moment = require("moment");
 var DataStore = /** @class */ (function () {
     function DataStore() {
         this.settings = new Store();
@@ -169,6 +170,12 @@ var DataStore = /** @class */ (function () {
         this.db.saveDatabase();
         return newNote.id;
     };
+    DataStore.prototype.updateNote = function (note) {
+        this.notes.update(note);
+        note.modificationDate = moment().valueOf();
+        this.db.saveDatabase();
+        return note.id;
+    };
     DataStore.prototype.getNote = function (noteId) {
         var note = this.notes.findOne({ 'id': noteId });
         return note;
@@ -183,12 +190,14 @@ var DataStore = /** @class */ (function () {
     DataStore.prototype.setNoteMark = function (noteId, isMarked) {
         var note = this.getNote(noteId);
         note.isMarked = isMarked;
+        note.modificationDate = moment().valueOf();
         this.notes.update(note);
         this.db.saveDatabase();
     };
     DataStore.prototype.setNoteTitle = function (noteId, noteTitle) {
         var noteToRename = this.getNote(noteId);
         noteToRename.title = noteTitle;
+        noteToRename.modificationDate = moment().valueOf();
         this.notes.update(noteToRename);
         this.db.saveDatabase();
     };
