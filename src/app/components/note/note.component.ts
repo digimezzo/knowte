@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, OnDestroy, HostListener, NgZone } from '@angular/core';
 import log from 'electron-log';
 import { CollectionService } from '../../services/collection.service';
 import * as Quill from 'quill';
@@ -28,7 +28,7 @@ export class NoteComponent implements OnInit {
 
     private noteService = remote.getGlobal('noteService');
     public noteTitleChanged: Subject<string> = new Subject<string>();
-    public closeNoteWindow: Subject<string> = new Subject<string>();
+    public saveChangedAndCloseNoteWindow: Subject<string> = new Subject<string>();
     private isDirty: boolean = false;
 
     public note: Note;
@@ -40,38 +40,18 @@ export class NoteComponent implements OnInit {
         log.info(`Detected closing of note with id=${this.note.id}`);
 
         // Prevents closing of the window
-        event.preventDefault();
-        event.returnValue = '';
-
         if (this.isDirty) {
-            log.info(`Note with id=${this.note.id} is dirty. Saving note before closing.`);
+            this.isDirty = false;
 
-            // let operation: NoteOperation = this.collectionService.updateNote(this.note);
-            // let operation: NoteOperation = this.collectionService.renameNote(this.note.id, this.note.title);
-            //     if (operation === NoteOperation.Error) {
-            //         let generatedErrorText: string = (await this.translateService.get('ErrorTexts.SaveNoteError', { noteTitle: this.originalNoteTitle }).toPromise());
+            log.info(`Note with id=${this.note.id} is dirty. Preventing close to save changes first.`);
+            event.preventDefault();
+            event.returnValue = '';
 
-            //         this.dialog.open(ErrorDialogComponent, {
-            //             width: '450px', data: { errorText: generatedErrorText }
-            //         });
-            //     }else{
-            //         this.noteService.noteRenamed.next(new NoteRenamedArgs(this.note.id, this.note.title));
-            //     }
-
-            // if (operation === NoteOperation.Error) {
-            //     this.note.title = this.originalNoteTitle;
-            //     this.snackBarService.duplicateNote(this.note.title);
-            // } else if (operation === NoteOperation.Duplicate) {
-            //     this.note.title = this.originalNoteTitle;
-            // } else {
-            //     this.originalNoteTitle = this.note.title;
-            //     this.noteService.noteRenamed.next(new NoteRenamedArgs(this.note.id, this.note.title));
-            // }
+            this.saveChangedAndCloseNoteWindow.next("");
+        } else {
+            log.info(`Note with id=${this.note.id} is clean. Closing directly.`);
+            this.noteService.closeNote(this.note.id);
         }
-
-        this.isDirty = false;
-        this.noteService.closeNote(this.note.id);
-        this.closeNoteWindow.next(null);
     }
 
     async ngOnInit() {
@@ -117,16 +97,18 @@ export class NoteComponent implements OnInit {
                 }
             });
 
-        this.closeNoteWindow
+        this.saveChangedAndCloseNoteWindow
             .pipe(debounceTime(500), distinctUntilChanged())
-            .subscribe(() => {
-                log.info(`Closing note with id=${this.note.id}`);
+            .subscribe((dummyString) => {
+                log.info(`Closing note with id=${this.note.id} after saving changes.`);
+                this.noteService.closeNote(this.note.id);
+
+                // TODO: save stuff here
+
                 let window: BrowserWindow = remote.getCurrentWindow();
                 window.close();
             });
     }
-
-    public renameNote
 
     public onNotetitleChange(newNoteTitle: string) {
         this.isDirty = true;
