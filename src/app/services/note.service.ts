@@ -1,10 +1,10 @@
 import { Subject } from "rxjs";
-import { NoteOperation } from "./noteOperation";
 import log from 'electron-log';
 import { Collection } from "../data/collection";
 import { Note } from "../data/note";
 import { NoteMarkChangedArgs } from "./noteMarkChangedArgs";
 import { RenameNoteResult } from "./renameNoteResult";
+import { CollectionOperation } from "./collectionOperation";
 
 /**
  * Angular services cannot be configured as singletons across Electron windows. So we use this class, which we 
@@ -72,18 +72,18 @@ export class NoteService {
   public renameNote(noteId: string, originalNoteTitle: string, newNoteTitle: string): RenameNoteResult {
     if (!noteId || !originalNoteTitle) {
       log.error("renameNote: noteId or originalNoteTitle is null");
-      return new RenameNoteResult(NoteOperation.Error);
+      return new RenameNoteResult(CollectionOperation.Error);
     }
 
     let uniqueNoteTitle: string = newNoteTitle.trim();
 
     if(uniqueNoteTitle.length === 0){
-      return new RenameNoteResult(NoteOperation.Blank);
+      return new RenameNoteResult(CollectionOperation.Blank);
     }
 
     if(originalNoteTitle === uniqueNoteTitle){
       log.error("New title is the same as old title. No rename required.");
-      return new RenameNoteResult(NoteOperation.Aborted);
+      return new RenameNoteResult(CollectionOperation.Aborted);
     }
 
     try {
@@ -94,10 +94,10 @@ export class NoteService {
       this.dataStore.setNoteTitle(noteId, uniqueNoteTitle);
     } catch (error) {
       log.error(`Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`);
-      return new RenameNoteResult(NoteOperation.Error);
+      return new RenameNoteResult(CollectionOperation.Error);
     }
 
-    let renameNoteResult: RenameNoteResult = new RenameNoteResult(NoteOperation.Success);
+    let renameNoteResult: RenameNoteResult = new RenameNoteResult(CollectionOperation.Success);
     renameNoteResult.noteId = noteId;
     renameNoteResult.newNoteTitle = uniqueNoteTitle;
 
@@ -106,22 +106,22 @@ export class NoteService {
     return renameNoteResult;
   }
 
-  public updateNote(note: Note): NoteOperation {
-    try {
-      this.dataStore.updateNote(note);
-    } catch (error) {
-      log.error(`Could not update the note with id='${note.id}' to '${note.title}'. Cause: ${error}`);
-      return NoteOperation.Error;
-    }
+  // public updateNote(note: Note): CollectionOperation {
+  //   try {
+  //     this.dataStore.updateNote(note);
+  //   } catch (error) {
+  //     log.error(`Could not update the note with id='${note.id}' to '${note.title}'. Cause: ${error}`);
+  //     return CollectionOperation.Error;
+  //   }
 
-    return NoteOperation.Success;
-  }
+  //   return CollectionOperation.Success;
+  // }
 
   public setNoteMark(noteId: string, isMarked: boolean): void {
     this.dataStore.setNoteMark(noteId, isMarked);
     let activeCollection: Collection = this.dataStore.getActiveCollection();
     let markedNotes: Note[] = this.dataStore.getMarkedNotes(activeCollection.id);
-    let arg: NoteMarkChangedArgs = new NoteMarkChangedArgs(noteId, isMarked, markedNotes.length);
-    this.noteMarkChanged.next(arg);
+    let args: NoteMarkChangedArgs = new NoteMarkChangedArgs(noteId, isMarked, markedNotes.length);
+    this.noteMarkChanged.next(args);
   }
 }

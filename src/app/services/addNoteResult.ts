@@ -1,11 +1,9 @@
 import { CollectionOperation } from "./collectionOperation";
 
 export class AddNoteResult {
-    constructor(operation: CollectionOperation) {
-        this.operation = operation;
+    constructor(public operation: CollectionOperation) {
     }
 
     public noteId: string;
     public noteTitle: string;
-    public operation: CollectionOperation;
 }

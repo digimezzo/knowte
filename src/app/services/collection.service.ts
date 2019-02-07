@@ -13,12 +13,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { NotebookOperation } from './notebookOperation';
 import { remote } from 'electron';
 import { Note } from '../data/note';
-import { NoteOperation } from './noteOperation';
-import { NoteOperationResult } from './noteOperationResult';
 import * as moment from 'moment'
 import { Moment, Duration } from 'moment';
 import { NoteDateFormatResult } from './noteDateFormatResult';
-import { NoteCountersArgs } from './noteCountersArgs';
+import { NoteCountersChangedArgs } from './noteCountersChangedArgs';
+import { AddNoteResult } from './addNoteResult';
 
 @Injectable({
   providedIn: 'root',
@@ -64,7 +63,7 @@ export class CollectionService {
   private noteDeleted = new Subject<string>();
   noteDeleted$ = this.noteDeleted.asObservable();
 
-  private noteCountersChanged = new Subject<NoteCountersArgs>();
+  private noteCountersChanged = new Subject<NoteCountersChangedArgs>();
   noteCountersChanged$ = this.noteCountersChanged.asObservable();
 
   public get hasDataStore(): boolean {
@@ -376,10 +375,10 @@ export class CollectionService {
     return NotebookOperation.Success;
   }
 
-  public async deleteNoteAsync(noteId: string): Promise<NoteOperation> {
+  public async deleteNoteAsync(noteId: string): Promise<CollectionOperation> {
     if (!noteId) {
       log.error("deleteNoteAsync: noteId is null");
-      return NoteOperation.Error;
+      return CollectionOperation.Error;
     }
 
     let noteTitle: string = "";
@@ -397,11 +396,11 @@ export class CollectionService {
       // TODO
     } catch (error) {
       log.error(`Could not delete the note with id='${noteId}'. Cause: ${error}`);
-      return NoteOperation.Error;
+      return CollectionOperation.Error;
     }
 
     this.noteDeleted.next(noteTitle);
-    return NoteOperation.Success;
+    return CollectionOperation.Success;
   }
 
   private async getNoteDateFormatResultAsync(millisecondsSinceEpoch: number, useFuzzyDates: boolean): Promise<NoteDateFormatResult> {
@@ -480,7 +479,7 @@ export class CollectionService {
   public async getNotesAsync(notebookId: string, useFuzzyDates: boolean): Promise<Note[]> {
     let notes: Note[] = [];
 
-    let arg: NoteCountersArgs = new NoteCountersArgs();
+    let noteCountersResult: NoteCountersChangedArgs = new NoteCountersChangedArgs();
 
     try {
       // Get the notes from the data store
@@ -495,8 +494,8 @@ export class CollectionService {
       }
 
       // Fill in counters
-      arg.allNotesCount = notes.length;
-      arg.markedNotesCount = notes.filter(x => x.isMarked).length;
+      noteCountersResult.allNotesCount = notes.length;
+      noteCountersResult.markedNotesCount = notes.filter(x => x.isMarked).length;
 
       // Fill in the display date
       for (let note of notes) {
@@ -504,22 +503,22 @@ export class CollectionService {
 
         // More counters
         if (result.isTodayNote) {
-          arg.todayNotesCount++;
+          noteCountersResult.todayNotesCount++;
         }
 
         if (result.isYesterdayNote) {
-          arg.yesterdayNotesCount++;
+          noteCountersResult.yesterdayNotesCount++;
         }
 
         if (result.isThisWeekNote) {
-          arg.thisWeekNotesCount++;
+          noteCountersResult.thisWeekNotesCount++;
         }
 
         // Date text
         note.displayModificationDate = result.dateText;
       }
 
-      this.noteCountersChanged.next(arg);
+      this.noteCountersChanged.next(noteCountersResult);
     } catch (error) {
       log.error(`Could not get notes. Cause: ${error}`);
     }
@@ -547,9 +546,9 @@ export class CollectionService {
     return uniqueTitle;
   }
 
-  public addNote(baseTitle: string, notebookId: string): NoteOperationResult {
+  public addNote(baseTitle: string, notebookId: string): AddNoteResult {
     let uniqueTitle: string = "";
-    let addNoteResult: NoteOperationResult = new NoteOperationResult(NoteOperation.Success);
+    let addNoteResult: AddNoteResult = new AddNoteResult(CollectionOperation.Success);
 
     // If a default notebook was selected, make sure the note is added as unfiled.
     if (notebookId === Constants.allNotesNotebookId || notebookId === Constants.unfiledNotesNotebookId) {
@@ -565,7 +564,7 @@ export class CollectionService {
       this.noteAdded.next(uniqueTitle);
     } catch (error) {
       log.error(`Could not add note '${uniqueTitle}'. Cause: ${error}`);
-      addNoteResult.operation = NoteOperation.Error;
+      addNoteResult.operation = CollectionOperation.Error;
     }
 
     return addNoteResult;

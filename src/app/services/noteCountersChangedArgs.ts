@@ -1,4 +1,4 @@
-export class NoteCountersArgs {
+export class NoteCountersChangedArgs {
     constructor() {
     }
 

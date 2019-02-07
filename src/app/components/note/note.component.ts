@@ -6,13 +6,13 @@ import { ActivatedRoute } from '@angular/router';
 import { Note } from '../../data/note';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from "rxjs/internal/operators";
-import { NoteOperation } from '../../services/noteOperation';
 import { SnackBarService } from '../../services/snackBar.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { MatDialog } from '@angular/material';
 import { remote, BrowserWindow } from 'electron';
 import { RenameNoteResult } from '../../services/renameNoteResult';
+import { CollectionOperation } from '../../services/collectionOperation';
 
 @Component({
     selector: 'note-content',
@@ -84,17 +84,17 @@ export class NoteComponent implements OnInit {
             .subscribe(async (newNoteTitle) => {
                 let renameNoteResult: RenameNoteResult = this.noteService.renameNote(this.noteId, this.originalNoteTitle, newNoteTitle);
 
-                if (renameNoteResult.operation === NoteOperation.Blank) {
+                if (renameNoteResult.operation === CollectionOperation.Blank) {
                     this.noteTitle = this.originalNoteTitle;
                     this.snackBarService.noteTitleCannotBeEmptyAsync();
-                } else if (renameNoteResult.operation === NoteOperation.Error) {
+                } else if (renameNoteResult.operation === CollectionOperation.Error) {
                     this.noteTitle = this.originalNoteTitle;
                     let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.originalNoteTitle }).toPromise());
 
                     this.dialog.open(ErrorDialogComponent, {
                         width: '450px', data: { errorText: generatedErrorText }
                     });
-                } else if (renameNoteResult.operation === NoteOperation.Success) {
+                } else if (renameNoteResult.operation === CollectionOperation.Success) {
                     this.originalNoteTitle = renameNoteResult.newNoteTitle;
                     this.noteTitle = renameNoteResult.newNoteTitle;
                     this.noteService.noteRenamed.next("");

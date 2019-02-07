@@ -61,18 +61,18 @@ export class CollectionComponent implements OnInit {
     }));
 
     // Note counters
-    this.subscription.add(this.collectionService.noteCountersChanged$.subscribe(async (noteCounterArgument) => {
-      this.allNotesCount = noteCounterArgument.allNotesCount;
-      this.todayNotesCount = noteCounterArgument.todayNotesCount;
-      this.yesterdayNotesCount = noteCounterArgument.yesterdayNotesCount;
-      this.thisWeekNotesCount = noteCounterArgument.thisWeekNotesCount;
-      this.markedNotesCount = noteCounterArgument.markedNotesCount;
+    this.subscription.add(this.collectionService.noteCountersChanged$.subscribe((noteCountersChangedArgs) => {
+      this.allNotesCount = noteCountersChangedArgs.allNotesCount;
+      this.todayNotesCount = noteCountersChangedArgs.todayNotesCount;
+      this.yesterdayNotesCount = noteCountersChangedArgs.yesterdayNotesCount;
+      this.thisWeekNotesCount = noteCountersChangedArgs.thisWeekNotesCount;
+      this.markedNotesCount = noteCountersChangedArgs.markedNotesCount;
     }));
 
     // Note mark changed
-    this.subscription = this.noteService.noteMarkChanged$.subscribe((noteMarkChangedArgument) => {
+    this.subscription = this.noteService.noteMarkChanged$.subscribe((noteMarkChangedArgs) => {
       this.zone.run(() => {
-        this.markedNotesCount = noteMarkChangedArgument.markedNotesCount;
+        this.markedNotesCount = noteMarkChangedArgs.markedNotesCount;
       });
     });
 

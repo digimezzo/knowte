@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var rxjs_1 = require("rxjs");
-var noteOperation_1 = require("./noteOperation");
 var electron_log_1 = require("electron-log");
 var noteMarkChangedArgs_1 = require("./noteMarkChangedArgs");
 var renameNoteResult_1 = require("./renameNoteResult");
+var collectionOperation_1 = require("./collectionOperation");
 /**
  * Angular services cannot be configured as singletons across Electron windows. So we use this class, which we
  * set as a global main process variable, and then use it as a app-wide singleton to send events across windows.
@@ -55,15 +55,15 @@ var NoteService = /** @class */ (function () {
     NoteService.prototype.renameNote = function (noteId, originalNoteTitle, newNoteTitle) {
         if (!noteId || !originalNoteTitle) {
             electron_log_1.default.error("renameNote: noteId or originalNoteTitle is null");
-            return new renameNoteResult_1.RenameNoteResult(noteOperation_1.NoteOperation.Error);
+            return new renameNoteResult_1.RenameNoteResult(collectionOperation_1.CollectionOperation.Error);
         }
         var uniqueNoteTitle = newNoteTitle.trim();
         if (uniqueNoteTitle.length === 0) {
-            return new renameNoteResult_1.RenameNoteResult(noteOperation_1.NoteOperation.Blank);
+            return new renameNoteResult_1.RenameNoteResult(collectionOperation_1.CollectionOperation.Blank);
         }
         if (originalNoteTitle === uniqueNoteTitle) {
             electron_log_1.default.error("New title is the same as old title. No rename required.");
-            return new renameNoteResult_1.RenameNoteResult(noteOperation_1.NoteOperation.Aborted);
+            return new renameNoteResult_1.RenameNoteResult(collectionOperation_1.CollectionOperation.Aborted);
         }
         try {
             // 1. Make sure the new title is unique
@@ -73,30 +73,29 @@ var NoteService = /** @class */ (function () {
         }
         catch (error) {
             electron_log_1.default.error("Could not rename the note with id='" + noteId + "' to '" + uniqueNoteTitle + "'. Cause: " + error);
-            return new renameNoteResult_1.RenameNoteResult(noteOperation_1.NoteOperation.Error);
+            return new renameNoteResult_1.RenameNoteResult(collectionOperation_1.CollectionOperation.Error);
         }
-        var renameNoteResult = new renameNoteResult_1.RenameNoteResult(noteOperation_1.NoteOperation.Success);
+        var renameNoteResult = new renameNoteResult_1.RenameNoteResult(collectionOperation_1.CollectionOperation.Success);
         renameNoteResult.noteId = noteId;
         renameNoteResult.newNoteTitle = uniqueNoteTitle;
         this.noteRenamed.next(renameNoteResult);
         return renameNoteResult;
     };
-    NoteService.prototype.updateNote = function (note) {
-        try {
-            this.dataStore.updateNote(note);
-        }
-        catch (error) {
-            electron_log_1.default.error("Could not update the note with id='" + note.id + "' to '" + note.title + "'. Cause: " + error);
-            return noteOperation_1.NoteOperation.Error;
-        }
-        return noteOperation_1.NoteOperation.Success;
-    };
+    // public updateNote(note: Note): CollectionOperation {
+    //   try {
+    //     this.dataStore.updateNote(note);
+    //   } catch (error) {
+    //     log.error(`Could not update the note with id='${note.id}' to '${note.title}'. Cause: ${error}`);
+    //     return CollectionOperation.Error;
+    //   }
+    //   return CollectionOperation.Success;
+    // }
     NoteService.prototype.setNoteMark = function (noteId, isMarked) {
         this.dataStore.setNoteMark(noteId, isMarked);
         var activeCollection = this.dataStore.getActiveCollection();
         var markedNotes = this.dataStore.getMarkedNotes(activeCollection.id);
-        var arg = new noteMarkChangedArgs_1.NoteMarkChangedArgs(noteId, isMarked, markedNotes.length);
-        this.noteMarkChanged.next(arg);
+        var args = new noteMarkChangedArgs_1.NoteMarkChangedArgs(noteId, isMarked, markedNotes.length);
+        this.noteMarkChanged.next(args);
     };
     return NoteService;
 }());

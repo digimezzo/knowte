@@ -6,13 +6,13 @@ import { Subscription } from 'rxjs';
 import { SnackBarService } from '../../services/snackBar.service';
 import { ipcRenderer } from 'electron';
 import { Notebook } from '../../data/notebook';
-import { NoteOperation } from '../../services/noteOperation';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { remote } from 'electron';
 import { AddNoteResult } from '../../services/addNoteResult';
+import { CollectionOperation } from '../../services/collectionOperation';
 
 @Component({
     selector: 'notes-component',
@@ -101,7 +101,7 @@ export class NotesComponent implements OnInit {
         // Create a new note
         let addNoteResult: AddNoteResult = this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
 
-        if (addNoteResult.operation === NoteOperation.Success) {
+        if (addNoteResult.operation === CollectionOperation.Success) {
             // Show the note window
             ipcRenderer.send('open-note-window', addNoteResult.noteId);
         }
@@ -120,9 +120,9 @@ export class NotesComponent implements OnInit {
             if (result) {
 
                 if (!this.noteService.noteIsOpen(this.selectedNote.id)) {
-                    let operation: NoteOperation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
+                    let operation: CollectionOperation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
 
-                    if (operation === NoteOperation.Error) {
+                    if (operation === CollectionOperation.Error) {
                         let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteNoteError', { noteTitle: this.selectedNote.title }).toPromise());
                         this.dialog.open(ErrorDialogComponent, {
                             width: '450px', data: { errorText: generatedErrorText }
