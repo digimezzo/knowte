@@ -6,13 +6,13 @@ import { Subscription } from 'rxjs';
 import { SnackBarService } from '../../services/snackBar.service';
 import { ipcRenderer } from 'electron';
 import { Notebook } from '../../data/notebook';
-import { AddNoteResult } from '../../services/addNoteResult';
 import { NoteOperation } from '../../services/noteOperation';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { remote } from 'electron';
+import { AddNoteResult } from '../../services/addNoteResult';
 
 @Component({
     selector: 'notes-component',
@@ -66,7 +66,7 @@ export class NotesComponent implements OnInit {
             this.notes.find(x => x.id === noteMarkChangedArgs.noteId).isMarked = noteMarkChangedArgs.isMarked;
         });
 
-        this.subscription = this.noteService.noteRenamed$.subscribe((noteRenamedArgs) => {
+        this.subscription = this.noteService.noteRenamed$.subscribe(() => {
             this.zone.run(async () => {
                 await this.getNotesAsync();
             });

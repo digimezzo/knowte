@@ -14,13 +14,11 @@ import { NotebookOperation } from './notebookOperation';
 import { remote } from 'electron';
 import { Note } from '../data/note';
 import { NoteOperation } from './noteOperation';
-import { AddNoteResult } from './addNoteResult';
+import { NoteOperationResult } from './noteOperationResult';
 import * as moment from 'moment'
 import { Moment, Duration } from 'moment';
 import { NoteDateFormatResult } from './noteDateFormatResult';
 import { NoteCountersArgs } from './noteCountersArgs';
-import { NoteMarkChangedArgs } from './noteMarkChangedArgs';
-import { NoteRenamedArgs } from './noteRenamedArgs';
 
 @Injectable({
   providedIn: 'root',
@@ -549,9 +547,9 @@ export class CollectionService {
     return uniqueTitle;
   }
 
-  public addNote(baseTitle: string, notebookId: string): AddNoteResult {
+  public addNote(baseTitle: string, notebookId: string): NoteOperationResult {
     let uniqueTitle: string = "";
-    let addNoteResult: AddNoteResult = new AddNoteResult();
+    let addNoteResult: NoteOperationResult = new NoteOperationResult(NoteOperation.Success);
 
     // If a default notebook was selected, make sure the note is added as unfiled.
     if (notebookId === Constants.allNotesNotebookId || notebookId === Constants.unfiledNotesNotebookId) {

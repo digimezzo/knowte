@@ -1,10 +1,10 @@
 import { Subject } from "rxjs";
-import { NoteRenamedArgs } from "./noteRenamedArgs";
 import { NoteOperation } from "./noteOperation";
 import log from 'electron-log';
 import { Collection } from "../data/collection";
 import { Note } from "../data/note";
 import { NoteMarkChangedArgs } from "./noteMarkChangedArgs";
+import { RenameNoteResult } from "./renameNoteResult";
 
 /**
  * Angular services cannot be configured as singletons across Electron windows. So we use this class, which we 
@@ -20,7 +20,7 @@ export class NoteService {
   private globalAny: any = global;
   private dataStore = this.globalAny.dataStore;
 
-  private noteRenamed = new Subject<NoteRenamedArgs>();
+  private noteRenamed = new Subject<RenameNoteResult>();
   noteRenamed$ = this.noteRenamed.asObservable();
 
   private noteMarkChanged = new Subject<NoteMarkChangedArgs>();
@@ -69,21 +69,21 @@ export class NoteService {
     return uniqueTitle;
   }
 
-  public renameNote(noteId: string, originalNoteTitle: string, newNoteTitle: string): NoteOperation {
+  public renameNote(noteId: string, originalNoteTitle: string, newNoteTitle: string): RenameNoteResult {
     if (!noteId || !originalNoteTitle) {
       log.error("renameNote: noteId or originalNoteTitle is null");
-      return NoteOperation.Error;
+      return new RenameNoteResult(NoteOperation.Error);
     }
 
     let uniqueNoteTitle: string = newNoteTitle.trim();
 
     if(uniqueNoteTitle.length === 0){
-      return NoteOperation.Blank;
+      return new RenameNoteResult(NoteOperation.Blank);
     }
 
     if(originalNoteTitle === uniqueNoteTitle){
       log.error("New title is the same as old title. No rename required.");
-      return NoteOperation.Success;
+      return new RenameNoteResult(NoteOperation.Aborted);
     }
 
     try {
@@ -94,13 +94,16 @@ export class NoteService {
       this.dataStore.setNoteTitle(noteId, uniqueNoteTitle);
     } catch (error) {
       log.error(`Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`);
-      return NoteOperation.Error;
+      return new RenameNoteResult(NoteOperation.Error);
     }
 
-    let args: NoteRenamedArgs = new NoteRenamedArgs(noteId, uniqueNoteTitle);
-    this.noteRenamed.next(args);
+    let renameNoteResult: RenameNoteResult = new RenameNoteResult(NoteOperation.Success);
+    renameNoteResult.noteId = noteId;
+    renameNoteResult.newNoteTitle = uniqueNoteTitle;
 
-    return NoteOperation.Success;
+    this.noteRenamed.next(renameNoteResult);
+
+    return renameNoteResult;
   }
 
   public updateNote(note: Note): NoteOperation {

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, OnDestroy, HostListener, NgZone } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, HostListener } from '@angular/core';
 import log from 'electron-log';
 import { CollectionService } from '../../services/collection.service';
 import * as Quill from 'quill';
@@ -12,7 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { MatDialog } from '@angular/material';
 import { remote, BrowserWindow } from 'electron';
-import { NoteRenamedArgs } from '../../services/noteRenamedArgs';
+import { RenameNoteResult } from '../../services/renameNoteResult';
 
 @Component({
     selector: 'note-content',
@@ -23,7 +23,7 @@ import { NoteRenamedArgs } from '../../services/noteRenamedArgs';
 export class NoteComponent implements OnInit {
     constructor(private collectionService: CollectionService, private activatedRoute: ActivatedRoute,
         private snackBarService: SnackBarService, private translateService: TranslateService,
-        private dialog: MatDialog, private zone: NgZone) {
+        private dialog: MatDialog) {
     }
 
     private noteService = remote.getGlobal('noteService');
@@ -82,23 +82,24 @@ export class NoteComponent implements OnInit {
         this.noteTitleChanged
             .pipe(debounceTime(5000), distinctUntilChanged())
             .subscribe(async (newNoteTitle) => {
-                let operation: NoteOperation = this.noteService.renameNote(this.noteId, this.originalNoteTitle, newNoteTitle);
+                let renameNoteResult: RenameNoteResult = this.noteService.renameNote(this.noteId, this.originalNoteTitle, newNoteTitle);
 
-                if (operation === NoteOperation.Blank) {
-                    this.zone.run(() => this.noteTitle = this.originalNoteTitle);
+                if (renameNoteResult.operation === NoteOperation.Blank) {
+                    this.noteTitle = this.originalNoteTitle;
                     this.snackBarService.noteTitleCannotBeEmptyAsync();
-                }else if (operation === NoteOperation.Error) {
-                    this.zone.run(() => this.noteTitle = this.originalNoteTitle);
+                } else if (renameNoteResult.operation === NoteOperation.Error) {
+                    this.noteTitle = this.originalNoteTitle;
                     let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.originalNoteTitle }).toPromise());
 
                     this.dialog.open(ErrorDialogComponent, {
                         width: '450px', data: { errorText: generatedErrorText }
                     });
+                } else if (renameNoteResult.operation === NoteOperation.Success) {
+                    this.originalNoteTitle = renameNoteResult.newNoteTitle;
+                    this.noteTitle = renameNoteResult.newNoteTitle;
+                    this.noteService.noteRenamed.next("");
                 } else {
-                    // TODO: it might be more performant to get the new unique note title from noteService.renameNote
-                    let note: Note = this.collectionService.getNote(this.noteId);
-                    this.originalNoteTitle = note.title;
-                    this.noteService.noteRenamed.next(new NoteRenamedArgs(this.noteId, this.noteTitle));
+                    // Do nothing
                 }
             });
 

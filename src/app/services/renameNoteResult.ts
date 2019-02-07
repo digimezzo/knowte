@@ -1,11 +1,11 @@
 import { CollectionOperation } from "./collectionOperation";
 
-export class AddNoteResult {
+export class RenameNoteResult {
     constructor(operation: CollectionOperation) {
         this.operation = operation;
     }
 
     public noteId: string;
-    public noteTitle: string;
+    public newNoteTitle: string;
     public operation: CollectionOperation;
 }

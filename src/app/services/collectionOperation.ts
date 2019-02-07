@@ -1,5 +1,7 @@
 export enum CollectionOperation {
     Success = 1,
     Error = 2,
-    Duplicate = 3
+    Duplicate = 3,
+    Blank = 4,
+    Aborted = 5
 }
