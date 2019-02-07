@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, NgZone } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { Notebook } from '../../data/notebook';
 import { MatDialog, MatDialogRef } from '@angular/material';
@@ -20,7 +20,7 @@ import { remote } from 'electron';
 })
 export class CollectionComponent implements OnInit {
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
-    private translateService: TranslateService, private snackBarService: SnackBarService) {
+    private translateService: TranslateService, private snackBarService: SnackBarService, private zone: NgZone) {
   }
 
   private noteService = remote.getGlobal('noteService');
@@ -71,7 +71,9 @@ export class CollectionComponent implements OnInit {
 
     // Note mark changed
     this.subscription = this.noteService.noteMarkChanged$.subscribe((noteMarkChangedArgument) => {
-      this.markedNotesCount = noteMarkChangedArgument.markedNotesCount;
+      this.zone.run(() => {
+        this.markedNotesCount = noteMarkChangedArgument.markedNotesCount;
+      });
     });
 
     // Collection activated

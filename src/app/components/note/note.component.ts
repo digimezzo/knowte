@@ -80,10 +80,10 @@ export class NoteComponent implements OnInit {
             .subscribe(async (newNoteTitle) => {
                 let operation: NoteOperation = this.noteService.renameNote(this.note.id, newNoteTitle);
 
-                if (operation === NoteOperation.Error) {
+                if (operation === NoteOperation.Duplicate) {
                     this.note.title = this.originalNoteTitle;
                     this.snackBarService.duplicateNote(newNoteTitle);
-                } else if (operation === NoteOperation.Duplicate) {
+                } else if (operation === NoteOperation.Error) {
                     this.note.title = this.originalNoteTitle;
 
                     let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.originalNoteTitle }).toPromise());
