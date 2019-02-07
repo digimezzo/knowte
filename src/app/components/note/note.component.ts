@@ -23,7 +23,7 @@ import { NoteRenamedArgs } from '../../services/noteRenamedArgs';
 export class NoteComponent implements OnInit {
     constructor(private collectionService: CollectionService, private activatedRoute: ActivatedRoute,
         private snackBarService: SnackBarService, private translateService: TranslateService,
-        private dialog: MatDialog) {
+        private dialog: MatDialog, private zone: NgZone) {
     }
 
     private noteService = remote.getGlobal('noteService');
@@ -31,26 +31,27 @@ export class NoteComponent implements OnInit {
     public saveChangedAndCloseNoteWindow: Subject<string> = new Subject<string>();
     private isDirty: boolean = false;
 
-    public note: Note;
+    private noteId: string;
     private originalNoteTitle: string;
+    private noteTitle: string;
 
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
-        log.info(`Detected closing of note with id=${this.note.id}`);
+        log.info(`Detected closing of note with id=${this.noteId}`);
 
         // Prevents closing of the window
         if (this.isDirty) {
             this.isDirty = false;
 
-            log.info(`Note with id=${this.note.id} is dirty. Preventing close to save changes first.`);
+            log.info(`Note with id=${this.noteId} is dirty. Preventing close to save changes first.`);
             event.preventDefault();
             event.returnValue = '';
 
             this.saveChangedAndCloseNoteWindow.next("");
         } else {
-            log.info(`Note with id=${this.note.id} is clean. Closing directly.`);
-            this.noteService.closeNote(this.note.id);
+            log.info(`Note with id=${this.noteId} is clean. Closing directly.`);
+            this.noteService.closeNote(this.noteId);
         }
     }
 
@@ -69,39 +70,43 @@ export class NoteComponent implements OnInit {
             let noteId: string = params['id'];
 
             // Get the note from the data store
-            this.note = this.collectionService.getNote(noteId);
-            log.info(`Opening note with id=${this.note.id}`);
-            this.noteService.openNote(this.note.id);
-            this.originalNoteTitle = this.note.title;
+            let note: Note = this.collectionService.getNote(noteId);
+            log.info(`Opening note with id=${note.id}`);
+            this.noteService.openNote(note.id);
+
+            this.noteId = note.id;
+            this.originalNoteTitle = note.title;
+            this.noteTitle = note.title;
         });
 
         this.noteTitleChanged
             .pipe(debounceTime(5000), distinctUntilChanged())
             .subscribe(async (newNoteTitle) => {
-                let operation: NoteOperation = this.noteService.renameNote(this.note.id, newNoteTitle);
+                let operation: NoteOperation = this.noteService.renameNote(this.noteId, this.originalNoteTitle, newNoteTitle);
 
-                if (operation === NoteOperation.Duplicate) {
-                    this.note.title = this.originalNoteTitle;
-                    this.snackBarService.duplicateNote(newNoteTitle);
-                } else if (operation === NoteOperation.Error) {
-                    this.note.title = this.originalNoteTitle;
-
+                if (operation === NoteOperation.Blank) {
+                    this.zone.run(() => this.noteTitle = this.originalNoteTitle);
+                    this.snackBarService.noteTitleCannotBeEmptyAsync();
+                }else if (operation === NoteOperation.Error) {
+                    this.zone.run(() => this.noteTitle = this.originalNoteTitle);
                     let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.originalNoteTitle }).toPromise());
 
                     this.dialog.open(ErrorDialogComponent, {
                         width: '450px', data: { errorText: generatedErrorText }
                     });
                 } else {
-                    this.originalNoteTitle = this.note.title;
-                    this.noteService.noteRenamed.next(new NoteRenamedArgs(this.note.id, this.note.title));
+                    // TODO: it might be more performant to get the new unique note title from noteService.renameNote
+                    let note: Note = this.collectionService.getNote(this.noteId);
+                    this.originalNoteTitle = note.title;
+                    this.noteService.noteRenamed.next(new NoteRenamedArgs(this.noteId, this.noteTitle));
                 }
             });
 
         this.saveChangedAndCloseNoteWindow
             .pipe(debounceTime(500), distinctUntilChanged())
             .subscribe((dummyString) => {
-                log.info(`Closing note with id=${this.note.id} after saving changes.`);
-                this.noteService.closeNote(this.note.id);
+                log.info(`Closing note with id=${this.noteId} after saving changes.`);
+                this.noteService.closeNote(this.noteId);
 
                 // TODO: save stuff here
 

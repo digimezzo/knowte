@@ -49,26 +49,55 @@ export class NoteService {
     return note != null;
   }
 
-  public renameNote(noteId: string, newNoteTitle: string): NoteOperation {
-    if (!noteId || !newNoteTitle) {
-      log.error("renameNote: noteId or newNoteTitle is null");
+  private getSimilarTitles(baseTitle: string): string[] {
+    let notesWithIdenticalBaseTitle: Note[] = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
+    return notesWithIdenticalBaseTitle.map(x => x.title);
+  }
+
+  private getUniqueNoteNoteTitle(baseTitle: string): string {
+    let similarTitles: string[] = [];
+    let counter: number = 0;
+    let uniqueTitle: string = baseTitle;
+
+    similarTitles = this.getSimilarTitles(baseTitle);
+
+    while (similarTitles.includes(uniqueTitle)) {
+      counter++;
+      uniqueTitle = `${baseTitle} (${counter})`;
+    }
+
+    return uniqueTitle;
+  }
+
+  public renameNote(noteId: string, originalNoteTitle: string, newNoteTitle: string): NoteOperation {
+    if (!noteId || !originalNoteTitle) {
+      log.error("renameNote: noteId or originalNoteTitle is null");
       return NoteOperation.Error;
+    }
+
+    let uniqueNoteTitle: string = newNoteTitle.trim();
+
+    if(uniqueNoteTitle.length === 0){
+      return NoteOperation.Blank;
+    }
+
+    if(originalNoteTitle === uniqueNoteTitle){
+      log.error("New title is the same as old title. No rename required.");
+      return NoteOperation.Success;
     }
 
     try {
-      // 1. Check if there is already a note with that title
-      if (this.noteExists(newNoteTitle)) {
-        return NoteOperation.Duplicate;
-      }
+      // 1. Make sure the new title is unique
+      uniqueNoteTitle = this.getUniqueNoteNoteTitle(newNoteTitle);
 
       // 2. Rename the note
-      this.dataStore.setNoteTitle(noteId, newNoteTitle);
+      this.dataStore.setNoteTitle(noteId, uniqueNoteTitle);
     } catch (error) {
-      log.error(`Could not rename the note with id='${noteId}' to '${newNoteTitle}'. Cause: ${error}`);
+      log.error(`Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`);
       return NoteOperation.Error;
     }
 
-    let args: NoteRenamedArgs = new NoteRenamedArgs(noteId, newNoteTitle);
+    let args: NoteRenamedArgs = new NoteRenamedArgs(noteId, uniqueNoteTitle);
     this.noteRenamed.next(args);
 
     return NoteOperation.Success;

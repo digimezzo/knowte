@@ -80,8 +80,8 @@ export class SnackBarService {
         this.showActionLessSnackBar(message, 2000);
     }
 
-    public async duplicateNote(noteTitle: string) {
-        let message: string = await this.translate.get('SnackBarMessages.DuplicateNote', { noteTitle: noteTitle }).toPromise();
+    public async noteTitleCannotBeEmptyAsync() {
+        let message: string = await this.translate.get('SnackBarMessages.NoteTitleCannotBeEmpty').toPromise();
         this.showActionLessSnackBar(message, 2000);
     }
 }

@@ -37,24 +37,45 @@ var NoteService = /** @class */ (function () {
         var note = this.dataStore.getNoteByTitle(activeCollection.id, noteTitle);
         return note != null;
     };
-    NoteService.prototype.renameNote = function (noteId, newNoteTitle) {
-        if (!noteId || !newNoteTitle) {
-            electron_log_1.default.error("renameNote: noteId or newNoteTitle is null");
+    NoteService.prototype.getSimilarTitles = function (baseTitle) {
+        var notesWithIdenticalBaseTitle = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
+        return notesWithIdenticalBaseTitle.map(function (x) { return x.title; });
+    };
+    NoteService.prototype.getUniqueNoteNoteTitle = function (baseTitle) {
+        var similarTitles = [];
+        var counter = 0;
+        var uniqueTitle = baseTitle;
+        similarTitles = this.getSimilarTitles(baseTitle);
+        while (similarTitles.includes(uniqueTitle)) {
+            counter++;
+            uniqueTitle = baseTitle + " (" + counter + ")";
+        }
+        return uniqueTitle;
+    };
+    NoteService.prototype.renameNote = function (noteId, originalNoteTitle, newNoteTitle) {
+        if (!noteId || !originalNoteTitle) {
+            electron_log_1.default.error("renameNote: noteId or originalNoteTitle is null");
             return noteOperation_1.NoteOperation.Error;
+        }
+        var uniqueNoteTitle = newNoteTitle.trim();
+        if (uniqueNoteTitle.length === 0) {
+            return noteOperation_1.NoteOperation.Blank;
+        }
+        if (originalNoteTitle === uniqueNoteTitle) {
+            electron_log_1.default.error("New title is the same as old title. No rename required.");
+            return noteOperation_1.NoteOperation.Success;
         }
         try {
-            // 1. Check if there is already a note with that title
-            if (this.noteExists(newNoteTitle)) {
-                return noteOperation_1.NoteOperation.Duplicate;
-            }
+            // 1. Make sure the new title is unique
+            uniqueNoteTitle = this.getUniqueNoteNoteTitle(newNoteTitle);
             // 2. Rename the note
-            this.dataStore.setNoteTitle(noteId, newNoteTitle);
+            this.dataStore.setNoteTitle(noteId, uniqueNoteTitle);
         }
         catch (error) {
-            electron_log_1.default.error("Could not rename the note with id='" + noteId + "' to '" + newNoteTitle + "'. Cause: " + error);
+            electron_log_1.default.error("Could not rename the note with id='" + noteId + "' to '" + uniqueNoteTitle + "'. Cause: " + error);
             return noteOperation_1.NoteOperation.Error;
         }
-        var args = new noteRenamedArgs_1.NoteRenamedArgs(noteId, newNoteTitle);
+        var args = new noteRenamedArgs_1.NoteRenamedArgs(noteId, uniqueNoteTitle);
         this.noteRenamed.next(args);
         return noteOperation_1.NoteOperation.Success;
     };

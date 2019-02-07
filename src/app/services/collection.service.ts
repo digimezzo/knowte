@@ -534,7 +534,7 @@ export class CollectionService {
     return notesWithIdenticalBaseTitle.map(x => x.title);
   }
 
-  private getUniqueNoteTitle(baseTitle: string): string {
+  private getUniqueNewNoteNoteTitle(baseTitle: string): string {
     let similarTitles: string[] = [];
     let counter: number = 1;
     let uniqueTitle: string = `${baseTitle} ${counter}`;
@@ -559,7 +559,7 @@ export class CollectionService {
     }
 
     try {
-      uniqueTitle = this.getUniqueNoteTitle(baseTitle);
+      uniqueTitle = this.getUniqueNewNoteNoteTitle(baseTitle);
       let activeCollection: Collection = this.dataStore.getActiveCollection();
       addNoteResult.noteId = this.dataStore.addNote(uniqueTitle, notebookId, activeCollection.id);
       addNoteResult.noteTitle = uniqueTitle;

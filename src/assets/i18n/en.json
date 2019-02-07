@@ -113,7 +113,7 @@
         "NoteDeleted": "Note '{{noteTitle}}' was deleted",
         "NoteDeleteBlocked": "The note '{{noteTitle}}' was not deleted because it is open",
         "NoteAlreadyOpen": "This note is already open",
-        "DuplicateNote": "There is already a note with title '{{noteTitle}}'"
+        "NoteTitleCannotBeEmpty": "The note title cannot be empty"
     },
     "MainPage": {
         "Notebooks": "Notebooks",
