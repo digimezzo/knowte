@@ -126,12 +126,6 @@ function createNoteWindow(noteId: string) {
 
   noteWindow.webContents.on('will-navigate', handleRedirect);
   noteWindow.webContents.on('new-window', handleRedirect);
-
-  // noteWindow.on('close', function (e) {
-
-  //   e.preventDefault();
-  //   noteWindow.hide();
-  // });
 }
 
 try {
