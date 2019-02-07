@@ -10,6 +10,7 @@ import { SnackBarService } from '../../services/snackBar.service';
 import { Subscription } from 'rxjs';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/renameNotebookDialog.component';
+import { remote } from 'electron';
 
 @Component({
   selector: 'collection-page',
@@ -21,6 +22,8 @@ export class CollectionComponent implements OnInit {
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
     private translateService: TranslateService, private snackBarService: SnackBarService) {
   }
+
+  private noteService = remote.getGlobal('noteService');
 
   private subscription: Subscription;
 
@@ -67,7 +70,7 @@ export class CollectionComponent implements OnInit {
     }));
 
     // Note mark changed
-    this.subscription = this.collectionService.noteMarkChanged$.subscribe((noteMarkChangedArgument) => {
+    this.subscription = this.noteService.noteMarkChanged$.subscribe((noteMarkChangedArgument) => {
       this.markedNotesCount = noteMarkChangedArgument.markedNotesCount;
     });
 

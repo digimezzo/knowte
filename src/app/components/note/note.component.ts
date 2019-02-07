@@ -78,7 +78,7 @@ export class NoteComponent implements OnInit {
         this.noteTitleChanged
             .pipe(debounceTime(5000), distinctUntilChanged())
             .subscribe(async (newNoteTitle) => {
-                let operation: NoteOperation = this.collectionService.renameNote(this.note.id, newNoteTitle);
+                let operation: NoteOperation = this.noteService.renameNote(this.note.id, newNoteTitle);
 
                 if (operation === NoteOperation.Error) {
                     this.note.title = this.originalNoteTitle;

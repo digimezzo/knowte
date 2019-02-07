@@ -62,7 +62,7 @@ export class NotesComponent implements OnInit {
             this.snackBarService.noteDeletedAsync(noteTitle);
         });
 
-        this.subscription = this.collectionService.noteMarkChanged$.subscribe((noteMarkChangedArgs) => {
+        this.subscription = this.noteService.noteMarkChanged$.subscribe((noteMarkChangedArgs) => {
             this.notes.find(x => x.id === noteMarkChangedArgs.noteId).isMarked = noteMarkChangedArgs.isMarked;
         });
 
@@ -144,6 +144,6 @@ export class NotesComponent implements OnInit {
     }
 
     public ToggleNoteMark(noteId: string, isMarked: boolean): void {
-        this.collectionService.setNoteMark(noteId, !isMarked);
+        this.noteService.setNoteMark(noteId, !isMarked);
     }
 }

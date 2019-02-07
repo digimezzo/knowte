@@ -66,14 +66,8 @@ export class CollectionService {
   private noteDeleted = new Subject<string>();
   noteDeleted$ = this.noteDeleted.asObservable();
 
-  private noteMarkChanged = new Subject<NoteMarkChangedArgs>();
-  noteMarkChanged$ = this.noteMarkChanged.asObservable();
-
   private noteCountersChanged = new Subject<NoteCountersArgs>();
   noteCountersChanged$ = this.noteCountersChanged.asObservable();
-
-  private noteRenamed = new Subject<NoteRenamedArgs>();
-  noteRenamed$ = this.noteRenamed.asObservable();
 
   public get hasDataStore(): boolean {
     return this.dataStore.isReady;
@@ -581,56 +575,5 @@ export class CollectionService {
 
   public getNote(noteId: string): Note {
     return this.dataStore.getNote(noteId);
-  }
-
-  public setNoteMark(noteId: string, isMarked: boolean): void {
-    this.dataStore.setNoteMark(noteId, isMarked);
-    let activeCollection: Collection = this.dataStore.getActiveCollection();
-    let markedNotes: Note[] = this.dataStore.getMarkedNotes(activeCollection.id);
-    let arg: NoteMarkChangedArgs = new NoteMarkChangedArgs(noteId, isMarked, markedNotes.length);
-    this.noteMarkChanged.next(arg);
-  }
-
-  private noteExists(noteTitle: string): boolean {
-    let activeCollection: Collection = this.dataStore.getActiveCollection();
-    let note: Note = this.dataStore.getNoteByTitle(activeCollection.id, noteTitle);
-
-    return note != null;
-  }
-
-  public renameNote(noteId: string, newNoteTitle: string): NoteOperation {
-    if (!noteId || !newNoteTitle) {
-      log.error("renameNote: noteId or newNoteTitle is null");
-      return NoteOperation.Error;
-    }
-
-    try {
-      // 1. Check if there is already a note with that title
-      if (this.noteExists(newNoteTitle)) {
-        return NoteOperation.Duplicate;
-      }
-
-      // 2. Rename the note
-      this.dataStore.setNoteTitle(noteId, newNoteTitle);
-    } catch (error) {
-      log.error(`Could not rename the note with id='${noteId}' to '${newNoteTitle}'. Cause: ${error}`);
-      return NoteOperation.Error;
-    }
-
-    let args: NoteRenamedArgs = new NoteRenamedArgs(noteId, newNoteTitle);
-    this.noteRenamed.next(args);
-
-    return NoteOperation.Success;
-  }
-
-  public updateNote(note: Note): NoteOperation {
-    try {
-      this.dataStore.updateNote(note);
-    } catch (error) {
-      log.error(`Could not update the note with id='${note.id}' to '${note.title}'. Cause: ${error}`);
-      return NoteOperation.Error;
-    }
-
-    return NoteOperation.Success;
   }
 }
