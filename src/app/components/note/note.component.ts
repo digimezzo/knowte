@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material';
 import { remote, BrowserWindow } from 'electron';
 import { RenameNoteResult } from '../../services/renameNoteResult';
 import { CollectionOperation } from '../../services/collectionOperation';
+import * as nanoid from 'nanoid';
 
 @Component({
     selector: 'note-content',
@@ -71,9 +72,10 @@ export class NoteComponent implements OnInit {
         });
 
         this.quill.on('text-change', () => {
-            log.info("text changed");
             this.isDirty = true;
-            this.noteTextChanged.next("");
+            // debounceTime only triggers on new values. We use nanoid to simulate a new value each time the quill text changes.
+            // We could send the full quill contents instead (because that's what changes). But that might not be performant for large notes.
+            this.noteTextChanged.next(nanoid());
         });
 
         // Get note id from url
@@ -98,8 +100,8 @@ export class NoteComponent implements OnInit {
 
         this.noteTextChanged
             .pipe(debounceTime(this.saveTimeoutMilliseconds), distinctUntilChanged())
-            .subscribe((_) => {
-                this.saveNoteText();
+            .subscribe(async(newNoteText) => {
+                await this.saveNoteTextAsync();
             });
 
         this.saveChangedAndCloseNoteWindow
@@ -145,7 +147,7 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    private saveNoteText(): void {
+    private async saveNoteTextAsync(): Promise<void> {
         let html: string = this.quill.container.firstChild.innerHTML;
         let text: string = this.quill.getText();
         let json: string = JSON.stringify(this.quill.getContents());
