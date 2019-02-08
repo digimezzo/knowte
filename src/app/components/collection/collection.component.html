@@ -34,41 +34,41 @@
         </div>
     </div>
     <!-- Tabs -->
-    <mat-tab-group>
+    <mat-tab-group (selectedTabChange)="onSelectedTabChange($event)">
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.All' | translate }}
                 <div class="countLabel">{{allNotesCount}}</div>
             </ng-template>
-            <notes-component [selectedNotebook]="selectedNotebook" [category]="allCategory"></notes-component>
+            <notes-component [selectedNotebook]="selectedNotebook" [category]="allCategory" [categoryChangedSubject]="tabChangedSubject"></notes-component>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Today' | translate }}
                 <div class="countLabel">{{todayNotesCount}}</div>
             </ng-template>
-            <notes-component [selectedNotebook]="selectedNotebook" [category]="todayCategory"></notes-component>
+            <notes-component [selectedNotebook]="selectedNotebook" [category]="todayCategory" [categoryChangedSubject]="tabChangedSubject"></notes-component>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Yesterday' | translate }}
                 <div class="countLabel">{{yesterdayNotesCount}}</div>
             </ng-template>
-            <notes-component [selectedNotebook]="selectedNotebook" [category]="yesterdayCategory"></notes-component>
+            <notes-component [selectedNotebook]="selectedNotebook" [category]="yesterdayCategory" [categoryChangedSubject]="tabChangedSubject"></notes-component>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.ThisWeek' | translate }}
                 <div class="countLabel">{{thisWeekNotesCount}}</div>
             </ng-template>
-            <notes-component [selectedNotebook]="selectedNotebook" [category]="thisWeekCategory"></notes-component>
+            <notes-component [selectedNotebook]="selectedNotebook" [category]="thisWeekCategory" [categoryChangedSubject]="tabChangedSubject"></notes-component>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Marked' | translate }}
                 <div class="countLabel">{{markedNotesCount}}</div>
             </ng-template>
-            <notes-component [selectedNotebook]="selectedNotebook" [category]="markedCategory"></notes-component>
+            <notes-component [selectedNotebook]="selectedNotebook" [category]="markedCategory" [categoryChangedSubject]="tabChangedSubject"></notes-component>
         </mat-tab>
     </mat-tab-group>
 </div>

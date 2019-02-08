@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
 import log from 'electron-log';
 import { CollectionService } from '../../services/collection.service';
 import { Note } from '../../data/note';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { SnackBarService } from '../../services/snackBar.service';
 import { ipcRenderer } from 'electron';
 import { Notebook } from '../../data/notebook';
@@ -13,19 +13,23 @@ import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.compone
 import { remote } from 'electron';
 import { AddNoteResult } from '../../services/addNoteResult';
 import { CollectionOperation } from '../../services/collectionOperation';
+import { Constants } from '../../core/constants';
 
 @Component({
     selector: 'notes-component',
     templateUrl: './notes.component.html',
     styleUrls: ['./notes.component.scss']
 })
-export class NotesComponent implements OnInit {
+export class NotesComponent implements OnInit, OnDestroy {
     constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
         private translateService: TranslateService, private zone: NgZone) {
     }
 
     private noteService = remote.getGlobal('noteService');
     private _selectedNotebook: Notebook;
+
+    @Input()
+    public categoryChangedSubject: Subject<any>;
 
     @Input()
     public category: string;
@@ -59,22 +63,27 @@ export class NotesComponent implements OnInit {
             this.snackBarService.noteAddedAsync(noteTitle);
         });
 
-        this.subscription = this.collectionService.noteDeleted$.subscribe(async (noteTitle) => {
+        this.subscription.add(this.collectionService.noteDeleted$.subscribe(async (noteTitle) => {
             this.setSelectedNote(null);
             await this.getNotesAsync();
             this.snackBarService.noteDeletedAsync(noteTitle);
-        });
+        }));
 
-        this.subscription = this.noteService.noteMarkChanged$.subscribe((noteMarkChangedArgs) => {
-            this.notes.find(x => x.id === noteMarkChangedArgs.noteId).isMarked = noteMarkChangedArgs.isMarked;
-        });
-
-        this.subscription = this.noteService.noteRenamed$.subscribe(() => {
-            this.zone.run(async () => {
+        this.subscription.add(this.noteService.noteMarkChanged$.subscribe(async (noteMarkChangedArgs) => {
+            if (this.category === Constants.markedCategory) {
                 await this.getNotesAsync();
-            });
+            } else {
+                this.notes.find(x => x.id === noteMarkChangedArgs.noteId).isMarked = noteMarkChangedArgs.isMarked;
+            }
+        }));
 
-        });
+        this.subscription.add(this.noteService.noteRenamed$.subscribe(async () => {
+            await this.getNotesAsync();
+        }));
+
+        this.subscription.add(this.categoryChangedSubject.subscribe(async (event) => {
+            await this.getNotesAsync();
+        }));
     }
 
     private async getNotesAsync(): Promise<void> {
@@ -90,10 +99,10 @@ export class NotesComponent implements OnInit {
         this.canEditNote = this.selectedNote != null;
     }
 
-    public selectFirstNote(){
-        if(this.notes && this.notes.length > 0){
+    public selectFirstNote() {
+        if (this.notes && this.notes.length > 0) {
             this.setSelectedNote(this.notes[0]);
-        }else{
+        } else {
             this.setSelectedNote(null);
         }
     }

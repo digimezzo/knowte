@@ -1,17 +1,18 @@
 import { Component, OnInit, ViewEncapsulation, NgZone } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { Notebook } from '../../data/notebook';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef, MatTabChangeEvent } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { NotebookOperation } from '../../services/notebookOperation';
 import { InputDialogComponent } from '../dialogs/inputDialog/inputDialog.component';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { SnackBarService } from '../../services/snackBar.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/renameNotebookDialog.component';
 import { remote } from 'electron';
 import { Constants } from '../../core/constants';
+import log from 'electron-log';
 
 @Component({
   selector: 'collection-page',
@@ -35,6 +36,8 @@ export class CollectionComponent implements OnInit {
   public notebooks: Notebook[];
   public selectedNotebook: Notebook;
   public canEditNotebook: boolean = false;
+
+  public tabChangedSubject: Subject<any> = new Subject();
 
   get allCategory() {
     return Constants.allCategory;
@@ -97,6 +100,10 @@ export class CollectionComponent implements OnInit {
       await this.getNotebooksAsync();
       this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
     }));
+  }
+
+  onSelectedTabChange(event: MatTabChangeEvent) {
+    this.tabChangedSubject.next(null);
   }
 
   private async getNotebooksAsync(): Promise<void> {
