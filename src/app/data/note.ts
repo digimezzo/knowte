@@ -10,4 +10,5 @@ export class Note{
     public creationDate: number = moment().valueOf();
     public modificationDate: number = moment().valueOf();
     public displayModificationDate: string;
+    public text: string;
 }
