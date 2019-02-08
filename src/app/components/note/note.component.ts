@@ -71,6 +71,7 @@ export class NoteComponent implements OnInit {
         });
 
         this.quill.on('text-change', () => {
+            log.info("text changed");
             this.isDirty = true;
             this.noteTextChanged.next("");
         });
@@ -145,7 +146,13 @@ export class NoteComponent implements OnInit {
     }
 
     private saveNoteText(): void {
+        let html: string = this.quill.container.firstChild.innerHTML;
+        let text: string = this.quill.getText();
+        let json: string = JSON.stringify(this.quill.getContents());
 
+        log.info(html);
+        log.info(text);
+        log.info(json);
     }
 
     private saveNoteCompletely(): void {
