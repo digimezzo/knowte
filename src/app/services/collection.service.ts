@@ -476,10 +476,14 @@ export class CollectionService {
     return result;
   }
 
-  public async getNotesAsync(notebookId: string, useFuzzyDates: boolean): Promise<Note[]> {
+  public async getNotesAsync(notebookId: string, category: string, useFuzzyDates: boolean): Promise<Note[]> {
+    log.info(`Category: ${category}`);
+
     let notes: Note[] = [];
 
     let noteCountersResult: NoteCountersChangedArgs = new NoteCountersChangedArgs();
+
+    let returnNotes: Note[] = [];
 
     try {
       // Get the notes from the data store
@@ -495,22 +499,44 @@ export class CollectionService {
 
       // Fill in counters
       noteCountersResult.allNotesCount = notes.length;
-      noteCountersResult.markedNotesCount = notes.filter(x => x.isMarked).length;
+      
+      let markedNotes: Note[] = notes.filter(x => x.isMarked);
+      noteCountersResult.markedNotesCount = markedNotes.length;
+
+      if (category === "marked") {
+        returnNotes = markedNotes;
+      }
 
       // Fill in the display date
       for (let note of notes) {
+        if (category === "all") {
+          returnNotes.push(note);
+        }
+
         let result: NoteDateFormatResult = await this.getNoteDateFormatResultAsync(note.modificationDate, useFuzzyDates);
 
         // More counters
         if (result.isTodayNote) {
+          if (category === "today") {
+            returnNotes.push(note);
+          }
+
           noteCountersResult.todayNotesCount++;
         }
 
         if (result.isYesterdayNote) {
+          if (category === "yesterday") {
+            returnNotes.push(note);
+          }
+
           noteCountersResult.yesterdayNotesCount++;
         }
 
         if (result.isThisWeekNote) {
+          if (category === "thisweek") {
+            returnNotes.push(note);
+          }
+
           noteCountersResult.thisWeekNotesCount++;
         }
 
@@ -523,7 +549,7 @@ export class CollectionService {
       log.error(`Could not get notes. Cause: ${error}`);
     }
 
-    return notes;
+    return returnNotes;
   }
 
   private getSimilarTitles(baseTitle: string): string[] {

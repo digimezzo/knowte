@@ -27,6 +27,9 @@ export class NotesComponent implements OnInit {
     private noteService = remote.getGlobal('noteService');
     private _selectedNotebook: Notebook;
 
+    @Input()
+    public category: string;
+
     get selectedNotebook(): Notebook {
         return this._selectedNotebook;
     }
@@ -76,7 +79,7 @@ export class NotesComponent implements OnInit {
 
     private async getNotesAsync(): Promise<void> {
         if (this.selectedNotebook) {
-            this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, true);
+            this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.category, true);
             this.notesCount = this.notes.length;
             this.selectFirstNote();
         }

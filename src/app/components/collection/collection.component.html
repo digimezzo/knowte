@@ -40,36 +40,35 @@
                 {{ 'NotesTabs.All' | translate }}
                 <div class="countLabel">{{allNotesCount}}</div>
             </ng-template>
-            <!-- Notes -->
-            <notes-component [selectedNotebook]="selectedNotebook"></notes-component>
+            <notes-component [selectedNotebook]="selectedNotebook" category="all"></notes-component>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Today' | translate }}
                 <div class="countLabel">{{todayNotesCount}}</div>
             </ng-template>
-            <!-- TODO -->
+            <notes-component [selectedNotebook]="selectedNotebook" category="today"></notes-component>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Yesterday' | translate }}
                 <div class="countLabel">{{yesterdayNotesCount}}</div>
             </ng-template>
-            <!-- TODO -->
+            <notes-component [selectedNotebook]="selectedNotebook" category="yesterday"></notes-component>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.ThisWeek' | translate }}
                 <div class="countLabel">{{thisWeekNotesCount}}</div>
             </ng-template>
-            <!-- TODO -->
+            <notes-component [selectedNotebook]="selectedNotebook" category="thisweek"></notes-component>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Marked' | translate }}
                 <div class="countLabel">{{markedNotesCount}}</div>
             </ng-template>
-            <!-- TODO -->
+            <notes-component [selectedNotebook]="selectedNotebook" category="marked"></notes-component>
         </mat-tab>
     </mat-tab-group>
 </div>
