@@ -28,12 +28,17 @@ export class NoteComponent implements OnInit {
 
     private noteService = remote.getGlobal('noteService');
     public noteTitleChanged: Subject<string> = new Subject<string>();
+    public noteTextChanged: Subject<string> = new Subject<string>();
     public saveChangedAndCloseNoteWindow: Subject<string> = new Subject<string>();
     private isDirty: boolean = false;
 
     private noteId: string;
     private originalNoteTitle: string;
     private noteTitle: string;
+    private saveTimeoutMilliseconds: number = 5000;
+    private windowCloseTimeoutMilliseconds: number = 500;
+
+    private quill: Quill;
 
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
@@ -60,9 +65,14 @@ export class NoteComponent implements OnInit {
 
         let notePlaceHolder: string = await this.translateService.get('Notes.NotePlaceholder').toPromise();
 
-        var quill = new Quill('#editor', {
+        this.quill = new Quill('#editor', {
             placeholder: notePlaceHolder,
             theme: 'snow',
+        });
+
+        this.quill.on('text-change', () => {
+            this.isDirty = true;
+            this.noteTextChanged.next("");
         });
 
         // Get note id from url
@@ -80,36 +90,23 @@ export class NoteComponent implements OnInit {
         });
 
         this.noteTitleChanged
-            .pipe(debounceTime(5000), distinctUntilChanged())
+            .pipe(debounceTime(this.saveTimeoutMilliseconds), distinctUntilChanged())
             .subscribe(async (newNoteTitle) => {
-                let renameNoteResult: RenameNoteResult = this.noteService.renameNote(this.noteId, this.originalNoteTitle, newNoteTitle);
+                await this.saveNoteTitleAsync(newNoteTitle);
+            });
 
-                if (renameNoteResult.operation === CollectionOperation.Blank) {
-                    this.noteTitle = this.originalNoteTitle;
-                    this.snackBarService.noteTitleCannotBeEmptyAsync();
-                } else if (renameNoteResult.operation === CollectionOperation.Error) {
-                    this.noteTitle = this.originalNoteTitle;
-                    let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.originalNoteTitle }).toPromise());
-
-                    this.dialog.open(ErrorDialogComponent, {
-                        width: '450px', data: { errorText: generatedErrorText }
-                    });
-                } else if (renameNoteResult.operation === CollectionOperation.Success) {
-                    this.originalNoteTitle = renameNoteResult.newNoteTitle;
-                    this.noteTitle = renameNoteResult.newNoteTitle;
-                    this.noteService.noteRenamed.next("");
-                } else {
-                    // Do nothing
-                }
+        this.noteTextChanged
+            .pipe(debounceTime(this.saveTimeoutMilliseconds), distinctUntilChanged())
+            .subscribe((_) => {
+                this.saveNoteText();
             });
 
         this.saveChangedAndCloseNoteWindow
-            .pipe(debounceTime(500), distinctUntilChanged())
+            .pipe(debounceTime(this.windowCloseTimeoutMilliseconds), distinctUntilChanged())
             .subscribe((dummyString) => {
                 log.info(`Closing note with id=${this.noteId} after saving changes.`);
                 this.noteService.closeNote(this.noteId);
-
-                // TODO: save stuff here
+                this.saveNoteCompletely();
 
                 let window: BrowserWindow = remote.getCurrentWindow();
                 window.close();
@@ -122,6 +119,36 @@ export class NoteComponent implements OnInit {
     }
 
     public performAction(): void {
+
+    }
+
+    private async saveNoteTitleAsync(newNoteTitle: string): Promise<void> {
+        let renameNoteResult: RenameNoteResult = this.noteService.renameNote(this.noteId, this.originalNoteTitle, newNoteTitle);
+
+        if (renameNoteResult.operation === CollectionOperation.Blank) {
+            this.noteTitle = this.originalNoteTitle;
+            this.snackBarService.noteTitleCannotBeEmptyAsync();
+        } else if (renameNoteResult.operation === CollectionOperation.Error) {
+            this.noteTitle = this.originalNoteTitle;
+            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.originalNoteTitle }).toPromise());
+
+            this.dialog.open(ErrorDialogComponent, {
+                width: '450px', data: { errorText: generatedErrorText }
+            });
+        } else if (renameNoteResult.operation === CollectionOperation.Success) {
+            this.originalNoteTitle = renameNoteResult.newNoteTitle;
+            this.noteTitle = renameNoteResult.newNoteTitle;
+            this.noteService.noteRenamed.next("");
+        } else {
+            // Do nothing
+        }
+    }
+
+    private saveNoteText(): void {
+
+    }
+
+    private saveNoteCompletely(): void {
 
     }
 }
