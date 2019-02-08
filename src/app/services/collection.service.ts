@@ -477,64 +477,61 @@ export class CollectionService {
   }
 
   public async getNotesAsync(notebookId: string, category: string, useFuzzyDates: boolean): Promise<Note[]> {
-    log.info(`Category: ${category}`);
+    let noteCountersResult: NoteCountersChangedArgs = new NoteCountersChangedArgs();
 
     let notes: Note[] = [];
 
-    let noteCountersResult: NoteCountersChangedArgs = new NoteCountersChangedArgs();
-
-    let returnNotes: Note[] = [];
-
     try {
       // Get the notes from the data store
+      let uncategorizedNotes: Note[] = [];
       let activeCollection: Collection = this.dataStore.getActiveCollection();
 
       if (notebookId === Constants.allNotesNotebookId) {
-        notes = this.dataStore.getAllNotes(activeCollection.id);
+        uncategorizedNotes = this.dataStore.getAllNotes(activeCollection.id);
       } else if (notebookId === Constants.unfiledNotesNotebookId) {
-        notes = this.dataStore.getUnfiledNotes(activeCollection.id);
+        uncategorizedNotes = this.dataStore.getUnfiledNotes(activeCollection.id);
       } else {
-        notes = this.dataStore.getNotes(notebookId);
+        uncategorizedNotes = this.dataStore.getNotes(notebookId);
       }
 
       // Fill in counters
-      noteCountersResult.allNotesCount = notes.length;
+      noteCountersResult.allNotesCount = uncategorizedNotes.length;
       
-      let markedNotes: Note[] = notes.filter(x => x.isMarked);
+      let markedNotes: Note[] = uncategorizedNotes.filter(x => x.isMarked);
       noteCountersResult.markedNotesCount = markedNotes.length;
 
-      if (category === "marked") {
-        returnNotes = markedNotes;
+      if (category === Constants.markedCategory) {
+        notes = markedNotes;
       }
 
-      // Fill in the display date
-      for (let note of notes) {
-        if (category === "all") {
-          returnNotes.push(note);
+      // Fill in the display date & notes array
+      for (let note of uncategorizedNotes) {
+        if (category === Constants.allCategory) {
+          notes.push(note);
         }
 
         let result: NoteDateFormatResult = await this.getNoteDateFormatResultAsync(note.modificationDate, useFuzzyDates);
 
         // More counters
         if (result.isTodayNote) {
-          if (category === "today") {
-            returnNotes.push(note);
+          if (category === Constants.todayCategory) {
+            notes.push(note);
           }
 
           noteCountersResult.todayNotesCount++;
         }
 
         if (result.isYesterdayNote) {
-          if (category === "yesterday") {
-            returnNotes.push(note);
+          if (category === Constants.yesterdayCategory) {
+            notes.push(note);
           }
 
           noteCountersResult.yesterdayNotesCount++;
         }
 
         if (result.isThisWeekNote) {
-          if (category === "thisweek") {
-            returnNotes.push(note);
+          if (category === Constants.thisWeekCategory) {
+            notes.push(note);
           }
 
           noteCountersResult.thisWeekNotesCount++;
@@ -549,7 +546,7 @@ export class CollectionService {
       log.error(`Could not get notes. Cause: ${error}`);
     }
 
-    return returnNotes;
+    return notes;
   }
 
   private getSimilarTitles(baseTitle: string): string[] {

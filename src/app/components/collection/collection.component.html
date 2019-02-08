@@ -40,35 +40,35 @@
                 {{ 'NotesTabs.All' | translate }}
                 <div class="countLabel">{{allNotesCount}}</div>
             </ng-template>
-            <notes-component [selectedNotebook]="selectedNotebook" category="all"></notes-component>
+            <notes-component [selectedNotebook]="selectedNotebook" [category]="allCategory"></notes-component>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Today' | translate }}
                 <div class="countLabel">{{todayNotesCount}}</div>
             </ng-template>
-            <notes-component [selectedNotebook]="selectedNotebook" category="today"></notes-component>
+            <notes-component [selectedNotebook]="selectedNotebook" [category]="todayCategory"></notes-component>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Yesterday' | translate }}
                 <div class="countLabel">{{yesterdayNotesCount}}</div>
             </ng-template>
-            <notes-component [selectedNotebook]="selectedNotebook" category="yesterday"></notes-component>
+            <notes-component [selectedNotebook]="selectedNotebook" [category]="yesterdayCategory"></notes-component>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.ThisWeek' | translate }}
                 <div class="countLabel">{{thisWeekNotesCount}}</div>
             </ng-template>
-            <notes-component [selectedNotebook]="selectedNotebook" category="thisweek"></notes-component>
+            <notes-component [selectedNotebook]="selectedNotebook" [category]="thisWeekCategory"></notes-component>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 {{ 'NotesTabs.Marked' | translate }}
                 <div class="countLabel">{{markedNotesCount}}</div>
             </ng-template>
-            <notes-component [selectedNotebook]="selectedNotebook" category="marked"></notes-component>
+            <notes-component [selectedNotebook]="selectedNotebook" [category]="markedCategory"></notes-component>
         </mat-tab>
     </mat-tab-group>
 </div>

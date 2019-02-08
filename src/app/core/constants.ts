@@ -14,6 +14,12 @@ export class Constants {
     static readonly allNotesNotebookId: string = "0";
     static readonly unfiledNotesNotebookId: string = "1";
 
+    static readonly allCategory: string = "all";
+    static readonly todayCategory: string = "today";
+    static readonly yesterdayCategory: string = "yesterday";
+    static readonly thisWeekCategory: string = "thisweek";
+    static readonly markedCategory: string = "marked";
+
     static readonly externalComponents: any[] = [
         { name: "Angular", description: "Angular is a development platform for building mobile and desktop web applications using Typescript/JavaScript and other languages.", url: "https://angular.io/", licenseUrl: "https://github.com/angular/angular/blob/master/LICENSE" },
         { name: "Electron", description: "The Electron framework lets you write cross-platform desktop applications using JavaScript, HTML and CSS. It is based on Node.js and Chromium.", url: "https://electronjs.org/", licenseUrl: "https://github.com/electron/electron/blob/master/LICENSE" },

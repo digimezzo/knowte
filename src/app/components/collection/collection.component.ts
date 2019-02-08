@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/renameNotebookDialog.component';
 import { remote } from 'electron';
+import { Constants } from '../../core/constants';
 
 @Component({
   selector: 'collection-page',
@@ -24,21 +25,36 @@ export class CollectionComponent implements OnInit {
   }
 
   private noteService = remote.getGlobal('noteService');
-
   private subscription: Subscription;
-
   public notebooksCount: number = 0;
-
   public allNotesCount: number = 0;
   public todayNotesCount: number = 0;
   public yesterdayNotesCount: number = 0;
   public thisWeekNotesCount: number = 0;
   public markedNotesCount: number = 0;
-
   public notebooks: Notebook[];
   public selectedNotebook: Notebook;
-
   public canEditNotebook: boolean = false;
+
+  get allCategory() {
+    return Constants.allCategory;
+  }
+
+  get todayCategory() {
+    return Constants.todayCategory;
+  }
+
+  get yesterdayCategory() {
+    return Constants.yesterdayCategory;
+  }
+
+  get thisWeekCategory() {
+    return Constants.thisWeekCategory;
+  }
+
+  get markedCategory() {
+    return Constants.markedCategory;
+  }
 
   async ngOnInit() {
     // Notebooks
