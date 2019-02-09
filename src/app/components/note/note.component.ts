@@ -165,7 +165,9 @@ export class NoteComponent implements OnInit {
     }
 
     private saveNoteAll(): void {
-
+        let textContent: string = this.quill.getText();
+        let jsonContent: string = JSON.stringify(this.quill.getContents());
+        this.noteService.updateNote(this.noteId, this.noteTitle, textContent, jsonContent);
     }
 
     private async getNoteContentAsync(): Promise<void> {
@@ -178,7 +180,7 @@ export class NoteComponent implements OnInit {
                 width: '450px', data: { errorText: generatedErrorText }
             });
         } else {
-            if(getNoteContentResult.noteContent){
+            if (getNoteContentResult.noteContent) {
                 // We can only parse to json if there is content
                 this.quill.setContents(JSON.parse(getNoteContentResult.noteContent), 'silent');
             }

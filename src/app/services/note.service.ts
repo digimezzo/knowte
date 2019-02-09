@@ -10,6 +10,7 @@ import * as fs from 'fs-extra';
 import { Constants } from "../core/constants";
 import * as path from 'path';
 import { GetNoteContentResult } from "./getNoteContentResult";
+import { UpdateNoteResult } from "./updateNoteResult";
 
 /**
  * Angular services cannot be configured as singletons across Electron windows. So we use this class, which we 
@@ -28,6 +29,9 @@ export class NoteService {
 
   private noteRenamed = new Subject<RenameNoteResult>();
   noteRenamed$ = this.noteRenamed.asObservable();
+
+  private noteUpdated = new Subject<UpdateNoteResult>();
+  noteUpdated$ = this.noteUpdated.asObservable();
 
   private noteMarkChanged = new Subject<NoteMarkChangedArgs>();
   noteMarkChanged$ = this.noteMarkChanged.asObservable();
@@ -75,16 +79,31 @@ export class NoteService {
     return uniqueTitle;
   }
 
-  // public updateNote(note: Note): CollectionOperation {
-  //   try {
-  //     this.dataStore.updateNote(note);
-  //   } catch (error) {
-  //     log.error(`Could not update the note with id='${note.id}' to '${note.title}'. Cause: ${error}`);
-  //     return CollectionOperation.Error;
-  //   }
+  public updateNote(noteId: string, title: string, textContent: string, jsonContent: string): CollectionOperation {
+    try {
+      // Update the note file on disk
+      let storageDirectory: string = this.settings.get('storageDirectory');
+      fs.writeFileSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), jsonContent);
 
-  //   return CollectionOperation.Success;
-  // }
+      // Update the note in the data store
+      let note: Note = this.dataStore.getNote(noteId);
+      note.title = title;
+      note.text = textContent;
+      this.dataStore.updateNote(note);
+    } catch (error) {
+      log.error(`Could not update the note with id='${noteId}'. Cause: ${error}`);
+      return CollectionOperation.Error;
+    }
+
+
+    let updateNoteResult: UpdateNoteResult = new UpdateNoteResult(CollectionOperation.Success);
+    updateNoteResult.noteId = noteId;
+    updateNoteResult.noteTitle = title;
+
+    this.noteUpdated.next(updateNoteResult);
+
+    return CollectionOperation.Success;
+  }
 
   public setNoteMark(noteId: string, isMarked: boolean): void {
     // Update note in the data store
