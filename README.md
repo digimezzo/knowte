@@ -15,7 +15,7 @@ $ git clone https://github.com/digimezzo/knowte-electron.git
 $ cd knowte-electron
 $ npm install            # Download dependencies
 $ npm start              # Start Knowte
-$ npm electron:windows   # Build for Windows
-$ npm electron:linux     # Build for Linux
-$ npm electron:mac       # Build for Linux
+$ npm run electron:windows   # Build for Windows
+$ npm run electron:linux     # Build for Linux
+$ npm run electron:mac       # Build for Linux
 ```
