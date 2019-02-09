@@ -141,7 +141,6 @@ export class NoteComponent implements OnInit {
         } else if (renameNoteResult.operation === CollectionOperation.Success) {
             this.originalNoteTitle = renameNoteResult.newNoteTitle;
             this.noteTitle = renameNoteResult.newNoteTitle;
-            this.noteService.noteRenamed.next("");
         } else {
             // Do nothing
         }
