@@ -35,7 +35,7 @@ export class NoteComponent implements OnInit {
 
     private noteId: string;
     private originalNoteTitle: string;
-    private noteTitle: string;
+    public noteTitle: string;
     private saveTimeoutMilliseconds: number = 5000;
     private windowCloseTimeoutMilliseconds: number = 500;
 
