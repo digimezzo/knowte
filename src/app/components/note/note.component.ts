@@ -13,7 +13,6 @@ import { MatDialog } from '@angular/material';
 import { remote, BrowserWindow } from 'electron';
 import { RenameNoteResult } from '../../services/renameNoteResult';
 import { CollectionOperation } from '../../services/collectionOperation';
-import * as nanoid from 'nanoid';
 
 @Component({
     selector: 'note-content',
@@ -73,9 +72,7 @@ export class NoteComponent implements OnInit {
 
         this.quill.on('text-change', () => {
             this.isDirty = true;
-            // debounceTime only triggers on new values. We use nanoid to simulate a new value each time the quill text changes.
-            // We could send the full quill contents instead (because that's what changes). But that might not be performant for large notes.
-            this.noteTextChanged.next(nanoid());
+            this.noteTextChanged.next("");
         });
 
         // Get note id from url
@@ -93,23 +90,23 @@ export class NoteComponent implements OnInit {
         });
 
         this.noteTitleChanged
-            .pipe(debounceTime(this.saveTimeoutMilliseconds), distinctUntilChanged())
+            .pipe(debounceTime(this.saveTimeoutMilliseconds))
             .subscribe(async (newNoteTitle) => {
                 await this.saveNoteTitleAsync(newNoteTitle);
             });
 
         this.noteTextChanged
-            .pipe(debounceTime(this.saveTimeoutMilliseconds), distinctUntilChanged())
-            .subscribe(async(newNoteText) => {
+            .pipe(debounceTime(this.saveTimeoutMilliseconds))
+            .subscribe(async (_) => {
                 await this.saveNoteTextAsync();
             });
 
         this.saveChangedAndCloseNoteWindow
-            .pipe(debounceTime(this.windowCloseTimeoutMilliseconds), distinctUntilChanged())
-            .subscribe((dummyString) => {
+            .pipe(debounceTime(this.windowCloseTimeoutMilliseconds))
+            .subscribe((_) => {
                 log.info(`Closing note with id=${this.noteId} after saving changes.`);
                 this.noteService.closeNote(this.noteId);
-                this.saveNoteCompletely();
+                this.saveNoteAll();
 
                 let window: BrowserWindow = remote.getCurrentWindow();
                 window.close();
@@ -148,16 +145,24 @@ export class NoteComponent implements OnInit {
     }
 
     private async saveNoteTextAsync(): Promise<void> {
-        let html: string = this.quill.container.firstChild.innerHTML;
-        let text: string = this.quill.getText();
-        let json: string = JSON.stringify(this.quill.getContents());
+        // let html: string = this.quill.container.firstChild.innerHTML;
+        let textContent: string = this.quill.getText();
+        let jsonContent: string = JSON.stringify(this.quill.getContents());
 
-        log.info(html);
-        log.info(text);
-        log.info(json);
+        let operation: CollectionOperation = this.noteService.updateNoteContent(this.noteId, textContent, jsonContent);
+
+        if (operation === CollectionOperation.Error) {
+            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.UpdateNoteContentError').toPromise());
+
+            this.dialog.open(ErrorDialogComponent, {
+                width: '450px', data: { errorText: generatedErrorText }
+            });
+        } else {
+            // Do nothing
+        }
     }
 
-    private saveNoteCompletely(): void {
+    private saveNoteAll(): void {
 
     }
 }

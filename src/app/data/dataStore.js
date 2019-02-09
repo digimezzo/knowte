@@ -170,39 +170,23 @@ var DataStore = /** @class */ (function () {
         this.db.saveDatabase();
         return newNote.id;
     };
+    DataStore.prototype.getNote = function (noteId) {
+        var note = this.notes.findOne({ 'id': noteId });
+        return note;
+    };
+    DataStore.prototype.getNoteByTitle = function (collectionId, noteTitle) {
+        return this.notes.findOne({ '$and': [{ 'collectionId': collectionId }, { 'title': noteTitle }] });
+    };
+    DataStore.prototype.deleteNote = function (noteId) {
+        var noteToRemove = this.getNote(noteId);
+        this.notes.remove(noteToRemove);
+        this.db.saveDatabase();
+    };
     DataStore.prototype.updateNote = function (note) {
         this.notes.update(note);
         note.modificationDate = moment().valueOf();
         this.db.saveDatabase();
         return note.id;
-    };
-    DataStore.prototype.getNote = function (noteId) {
-        var note = this.notes.findOne({ 'id': noteId });
-        return note;
-    };
-    DataStore.prototype.deleteNote = function (noteId) {
-        // Remove note
-        var noteToRemove = this.getNote(noteId);
-        this.notes.remove(noteToRemove);
-        // Persist
-        this.db.saveDatabase();
-    };
-    DataStore.prototype.setNoteMark = function (noteId, isMarked) {
-        var note = this.getNote(noteId);
-        note.isMarked = isMarked;
-        note.modificationDate = moment().valueOf();
-        this.notes.update(note);
-        this.db.saveDatabase();
-    };
-    DataStore.prototype.setNoteTitle = function (noteId, noteTitle) {
-        var noteToRename = this.getNote(noteId);
-        noteToRename.title = noteTitle;
-        noteToRename.modificationDate = moment().valueOf();
-        this.notes.update(noteToRename);
-        this.db.saveDatabase();
-    };
-    DataStore.prototype.getNoteByTitle = function (collectionId, noteTitle) {
-        return this.notes.findOne({ '$and': [{ 'collectionId': collectionId }, { 'title': noteTitle }] });
     };
     DataStore = __decorate([
         core_1.Injectable({

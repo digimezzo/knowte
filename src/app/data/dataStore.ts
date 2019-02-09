@@ -218,46 +218,27 @@ export class DataStore {
         return newNote.id;
     }
 
-    public updateNote(note: Note): string {
-        this.notes.update(note);
-        note.modificationDate = moment().valueOf();
-        this.db.saveDatabase();
-
-        return note.id;
-    }
-
     public getNote(noteId: string): Note {
         let note: Note = this.notes.findOne({ 'id': noteId });
 
         return note;
     }
 
-    public deleteNote(noteId: string) {
-        // Remove note
-        let noteToRemove: Note = this.getNote(noteId);
-        this.notes.remove(noteToRemove);
-
-        // Persist
-        this.db.saveDatabase();
-    }
-
-    public setNoteMark(noteId: string, isMarked: boolean): void {
-        let note: Note = this.getNote(noteId);
-        note.isMarked = isMarked;
-        note.modificationDate = moment().valueOf();
-        this.notes.update(note);
-        this.db.saveDatabase();
-    }
-
-    public setNoteTitle(noteId: string, noteTitle: string) {
-        let noteToRename: Note = this.getNote(noteId);
-        noteToRename.title = noteTitle;
-        noteToRename.modificationDate = moment().valueOf();
-        this.notes.update(noteToRename);
-        this.db.saveDatabase();
-    }
-
     public getNoteByTitle(collectionId: string, noteTitle: string): Notebook {
         return this.notes.findOne({ '$and': [{ 'collectionId': collectionId }, { 'title': noteTitle }] });
+    }
+
+    public deleteNote(noteId: string) {
+        let noteToRemove: Note = this.getNote(noteId);
+        this.notes.remove(noteToRemove);
+        this.db.saveDatabase();
+    }
+
+    public updateNote(note: Note): string {
+        this.notes.update(note);
+        note.modificationDate = moment().valueOf();
+        this.db.saveDatabase();
+
+        return note.id;
     }
 }

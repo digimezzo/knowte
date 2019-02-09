@@ -71,7 +71,7 @@ export class CollectionService {
   }
 
   public get hasStorageDirectory(): boolean {
-    // 1. Get the storage directory from the data store
+    // 1. Get the storage directory from the settings
     let storageDirectory: string = this.settings.get('storageDirectory');
 
     if (!storageDirectory) {
@@ -496,7 +496,7 @@ export class CollectionService {
 
       // Fill in counters
       noteCountersResult.allNotesCount = uncategorizedNotes.length;
-      
+
       let markedNotes: Note[] = uncategorizedNotes.filter(x => x.isMarked);
       noteCountersResult.markedNotesCount = markedNotes.length;
 
@@ -579,11 +579,17 @@ export class CollectionService {
     }
 
     try {
+      // 1. Add note to data store
       uniqueTitle = this.getUniqueNewNoteNoteTitle(baseTitle);
       let activeCollection: Collection = this.dataStore.getActiveCollection();
       addNoteResult.noteId = this.dataStore.addNote(uniqueTitle, notebookId, activeCollection.id);
       addNoteResult.noteTitle = uniqueTitle;
 
+      // 2. Create note file
+      let storageDirectory: string = this.settings.get('storageDirectory');
+      // fs.closeSync(fs.openSync(path.join(storageDirectory, `${addNoteResult.noteId}${Constants.noteExtension}`), 'w'));
+      fs.writeFileSync(path.join(storageDirectory, `${addNoteResult.noteId}${Constants.noteExtension}`), '');
+      
       this.noteAdded.next(uniqueTitle);
     } catch (error) {
       log.error(`Could not add note '${uniqueTitle}'. Cause: ${error}`);

@@ -69,6 +69,30 @@ export class NoteService {
     return uniqueTitle;
   }
 
+  // public updateNote(note: Note): CollectionOperation {
+  //   try {
+  //     this.dataStore.updateNote(note);
+  //   } catch (error) {
+  //     log.error(`Could not update the note with id='${note.id}' to '${note.title}'. Cause: ${error}`);
+  //     return CollectionOperation.Error;
+  //   }
+
+  //   return CollectionOperation.Success;
+  // }
+
+  public setNoteMark(noteId: string, isMarked: boolean): void {
+    // Update note in the data store
+    let note: Note = this.dataStore.getNote(noteId);
+    note.isMarked = isMarked;
+    this.dataStore.updateNote(note);
+
+    // Update counters
+    let activeCollection: Collection = this.dataStore.getActiveCollection();
+    let markedNotes: Note[] = this.dataStore.getMarkedNotes(activeCollection.id);
+    let args: NoteMarkChangedArgs = new NoteMarkChangedArgs(noteId, isMarked, markedNotes.length);
+    this.noteMarkChanged.next(args);
+  }
+
   public renameNote(noteId: string, originalNoteTitle: string, newNoteTitle: string): RenameNoteResult {
     if (!noteId || !originalNoteTitle) {
       log.error("renameNote: noteId or originalNoteTitle is null");
@@ -77,11 +101,11 @@ export class NoteService {
 
     let uniqueNoteTitle: string = newNoteTitle.trim();
 
-    if(uniqueNoteTitle.length === 0){
+    if (uniqueNoteTitle.length === 0) {
       return new RenameNoteResult(CollectionOperation.Blank);
     }
 
-    if(originalNoteTitle === uniqueNoteTitle){
+    if (originalNoteTitle === uniqueNoteTitle) {
       log.error("New title is the same as old title. No rename required.");
       return new RenameNoteResult(CollectionOperation.Aborted);
     }
@@ -91,7 +115,9 @@ export class NoteService {
       uniqueNoteTitle = this.getUniqueNoteNoteTitle(newNoteTitle);
 
       // 2. Rename the note
-      this.dataStore.setNoteTitle(noteId, uniqueNoteTitle);
+      let note: Note = this.dataStore.getNote(noteId);
+      note.title = uniqueNoteTitle;
+      this.dataStore.updateNote(note);
     } catch (error) {
       log.error(`Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`);
       return new RenameNoteResult(CollectionOperation.Error);
@@ -106,22 +132,8 @@ export class NoteService {
     return renameNoteResult;
   }
 
-  // public updateNote(note: Note): CollectionOperation {
-  //   try {
-  //     this.dataStore.updateNote(note);
-  //   } catch (error) {
-  //     log.error(`Could not update the note with id='${note.id}' to '${note.title}'. Cause: ${error}`);
-  //     return CollectionOperation.Error;
-  //   }
-
-  //   return CollectionOperation.Success;
-  // }
-
-  public setNoteMark(noteId: string, isMarked: boolean): void {
-    this.dataStore.setNoteMark(noteId, isMarked);
-    let activeCollection: Collection = this.dataStore.getActiveCollection();
-    let markedNotes: Note[] = this.dataStore.getMarkedNotes(activeCollection.id);
-    let args: NoteMarkChangedArgs = new NoteMarkChangedArgs(noteId, isMarked, markedNotes.length);
-    this.noteMarkChanged.next(args);
+  public updateNoteContent(noteId: string, textContent: string, jsonContent: string): CollectionOperation {
+    // TODO
+    return CollectionOperation.Success;
   }
 }

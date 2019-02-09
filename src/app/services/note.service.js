@@ -52,6 +52,26 @@ var NoteService = /** @class */ (function () {
         }
         return uniqueTitle;
     };
+    // public updateNote(note: Note): CollectionOperation {
+    //   try {
+    //     this.dataStore.updateNote(note);
+    //   } catch (error) {
+    //     log.error(`Could not update the note with id='${note.id}' to '${note.title}'. Cause: ${error}`);
+    //     return CollectionOperation.Error;
+    //   }
+    //   return CollectionOperation.Success;
+    // }
+    NoteService.prototype.setNoteMark = function (noteId, isMarked) {
+        // Update note in the data store
+        var note = this.dataStore.getNote(noteId);
+        note.isMarked = isMarked;
+        this.dataStore.updateNote(note);
+        // Update counters
+        var activeCollection = this.dataStore.getActiveCollection();
+        var markedNotes = this.dataStore.getMarkedNotes(activeCollection.id);
+        var args = new noteMarkChangedArgs_1.NoteMarkChangedArgs(noteId, isMarked, markedNotes.length);
+        this.noteMarkChanged.next(args);
+    };
     NoteService.prototype.renameNote = function (noteId, originalNoteTitle, newNoteTitle) {
         if (!noteId || !originalNoteTitle) {
             electron_log_1.default.error("renameNote: noteId or originalNoteTitle is null");
@@ -69,7 +89,9 @@ var NoteService = /** @class */ (function () {
             // 1. Make sure the new title is unique
             uniqueNoteTitle = this.getUniqueNoteNoteTitle(newNoteTitle);
             // 2. Rename the note
-            this.dataStore.setNoteTitle(noteId, uniqueNoteTitle);
+            var note = this.dataStore.getNote(noteId);
+            note.title = uniqueNoteTitle;
+            this.dataStore.updateNote(note);
         }
         catch (error) {
             electron_log_1.default.error("Could not rename the note with id='" + noteId + "' to '" + uniqueNoteTitle + "'. Cause: " + error);
@@ -81,21 +103,8 @@ var NoteService = /** @class */ (function () {
         this.noteRenamed.next(renameNoteResult);
         return renameNoteResult;
     };
-    // public updateNote(note: Note): CollectionOperation {
-    //   try {
-    //     this.dataStore.updateNote(note);
-    //   } catch (error) {
-    //     log.error(`Could not update the note with id='${note.id}' to '${note.title}'. Cause: ${error}`);
-    //     return CollectionOperation.Error;
-    //   }
-    //   return CollectionOperation.Success;
-    // }
-    NoteService.prototype.setNoteMark = function (noteId, isMarked) {
-        this.dataStore.setNoteMark(noteId, isMarked);
-        var activeCollection = this.dataStore.getActiveCollection();
-        var markedNotes = this.dataStore.getMarkedNotes(activeCollection.id);
-        var args = new noteMarkChangedArgs_1.NoteMarkChangedArgs(noteId, isMarked, markedNotes.length);
-        this.noteMarkChanged.next(args);
+    NoteService.prototype.updateNoteText = function (noteId, newNoteText, newNoteJson) {
+        return collectionOperation_1.CollectionOperation.Success;
     };
     return NoteService;
 }());
