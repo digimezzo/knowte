@@ -9,6 +9,7 @@ var Store = require("electron-store");
 var fs = require("fs-extra");
 var constants_1 = require("../core/constants");
 var path = require("path");
+var getNoteContentResult_1 = require("./getNoteContentResult");
 /**
  * Angular services cannot be configured as singletons across Electron windows. So we use this class, which we
  * set as a global main process variable, and then use it as a app-wide singleton to send events across windows.
@@ -97,6 +98,7 @@ var NoteService = /** @class */ (function () {
             var note = this.dataStore.getNote(noteId);
             note.title = uniqueNoteTitle;
             this.dataStore.updateNote(note);
+            electron_log_1.default.info("Renamed note with id=" + noteId + " from " + originalNoteTitle + " to " + uniqueNoteTitle + ".");
         }
         catch (error) {
             electron_log_1.default.error("Could not rename the note with id='" + noteId + "' to '" + uniqueNoteTitle + "'. Cause: " + error);
@@ -121,12 +123,32 @@ var NoteService = /** @class */ (function () {
             var note = this.dataStore.getNote(noteId);
             note.text = textContent;
             this.dataStore.updateNote(note);
+            electron_log_1.default.info("Updated content for note with id=" + noteId + ".");
         }
         catch (error) {
             electron_log_1.default.error("Could not update the content for the note with id='" + noteId + "'. Cause: " + error);
             return collectionOperation_1.CollectionOperation.Error;
         }
         return collectionOperation_1.CollectionOperation.Success;
+    };
+    NoteService.prototype.getNoteContent = function (noteId) {
+        if (!noteId) {
+            electron_log_1.default.error("getNoteContent: noteId is null");
+            return new getNoteContentResult_1.GetNoteContentResult(collectionOperation_1.CollectionOperation.Error);
+        }
+        var noteContent = "";
+        try {
+            var storageDirectory = this.settings.get('storageDirectory');
+            noteContent = fs.readFileSync(path.join(storageDirectory, "" + noteId + constants_1.Constants.noteExtension), 'utf8');
+        }
+        catch (error) {
+            electron_log_1.default.error("Could not get the content for the note with id='" + noteId + "'. Cause: " + error);
+            return new getNoteContentResult_1.GetNoteContentResult(collectionOperation_1.CollectionOperation.Error);
+        }
+        var getNoteContentResult = new getNoteContentResult_1.GetNoteContentResult(collectionOperation_1.CollectionOperation.Success);
+        getNoteContentResult.noteId = noteId;
+        getNoteContentResult.noteContent = noteContent;
+        return getNoteContentResult;
     };
     return NoteService;
 }());

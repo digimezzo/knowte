@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material';
 import { remote, BrowserWindow } from 'electron';
 import { RenameNoteResult } from '../../services/renameNoteResult';
 import { CollectionOperation } from '../../services/collectionOperation';
+import { GetNoteContentResult } from '../../services/getNoteContentResult';
 
 @Component({
     selector: 'note-content',
@@ -76,7 +77,7 @@ export class NoteComponent implements OnInit {
         });
 
         // Get note id from url
-        this.activatedRoute.queryParams.subscribe(params => {
+        this.activatedRoute.queryParams.subscribe(async (params) => {
             let noteId: string = params['id'];
 
             // Get the note from the data store
@@ -87,6 +88,8 @@ export class NoteComponent implements OnInit {
             this.noteId = note.id;
             this.originalNoteTitle = note.title;
             this.noteTitle = note.title;
+
+            await this.getNoteContentAsync();
         });
 
         this.noteTitleChanged
@@ -98,7 +101,7 @@ export class NoteComponent implements OnInit {
         this.noteTextChanged
             .pipe(debounceTime(this.saveTimeoutMilliseconds))
             .subscribe(async (_) => {
-                await this.saveNoteTextAsync();
+                await this.saveNoteContentAsync();
             });
 
         this.saveChangedAndCloseNoteWindow
@@ -144,7 +147,7 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    private async saveNoteTextAsync(): Promise<void> {
+    private async saveNoteContentAsync(): Promise<void> {
         // let html: string = this.quill.container.firstChild.innerHTML;
         let textContent: string = this.quill.getText();
         let jsonContent: string = JSON.stringify(this.quill.getContents());
@@ -164,5 +167,22 @@ export class NoteComponent implements OnInit {
 
     private saveNoteAll(): void {
 
+    }
+
+    private async getNoteContentAsync(): Promise<void> {
+        let getNoteContentResult: GetNoteContentResult = this.noteService.getNoteContent(this.noteId);
+
+        if (getNoteContentResult.operation === CollectionOperation.Error) {
+            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.GetNoteContentError').toPromise());
+
+            this.dialog.open(ErrorDialogComponent, {
+                width: '450px', data: { errorText: generatedErrorText }
+            });
+        } else {
+            if(getNoteContentResult.noteContent){
+                // We can only parse to json if there is content
+                this.quill.setContents(JSON.parse(getNoteContentResult.noteContent), 'silent');
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ import * as Store from 'electron-store';
 import * as fs from 'fs-extra';
 import { Constants } from "../core/constants";
 import * as path from 'path';
+import { GetNoteContentResult } from "./getNoteContentResult";
 
 /**
  * Angular services cannot be configured as singletons across Electron windows. So we use this class, which we 
@@ -18,7 +19,7 @@ export class NoteService {
   constructor() {
 
   }
-  
+
   private settings: Store = new Store();
   private openNoteIds: string[] = [];
 
@@ -162,5 +163,28 @@ export class NoteService {
     }
 
     return CollectionOperation.Success;
+  }
+
+  public getNoteContent(noteId: string): GetNoteContentResult {
+    if (!noteId) {
+      log.error("getNoteContent: noteId is null");
+      return new GetNoteContentResult(CollectionOperation.Error);
+    }
+
+    let noteContent: string = "";
+
+    try {
+      let storageDirectory: string = this.settings.get('storageDirectory');
+      noteContent = fs.readFileSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), 'utf8');
+    } catch (error) {
+      log.error(`Could not get the content for the note with id='${noteId}'. Cause: ${error}`);
+      return new GetNoteContentResult(CollectionOperation.Error);
+    }
+
+    let getNoteContentResult: GetNoteContentResult = new GetNoteContentResult(CollectionOperation.Success);
+    getNoteContentResult.noteId = noteId;
+    getNoteContentResult.noteContent = noteContent;
+
+    return getNoteContentResult;
   }
 }
