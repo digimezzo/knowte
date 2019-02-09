@@ -10,6 +10,7 @@ var fs = require("fs-extra");
 var constants_1 = require("../core/constants");
 var path = require("path");
 var getNoteContentResult_1 = require("./getNoteContentResult");
+var updateNoteResult_1 = require("./updateNoteResult");
 /**
  * Angular services cannot be configured as singletons across Electron windows. So we use this class, which we
  * set as a global main process variable, and then use it as a app-wide singleton to send events across windows.
@@ -22,6 +23,8 @@ var NoteService = /** @class */ (function () {
         this.dataStore = this.globalAny.dataStore;
         this.noteRenamed = new rxjs_1.Subject();
         this.noteRenamed$ = this.noteRenamed.asObservable();
+        this.noteUpdated = new rxjs_1.Subject();
+        this.noteUpdated$ = this.noteUpdated.asObservable();
         this.noteMarkChanged = new rxjs_1.Subject();
         this.noteMarkChanged$ = this.noteMarkChanged.asObservable();
     }
@@ -58,15 +61,27 @@ var NoteService = /** @class */ (function () {
         }
         return uniqueTitle;
     };
-    // public updateNote(note: Note): CollectionOperation {
-    //   try {
-    //     this.dataStore.updateNote(note);
-    //   } catch (error) {
-    //     log.error(`Could not update the note with id='${note.id}' to '${note.title}'. Cause: ${error}`);
-    //     return CollectionOperation.Error;
-    //   }
-    //   return CollectionOperation.Success;
-    // }
+    NoteService.prototype.updateNote = function (noteId, title, textContent, jsonContent) {
+        try {
+            // Update the note file on disk
+            var storageDirectory = this.settings.get('storageDirectory');
+            fs.writeFileSync(path.join(storageDirectory, "" + noteId + constants_1.Constants.noteExtension), jsonContent);
+            // Update the note in the data store
+            var note = this.dataStore.getNote(noteId);
+            note.title = title;
+            note.text = textContent;
+            this.dataStore.updateNote(note);
+        }
+        catch (error) {
+            electron_log_1.default.error("Could not update the note with id='" + noteId + "'. Cause: " + error);
+            return collectionOperation_1.CollectionOperation.Error;
+        }
+        var updateNoteResult = new updateNoteResult_1.UpdateNoteResult(collectionOperation_1.CollectionOperation.Success);
+        updateNoteResult.noteId = noteId;
+        updateNoteResult.noteTitle = title;
+        this.noteUpdated.next(updateNoteResult);
+        return collectionOperation_1.CollectionOperation.Success;
+    };
     NoteService.prototype.setNoteMark = function (noteId, isMarked) {
         // Update note in the data store
         var note = this.dataStore.getNote(noteId);
