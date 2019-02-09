@@ -5,6 +5,10 @@ import { Note } from "../data/note";
 import { NoteMarkChangedArgs } from "./noteMarkChangedArgs";
 import { RenameNoteResult } from "./renameNoteResult";
 import { CollectionOperation } from "./collectionOperation";
+import * as Store from 'electron-store';
+import * as fs from 'fs-extra';
+import { Constants } from "../core/constants";
+import * as path from 'path';
 
 /**
  * Angular services cannot be configured as singletons across Electron windows. So we use this class, which we 
@@ -14,7 +18,8 @@ export class NoteService {
   constructor() {
 
   }
-
+  
+  private settings: Store = new Store();
   private openNoteIds: string[] = [];
 
   private globalAny: any = global;
@@ -118,6 +123,8 @@ export class NoteService {
       let note: Note = this.dataStore.getNote(noteId);
       note.title = uniqueNoteTitle;
       this.dataStore.updateNote(note);
+
+      log.info(`Renamed note with id=${noteId} from ${originalNoteTitle} to ${uniqueNoteTitle}.`);
     } catch (error) {
       log.error(`Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`);
       return new RenameNoteResult(CollectionOperation.Error);
@@ -133,7 +140,27 @@ export class NoteService {
   }
 
   public updateNoteContent(noteId: string, textContent: string, jsonContent: string): CollectionOperation {
-    // TODO
+    if (!noteId) {
+      log.error("updateNoteContent: noteId is null");
+      return CollectionOperation.Error;
+    }
+
+    try {
+      // Update the note file on disk
+      let storageDirectory: string = this.settings.get('storageDirectory');
+      fs.writeFileSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), jsonContent);
+
+      // Update the note in the data store
+      let note: Note = this.dataStore.getNote(noteId);
+      note.text = textContent;
+      this.dataStore.updateNote(note);
+
+      log.info(`Updated content for note with id=${noteId}.`);
+    } catch (error) {
+      log.error(`Could not update the content for the note with id='${noteId}'. Cause: ${error}`);
+      return CollectionOperation.Error;
+    }
+
     return CollectionOperation.Success;
   }
 }

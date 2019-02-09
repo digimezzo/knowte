@@ -5,12 +5,17 @@ var electron_log_1 = require("electron-log");
 var noteMarkChangedArgs_1 = require("./noteMarkChangedArgs");
 var renameNoteResult_1 = require("./renameNoteResult");
 var collectionOperation_1 = require("./collectionOperation");
+var Store = require("electron-store");
+var fs = require("fs-extra");
+var constants_1 = require("../core/constants");
+var path = require("path");
 /**
  * Angular services cannot be configured as singletons across Electron windows. So we use this class, which we
  * set as a global main process variable, and then use it as a app-wide singleton to send events across windows.
  */
 var NoteService = /** @class */ (function () {
     function NoteService() {
+        this.settings = new Store();
         this.openNoteIds = [];
         this.globalAny = global;
         this.dataStore = this.globalAny.dataStore;
@@ -103,7 +108,24 @@ var NoteService = /** @class */ (function () {
         this.noteRenamed.next(renameNoteResult);
         return renameNoteResult;
     };
-    NoteService.prototype.updateNoteText = function (noteId, newNoteText, newNoteJson) {
+    NoteService.prototype.updateNoteContent = function (noteId, textContent, jsonContent) {
+        if (!noteId) {
+            electron_log_1.default.error("updateNoteContent: noteId is null");
+            return collectionOperation_1.CollectionOperation.Error;
+        }
+        try {
+            // Update the note file on disk
+            var storageDirectory = this.settings.get('storageDirectory');
+            fs.writeFileSync(path.join(storageDirectory, "" + noteId + constants_1.Constants.noteExtension), jsonContent);
+            // Update the note in the data store
+            var note = this.dataStore.getNote(noteId);
+            note.text = textContent;
+            this.dataStore.updateNote(note);
+        }
+        catch (error) {
+            electron_log_1.default.error("Could not update the content for the note with id='" + noteId + "'. Cause: " + error);
+            return collectionOperation_1.CollectionOperation.Error;
+        }
         return collectionOperation_1.CollectionOperation.Success;
     };
     return NoteService;
