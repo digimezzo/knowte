@@ -27,8 +27,6 @@ export class NoteComponent implements OnInit {
         private dialog: MatDialog) {
     }
 
-    private noteEvents = remote.getGlobal('noteEvents');
-
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteTextChanged: Subject<string> = new Subject<string>();
     public saveChangedAndCloseNoteWindow: Subject<string> = new Subject<string>();
@@ -142,7 +140,6 @@ export class NoteComponent implements OnInit {
         } else if (renameNoteResult.operation === CollectionOperation.Success) {
             this.originalNoteTitle = renameNoteResult.newNoteTitle;
             this.noteTitle = renameNoteResult.newNoteTitle;
-            this.noteEvents.emit('noteRenamed');
         } else {
             // Do nothing
         }
@@ -170,7 +167,6 @@ export class NoteComponent implements OnInit {
         let textContent: string = this.quill.getText();
         let jsonContent: string = JSON.stringify(this.quill.getContents());
         this.collectionService.updateNote(this.noteId, this.noteTitle, textContent, jsonContent);
-        this.noteEvents.emit('noteUpdated');
     }
 
     private async getNoteContentAsync(): Promise<void> {

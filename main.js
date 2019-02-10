@@ -30,15 +30,15 @@ var dataStore = new dataStore_1.DataStore();
 globalAny.dataStore = dataStore;
 // Workaround to send messages between Electron windows
 var EventEmitter = require('events');
-var NoteEmitter = /** @class */ (function (_super) {
-    __extends(NoteEmitter, _super);
-    function NoteEmitter() {
+var GlobalEventEmitter = /** @class */ (function (_super) {
+    __extends(GlobalEventEmitter, _super);
+    function GlobalEventEmitter() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    return NoteEmitter;
+    return GlobalEventEmitter;
 }(EventEmitter));
 ;
-globalAny.noteEvents = new NoteEmitter();
+globalAny.globalEvents = new GlobalEventEmitter();
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 electron_log_1.default.transports.file.level = 'info';
 function createWindow() {

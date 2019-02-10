@@ -29,9 +29,18 @@ import { GetNoteContentResult } from './getNoteContentResult';
 export class CollectionService {
   constructor(private translateService: TranslateService) {
     log.info("CollectionService");
+
+    this.globalEvents.on('noteRenamed', (renameNoteResult) => {
+      this.noteRenamed.next(renameNoteResult);
+    });
+
+    this.globalEvents.on('noteUpdated', (updateNoteResult) => {
+      this.noteUpdated.next(updateNoteResult);
+    });
   }
 
   private dataStore = remote.getGlobal('dataStore');
+  private globalEvents = remote.getGlobal('globalEvents');
   private settings: Store = new Store();
 
   private dataStoreInitialized = new Subject<boolean>();
@@ -70,11 +79,11 @@ export class CollectionService {
   private noteCountersChanged = new Subject<NoteCountersChangedArgs>();
   noteCountersChanged$ = this.noteCountersChanged.asObservable();
 
-  // private noteRenamed = new Subject<RenameNoteResult>();
-  // noteRenamed$ = this.noteRenamed.asObservable();
+  private noteRenamed = new Subject<RenameNoteResult>();
+  noteRenamed$ = this.noteRenamed.asObservable();
 
-  // private noteUpdated = new Subject<UpdateNoteResult>();
-  // noteUpdated$ = this.noteUpdated.asObservable();
+  private noteUpdated = new Subject<UpdateNoteResult>();
+  noteUpdated$ = this.noteUpdated.asObservable();
 
   private noteMarkChanged = new Subject<NoteMarkChangedArgs>();
   noteMarkChanged$ = this.noteMarkChanged.asObservable();
@@ -170,7 +179,7 @@ export class CollectionService {
     updateNoteResult.noteId = noteId;
     updateNoteResult.noteTitle = title;
 
-    // this.noteUpdated.next(updateNoteResult);
+    this.globalEvents.emit('noteUpdated', updateNoteResult);
 
     return CollectionOperation.Success;
   }
@@ -224,7 +233,7 @@ export class CollectionService {
     renameNoteResult.noteId = noteId;
     renameNoteResult.newNoteTitle = uniqueNoteTitle;
 
-    // this.noteRenamed.next(renameNoteResult);
+    this.globalEvents.emit('noteRenamed', renameNoteResult);
 
     return renameNoteResult;
   }
@@ -774,7 +783,7 @@ export class CollectionService {
       let storageDirectory: string = this.settings.get('storageDirectory');
       // fs.closeSync(fs.openSync(path.join(storageDirectory, `${addNoteResult.noteId}${Constants.noteExtension}`), 'w'));
       fs.writeFileSync(path.join(storageDirectory, `${addNoteResult.noteId}${Constants.noteExtension}`), '');
-      
+
       this.noteAdded.next(uniqueTitle);
     } catch (error) {
       log.error(`Could not add note '${uniqueTitle}'. Cause: ${error}`);

@@ -10,7 +10,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
-import { remote } from 'electron';
 import { AddNoteResult } from '../../services/addNoteResult';
 import { CollectionOperation } from '../../services/collectionOperation';
 import { Constants } from '../../core/constants';
@@ -26,8 +25,6 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     private _selectedNotebook: Notebook;
-
-    private noteEvents = remote.getGlobal('noteEvents');
 
     @Input()
     public categoryChangedSubject: Subject<any>;
@@ -62,21 +59,6 @@ export class NotesComponent implements OnInit, OnDestroy {
         // Get notes
         await this.getNotesAsync();
 
-        this.noteEvents.on('noteRenamed', async() => {
-            log.info("noteRenamed event received");
-            this.zone.run(async () => {
-                await this.getNotesAsync();
-            });
-        });
-
-        this.noteEvents.on('noteUpdated', async() => {
-            // TODO: process updating errors
-            log.info("noteUpdated event received");
-            this.zone.run(async () => {
-                await this.getNotesAsync();
-            });
-        });
-
         this.subscription = this.collectionService.noteAdded$.subscribe(async (noteTitle) => {
             await this.getNotesAsync();
             this.snackBarService.noteAddedAsync(noteTitle);
@@ -98,18 +80,18 @@ export class NotesComponent implements OnInit, OnDestroy {
             }
         }));
 
-        // this.subscription.add(this.collectionService.noteRenamed$.subscribe(async () => {
-        //     this.zone.run(async () => {
-        //         await this.getNotesAsync();
-        //     });
-        // }));
+        this.subscription.add(this.collectionService.noteRenamed$.subscribe(async () => {
+            this.zone.run(async () => {
+                await this.getNotesAsync();
+            });
+        }));
 
-        // this.subscription.add(this.collectionService.noteUpdated$.subscribe(async () => {
-        //     // TODO: process updating errors
-        //     this.zone.run(async () => {
-        //         await this.getNotesAsync();
-        //     });
-        // }));
+        this.subscription.add(this.collectionService.noteUpdated$.subscribe(async () => {
+            // TODO: process updating errors
+            this.zone.run(async () => {
+                await this.getNotesAsync();
+            });
+        }));
 
         this.subscription.add(this.categoryChangedSubject.subscribe(async (event) => {
             await this.getNotesAsync();
