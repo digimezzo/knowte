@@ -74,7 +74,7 @@ export class DataStore {
 
     public addCollection(name: string, isActive: boolean) {
         let newCollection: Collection = new Collection(name, isActive);
-        this.notebooks.insert(newCollection);
+        this.collections.insert(newCollection);
         this.db.saveDatabase();
 
         return newCollection.id;
