@@ -66,8 +66,8 @@ p {
 }
 
 #window-controls {
-    display: grid;
-    grid-template-columns: repeat(4, 46px);
+    display: flex;
+    flex-direction: row;
     position: absolute;
     top: 0;
     right: 0;
@@ -78,11 +78,10 @@ p {
 }
 
 #window-controls .button {
-    grid-row: 1 / span 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    width: 46px;
     height: 100%;
     user-select: none;
     cursor: default;
@@ -103,21 +102,7 @@ p {
 }
 
 #window-controls #menu-button {
-    grid-column: 1;
     font-size: 16px !important;
-}
-
-#window-controls #min-button {
-    grid-column: 2;
-}
-
-#window-controls #max-button,
-#window-controls #restore-button {
-    grid-column: 3;
-}
-
-#window-controls #close-button {
-    grid-column: 4;
 }
 
 #window-title span {
