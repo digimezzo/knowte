@@ -79,8 +79,8 @@
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Are you sure you want to delete the collection '{{collectionName}}'? If you continue, its notebooks and notes will be lost.",
-        "ConfirmDeleteNote": "Are you sure you want to delete the note '{{noteTitle}}'?"
-        
+        "ConfirmDeleteNote": "Are you sure you want to delete the note '{{noteTitle}}'?",
+        "ConfirmDeleteNotebook": "Are you sure you want to delete the notebook '{{notebookName}}'?"
     },
     "Input": {
         "CollectionName": "Collection name",
