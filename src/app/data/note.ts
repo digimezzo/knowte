@@ -11,4 +11,5 @@ export class Note{
     public modificationDate: number = moment().valueOf();
     public displayModificationDate: string;
     public text: string;
+    public isOpen: boolean;
 }

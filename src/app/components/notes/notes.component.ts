@@ -55,6 +55,9 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     async ngOnInit() {
+        // In case we crashed on a previous run, make sure all notes are closed.
+        this.noteService.closeAllNotes();
+
         // Get notes
         await this.getNotesAsync();
 

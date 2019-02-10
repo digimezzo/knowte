@@ -18,7 +18,6 @@ var updateNoteResult_1 = require("./updateNoteResult");
 var NoteService = /** @class */ (function () {
     function NoteService() {
         this.settings = new Store();
-        this.openNoteIds = [];
         this.globalAny = global;
         this.dataStore = this.globalAny.dataStore;
         this.noteRenamed = new rxjs_1.Subject();
@@ -29,17 +28,17 @@ var NoteService = /** @class */ (function () {
         this.noteMarkChanged$ = this.noteMarkChanged.asObservable();
     }
     NoteService.prototype.openNote = function (noteId) {
-        if (!this.openNoteIds.includes(noteId)) {
-            this.openNoteIds.push(noteId);
-        }
+        this.dataStore.setNoteIsOpen(noteId, true);
     };
     NoteService.prototype.closeNote = function (noteId) {
-        if (this.openNoteIds.includes(noteId)) {
-            this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);
-        }
+        this.dataStore.setNoteIsOpen(noteId, false);
     };
     NoteService.prototype.noteIsOpen = function (noteId) {
-        return this.openNoteIds.includes(noteId);
+        var openNotes = this.dataStore.getOpenNotes();
+        if (openNotes.map(function (x) { return x.id; }).includes(noteId)) {
+            return true;
+        }
+        return false;
     };
     NoteService.prototype.noteExists = function (noteTitle) {
         var activeCollection = this.dataStore.getActiveCollection();

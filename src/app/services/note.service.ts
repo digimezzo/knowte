@@ -22,7 +22,6 @@ export class NoteService {
   }
 
   private settings: Store = new Store();
-  private openNoteIds: string[] = [];
 
   private globalAny: any = global;
   private dataStore = this.globalAny.dataStore;
@@ -37,19 +36,21 @@ export class NoteService {
   noteMarkChanged$ = this.noteMarkChanged.asObservable();
 
   public openNote(noteId: string): void {
-    if (!this.openNoteIds.includes(noteId)) {
-      this.openNoteIds.push(noteId);
-    }
+    this.dataStore.setNoteIsOpen(noteId, true);
   }
 
   public closeNote(noteId: string): void {
-    if (this.openNoteIds.includes(noteId)) {
-      this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);
-    }
+    this.dataStore.setNoteIsOpen(noteId, false);
   }
 
   public noteIsOpen(noteId: string): boolean {
-    return this.openNoteIds.includes(noteId);
+    let openNotes: Note[] = this.dataStore.getOpenNotes();
+
+    if (openNotes.map(x => x.id).includes(noteId)) {
+      return true;
+    }
+
+    return false;
   }
 
   private noteExists(noteTitle: string): boolean {
