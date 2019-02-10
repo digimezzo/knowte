@@ -70,11 +70,11 @@ export class CollectionService {
   private noteCountersChanged = new Subject<NoteCountersChangedArgs>();
   noteCountersChanged$ = this.noteCountersChanged.asObservable();
 
-  private noteRenamed = new Subject<RenameNoteResult>();
-  noteRenamed$ = this.noteRenamed.asObservable();
+  // private noteRenamed = new Subject<RenameNoteResult>();
+  // noteRenamed$ = this.noteRenamed.asObservable();
 
-  private noteUpdated = new Subject<UpdateNoteResult>();
-  noteUpdated$ = this.noteUpdated.asObservable();
+  // private noteUpdated = new Subject<UpdateNoteResult>();
+  // noteUpdated$ = this.noteUpdated.asObservable();
 
   private noteMarkChanged = new Subject<NoteMarkChangedArgs>();
   noteMarkChanged$ = this.noteMarkChanged.asObservable();
@@ -170,7 +170,7 @@ export class CollectionService {
     updateNoteResult.noteId = noteId;
     updateNoteResult.noteTitle = title;
 
-    this.noteUpdated.next(updateNoteResult);
+    // this.noteUpdated.next(updateNoteResult);
 
     return CollectionOperation.Success;
   }
@@ -224,7 +224,7 @@ export class CollectionService {
     renameNoteResult.noteId = noteId;
     renameNoteResult.newNoteTitle = uniqueNoteTitle;
 
-    this.noteRenamed.next(renameNoteResult);
+    // this.noteRenamed.next(renameNoteResult);
 
     return renameNoteResult;
   }

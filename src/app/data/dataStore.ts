@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import * as Store from 'electron-store';
 import * as loki from 'lokijs';
 import * as path from 'path';
@@ -9,9 +8,6 @@ import { Notebook } from './notebook';
 import { Note } from './note';
 import * as moment from 'moment'
 
-@Injectable({
-    providedIn: 'root',
-})
 export class DataStore {
     private settings: Store = new Store();
 
