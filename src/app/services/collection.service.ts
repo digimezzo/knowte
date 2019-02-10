@@ -114,15 +114,13 @@ export class CollectionService {
     return true;
   }
 
-  public openNote(noteId: string): void {
-    this.dataStore.setNoteIsOpen(noteId, true);
+  public setNoteIsOpen(noteId: string, noteIsOpen: boolean): void {
+    let note: Note = this.dataStore.getNote(noteId);
+    note.isOpen = noteIsOpen;
+    this.dataStore.updateNote(note);
   }
 
-  public closeNote(noteId: string): void {
-    this.dataStore.setNoteIsOpen(noteId, false);
-  }
-
-  public noteIsOpen(noteId: string): boolean {
+  public getNoteIsOpen(noteId: string): boolean {
     let openNotes: Note[] = this.dataStore.getOpenNotes();
 
     if (openNotes.map(x => x.id).includes(noteId)) {

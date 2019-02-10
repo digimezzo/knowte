@@ -238,13 +238,6 @@ export class DataStore {
         return note.id;
     }
 
-    public setNoteIsOpen(noteId: string, isOpen: boolean): void {
-        let note: Note = this.notes.findOne({ 'id': noteId });
-        note.isOpen = isOpen;
-        this.notes.update(note);
-        this.db.saveDatabase();
-    }
-
      public getOpenNotes(): Note[] {
         let notes: Note[] = this.notes.chain().find({ 'isOpen': true }).data();
 

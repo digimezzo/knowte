@@ -178,12 +178,6 @@ var DataStore = /** @class */ (function () {
         this.db.saveDatabase();
         return note.id;
     };
-    DataStore.prototype.setNoteIsOpen = function (noteId, isOpen) {
-        var note = this.notes.findOne({ 'id': noteId });
-        note.isOpen = isOpen;
-        this.notes.update(note);
-        this.db.saveDatabase();
-    };
     DataStore.prototype.getOpenNotes = function () {
         var notes = this.notes.chain().find({ 'isOpen': true }).data();
         return notes;
