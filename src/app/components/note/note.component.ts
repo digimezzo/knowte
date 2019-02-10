@@ -3,7 +3,7 @@ import log from 'electron-log';
 import { CollectionService } from '../../services/collection.service';
 import * as Quill from 'quill';
 import { ActivatedRoute } from '@angular/router';
-import { Note } from '../../data/note';
+import { Note } from '../../data/entities/note';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from "rxjs/internal/operators";
 import { SnackBarService } from '../../services/snackBar.service';

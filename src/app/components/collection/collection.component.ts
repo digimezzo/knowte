@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, NgZone } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
-import { Notebook } from '../../data/notebook';
+import { Notebook } from '../../data/entities/notebook';
 import { MatDialog, MatDialogRef, MatTabChangeEvent } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { NotebookOperation } from '../../services/notebookOperation';

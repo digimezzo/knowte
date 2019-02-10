@@ -2,11 +2,12 @@ import * as Store from 'electron-store';
 import * as loki from 'lokijs';
 import * as path from 'path';
 import { Constants } from '../core/constants';
-import { Collection } from './collection';
+import { Collection } from './entities/collection';
 import * as nanoid from 'nanoid';
-import { Notebook } from './notebook';
-import { Note } from './note';
+import { Notebook } from './entities/notebook';
+import { Note } from './entities/note';
 import * as moment from 'moment'
+import { Utils } from '../core/utils';
 
 export class DataStore {
     private settings: Store = new Store();
@@ -60,12 +61,8 @@ export class DataStore {
         });
     }
 
-    private caseInsensitiveNameSort(object1: any, object2: any) {
-        return object1.name.toLowerCase().localeCompare(object2.name.toLowerCase());
-    }
-
     public getAllCollections(): Collection[] {
-        return this.collections.chain().sort(this.caseInsensitiveNameSort).data();
+        return this.collections.chain().sort(Utils.caseInsensitiveNameSort).data();
     }
 
     public getCollection(collectionId: string): Collection {
@@ -84,10 +81,8 @@ export class DataStore {
         return newCollection.id;
     }
 
-    public setCollectionName(collectionId: string, collectionName: string) {
-        let collectionToRename: Collection = this.getCollection(collectionId);
-        collectionToRename.name = collectionName;
-        this.collections.update(collectionToRename);
+    public updateCollection(collection: Collection): void {
+        this.collections.update(collection);
         this.db.saveDatabase();
     }
 
@@ -145,20 +140,13 @@ export class DataStore {
     }
 
     public getNotebooks(collectionId: string): Notebook[] {
-        let notebooks: Notebook[] = this.notebooks.chain().find({ 'collectionId': collectionId }).sort(this.caseInsensitiveNameSort).data();
+        let notebooks: Notebook[] = this.notebooks.chain().find({ 'collectionId': collectionId }).sort(Utils.caseInsensitiveNameSort).data();
 
         return notebooks;
     }
 
     public getNotebook(notebookId: string): Notebook {
         return this.notebooks.findOne({ 'id': notebookId });
-    }
-
-    public setNotebookName(notebookId: string, notebookName: string) {
-        let notebookToRename: Notebook = this.getNotebook(notebookId);
-        notebookToRename.name = notebookName;
-        this.notebooks.update(notebookToRename);
-        this.db.saveDatabase();
     }
 
     public deleteNotebook(notebookId: string) {
@@ -230,12 +218,15 @@ export class DataStore {
         this.db.saveDatabase();
     }
 
-    public updateNote(note: Note): string {
+    public updateNote(note: Note): void {
         this.notes.update(note);
         note.modificationDate = moment().valueOf();
         this.db.saveDatabase();
+    }
 
-        return note.id;
+    public updateNotebook(notebook: Notebook): void {
+        this.notebooks.update(notebook);
+        this.db.saveDatabase();
     }
 
     public getOpenNotes(): Note[] {

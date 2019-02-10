@@ -45,6 +45,9 @@ var Utils = /** @class */ (function () {
             });
         });
     };
+    Utils.caseInsensitiveNameSort = function (object1, object2) {
+        return object1.name.toLowerCase().localeCompare(object2.name.toLowerCase());
+    };
     return Utils;
 }());
 exports.Utils = Utils;

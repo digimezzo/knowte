@@ -4,10 +4,11 @@ var Store = require("electron-store");
 var loki = require("lokijs");
 var path = require("path");
 var constants_1 = require("../core/constants");
-var collection_1 = require("./collection");
-var notebook_1 = require("./notebook");
-var note_1 = require("./note");
+var collection_1 = require("./entities/collection");
+var notebook_1 = require("./entities/notebook");
+var note_1 = require("./entities/note");
 var moment = require("moment");
+var utils_1 = require("../core/utils");
 var DataStore = /** @class */ (function () {
     function DataStore() {
         this.settings = new Store();
@@ -42,11 +43,8 @@ var DataStore = /** @class */ (function () {
             autoloadCallback: this.databaseLoaded.bind(this)
         });
     };
-    DataStore.prototype.caseInsensitiveNameSort = function (object1, object2) {
-        return object1.name.toLowerCase().localeCompare(object2.name.toLowerCase());
-    };
     DataStore.prototype.getAllCollections = function () {
-        return this.collections.chain().sort(this.caseInsensitiveNameSort).data();
+        return this.collections.chain().sort(utils_1.Utils.caseInsensitiveNameSort).data();
     };
     DataStore.prototype.getCollection = function (collectionId) {
         return this.collections.findOne({ 'id': collectionId });
@@ -60,10 +58,8 @@ var DataStore = /** @class */ (function () {
         this.db.saveDatabase();
         return newCollection.id;
     };
-    DataStore.prototype.setCollectionName = function (collectionId, collectionName) {
-        var collectionToRename = this.getCollection(collectionId);
-        collectionToRename.name = collectionName;
-        this.collections.update(collectionToRename);
+    DataStore.prototype.updateCollection = function (collection) {
+        this.collections.update(collection);
         this.db.saveDatabase();
     };
     DataStore.prototype.activateCollection = function (collectionId) {
@@ -109,17 +105,11 @@ var DataStore = /** @class */ (function () {
         return newNotebook.id;
     };
     DataStore.prototype.getNotebooks = function (collectionId) {
-        var notebooks = this.notebooks.chain().find({ 'collectionId': collectionId }).sort(this.caseInsensitiveNameSort).data();
+        var notebooks = this.notebooks.chain().find({ 'collectionId': collectionId }).sort(utils_1.Utils.caseInsensitiveNameSort).data();
         return notebooks;
     };
     DataStore.prototype.getNotebook = function (notebookId) {
         return this.notebooks.findOne({ 'id': notebookId });
-    };
-    DataStore.prototype.setNotebookName = function (notebookId, notebookName) {
-        var notebookToRename = this.getNotebook(notebookId);
-        notebookToRename.name = notebookName;
-        this.notebooks.update(notebookToRename);
-        this.db.saveDatabase();
     };
     DataStore.prototype.deleteNotebook = function (notebookId) {
         // Remove notebook
@@ -175,7 +165,10 @@ var DataStore = /** @class */ (function () {
         this.notes.update(note);
         note.modificationDate = moment().valueOf();
         this.db.saveDatabase();
-        return note.id;
+    };
+    DataStore.prototype.updateNotebook = function (notebook) {
+        this.notebooks.update(notebook);
+        this.db.saveDatabase();
     };
     DataStore.prototype.getOpenNotes = function () {
         var notes = this.notes.chain().find({ 'isOpen': true }).data();

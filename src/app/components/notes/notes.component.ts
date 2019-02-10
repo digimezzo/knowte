@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, NgZone, OnDestroy } from '@angular/core';
 import log from 'electron-log';
 import { CollectionService } from '../../services/collection.service';
-import { Note } from '../../data/note';
+import { Note } from '../../data/entities/note';
 import { Subscription, Subject } from 'rxjs';
 import { SnackBarService } from '../../services/snackBar.service';
 import { ipcRenderer } from 'electron';
-import { Notebook } from '../../data/notebook';
+import { Notebook } from '../../data/entities/notebook';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { MatDialogRef, MatDialog } from '@angular/material';

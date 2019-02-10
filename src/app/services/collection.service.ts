@@ -6,13 +6,13 @@ import log from 'electron-log';
 import * as Store from 'electron-store';
 import { Subject } from 'rxjs';
 import { CollectionOperation } from './collectionOperation';
-import { Collection } from '../data/collection';
+import { Collection } from '../data/entities/collection';
 import { Utils } from '../core/utils';
-import { Notebook } from '../data/notebook';
+import { Notebook } from '../data/entities/notebook';
 import { TranslateService } from '@ngx-translate/core';
 import { NotebookOperation } from './notebookOperation';
 import { remote } from 'electron';
-import { Note } from '../data/note';
+import { Note } from '../data/entities/note';
 import * as moment from 'moment'
 import { Moment, Duration } from 'moment';
 import { NoteDateFormatResult } from './noteDateFormatResult';
@@ -381,7 +381,9 @@ export class CollectionService {
       }
 
       // 2. Rename the collection
-      this.dataStore.setCollectionName(collectionId, newCollectionName);
+      let collection: Collection = this.dataStore.getCollection(collectionId);
+      collection.name = newCollectionName;
+      this.dataStore.updateCollection(collection);
     } catch (error) {
       log.error(`Could not rename the collection with id='${collectionId}' to '${newCollectionName}'. Cause: ${error}`);
       return CollectionOperation.Error;
@@ -529,7 +531,9 @@ export class CollectionService {
       }
 
       // 2. Rename the notebook
-      this.dataStore.setNotebookName(notebookId, newNotebookName);
+      let notebook: Notebook = this.dataStore.getNotebook(notebookId);
+      notebook.name = newNotebookName;
+      this.dataStore.updateNotebook(notebook);
     } catch (error) {
       log.error(`Could not rename the notebook with id='${notebookId}' to '${newNotebookName}'. Cause: ${error}`);
       return NotebookOperation.Error;
