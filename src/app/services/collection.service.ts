@@ -115,7 +115,7 @@ export class CollectionService {
   }
 
   public setNoteIsOpen(noteId: string, noteIsOpen: boolean): void {
-    let note: Note = this.dataStore.getNote(noteId);
+    let note: Note = this.dataStore.getNoteById(noteId);
     note.isOpen = noteIsOpen;
     this.dataStore.updateNote(note);
   }
@@ -163,7 +163,7 @@ export class CollectionService {
       fs.writeFileSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), jsonContent);
 
       // Update the note in the data store
-      let note: Note = this.dataStore.getNote(noteId);
+      let note: Note = this.dataStore.getNoteById(noteId);
       note.title = title;
       note.text = textContent;
       this.dataStore.updateNote(note);
@@ -184,7 +184,7 @@ export class CollectionService {
 
   public setNoteMark(noteId: string, isMarked: boolean): void {
     // Update note in the data store
-    let note: Note = this.dataStore.getNote(noteId);
+    let note: Note = this.dataStore.getNoteById(noteId);
     note.isMarked = isMarked;
     this.dataStore.updateNote(note);
 
@@ -217,7 +217,7 @@ export class CollectionService {
       uniqueNoteTitle = this.getUniqueNoteNoteTitle(newNoteTitle);
 
       // 2. Rename the note
-      let note: Note = this.dataStore.getNote(noteId);
+      let note: Note = this.dataStore.getNoteById(noteId);
       note.title = uniqueNoteTitle;
       this.dataStore.updateNote(note);
 
@@ -248,7 +248,7 @@ export class CollectionService {
       fs.writeFileSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), jsonContent);
 
       // Update the note in the data store
-      let note: Note = this.dataStore.getNote(noteId);
+      let note: Note = this.dataStore.getNoteById(noteId);
       note.text = textContent;
       this.dataStore.updateNote(note);
 
@@ -381,7 +381,7 @@ export class CollectionService {
       }
 
       // 2. Rename the collection
-      let collection: Collection = this.dataStore.getCollection(collectionId);
+      let collection: Collection = this.dataStore.getCollectionById(collectionId);
       collection.name = newCollectionName;
       this.dataStore.updateCollection(collection);
     } catch (error) {
@@ -398,7 +398,7 @@ export class CollectionService {
     let collections: Collection[];
 
     try {
-      collections = this.dataStore.getAllCollections();
+      collections = this.dataStore.getCollections();
     } catch (error) {
       log.error(`Could not get collections. Cause: ${error}`);
       // This is a fatal error. Throw the error so the global error handler catches it.
@@ -409,7 +409,7 @@ export class CollectionService {
   }
 
   public getCollectionName(collectionId: string): string {
-    return this.dataStore.getCollection(collectionId).name;
+    return this.dataStore.getCollectionById(collectionId).name;
   }
 
   public activateCollection(collectionId: string): void {
@@ -531,7 +531,7 @@ export class CollectionService {
       }
 
       // 2. Rename the notebook
-      let notebook: Notebook = this.dataStore.getNotebook(notebookId);
+      let notebook: Notebook = this.dataStore.getNotebookById(notebookId);
       notebook.name = newNotebookName;
       this.dataStore.updateNotebook(notebook);
     } catch (error) {
@@ -545,7 +545,7 @@ export class CollectionService {
   }
 
   public getNotebookName(notebookId: string): string {
-    return this.dataStore.getNotebook(notebookId).name;
+    return this.dataStore.getNotebookById(notebookId).name;
   }
 
   public async deleteNotebookAsync(notebookId: string): Promise<NotebookOperation> {
@@ -580,7 +580,7 @@ export class CollectionService {
     let noteTitle: string = "";
 
     try {
-      let noteToDelete: Note = this.dataStore.getNote(noteId);
+      let noteToDelete: Note = this.dataStore.getNoteById(noteId);
 
       // 1. Get the title of the note
       noteTitle = noteToDelete.title;
@@ -683,11 +683,11 @@ export class CollectionService {
       let activeCollection: Collection = this.dataStore.getActiveCollection();
 
       if (notebookId === Constants.allNotesNotebookId) {
-        uncategorizedNotes = this.dataStore.getAllNotes(activeCollection.id);
+        uncategorizedNotes = this.dataStore.getNotes(activeCollection.id);
       } else if (notebookId === Constants.unfiledNotesNotebookId) {
         uncategorizedNotes = this.dataStore.getUnfiledNotes(activeCollection.id);
       } else {
-        uncategorizedNotes = this.dataStore.getNotes(notebookId);
+        uncategorizedNotes = this.dataStore.getNotebookNotes(notebookId);
       }
 
       // Fill in counters
@@ -796,6 +796,6 @@ export class CollectionService {
   }
 
   public getNote(noteId: string): Note {
-    return this.dataStore.getNote(noteId);
+    return this.dataStore.getNoteById(noteId);
   }
 }

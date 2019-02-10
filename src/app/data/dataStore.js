@@ -43,17 +43,17 @@ var DataStore = /** @class */ (function () {
             autoloadCallback: this.databaseLoaded.bind(this)
         });
     };
-    DataStore.prototype.getAllCollections = function () {
+    DataStore.prototype.getCollections = function () {
         return this.collections.chain().sort(utils_1.Utils.caseInsensitiveNameSort).data();
     };
-    DataStore.prototype.getCollection = function (collectionId) {
-        return this.collections.findOne({ 'id': collectionId });
+    DataStore.prototype.getCollectionById = function (id) {
+        return this.collections.findOne({ 'id': id });
     };
-    DataStore.prototype.getCollectionByName = function (collectionName) {
-        return this.collections.findOne({ 'name': collectionName });
+    DataStore.prototype.getCollectionByName = function (name) {
+        return this.collections.findOne({ 'name': name });
     };
-    DataStore.prototype.addCollection = function (collectionName, isActive) {
-        var newCollection = new collection_1.Collection(collectionName, isActive);
+    DataStore.prototype.addCollection = function (name, isActive) {
+        var newCollection = new collection_1.Collection(name, isActive);
         this.notebooks.insert(newCollection);
         this.db.saveDatabase();
         return newCollection.id;
@@ -62,7 +62,7 @@ var DataStore = /** @class */ (function () {
         this.collections.update(collection);
         this.db.saveDatabase();
     };
-    DataStore.prototype.activateCollection = function (collectionId) {
+    DataStore.prototype.activateCollection = function (id) {
         var _this = this;
         // Deactivate all collections
         var collections = this.collections.find();
@@ -71,23 +71,23 @@ var DataStore = /** @class */ (function () {
             _this.collections.update(x);
         });
         // Activate the selected collection
-        var collectionToActivate = this.getCollection(collectionId);
+        var collectionToActivate = this.getCollectionById(id);
         collectionToActivate.isActive = true;
         this.collections.update(collectionToActivate);
         // Persist
         this.db.saveDatabase();
     };
-    DataStore.prototype.deleteCollection = function (collectionId) {
+    DataStore.prototype.deleteCollection = function (id) {
         var _this = this;
-        // Remove collection
-        var collectionToRemove = this.getCollection(collectionId);
-        this.collections.remove(collectionToRemove);
-        // Remove Notebooks
-        var notebooksToRemove = this.notebooks.find({ 'collectionId': collectionId });
-        notebooksToRemove.forEach(function (x) { return _this.notebooks.remove(x); });
-        // Remove Notes
-        var notesToRemove = this.notes.find({ 'collectionId': collectionId });
-        notesToRemove.forEach(function (x) { return _this.notes.remove(x); });
+        // Delete collection
+        var collectionToDelete = this.getCollectionById(id);
+        this.collections.remove(collectionToDelete);
+        // Delete Notebooks
+        var notebooksToDelete = this.notebooks.find({ 'collectionId': id });
+        notebooksToDelete.forEach(function (x) { return _this.notebooks.remove(x); });
+        // Delete Notes
+        var notesToDelete = this.notes.find({ 'collectionId': id });
+        notesToDelete.forEach(function (x) { return _this.notes.remove(x); });
         // Persist
         this.db.saveDatabase();
     };
@@ -95,30 +95,28 @@ var DataStore = /** @class */ (function () {
         var activeCollection = this.collections.findOne({ 'isActive': true });
         return activeCollection;
     };
-    DataStore.prototype.getNotebookByName = function (collectionId, notebookName) {
-        return this.notebooks.findOne({ '$and': [{ 'collectionId': collectionId }, { 'name': notebookName }] });
-    };
-    DataStore.prototype.addNotebook = function (collectionId, notebookName) {
-        var newNotebook = new notebook_1.Notebook(notebookName, collectionId);
-        this.notebooks.insert(newNotebook);
-        this.db.saveDatabase();
-        return newNotebook.id;
-    };
     DataStore.prototype.getNotebooks = function (collectionId) {
         var notebooks = this.notebooks.chain().find({ 'collectionId': collectionId }).sort(utils_1.Utils.caseInsensitiveNameSort).data();
         return notebooks;
     };
-    DataStore.prototype.getNotebook = function (notebookId) {
-        return this.notebooks.findOne({ 'id': notebookId });
+    DataStore.prototype.getNotebookById = function (id) {
+        return this.notebooks.findOne({ 'id': id });
     };
-    DataStore.prototype.deleteNotebook = function (notebookId) {
-        // Remove notebook
-        var notebookToRemove = this.getNotebook(notebookId);
-        this.notebooks.remove(notebookToRemove);
-        // Persist
+    DataStore.prototype.getNotebookByName = function (collectionId, name) {
+        return this.notebooks.findOne({ '$and': [{ 'collectionId': collectionId }, { 'name': name }] });
+    };
+    DataStore.prototype.addNotebook = function (collectionId, name) {
+        var newNotebook = new notebook_1.Notebook(name, collectionId);
+        this.notebooks.insert(newNotebook);
+        this.db.saveDatabase();
+        return newNotebook.id;
+    };
+    DataStore.prototype.deleteNotebook = function (id) {
+        var notebookToDelete = this.getNotebookById(id);
+        this.notebooks.remove(notebookToDelete);
         this.db.saveDatabase();
     };
-    DataStore.prototype.getAllNotes = function (collectionId) {
+    DataStore.prototype.getNotes = function (collectionId) {
         var notes = this.notes.chain().find({ 'collectionId': collectionId }).simplesort('modificationDate', true).data();
         return notes;
     };
@@ -133,7 +131,7 @@ var DataStore = /** @class */ (function () {
         var notes = this.notes.chain().find({ '$and': [{ 'collectionId': collectionId }, { 'isMarked': true }] }).simplesort('modificationDate', true).data();
         return notes;
     };
-    DataStore.prototype.getNotes = function (notebookId) {
+    DataStore.prototype.getNotebookNotes = function (notebookId) {
         var notes = this.notes.chain().find({ 'notebookId': notebookId }).simplesort('modificationDate', true).data();
         return notes;
     };
@@ -143,22 +141,22 @@ var DataStore = /** @class */ (function () {
         }).data();
         return notesWithIdenticalBaseTitle;
     };
-    DataStore.prototype.addNote = function (noteTitle, notebookId, collectionId) {
-        var newNote = new note_1.Note(noteTitle, notebookId, collectionId);
+    DataStore.prototype.addNote = function (title, notebookId, collectionId) {
+        var newNote = new note_1.Note(title, notebookId, collectionId);
         this.notes.insert(newNote);
         this.db.saveDatabase();
         return newNote.id;
     };
-    DataStore.prototype.getNote = function (noteId) {
-        var note = this.notes.findOne({ 'id': noteId });
+    DataStore.prototype.getNoteById = function (id) {
+        var note = this.notes.findOne({ 'id': id });
         return note;
     };
     DataStore.prototype.getNoteByTitle = function (collectionId, noteTitle) {
         return this.notes.findOne({ '$and': [{ 'collectionId': collectionId }, { 'title': noteTitle }] });
     };
-    DataStore.prototype.deleteNote = function (noteId) {
-        var noteToRemove = this.getNote(noteId);
-        this.notes.remove(noteToRemove);
+    DataStore.prototype.deleteNote = function (id) {
+        var noteToDelete = this.getNoteById(id);
+        this.notes.remove(noteToDelete);
         this.db.saveDatabase();
     };
     DataStore.prototype.updateNote = function (note) {

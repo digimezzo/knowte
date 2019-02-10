@@ -30,7 +30,8 @@ export class NoteComponent implements OnInit {
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteTextChanged: Subject<string> = new Subject<string>();
     public saveChangedAndCloseNoteWindow: Subject<string> = new Subject<string>();
-    private isDirty: boolean = false;
+    private isTitleChanged: boolean = false;
+    private isContentChanged: boolean = false;
 
     private noteId: string;
     private originalNoteTitle: string;
@@ -46,8 +47,9 @@ export class NoteComponent implements OnInit {
         log.info(`Detected closing of note with id=${this.noteId}`);
 
         // Prevents closing of the window
-        if (this.isDirty) {
-            this.isDirty = false;
+        if (this.isTitleChanged || this.isContentChanged) {
+            this.isTitleChanged = false;
+            this.isContentChanged = false;
 
             log.info(`Note with id=${this.noteId} is dirty. Preventing close to save changes first.`);
             event.preventDefault();
@@ -71,7 +73,7 @@ export class NoteComponent implements OnInit {
         });
 
         this.quill.on('text-change', () => {
-            this.isDirty = true;
+            this.isContentChanged = true;
             this.noteTextChanged.next("");
         });
 
@@ -116,7 +118,7 @@ export class NoteComponent implements OnInit {
     }
 
     public onNotetitleChange(newNoteTitle: string) {
-        this.isDirty = true;
+        this.isTitleChanged = true;
         this.noteTitleChanged.next(newNoteTitle);
     }
 

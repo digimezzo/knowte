@@ -3,7 +3,6 @@ import * as loki from 'lokijs';
 import * as path from 'path';
 import { Constants } from '../core/constants';
 import { Collection } from './entities/collection';
-import * as nanoid from 'nanoid';
 import { Notebook } from './entities/notebook';
 import { Note } from './entities/note';
 import * as moment from 'moment'
@@ -61,20 +60,20 @@ export class DataStore {
         });
     }
 
-    public getAllCollections(): Collection[] {
+    public getCollections(): Collection[] {
         return this.collections.chain().sort(Utils.caseInsensitiveNameSort).data();
     }
 
-    public getCollection(collectionId: string): Collection {
-        return this.collections.findOne({ 'id': collectionId });
+    public getCollectionById(id: string): Collection {
+        return this.collections.findOne({ 'id': id });
     }
 
-    public getCollectionByName(collectionName: string): Collection {
-        return this.collections.findOne({ 'name': collectionName });
+    public getCollectionByName(name: string): Collection {
+        return this.collections.findOne({ 'name': name });
     }
 
-    public addCollection(collectionName: string, isActive: boolean) {
-        let newCollection: Collection = new Collection(collectionName, isActive);
+    public addCollection(name: string, isActive: boolean) {
+        let newCollection: Collection = new Collection(name, isActive);
         this.notebooks.insert(newCollection);
         this.db.saveDatabase();
 
@@ -86,7 +85,7 @@ export class DataStore {
         this.db.saveDatabase();
     }
 
-    public activateCollection(collectionId: string): void {
+    public activateCollection(id: string): void {
         // Deactivate all collections
         let collections: Collection[] = this.collections.find();
 
@@ -96,7 +95,7 @@ export class DataStore {
         });
 
         // Activate the selected collection
-        let collectionToActivate: Collection = this.getCollection(collectionId);
+        let collectionToActivate: Collection = this.getCollectionById(id);
         collectionToActivate.isActive = true;
         this.collections.update(collectionToActivate);
 
@@ -104,18 +103,18 @@ export class DataStore {
         this.db.saveDatabase();
     }
 
-    public deleteCollection(collectionId: string) {
-        // Remove collection
-        let collectionToRemove: Collection = this.getCollection(collectionId);
-        this.collections.remove(collectionToRemove);
+    public deleteCollection(id: string) {
+        // Delete collection
+        let collectionToDelete: Collection = this.getCollectionById(id);
+        this.collections.remove(collectionToDelete);
 
-        // Remove Notebooks
-        let notebooksToRemove: Notebook[] = this.notebooks.find({ 'collectionId': collectionId });
-        notebooksToRemove.forEach(x => this.notebooks.remove(x));
+        // Delete Notebooks
+        let notebooksToDelete: Notebook[] = this.notebooks.find({ 'collectionId': id });
+        notebooksToDelete.forEach(x => this.notebooks.remove(x));
 
-        // Remove Notes
-        let notesToRemove: Note[] = this.notes.find({ 'collectionId': collectionId });
-        notesToRemove.forEach(x => this.notes.remove(x));
+        // Delete Notes
+        let notesToDelete: Note[] = this.notes.find({ 'collectionId': id });
+        notesToDelete.forEach(x => this.notes.remove(x));
 
         // Persist
         this.db.saveDatabase();
@@ -127,38 +126,35 @@ export class DataStore {
         return activeCollection;
     }
 
-    public getNotebookByName(collectionId: string, notebookName: string): Notebook {
-        return this.notebooks.findOne({ '$and': [{ 'collectionId': collectionId }, { 'name': notebookName }] });
-    }
-
-    public addNotebook(collectionId: string, notebookName: string): string {
-        let newNotebook: Notebook = new Notebook(notebookName, collectionId);
-        this.notebooks.insert(newNotebook);
-        this.db.saveDatabase();
-
-        return newNotebook.id;
-    }
-
     public getNotebooks(collectionId: string): Notebook[] {
         let notebooks: Notebook[] = this.notebooks.chain().find({ 'collectionId': collectionId }).sort(Utils.caseInsensitiveNameSort).data();
 
         return notebooks;
     }
 
-    public getNotebook(notebookId: string): Notebook {
-        return this.notebooks.findOne({ 'id': notebookId });
+    public getNotebookById(id: string): Notebook {
+        return this.notebooks.findOne({ 'id': id });
     }
 
-    public deleteNotebook(notebookId: string) {
-        // Remove notebook
-        let notebookToRemove: Notebook = this.getNotebook(notebookId);
-        this.notebooks.remove(notebookToRemove);
+    public getNotebookByName(collectionId: string, name: string): Notebook {
+        return this.notebooks.findOne({ '$and': [{ 'collectionId': collectionId }, { 'name': name }] });
+    }
 
-        // Persist
+    public addNotebook(collectionId: string, name: string): string {
+        let newNotebook: Notebook = new Notebook(name, collectionId);
+        this.notebooks.insert(newNotebook);
+        this.db.saveDatabase();
+
+        return newNotebook.id;
+    }
+
+    public deleteNotebook(id: string) {
+        let notebookToDelete: Notebook = this.getNotebookById(id);
+        this.notebooks.remove(notebookToDelete);
         this.db.saveDatabase();
     }
 
-    public getAllNotes(collectionId: string): Note[] {
+    public getNotes(collectionId: string): Note[] {
         let notes: Note[] = this.notes.chain().find({ 'collectionId': collectionId }).simplesort('modificationDate', true).data();
 
         return notes;
@@ -180,7 +176,7 @@ export class DataStore {
         return notes;
     }
 
-    public getNotes(notebookId: string): Note[] {
+    public getNotebookNotes(notebookId: string): Note[] {
         let notes: Note[] = this.notes.chain().find({ 'notebookId': notebookId }).simplesort('modificationDate', true).data();
 
         return notes;
@@ -194,16 +190,16 @@ export class DataStore {
         return notesWithIdenticalBaseTitle;
     }
 
-    public addNote(noteTitle: string, notebookId: string, collectionId: string): string {
-        let newNote: Note = new Note(noteTitle, notebookId, collectionId);
+    public addNote(title: string, notebookId: string, collectionId: string): string {
+        let newNote: Note = new Note(title, notebookId, collectionId);
         this.notes.insert(newNote);
         this.db.saveDatabase();
 
         return newNote.id;
     }
 
-    public getNote(noteId: string): Note {
-        let note: Note = this.notes.findOne({ 'id': noteId });
+    public getNoteById(id: string): Note {
+        let note: Note = this.notes.findOne({ 'id': id });
 
         return note;
     }
@@ -212,9 +208,9 @@ export class DataStore {
         return this.notes.findOne({ '$and': [{ 'collectionId': collectionId }, { 'title': noteTitle }] });
     }
 
-    public deleteNote(noteId: string) {
-        let noteToRemove: Note = this.getNote(noteId);
-        this.notes.remove(noteToRemove);
+    public deleteNote(id: string) {
+        let noteToDelete: Note = this.getNoteById(id);
+        this.notes.remove(noteToDelete);
         this.db.saveDatabase();
     }
 

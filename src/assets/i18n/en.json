@@ -80,7 +80,7 @@
     "DialogTexts": {
         "ConfirmDeleteCollection": "Are you sure you want to delete the collection '{{collectionName}}'? If you continue, its notebooks and notes will be lost.",
         "ConfirmDeleteNote": "Are you sure you want to delete the note '{{noteTitle}}'?",
-        "ConfirmDeleteNotebook": "Are you sure you want to delete the notebook '{{notebookName}}'?"
+        "ConfirmDeleteNotebook": "Are you sure you want to delete the notebook '{{notebookName}}'? Its notes will not be deleted. They will just become unfiled."
     },
     "Input": {
         "CollectionName": "Collection name",
