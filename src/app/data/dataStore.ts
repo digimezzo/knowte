@@ -28,7 +28,7 @@ export class DataStore {
 
         if (!this.collections) {
             this.collections = this.db.addCollection('collections');
-            this.collections.insert(new Collection(Constants.defaultCollectionName, nanoid(), true));
+            this.collections.insert(new Collection(Constants.defaultCollectionName, true));
             mustSaveDatabase = true;
         }
 
@@ -77,11 +77,11 @@ export class DataStore {
     }
 
     public addCollection(collectionName: string, isActive: boolean) {
-        let collectionId: string = nanoid();
-        this.collections.insert(new Collection(collectionName, collectionId, isActive));
+        let newCollection: Collection = new Collection(collectionName, isActive);
+        this.notebooks.insert(newCollection);
         this.db.saveDatabase();
 
-        return collectionId;
+        return newCollection.id;
     }
 
     public setCollectionName(collectionId: string, collectionName: string) {

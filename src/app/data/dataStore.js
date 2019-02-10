@@ -5,7 +5,6 @@ var loki = require("lokijs");
 var path = require("path");
 var constants_1 = require("../core/constants");
 var collection_1 = require("./collection");
-var nanoid = require("nanoid");
 var notebook_1 = require("./notebook");
 var note_1 = require("./note");
 var moment = require("moment");
@@ -19,7 +18,7 @@ var DataStore = /** @class */ (function () {
         this.collections = this.db.getCollection('collections');
         if (!this.collections) {
             this.collections = this.db.addCollection('collections');
-            this.collections.insert(new collection_1.Collection(constants_1.Constants.defaultCollectionName, nanoid(), true));
+            this.collections.insert(new collection_1.Collection(constants_1.Constants.defaultCollectionName, true));
             mustSaveDatabase = true;
         }
         this.notebooks = this.db.getCollection('notebooks');
@@ -56,10 +55,10 @@ var DataStore = /** @class */ (function () {
         return this.collections.findOne({ 'name': collectionName });
     };
     DataStore.prototype.addCollection = function (collectionName, isActive) {
-        var collectionId = nanoid();
-        this.collections.insert(new collection_1.Collection(collectionName, collectionId, isActive));
+        var newCollection = new collection_1.Collection(collectionName, isActive);
+        this.notebooks.insert(newCollection);
         this.db.saveDatabase();
-        return collectionId;
+        return newCollection.id;
     };
     DataStore.prototype.setCollectionName = function (collectionId, collectionName) {
         var collectionToRename = this.getCollection(collectionId);
