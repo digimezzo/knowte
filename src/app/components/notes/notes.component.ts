@@ -25,7 +25,6 @@ export class NotesComponent implements OnInit, OnDestroy {
         private translateService: TranslateService, private zone: NgZone) {
     }
 
-    private noteService = remote.getGlobal('noteService');
     private _selectedNotebook: Notebook;
 
     @Input()
@@ -56,7 +55,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     async ngOnInit() {
         // In case we crashed on a previous run, make sure all notes are closed.
-        this.noteService.closeAllNotes();
+        this.collectionService.closeAllNotes();
 
         // Get notes
         await this.getNotesAsync();
@@ -72,7 +71,7 @@ export class NotesComponent implements OnInit, OnDestroy {
             this.snackBarService.noteDeletedAsync(noteTitle);
         }));
 
-        this.subscription.add(this.noteService.noteMarkChanged$.subscribe(async (noteMarkChangedArgs) => {
+        this.subscription.add(this.collectionService.noteMarkChanged$.subscribe(async (noteMarkChangedArgs) => {
             if (this.category === Constants.markedCategory) {
                 await this.getNotesAsync();
             } else {
@@ -82,13 +81,13 @@ export class NotesComponent implements OnInit, OnDestroy {
             }
         }));
 
-        this.subscription.add(this.noteService.noteRenamed$.subscribe(async () => {
+        this.subscription.add(this.collectionService.noteRenamed$.subscribe(async () => {
             this.zone.run(async () => {
                 await this.getNotesAsync();
             });
         }));
 
-        this.subscription.add(this.noteService.noteUpdated$.subscribe(async () => {
+        this.subscription.add(this.collectionService.noteUpdated$.subscribe(async () => {
             // TODO: process updating errors
             this.zone.run(async () => {
                 await this.getNotesAsync();
@@ -145,7 +144,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         dialogRef.afterClosed().subscribe(async (result) => {
             if (result) {
 
-                if (!this.noteService.noteIsOpen(this.selectedNote.id)) {
+                if (!this.collectionService.noteIsOpen(this.selectedNote.id)) {
                     let operation: CollectionOperation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
 
                     if (operation === CollectionOperation.Error) {
@@ -162,7 +161,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public openNote(): void {
-        if (!this.noteService.noteIsOpen(this.selectedNote.id)) {
+        if (!this.collectionService.noteIsOpen(this.selectedNote.id)) {
             ipcRenderer.send('open-note-window', this.selectedNote.id);
         } else {
             this.snackBarService.noteAlreadyOpenAsync();
@@ -170,6 +169,6 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public ToggleNoteMark(noteId: string, isMarked: boolean): void {
-        this.noteService.setNoteMark(noteId, !isMarked);
+        this.collectionService.setNoteMark(noteId, !isMarked);
     }
 }

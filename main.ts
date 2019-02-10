@@ -7,7 +7,6 @@ import * as url from 'url';
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
 import log from 'electron-log';
 import { DataStore } from './src/app/data/dataStore';
-import { NoteService } from './src/app/services/note.service';
 
 let mainWindow, serve;
 const args = process.argv.slice(1);
@@ -17,9 +16,6 @@ serve = args.some(val => val === '--serve');
 const globalAny: any = global;
 let dataStore: DataStore = new DataStore();
 globalAny.dataStore = dataStore;
-
-let noteService: NoteService = new NoteService();
-globalAny.noteService = noteService;
 
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 log.transports.file.level = 'info';

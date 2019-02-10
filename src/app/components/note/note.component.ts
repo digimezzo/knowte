@@ -27,7 +27,6 @@ export class NoteComponent implements OnInit {
         private dialog: MatDialog) {
     }
 
-    private noteService = remote.getGlobal('noteService');
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteTextChanged: Subject<string> = new Subject<string>();
     public saveChangedAndCloseNoteWindow: Subject<string> = new Subject<string>();
@@ -57,7 +56,7 @@ export class NoteComponent implements OnInit {
             this.saveChangedAndCloseNoteWindow.next("");
         } else {
             log.info(`Note with id=${this.noteId} is clean. Closing directly.`);
-            this.noteService.closeNote(this.noteId);
+            this.collectionService.closeNote(this.noteId);
         }
     }
 
@@ -83,7 +82,7 @@ export class NoteComponent implements OnInit {
             // Get the note from the data store
             let note: Note = this.collectionService.getNote(noteId);
             log.info(`Opening note with id=${note.id}`);
-            this.noteService.openNote(note.id);
+            this.collectionService.openNote(note.id);
 
             this.noteId = note.id;
             this.originalNoteTitle = note.title;
@@ -108,7 +107,7 @@ export class NoteComponent implements OnInit {
             .pipe(debounceTime(this.windowCloseTimeoutMilliseconds))
             .subscribe((_) => {
                 log.info(`Closing note with id=${this.noteId} after saving changes.`);
-                this.noteService.closeNote(this.noteId);
+                this.collectionService.closeNote(this.noteId);
                 this.saveNoteAll();
 
                 let window: BrowserWindow = remote.getCurrentWindow();
@@ -126,7 +125,7 @@ export class NoteComponent implements OnInit {
     }
 
     private async saveNoteTitleAsync(newNoteTitle: string): Promise<void> {
-        let renameNoteResult: RenameNoteResult = this.noteService.renameNote(this.noteId, this.originalNoteTitle, newNoteTitle);
+        let renameNoteResult: RenameNoteResult = this.collectionService.renameNote(this.noteId, this.originalNoteTitle, newNoteTitle);
 
         if (renameNoteResult.operation === CollectionOperation.Blank) {
             this.noteTitle = this.originalNoteTitle;
@@ -151,7 +150,7 @@ export class NoteComponent implements OnInit {
         let textContent: string = this.quill.getText();
         let jsonContent: string = JSON.stringify(this.quill.getContents());
 
-        let operation: CollectionOperation = this.noteService.updateNoteContent(this.noteId, textContent, jsonContent);
+        let operation: CollectionOperation = this.collectionService.updateNoteContent(this.noteId, textContent, jsonContent);
 
         if (operation === CollectionOperation.Error) {
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.UpdateNoteContentError').toPromise());
@@ -167,11 +166,11 @@ export class NoteComponent implements OnInit {
     private saveNoteAll(): void {
         let textContent: string = this.quill.getText();
         let jsonContent: string = JSON.stringify(this.quill.getContents());
-        this.noteService.updateNote(this.noteId, this.noteTitle, textContent, jsonContent);
+        this.collectionService.updateNote(this.noteId, this.noteTitle, textContent, jsonContent);
     }
 
     private async getNoteContentAsync(): Promise<void> {
-        let getNoteContentResult: GetNoteContentResult = this.noteService.getNoteContent(this.noteId);
+        let getNoteContentResult: GetNoteContentResult = this.collectionService.getNoteContent(this.noteId);
 
         if (getNoteContentResult.operation === CollectionOperation.Error) {
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.GetNoteContentError').toPromise());

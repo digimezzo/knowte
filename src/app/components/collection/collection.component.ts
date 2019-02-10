@@ -25,7 +25,6 @@ export class CollectionComponent implements OnInit {
     private translateService: TranslateService, private snackBarService: SnackBarService, private zone: NgZone) {
   }
 
-  private noteService = remote.getGlobal('noteService');
   private subscription: Subscription;
   public notebooksCount: number = 0;
   public allNotesCount: number = 0;
@@ -89,7 +88,7 @@ export class CollectionComponent implements OnInit {
     }));
 
     // Note mark changed
-    this.subscription = this.noteService.noteMarkChanged$.subscribe((noteMarkChangedArgs) => {
+    this.subscription = this.collectionService.noteMarkChanged$.subscribe((noteMarkChangedArgs) => {
       this.zone.run(() => {
         this.markedNotesCount = noteMarkChangedArgs.markedNotesCount;
       });

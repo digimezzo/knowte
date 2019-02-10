@@ -8,7 +8,6 @@ var url = require("url");
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
 var electron_log_1 = require("electron-log");
 var dataStore_1 = require("./src/app/data/dataStore");
-var note_service_1 = require("./src/app/services/note.service");
 var mainWindow, serve;
 var args = process.argv.slice(1);
 serve = args.some(function (val) { return val === '--serve'; });
@@ -16,8 +15,6 @@ serve = args.some(function (val) { return val === '--serve'; });
 var globalAny = global;
 var dataStore = new dataStore_1.DataStore();
 globalAny.dataStore = dataStore;
-var noteService = new note_service_1.NoteService();
-globalAny.noteService = noteService;
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 electron_log_1.default.transports.file.level = 'info';
 function createWindow() {

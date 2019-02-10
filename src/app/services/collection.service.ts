@@ -18,6 +18,10 @@ import { Moment, Duration } from 'moment';
 import { NoteDateFormatResult } from './noteDateFormatResult';
 import { NoteCountersChangedArgs } from './noteCountersChangedArgs';
 import { AddNoteResult } from './addNoteResult';
+import { NoteMarkChangedArgs } from './noteMarkChangedArgs';
+import { UpdateNoteResult } from './updateNoteResult';
+import { RenameNoteResult } from './renameNoteResult';
+import { GetNoteContentResult } from './getNoteContentResult';
 
 @Injectable({
   providedIn: 'root',
@@ -66,6 +70,15 @@ export class CollectionService {
   private noteCountersChanged = new Subject<NoteCountersChangedArgs>();
   noteCountersChanged$ = this.noteCountersChanged.asObservable();
 
+  private noteRenamed = new Subject<RenameNoteResult>();
+  noteRenamed$ = this.noteRenamed.asObservable();
+
+  private noteUpdated = new Subject<UpdateNoteResult>();
+  noteUpdated$ = this.noteUpdated.asObservable();
+
+  private noteMarkChanged = new Subject<NoteMarkChangedArgs>();
+  noteMarkChanged$ = this.noteMarkChanged.asObservable();
+
   public get hasDataStore(): boolean {
     return this.dataStore.isReady;
   }
@@ -90,6 +103,178 @@ export class CollectionService {
     // Storage directory is OK.
     log.info(`Storage directory '${storageDirectory}' is OK`);
     return true;
+  }
+
+  public openNote(noteId: string): void {
+    this.dataStore.setNoteIsOpen(noteId, true);
+  }
+
+  public closeNote(noteId: string): void {
+    this.dataStore.setNoteIsOpen(noteId, false);
+  }
+
+  public noteIsOpen(noteId: string): boolean {
+    let openNotes: Note[] = this.dataStore.getOpenNotes();
+
+    if (openNotes.map(x => x.id).includes(noteId)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public closeAllNotes(): void {
+    this.dataStore.closeAllNotes();
+  }
+
+  private noteExists(noteTitle: string): boolean {
+    let activeCollection: Collection = this.dataStore.getActiveCollection();
+    let note: Note = this.dataStore.getNoteByTitle(activeCollection.id, noteTitle);
+
+    return note != null;
+  }
+
+  private getUniqueNoteNoteTitle(baseTitle: string): string {
+    let similarTitles: string[] = [];
+    let counter: number = 0;
+    let uniqueTitle: string = baseTitle;
+
+    similarTitles = this.getSimilarTitles(baseTitle);
+
+    while (similarTitles.includes(uniqueTitle)) {
+      counter++;
+      uniqueTitle = `${baseTitle} (${counter})`;
+    }
+
+    return uniqueTitle;
+  }
+
+  public updateNote(noteId: string, title: string, textContent: string, jsonContent: string): CollectionOperation {
+    try {
+      // Update the note file on disk
+      let storageDirectory: string = this.settings.get('storageDirectory');
+      fs.writeFileSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), jsonContent);
+
+      // Update the note in the data store
+      let note: Note = this.dataStore.getNote(noteId);
+      note.title = title;
+      note.text = textContent;
+      this.dataStore.updateNote(note);
+    } catch (error) {
+      log.error(`Could not update the note with id='${noteId}'. Cause: ${error}`);
+      return CollectionOperation.Error;
+    }
+
+
+    let updateNoteResult: UpdateNoteResult = new UpdateNoteResult(CollectionOperation.Success);
+    updateNoteResult.noteId = noteId;
+    updateNoteResult.noteTitle = title;
+
+    this.noteUpdated.next(updateNoteResult);
+
+    return CollectionOperation.Success;
+  }
+
+  public setNoteMark(noteId: string, isMarked: boolean): void {
+    // Update note in the data store
+    let note: Note = this.dataStore.getNote(noteId);
+    note.isMarked = isMarked;
+    this.dataStore.updateNote(note);
+
+    // Update counters
+    let activeCollection: Collection = this.dataStore.getActiveCollection();
+    let markedNotes: Note[] = this.dataStore.getMarkedNotes(activeCollection.id);
+    let args: NoteMarkChangedArgs = new NoteMarkChangedArgs(noteId, isMarked, markedNotes.length);
+    this.noteMarkChanged.next(args);
+  }
+
+  public renameNote(noteId: string, originalNoteTitle: string, newNoteTitle: string): RenameNoteResult {
+    if (!noteId || !originalNoteTitle) {
+      log.error("renameNote: noteId or originalNoteTitle is null");
+      return new RenameNoteResult(CollectionOperation.Error);
+    }
+
+    let uniqueNoteTitle: string = newNoteTitle.trim();
+
+    if (uniqueNoteTitle.length === 0) {
+      return new RenameNoteResult(CollectionOperation.Blank);
+    }
+
+    if (originalNoteTitle === uniqueNoteTitle) {
+      log.error("New title is the same as old title. No rename required.");
+      return new RenameNoteResult(CollectionOperation.Aborted);
+    }
+
+    try {
+      // 1. Make sure the new title is unique
+      uniqueNoteTitle = this.getUniqueNoteNoteTitle(newNoteTitle);
+
+      // 2. Rename the note
+      let note: Note = this.dataStore.getNote(noteId);
+      note.title = uniqueNoteTitle;
+      this.dataStore.updateNote(note);
+
+      log.info(`Renamed note with id=${noteId} from ${originalNoteTitle} to ${uniqueNoteTitle}.`);
+    } catch (error) {
+      log.error(`Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`);
+      return new RenameNoteResult(CollectionOperation.Error);
+    }
+
+    let renameNoteResult: RenameNoteResult = new RenameNoteResult(CollectionOperation.Success);
+    renameNoteResult.noteId = noteId;
+    renameNoteResult.newNoteTitle = uniqueNoteTitle;
+
+    this.noteRenamed.next(renameNoteResult);
+
+    return renameNoteResult;
+  }
+
+  public updateNoteContent(noteId: string, textContent: string, jsonContent: string): CollectionOperation {
+    if (!noteId) {
+      log.error("updateNoteContent: noteId is null");
+      return CollectionOperation.Error;
+    }
+
+    try {
+      // Update the note file on disk
+      let storageDirectory: string = this.settings.get('storageDirectory');
+      fs.writeFileSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), jsonContent);
+
+      // Update the note in the data store
+      let note: Note = this.dataStore.getNote(noteId);
+      note.text = textContent;
+      this.dataStore.updateNote(note);
+
+      log.info(`Updated content for note with id=${noteId}.`);
+    } catch (error) {
+      log.error(`Could not update the content for the note with id='${noteId}'. Cause: ${error}`);
+      return CollectionOperation.Error;
+    }
+
+    return CollectionOperation.Success;
+  }
+
+  public getNoteContent(noteId: string): GetNoteContentResult {
+    if (!noteId) {
+      log.error("getNoteContent: noteId is null");
+      return new GetNoteContentResult(CollectionOperation.Error);
+    }
+
+    let noteContent: string = "";
+
+    try {
+      let storageDirectory: string = this.settings.get('storageDirectory');
+      noteContent = fs.readFileSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), 'utf8');
+    } catch (error) {
+      log.error(`Could not get the content for the note with id='${noteId}'. Cause: ${error}`);
+      return new GetNoteContentResult(CollectionOperation.Error);
+    }
+
+    let getNoteContentResult: GetNoteContentResult = new GetNoteContentResult(CollectionOperation.Success);
+    getNoteContentResult.noteId = noteId;
+    getNoteContentResult.noteContent = noteContent;
+
+    return getNoteContentResult;
   }
 
   public async initializeStorageDirectoryAsync(parentDirectory: string): Promise<boolean> {
