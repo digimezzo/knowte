@@ -45,7 +45,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     private subscription: Subscription;
-    public notes: Note[];
+    public notes: Note[] = [];
     public selectedNote: Note;
     public notesCount: number = 0;
     public canEditNote: boolean = false;
@@ -73,7 +73,9 @@ export class NotesComponent implements OnInit, OnDestroy {
             if (this.category === Constants.markedCategory) {
                 await this.getNotesAsync();
             } else {
-                this.notes.find(x => x.id === noteMarkChangedArgs.noteId).isMarked = noteMarkChangedArgs.isMarked;
+                if(this.notes.length > 0){
+                    this.notes.find(x => x.id === noteMarkChangedArgs.noteId).isMarked = noteMarkChangedArgs.isMarked;
+                }
             }
         }));
 
