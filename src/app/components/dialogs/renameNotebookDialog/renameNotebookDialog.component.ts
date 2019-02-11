@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { NotebookOperation } from '../../../services/notebookOperation';
 import { ErrorDialogComponent } from '../errorDialog/errorDialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { Operation } from '../../../core/enums';
 
 @Component({
     selector: 'rename-notebook-dialog',
@@ -21,7 +22,7 @@ export class RenameNotebookDialogComponent implements OnInit {
     public async renameNotebookAsync(): Promise<void> {
         let operation: NotebookOperation = await this.collectionService.renameNotebookAsync(this.notebookId, this.notebookName);
 
-        if(operation === NotebookOperation.Error){
+        if(operation === Operation.Error){
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNotebookError', { notebookName: this.notebookName }).toPromise());
 
             this.dialog.open(ErrorDialogComponent, {

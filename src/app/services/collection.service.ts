@@ -9,7 +9,6 @@ import { Collection } from '../data/entities/collection';
 import { Utils } from '../core/utils';
 import { Notebook } from '../data/entities/notebook';
 import { TranslateService } from '@ngx-translate/core';
-import { NotebookOperation } from './notebookOperation';
 import { remote } from 'electron';
 import { Note } from '../data/entities/note';
 import * as moment from 'moment'
@@ -487,17 +486,17 @@ export class CollectionService {
     return notebook != null;
   }
 
-  public addNotebook(notebookName: string): NotebookOperation {
+  public addNotebook(notebookName: string): Operation {
     // Check if a notebook name was provided
     if (!notebookName) {
       log.error("notebookName is null");
-      return NotebookOperation.Error;
+      return Operation.Error;
     }
 
     // Check if there is already a notebook with that name
     if (this.notebookExists(notebookName)) {
       log.info(`Not adding notebook '${notebookName}' to the data store because it already exists`);
-      return NotebookOperation.Duplicate;
+      return Operation.Duplicate;
     }
 
     try {
@@ -508,24 +507,24 @@ export class CollectionService {
     } catch (error) {
       log.error(`Could not add notebook '${notebookName}'. Cause: ${error}`);
 
-      return NotebookOperation.Error;
+      return Operation.Error;
     }
 
     this.notebookAdded.next(notebookName);
 
-    return NotebookOperation.Success;
+    return Operation.Success;
   }
 
-  public async renameNotebookAsync(notebookId: string, newNotebookName: string): Promise<NotebookOperation> {
+  public async renameNotebookAsync(notebookId: string, newNotebookName: string): Promise<Operation> {
     if (!notebookId || !newNotebookName) {
       log.error("renameNotebookAsync: notebookId or newNotebookName is null");
-      return NotebookOperation.Error;
+      return Operation.Error;
     }
 
     try {
       // 1. Check if there is already a notebook with that name
       if (this.notebookExists(newNotebookName)) {
-        return NotebookOperation.Duplicate;
+        return Operation.Duplicate;
       }
 
       // 2. Rename the notebook
@@ -534,22 +533,22 @@ export class CollectionService {
       this.dataStore.updateNotebook(notebook);
     } catch (error) {
       log.error(`Could not rename the notebook with id='${notebookId}' to '${newNotebookName}'. Cause: ${error}`);
-      return NotebookOperation.Error;
+      return Operation.Error;
     }
 
     this.notebookRenamed.next(newNotebookName);
 
-    return NotebookOperation.Success;
+    return Operation.Success;
   }
 
   public getNotebookName(notebookId: string): string {
     return this.dataStore.getNotebookById(notebookId).name;
   }
 
-  public async deleteNotebookAsync(notebookId: string): Promise<NotebookOperation> {
+  public async deleteNotebookAsync(notebookId: string): Promise<Operation> {
     if (!notebookId) {
       log.error("deleteNotebookAsync: notebookId is null");
-      return NotebookOperation.Error;
+      return Operation.Error;
     }
 
     let notebookName: string = "";
@@ -562,11 +561,11 @@ export class CollectionService {
       this.dataStore.deleteNotebook(notebookId);
     } catch (error) {
       log.error(`Could not delete the notebook with id='${notebookId}'. Cause: ${error}`);
-      return NotebookOperation.Error;
+      return Operation.Error;
     }
 
     this.notebookDeleted.next(notebookName);
-    return NotebookOperation.Success;
+    return Operation.Success;
   }
 
   public async deleteNoteAsync(noteId: string): Promise<Operation> {

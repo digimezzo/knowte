@@ -3,16 +3,15 @@ import { CollectionService } from '../../services/collection.service';
 import { Notebook } from '../../data/entities/notebook';
 import { MatDialog, MatDialogRef, MatTabChangeEvent } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
-import { NotebookOperation } from '../../services/notebookOperation';
 import { InputDialogComponent } from '../dialogs/inputDialog/inputDialog.component';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { SnackBarService } from '../../services/snackBar.service';
 import { Subscription, Subject } from 'rxjs';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/renameNotebookDialog.component';
-import { remote } from 'electron';
 import { Constants } from '../../core/constants';
 import log from 'electron-log';
+import { Operation } from '../../core/enums';
 
 @Component({
   selector: 'collection-page',
@@ -124,14 +123,14 @@ export class CollectionComponent implements OnInit {
       if (result) {
         let notebookName: string = dialogRef.componentInstance.inputText;
 
-        let operation: NotebookOperation = this.collectionService.addNotebook(notebookName);
+        let operation: Operation = this.collectionService.addNotebook(notebookName);
 
         switch (operation) {
-          case NotebookOperation.Duplicate: {
+          case Operation.Duplicate: {
             this.snackBarService.duplicateNotebookAsync(notebookName);
             break;
           }
-          case NotebookOperation.Error: {
+          case Operation.Error: {
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.AddNotebookError', { notebookName: notebookName }).toPromise());
             this.dialog.open(ErrorDialogComponent, {
               width: '450px', data: { errorText: generatedErrorText }
@@ -165,9 +164,9 @@ export class CollectionComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        let operation: NotebookOperation = await this.collectionService.deleteNotebookAsync(this.selectedNotebook.id);
+        let operation: Operation = await this.collectionService.deleteNotebookAsync(this.selectedNotebook.id);
 
-        if (operation === NotebookOperation.Error) {
+        if (operation === Operation.Error) {
           let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteNotebookError', { notebookName: notebookName }).toPromise());
           this.dialog.open(ErrorDialogComponent, {
             width: '450px', data: { errorText: generatedErrorText }
