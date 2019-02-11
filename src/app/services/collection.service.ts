@@ -14,13 +14,11 @@ import { Note } from '../data/entities/note';
 import * as moment from 'moment'
 import { Moment, Duration } from 'moment';
 import { NoteDateFormatResult } from './noteDateFormatResult';
-import { NoteCountersChangedArgs } from './noteCountersChangedArgs';
-import { AddNoteResult } from './addNoteResult';
 import { NoteMarkChangedArgs } from './noteMarkChangedArgs';
-import { UpdateNoteResult } from './updateNoteResult';
-import { RenameNoteResult } from './renameNoteResult';
 import { GetNoteContentResult } from './getNoteContentResult';
 import { Operation } from '../core/enums';
+import { NoteOperationResult } from './results/noteOperationResult';
+import { NotesCountResult } from './results/notesCountResult';
 
 @Injectable({
   providedIn: 'root',
@@ -29,12 +27,12 @@ export class CollectionService {
   constructor(private translateService: TranslateService) {
     log.info("CollectionService");
 
-    this.globalEvents.on('noteRenamed', (renameNoteResult) => {
-      this.noteRenamed.next(renameNoteResult);
+    this.globalEvents.on('noteRenamed', (noteOperationResult) => {
+      this.noteRenamed.next(noteOperationResult);
     });
 
-    this.globalEvents.on('noteUpdated', (updateNoteResult) => {
-      this.noteUpdated.next(updateNoteResult);
+    this.globalEvents.on('noteUpdated', (noteOperationResult) => {
+      this.noteUpdated.next(noteOperationResult);
     });
   }
 
@@ -75,13 +73,13 @@ export class CollectionService {
   private noteDeleted = new Subject<string>();
   noteDeleted$ = this.noteDeleted.asObservable();
 
-  private noteCountersChanged = new Subject<NoteCountersChangedArgs>();
-  noteCountersChanged$ = this.noteCountersChanged.asObservable();
+  private notesCountChanged = new Subject<NotesCountResult>();
+  notesCountChanged$ = this.notesCountChanged.asObservable();
 
-  private noteRenamed = new Subject<RenameNoteResult>();
+  private noteRenamed = new Subject<NoteOperationResult>();
   noteRenamed$ = this.noteRenamed.asObservable();
 
-  private noteUpdated = new Subject<UpdateNoteResult>();
+  private noteUpdated = new Subject<NoteOperationResult>();
   noteUpdated$ = this.noteUpdated.asObservable();
 
   private noteMarkChanged = new Subject<NoteMarkChangedArgs>();
@@ -171,44 +169,41 @@ export class CollectionService {
       return Operation.Error;
     }
 
+    let result: NoteOperationResult = new NoteOperationResult(Operation.Success);
+    result.noteId = noteId;
+    result.noteTitle = title;
 
-    let updateNoteResult: UpdateNoteResult = new UpdateNoteResult(Operation.Success);
-    updateNoteResult.noteId = noteId;
-    updateNoteResult.noteTitle = title;
-
-    this.globalEvents.emit('noteUpdated', updateNoteResult);
+    this.globalEvents.emit('noteUpdated', result);
 
     return Operation.Success;
   }
 
   public setNoteMark(noteId: string, isMarked: boolean): void {
-    // Update note in the data store
     let note: Note = this.dataStore.getNoteById(noteId);
     note.isMarked = isMarked;
     this.dataStore.updateNote(note);
 
-    // Update counters
     let activeCollection: Collection = this.dataStore.getActiveCollection();
     let markedNotes: Note[] = this.dataStore.getMarkedNotes(activeCollection.id);
     let args: NoteMarkChangedArgs = new NoteMarkChangedArgs(noteId, isMarked, markedNotes.length);
     this.noteMarkChanged.next(args);
   }
 
-  public renameNote(noteId: string, originalNoteTitle: string, newNoteTitle: string): RenameNoteResult {
+  public renameNote(noteId: string, originalNoteTitle: string, newNoteTitle: string): NoteOperationResult {
     if (!noteId || !originalNoteTitle) {
       log.error("renameNote: noteId or originalNoteTitle is null");
-      return new RenameNoteResult(Operation.Error);
+      return new NoteOperationResult(Operation.Error);
     }
 
     let uniqueNoteTitle: string = newNoteTitle.trim();
 
     if (uniqueNoteTitle.length === 0) {
-      return new RenameNoteResult(Operation.Blank);
+      return new NoteOperationResult(Operation.Blank);
     }
 
     if (originalNoteTitle === uniqueNoteTitle) {
       log.error("New title is the same as old title. No rename required.");
-      return new RenameNoteResult(Operation.Aborted);
+      return new NoteOperationResult(Operation.Aborted);
     }
 
     try {
@@ -223,16 +218,16 @@ export class CollectionService {
       log.info(`Renamed note with id=${noteId} from ${originalNoteTitle} to ${uniqueNoteTitle}.`);
     } catch (error) {
       log.error(`Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`);
-      return new RenameNoteResult(Operation.Error);
+      return new NoteOperationResult(Operation.Error);
     }
 
-    let renameNoteResult: RenameNoteResult = new RenameNoteResult(Operation.Success);
-    renameNoteResult.noteId = noteId;
-    renameNoteResult.newNoteTitle = uniqueNoteTitle;
+    let result: NoteOperationResult = new NoteOperationResult(Operation.Success);
+    result.noteId = noteId;
+    result.noteTitle = uniqueNoteTitle;
 
-    this.globalEvents.emit('noteRenamed', renameNoteResult);
+    this.globalEvents.emit('noteRenamed', result);
 
-    return renameNoteResult;
+    return result;
   }
 
   public updateNoteContent(noteId: string, textContent: string, jsonContent: string): Operation {
@@ -670,7 +665,7 @@ export class CollectionService {
   }
 
   public async getNotesAsync(notebookId: string, category: string, useFuzzyDates: boolean): Promise<Note[]> {
-    let noteCountersResult: NoteCountersChangedArgs = new NoteCountersChangedArgs();
+    let notesCountResult: NotesCountResult = new NotesCountResult();
 
     let notes: Note[] = [];
 
@@ -687,11 +682,11 @@ export class CollectionService {
         uncategorizedNotes = this.dataStore.getNotebookNotes(notebookId);
       }
 
-      // Fill in counters
-      noteCountersResult.allNotesCount = uncategorizedNotes.length;
+      // Fill in count
+      notesCountResult.allNotesCount = uncategorizedNotes.length;
 
       let markedNotes: Note[] = uncategorizedNotes.filter(x => x.isMarked);
-      noteCountersResult.markedNotesCount = markedNotes.length;
+      notesCountResult.markedNotesCount = markedNotes.length;
 
       if (category === Constants.markedCategory) {
         notes = markedNotes;
@@ -705,13 +700,13 @@ export class CollectionService {
 
         let result: NoteDateFormatResult = await this.getNoteDateFormatResultAsync(note.modificationDate, useFuzzyDates);
 
-        // More counters
+        // More counts
         if (result.isTodayNote) {
           if (category === Constants.todayCategory) {
             notes.push(note);
           }
 
-          noteCountersResult.todayNotesCount++;
+          notesCountResult.todayNotesCount++;
         }
 
         if (result.isYesterdayNote) {
@@ -719,7 +714,7 @@ export class CollectionService {
             notes.push(note);
           }
 
-          noteCountersResult.yesterdayNotesCount++;
+          notesCountResult.yesterdayNotesCount++;
         }
 
         if (result.isThisWeekNote) {
@@ -727,14 +722,14 @@ export class CollectionService {
             notes.push(note);
           }
 
-          noteCountersResult.thisWeekNotesCount++;
+          notesCountResult.thisWeekNotesCount++;
         }
 
         // Date text
         note.displayModificationDate = result.dateText;
       }
 
-      this.noteCountersChanged.next(noteCountersResult);
+      this.notesCountChanged.next(notesCountResult);
     } catch (error) {
       log.error(`Could not get notes. Cause: ${error}`);
     }
@@ -762,9 +757,9 @@ export class CollectionService {
     return uniqueTitle;
   }
 
-  public addNote(baseTitle: string, notebookId: string): AddNoteResult {
+  public addNote(baseTitle: string, notebookId: string): NoteOperationResult {
     let uniqueTitle: string = "";
-    let addNoteResult: AddNoteResult = new AddNoteResult(Operation.Success);
+    let result: NoteOperationResult = new NoteOperationResult(Operation.Success);
 
     // If a default notebook was selected, make sure the note is added as unfiled.
     if (notebookId === Constants.allNotesNotebookId || notebookId === Constants.unfiledNotesNotebookId) {
@@ -775,20 +770,20 @@ export class CollectionService {
       // 1. Add note to data store
       uniqueTitle = this.getUniqueNewNoteNoteTitle(baseTitle);
       let activeCollection: Collection = this.dataStore.getActiveCollection();
-      addNoteResult.noteId = this.dataStore.addNote(uniqueTitle, notebookId, activeCollection.id);
-      addNoteResult.noteTitle = uniqueTitle;
-
+      result.noteId = this.dataStore.addNote(uniqueTitle, notebookId, activeCollection.id);
+      result.noteTitle = uniqueTitle;
+      
       // 2. Create note file
       let storageDirectory: string = this.settings.get('storageDirectory');
-      fs.writeFileSync(path.join(storageDirectory, `${addNoteResult.noteId}${Constants.noteExtension}`), '');
+      fs.writeFileSync(path.join(storageDirectory, `${result.noteId}${Constants.noteExtension}`), '');
 
       this.noteAdded.next(uniqueTitle);
     } catch (error) {
       log.error(`Could not add note '${uniqueTitle}'. Cause: ${error}`);
-      addNoteResult.operation = Operation.Error;
+      result.operation = Operation.Error;
     }
 
-    return addNoteResult;
+    return result;
   }
 
   public getNote(noteId: string): Note {

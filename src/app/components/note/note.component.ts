@@ -5,15 +5,15 @@ import * as Quill from 'quill';
 import { ActivatedRoute } from '@angular/router';
 import { Note } from '../../data/entities/note';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from "rxjs/internal/operators";
+import { debounceTime } from "rxjs/internal/operators";
 import { SnackBarService } from '../../services/snackBar.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { MatDialog } from '@angular/material';
 import { remote, BrowserWindow } from 'electron';
-import { RenameNoteResult } from '../../services/renameNoteResult';
 import { GetNoteContentResult } from '../../services/getNoteContentResult';
 import { Operation } from '../../core/enums';
+import { NoteOperationResult } from '../../services/results/noteOperationResult';
 
 @Component({
     selector: 'note-content',
@@ -127,21 +127,21 @@ export class NoteComponent implements OnInit {
     }
 
     private async saveNoteTitleAsync(newNoteTitle: string): Promise<void> {
-        let renameNoteResult: RenameNoteResult = this.collectionService.renameNote(this.noteId, this.originalNoteTitle, newNoteTitle);
+        let result: NoteOperationResult = this.collectionService.renameNote(this.noteId, this.originalNoteTitle, newNoteTitle);
 
-        if (renameNoteResult.operation === Operation.Blank) {
+        if (result.operation === Operation.Blank) {
             this.noteTitle = this.originalNoteTitle;
             this.snackBarService.noteTitleCannotBeEmptyAsync();
-        } else if (renameNoteResult.operation === Operation.Error) {
+        } else if (result.operation === Operation.Error) {
             this.noteTitle = this.originalNoteTitle;
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.originalNoteTitle }).toPromise());
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: generatedErrorText }
             });
-        } else if (renameNoteResult.operation === Operation.Success) {
-            this.originalNoteTitle = renameNoteResult.newNoteTitle;
-            this.noteTitle = renameNoteResult.newNoteTitle;
+        } else if (result.operation === Operation.Success) {
+            this.originalNoteTitle = result.noteTitle;
+            this.noteTitle = result.noteTitle;
         } else {
             // Do nothing
         }

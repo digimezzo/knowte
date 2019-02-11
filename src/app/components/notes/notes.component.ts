@@ -10,9 +10,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
-import { AddNoteResult } from '../../services/addNoteResult';
 import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
+import { NoteOperationResult } from '../../services/results/noteOperationResult';
 
 @Component({
     selector: 'notes-component',
@@ -125,11 +125,11 @@ export class NotesComponent implements OnInit, OnDestroy {
         let baseTitle: string = await this.translateService.get('Notes.NewNote').toPromise();
 
         // Create a new note
-        let addNoteResult: AddNoteResult = this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
+        let result: NoteOperationResult = this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
 
-        if (addNoteResult.operation === Operation.Success) {
+        if (result.operation === Operation.Success) {
             // Show the note window
-            ipcRenderer.send('open-note-window', addNoteResult.noteId);
+            ipcRenderer.send('open-note-window', result.noteId);
         }
     }
 

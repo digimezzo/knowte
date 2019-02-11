@@ -66,13 +66,13 @@ export class CollectionComponent implements OnInit {
     this.subscription.add(this.collectionService.notebookRenamed$.subscribe(async (newNotebookName) => await this.getNotebooksAsync()));
     this.subscription.add(this.collectionService.notebookDeleted$.subscribe(async (notebookName) => await this.getNotebooksAsync()));
 
-    // Note counters
-    this.subscription.add(this.collectionService.noteCountersChanged$.subscribe((noteCountersChangedArgs) => {
-      this.allNotesCount = noteCountersChangedArgs.allNotesCount;
-      this.todayNotesCount = noteCountersChangedArgs.todayNotesCount;
-      this.yesterdayNotesCount = noteCountersChangedArgs.yesterdayNotesCount;
-      this.thisWeekNotesCount = noteCountersChangedArgs.thisWeekNotesCount;
-      this.markedNotesCount = noteCountersChangedArgs.markedNotesCount;
+    // Notes count
+    this.subscription.add(this.collectionService.notesCountChanged$.subscribe((result) => {
+      this.allNotesCount = result.allNotesCount;
+      this.todayNotesCount = result.todayNotesCount;
+      this.yesterdayNotesCount = result.yesterdayNotesCount;
+      this.thisWeekNotesCount = result.thisWeekNotesCount;
+      this.markedNotesCount = result.markedNotesCount;
     }));
 
     // Note mark changed
