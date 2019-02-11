@@ -54,7 +54,7 @@ var DataStore = /** @class */ (function () {
     };
     DataStore.prototype.addCollection = function (name, isActive) {
         var newCollection = new collection_1.Collection(name, isActive);
-        this.notebooks.insert(newCollection);
+        this.collections.insert(newCollection);
         this.db.saveDatabase();
         return newCollection.id;
     };
