@@ -11,8 +11,8 @@ import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confi
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { AddNoteResult } from '../../services/addNoteResult';
-import { CollectionOperation } from '../../services/collectionOperation';
 import { Constants } from '../../core/constants';
+import { Operation } from '../../core/enums';
 
 @Component({
     selector: 'notes-component',
@@ -127,7 +127,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         // Create a new note
         let addNoteResult: AddNoteResult = this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
 
-        if (addNoteResult.operation === CollectionOperation.Success) {
+        if (addNoteResult.operation === Operation.Success) {
             // Show the note window
             ipcRenderer.send('open-note-window', addNoteResult.noteId);
         }
@@ -146,9 +146,9 @@ export class NotesComponent implements OnInit, OnDestroy {
             if (result) {
 
                 if (!this.collectionService.getNoteIsOpen(this.selectedNote.id)) {
-                    let operation: CollectionOperation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
+                    let operation: Operation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
 
-                    if (operation === CollectionOperation.Error) {
+                    if (operation === Operation.Error) {
                         let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteNoteError', { noteTitle: this.selectedNote.title }).toPromise());
                         this.dialog.open(ErrorDialogComponent, {
                             width: '450px', data: { errorText: generatedErrorText }

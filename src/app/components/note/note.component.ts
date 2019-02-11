@@ -12,8 +12,8 @@ import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.compone
 import { MatDialog } from '@angular/material';
 import { remote, BrowserWindow } from 'electron';
 import { RenameNoteResult } from '../../services/renameNoteResult';
-import { CollectionOperation } from '../../services/collectionOperation';
 import { GetNoteContentResult } from '../../services/getNoteContentResult';
+import { Operation } from '../../core/enums';
 
 @Component({
     selector: 'note-content',
@@ -129,17 +129,17 @@ export class NoteComponent implements OnInit {
     private async saveNoteTitleAsync(newNoteTitle: string): Promise<void> {
         let renameNoteResult: RenameNoteResult = this.collectionService.renameNote(this.noteId, this.originalNoteTitle, newNoteTitle);
 
-        if (renameNoteResult.operation === CollectionOperation.Blank) {
+        if (renameNoteResult.operation === Operation.Blank) {
             this.noteTitle = this.originalNoteTitle;
             this.snackBarService.noteTitleCannotBeEmptyAsync();
-        } else if (renameNoteResult.operation === CollectionOperation.Error) {
+        } else if (renameNoteResult.operation === Operation.Error) {
             this.noteTitle = this.originalNoteTitle;
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.originalNoteTitle }).toPromise());
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: generatedErrorText }
             });
-        } else if (renameNoteResult.operation === CollectionOperation.Success) {
+        } else if (renameNoteResult.operation === Operation.Success) {
             this.originalNoteTitle = renameNoteResult.newNoteTitle;
             this.noteTitle = renameNoteResult.newNoteTitle;
         } else {
@@ -152,9 +152,9 @@ export class NoteComponent implements OnInit {
         let textContent: string = this.quill.getText();
         let jsonContent: string = JSON.stringify(this.quill.getContents());
 
-        let operation: CollectionOperation = this.collectionService.updateNoteContent(this.noteId, textContent, jsonContent);
+        let operation: Operation = this.collectionService.updateNoteContent(this.noteId, textContent, jsonContent);
 
-        if (operation === CollectionOperation.Error) {
+        if (operation === Operation.Error) {
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.UpdateNoteContentError').toPromise());
 
             this.dialog.open(ErrorDialogComponent, {
@@ -174,7 +174,7 @@ export class NoteComponent implements OnInit {
     private async getNoteContentAsync(): Promise<void> {
         let getNoteContentResult: GetNoteContentResult = this.collectionService.getNoteContent(this.noteId);
 
-        if (getNoteContentResult.operation === CollectionOperation.Error) {
+        if (getNoteContentResult.operation === Operation.Error) {
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.GetNoteContentError').toPromise());
 
             this.dialog.open(ErrorDialogComponent, {

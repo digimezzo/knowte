@@ -9,9 +9,9 @@ import { RenameCollectionDialogComponent } from '../dialogs/renameCollectionDial
 import { SnackBarService } from '../../services/snackBar.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { TranslateService } from '@ngx-translate/core';
-import { CollectionOperation } from '../../services/collectionOperation';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { Router } from '@angular/router';
+import { Operation } from '../../core/enums';
 
 @Component({
   selector: 'main-menu-button',
@@ -66,14 +66,14 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
       if (result) {
         let collectionName: string = dialogRef.componentInstance.inputText;
 
-        let operation: CollectionOperation = this.collectionService.addCollection(collectionName);
+        let operation: Operation = this.collectionService.addCollection(collectionName);
 
         switch (operation) {
-          case CollectionOperation.Duplicate: {
+          case Operation.Duplicate: {
             this.snackBarService.duplicateCollectionAsync(collectionName);
             break;
           }
-          case CollectionOperation.Error: {
+          case Operation.Error: {
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.AddCollectionError', { collectionName: collectionName }).toPromise());
             this.dialog.open(ErrorDialogComponent, {
               width: '450px', data: { errorText: generatedErrorText }
@@ -116,9 +116,9 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        let operation: CollectionOperation = await this.collectionService.deleteCollectionAsync(collectionId);
+        let operation: Operation = await this.collectionService.deleteCollectionAsync(collectionId);
 
-        if (operation === CollectionOperation.Error) {
+        if (operation === Operation.Error) {
           let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteCollectionError', { collectionName: collectionName }).toPromise());
           this.dialog.open(ErrorDialogComponent, {
             width: '450px', data: { errorText: generatedErrorText }

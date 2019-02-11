@@ -1,9 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { CollectionService } from '../../../services/collection.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { CollectionOperation } from '../../../services/collectionOperation';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorDialogComponent } from '../errorDialog/errorDialog.component';
+import { Operation } from '../../../core/enums';
 
 @Component({
     selector: 'rename-collection-dialog',
@@ -19,9 +19,9 @@ export class RenameCollectionDialogComponent implements OnInit {
     public collectionName: string = this.collectionService.getCollectionName(this.data.collectionId);
 
     public async renameCollectionAsync(): Promise<void> {
-        let operation: CollectionOperation = await this.collectionService.renameCollectionAsync(this.collectionId, this.collectionName);
+        let operation: Operation = await this.collectionService.renameCollectionAsync(this.collectionId, this.collectionName);
 
-        if(operation === CollectionOperation.Error){
+        if(operation === Operation.Error){
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameCollectionError', { collectionName: this.collectionName }).toPromise());
 
             this.dialog.open(ErrorDialogComponent, {

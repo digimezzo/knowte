@@ -1,7 +1,7 @@
-import { CollectionOperation } from "./collectionOperation";
+import { Operation } from "../core/enums";
 
 export class AddNoteResult {
-    constructor(public operation: CollectionOperation) {
+    constructor(public operation: Operation) {
     }
 
     public noteId: string;

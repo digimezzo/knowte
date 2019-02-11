@@ -1,11 +1,11 @@
-import { CollectionOperation } from "./collectionOperation";
+import { Operation } from "../core/enums";
 
 export class UpdateNoteResult {
-    constructor(operation: CollectionOperation) {
+    constructor(operation: Operation) {
         this.operation = operation;
     }
 
     public noteId: string;
     public noteTitle: string;
-    public operation: CollectionOperation;
+    public operation: Operation;
 }

@@ -5,7 +5,6 @@ import * as fs from 'fs-extra';
 import log from 'electron-log';
 import * as Store from 'electron-store';
 import { Subject } from 'rxjs';
-import { CollectionOperation } from './collectionOperation';
 import { Collection } from '../data/entities/collection';
 import { Utils } from '../core/utils';
 import { Notebook } from '../data/entities/notebook';
@@ -22,6 +21,7 @@ import { NoteMarkChangedArgs } from './noteMarkChangedArgs';
 import { UpdateNoteResult } from './updateNoteResult';
 import { RenameNoteResult } from './renameNoteResult';
 import { GetNoteContentResult } from './getNoteContentResult';
+import { Operation } from '../core/enums';
 
 @Injectable({
   providedIn: 'root',
@@ -156,7 +156,7 @@ export class CollectionService {
     return uniqueTitle;
   }
 
-  public updateNote(noteId: string, title: string, textContent: string, jsonContent: string): CollectionOperation {
+  public updateNote(noteId: string, title: string, textContent: string, jsonContent: string): Operation {
     try {
       // Update the note file on disk
       let storageDirectory: string = this.settings.get('storageDirectory');
@@ -169,17 +169,17 @@ export class CollectionService {
       this.dataStore.updateNote(note);
     } catch (error) {
       log.error(`Could not update the note with id='${noteId}'. Cause: ${error}`);
-      return CollectionOperation.Error;
+      return Operation.Error;
     }
 
 
-    let updateNoteResult: UpdateNoteResult = new UpdateNoteResult(CollectionOperation.Success);
+    let updateNoteResult: UpdateNoteResult = new UpdateNoteResult(Operation.Success);
     updateNoteResult.noteId = noteId;
     updateNoteResult.noteTitle = title;
 
     this.globalEvents.emit('noteUpdated', updateNoteResult);
 
-    return CollectionOperation.Success;
+    return Operation.Success;
   }
 
   public setNoteMark(noteId: string, isMarked: boolean): void {
@@ -198,18 +198,18 @@ export class CollectionService {
   public renameNote(noteId: string, originalNoteTitle: string, newNoteTitle: string): RenameNoteResult {
     if (!noteId || !originalNoteTitle) {
       log.error("renameNote: noteId or originalNoteTitle is null");
-      return new RenameNoteResult(CollectionOperation.Error);
+      return new RenameNoteResult(Operation.Error);
     }
 
     let uniqueNoteTitle: string = newNoteTitle.trim();
 
     if (uniqueNoteTitle.length === 0) {
-      return new RenameNoteResult(CollectionOperation.Blank);
+      return new RenameNoteResult(Operation.Blank);
     }
 
     if (originalNoteTitle === uniqueNoteTitle) {
       log.error("New title is the same as old title. No rename required.");
-      return new RenameNoteResult(CollectionOperation.Aborted);
+      return new RenameNoteResult(Operation.Aborted);
     }
 
     try {
@@ -224,10 +224,10 @@ export class CollectionService {
       log.info(`Renamed note with id=${noteId} from ${originalNoteTitle} to ${uniqueNoteTitle}.`);
     } catch (error) {
       log.error(`Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`);
-      return new RenameNoteResult(CollectionOperation.Error);
+      return new RenameNoteResult(Operation.Error);
     }
 
-    let renameNoteResult: RenameNoteResult = new RenameNoteResult(CollectionOperation.Success);
+    let renameNoteResult: RenameNoteResult = new RenameNoteResult(Operation.Success);
     renameNoteResult.noteId = noteId;
     renameNoteResult.newNoteTitle = uniqueNoteTitle;
 
@@ -236,10 +236,10 @@ export class CollectionService {
     return renameNoteResult;
   }
 
-  public updateNoteContent(noteId: string, textContent: string, jsonContent: string): CollectionOperation {
+  public updateNoteContent(noteId: string, textContent: string, jsonContent: string): Operation {
     if (!noteId) {
       log.error("updateNoteContent: noteId is null");
-      return CollectionOperation.Error;
+      return Operation.Error;
     }
 
     try {
@@ -255,16 +255,16 @@ export class CollectionService {
       log.info(`Updated content for note with id=${noteId}.`);
     } catch (error) {
       log.error(`Could not update the content for the note with id='${noteId}'. Cause: ${error}`);
-      return CollectionOperation.Error;
+      return Operation.Error;
     }
 
-    return CollectionOperation.Success;
+    return Operation.Success;
   }
 
   public getNoteContent(noteId: string): GetNoteContentResult {
     if (!noteId) {
       log.error("getNoteContent: noteId is null");
-      return new GetNoteContentResult(CollectionOperation.Error);
+      return new GetNoteContentResult(Operation.Error);
     }
 
     let noteContent: string = "";
@@ -274,10 +274,10 @@ export class CollectionService {
       noteContent = fs.readFileSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), 'utf8');
     } catch (error) {
       log.error(`Could not get the content for the note with id='${noteId}'. Cause: ${error}`);
-      return new GetNoteContentResult(CollectionOperation.Error);
+      return new GetNoteContentResult(Operation.Error);
     }
 
-    let getNoteContentResult: GetNoteContentResult = new GetNoteContentResult(CollectionOperation.Success);
+    let getNoteContentResult: GetNoteContentResult = new GetNoteContentResult(Operation.Success);
     getNoteContentResult.noteId = noteId;
     getNoteContentResult.noteContent = noteContent;
 
@@ -338,17 +338,17 @@ export class CollectionService {
     return collection != null;
   }
 
-  public addCollection(collectionName: string): CollectionOperation {
+  public addCollection(collectionName: string): Operation {
     // Check if a collection name was provided
     if (!collectionName) {
       log.error("collectionName is null");
-      return CollectionOperation.Error;
+      return Operation.Error;
     }
 
     // Check if there is already a collection with that name
     if (this.collectionExists(collectionName)) {
       log.info(`Not adding collection '${collectionName}' to the data store because it already exists`);
-      return CollectionOperation.Duplicate;
+      return Operation.Duplicate;
     }
 
     try {
@@ -358,24 +358,24 @@ export class CollectionService {
     } catch (error) {
       log.error(`Could not add collection '${collectionName}'. Cause: ${error}`);
 
-      return CollectionOperation.Error;
+      return Operation.Error;
     }
 
     this.collectionAdded.next(collectionName);
 
-    return CollectionOperation.Success;
+    return Operation.Success;
   }
 
-  public async renameCollectionAsync(collectionId: string, newCollectionName: string): Promise<CollectionOperation> {
+  public async renameCollectionAsync(collectionId: string, newCollectionName: string): Promise<Operation> {
     if (!collectionId || !newCollectionName) {
       log.error("renameCollectionAsync: collectionId or newCollectionName is null");
-      return CollectionOperation.Error;
+      return Operation.Error;
     }
 
     try {
       // 1. Check if there is already a collection with that name
       if (this.collectionExists(newCollectionName)) {
-        return CollectionOperation.Duplicate;
+        return Operation.Duplicate;
       }
 
       // 2. Rename the collection
@@ -384,12 +384,12 @@ export class CollectionService {
       this.dataStore.updateCollection(collection);
     } catch (error) {
       log.error(`Could not rename the collection with id='${collectionId}' to '${newCollectionName}'. Cause: ${error}`);
-      return CollectionOperation.Error;
+      return Operation.Error;
     }
 
     this.collectionRenamed.next(newCollectionName);
 
-    return CollectionOperation.Success;
+    return Operation.Success;
   }
 
   public getCollections(): Collection[] {
@@ -416,10 +416,10 @@ export class CollectionService {
     this.collectionActivated.next(activeCollection.name);
   }
 
-  public async deleteCollectionAsync(collectionId: string): Promise<CollectionOperation> {
+  public async deleteCollectionAsync(collectionId: string): Promise<Operation> {
     if (!collectionId) {
       log.error("deleteCollectionAsync: collectionId is null");
-      return CollectionOperation.Error;
+      return Operation.Error;
     }
 
     let collectionName: string = "";
@@ -435,11 +435,11 @@ export class CollectionService {
       // TODO
     } catch (error) {
       log.error(`Could not delete the collection with id='${collectionId}'. Cause: ${error}`);
-      return CollectionOperation.Error;
+      return Operation.Error;
     }
 
     this.collectionDeleted.next(collectionName);
-    return CollectionOperation.Success;
+    return Operation.Success;
   }
 
   public async getNotebooksAsync(): Promise<Notebook[]> {
@@ -569,10 +569,10 @@ export class CollectionService {
     return NotebookOperation.Success;
   }
 
-  public async deleteNoteAsync(noteId: string): Promise<CollectionOperation> {
+  public async deleteNoteAsync(noteId: string): Promise<Operation> {
     if (!noteId) {
       log.error("deleteNoteAsync: noteId is null");
-      return CollectionOperation.Error;
+      return Operation.Error;
     }
 
     let noteTitle: string = "";
@@ -590,11 +590,11 @@ export class CollectionService {
       // TODO
     } catch (error) {
       log.error(`Could not delete the note with id='${noteId}'. Cause: ${error}`);
-      return CollectionOperation.Error;
+      return Operation.Error;
     }
 
     this.noteDeleted.next(noteTitle);
-    return CollectionOperation.Success;
+    return Operation.Success;
   }
 
   private async getNoteDateFormatResultAsync(millisecondsSinceEpoch: number, useFuzzyDates: boolean): Promise<NoteDateFormatResult> {
@@ -765,7 +765,7 @@ export class CollectionService {
 
   public addNote(baseTitle: string, notebookId: string): AddNoteResult {
     let uniqueTitle: string = "";
-    let addNoteResult: AddNoteResult = new AddNoteResult(CollectionOperation.Success);
+    let addNoteResult: AddNoteResult = new AddNoteResult(Operation.Success);
 
     // If a default notebook was selected, make sure the note is added as unfiled.
     if (notebookId === Constants.allNotesNotebookId || notebookId === Constants.unfiledNotesNotebookId) {
@@ -786,7 +786,7 @@ export class CollectionService {
       this.noteAdded.next(uniqueTitle);
     } catch (error) {
       log.error(`Could not add note '${uniqueTitle}'. Cause: ${error}`);
-      addNoteResult.operation = CollectionOperation.Error;
+      addNoteResult.operation = Operation.Error;
     }
 
     return addNoteResult;
