@@ -29,35 +29,27 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
   public collections: Collection[];
 
   async ngOnInit() {
-    this.subscription = this.collectionService.dataStoreInitialized$.subscribe(() => {
+    this.subscription = this.collectionService.dataStoreInitialized$.subscribe(async () => {
       this.canShow = true;
-      this.collections = this.collectionService.getCollections();
+      await this.getCollectionsAsync();
     });
 
-    this.subscription.add(this.collectionService.collectionsChanged$.subscribe(() => this.collections = this.collectionService.getCollections()));
+    this.subscription.add(this.collectionService.collectionsChanged$.subscribe(async () => await this.getCollectionsAsync()));
+    this.subscription.add(this.collectionService.collectionAdded$.subscribe(async (collectionName) => await this.getCollectionsAsync()));
+    this.subscription.add(this.collectionService.collectionRenamed$.subscribe(async (newCollectionName) => await this.getCollectionsAsync()));
+    this.subscription.add(this.collectionService.collectionDeleted$.subscribe(async (collectionName) => await this.getCollectionsAsync()));
 
     this.subscription.add(this.collectionService.collectionActivated$.subscribe(async (collectionName) => {
-      this.collections = await this.collectionService.getCollections();
+      await this.getCollectionsAsync();
       this.snackBarService.collectionActivatedAsync(collectionName);
     }));
 
-    this.subscription.add(this.collectionService.collectionAdded$.subscribe(async (collectionName) => {
-      this.collections = await this.collectionService.getCollections();
-      this.snackBarService.collectionAddedAsync(collectionName);
-    }));
+    // Workaround for auto reload
+    await this.collectionService.initializeDataStoreAsync();
+  }
 
-    this.subscription.add(this.collectionService.collectionRenamed$.subscribe(async (newCollectionName) => {
-      this.collections = await this.collectionService.getCollections();
-      this.snackBarService.collectionRenamedAsync(newCollectionName);
-    }));
-
-    this.subscription.add(this.collectionService.collectionDeleted$.subscribe(async (collectionName) => {
-      this.collections = this.collectionService.getCollections();
-      this.snackBarService.collectionDeletedAsync(collectionName);
-    }));
-
-     // Workaround for auto reload
-     await this.collectionService.initializeDataStoreAsync();
+  private async getCollectionsAsync(): Promise<void> {
+    this.collections = await this.collectionService.getCollections();
   }
 
   public async addCollectionAsync(): Promise<void> {
@@ -82,7 +74,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
             break;
           }
           case CollectionOperation.Error: {
-            let generatedErrorText:string = (await this.translateService.get('ErrorTexts.AddCollectionError', {collectionName: collectionName}).toPromise());
+            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.AddCollectionError', { collectionName: collectionName }).toPromise());
             this.dialog.open(ErrorDialogComponent, {
               width: '450px', data: { errorText: generatedErrorText }
             });
@@ -115,7 +107,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
     let collectionName: string = this.collectionService.getCollectionName(collectionId);
     let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteCollection').toPromise();
-    let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteCollection', {collectionName: collectionName}).toPromise();
+    let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteCollection', { collectionName: collectionName }).toPromise();
 
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
 
@@ -126,8 +118,8 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
       if (result) {
         let operation: CollectionOperation = await this.collectionService.deleteCollectionAsync(collectionId);
 
-        if(operation === CollectionOperation.Error){
-          let generatedErrorText:string = (await this.translateService.get('ErrorTexts.DeleteCollectionError', {collectionName: collectionName}).toPromise());
+        if (operation === CollectionOperation.Error) {
+          let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteCollectionError', { collectionName: collectionName }).toPromise());
           this.dialog.open(ErrorDialogComponent, {
             width: '450px', data: { errorText: generatedErrorText }
           });

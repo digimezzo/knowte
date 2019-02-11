@@ -102,17 +102,9 @@
         "GetNoteContentError": "An error occurred while getting the note content. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
-        "CollectionActivated": "Collection '{{collectionName}}' was activated",
-        "CollectionAdded": "Collection '{{collectionName}}' was added",
-        "CollectionDeleted": "Collection '{{collectionName}}' was deleted",
-        "CollectionRenamed": "Collection was renamed to '{{collectionName}}'",
+        "CollectionActivated": "Collection '{{collectionName}}' is activated",
         "DuplicateCollection": "There is already a collection with the name '{{collectionName}}'",
         "DuplicateNotebook": "There is already a notebook with the name '{{notebookName}}'",
-        "NotebookAdded": "Notebook '{{notebookName}}' was added",
-        "NotebookDeleted": "Notebook '{{notebookName}}' was deleted",
-        "NotebookRenamed": "Notebook was renamed to '{{notebookName}}'",
-        "NoteAdded": "Note '{{noteTitle}}' was added",
-        "NoteDeleted": "Note '{{noteTitle}}' was deleted",
         "NoteDeleteBlocked": "The note '{{noteTitle}}' was not deleted because it is open",
         "NoteAlreadyOpen": "This note is already open",
         "NoteTitleCannotBeEmpty": "The note title cannot be empty"

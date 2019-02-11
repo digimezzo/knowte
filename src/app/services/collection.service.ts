@@ -306,8 +306,6 @@ export class CollectionService {
       return false;
     }
 
-    //await Utils.sleep(2000);
-
     return true;
   }
 
@@ -783,7 +781,6 @@ export class CollectionService {
 
       // 2. Create note file
       let storageDirectory: string = this.settings.get('storageDirectory');
-      // fs.closeSync(fs.openSync(path.join(storageDirectory, `${addNoteResult.noteId}${Constants.noteExtension}`), 'w'));
       fs.writeFileSync(path.join(storageDirectory, `${addNoteResult.noteId}${Constants.noteExtension}`), '');
 
       this.noteAdded.next(uniqueTitle);

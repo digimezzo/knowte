@@ -63,20 +63,9 @@ export class CollectionComponent implements OnInit {
     await this.getNotebooksAsync();
     this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
 
-    this.subscription = this.collectionService.notebookAdded$.subscribe(async (notebookName) => {
-      await this.getNotebooksAsync();
-      this.snackBarService.notebookAddedAsync(notebookName);
-    });
-
-    this.subscription.add(this.collectionService.notebookRenamed$.subscribe(async (newNotebookName) => {
-      await this.getNotebooksAsync();
-      this.snackBarService.notebookRenamedAsync(newNotebookName);
-    }));
-
-    this.subscription.add(this.collectionService.notebookDeleted$.subscribe(async (notebookName) => {
-      await this.getNotebooksAsync();
-      this.snackBarService.notebookDeletedAsync(notebookName);
-    }));
+    this.subscription = this.collectionService.notebookAdded$.subscribe(async (notebookName) => await this.getNotebooksAsync());
+    this.subscription.add(this.collectionService.notebookRenamed$.subscribe(async (newNotebookName) => await this.getNotebooksAsync()));
+    this.subscription.add(this.collectionService.notebookDeleted$.subscribe(async (notebookName) => await this.getNotebooksAsync()));
 
     // Note counters
     this.subscription.add(this.collectionService.noteCountersChanged$.subscribe((noteCountersChangedArgs) => {
