@@ -15,6 +15,21 @@ export class SnackBarService {
         });
     }
 
+    public async collectionAddedAsync(collectionName: string) {	
+        let message: string = await this.translate.get('SnackBarMessages.CollectionAdded', { collectionName: collectionName }).toPromise();	
+        this.showActionLessSnackBar(message, 2000);	
+    }
+
+    public async collectionDeletedAsync(collectionName: string) {	
+        let message: string = await this.translate.get('SnackBarMessages.CollectionDeleted', { collectionName: collectionName }).toPromise();	
+        this.showActionLessSnackBar(message, 2000);	
+    }
+
+    public async collectionRenamedAsync(collectionName: string) {	
+        let message: string = await this.translate.get('SnackBarMessages.CollectionRenamed', { collectionName: collectionName }).toPromise();	
+        this.showActionLessSnackBar(message, 2000);	
+    }
+
     public async collectionActivatedAsync(collectionName: string) {
         let message: string = await this.translate.get('SnackBarMessages.CollectionActivated', { collectionName: collectionName }).toPromise();
         this.showActionLessSnackBar(message, 2000);

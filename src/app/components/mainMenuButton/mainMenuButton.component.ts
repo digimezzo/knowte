@@ -34,9 +34,20 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
       await this.getCollectionsAsync();
     });
 
-    this.subscription.add(this.collectionService.collectionAdded$.subscribe(async (collectionName) => await this.getCollectionsAsync()));
-    this.subscription.add(this.collectionService.collectionRenamed$.subscribe(async (newCollectionName) => await this.getCollectionsAsync()));
-    this.subscription.add(this.collectionService.collectionDeleted$.subscribe(async (collectionName) => await this.getCollectionsAsync()));
+    this.subscription.add(this.collectionService.collectionAdded$.subscribe(async (collectionName) => {
+      await this.getCollectionsAsync();
+      this.snackBarService.collectionAddedAsync(collectionName);
+    }));
+
+    this.subscription.add(this.collectionService.collectionRenamed$.subscribe(async (newCollectionName) => {
+      await this.getCollectionsAsync();
+      this.snackBarService.collectionRenamedAsync(newCollectionName);
+    }));
+
+    this.subscription.add(this.collectionService.collectionDeleted$.subscribe(async (collectionName) => {
+      await this.getCollectionsAsync();
+      this.snackBarService.collectionDeletedAsync(collectionName);
+    }));
 
     this.subscription.add(this.collectionService.collectionActivated$.subscribe(async (collectionName) => {
       await this.getCollectionsAsync();

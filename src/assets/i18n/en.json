@@ -102,6 +102,9 @@
         "GetNoteContentError": "An error occurred while getting the note content. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
+        "CollectionAdded": "Collection '{{collectionName}}' was added",	
+        "CollectionDeleted": "Collection '{{collectionName}}' was deleted",	
+        "CollectionRenamed": "Collection was renamed to '{{collectionName}}'",
         "CollectionActivated": "Collection '{{collectionName}}' is activated",
         "DuplicateCollection": "There is already a collection with the name '{{collectionName}}'",
         "DuplicateNotebook": "There is already a notebook with the name '{{notebookName}}'",
