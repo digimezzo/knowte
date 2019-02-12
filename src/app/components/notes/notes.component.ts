@@ -68,15 +68,15 @@ export class NotesComponent implements OnInit, OnDestroy {
             await this.getNotesAsync();
         }));
 
-        this.subscription.add(this.collectionService.noteMarkChanged$.subscribe(async (noteMarkChangedArgs) => {
+        this.subscription.add(this.collectionService.noteMarkChanged$.subscribe(async (result) => {
             if (this.category === Constants.markedCategory) {
                 await this.getNotesAsync();
             } else {
                 if (this.notes.length > 0) {
-                    let noteToMark: Note = this.notes.find(x => x.id === noteMarkChangedArgs.noteId);
+                    let noteToMark: Note = this.notes.find(x => x.id === result.noteId);
 
                     if(noteToMark){
-                        noteToMark.isMarked = noteMarkChangedArgs.isMarked;
+                        noteToMark.isMarked = result.isMarked;
                     }
                 }
             }

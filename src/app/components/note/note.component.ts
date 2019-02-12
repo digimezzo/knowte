@@ -11,7 +11,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { MatDialog } from '@angular/material';
 import { remote, BrowserWindow } from 'electron';
-import { GetNoteContentResult } from '../../services/getNoteContentResult';
 import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../../services/results/noteOperationResult';
 
@@ -172,18 +171,18 @@ export class NoteComponent implements OnInit {
     }
 
     private async getNoteContentAsync(): Promise<void> {
-        let getNoteContentResult: GetNoteContentResult = this.collectionService.getNoteContent(this.noteId);
+        let result: NoteOperationResult = this.collectionService.getNoteContent(this.noteId);
 
-        if (getNoteContentResult.operation === Operation.Error) {
+        if (result.operation === Operation.Error) {
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.GetNoteContentError').toPromise());
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: generatedErrorText }
             });
         } else {
-            if (getNoteContentResult.noteContent) {
+            if (result.noteContent) {
                 // We can only parse to json if there is content
-                this.quill.setContents(JSON.parse(getNoteContentResult.noteContent), 'silent');
+                this.quill.setContents(JSON.parse(result.noteContent), 'silent');
             }
         }
     }

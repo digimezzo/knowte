@@ -7,4 +7,5 @@ export class NoteOperationResult {
 
     public noteId: string;
     public noteTitle: string;
+    public noteContent: string;
 }

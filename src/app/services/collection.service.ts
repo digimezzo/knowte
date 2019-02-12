@@ -13,9 +13,8 @@ import { remote } from 'electron';
 import { Note } from '../data/entities/note';
 import * as moment from 'moment'
 import { Moment, Duration } from 'moment';
-import { NoteDateFormatResult } from './noteDateFormatResult';
-import { NoteMarkChangedArgs } from './noteMarkChangedArgs';
-import { GetNoteContentResult } from './getNoteContentResult';
+import { NoteDateFormatResult } from './results/noteDateFormatResult';
+import { NoteMarkResult } from './results/noteMarkResult';
 import { Operation } from '../core/enums';
 import { NoteOperationResult } from './results/noteOperationResult';
 import { NotesCountResult } from './results/notesCountResult';
@@ -42,9 +41,6 @@ export class CollectionService {
 
   private dataStoreInitialized = new Subject<boolean>();
   dataStoreInitialized$ = this.dataStoreInitialized.asObservable();
-
-  private collectionsChanged = new Subject();
-  collectionsChanged$ = this.collectionsChanged.asObservable();
 
   private collectionActivated = new Subject<string>();
   collectionActivated$ = this.collectionActivated.asObservable();
@@ -82,7 +78,7 @@ export class CollectionService {
   private noteUpdated = new Subject<NoteOperationResult>();
   noteUpdated$ = this.noteUpdated.asObservable();
 
-  private noteMarkChanged = new Subject<NoteMarkChangedArgs>();
+  private noteMarkChanged = new Subject<NoteMarkResult>();
   noteMarkChanged$ = this.noteMarkChanged.asObservable();
 
   public get hasDataStore(): boolean {
@@ -185,8 +181,8 @@ export class CollectionService {
 
     let activeCollection: Collection = this.dataStore.getActiveCollection();
     let markedNotes: Note[] = this.dataStore.getMarkedNotes(activeCollection.id);
-    let args: NoteMarkChangedArgs = new NoteMarkChangedArgs(noteId, isMarked, markedNotes.length);
-    this.noteMarkChanged.next(args);
+    let result: NoteMarkResult = new NoteMarkResult(noteId, isMarked, markedNotes.length);
+    this.noteMarkChanged.next(result);
   }
 
   public renameNote(noteId: string, originalNoteTitle: string, newNoteTitle: string): NoteOperationResult {
@@ -255,10 +251,10 @@ export class CollectionService {
     return Operation.Success;
   }
 
-  public getNoteContent(noteId: string): GetNoteContentResult {
+  public getNoteContent(noteId: string): NoteOperationResult {
     if (!noteId) {
       log.error("getNoteContent: noteId is null");
-      return new GetNoteContentResult(Operation.Error);
+      return new NoteOperationResult(Operation.Error);
     }
 
     let noteContent: string = "";
@@ -268,14 +264,14 @@ export class CollectionService {
       noteContent = fs.readFileSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), 'utf8');
     } catch (error) {
       log.error(`Could not get the content for the note with id='${noteId}'. Cause: ${error}`);
-      return new GetNoteContentResult(Operation.Error);
+      return new NoteOperationResult(Operation.Error);
     }
 
-    let getNoteContentResult: GetNoteContentResult = new GetNoteContentResult(Operation.Success);
-    getNoteContentResult.noteId = noteId;
-    getNoteContentResult.noteContent = noteContent;
+    let result: NoteOperationResult = new NoteOperationResult(Operation.Success);
+    result.noteId = noteId;
+    result.noteContent = noteContent;
 
-    return getNoteContentResult;
+    return result;
   }
 
   public async initializeStorageDirectoryAsync(parentDirectory: string): Promise<boolean> {
@@ -591,7 +587,7 @@ export class CollectionService {
     return Operation.Success;
   }
 
-  private async getNoteDateFormatResultAsync(millisecondsSinceEpoch: number, useFuzzyDates: boolean): Promise<NoteDateFormatResult> {
+  private async getNoteDateFormatAsync(millisecondsSinceEpoch: number, useFuzzyDates: boolean): Promise<NoteDateFormatResult> {
     let result: NoteDateFormatResult = new NoteDateFormatResult();
     let nowDateonly: Moment = moment().startOf('day');
     let modificationDateOnly: Moment = moment(millisecondsSinceEpoch).startOf('day');
@@ -698,7 +694,7 @@ export class CollectionService {
           notes.push(note);
         }
 
-        let result: NoteDateFormatResult = await this.getNoteDateFormatResultAsync(note.modificationDate, useFuzzyDates);
+        let result: NoteDateFormatResult = await this.getNoteDateFormatAsync(note.modificationDate, useFuzzyDates);
 
         // More counts
         if (result.isTodayNote) {
