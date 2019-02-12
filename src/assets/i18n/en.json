@@ -112,6 +112,9 @@
         "NoteAlreadyOpen": "This note is already open",
         "NoteTitleCannotBeEmpty": "The note title cannot be empty"
     },
+    "SnackBarActions": {
+        "Ok": "OK"
+    },
     "MainPage": {
         "Notebooks": "Notebooks",
         "AddNotebook": "Add notebook...",
