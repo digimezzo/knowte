@@ -7,7 +7,7 @@ export class Constants {
     static readonly emailAddress = "https://www.digimezzo.com/contact";
     static readonly facebookUrl = "https://www.facebook.com/Digimezzo";
     static readonly twitterUrl = "https://twitter.com/Digimezzo";
-    static readonly collectionsDirectory: string = Constants.applicationName;
+    static readonly collectionsDirectory: string = `${Constants.applicationName} collections`;
     static readonly dataStoreFile: string = `${Constants.applicationName}.db`;
     static readonly noteExtension: string = ".knowte";
     static readonly defaultCollectionName: string = "Default";

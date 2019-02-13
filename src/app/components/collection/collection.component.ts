@@ -62,9 +62,9 @@ export class CollectionComponent implements OnInit {
     await this.getNotebooksAsync();
     this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
 
-    this.subscription = this.collectionService.notebookAdded$.subscribe(async (notebookName) => await this.getNotebooksAsync());
-    this.subscription.add(this.collectionService.notebookRenamed$.subscribe(async (newNotebookName) => await this.getNotebooksAsync()));
-    this.subscription.add(this.collectionService.notebookDeleted$.subscribe(async (notebookName) => await this.getNotebooksAsync()));
+    this.subscription = this.collectionService.notebookAdded$.subscribe(async () => await this.getNotebooksAsync());
+    this.subscription.add(this.collectionService.notebookRenamed$.subscribe(async () => await this.getNotebooksAsync()));
+    this.subscription.add(this.collectionService.notebookDeleted$.subscribe(async () => await this.getNotebooksAsync()));
 
     // Notes count
     this.subscription.add(this.collectionService.notesCountChanged$.subscribe((result) => {

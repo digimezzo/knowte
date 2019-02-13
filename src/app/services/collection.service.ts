@@ -54,19 +54,19 @@ export class CollectionService {
   private collectionDeleted = new Subject<string>();
   collectionDeleted$ = this.collectionDeleted.asObservable();
 
-  private notebookAdded = new Subject<string>();
+  private notebookAdded = new Subject();
   notebookAdded$ = this.notebookAdded.asObservable();
 
-  private notebookRenamed = new Subject<string>();
+  private notebookRenamed = new Subject();
   notebookRenamed$ = this.notebookRenamed.asObservable();
 
-  private notebookDeleted = new Subject<string>();
+  private notebookDeleted = new Subject();
   notebookDeleted$ = this.notebookDeleted.asObservable();
 
-  private noteAdded = new Subject<string>();
+  private noteAdded = new Subject();
   noteAdded$ = this.noteAdded.asObservable();
 
-  private noteDeleted = new Subject<string>();
+  private noteDeleted = new Subject();
   noteDeleted$ = this.noteDeleted.asObservable();
 
   private notesCountChanged = new Subject<NotesCountResult>();
@@ -501,7 +501,7 @@ export class CollectionService {
       return Operation.Error;
     }
 
-    this.notebookAdded.next(notebookName);
+    this.notebookAdded.next();
 
     return Operation.Success;
   }
@@ -527,7 +527,7 @@ export class CollectionService {
       return Operation.Error;
     }
 
-    this.notebookRenamed.next(newNotebookName);
+    this.notebookRenamed.next();
 
     return Operation.Success;
   }
@@ -542,20 +542,14 @@ export class CollectionService {
       return Operation.Error;
     }
 
-    let notebookName: string = "";
-
     try {
-      // 1. Get the name of the notebook
-      notebookName = this.getNotebookName(notebookId);
-
-      // 2. Delete notebook from data store
       this.dataStore.deleteNotebook(notebookId);
     } catch (error) {
       log.error(`Could not delete the notebook with id='${notebookId}'. Cause: ${error}`);
       return Operation.Error;
     }
 
-    this.notebookDeleted.next(notebookName);
+    this.notebookDeleted.next();
     return Operation.Success;
   }
 
@@ -570,20 +564,18 @@ export class CollectionService {
     try {
       let noteToDelete: Note = this.dataStore.getNoteById(noteId);
 
-      // 1. Get the title of the note
-      noteTitle = noteToDelete.title;
+      // 1. Delete all files from disk, which are related to the note.
+      let storageDirectory: string = this.settings.get('storageDirectory');
+      fs.unlinkSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), '');
 
       // 2. Delete note from data store
       this.dataStore.deleteNote(noteId);
-
-      // 3. Delete all files from disk, which are related to the note.
-      // TODO
     } catch (error) {
       log.error(`Could not delete the note with id='${noteId}'. Cause: ${error}`);
       return Operation.Error;
     }
 
-    this.noteDeleted.next(noteTitle);
+    this.noteDeleted.next();
     return Operation.Success;
   }
 
@@ -767,13 +759,12 @@ export class CollectionService {
       uniqueTitle = this.getUniqueNewNoteNoteTitle(baseTitle);
       let activeCollection: Collection = this.dataStore.getActiveCollection();
       result.noteId = this.dataStore.addNote(uniqueTitle, notebookId, activeCollection.id);
-      result.noteTitle = uniqueTitle;
       
       // 2. Create note file
       let storageDirectory: string = this.settings.get('storageDirectory');
       fs.writeFileSync(path.join(storageDirectory, `${result.noteId}${Constants.noteExtension}`), '');
 
-      this.noteAdded.next(uniqueTitle);
+      this.noteAdded.next();
     } catch (error) {
       log.error(`Could not add note '${uniqueTitle}'. Cause: ${error}`);
       result.operation = Operation.Error;
