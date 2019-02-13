@@ -13,6 +13,7 @@ import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.compone
 import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../../services/results/noteOperationResult';
+import { NoteService } from '../../services/note.service';
 
 @Component({
     selector: 'notes-component',
@@ -21,7 +22,7 @@ import { NoteOperationResult } from '../../services/results/noteOperationResult'
 })
 export class NotesComponent implements OnInit, OnDestroy {
     constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
-        private translateService: TranslateService, private zone: NgZone) {
+        private translateService: TranslateService, private noteService: NoteService, private zone: NgZone) {
     }
 
     private _selectedNotebook: Notebook;
@@ -82,13 +83,13 @@ export class NotesComponent implements OnInit, OnDestroy {
             }
         }));
 
-        this.subscription.add(this.collectionService.noteRenamed$.subscribe(async () => {
+        this.subscription.add(this.noteService.noteRenamed$.subscribe(async () => {
             this.zone.run(async () => {
                 await this.getNotesAsync();
             });
         }));
 
-        this.subscription.add(this.collectionService.noteUpdated$.subscribe(async () => {
+        this.subscription.add(this.noteService.noteUpdated$.subscribe(async () => {
             // TODO: process updating errors
             this.zone.run(async () => {
                 await this.getNotesAsync();

@@ -24,19 +24,9 @@ import { NotesCountResult } from './results/notesCountResult';
 })
 export class CollectionService {
   constructor(private translateService: TranslateService) {
-    log.info("CollectionService");
-
-    this.globalEvents.on('noteRenamed', (noteOperationResult) => {
-      this.noteRenamed.next(noteOperationResult);
-    });
-
-    this.globalEvents.on('noteUpdated', (noteOperationResult) => {
-      this.noteUpdated.next(noteOperationResult);
-    });
   }
 
   private dataStore = remote.getGlobal('dataStore');
-  private globalEvents = remote.getGlobal('globalEvents');
   private settings: Store = new Store();
 
   private dataStoreInitialized = new Subject<boolean>();
@@ -71,12 +61,6 @@ export class CollectionService {
 
   private notesCountChanged = new Subject<NotesCountResult>();
   notesCountChanged$ = this.notesCountChanged.asObservable();
-
-  private noteRenamed = new Subject<NoteOperationResult>();
-  noteRenamed$ = this.noteRenamed.asObservable();
-
-  private noteUpdated = new Subject<NoteOperationResult>();
-  noteUpdated$ = this.noteUpdated.asObservable();
 
   private noteMarkChanged = new Subject<NoteMarkResult>();
   noteMarkChanged$ = this.noteMarkChanged.asObservable();
@@ -134,46 +118,6 @@ export class CollectionService {
     return note != null;
   }
 
-  private getUniqueNoteNoteTitle(baseTitle: string): string {
-    let similarTitles: string[] = [];
-    let counter: number = 0;
-    let uniqueTitle: string = baseTitle;
-
-    similarTitles = this.getSimilarTitles(baseTitle);
-
-    while (similarTitles.includes(uniqueTitle)) {
-      counter++;
-      uniqueTitle = `${baseTitle} (${counter})`;
-    }
-
-    return uniqueTitle;
-  }
-
-  public updateNote(noteId: string, title: string, textContent: string, jsonContent: string): Operation {
-    try {
-      // Update the note file on disk
-      let storageDirectory: string = this.settings.get('storageDirectory');
-      fs.writeFileSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), jsonContent);
-
-      // Update the note in the data store
-      let note: Note = this.dataStore.getNoteById(noteId);
-      note.title = title;
-      note.text = textContent;
-      this.dataStore.updateNote(note);
-    } catch (error) {
-      log.error(`Could not update the note with id='${noteId}'. Cause: ${error}`);
-      return Operation.Error;
-    }
-
-    let result: NoteOperationResult = new NoteOperationResult(Operation.Success);
-    result.noteId = noteId;
-    result.noteTitle = title;
-
-    this.globalEvents.emit('noteUpdated', result);
-
-    return Operation.Success;
-  }
-
   public setNoteMark(noteId: string, isMarked: boolean): void {
     let note: Note = this.dataStore.getNoteById(noteId);
     note.isMarked = isMarked;
@@ -183,47 +127,6 @@ export class CollectionService {
     let markedNotes: Note[] = this.dataStore.getMarkedNotes(activeCollection.id);
     let result: NoteMarkResult = new NoteMarkResult(noteId, isMarked, markedNotes.length);
     this.noteMarkChanged.next(result);
-  }
-
-  public renameNote(noteId: string, originalNoteTitle: string, newNoteTitle: string): NoteOperationResult {
-    if (!noteId || !originalNoteTitle) {
-      log.error("renameNote: noteId or originalNoteTitle is null");
-      return new NoteOperationResult(Operation.Error);
-    }
-
-    let uniqueNoteTitle: string = newNoteTitle.trim();
-
-    if (uniqueNoteTitle.length === 0) {
-      return new NoteOperationResult(Operation.Blank);
-    }
-
-    if (originalNoteTitle === uniqueNoteTitle) {
-      log.error("New title is the same as old title. No rename required.");
-      return new NoteOperationResult(Operation.Aborted);
-    }
-
-    try {
-      // 1. Make sure the new title is unique
-      uniqueNoteTitle = this.getUniqueNoteNoteTitle(newNoteTitle);
-
-      // 2. Rename the note
-      let note: Note = this.dataStore.getNoteById(noteId);
-      note.title = uniqueNoteTitle;
-      this.dataStore.updateNote(note);
-
-      log.info(`Renamed note with id=${noteId} from ${originalNoteTitle} to ${uniqueNoteTitle}.`);
-    } catch (error) {
-      log.error(`Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`);
-      return new NoteOperationResult(Operation.Error);
-    }
-
-    let result: NoteOperationResult = new NoteOperationResult(Operation.Success);
-    result.noteId = noteId;
-    result.noteTitle = uniqueNoteTitle;
-
-    this.globalEvents.emit('noteRenamed', result);
-
-    return result;
   }
 
   public updateNoteContent(noteId: string, textContent: string, jsonContent: string): Operation {
@@ -725,17 +628,12 @@ export class CollectionService {
     return notes;
   }
 
-  private getSimilarTitles(baseTitle: string): string[] {
-    let notesWithIdenticalBaseTitle: Note[] = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
-    return notesWithIdenticalBaseTitle.map(x => x.title);
-  }
-
   private getUniqueNewNoteNoteTitle(baseTitle: string): string {
-    let similarTitles: string[] = [];
     let counter: number = 1;
     let uniqueTitle: string = `${baseTitle} ${counter}`;
 
-    similarTitles = this.getSimilarTitles(baseTitle);
+    let notesWithIdenticalBaseTitle: Note[] = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
+    let similarTitles: string[] = notesWithIdenticalBaseTitle.map(x => x.title);
 
     while (similarTitles.includes(uniqueTitle)) {
       counter++;

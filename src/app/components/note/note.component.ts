@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material';
 import { remote, BrowserWindow } from 'electron';
 import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../../services/results/noteOperationResult';
+import { NoteService } from '../../services/note.service';
 
 @Component({
     selector: 'note-content',
@@ -22,7 +23,7 @@ import { NoteOperationResult } from '../../services/results/noteOperationResult'
 })
 export class NoteComponent implements OnInit {
     constructor(private collectionService: CollectionService, private activatedRoute: ActivatedRoute,
-        private snackBarService: SnackBarService, private translateService: TranslateService,
+        private snackBarService: SnackBarService, private translateService: TranslateService, private noteService: NoteService,
         private dialog: MatDialog) {
     }
 
@@ -126,7 +127,7 @@ export class NoteComponent implements OnInit {
     }
 
     private async saveNoteTitleAsync(newNoteTitle: string): Promise<void> {
-        let result: NoteOperationResult = this.collectionService.renameNote(this.noteId, this.originalNoteTitle, newNoteTitle);
+        let result: NoteOperationResult = this.noteService.renameNote(this.noteId, this.originalNoteTitle, newNoteTitle);
 
         if (result.operation === Operation.Blank) {
             this.noteTitle = this.originalNoteTitle;
@@ -167,7 +168,7 @@ export class NoteComponent implements OnInit {
     private saveNoteAll(): void {
         let textContent: string = this.quill.getText();
         let jsonContent: string = JSON.stringify(this.quill.getContents());
-        this.collectionService.updateNote(this.noteId, this.noteTitle, textContent, jsonContent);
+        this.noteService.updateNote(this.noteId, this.noteTitle, textContent, jsonContent);
     }
 
     private async getNoteContentAsync(): Promise<void> {
