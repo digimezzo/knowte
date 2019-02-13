@@ -1,14 +1,14 @@
 <div class="noteContent">
+    <div class="noteContentFloating">
+        <button mat-fab color="primary" (click)="performAction()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
+            <span class="performActionIcon">&#xE5D2;</span>
+        </button>
+    </div>
     <div class="noteContentFixed">
         <div class="noteTitleBackground">
             <input class="noteTitle" type="text" [(ngModel)]="noteTitle" (ngModelChange)="onNotetitleChange($event)" />
         </div>
         <div class="noteEditor" id="editor">
         </div>
-    </div>
-    <div class="noteContentFloating">
-        <button mat-fab color="primary" (click)="performAction()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
-            <span class="performActionIcon">&#xE5D2;</span>
-        </button>
     </div>
 </div>
