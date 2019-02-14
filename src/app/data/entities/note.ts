@@ -9,7 +9,7 @@ export class Note{
     public isMarked: boolean = false;
     public creationDate: number = moment().valueOf();
     public modificationDate: number = moment().valueOf();
+    public isOpen: boolean = false;
+    public text: string = "";
     public displayModificationDate: string;
-    public text: string;
-    public isOpen: boolean;
 }

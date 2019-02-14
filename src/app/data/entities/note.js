@@ -11,6 +11,8 @@ var Note = /** @class */ (function () {
         this.isMarked = false;
         this.creationDate = moment().valueOf();
         this.modificationDate = moment().valueOf();
+        this.isOpen = false;
+        this.text = "";
     }
     return Note;
 }());
