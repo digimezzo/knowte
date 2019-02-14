@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewEncapsulation, HostListener } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, HostListener, OnDestroy } from '@angular/core';
 import log from 'electron-log';
 import { CollectionService } from '../../services/collection.service';
 import * as Quill from 'quill';
 import { ActivatedRoute } from '@angular/router';
 import { Note } from '../../data/entities/note';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from "rxjs/internal/operators";
 import { SnackBarService } from '../../services/snackBar.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -14,6 +14,7 @@ import { remote, BrowserWindow } from 'electron';
 import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../../services/results/noteOperationResult';
 import { NoteService } from '../../services/note.service';
+import { Notebook } from '../../data/entities/notebook';
 
 @Component({
     selector: 'note-content',
@@ -21,11 +22,15 @@ import { NoteService } from '../../services/note.service';
     styleUrls: ['./note.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class NoteComponent implements OnInit {
+export class NoteComponent implements OnInit, OnDestroy {
     constructor(private collectionService: CollectionService, private activatedRoute: ActivatedRoute,
         private snackBarService: SnackBarService, private translateService: TranslateService, private noteService: NoteService,
         private dialog: MatDialog) {
     }
+
+    private subscription: Subscription;
+
+    public notebooks: Notebook[];
 
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteTextChanged: Subject<string> = new Subject<string>();
@@ -62,28 +67,34 @@ export class NoteComponent implements OnInit {
         }
     }
 
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
     async ngOnInit() {
-        this.collectionService.initializeDataStoreAsync();
+        await this.collectionService.initializeDataStoreAsync();
+
+        await this.getNotebooksAsync();
+
+        this.subscription = this.collectionService.notebookAdded$.subscribe(async () => await this.getNotebooksAsync());
+        this.subscription.add(this.collectionService.notebookRenamed$.subscribe(async () => await this.getNotebooksAsync()));
+        this.subscription.add(this.collectionService.notebookDeleted$.subscribe(async () => await this.getNotebooksAsync()));
 
         let notePlaceHolder: string = await this.translateService.get('Notes.NotePlaceholder').toPromise();
 
         let toolbarOptions: any = [
+            [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
             ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-            ['blockquote', 'code-block'],
-
             [{ 'header': 1 }, { 'header': 2 }],               // custom button values
             [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            ['blockquote', 'code-block'],
             // [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
             // [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
             // [{ 'direction': 'rtl' }],                         // text direction
-
             // [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
             // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-            [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
             // [{ 'font': [] }],
             // [{ 'align': [] }],
-
             ['clean']                                         // remove formatting button
         ];
 
@@ -138,6 +149,10 @@ export class NoteComponent implements OnInit {
                 let window: BrowserWindow = remote.getCurrentWindow();
                 window.close();
             });
+    }
+
+    private async getNotebooksAsync(): Promise<void> {
+        this.notebooks = await this.collectionService.getNotebooksAsync(false);
     }
 
     public onNotetitleChange(newNoteTitle: string) {

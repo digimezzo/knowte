@@ -6,6 +6,7 @@
   bottom: 0;
   left: 0;
   right: 0;
+  overflow-x: hidden;
 }
 
 .noteContentFloating {
@@ -54,4 +55,8 @@
   font-family: Material;
   font-size: 28px;
   color: #fff;
+}
+
+.ql-toolbar.ql-snow {
+  padding-right: 50px !important;
 }

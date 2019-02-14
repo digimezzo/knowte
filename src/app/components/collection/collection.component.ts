@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, NgZone } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, NgZone, OnDestroy } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { Notebook } from '../../data/entities/notebook';
 import { MatDialog, MatDialogRef, MatTabChangeEvent } from '@angular/material';
@@ -19,7 +19,7 @@ import { Operation } from '../../core/enums';
   styleUrls: ['./collection.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class CollectionComponent implements OnInit {
+export class CollectionComponent implements OnInit, OnDestroy {
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
     private translateService: TranslateService, private snackBarService: SnackBarService, private zone: NgZone) {
   }
@@ -94,7 +94,7 @@ export class CollectionComponent implements OnInit {
   }
 
   private async getNotebooksAsync(): Promise<void> {
-    this.notebooks = await this.collectionService.getNotebooksAsync();
+    this.notebooks = await this.collectionService.getNotebooksAsync(true);
     this.notebooksCount = this.notebooks.length;
   }
 

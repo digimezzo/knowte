@@ -335,7 +335,7 @@ export class CollectionService {
     return Operation.Success;
   }
 
-  public async getNotebooksAsync(): Promise<Notebook[]> {
+  public async getNotebooksAsync(includeAllNotes: boolean): Promise<Notebook[]> {
     let notebooks: Notebook[] = [];
 
     try {
@@ -350,15 +350,16 @@ export class CollectionService {
       let activeCollectionId: string = activeCollection.id;
 
       // 3. Add the default notebooks
-      let allNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.AllNotes').toPromise(), activeCollectionId);
-      allNotesNotebook.id = Constants.allNotesNotebookId;
-      allNotesNotebook.isDefault = true;
+      if (includeAllNotes) {
+        let allNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.AllNotes').toPromise(), activeCollectionId);
+        allNotesNotebook.id = Constants.allNotesNotebookId;
+        allNotesNotebook.isDefault = true;
+        notebooks.push(allNotesNotebook);
+      }
 
       let unfiledNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.UnfiledNotes').toPromise(), activeCollectionId);
       unfiledNotesNotebook.id = Constants.unfiledNotesNotebookId;
       unfiledNotesNotebook.isDefault = true;
-
-      notebooks.push(allNotesNotebook);
       notebooks.push(unfiledNotesNotebook);
 
       // 4. Get the user defined notebooks
@@ -657,7 +658,7 @@ export class CollectionService {
       uniqueTitle = this.getUniqueNewNoteNoteTitle(baseTitle);
       let activeCollection: Collection = this.dataStore.getActiveCollection();
       result.noteId = this.dataStore.addNote(uniqueTitle, notebookId, activeCollection.id);
-      
+
       // 2. Create note file
       let storageDirectory: string = this.settings.get('storageDirectory');
       fs.writeFileSync(path.join(storageDirectory, `${result.noteId}${Constants.noteExtension}`), '');
