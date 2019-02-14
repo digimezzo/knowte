@@ -675,4 +675,16 @@ export class CollectionService {
   public getNote(noteId: string): Note {
     return this.dataStore.getNoteById(noteId);
   }
+
+  public async getNotebookAsync(noteId: string): Promise<Notebook> {
+    let note: Note = this.dataStore.getNoteById(noteId);
+    let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
+
+    if (!note.notebookId || !notebook) {
+      let activeCollection: Collection = this.dataStore.getActiveCollection();
+      notebook = new Notebook(await this.translateService.get('MainPage.UnfiledNotes').toPromise(), activeCollection.id);
+    }
+
+    return notebook;
+  }
 }

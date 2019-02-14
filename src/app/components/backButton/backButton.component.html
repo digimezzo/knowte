@@ -1,10 +1,15 @@
 <div class="title-and-back-button-container">
-    <div *ngIf="!router.url.includes('/welcome') && !router.url.includes('/collection') && !router.url.includes('/note')" class="back-button" (click)="goToNotes()" matTooltip="{{ 'Tooltips.Back' | translate }}">
+    <div *ngIf="!router.url.includes('/welcome') && !router.url.includes('/collection') && !router.url.includes('/note')"
+        class="back-button" (click)="goToNotes()" matTooltip="{{ 'Tooltips.Back' | translate }}">
         <span>&#xE72B;</span>
     </div>
     <div class="title-container">
-        <div *ngIf="router.url == '/collection'">{{ applicationName }}</div>
-        <div *ngIf="router.url == '/settings'">{{ 'Pages.Settings' | translate }}</div>
-        <div *ngIf="router.url == '/information'">{{ 'Pages.Information' | translate }}</div>
+        <div *ngIf="router.url.includes('/collection')">{{ applicationName }}</div>
+        <div *ngIf="router.url.includes('/settings')">{{ 'Pages.Settings' | translate }}</div>
+        <div *ngIf="router.url.includes('/information')">{{ 'Pages.Information' | translate }}</div>
+        <div *ngIf="router.url.includes('/note')" class="notebookContainer" (click)="changeNotebook()" matTooltip="{{ 'Tooltips.ClickToChangeNotebook' | translate }}">
+            <span class="changeNotebookIcon">&#xE0E0;</span>
+            {{notebook?.name}}
+        </div>
     </div>
 </div>

@@ -52,7 +52,8 @@
         "Back": "Back",
         "Rename": "Rename",
         "Delete": "Delete",
-        "Activate": "Activate"
+        "Activate": "Activate",
+        "ClickToChangeNotebook": "Click here to change the notebook"
     },
     "LicenseDialog": {
         "License": "License"

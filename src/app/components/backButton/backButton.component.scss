@@ -1,30 +1,42 @@
-@import 'css/variables.scss';
+@import "css/variables.scss";
 
 .title-and-back-button-container {
-    display: flex;
-    height: 100%;
-    justify-content: left;
-    align-items: center;
-    font-size: 12px;
+  display: flex;
+  height: 100%;
+  justify-content: left;
+  align-items: center;
+  font-size: 12px;
 }
 
 .back-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 46px;
-    height: 100%;
-    user-select: none;
-    cursor: default;
-    font-family: Segoe;
-    font-size: 13px;
-    -webkit-app-region: no-drag;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 46px;
+  height: 100%;
+  user-select: none;
+  cursor: default;
+  font-family: Segoe;
+  font-size: 13px;
+  -webkit-app-region: no-drag;
 }
 
 .back-button:hover {
-    background: $color-primary;
+  background: $color-primary;
 }
 
 .title-container {
-    margin-left: 10px;
+  margin-left: 10px;
+}
+
+.notebookContainer{
+    display: flex;
+    -webkit-app-region: no-drag;
+    cursor: pointer;
+}
+
+.changeNotebookIcon {
+    margin-right: 8px;
+    font-family: Material;
+    font-size: 18px;
 }

@@ -48,7 +48,7 @@ import { DialogHeaderComponent } from './components/dialogs/dialogHeader/dialogH
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, MatTooltipModule, 
   MatDialogModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatSnackBarModule,
-  MatListModule } from '@angular/material';
+  MatListModule, MatSelectModule } from '@angular/material';
 import { GlobalErrorHandler } from './globalErrorHandler';
 
 // AoT requires an exported function for factories
@@ -91,6 +91,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatInputModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatSelectModule,
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
