@@ -4,17 +4,19 @@ import { CollectionService } from '../../services/collection.service';
 import * as Quill from 'quill';
 import { ActivatedRoute } from '@angular/router';
 import { Note } from '../../data/entities/note';
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { debounceTime } from "rxjs/internal/operators";
 import { SnackBarService } from '../../services/snackBar.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { remote, BrowserWindow } from 'electron';
 import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../../services/results/noteOperationResult';
 import { NoteService } from '../../services/note.service';
 import { Notebook } from '../../data/entities/notebook';
+import { ChangeNotebookDialogComponent } from '../dialogs/changeNotebookDialog/changeNotebookDialog.component';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'note-content',
@@ -29,8 +31,6 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private subscription: Subscription;
-
-    public notebooks: Notebook[];
 
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteTextChanged: Subject<string> = new Subject<string>();
@@ -73,12 +73,6 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     async ngOnInit() {
         await this.collectionService.initializeDataStoreAsync();
-
-        await this.getNotebooksAsync();
-
-        this.subscription = this.collectionService.notebookAdded$.subscribe(async () => await this.getNotebooksAsync());
-        this.subscription.add(this.collectionService.notebookRenamed$.subscribe(async () => await this.getNotebooksAsync()));
-        this.subscription.add(this.collectionService.notebookDeleted$.subscribe(async () => await this.getNotebooksAsync()));
 
         let notePlaceHolder: string = await this.translateService.get('Notes.NotePlaceholder').toPromise();
 
@@ -149,10 +143,8 @@ export class NoteComponent implements OnInit, OnDestroy {
                 let window: BrowserWindow = remote.getCurrentWindow();
                 window.close();
             });
-    }
 
-    private async getNotebooksAsync(): Promise<void> {
-        this.notebooks = await this.collectionService.getNotebooksAsync(false);
+        this.subscription = this.noteService.notebookChangeRequested$.subscribe((noteId) => this.changeNotebook(noteId));
     }
 
     public onNotetitleChange(newNoteTitle: string) {
@@ -223,6 +215,15 @@ export class NoteComponent implements OnInit, OnDestroy {
                 // We can only parse to json if there is content
                 this.quill.setContents(JSON.parse(result.noteContent), 'silent');
             }
+        }
+    }
+
+    private changeNotebook(noteId: string) {
+        // Because all open notes get this request, we need to match the noteId.
+        if (noteId === this.noteId) {
+            let dialogRef: MatDialogRef<ChangeNotebookDialogComponent> = this.dialog.open(ChangeNotebookDialogComponent, {
+                width: '450px'
+            });
         }
     }
 }

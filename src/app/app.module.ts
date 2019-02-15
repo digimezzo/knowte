@@ -43,6 +43,7 @@ import { RenameCollectionDialogComponent } from './components/dialogs/renameColl
 import { RenameNotebookDialogComponent } from './components/dialogs/renameNotebookDialog/renameNotebookDialog.component';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmationDialog/confirmationDialog.component';
 import { DialogHeaderComponent } from './components/dialogs/dialogHeader/dialogHeader.component';
+import { ChangeNotebookDialogComponent } from './components/dialogs/changeNotebookDialog/changeNotebookDialog.component';
 
 // Modules
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -73,6 +74,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ErrorDialogComponent,
     InputDialogComponent,
     ConfirmationDialogComponent,
+    ChangeNotebookDialogComponent,
     DialogHeaderComponent,
     LogoFullComponent,
     NoteComponent,
@@ -118,7 +120,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   bootstrap: [AppComponent, BackButtonComponent, MainMenuButtonComponent],
   entryComponents: [
     LicenseDialogComponent, InputDialogComponent, ErrorDialogComponent, RenameCollectionDialogComponent, RenameNotebookDialogComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent, ChangeNotebookDialogComponent
   ],
 })
 export class AppModule { }

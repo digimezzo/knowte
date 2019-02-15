@@ -22,6 +22,10 @@ export class NoteService {
     this.globalEvents.on('noteUpdated', (noteOperationResult) => {
       this.noteUpdated.next(noteOperationResult);
     });
+
+    this.globalEvents.on('notebookChangeRequested', (noteId) => {
+      this.notebookChangeRequested.next(noteId);
+    });
   }
 
   private globalEvents = remote.getGlobal('globalEvents');
@@ -34,13 +38,16 @@ export class NoteService {
   private noteUpdated = new Subject<NoteOperationResult>();
   noteUpdated$ = this.noteUpdated.asObservable();
 
+  private notebookChangeRequested = new Subject<string>();
+  notebookChangeRequested$ = this.notebookChangeRequested.asObservable();
+
   private getUniqueNoteNoteTitle(baseTitle: string): string {
     let counter: number = 0;
     let uniqueTitle: string = baseTitle;
 
     let notesWithIdenticalBaseTitle: Note[] = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
     let similarTitles: string[] = notesWithIdenticalBaseTitle.map(x => x.title);
-   
+
     while (similarTitles.includes(uniqueTitle)) {
       counter++;
       uniqueTitle = `${baseTitle} (${counter})`;
@@ -113,5 +120,9 @@ export class NoteService {
     this.globalEvents.emit('noteUpdated', result);
 
     return Operation.Success;
+  }
+
+  public OnChangeNotebook(noteId: string): void {
+    this.globalEvents.emit('notebookChangeRequested', noteId);
   }
 }
