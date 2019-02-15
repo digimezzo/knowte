@@ -1,7 +1,8 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Notebook } from '../../../data/entities/notebook';
 import { CollectionService } from '../../../services/collection.service';
+import { NoteService } from '../../../services/note.service';
 // import { Subscription } from 'rxjs';
 
 @Component({
@@ -10,7 +11,8 @@ import { CollectionService } from '../../../services/collection.service';
     styleUrls: ['./changeNotebookDialog.component.scss']
 })
 export class ChangeNotebookDialogComponent implements OnInit, OnDestroy {
-    constructor(@Inject(MAT_DIALOG_DATA) public data: any, private collectionService: CollectionService) {
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any, private collectionService: CollectionService, private noteService: NoteService,
+        private dialogRef: MatDialogRef<ChangeNotebookDialogComponent>) {
     }
 
     // private subscription: Subscription;
@@ -33,6 +35,7 @@ export class ChangeNotebookDialogComponent implements OnInit, OnDestroy {
     }
 
     public changeNotebook(notebook: Notebook) {
-        // TODO
+        this.noteService.setNotebook(this.data.noteId, notebook.id);
+        this.dialogRef.close(true); // Force return "true"
     }
 }

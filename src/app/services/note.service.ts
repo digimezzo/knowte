@@ -26,6 +26,10 @@ export class NoteService {
     this.globalEvents.on('notebookChangeRequested', (noteId) => {
       this.notebookChangeRequested.next(noteId);
     });
+
+    this.globalEvents.on('notebookChanged', () => {
+      this.notebookChanged.next(null);
+    });
   }
 
   private globalEvents = remote.getGlobal('globalEvents');
@@ -40,6 +44,9 @@ export class NoteService {
 
   private notebookChangeRequested = new Subject<string>();
   notebookChangeRequested$ = this.notebookChangeRequested.asObservable();
+
+  private notebookChanged = new Subject();
+  notebookChanged$ = this.notebookChanged.asObservable();
 
   private getUniqueNoteNoteTitle(baseTitle: string): string {
     let counter: number = 0;
@@ -124,5 +131,30 @@ export class NoteService {
 
   public OnChangeNotebook(noteId: string): void {
     this.globalEvents.emit('notebookChangeRequested', noteId);
+  }
+
+  public setNotebook(noteId: string, notebookId: string): Operation {
+    if (!noteId) {
+      log.error("setNotebook: noteId is null");
+      return Operation.Error;
+    }
+
+    if (!notebookId) {
+      log.error("setNotebook: notebookId is null");
+      return Operation.Error;
+    }
+
+    try {
+      let note: Note = this.dataStore.getNoteById(noteId);
+      note.notebookId = notebookId;
+      this.dataStore.updateNote(note);
+    } catch (error) {
+      log.error(`Could not set the notebook for the note with id='${noteId}' to notebook with id='${notebookId}'. Cause: ${error}`);
+      return Operation.Error;
+    }
+
+    this.globalEvents.emit('notebookChanged');
+
+    return Operation.Success;
   }
 }

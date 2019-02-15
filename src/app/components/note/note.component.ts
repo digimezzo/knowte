@@ -222,7 +222,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         // Because all open notes get this request, we need to match the noteId.
         if (noteId === this.noteId) {
             let dialogRef: MatDialogRef<ChangeNotebookDialogComponent> = this.dialog.open(ChangeNotebookDialogComponent, {
-                width: '450px'
+                width: '450px', data: { noteId: noteId }
             });
         }
     }

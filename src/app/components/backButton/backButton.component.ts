@@ -5,6 +5,7 @@ import { Constants } from '../../core/constants';
 import { Notebook } from '../../data/entities/notebook';
 import log from 'electron-log';
 import { NoteService } from '../../services/note.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'back-button',
@@ -15,11 +16,13 @@ export class BackButtonComponent implements OnInit, OnDestroy {
   constructor(public router: Router, private collectionService: CollectionService, private noteService: NoteService, private activatedRoute: ActivatedRoute) {
   }
 
+  private subscription: Subscription;
   public applicationName: string = Constants.applicationName;
   public notebook: Notebook;
   private noteId: string;
 
   ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   ngOnInit() {
@@ -27,9 +30,14 @@ export class BackButtonComponent implements OnInit, OnDestroy {
       this.noteId = params['id'];
 
       if (this.noteId) {
-        this.notebook = await this.collectionService.getNotebookAsync(this.noteId);
+        await this.getNotebookAsync();
+        this.subscription = this.noteService.notebookChanged$.subscribe(async() => await this.getNotebookAsync());
       }
     });
+  }
+
+  private async getNotebookAsync(){
+    this.notebook = await this.collectionService.getNotebookAsync(this.noteId);
   }
 
   public goToNotes(): void {

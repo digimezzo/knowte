@@ -83,14 +83,19 @@ export class NotesComponent implements OnInit, OnDestroy {
             }
         }));
 
-        this.subscription.add(this.noteService.noteRenamed$.subscribe(async () => {
+        this.subscription.add(this.noteService.noteRenamed$.subscribe(() => {
             this.zone.run(async () => {
                 await this.getNotesAsync();
             });
         }));
 
-        this.subscription.add(this.noteService.noteUpdated$.subscribe(async () => {
-            // TODO: process updating errors
+        this.subscription.add(this.noteService.noteUpdated$.subscribe(() => {
+            this.zone.run(async () => {
+                await this.getNotesAsync();
+            });
+        }));
+
+        this.subscription.add(this.noteService.notebookChanged$.subscribe(() => {
             this.zone.run(async () => {
                 await this.getNotesAsync();
             });
