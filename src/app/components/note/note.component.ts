@@ -145,6 +145,8 @@ export class NoteComponent implements OnInit, OnDestroy {
             });
 
         this.subscription = this.noteService.notebookChangeRequested$.subscribe((noteId) => this.changeNotebook(noteId));
+
+        // this.quill.clipboard.dangerouslyPasteHTML(0, "<b>Bold</b> test<br><br><ul><li>Item 1</li><li>Item 2</li></ul>");
     }
 
     public onNotetitleChange(newNoteTitle: string) {
