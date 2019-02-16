@@ -1,25 +1,35 @@
 <div class="notesContainer">
     <!-- Note buttons-->
     <div class="collectionContainerButtons m-2">
-        <button class="listButton" mat-mini-fab color="" (click)="deleteNoteAsync()" matTooltip="{{ 'MainPage.DeleteNote' | translate }}"
-            *ngIf=canEditNote>
+        <button class="listButton" mat-mini-fab color="" (click)="deleteNoteAsync()"
+            matTooltip="{{ 'MainPage.DeleteNote' | translate }}" *ngIf=canEditNote>
             <span class="editItemIcon">&#xE872;</span>
         </button>
-        <button class="listButton" mat-fab color="primary" (click)="addNoteAsync()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
+        <button class="listButton" mat-fab color="primary" (click)="addNoteAsync()"
+            matTooltip="{{ 'MainPage.AddNote' | translate }}">
             <span class="addItemIcon">&#xE145;</span>
         </button>
     </div>
     <div class="notesContainerContent">
-        <!-- Notes title -->
-        <div class="notesTitleContainer p-2 noselect">
-            <h2>{{ selectedNotebook?.name }}</h2>
-            <div class="countLabel">{{notesCount}}</div>
+        <!-- Note title & search -->
+        <div class="notesTitleAndSearchContainer p-2 noselect">
+            <!-- Notes title -->
+            <div class="notesTitleContainer">
+                <h2>{{ selectedNotebook?.name }}</h2>
+                <div class="countLabel">{{notesCount}}</div>
+            </div>
+            <!-- Search -->
+            <mat-form-field class="notesSearchContainer">
+                <input matInput type="text" placeholder="{{ 'MainPage.Search' | translate }}" [(ngModel)]="value">
+                <span class="searchClearButton" *ngIf="value" matSuffix (click)="value=''" matTooltip="{{ 'MainPage.ClearSearch' | translate }}">&#xE5C9;</span>
+            </mat-form-field>
         </div>
         <!-- Notes list container -->
         <div class="notesListContainer">
             <!-- Notes list -->
             <mat-selection-list class="notesListContainerList">
-                <mat-list-option [ngClass]="{'selectedItem':note === selectedNote }" *ngFor="let note of notes" role="option">
+                <mat-list-option [ngClass]="{'selectedItem':note === selectedNote }" *ngFor="let note of notes"
+                    role="option">
                     <div class="noselect" (dblclick)="openNote()" (click)="setSelectedNote(note)">
                         <div class="noteItem px-2">
                             <div class="noteItemIcon">
