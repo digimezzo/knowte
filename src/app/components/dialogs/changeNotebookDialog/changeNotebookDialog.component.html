@@ -1,6 +1,6 @@
 <mat-dialog-content>
-    <mat-selection-list class="notebooksList">
-        <mat-list-option *ngFor="let notebook of notebooks" role="option">
+    <mat-selection-list dense class="notebooksList">
+        <mat-list-option *ngFor="let notebook of notebooks" role="option" class="notebook">
             <div class="noselect px-2" (click)="changeNotebook(notebook)">
                 {{ notebook.name }}
             </div>

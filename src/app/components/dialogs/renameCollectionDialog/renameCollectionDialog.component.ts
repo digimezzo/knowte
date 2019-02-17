@@ -13,7 +13,7 @@ import { Operation } from '../../../core/enums';
 export class RenameCollectionDialogComponent implements OnInit {
     constructor(private collectionService: CollectionService, private dialogRef: MatDialogRef<RenameCollectionDialogComponent>,
         private translateService: TranslateService, @Inject(MAT_DIALOG_DATA) public data: any, private dialog: MatDialog) {
-            dialogRef.disableClose = true;
+        dialogRef.disableClose = true;
     }
 
     public collectionId: string = this.data.collectionId;
@@ -22,7 +22,7 @@ export class RenameCollectionDialogComponent implements OnInit {
     public async renameCollectionAsync(): Promise<void> {
         let operation: Operation = await this.collectionService.renameCollectionAsync(this.collectionId, this.collectionName);
 
-        if(operation === Operation.Error){
+        if (operation === Operation.Error) {
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameCollectionError', { collectionName: this.collectionName }).toPromise());
 
             this.dialog.open(ErrorDialogComponent, {

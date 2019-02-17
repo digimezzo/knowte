@@ -3,7 +3,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Notebook } from '../../../data/entities/notebook';
 import { CollectionService } from '../../../services/collection.service';
 import { NoteService } from '../../../services/note.service';
-// import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'changenotebook-dialog',
@@ -15,19 +14,13 @@ export class ChangeNotebookDialogComponent implements OnInit, OnDestroy {
         private dialogRef: MatDialogRef<ChangeNotebookDialogComponent>) {
     }
 
-    // private subscription: Subscription;
     public notebooks: Notebook[];
 
     ngOnDestroy() {
-        // this.subscription.unsubscribe();
     }
 
     async ngOnInit() {
         await this.getNotebooksAsync();
-
-        // this.subscription = this.collectionService.notebookAdded$.subscribe(async () => await this.getNotebooksAsync());
-        // this.subscription.add(this.collectionService.notebookRenamed$.subscribe(async () => await this.getNotebooksAsync()));
-        // this.subscription.add(this.collectionService.notebookDeleted$.subscribe(async () => await this.getNotebooksAsync()));
     }
 
     private async getNotebooksAsync(): Promise<void> {
