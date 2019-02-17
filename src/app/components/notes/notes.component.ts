@@ -23,7 +23,7 @@ import { SearchService } from '../../services/search.service';
 })
 export class NotesComponent implements OnInit, OnDestroy {
     constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
-        private translateService: TranslateService, private noteService: NoteService, private searchService: SearchService, private zone: NgZone) {
+        private translateService: TranslateService, private noteService: NoteService, public searchService: SearchService, private zone: NgZone) {
     }
 
     private _selectedNotebook: Notebook;
