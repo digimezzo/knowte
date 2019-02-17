@@ -557,15 +557,39 @@ export class CollectionService {
     return result;
   }
 
+  private containsAny(text: string, items: string[]) {
+    for (let i: number = 0; i < items.length; i++) {
+      let item: string = items[i].toLowerCase();
+
+      if (text.toLowerCase().indexOf(item) > -1) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private containsAll(text: string, items: string[]) {
+    for (let i: number = 0; i < items.length; i++) {
+      let item: string = items[i].toLowerCase();
+
+      if (text.toLowerCase().indexOf(item) < 0) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   private getFilteredNotes(unfilteredNotes: Note[], filter: string): Note[] {
     // When there is no filter, return the original collection.
     if (!filter || filter.trim().length === 0) {
       return unfilteredNotes;
     }
 
-    // let pieces: string[] = filter.split(" ");
-    
-    return unfilteredNotes.filter((x) => x.title.toLowerCase().includes(filter) || x.text.toLowerCase().includes(filter));
+    let pieces: string[] = filter.trim().split(" ");
+
+    return unfilteredNotes.filter((x) => this.containsAll(`${x.title} ${x.text}`, pieces));
   }
 
   public async getNotesAsync(notebookId: string, category: string, useFuzzyDates: boolean): Promise<Note[]> {
