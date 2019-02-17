@@ -20,8 +20,8 @@
             </div>
             <!-- Search -->
             <mat-form-field class="notesSearchContainer">
-                <input matInput type="text" placeholder="{{ 'MainPage.Search' | translate }}" [(ngModel)]="value">
-                <span class="searchClearButton" *ngIf="value" matSuffix (click)="value=''" matTooltip="{{ 'MainPage.ClearSearch' | translate }}">&#xE5C9;</span>
+                <input matInput type="text" placeholder="{{ 'MainPage.Search' | translate }}" [(ngModel)]="searchService.searchText">
+                <span class="searchClearButton" *ngIf="searchService.searchText" matSuffix (click)="searchService.searchText=''" matTooltip="{{ 'MainPage.ClearSearch' | translate }}">&#xE5C9;</span>
             </mat-form-field>
         </div>
         <!-- Notes list container -->

@@ -35,7 +35,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   public selectedNotebook: Notebook;
   public canEditNotebook: boolean = false;
 
-  public tabChangedSubject: Subject<any> = new Subject();
+  public categoryChangedSubject: Subject<any> = new Subject();
 
   get allCategory() {
     return Constants.allCategory;
@@ -90,7 +90,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   }
 
   onSelectedTabChange(event: MatTabChangeEvent) {
-    this.tabChangedSubject.next(null);
+    this.categoryChangedSubject.next(null);
   }
 
   private async getNotebooksAsync(): Promise<void> {

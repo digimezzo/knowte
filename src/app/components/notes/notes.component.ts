@@ -14,6 +14,7 @@ import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../../services/results/noteOperationResult';
 import { NoteService } from '../../services/note.service';
+import { SearchService } from '../../services/search.service';
 
 @Component({
     selector: 'notes-component',
@@ -22,10 +23,19 @@ import { NoteService } from '../../services/note.service';
 })
 export class NotesComponent implements OnInit, OnDestroy {
     constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
-        private translateService: TranslateService, private noteService: NoteService, private zone: NgZone) {
+        private translateService: TranslateService, private noteService: NoteService, private searchService: SearchService, private zone: NgZone) {
     }
 
     private _selectedNotebook: Notebook;
+
+    private _value : string;
+    public get value() : string {
+        return this._value;
+    }
+    public set value(v : string) {
+        this._value = v;
+    }
+    
 
     @Input()
     public categoryChangedSubject: Subject<any>;
@@ -103,6 +113,11 @@ export class NotesComponent implements OnInit, OnDestroy {
 
         this.subscription.add(this.categoryChangedSubject.subscribe(async (event) => {
             await this.getNotesAsync();
+        }));
+
+        this.subscription.add(this.searchService.searchTextChanged$.subscribe((searchText) => {
+            this.getNotesAsync();
+            log.info("SEARCHING...");
         }));
     }
 
