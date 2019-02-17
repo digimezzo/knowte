@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'license-dialog',
@@ -7,8 +8,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LicenseDialogComponent implements OnInit {
 
-    constructor() {
-
+    constructor(private dialogRef: MatDialogRef<LicenseDialogComponent>) {
+        dialogRef.disableClose = true;
     }
 
     ngOnInit() {

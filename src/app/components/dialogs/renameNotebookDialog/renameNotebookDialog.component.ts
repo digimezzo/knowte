@@ -14,6 +14,7 @@ import { Operation } from '../../../core/enums';
 export class RenameNotebookDialogComponent implements OnInit {
     constructor(private collectionService: CollectionService, private dialogRef: MatDialogRef<RenameNotebookDialogComponent>,
         private translateService: TranslateService, @Inject(MAT_DIALOG_DATA) public data: any, private dialog: MatDialog) {
+        dialogRef.disableClose = true;
     }
 
     public notebookId: string = this.data.notebookId;
@@ -22,7 +23,7 @@ export class RenameNotebookDialogComponent implements OnInit {
     public async renameNotebookAsync(): Promise<void> {
         let operation: NotebookOperation = await this.collectionService.renameNotebookAsync(this.notebookId, this.notebookName);
 
-        if(operation === Operation.Error){
+        if (operation === Operation.Error) {
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNotebookError', { notebookName: this.notebookName }).toPromise());
 
             this.dialog.open(ErrorDialogComponent, {

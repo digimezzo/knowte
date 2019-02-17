@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { remote } from 'electron';
 
 @Component({
@@ -8,7 +8,8 @@ import { remote } from 'electron';
     styleUrls: ['./errorDialog.component.scss']
 })
 export class ErrorDialogComponent implements OnInit {
-    constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<ErrorDialogComponent>) {
+        dialogRef.disableClose = true;
     }
 
     ngOnInit() {

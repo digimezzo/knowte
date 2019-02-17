@@ -13,6 +13,7 @@ import { Operation } from '../../../core/enums';
 export class RenameCollectionDialogComponent implements OnInit {
     constructor(private collectionService: CollectionService, private dialogRef: MatDialogRef<RenameCollectionDialogComponent>,
         private translateService: TranslateService, @Inject(MAT_DIALOG_DATA) public data: any, private dialog: MatDialog) {
+            dialogRef.disableClose = true;
     }
 
     public collectionId: string = this.data.collectionId;

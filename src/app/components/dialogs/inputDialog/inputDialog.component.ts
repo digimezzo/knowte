@@ -7,8 +7,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
     styleUrls: ['./inputDialog.component.scss']
 })
 export class InputDialogComponent implements OnInit {
-    constructor(@Inject(MAT_DIALOG_DATA) public data: any,
-        private dialogRef: MatDialogRef<InputDialogComponent>) {
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<InputDialogComponent>) {
+        dialogRef.disableClose = true;
     }
 
     public inputText: string;
