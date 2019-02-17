@@ -12,6 +12,7 @@ import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/r
 import { Constants } from '../../core/constants';
 import log from 'electron-log';
 import { Operation } from '../../core/enums';
+import { NoteService } from '../../services/note.service';
 
 @Component({
   selector: 'collection-page',
@@ -20,7 +21,7 @@ import { Operation } from '../../core/enums';
   encapsulation: ViewEncapsulation.None
 })
 export class CollectionComponent implements OnInit, OnDestroy {
-  constructor(private dialog: MatDialog, private collectionService: CollectionService,
+  constructor(private dialog: MatDialog, private collectionService: CollectionService, private noteService: NoteService,
     private translateService: TranslateService, private snackBarService: SnackBarService, private zone: NgZone) {
   }
 
@@ -76,7 +77,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     }));
 
     // Note mark changed
-    this.subscription = this.collectionService.noteMarkChanged$.subscribe((noteMarkChangedArgs) => {
+    this.subscription = this.noteService.noteMarkChanged$.subscribe((noteMarkChangedArgs) => {
       this.zone.run(() => {
         this.markedNotesCount = noteMarkChangedArgs.markedNotesCount;
       });

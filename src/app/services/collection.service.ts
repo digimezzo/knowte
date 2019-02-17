@@ -14,7 +14,6 @@ import { Note } from '../data/entities/note';
 import * as moment from 'moment'
 import { Moment, Duration } from 'moment';
 import { NoteDateFormatResult } from './results/noteDateFormatResult';
-import { NoteMarkResult } from './results/noteMarkResult';
 import { Operation } from '../core/enums';
 import { NoteOperationResult } from './results/noteOperationResult';
 import { NotesCountResult } from './results/notesCountResult';
@@ -62,9 +61,6 @@ export class CollectionService {
 
   private notesCountChanged = new Subject<NotesCountResult>();
   notesCountChanged$ = this.notesCountChanged.asObservable();
-
-  private noteMarkChanged = new Subject<NoteMarkResult>();
-  noteMarkChanged$ = this.noteMarkChanged.asObservable();
 
   public get hasDataStore(): boolean {
     return this.dataStore.isReady;
@@ -117,17 +113,6 @@ export class CollectionService {
     let note: Note = this.dataStore.getNoteByTitle(activeCollection.id, noteTitle);
 
     return note != null;
-  }
-
-  public setNoteMark(noteId: string, isMarked: boolean): void {
-    let note: Note = this.dataStore.getNoteById(noteId);
-    note.isMarked = isMarked;
-    this.dataStore.updateNote(note);
-
-    let activeCollection: Collection = this.dataStore.getActiveCollection();
-    let markedNotes: Note[] = this.dataStore.getMarkedNotes(activeCollection.id);
-    let result: NoteMarkResult = new NoteMarkResult(noteId, isMarked, markedNotes.length);
-    this.noteMarkChanged.next(result);
   }
 
   public updateNoteContent(noteId: string, textContent: string, jsonContent: string): Operation {

@@ -9,6 +9,8 @@ import log from 'electron-log';
 import { Note } from '../data/entities/note';
 import { Constants } from '../core/constants';
 import * as path from 'path';
+import { NoteMarkResult } from './results/noteMarkResult';
+import { Collection } from '../data/entities/collection';
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +32,10 @@ export class NoteService {
     this.globalEvents.on('notebookChanged', () => {
       this.notebookChanged.next(null);
     });
+
+    this.globalEvents.on('noteMarkChanged', (noteMarkResult) => {
+      this.noteMarkChanged.next(noteMarkResult);
+    });
   }
 
   private globalEvents = remote.getGlobal('globalEvents');
@@ -47,6 +53,9 @@ export class NoteService {
 
   private notebookChanged = new Subject();
   notebookChanged$ = this.notebookChanged.asObservable();
+
+  private noteMarkChanged = new Subject<NoteMarkResult>();
+  noteMarkChanged$ = this.noteMarkChanged.asObservable();
 
   private getUniqueNoteNoteTitle(baseTitle: string): string {
     let counter: number = 0;
@@ -156,5 +165,16 @@ export class NoteService {
     this.globalEvents.emit('notebookChanged');
 
     return Operation.Success;
+  }
+
+  public setNoteMark(noteId: string, isMarked: boolean): void {
+    let note: Note = this.dataStore.getNoteById(noteId);
+    note.isMarked = isMarked;
+    this.dataStore.updateNote(note);
+
+    let activeCollection: Collection = this.dataStore.getActiveCollection();
+    let markedNotes: Note[] = this.dataStore.getMarkedNotes(activeCollection.id);
+    let result: NoteMarkResult = new NoteMarkResult(noteId, isMarked, markedNotes.length);
+    this.globalEvents.emit('noteMarkChanged', result);
   }
 }

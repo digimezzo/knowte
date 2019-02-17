@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, HostListener, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, HostListener, OnDestroy, NgZone } from '@angular/core';
 import log from 'electron-log';
 import { CollectionService } from '../../services/collection.service';
 import * as Quill from 'quill';
@@ -27,7 +27,7 @@ import { Subscription } from 'rxjs';
 export class NoteComponent implements OnInit, OnDestroy {
     constructor(private collectionService: CollectionService, private activatedRoute: ActivatedRoute,
         private snackBarService: SnackBarService, private translateService: TranslateService, private noteService: NoteService,
-        private dialog: MatDialog) {
+        private dialog: MatDialog, private zone: NgZone) {
     }
 
     private subscription: Subscription;
@@ -41,6 +41,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private noteId: string;
     private originalNoteTitle: string;
     public noteTitle: string;
+    public isMarked: boolean;
     private saveTimeoutMilliseconds: number = 5000;
     private windowCloseTimeoutMilliseconds: number = 500;
 
@@ -117,6 +118,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.noteId = note.id;
             this.originalNoteTitle = note.title;
             this.noteTitle = note.title;
+            this.isMarked = note.isMarked;
 
             await this.getNoteContentAsync();
         });
@@ -145,6 +147,14 @@ export class NoteComponent implements OnInit, OnDestroy {
             });
 
         this.subscription = this.noteService.notebookChangeRequested$.subscribe((noteId) => this.changeNotebook(noteId));
+
+        this.subscription.add(this.noteService.noteMarkChanged$.subscribe(async (result) => {
+            if (this.noteId === result.noteId) {
+                this.zone.run(async () => {
+                    this.isMarked = result.isMarked;
+                });
+            }
+        }));
 
         // this.quill.clipboard.dangerouslyPasteHTML(0, `<HTML><BODY><P STYLE="text-align:Left;font-family:Calibri;font-size:15;">Om uw kinderen in te plannen voor de vakantieopvang dient u zich aan te melden via onderstaande planningslink met onderstaande <SPAN STYLE="font-weight:bold;">gebruikersnaam </SPAN>en <SPAN STYLE="font-weight:bold;">wachtwoord</SPAN>.</P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;" /><UL STYLE="text-align:Left;font-family:Calibri;font-size:15;"><LI><P>Uw gebruiker:  15704293</P></LI><LI><P>Uw wachtwoord: upv7s88</P></LI></UL><P STYLE="text-align:Left;font-family:Calibri;font-size:15;" /><P STYLE="text-align:Left;font-family:Calibri;font-size:15;">Om <SPAN STYLE="background-color:#FFFF00;">vakantiedagen </SPAN>aan te vragen, klik op de link  </P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;">Werkt deze link niet? </P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;">surf naar  ,  klik op 'reserveren', klik bij stap 2 Plannen op 'Hier'. </P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;" /><P STYLE="text-align:Left;font-family:Calibri;font-size:15;">Bij de eerste maal aanloggen dient u dit wachtwoord direct te wijzigen. Houd uw gebruikersnaam en nieuwe wachtwoord zorgvuldig bij. U heeft het later nog nodig indien u wijzigingen in de opvangkalender wilt aanbrengen</P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;" /><P STYLE="text-align:Left;font-family:Calibri;font-size:15;">Met vriendelijke groet,</P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;">Stekelbees - Vakantieopvang voor Bedrijven vakantie@landelijkekinderopvang.be</P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;">016/24 20 77</P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;" /></BODY></HTML>`);
     }
@@ -227,5 +237,9 @@ export class NoteComponent implements OnInit, OnDestroy {
                 width: '450px', data: { noteId: noteId }
             });
         }
+    }
+
+    public toggleNoteMark(): void {
+        this.noteService.setNoteMark(this.noteId, !this.isMarked);
     }
 }

@@ -1,7 +1,8 @@
 <div class="noteContent">
     <div class="noteContentFloating">
-        <button mat-fab (click)="performAction()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
-            <span class="performActionIcon">&#xE5D2;</span>
+        <button mat-fab (click)="performAction()" matTooltip="{{ 'MainPage.AddNote' | translate }}" (click)="toggleNoteMark()">
+            <span class="heartIcon" *ngIf="isMarked">&#xE87D;</span>
+            <span class="heartIcon" *ngIf="!isMarked">&#xE87E;</span>
         </button>
     </div>
     <div class="noteContentFixed">

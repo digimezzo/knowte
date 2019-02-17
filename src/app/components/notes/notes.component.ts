@@ -80,7 +80,7 @@ export class NotesComponent implements OnInit, OnDestroy {
             await this.getNotesAsync();
         }));
 
-        this.subscription.add(this.collectionService.noteMarkChanged$.subscribe(async (result) => {
+        this.subscription.add(this.noteService.noteMarkChanged$.subscribe(async (result) => {
             if (this.componentCategory === Constants.markedCategory) {
                 await this.getNotesAsync();
             } else {
@@ -195,6 +195,6 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public ToggleNoteMark(noteId: string, isMarked: boolean): void {
-        this.collectionService.setNoteMark(noteId, !isMarked);
+        this.noteService.setNoteMark(noteId, !isMarked);
     }
 }
