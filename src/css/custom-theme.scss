@@ -10,7 +10,10 @@
 @include mat-core();
 
 // Create the theme object (a Sass map containing all of the palettes).
-$custom-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
+// $custom-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
+
+// We don't use a accent color, so we set accent color to $custom-theme-primary
+$custom-theme: mat-light-theme($custom-theme-primary, $custom-theme-primary, $custom-theme-warn);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component

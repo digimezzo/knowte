@@ -5,7 +5,7 @@
             matTooltip="{{ 'MainPage.DeleteNote' | translate }}" *ngIf=canEditNote>
             <span class="editItemIcon">&#xE872;</span>
         </button>
-        <button class="listButton" mat-fab color="primary" (click)="addNoteAsync()"
+        <button class="listButton" mat-fab (click)="addNoteAsync()"
             matTooltip="{{ 'MainPage.AddNote' | translate }}">
             <span class="addItemIcon">&#xE145;</span>
         </button>
