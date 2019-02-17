@@ -35,7 +35,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   public selectedNotebook: Notebook;
   public canEditNotebook: boolean = false;
 
-  public categoryChangedSubject: Subject<any> = new Subject();
+  public tabChangedSubject: Subject<any> = new Subject();
 
   get allCategory() {
     return Constants.allCategory;
@@ -87,10 +87,28 @@ export class CollectionComponent implements OnInit, OnDestroy {
       await this.getNotebooksAsync();
       this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
     }));
+
+    // Default selected category
+    this.tabChangedSubject.next(Constants.allCategory);
   }
 
   onSelectedTabChange(event: MatTabChangeEvent) {
-    this.categoryChangedSubject.next(null);
+    let tabIndex: number = event.index;
+    let category: string = "";
+
+    if (tabIndex === 0) {
+      category = Constants.allCategory;
+    } else if (tabIndex === 1) {
+      category = Constants.todayCategory;
+    } else if (tabIndex === 2) {
+      category = Constants.yesterdayCategory;
+    } else if (tabIndex === 3) {
+      category = Constants.thisWeekCategory;
+    } else if (tabIndex === 4) {
+      category = Constants.markedCategory;
+    }
+
+    this.tabChangedSubject.next(category);
   }
 
   private async getNotebooksAsync(): Promise<void> {

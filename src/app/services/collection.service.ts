@@ -18,12 +18,13 @@ import { NoteMarkResult } from './results/noteMarkResult';
 import { Operation } from '../core/enums';
 import { NoteOperationResult } from './results/noteOperationResult';
 import { NotesCountResult } from './results/notesCountResult';
+import { SearchService } from './search.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionService {
-  constructor(private translateService: TranslateService) {
+  constructor(private translateService: TranslateService, private searchService: SearchService) {
   }
 
   private dataStore = remote.getGlobal('dataStore');
@@ -556,6 +557,17 @@ export class CollectionService {
     return result;
   }
 
+  private getFilteredNotes(unfilteredNotes: Note[], filter: string): Note[] {
+    // When there is no filter, return the original collection.
+    if (!filter || filter.trim().length === 0) {
+      return unfilteredNotes;
+    }
+
+    // let pieces: string[] = filter.split(" ");
+    
+    return unfilteredNotes.filter((x) => x.title.toLowerCase().includes(filter) || x.text.toLowerCase().includes(filter));
+  }
+
   public async getNotesAsync(notebookId: string, category: string, useFuzzyDates: boolean): Promise<Note[]> {
     let notesCountResult: NotesCountResult = new NotesCountResult();
 
@@ -573,6 +585,9 @@ export class CollectionService {
       } else {
         uncategorizedNotes = this.dataStore.getNotebookNotes(notebookId);
       }
+
+      // TODO: filter uncategorizedNotes by search text
+      uncategorizedNotes = this.getFilteredNotes(uncategorizedNotes, this.searchService.searchText);
 
       // Fill in count
       notesCountResult.allNotesCount = uncategorizedNotes.length;

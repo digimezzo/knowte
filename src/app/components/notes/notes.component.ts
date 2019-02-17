@@ -36,12 +36,13 @@ export class NotesComponent implements OnInit, OnDestroy {
         this._value = v;
     }
     
+    public selectedCategory: string;
 
     @Input()
-    public categoryChangedSubject: Subject<any>;
+    public categoryChangedSubject: Subject<string>;
 
     @Input()
-    public category: string;
+    public componentCategory: string;
 
     get selectedNotebook(): Notebook {
         return this._selectedNotebook;
@@ -80,7 +81,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.collectionService.noteMarkChanged$.subscribe(async (result) => {
-            if (this.category === Constants.markedCategory) {
+            if (this.componentCategory === Constants.markedCategory) {
                 await this.getNotesAsync();
             } else {
                 if (this.notes.length > 0) {
@@ -111,19 +112,22 @@ export class NotesComponent implements OnInit, OnDestroy {
             });
         }));
 
-        this.subscription.add(this.categoryChangedSubject.subscribe(async (event) => {
+        this.subscription.add(this.categoryChangedSubject.subscribe(async (selectedCategory) => {
+            this.selectedCategory = selectedCategory;
             await this.getNotesAsync();
         }));
 
-        this.subscription.add(this.searchService.searchTextChanged$.subscribe((searchText) => {
-            this.getNotesAsync();
-            log.info("SEARCHING...");
+        this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => {
+            // Only fresh notes list for selected category
+            if(this.componentCategory === this.selectedCategory){
+                this.getNotesAsync();
+            }
         }));
     }
 
     private async getNotesAsync(): Promise<void> {
         if (this.selectedNotebook) {
-            this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.category, true);
+            this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, true);
             this.notesCount = this.notes.length;
             this.selectFirstNote();
         }

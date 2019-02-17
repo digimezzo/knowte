@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { debounceTime } from "rxjs/internal/operators";
+import { debounceTime, distinctUntilChanged } from "rxjs/internal/operators";
 import log from 'electron-log';
 
 @Injectable({
@@ -9,7 +9,7 @@ import log from 'electron-log';
 export class SearchService {
     constructor() {
         this.debouncingSearchTextChanged
-            .pipe(debounceTime(this.timeoutMilliseconds))
+            .pipe(debounceTime(this.timeoutMilliseconds), distinctUntilChanged())
             .subscribe((searchText) => {
                 this.searchTextChanged.next(searchText);
             });
@@ -19,7 +19,7 @@ export class SearchService {
     private searchTextChanged = new Subject<string>();
     searchTextChanged$ = this.searchTextChanged.asObservable();
 
-    private timeoutMilliseconds: number = 1000;
+    private timeoutMilliseconds: number = 500;
     private _searchText: string;
 
     public get searchText(): string {
