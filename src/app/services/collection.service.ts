@@ -209,13 +209,7 @@ export class CollectionService {
     }
 
     // We found all we need: we can now initialize the data store.
-    if (!this.dataStore.isReady) {
-      this.dataStore.initialize(storageDirectory);
-
-      while (!this.dataStore.isReady) {
-        await Utils.sleep(100);
-      }
-    }
+    await this.dataStore.initializeAsync(storageDirectory);
 
     //await Utils.sleep(2000);
     this.dataStoreInitialized.next();

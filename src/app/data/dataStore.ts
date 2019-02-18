@@ -19,7 +19,8 @@ export class DataStore {
     private notebooks: any;
     private notes: any;
 
-    public isReady: boolean = false;
+    private isLoaded: boolean = false;
+    private databaseFile: string;
 
     private databaseLoaded(): void {
         let mustSaveDatabase: boolean = false;
@@ -50,14 +51,30 @@ export class DataStore {
             this.db.saveDatabase();
         }
 
-        this.isReady = true;
+        this.isLoaded = true;
     }
 
-    public initialize(storageDirectory: string): void {
-        this.db = new loki(path.join(storageDirectory, Constants.dataStoreFile), {
+    private loadDatabase(databaseFile: string): void {
+        this.isLoaded = false;
+        this.databaseFile = databaseFile;
+
+        this.db = new loki(path.join(databaseFile, Constants.dataStoreFile), {
             autoload: true,
             autoloadCallback: this.databaseLoaded.bind(this)
         });
+    }
+
+    public async initializeAsync(databaseFile: string) {
+        if (this.databaseFile && this.databaseFile === databaseFile && this.isLoaded) {
+            // This database file is already loaded
+            return;
+        }
+
+        this.loadDatabase(databaseFile);
+
+        while (!this.isLoaded) {
+            await Utils.sleep(100);
+        }
     }
 
     public getCollections(): Collection[] {
