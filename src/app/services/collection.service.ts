@@ -104,6 +104,16 @@ export class CollectionService {
     return false;
   }
 
+  public hasOpenNotes(): boolean {
+    let openNotes: Note[] = this.dataStore.getOpenNotes();
+
+    if (openNotes && openNotes.length > 0) {
+      return true;
+    }
+
+    return false;
+  }
+
   public closeAllNotes(): void {
     this.dataStore.closeAllNotes();
   }

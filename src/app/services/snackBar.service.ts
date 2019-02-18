@@ -74,4 +74,10 @@ export class SnackBarService {
         let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();	
         this.showActionSnackBar(message, action, 2000);	
     }
+
+    public async closeNoteBeforeChangingCollections() {
+        let message: string = await this.translate.get('SnackBarMessages.CloseNoteBeforeChangingCollections').toPromise();
+        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();	
+        this.showActionSnackBar(message, action, 3000);	
+    }
 }

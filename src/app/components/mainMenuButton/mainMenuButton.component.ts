@@ -63,8 +63,6 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
   }
 
   public async addCollectionAsync(): Promise<void> {
-    log.info("Pressed addCollection()");
-
     let titleText: string = await this.translateService.get('DialogTitles.AddCollection').toPromise();
     let placeholderText: string = await this.translateService.get('Input.CollectionName').toPromise();
 
@@ -100,12 +98,19 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
   }
 
   public async activateCollection(collectionId: string) {
-    log.info(`Pressed activateCollection(${collectionId})`);
+    if (this.collectionService.hasOpenNotes()) {
+      this.snackBarService.closeNoteBeforeChangingCollections();
+      return;
+    }
+
     this.collectionService.activateCollection(collectionId);
   }
 
   public renameCollection(collectionId: string) {
-    log.info(`Pressed renameCollection(${collectionId})`);
+    if (this.collectionService.hasOpenNotes()) {
+      this.snackBarService.closeNoteBeforeChangingCollections();
+      return;
+    }
 
     let dialogRef: MatDialogRef<RenameCollectionDialogComponent> = this.dialog.open(RenameCollectionDialogComponent, {
       width: '450px', data: { collectionId: collectionId }
@@ -113,7 +118,10 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
   }
 
   public async deleteCollectionAsync(collectionId: string): Promise<void> {
-    log.info(`Pressed deleteCollection(${collectionId})`);
+    if (this.collectionService.hasOpenNotes()) {
+      this.snackBarService.closeNoteBeforeChangingCollections();
+      return;
+    }
 
     let collectionName: string = this.collectionService.getCollectionName(collectionId);
     let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteCollection').toPromise();
