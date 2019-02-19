@@ -170,7 +170,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         dialogRef.afterClosed().subscribe(async (result) => {
             if (result) {
 
-                if (!this.collectionService.getNoteIsOpen(this.selectedNote.id)) {
+                if (!this.collectionService.noteIsOpen(this.selectedNote.id)) {
                     let operation: Operation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
 
                     if (operation === Operation.Error) {
@@ -187,7 +187,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public openNote(): void {
-        if (!this.collectionService.getNoteIsOpen(this.selectedNote.id)) {
+        if (!this.collectionService.noteIsOpen(this.selectedNote.id)) {
             ipcRenderer.send('open-note-window', this.selectedNote.id);
         } else {
             this.snackBarService.noteAlreadyOpenAsync();

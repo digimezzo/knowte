@@ -64,7 +64,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.saveChangedAndCloseNoteWindow.next("");
         } else {
             log.info(`Note with id=${this.noteId} is clean. Closing directly.`);
-            this.collectionService.setNoteIsOpen(this.noteId, false);
+            this.collectionService.setNoteOpen(this.noteId, false);
         }
     }
 
@@ -113,7 +113,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             // Get the note from the data store
             let note: Note = this.collectionService.getNote(noteId);
             log.info(`Opening note with id=${note.id}`);
-            this.collectionService.setNoteIsOpen(note.id, true);
+            this.collectionService.setNoteOpen(note.id, true);
 
             this.noteId = note.id;
             this.originalNoteTitle = note.title;
@@ -139,7 +139,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             .pipe(debounceTime(this.windowCloseTimeoutMilliseconds))
             .subscribe((_) => {
                 log.info(`Closing note with id=${this.noteId} after saving changes.`);
-                this.collectionService.setNoteIsOpen(this.noteId, false);
+                this.collectionService.setNoteOpen(this.noteId, false);
                 this.saveNoteAll();
 
                 let window: BrowserWindow = remote.getCurrentWindow();

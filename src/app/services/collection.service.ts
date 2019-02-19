@@ -5,7 +5,6 @@ import * as fs from 'fs-extra';
 import log from 'electron-log';
 import * as Store from 'electron-store';
 import { Subject } from 'rxjs';
-import { Collection } from '../data/entities/collection';
 import { Utils } from '../core/utils';
 import { Notebook } from '../data/entities/notebook';
 import { TranslateService } from '@ngx-translate/core';
@@ -18,6 +17,7 @@ import { Operation } from '../core/enums';
 import { NoteOperationResult } from './results/noteOperationResult';
 import { NotesCountResult } from './results/notesCountResult';
 import { SearchService } from './search.service';
+import * as sanitize from 'sanitize-filename';
 
 @Injectable({
   providedIn: 'root',
@@ -26,23 +26,16 @@ export class CollectionService {
   constructor(private translateService: TranslateService, private searchService: SearchService) {
   }
 
+  private isInitializing: boolean = false;
+
   private dataStore = remote.getGlobal('dataStore');
   private settings: Store = new Store();
 
   private dataStoreInitialized = new Subject<boolean>();
   dataStoreInitialized$ = this.dataStoreInitialized.asObservable();
 
-  private collectionActivated = new Subject<string>();
-  collectionActivated$ = this.collectionActivated.asObservable();
-
-  private collectionAdded = new Subject<string>();
-  collectionAdded$ = this.collectionAdded.asObservable();
-
-  private collectionRenamed = new Subject<string>();
-  collectionRenamed$ = this.collectionRenamed.asObservable();
-
-  private collectionDeleted = new Subject<string>();
-  collectionDeleted$ = this.collectionDeleted.asObservable();
+  private collectionsChanged = new Subject();
+  collectionsChanged$ = this.collectionsChanged.asObservable();
 
   private notebookAdded = new Subject();
   notebookAdded$ = this.notebookAdded.asObservable();
@@ -62,10 +55,6 @@ export class CollectionService {
   private notesCountChanged = new Subject<NotesCountResult>();
   notesCountChanged$ = this.notesCountChanged.asObservable();
 
-  public get hasDataStore(): boolean {
-    return this.dataStore.isReady;
-  }
-
   public get hasStorageDirectory(): boolean {
     // 1. Get the storage directory from the settings
     let storageDirectory: string = this.settings.get('storageDirectory');
@@ -76,7 +65,7 @@ export class CollectionService {
       return false;
     }
 
-    // 2. If a storage directory was found in the data store, check if it exists on disk.
+    // 2. If a storage directory was found in the settings, check if it exists on disk.
     if (!fs.existsSync(storageDirectory)) {
       // Storage directory is not found on disk
       log.info(`Storage directory '${storageDirectory}' is not found on disk`);
@@ -86,91 +75,6 @@ export class CollectionService {
     // Storage directory is OK.
     log.info(`Storage directory '${storageDirectory}' is OK`);
     return true;
-  }
-
-  public setNoteIsOpen(noteId: string, noteIsOpen: boolean): void {
-    let note: Note = this.dataStore.getNoteById(noteId);
-    note.isOpen = noteIsOpen;
-    this.dataStore.updateNote(note);
-  }
-
-  public getNoteIsOpen(noteId: string): boolean {
-    let openNotes: Note[] = this.dataStore.getOpenNotes();
-
-    if (openNotes.map(x => x.id).includes(noteId)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  public hasOpenNotes(): boolean {
-    let openNotes: Note[] = this.dataStore.getOpenNotes();
-
-    if (openNotes && openNotes.length > 0) {
-      return true;
-    }
-
-    return false;
-  }
-
-  public closeAllNotes(): void {
-    this.dataStore.closeAllNotes();
-  }
-
-  private noteExists(noteTitle: string): boolean {
-    let activeCollection: Collection = this.dataStore.getActiveCollection();
-    let note: Note = this.dataStore.getNoteByTitle(activeCollection.id, noteTitle);
-
-    return note != null;
-  }
-
-  public updateNoteContent(noteId: string, textContent: string, jsonContent: string): Operation {
-    if (!noteId) {
-      log.error("updateNoteContent: noteId is null");
-      return Operation.Error;
-    }
-
-    try {
-      // Update the note file on disk
-      let storageDirectory: string = this.settings.get('storageDirectory');
-      fs.writeFileSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), jsonContent);
-
-      // Update the note in the data store
-      let note: Note = this.dataStore.getNoteById(noteId);
-      note.text = textContent;
-      this.dataStore.updateNote(note);
-
-      log.info(`Updated content for note with id=${noteId}.`);
-    } catch (error) {
-      log.error(`Could not update the content for the note with id='${noteId}'. Cause: ${error}`);
-      return Operation.Error;
-    }
-
-    return Operation.Success;
-  }
-
-  public getNoteContent(noteId: string): NoteOperationResult {
-    if (!noteId) {
-      log.error("getNoteContent: noteId is null");
-      return new NoteOperationResult(Operation.Error);
-    }
-
-    let noteContent: string = "";
-
-    try {
-      let storageDirectory: string = this.settings.get('storageDirectory');
-      noteContent = fs.readFileSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), 'utf8');
-    } catch (error) {
-      log.error(`Could not get the content for the note with id='${noteId}'. Cause: ${error}`);
-      return new NoteOperationResult(Operation.Error);
-    }
-
-    let result: NoteOperationResult = new NoteOperationResult(Operation.Success);
-    result.noteId = noteId;
-    result.noteContent = noteContent;
-
-    return result;
   }
 
   public async initializeStorageDirectoryAsync(parentDirectory: string): Promise<boolean> {
@@ -198,162 +102,280 @@ export class CollectionService {
     return true;
   }
 
-  public async initializeDataStoreAsync(): Promise<void> {
-    // First we get the storage directory from the settings.
+  private pathToCollection(collectionDirectoryPath: string): string {
+    return path.dirname(collectionDirectoryPath).split(path.sep).pop();
+  }
+
+  private collectionToPath(collection: string): string {
     let storageDirectory: string = this.settings.get('storageDirectory');
 
-    // We can only initialize the data store if a storage directory was
-    // found in the settings, AND the storage directory exists on disk.
-    if (!storageDirectory || !fs.existsSync(storageDirectory)) {
-      return;
-    }
-
-    // We found all we need: we can now initialize the data store.
-    await this.dataStore.initializeAsync(storageDirectory);
-
-    //await Utils.sleep(2000);
-    this.dataStoreInitialized.next();
+    return path.join(storageDirectory, collection);
   }
 
-  private collectionExists(collectionName: string): boolean {
-    let collection: Collection = this.dataStore.getCollectionByName(collectionName);
+  public async getCollectionsAsync() {
+    let storageDirectory: string = this.settings.get('storageDirectory');
+    let fileNames: string[] = await fs.readdir(storageDirectory);
+    let collections: string[] = [];
 
-    return collection != null;
-  }
+    for (let fileName of fileNames) {
+      let absoluteFilePath: string = path.join(storageDirectory, fileName);
+      let stat: any = await fs.stat(absoluteFilePath);
 
-  public addCollection(collectionName: string): Operation {
-    // Check if a collection name was provided
-    if (!collectionName) {
-      log.error("collectionName is null");
-      return Operation.Error;
-    }
-
-    // Check if there is already a collection with that name
-    if (this.collectionExists(collectionName)) {
-      log.info(`Not adding collection '${collectionName}' to the data store because it already exists`);
-      return Operation.Duplicate;
-    }
-
-    try {
-      // Add the collection to the data store
-      this.dataStore.addCollection(collectionName, false);
-      log.info(`Added collection '${collectionName}' to the data store`);
-    } catch (error) {
-      log.error(`Could not add collection '${collectionName}'. Cause: ${error}`);
-
-      return Operation.Error;
-    }
-
-    this.collectionAdded.next(collectionName);
-
-    return Operation.Success;
-  }
-
-  public async renameCollectionAsync(collectionId: string, newCollectionName: string): Promise<Operation> {
-    if (!collectionId || !newCollectionName) {
-      log.error("renameCollectionAsync: collectionId or newCollectionName is null");
-      return Operation.Error;
-    }
-
-    try {
-      // 1. Check if there is already a collection with that name
-      if (this.collectionExists(newCollectionName)) {
-        return Operation.Duplicate;
+      if (stat.isDirectory()) {
+        collections.push(fileName);
       }
-
-      // 2. Rename the collection
-      let collection: Collection = this.dataStore.getCollectionById(collectionId);
-      collection.name = newCollectionName;
-      this.dataStore.updateCollection(collection);
-    } catch (error) {
-      log.error(`Could not rename the collection with id='${collectionId}' to '${newCollectionName}'. Cause: ${error}`);
-      return Operation.Error;
-    }
-
-    this.collectionRenamed.next(newCollectionName);
-
-    return Operation.Success;
-  }
-
-  public getCollections(): Collection[] {
-    let collections: Collection[];
-
-    try {
-      collections = this.dataStore.getCollections();
-    } catch (error) {
-      log.error(`Could not get collections. Cause: ${error}`);
-      // This is a fatal error. Throw the error so the global error handler catches it.
-      throw error;
     }
 
     return collections;
   }
 
-  public getCollectionName(collectionId: string): string {
-    return this.dataStore.getCollectionById(collectionId).name;
+  public async initializeDataStoreAsync(): Promise<void> {
+    // Prevents initializing multiple times. To prevent calling 
+    // functions before initialization is complete, force a wait.
+    while (this.isInitializing) {
+      await Utils.sleep(100);
+    }
+
+    this.isInitializing = true;
+
+    // Get the active collection from the settings
+    let storageDirectory: string = this.settings.get('storageDirectory');
+    let activeCollection: string = this.settings.get('activeCollection');
+    let activeCollectionDirectory: string = "";
+
+    if (activeCollection && this.collectionToPath(activeCollection).includes(storageDirectory) &&
+      this.collectionToPath(activeCollection) !== storageDirectory && await fs.exists(this.collectionToPath(activeCollection))) {
+      // There is an active collection and the collection directory exists
+      activeCollectionDirectory = this.collectionToPath(activeCollection);
+    } else {
+      // There is no active collection or no collection directory
+      // Get all collection directories in the storage directory
+      let collections: string[] = await this.getCollectionsAsync();
+
+      if (collections && collections.length > 0) {
+        // If there are collection directories, take the first one.
+        activeCollectionDirectory = collections[0];
+        this.settings.set('activeCollection', this.pathToCollection(activeCollectionDirectory));
+      } else {
+        // If there are no collection directories, we must create a default collection.
+        activeCollectionDirectory = this.collectionToPath(Constants.defaultCollection);
+        await fs.mkdir(activeCollectionDirectory);
+        this.settings.set('activeCollection', Constants.defaultCollection);
+      }
+    }
+
+    let databaseFile: string = path.join(activeCollectionDirectory, `${activeCollection}.db`);
+
+    log.info(`${databaseFile}`);
+
+    // Now initialize the data store.
+    await this.dataStore.initializeAsync(databaseFile);
+
+    //await Utils.sleep(2000);
+    this.dataStoreInitialized.next();
+
+    this.isInitializing = false;
   }
 
-  public activateCollection(collectionId: string): void {
-    this.dataStore.activateCollection(collectionId);
-    let activeCollection: Collection = this.dataStore.getActiveCollection();
-    this.collectionActivated.next(activeCollection.name);
+  private async collectionExistsAsync(collection: string): Promise<boolean> {
+    let storageDirectory: string = this.settings.get('storageDirectory');
+    let collections: string[] = await this.getCollectionsAsync();
+    let existingCollections: string[] = collections.filter(x => x.toLocaleLowerCase() === collection.toLocaleLowerCase());
+
+    return existingCollections && existingCollections.length > 0;
   }
 
-  public async deleteCollectionAsync(collectionId: string): Promise<Operation> {
-    if (!collectionId) {
-      log.error("deleteCollectionAsync: collectionId is null");
+  public async addCollectionAsync(possiblyDirtyCollection: string): Promise<Operation> {
+    // Check if a collection name was provided
+    if (!possiblyDirtyCollection) {
+      log.error("possiblyDirtyCollection is null");
+
       return Operation.Error;
     }
 
-    let collectionName: string = "";
+    let sanitizedCollection: string = sanitize(possiblyDirtyCollection);
+
+    // Check if there is already a collection with that name
+    if (await this.collectionExistsAsync(sanitizedCollection)) {
+      log.info(`Not adding collection '${sanitizedCollection}' because it already exists`);
+      return Operation.Duplicate;
+    }
 
     try {
-      // 1. Get the name of the collection
-      collectionName = this.getCollectionName(collectionId);
+      // Add the collection
+      let storageDirectory: string = this.settings.get('storageDirectory');
+      await fs.mkdir(this.collectionToPath(`${sanitizedCollection}`));
 
-      // 2. Delete collection from data store (including its notebooks and notes)
-      this.dataStore.deleteCollection(collectionId);
+      log.info(`Added collection '${sanitizedCollection}'`);
 
-      // 2. Delete the note files from disk
-      // TODO
+      // Activate the added collection
+      this.settings.set('activeCollection', sanitizedCollection);
     } catch (error) {
-      log.error(`Could not delete the collection with id='${collectionId}'. Cause: ${error}`);
+      log.error(`Could not add collection '${sanitizedCollection}'. Cause: ${error}`);
+
       return Operation.Error;
     }
 
-    this.collectionDeleted.next(collectionName);
+    this.collectionsChanged.next();
+
     return Operation.Success;
+  }
+
+  public async renameCollectionAsync(oldCollection: string, newCollection: string): Promise<Operation> {
+    if (!oldCollection || !newCollection) {
+      log.error("renameCollectionAsync: oldCollection or newCollection is null");
+      return Operation.Error;
+    }
+
+    try {
+      await fs.move(this.collectionToPath(oldCollection), this.collectionToPath(newCollection));
+      this.settings.set('activeCollection', newCollection);
+    } catch (error) {
+      log.error(`Could not rename the collection '${oldCollection}' to '${newCollection}'. Cause: ${error}`);
+      return Operation.Error;
+    }
+
+    this.collectionsChanged.next();
+
+    return Operation.Success;
+  }
+
+  public async deleteCollectionAsync(collection: string): Promise<Operation> {
+    if (!collection) {
+      log.error("deleteCollectionAsync: collection is null");
+      return Operation.Error;
+    }
+
+    try {
+      await fs.remove(this.collectionToPath(collection));
+      let collections: string[] = await this.getCollectionsAsync();
+
+      if (collections && collections.length > 0) {
+        this.settings.set('activeCollection', collections[0]);
+      } else {
+        this.settings.set('activeCollection', "");
+      }
+    } catch (error) {
+      log.error(`Could not delete the collection '${collection}'. Cause: ${error}`);
+    }
+
+    this.collectionsChanged.next();
+
+    return Operation.Success;
+  }
+
+  public activateCollection(collection: string): void {
+    this.settings.set('activeCollection', collection);
+    this.collectionsChanged.next();
+  }
+
+  public getActiveCollection(): string {
+    return this.settings.get('activeCollection');
+  }
+
+  public setNoteOpen(noteId: string, isOpen: boolean): void {
+    let note: Note = this.dataStore.getNoteById(noteId);
+    note.isOpen = isOpen;
+    this.dataStore.updateNote(note);
+  }
+
+  public noteIsOpen(noteId: string): boolean {
+    let openNotes: Note[] = this.dataStore.getOpenNotes();
+
+    if (openNotes.map(x => x.id).includes(noteId)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public hasOpenNotes(): boolean {
+    let openNotes: Note[] = this.dataStore.getOpenNotes();
+
+    if (openNotes && openNotes.length > 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public closeAllNotes(): void {
+    this.dataStore.closeAllNotes();
+  }
+
+  private noteExists(noteTitle: string): boolean {
+    let note: Note = this.dataStore.getNoteByTitle(noteTitle);
+
+    return note != null;
+  }
+
+  public updateNoteContent(noteId: string, textContent: string, jsonContent: string): Operation {
+    if (!noteId) {
+      log.error("updateNoteContent: noteId is null");
+      return Operation.Error;
+    }
+
+    try {
+      // Update the note file on disk
+      let activeCollection: string = this.settings.get('activeCollection');
+      fs.writeFileSync(path.join(this.collectionToPath(activeCollection), `${noteId}${Constants.noteExtension}`), jsonContent);
+
+      // Update the note in the data store
+      let note: Note = this.dataStore.getNoteById(noteId);
+      note.text = textContent;
+      this.dataStore.updateNote(note);
+
+      log.info(`Updated content for note with id=${noteId}.`);
+    } catch (error) {
+      log.error(`Could not update the content for the note with id='${noteId}'. Cause: ${error}`);
+      return Operation.Error;
+    }
+
+    return Operation.Success;
+  }
+
+  public getNoteContent(noteId: string): NoteOperationResult {
+    if (!noteId) {
+      log.error("getNoteContent: noteId is null");
+      return new NoteOperationResult(Operation.Error);
+    }
+
+    let noteContent: string = "";
+
+    try {
+      let activeCollection: string = this.settings.get('activeCollection');
+      noteContent = fs.readFileSync(path.join(this.collectionToPath(activeCollection), `${noteId}${Constants.noteExtension}`), 'utf8');
+    } catch (error) {
+      log.error(`Could not get the content for the note with id='${noteId}'. Cause: ${error}`);
+      return new NoteOperationResult(Operation.Error);
+    }
+
+    let result: NoteOperationResult = new NoteOperationResult(Operation.Success);
+    result.noteId = noteId;
+    result.noteContent = noteContent;
+
+    return result;
   }
 
   public async getNotebooksAsync(includeAllNotes: boolean): Promise<Notebook[]> {
     let notebooks: Notebook[] = [];
 
     try {
-      // 1. Get the active collection. If none is found, return an empty array.
-      let activeCollection: Collection = this.dataStore.getActiveCollection();
-
-      if (!activeCollection) {
-        return notebooks;
-      }
-
-      // 2. Get the id of the active collection
-      let activeCollectionId: string = activeCollection.id;
-
-      // 3. Add the default notebooks
+      // Add the default notebooks
       if (includeAllNotes) {
-        let allNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.AllNotes').toPromise(), activeCollectionId);
+        let allNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.AllNotes').toPromise());
         allNotesNotebook.id = Constants.allNotesNotebookId;
         allNotesNotebook.isDefault = true;
         notebooks.push(allNotesNotebook);
       }
 
-      let unfiledNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.UnfiledNotes').toPromise(), activeCollectionId);
+      let unfiledNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.UnfiledNotes').toPromise());
       unfiledNotesNotebook.id = Constants.unfiledNotesNotebookId;
       unfiledNotesNotebook.isDefault = true;
       notebooks.push(unfiledNotesNotebook);
 
       // 4. Get the user defined notebooks
-      let userNotebooks: Notebook[] = this.dataStore.getNotebooks(activeCollectionId);
+      let userNotebooks: Notebook[] = this.dataStore.getNotebooks();
 
       // 5. Add the user defined notebooks to the notebooks
       notebooks.push.apply(notebooks, userNotebooks);
@@ -365,8 +387,7 @@ export class CollectionService {
   }
 
   private notebookExists(notebookName: string): boolean {
-    let activeCollection: Collection = this.dataStore.getActiveCollection();
-    let notebook: Notebook = this.dataStore.getNotebookByName(activeCollection.id, notebookName);
+    let notebook: Notebook = this.dataStore.getNotebookByName(notebookName);
 
     return notebook != null;
   }
@@ -386,8 +407,7 @@ export class CollectionService {
 
     try {
       // Add the notebook to the data store
-      let activeCollection: Collection = this.dataStore.getActiveCollection();
-      this.dataStore.addNotebook(activeCollection.id, notebookName);
+      this.dataStore.addNotebook(notebookName);
       log.info(`Added notebook '${notebookName}' to the data store`);
     } catch (error) {
       log.error(`Could not add notebook '${notebookName}'. Cause: ${error}`);
@@ -589,12 +609,11 @@ export class CollectionService {
     try {
       // Get the notes from the data store
       let uncategorizedNotes: Note[] = [];
-      let activeCollection: Collection = this.dataStore.getActiveCollection();
 
       if (notebookId === Constants.allNotesNotebookId) {
-        uncategorizedNotes = this.dataStore.getNotes(activeCollection.id);
+        uncategorizedNotes = this.dataStore.getNotes();
       } else if (notebookId === Constants.unfiledNotesNotebookId) {
-        uncategorizedNotes = this.dataStore.getUnfiledNotes(activeCollection.id);
+        uncategorizedNotes = this.dataStore.getUnfiledNotes();
       } else {
         uncategorizedNotes = this.dataStore.getNotebookNotes(notebookId);
       }
@@ -684,12 +703,11 @@ export class CollectionService {
     try {
       // 1. Add note to data store
       uniqueTitle = this.getUniqueNewNoteNoteTitle(baseTitle);
-      let activeCollection: Collection = this.dataStore.getActiveCollection();
-      result.noteId = this.dataStore.addNote(uniqueTitle, notebookId, activeCollection.id);
+      result.noteId = this.dataStore.addNote(uniqueTitle, notebookId);
 
       // 2. Create note file
-      let storageDirectory: string = this.settings.get('storageDirectory');
-      fs.writeFileSync(path.join(storageDirectory, `${result.noteId}${Constants.noteExtension}`), '');
+      let activeCollection: string = this.settings.get('activeCollection');
+      fs.writeFileSync(path.join(this.collectionToPath(activeCollection), `${result.noteId}${Constants.noteExtension}`), '');
 
       this.noteAdded.next();
     } catch (error) {
@@ -709,8 +727,7 @@ export class CollectionService {
     let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
 
     if (!note.notebookId || !notebook) {
-      let activeCollection: Collection = this.dataStore.getActiveCollection();
-      notebook = new Notebook(await this.translateService.get('MainPage.UnfiledNotes').toPromise(), activeCollection.id);
+      notebook = new Notebook(await this.translateService.get('MainPage.UnfiledNotes').toPromise());
     }
 
     return notebook;

@@ -20,33 +20,9 @@ export class SnackBarService {
             this.snackBar.open(message, action, { duration: durationMillis });
         });
     }
-
-    public async collectionAddedAsync(collectionName: string) {	
-        let message: string = await this.translate.get('SnackBarMessages.CollectionAdded', { collectionName: collectionName }).toPromise();	
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();	
-        this.showActionSnackBar(message, action, 2000);	
-    }
-
-    public async collectionDeletedAsync(collectionName: string) {	
-        let message: string = await this.translate.get('SnackBarMessages.CollectionDeleted', { collectionName: collectionName }).toPromise();	
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();	
-        this.showActionSnackBar(message, action, 2000);	
-    }
-
-    public async collectionRenamedAsync(collectionName: string) {	
-        let message: string = await this.translate.get('SnackBarMessages.CollectionRenamed', { collectionName: collectionName }).toPromise();	
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();	
-        this.showActionSnackBar(message, action, 2000);	
-    }
-
-    public async collectionActivatedAsync(collectionName: string) {
-        let message: string = await this.translate.get('SnackBarMessages.CollectionActivated', { collectionName: collectionName }).toPromise();
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();	
-        this.showActionSnackBar(message, action, 2000);	
-    }
-
-    public async duplicateCollectionAsync(collectionName: string) {
-        let message: string = await this.translate.get('SnackBarMessages.DuplicateCollection', { collectionName: collectionName }).toPromise();
+    
+    public async duplicateCollectionAsync(collection: string) {
+        let message: string = await this.translate.get('SnackBarMessages.DuplicateCollection', { collection: collection }).toPromise();
         let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();	
         this.showActionSnackBar(message, action, 2000);	
     }

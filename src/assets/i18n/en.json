@@ -79,23 +79,23 @@
         "ConfirmDeleteNote": "Delete note?"
     },
     "DialogTexts": {
-        "ConfirmDeleteCollection": "Are you sure you want to delete the collection '{{collectionName}}'? If you continue, its notebooks and notes will be lost.",
+        "ConfirmDeleteCollection": "Are you sure you want to delete the collection '{{collection}}'? If you continue, its notebooks and notes will be lost.",
         "ConfirmDeleteNote": "Are you sure you want to delete the note '{{noteTitle}}'?",
         "ConfirmDeleteNotebook": "Are you sure you want to delete the notebook '{{notebookName}}'? Its notes will not be deleted. They will just become unfiled."
     },
     "Input": {
-        "CollectionName": "Collection name",
+        "Collection": "Collection",
         "NotebookName": "Notebook name"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "The directory '{{storageDirectory}}' cannot be used to save your notes. You might not have sufficient permissions to create items in it. Please verify the log if you need more information.",
         "GlobalError": "An error has occurred which will cause the application to close. Please verify the log if you need more information.",
-        "AddCollectionError": "An error occurred while adding the collection '{{collectionName}}'. Please verify the log if you need more information.",
+        "AddCollectionError": "An error occurred while adding the collection '{{collection}}'. Please verify the log if you need more information.",
         "AddNotebookError": "An error occurred while adding the notebook '{{notebookName}}'. Please verify the log if you need more information.",
         "RenameNoteError": "An error occurred while renaming the note '{{noteTitle}}'. Please verify the log if you need more information.",
         "RenameNotebookError": "An error occurred while renaming the notebook '{{notebookName}}'. Please verify the log if you need more information.",
-        "RenameCollectionError": "An error occurred while renaming the collection '{{collectionName}}'. Please verify the log if you need more information.",
-        "DeleteCollectionError": "An error occurred while deleting the collection '{{collectionName}}'. Please verify the log if you need more information.",
+        "RenameCollectionError": "An error occurred while renaming the collection '{{collection}}'. Please verify the log if you need more information.",
+        "DeleteCollectionError": "An error occurred while deleting the collection '{{collection}}'. Please verify the log if you need more information.",
         "DeleteNotebookError": "An error occurred while deleting the notebook '{{notebookName}}'. Please verify the log if you need more information.",
         "DeleteNoteError": "An error occurred while deleting the note '{{noteTitle}}'. Please verify the log if you need more information.",
         "SaveNoteError": "An error occurred while saving the note '{{noteTitle}}'. Please verify the log if you need more information.",
@@ -103,11 +103,7 @@
         "GetNoteContentError": "An error occurred while getting the note content. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
-        "CollectionAdded": "Collection '{{collectionName}}' was added",	
-        "CollectionDeleted": "Collection '{{collectionName}}' was deleted",	
-        "CollectionRenamed": "Collection was renamed to '{{collectionName}}'",
-        "CollectionActivated": "Collection '{{collectionName}}' is activated",
-        "DuplicateCollection": "There is already a collection with the name '{{collectionName}}'",
+        "DuplicateCollection": "There is already a collection with the name '{{collection}}'",
         "DuplicateNotebook": "There is already a notebook with the name '{{notebookName}}'",
         "NoteDeleteBlocked": "The note '{{noteTitle}}' was not deleted because it is open",
         "NoteAlreadyOpen": "This note is already open",

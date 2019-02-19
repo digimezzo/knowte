@@ -27,6 +27,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
   public canShow: boolean = false;
   public collections: Collection[];
+  public activeCollection: string = "";
 
   async ngOnInit() {
     this.subscription = this.collectionService.dataStoreInitialized$.subscribe(async () => {
@@ -34,37 +35,25 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
       await this.getCollectionsAsync();
     });
 
-    this.subscription.add(this.collectionService.collectionAdded$.subscribe(async (collectionName) => {
-      await this.getCollectionsAsync();
-      this.snackBarService.collectionAddedAsync(collectionName);
-    }));
-
-    this.subscription.add(this.collectionService.collectionRenamed$.subscribe(async (newCollectionName) => {
-      await this.getCollectionsAsync();
-      this.snackBarService.collectionRenamedAsync(newCollectionName);
-    }));
-
-    this.subscription.add(this.collectionService.collectionDeleted$.subscribe(async (collectionName) => {
-      await this.getCollectionsAsync();
-      this.snackBarService.collectionDeletedAsync(collectionName);
-    }));
-
-    this.subscription.add(this.collectionService.collectionActivated$.subscribe(async (collectionName) => {
-      await this.getCollectionsAsync();
-      this.snackBarService.collectionActivatedAsync(collectionName);
-    }));
+    this.subscription.add(this.collectionService.collectionsChanged$.subscribe(() => this.router.navigate(['/loading'])));
 
     // Workaround for auto reload
     await this.collectionService.initializeDataStoreAsync();
   }
 
   private async getCollectionsAsync(): Promise<void> {
-    this.collections = await this.collectionService.getCollections();
+    this.collections = await this.collectionService.getCollectionsAsync();
+    this.activeCollection = this.collectionService.getActiveCollection();
   }
 
   public async addCollectionAsync(): Promise<void> {
+    if (this.collectionService.hasOpenNotes()) {
+      this.snackBarService.closeNoteBeforeChangingCollections();
+      return;
+    }
+
     let titleText: string = await this.translateService.get('DialogTitles.AddCollection').toPromise();
-    let placeholderText: string = await this.translateService.get('Input.CollectionName').toPromise();
+    let placeholderText: string = await this.translateService.get('Input.Collection').toPromise();
 
     let dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
       width: '450px', data: { titleText: titleText, placeholderText: placeholderText }
@@ -72,17 +61,17 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        let collectionName: string = dialogRef.componentInstance.inputText;
+        let collection: string = dialogRef.componentInstance.inputText;
 
-        let operation: Operation = this.collectionService.addCollection(collectionName);
+        let operation: Operation = await this.collectionService.addCollectionAsync(collection);
 
         switch (operation) {
           case Operation.Duplicate: {
-            this.snackBarService.duplicateCollectionAsync(collectionName);
+            this.snackBarService.duplicateCollectionAsync(collection);
             break;
           }
           case Operation.Error: {
-            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.AddCollectionError', { collectionName: collectionName }).toPromise());
+            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.AddCollectionError', { collection: collection }).toPromise());
             this.dialog.open(ErrorDialogComponent, {
               width: '450px', data: { errorText: generatedErrorText }
             });
@@ -97,35 +86,38 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
     });
   }
 
-  public async activateCollection(collectionId: string) {
+  public async activateCollection(collection: string) {
+    if (collection === this.activeCollection) {
+      return;
+    }
+
     if (this.collectionService.hasOpenNotes()) {
       this.snackBarService.closeNoteBeforeChangingCollections();
       return;
     }
 
-    this.collectionService.activateCollection(collectionId);
+    this.collectionService.activateCollection(collection);
   }
 
-  public renameCollection(collectionId: string) {
+  public renameCollection(collection: string) {
     if (this.collectionService.hasOpenNotes()) {
       this.snackBarService.closeNoteBeforeChangingCollections();
       return;
     }
 
     let dialogRef: MatDialogRef<RenameCollectionDialogComponent> = this.dialog.open(RenameCollectionDialogComponent, {
-      width: '450px', data: { collectionId: collectionId }
+      width: '450px', data: { collection: collection }
     });
   }
 
-  public async deleteCollectionAsync(collectionId: string): Promise<void> {
+  public async deleteCollectionAsync(collection: string): Promise<void> {
     if (this.collectionService.hasOpenNotes()) {
       this.snackBarService.closeNoteBeforeChangingCollections();
       return;
     }
 
-    let collectionName: string = this.collectionService.getCollectionName(collectionId);
     let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteCollection').toPromise();
-    let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteCollection', { collectionName: collectionName }).toPromise();
+    let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteCollection', { collection: collection }).toPromise();
 
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
 
@@ -134,10 +126,10 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        let operation: Operation = await this.collectionService.deleteCollectionAsync(collectionId);
+        let operation: Operation = await this.collectionService.deleteCollectionAsync(collection);
 
         if (operation === Operation.Error) {
-          let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteCollectionError', { collectionName: collectionName }).toPromise());
+          let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteCollectionError', { collection: collection }).toPromise());
           this.dialog.open(ErrorDialogComponent, {
             width: '450px', data: { errorText: generatedErrorText }
           });

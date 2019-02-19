@@ -10,7 +10,6 @@ import { Note } from '../data/entities/note';
 import { Constants } from '../core/constants';
 import * as path from 'path';
 import { NoteMarkResult } from './results/noteMarkResult';
-import { Collection } from '../data/entities/collection';
 
 @Injectable({
   providedIn: 'root',
@@ -172,8 +171,7 @@ export class NoteService {
     note.isMarked = isMarked;
     this.dataStore.updateNote(note);
 
-    let activeCollection: Collection = this.dataStore.getActiveCollection();
-    let markedNotes: Note[] = this.dataStore.getMarkedNotes(activeCollection.id);
+    let markedNotes: Note[] = this.dataStore.getMarkedNotes();
     let result: NoteMarkResult = new NoteMarkResult(noteId, isMarked, markedNotes.length);
     this.globalEvents.emit('noteMarkChanged', result);
   }

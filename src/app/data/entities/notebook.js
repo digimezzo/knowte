@@ -2,9 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var nanoid = require("nanoid");
 var Notebook = /** @class */ (function () {
-    function Notebook(name, collectionId) {
+    function Notebook(name) {
         this.name = name;
-        this.collectionId = collectionId;
         this.id = nanoid();
         this.isDefault = false;
     }

@@ -84,10 +84,10 @@ export class CollectionComponent implements OnInit, OnDestroy {
     });
 
     // Collection activated
-    this.subscription.add(this.collectionService.collectionActivated$.subscribe(async (collectionName) => {
-      await this.getNotebooksAsync();
-      this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
-    }));
+    // this.subscription.add(this.collectionService.collectionActivated$.subscribe(async (_) => {
+    //   await this.getNotebooksAsync();
+    //   this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
+    // }));
 
     // Default selected category
     this.tabChangedSubject.next(Constants.allCategory);

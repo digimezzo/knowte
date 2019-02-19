@@ -8,9 +8,8 @@ export class Constants {
     static readonly facebookUrl = "https://www.facebook.com/Digimezzo";
     static readonly twitterUrl = "https://twitter.com/Digimezzo";
     static readonly collectionsDirectory: string = `${Constants.applicationName} collections`;
-    static readonly dataStoreFile: string = `${Constants.applicationName}.db`;
     static readonly noteExtension: string = ".knowte";
-    static readonly defaultCollectionName: string = "Default";
+    static readonly defaultCollection: string = "Default";
     static readonly unfiledNotebookName: string = "Unfiled";
     static readonly allNotesNotebookId: string = "0";
     static readonly unfiledNotesNotebookId: string = "1";

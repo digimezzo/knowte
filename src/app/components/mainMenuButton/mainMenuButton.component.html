@@ -25,13 +25,13 @@
 
     <div *ngFor="let collection of collections">
         <button class="mainMenuButton" mat-menu-item>
-            <span class="mainMenuItemContainer" (click)="activateCollection(collection.id)" matTooltip="{{ 'Tooltips.Activate' | translate }}">
-                <span class="mainMenuIcon" [ngClass]="{'isActive' : collection.isActive == 1}">&#xE02F;</span>
-                <span class="mainMenuItemText">{{ collection.name }}</span>
+            <span class="mainMenuItemContainer" (click)="activateCollection(collection)" matTooltip="{{ 'Tooltips.Activate' | translate }}">
+                <span class="mainMenuIcon" [ngClass]="{'isActive' : collection === activeCollection }">&#xE02F;</span>
+                <span class="mainMenuItemText">{{ collection }}</span>
             </span>
             <span class="mainMenuCommandIconContainer mr-1">
-                <span class="mainMenuCommandIcon mr-1" matTooltip="{{ 'Tooltips.Rename' | translate }}" (click)="renameCollection(collection.id)">&#xE254;</span>
-                <span class="mainMenuCommandIcon" matTooltip="{{ 'Tooltips.Delete' | translate }}" (click)="deleteCollectionAsync(collection.id)">&#xE872;</span>
+                <span class="mainMenuCommandIcon mr-1" matTooltip="{{ 'Tooltips.Rename' | translate }}" (click)="renameCollection(collection)">&#xE254;</span>
+                <span class="mainMenuCommandIcon" matTooltip="{{ 'Tooltips.Delete' | translate }}" (click)="deleteCollectionAsync(collection)">&#xE872;</span>
             </span>
         </button>
     </div>
