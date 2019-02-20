@@ -602,6 +602,7 @@ export class CollectionService {
   }
 
   public async getNotesAsync(notebookId: string, category: string, useFuzzyDates: boolean): Promise<Note[]> {
+    log.info(`Getting notes for category ${category}`);
     let notesCountResult: NotesCountResult = new NotesCountResult();
 
     let notes: Note[] = [];

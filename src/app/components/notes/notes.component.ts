@@ -28,14 +28,14 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     private _selectedNotebook: Notebook;
 
-    private _value : string;
-    public get value() : string {
+    private _value: string;
+    public get value(): string {
         return this._value;
     }
-    public set value(v : string) {
+    public set value(v: string) {
         this._value = v;
     }
-    
+
     public selectedCategory: string;
 
     @Input()
@@ -87,7 +87,7 @@ export class NotesComponent implements OnInit, OnDestroy {
                 if (this.notes.length > 0) {
                     let noteToMark: Note = this.notes.find(x => x.id === result.noteId);
 
-                    if(noteToMark){
+                    if (noteToMark) {
                         noteToMark.isMarked = result.isMarked;
                     }
                 }
@@ -118,14 +118,16 @@ export class NotesComponent implements OnInit, OnDestroy {
         }));
 
         this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => {
-            // Only fresh notes list for selected category
-            if(this.componentCategory === this.selectedCategory){
-                this.getNotesAsync();
-            }
+            this.getNotesAsync();
         }));
     }
 
     private async getNotesAsync(): Promise<void> {
+        // Only fetch notes list for selected category
+        if (this.componentCategory !== this.selectedCategory) {
+            return;
+        }
+
         if (this.selectedNotebook) {
             this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, true);
             this.notesCount = this.notes.length;
