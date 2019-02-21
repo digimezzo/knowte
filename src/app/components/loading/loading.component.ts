@@ -14,10 +14,10 @@ export class LoadingComponent implements OnInit {
 
   ngOnInit() {
     log.info(`Loading`);
-    this.showMain();
+    this.showCollection();
   }
 
-  private async showMain(): Promise<void> {
+  private async showCollection(): Promise<void> {
     await this.collectionService.initializeDataStoreAsync();
     this.router.navigate(['/collection']);
   }
