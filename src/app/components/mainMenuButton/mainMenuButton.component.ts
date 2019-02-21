@@ -30,15 +30,15 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
   public activeCollection: string = "";
 
   async ngOnInit() {
+    // Workaround for auto reload
+    await this.collectionService.initializeDataStoreAsync();
+    
     this.subscription = this.collectionService.dataStoreInitialized$.subscribe(async () => {
       this.canShow = true;
       await this.getCollectionsAsync();
     });
 
     this.subscription.add(this.collectionService.collectionsChanged$.subscribe(() => this.router.navigate(['/loading'])));
-
-    // Workaround for auto reload
-    await this.collectionService.initializeDataStoreAsync();
   }
 
   private async getCollectionsAsync(): Promise<void> {
@@ -106,7 +106,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
     }
 
     let dialogRef: MatDialogRef<RenameCollectionDialogComponent> = this.dialog.open(RenameCollectionDialogComponent, {
-      width: '450px', data: { collection: collection }
+      width: '450px', data: { oldCollection: collection }
     });
   }
 

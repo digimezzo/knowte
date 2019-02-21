@@ -16,7 +16,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 // Services
 import { ElectronService } from './services/electron.service';
 import { CollectionService } from './services/collection.service';
-import { NoteService } from './services/note.service';
 
 // Stores
 import { DataStore } from './data/dataStore';
@@ -43,7 +42,6 @@ import { RenameCollectionDialogComponent } from './components/dialogs/renameColl
 import { RenameNotebookDialogComponent } from './components/dialogs/renameNotebookDialog/renameNotebookDialog.component';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmationDialog/confirmationDialog.component';
 import { DialogHeaderComponent } from './components/dialogs/dialogHeader/dialogHeader.component';
-import { ChangeNotebookDialogComponent } from './components/dialogs/changeNotebookDialog/changeNotebookDialog.component';
 
 // Modules
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -74,7 +72,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     ErrorDialogComponent,
     InputDialogComponent,
     ConfirmationDialogComponent,
-    ChangeNotebookDialogComponent,
     DialogHeaderComponent,
     LogoFullComponent,
     NoteComponent,
@@ -110,7 +107,6 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [
     ElectronService,
     CollectionService,
-    NoteService,
     DataStore,
     {
       provide: ErrorHandler,
@@ -119,8 +115,8 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   bootstrap: [AppComponent, BackButtonComponent, MainMenuButtonComponent],
   entryComponents: [
-    LicenseDialogComponent, InputDialogComponent, ErrorDialogComponent, RenameCollectionDialogComponent, RenameNotebookDialogComponent,
-    ConfirmationDialogComponent, ChangeNotebookDialogComponent
+    LicenseDialogComponent, InputDialogComponent, ErrorDialogComponent, RenameCollectionDialogComponent, 
+    RenameNotebookDialogComponent, ConfirmationDialogComponent
   ],
 })
 export class AppModule { }

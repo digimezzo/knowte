@@ -16,14 +16,14 @@ export class RenameCollectionDialogComponent implements OnInit {
         dialogRef.disableClose = true;
     }
 
-    public collectionId: string = this.data.collectionId;
-    public collectionName: string = "" // this.collectionService.getCollectionName(this.data.collectionId);
+    public oldCollection: string = this.data.oldCollection;
+    public newCollection: string = "";
 
     public async renameCollectionAsync(): Promise<void> {
-        let operation: Operation = await this.collectionService.renameCollectionAsync(this.collectionId, this.collectionName);
+        let operation: Operation = await this.collectionService.renameCollectionAsync(this.oldCollection, this.newCollection);
 
         if (operation === Operation.Error) {
-            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameCollectionError', { collectionName: this.collectionName }).toPromise());
+            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameCollectionError', { collection: this.newCollection }).toPromise());
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: generatedErrorText }

@@ -1,13 +1,14 @@
 import * as Store from 'electron-store';
 import * as loki from 'lokijs';
-import * as path from 'path';
-import { Constants } from '../core/constants';
-import { Collection } from './entities/collection';
 import { Notebook } from './entities/notebook';
 import { Note } from './entities/note';
 import * as moment from 'moment'
 import { Utils } from '../core/utils';
+import { Injectable } from '@angular/core';
 
+@Injectable({
+    providedIn: 'root',
+  })
 export class DataStore {
     private settings: Store = new Store();
 

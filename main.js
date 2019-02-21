@@ -20,14 +20,12 @@ var url = require("url");
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
 var electron_log_1 = require("electron-log");
-var dataStore_1 = require("./src/app/data/dataStore");
 var mainWindow, serve;
 var args = process.argv.slice(1);
 serve = args.some(function (val) { return val === '--serve'; });
-// Global dataStore so all windows use the same dataStore
+// Workaround: Global does not allow setting custom properties.
+// We need to cast it to "any" first.
 var globalAny = global;
-var dataStore = new dataStore_1.DataStore();
-globalAny.dataStore = dataStore;
 // Workaround to send messages between Electron windows
 var EventEmitter = require('events');
 var GlobalEventEmitter = /** @class */ (function (_super) {

@@ -13,7 +13,6 @@ import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.compone
 import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../../services/results/noteOperationResult';
-import { NoteService } from '../../services/note.service';
 import { SearchService } from '../../services/search.service';
 
 @Component({
@@ -23,7 +22,7 @@ import { SearchService } from '../../services/search.service';
 })
 export class NotesComponent implements OnInit, OnDestroy {
     constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
-        private translateService: TranslateService, private noteService: NoteService, public searchService: SearchService, private zone: NgZone) {
+        private translateService: TranslateService, public searchService: SearchService, private zone: NgZone) {
     }
 
     private _selectedNotebook: Notebook;
@@ -36,7 +35,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         this._value = v;
     }
 
-    public selectedCategory: string;
+    public selectedCategory: string = Constants.allCategory;
 
     @Input()
     public categoryChangedSubject: Subject<string>;
@@ -65,22 +64,24 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     async ngOnInit() {
+        // Workaround for auto reload
+        await this.collectionService.initializeDataStoreAsync();
+
         // In case we crashed on a previous run, make sure all notes are closed.
         this.collectionService.closeAllNotes();
 
         // Get notes
         await this.getNotesAsync();
 
-        this.subscription = this.collectionService.noteAdded$.subscribe(async () => {
-            await this.getNotesAsync();
-        });
+        this.subscription = this.collectionService.noteAdded$.subscribe(async () => await this.getNotesAsync());
+        this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => this.getNotesAsync()));
 
         this.subscription.add(this.collectionService.noteDeleted$.subscribe(async () => {
             this.setSelectedNote(null);
             await this.getNotesAsync();
         }));
 
-        this.subscription.add(this.noteService.noteMarkChanged$.subscribe(async (result) => {
+        this.subscription.add(this.collectionService.noteMarkChanged$.subscribe(async (result) => {
             if (this.componentCategory === Constants.markedCategory) {
                 await this.getNotesAsync();
             } else {
@@ -94,32 +95,10 @@ export class NotesComponent implements OnInit, OnDestroy {
             }
         }));
 
-        this.subscription.add(this.noteService.noteRenamed$.subscribe(() => {
-            this.zone.run(async () => {
-                await this.getNotesAsync();
-            });
-        }));
-
-        this.subscription.add(this.noteService.noteUpdated$.subscribe(() => {
-            this.zone.run(async () => {
-                await this.getNotesAsync();
-            });
-        }));
-
-        this.subscription.add(this.noteService.notebookChanged$.subscribe(() => {
-            this.zone.run(async () => {
-                await this.getNotesAsync();
-            });
-        }));
-
         this.subscription.add(this.categoryChangedSubject.subscribe(async (selectedCategory) => {
             this.selectedCategory = selectedCategory;
             await this.getNotesAsync();
-        }));
-
-        this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => {
-            this.getNotesAsync();
-        }));
+        })); 
     }
 
     private async getNotesAsync(): Promise<void> {
@@ -197,6 +176,6 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public ToggleNoteMark(noteId: string, isMarked: boolean): void {
-        this.noteService.setNoteMark(noteId, !isMarked);
+        this.collectionService.setNoteMark(noteId, !isMarked);
     }
 }

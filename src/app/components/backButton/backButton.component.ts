@@ -4,7 +4,6 @@ import { CollectionService } from '../../services/collection.service';
 import { Constants } from '../../core/constants';
 import { Notebook } from '../../data/entities/notebook';
 import log from 'electron-log';
-import { NoteService } from '../../services/note.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -13,7 +12,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./backButton.component.scss']
 })
 export class BackButtonComponent implements OnInit, OnDestroy {
-  constructor(public router: Router, private collectionService: CollectionService, private noteService: NoteService, private activatedRoute: ActivatedRoute) {
+  constructor(public router: Router, private collectionService: CollectionService, private activatedRoute: ActivatedRoute) {
   }
 
   private subscription: Subscription;
@@ -26,27 +25,10 @@ export class BackButtonComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.activatedRoute.queryParams.subscribe(async (params) => {
-      this.noteId = params['id'];
-
-      if (this.noteId) {
-        await this.getNotebookAsync();
-        this.subscription = this.noteService.notebookChanged$.subscribe(async() => await this.getNotebookAsync());
-      }
-    });
-  }
-
-  private async getNotebookAsync(){
-    this.notebook = await this.collectionService.getNotebookAsync(this.noteId);
+   
   }
 
   public goToNotes(): void {
     this.router.navigate(['/collection']);
-  }
-
-  public changeNotebook(): void {
-    if (this.noteId) {
-      this.noteService.OnChangeNotebook(this.noteId);
-    }
   }
 }

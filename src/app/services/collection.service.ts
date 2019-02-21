@@ -18,17 +18,18 @@ import { NoteOperationResult } from './results/noteOperationResult';
 import { NotesCountResult } from './results/notesCountResult';
 import { SearchService } from './search.service';
 import * as sanitize from 'sanitize-filename';
+import { DataStore } from '../data/dataStore';
+import { NoteMarkResult } from './results/noteMarkResult';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionService {
-  constructor(private translateService: TranslateService, private searchService: SearchService) {
+  constructor(private translateService: TranslateService, private searchService: SearchService, private dataStore: DataStore) {
   }
 
   private isInitializing: boolean = false;
 
-  private dataStore = remote.getGlobal('dataStore');
   private settings: Store = new Store();
 
   private dataStoreInitialized = new Subject<boolean>();
@@ -54,6 +55,9 @@ export class CollectionService {
 
   private notesCountChanged = new Subject<NotesCountResult>();
   notesCountChanged$ = this.notesCountChanged.asObservable();
+
+  private noteMarkChanged = new Subject<NoteMarkResult>();
+  noteMarkChanged$ = this.noteMarkChanged.asObservable();
 
   public get hasStorageDirectory(): boolean {
     // 1. Get the storage directory from the settings
@@ -479,8 +483,8 @@ export class CollectionService {
       let noteToDelete: Note = this.dataStore.getNoteById(noteId);
 
       // 1. Delete all files from disk, which are related to the note.
-      let storageDirectory: string = this.settings.get('storageDirectory');
-      fs.unlinkSync(path.join(storageDirectory, `${noteId}${Constants.noteExtension}`), '');
+      let activeCollection: string = this.settings.get('activeCollection');
+      fs.unlinkSync(path.join(this.collectionToPath(activeCollection), `${noteId}${Constants.noteExtension}`), '');
 
       // 2. Delete note from data store
       this.dataStore.deleteNote(noteId);
@@ -732,5 +736,15 @@ export class CollectionService {
     }
 
     return notebook;
+  }
+
+  public setNoteMark(noteId: string, isMarked: boolean): void {
+    let note: Note = this.dataStore.getNoteById(noteId);
+    note.isMarked = isMarked;
+    this.dataStore.updateNote(note);
+
+    let markedNotes: Note[] = this.dataStore.getMarkedNotes();
+    let result: NoteMarkResult = new NoteMarkResult(noteId, isMarked, markedNotes.length);
+    this.noteMarkChanged.next(result);
   }
 }

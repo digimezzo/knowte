@@ -1,12 +1,12 @@
 <dialog-header titleText="{{ 'DialogTitles.RenameCollection' | translate }}"></dialog-header>
 <mat-dialog-content>
     <mat-form-field>
-        <input matInput [(ngModel)]="collectionName" placeholder="{{ 'Input.CollectionName' | translate }}"
+        <input matInput [(ngModel)]="newCollection" placeholder="{{ 'Input.Collection' | translate }}"
         (keyup.enter)="renameCollectionAndCloseAsync()">
     </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button [disabled]="!collectionName" mat-raised-button color="primary" [mat-dialog-close]
+    <button [disabled]="!newCollection" mat-raised-button color="primary" [mat-dialog-close]
     (click)="renameCollectionAsync()">{{ 'Buttons.Ok' | translate }}</button>
     <button mat-raised-button [mat-dialog-close]>{{ 'Buttons.Cancel' | translate }}</button>
 </mat-dialog-actions>

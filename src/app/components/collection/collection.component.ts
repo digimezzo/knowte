@@ -12,7 +12,6 @@ import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/r
 import { Constants } from '../../core/constants';
 import log from 'electron-log';
 import { Operation } from '../../core/enums';
-import { NoteService } from '../../services/note.service';
 
 @Component({
   selector: 'collection-page',
@@ -21,7 +20,7 @@ import { NoteService } from '../../services/note.service';
   encapsulation: ViewEncapsulation.None
 })
 export class CollectionComponent implements OnInit, OnDestroy {
-  constructor(private dialog: MatDialog, private collectionService: CollectionService, private noteService: NoteService,
+  constructor(private dialog: MatDialog, private collectionService: CollectionService,
     private translateService: TranslateService, private snackBarService: SnackBarService, private zone: NgZone) {
   }
 
@@ -58,16 +57,22 @@ export class CollectionComponent implements OnInit, OnDestroy {
     return Constants.markedCategory;
   }
 
-  async ngOnInit() {
-    // Notebooks
-    await this.getNotebooksAsync();
-    this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 
+  async ngOnInit() {
+    // Get notebooks
+    await this.getNotebooksAsync();
+
+    // Select 1st notebook by default
+    this.selectedNotebook = this.notebooks[0];
+
+    // Subscriptions
     this.subscription = this.collectionService.notebookAdded$.subscribe(async () => await this.getNotebooksAsync());
     this.subscription.add(this.collectionService.notebookRenamed$.subscribe(async () => await this.getNotebooksAsync()));
     this.subscription.add(this.collectionService.notebookDeleted$.subscribe(async () => await this.getNotebooksAsync()));
 
-    // Notes count
     this.subscription.add(this.collectionService.notesCountChanged$.subscribe((result) => {
       this.allNotesCount = result.allNotesCount;
       this.todayNotesCount = result.todayNotesCount;
@@ -76,21 +81,11 @@ export class CollectionComponent implements OnInit, OnDestroy {
       this.markedNotesCount = result.markedNotesCount;
     }));
 
-    // Note mark changed
-    this.subscription = this.noteService.noteMarkChanged$.subscribe((noteMarkChangedArgs) => {
+    this.subscription.add(this.collectionService.noteMarkChanged$.subscribe((noteMarkChangedArgs) => {
       this.zone.run(() => {
         this.markedNotesCount = noteMarkChangedArgs.markedNotesCount;
       });
-    });
-
-    // Collection activated
-    // this.subscription.add(this.collectionService.collectionActivated$.subscribe(async (_) => {
-    //   await this.getNotebooksAsync();
-    //   this.selectedNotebook = this.notebooks[0]; // Select 1st notebook by default
-    // }));
-
-    // Default selected category
-    this.tabChangedSubject.next(Constants.allCategory);
+    }));
   }
 
   onSelectedTabChange(event: MatTabChangeEvent) {
@@ -117,17 +112,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.notebooksCount = this.notebooks.length;
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
   public async setSelectedNotebookAsync(notebook: Notebook) {
     this.selectedNotebook = notebook;
     this.canEditNotebook = this.selectedNotebook != null && !this.selectedNotebook.isDefault;
-
-    // Fetch the notes for the newly selected notebook
-    // TODO: this should trigger the fetch action on the notes component instead
-    // this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id);
   }
 
   public async addNotebookAsync(): Promise<void> {
