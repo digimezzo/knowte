@@ -29,7 +29,6 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "renderer.js"
             ]
           },
           "configurations": {

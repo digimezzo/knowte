@@ -25,6 +25,7 @@ import { WebviewDirective } from './directives/webview.directive';
 
 // Components
 import { AppComponent } from './app.component';
+import { WindowControlsComponent } from './components/windowControls/windowControls.component';
 import { BackButtonComponent } from './components/backButton/backButton.component';
 import { MainMenuButtonComponent } from './components/mainMenuButton/mainMenuButton.component';
 import { SettingsComponent } from './components/settings/settings.component';
@@ -58,6 +59,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 @NgModule({
   declarations: [
     AppComponent,
+    WindowControlsComponent,
     BackButtonComponent,
     MainMenuButtonComponent,
     WelcomeComponent,
@@ -113,7 +115,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       useClass: GlobalErrorHandler
     }
   ],
-  bootstrap: [AppComponent, BackButtonComponent, MainMenuButtonComponent],
+  bootstrap: [AppComponent, WindowControlsComponent, BackButtonComponent, MainMenuButtonComponent],
   entryComponents: [
     LicenseDialogComponent, InputDialogComponent, ErrorDialogComponent, RenameCollectionDialogComponent, 
     RenameNotebookDialogComponent, ConfirmationDialogComponent
