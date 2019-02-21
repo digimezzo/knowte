@@ -1,15 +1,26 @@
-<div class="noteContent">
-    <div class="noteContentFloating">
-        <button mat-fab (click)="performAction()" matTooltip="{{ 'MainPage.AddNote' | translate }}" (click)="toggleNoteMark()">
-            <span class="heartIcon" *ngIf="isMarked">&#xE87D;</span>
-            <span class="heartIcon" *ngIf="!isMarked">&#xE87E;</span>
-        </button>
-    </div>
-    <div class="noteContentFixed">
-        <div class="noteTitleBackground">
-            <input class="noteTitle" type="text" [(ngModel)]="noteTitle" (ngModelChange)="onNotetitleChange($event)" />
+<div class="windowFrame">
+    <div class="windowTitleBar">
+        <div class="windowTitleBarDragArea">
         </div>
-        <div class="noteEditor" id="editor">
+        <window-controls></window-controls>
+    </div>
+    <div class="windowContent">
+        <div class="noteContent">
+            <div class="noteContentFloating">
+                <button mat-fab (click)="performAction()" matTooltip="{{ 'MainPage.AddNote' | translate }}"
+                    (click)="toggleNoteMark()">
+                    <span class="heartIcon" *ngIf="isMarked">&#xE87D;</span>
+                    <span class="heartIcon" *ngIf="!isMarked">&#xE87E;</span>
+                </button>
+            </div>
+            <div class="noteContentFixed">
+                <div class="noteTitleBackground">
+                    <input class="noteTitle" type="text" [(ngModel)]="noteTitle"
+                        (ngModelChange)="onNotetitleChange($event)" />
+                </div>
+                <div class="noteEditor" id="editor">
+                </div>
+            </div>
         </div>
     </div>
 </div>

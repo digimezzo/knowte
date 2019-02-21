@@ -1,12 +1,21 @@
-<div class="loadingContainer">
-    <div class="loadingContentContainer">
-        <div class="loadingContentContainerForeground">
-            <logo-full [textColor]="'white'"></logo-full>
-            <div class="loadingText mt-4">{{ 'LoadingPage.Text' | translate }}</div>
-            <mat-spinner class="mt-4" [diameter]="40"></mat-spinner>
+<div class="windowFrame">
+    <div class="windowTitleBar">
+        <div class="windowTitleBarDragArea">
         </div>
-        <div class="loadingContentContainerBackground">
-            <img class="loadingPenImage" src="./assets/images/pencil_256x256.svg">
+        <window-controls></window-controls>
+    </div>
+    <div class="windowContent">
+        <div class="loadingContainer">
+            <div class="loadingContentContainer">
+                <div class="loadingContentContainerForeground">
+                    <logo-full [textColor]="'white'"></logo-full>
+                    <div class="loadingText mt-4">{{ 'LoadingPage.Text' | translate }}</div>
+                    <mat-spinner class="mt-4" [diameter]="40"></mat-spinner>
+                </div>
+                <div class="loadingContentContainerBackground">
+                    <img class="loadingPenImage" src="./assets/images/pencil_256x256.svg">
+                </div>
+            </div>
         </div>
     </div>
 </div>

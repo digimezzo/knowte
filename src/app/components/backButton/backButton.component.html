@@ -1,6 +1,6 @@
 <div class="title-and-back-button-container">
     <div *ngIf="!router.url.includes('/welcome') && !router.url.includes('/collection') && !router.url.includes('/note')"
-        class="back-button" (click)="goToNotes()" matTooltip="{{ 'Tooltips.Back' | translate }}">
+        class="window-button back-button" (click)="goToNotes()" matTooltip="{{ 'Tooltips.Back' | translate }}">
         <span>&#xE72B;</span>
     </div>
     <div class="title-container">

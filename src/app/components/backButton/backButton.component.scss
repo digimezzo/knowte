@@ -8,17 +8,8 @@
   font-size: 12px;
 }
 
-.back-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 46px;
-  height: 100%;
-  user-select: none;
-  cursor: default;
-  font-family: Segoe;
-  font-size: 13px;
-  -webkit-app-region: no-drag;
+.back-button{
+  font-size: 14px !important;
 }
 
 .back-button:hover {

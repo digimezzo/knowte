@@ -1,58 +1,43 @@
-@import 'css/font-faces.scss';
-@import 'css/variables.scss';
-
-.button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 46px;
-    height: 100%;
-    user-select: none;
-    cursor: default;
-    opacity: 0.8;
-    color: white;
-    font-family: Segoe;
-    font-size: 16px !important;
-}
-
-.button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    opacity: 1;
-}
+@import "css/font-faces.scss";
+@import "css/variables.scss";
 
 .mainMenuButton {
-    display: flex;
+  font-size: 16px !important;
 }
 
-.mainMenuIcon {
-    font-family: Material;
-    font-size: 22px;
-    color: $color-grey-icon;
-    margin: 0 8px 0 0;
+.menuButton {
+  display: flex;
 }
 
-.mainMenuIcon.isActive{
-    color: $color-primary;
+.menuIcon {
+  font-family: Material;
+  font-size: 22px;
+  color: $color-grey-icon;
+  margin: 0 8px 0 0;
 }
 
-.mainMenuCommandIcon{
-    font-family: Material;
-    font-size: 22px;
-    color: $color-grey-icon;
-    opacity: 0.3;
+.menuIcon.isActive {
+  color: $color-primary;
 }
 
-.mainMenuItemContainer{
-    display: flex;
-    width: 100%;
-    margin-right: 80px;
+.menuCommandIcon {
+  font-family: Material;
+  font-size: 22px;
+  color: $color-grey-icon;
+  opacity: 0.3;
 }
 
-.mainMenuCommandIconContainer{
-    position: absolute;
-    right: 8px;
+.menuItemContainer {
+  display: flex;
+  width: 100%;
+  margin-right: 80px;
 }
 
-.mainMenuCommandIcon:hover{
-    opacity: 1.0;
+.menuCommandIconContainer {
+  position: absolute;
+  right: 8px;
+}
+
+.menuCommandIcon:hover {
+  opacity: 1;
 }

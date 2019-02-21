@@ -4,7 +4,6 @@ import { CollectionService } from '../../services/collection.service';
 import { Constants } from '../../core/constants';
 import { Notebook } from '../../data/entities/notebook';
 import log from 'electron-log';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'back-button',
@@ -15,17 +14,14 @@ export class BackButtonComponent implements OnInit, OnDestroy {
   constructor(public router: Router, private collectionService: CollectionService, private activatedRoute: ActivatedRoute) {
   }
 
-  private subscription: Subscription;
   public applicationName: string = Constants.applicationName;
   public notebook: Notebook;
   private noteId: string;
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 
   ngOnInit() {
-   
   }
 
   public goToNotes(): void {
