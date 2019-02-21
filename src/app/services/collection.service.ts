@@ -32,9 +32,6 @@ export class CollectionService {
 
   private settings: Store = new Store();
 
-  private dataStoreInitialized = new Subject<boolean>();
-  dataStoreInitialized$ = this.dataStoreInitialized.asObservable();
-
   private collectionsChanged = new Subject();
   collectionsChanged$ = this.collectionsChanged.asObservable();
 
@@ -176,7 +173,6 @@ export class CollectionService {
     await this.dataStore.initializeAsync(databaseFile);
 
     //await Utils.sleep(2000);
-    this.dataStoreInitialized.next();
 
     this.isInitializing = false;
   }

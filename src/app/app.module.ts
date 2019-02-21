@@ -115,7 +115,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       useClass: GlobalErrorHandler
     }
   ],
-  bootstrap: [AppComponent, WindowControlsComponent, BackButtonComponent, MainMenuButtonComponent],
+  bootstrap: [AppComponent],
   entryComponents: [
     LicenseDialogComponent, InputDialogComponent, ErrorDialogComponent, RenameCollectionDialogComponent, 
     RenameNotebookDialogComponent, ConfirmationDialogComponent

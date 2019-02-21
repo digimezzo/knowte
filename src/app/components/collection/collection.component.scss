@@ -1,34 +1,5 @@
 @import "css/variables.scss";
 
-.collectionContainer {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.collectionTitleBarContainer {
-  width: 100%;
-  height: $titlebar-height;
-  background-color: $color-darkgrey;
-  display: flex;
-  flex-direction: row;
-}
-
-.collectionTitleBar {
-  width: 100%;
-  height: 100%;
-  flex: 1;
-  -webkit-app-region: drag;
-}
-
-.collectionContentContainer {
-  flex: 1;
-}
-
 .collectionContainerButtons {
   position: absolute;
   bottom: 0;
@@ -38,7 +9,12 @@
   flex-direction: column;
 }
 
-.collectionContentContainer .mat-tab-body-wrapper {
+.collectionContainer {
+  width: 100%;
+  height: 100%;
+}
+
+.collectionContainer .mat-tab-body-wrapper {
   margin: 0 0 0 350px;
 }
 
@@ -62,8 +38,8 @@
   border-left: 1px solid $color-lightgrey-border;
   top: 0;
   left: 0;
-  margin: 80px 0 0 0;
-  height: calc(100% - 80px);
+  margin: 48px 0 0 0;
+  height: calc(100% - 48px);
   width: 351px;
   z-index: 99;
   display: flex;

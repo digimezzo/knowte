@@ -25,20 +25,15 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
     private snackBarService: SnackBarService, private translateService: TranslateService, public router: Router) {
   }
 
-  public canShow: boolean = false;
   public collections: Collection[];
   public activeCollection: string = "";
 
   async ngOnInit() {
     // Workaround for auto reload
     await this.collectionService.initializeDataStoreAsync();
-    
-    this.subscription = this.collectionService.dataStoreInitialized$.subscribe(async () => {
-      this.canShow = true;
-      await this.getCollectionsAsync();
-    });
+    await this.getCollectionsAsync();
 
-    this.subscription.add(this.collectionService.collectionsChanged$.subscribe(() => this.router.navigate(['/loading'])));
+    this.subscription = this.collectionService.collectionsChanged$.subscribe(() => this.router.navigate(['/loading']));
   }
 
   private async getCollectionsAsync(): Promise<void> {
