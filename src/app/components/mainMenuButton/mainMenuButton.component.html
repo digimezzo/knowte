@@ -1,37 +1,37 @@
-<div class="window-button mainMenuButton" mat-icon-button [matMenuTriggerFor]="menu">
+<div class="window-button main-menu-button" mat-icon-button [matMenuTriggerFor]="menu">
     &#xE700;
 </div>
 <mat-menu #menu="matMenu">
-    <button class="menuButton" mat-menu-item [matMenuTriggerFor]="subMenu">
-        <span class="menuIcon">&#xE6DD;</span>
+    <button class="menu-button" mat-menu-item [matMenuTriggerFor]="subMenu">
+        <span class="menu-icon">&#xE6DD;</span>
         {{ 'MainMenu.Collections' | translate }}
     </button>
     <mat-divider></mat-divider>
-    <button class="menuButton" routerLink="/settings" mat-menu-item>
-        <span class="menuIcon">&#xE8B8;</span>
+    <button class="menu-button" routerLink="/settings" mat-menu-item>
+        <span class="menu-icon">&#xE8B8;</span>
         {{ 'MainMenu.Settings' | translate }}
     </button>
-    <button class="menuButton" routerLink="/information" mat-menu-item>
-        <span class="menuIcon">&#xE88E;</span>
+    <button class="menu-button" routerLink="/information" mat-menu-item>
+        <span class="menu-icon">&#xE88E;</span>
         {{ 'MainMenu.Information' | translate }}
     </button>
 </mat-menu>
 <mat-menu #subMenu="matMenu">
-    <button class="menuButton" mat-menu-item (click)="addCollectionAsync()">
-        <span class="menuIcon">&#xE145;</span>
+    <button class="menu-button" mat-menu-item (click)="addCollectionAsync()">
+        <span class="menu-icon">&#xE145;</span>
         {{ 'MainMenu.AddCollection' | translate }}
     </button>
     <mat-divider></mat-divider>
 
     <div *ngFor="let collection of collections">
-        <button class="menuButton" mat-menu-item>
-            <span class="menuItemContainer" (click)="activateCollection(collection)" matTooltip="{{ 'Tooltips.Activate' | translate }}">
-                <span class="menuIcon" [ngClass]="{'isActive' : collection === activeCollection }">&#xE02F;</span>
-                <span class="mainMenuItemText">{{ collection }}</span>
+        <button class="menu-button" mat-menu-item>
+            <span class="menu-item" (click)="activateCollection(collection)" matTooltip="{{ 'Tooltips.Activate' | translate }}">
+                <span class="menu-icon" [ngClass]="{'isActive' : collection === activeCollection }">&#xE02F;</span>
+                <span>{{ collection }}</span>
             </span>
-            <span class="menuCommandIconContainer mr-1">
-                <span class="menuCommandIcon mr-1" matTooltip="{{ 'Tooltips.Rename' | translate }}" (click)="renameCollection(collection)">&#xE254;</span>
-                <span class="menuCommandIcon" matTooltip="{{ 'Tooltips.Delete' | translate }}" (click)="deleteCollectionAsync(collection)">&#xE872;</span>
+            <span class="menu-command-item mr-1">
+                <span class="menu-command-item-icon mr-1" matTooltip="{{ 'Tooltips.Rename' | translate }}" (click)="renameCollection(collection)">&#xE254;</span>
+                <span class="menu-command-item-icon" matTooltip="{{ 'Tooltips.Delete' | translate }}" (click)="deleteCollectionAsync(collection)">&#xE872;</span>
             </span>
         </button>
     </div>

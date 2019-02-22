@@ -5,20 +5,20 @@
         <window-controls></window-controls>
     </div>
     <div class="window-frame-content">
-        <div class="noteContent">
-            <div class="noteContentFloating">
+        <div class="note-content">
+            <div class="note-content-floating">
                 <button mat-fab (click)="performAction()" matTooltip="{{ 'MainPage.AddNote' | translate }}"
                     (click)="toggleNoteMark()">
-                    <span class="heartIcon" *ngIf="isMarked">&#xE87D;</span>
-                    <span class="heartIcon" *ngIf="!isMarked">&#xE87E;</span>
+                    <span class="note-content-floating-hearticon" *ngIf="isMarked">&#xE87D;</span>
+                    <span class="note-content-floating-hearticon" *ngIf="!isMarked">&#xE87E;</span>
                 </button>
             </div>
-            <div class="noteContentFixed">
-                <div class="noteTitleBackground">
-                    <input class="noteTitle" type="text" [(ngModel)]="noteTitle"
+            <div class="note-content-fixed">
+                <div class="note-content-fixed-title">
+                    <input class="note-content-fixed-title-text" type="text" [(ngModel)]="noteTitle"
                         (ngModelChange)="onNotetitleChange($event)" />
                 </div>
-                <div class="noteEditor" id="editor">
+                <div class="note-editor" id="editor">
                 </div>
             </div>
         </div>

@@ -7,39 +7,39 @@
         <window-controls></window-controls>
     </div>
     <div class="window-frame-content">
-        <div class="collectionContainer">
+        <div class="collection">
             <!-- Notebooks -->
-            <div class="notebooksContainer">
+            <div class="collection-notebooks">
                 <!-- Notebooks title -->
-                <div class="notebooksTitleContainer p-2 no-select">
+                <div class="collection-notebooks-title p-2 no-select">
                     <h2>{{ 'MainPage.Notebooks' | translate }}</h2>
-                    <div class="countLabel">{{notebooksCount}}</div>
+                    <div class="count-label">{{notebooksCount}}</div>
                 </div>
                 <!-- Notebooks list container -->
-                <div class="notebooksListContainer">
+                <div class="collection-notebooks-list">
                     <!-- Notebooks list -->
-                    <mat-selection-list dense class="notebooksListContainerList">
-                        <mat-list-option [ngClass]="{'selectedItem':notebook === selectedNotebook }" class="notebook"
+                    <mat-selection-list dense class="collection-notebooks-list-list">
+                        <mat-list-option [ngClass]="{'selected-item':notebook === selectedNotebook }" class="notebook"
                             *ngFor="let notebook of notebooks" role="option">
-                            <p class="notebookName no-select"
+                            <p class="notebook-name no-select"
                                 [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
                                 (click)="setSelectedNotebookAsync(notebook)">
                                 {{ notebook.name }}</p>
                         </mat-list-option>
                     </mat-selection-list>
                     <!-- Notebooks buttons -->
-                    <div class="notebooksListButtonContainer m-2">
-                        <button class="listButton" mat-mini-fab color="" (click)="renameNotebook()"
+                    <div class="collection-notebooks-list-buttons m-2">
+                        <button class="list-button" mat-mini-fab color="" (click)="renameNotebook()"
                             matTooltip="{{ 'MainPage.RenameNotebook' | translate }}" *ngIf=canEditNotebook>
-                            <span class="editItemIcon">&#xE254;</span>
+                            <span class="edit-item-icon">&#xE254;</span>
                         </button>
-                        <button class="listButton" mat-mini-fab color="" (click)="deleteNotebookAsync()"
+                        <button class="list-button" mat-mini-fab color="" (click)="deleteNotebookAsync()"
                             matTooltip="{{ 'MainPage.DeleteNotebook' | translate }}" *ngIf=canEditNotebook>
-                            <span class="editItemIcon">&#xE872;</span>
+                            <span class="edit-item-icon">&#xE872;</span>
                         </button>
-                        <button class="listButton" mat-fab (click)="addNotebookAsync()"
+                        <button class="list-button" mat-fab (click)="addNotebookAsync()"
                             matTooltip="{{ 'MainPage.AddNotebook' | translate }}">
-                            <span class="addItemIcon">&#xE145;</span>
+                            <span class="add-item-icon">&#xE145;</span>
                         </button>
                     </div>
                 </div>

@@ -1,12 +1,12 @@
 @import "css/variables.scss";
 
-.noteContent {
+.note-content {
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
 
-.noteContentFloating {
+.note-content-floating {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -15,7 +15,13 @@
   z-index: 1;
 }
 
-.noteContentFixed {
+.note-content-floating-hearticon{
+  color: white;
+  font-family: material;
+  font-size: 24px;
+}
+
+.note-content-fixed {
   position: absolute;
   top: 0;
   left: 0;
@@ -26,13 +32,13 @@
   flex-direction: column;
 }
 
-.noteTitleBackground {
+.note-content-fixed-title {
   background-color: $color-darkgrey;
   width: 100%;
   height: 50px;
 }
 
-.noteTitle {
+.note-content-fixed-title-text {
   background-color: transparent;
   width: 100%;
   height: 50px;
@@ -42,24 +48,12 @@
   color: white;
 }
 
-.noteEditor {
+.note-editor {
   flex: 1;
   display: flex;
   flex-flow: column nowrap;
 }
 
-.performActionIcon {
-  font-family: material;
-  font-size: 28px;
-  color: white;
-}
-
 .ql-toolbar.ql-snow {
   padding-right: 50px !important;
-}
-
-.heartIcon{
-  color: white;
-  font-family: material;
-  font-size: 24px;
 }

@@ -1,43 +1,43 @@
 @import "css/font-faces.scss";
 @import "css/variables.scss";
 
-.mainMenuButton {
+.main-menu-button {
   font-size: 16px !important;
 }
 
-.menuButton {
+.menu-button {
   display: flex;
 }
 
-.menuIcon {
+.menu-item {
+  display: flex;
+  width: 100%;
+  margin-right: 80px;
+}
+
+.menu-icon {
   font-family: material;
   font-size: 22px;
   color: $color-grey-icon;
   margin: 0 8px 0 0;
 }
 
-.menuIcon.isActive {
+.menu-icon.isActive {
   color: $color-primary;
 }
 
-.menuCommandIcon {
+.menu-command-item {
+  position: absolute;
+  right: 8px;
+}
+
+.menu-command-item-icon {
   font-family: material;
   font-size: 22px;
   color: $color-grey-icon;
   opacity: 0.3;
 }
 
-.menuItemContainer {
-  display: flex;
-  width: 100%;
-  margin-right: 80px;
-}
-
-.menuCommandIconContainer {
-  position: absolute;
-  right: 8px;
-}
-
-.menuCommandIcon:hover {
+.menu-command-item-icon:hover {
   opacity: 1;
 }

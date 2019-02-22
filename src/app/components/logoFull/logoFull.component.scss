@@ -1,19 +1,15 @@
-.logoContainer {
+.logo {
     display: flex;
     user-select: none;
 }
 
-.logoImageContainer {
+.logo-image {
     width: 64px;
 }
 
-.logoTextContainer {
+.logo-text {
     flex-grow: 1;
     margin: auto 0px auto 20px;
     font-family: roboto-thin;
     font-size: 48px;
-}
-
-.versionContainer {
-    display: flex;
 }

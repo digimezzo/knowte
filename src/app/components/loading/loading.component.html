@@ -5,15 +5,15 @@
         <window-controls></window-controls>
     </div>
     <div class="window-frame-content">
-        <div class="loadingContainer">
-            <div class="loadingContentContainer">
-                <div class="loadingContentContainerForeground">
+        <div class="loading">
+            <div class="loading-content">
+                <div class="loading-content-foreground">
                     <logo-full [textColor]="'white'"></logo-full>
-                    <div class="loadingText mt-4">{{ 'LoadingPage.Text' | translate }}</div>
+                    <div class="loading-content-foreground-text mt-4">{{ 'LoadingPage.Text' | translate }}</div>
                     <mat-spinner class="mt-4" [diameter]="40"></mat-spinner>
                 </div>
-                <div class="loadingContentContainerBackground">
-                    <img class="loadingPenImage" src="./assets/images/pencil_256x256.svg">
+                <div class="loading-content-background">
+                    <img class="loading-content-background-pen" src="./assets/images/pencil_256x256.svg">
                 </div>
             </div>
         </div>

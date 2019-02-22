@@ -1,6 +1,6 @@
 @import "css/variables.scss";
 
-.notesContainer {
+.notes {
   position: absolute;
   top: 0;
   left: 0;
@@ -8,7 +8,16 @@
   width: 100%;
 }
 
-.notesContainerContent {
+.notes-buttons {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.notes-content {
   position: absolute;
   top: 0;
   left: 0;
@@ -19,44 +28,35 @@
   flex-direction: column;
 }
 
-.notesContainerButtons {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.notesTitleAndSearchContainer {
+.notes-content-title-and-search {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.notesTitleContainer {
+.notes-content-title {
   display: flex;
 }
 
-.notesSearchContainer {
+.notes-content-search {
   margin-top: -8px;
   width: 150px;
 }
 
-.searchClearButton {
+.notes-content-search-clearbutton {
   font-family: material;
   font-size: 18px;
   color: #aaaaaa;
   cursor: pointer;
 }
 
-.notesListContainer {
+.notes-content-list {
   margin-top: -8px;
   flex: 1;
   position: relative;
 }
 
-.notesListContainerList {
+.notes-content-list-list {
   position: absolute;
   left: 0px;
   top: 0px;
@@ -66,13 +66,13 @@
   overflow: auto;
 }
 
-.noteItem {
+.note-item {
   height: 48px;
   display: flex;
   flex-direction: row;
 }
 
-.noteItemIcon {
+.note-item-icon {
   margin: 4px;
   width: 40px;
   height: 40px;
@@ -80,31 +80,31 @@
   background-color: $color-primary;
 }
 
-.noteItemActions {
-  margin: 0 40px 0 0;
-  width: 48px;
-  height: 48px;
-  line-height: 48px;
-  font-size: 20px;
-  font-family: material;
+.note-item-icon-pen {
+  width: 20px;
+  height: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 9px;
 }
 
-.isMarkedHeart {
+.note-item-actions-heart-marked {
   color: $color-primary;
 }
 
-.isNotMarkedHeart {
+.note-item-actions-heart-unmarked {
   color: #aaaaaa;
 }
 
-.noteItemInfo {
+.note-item-info {
   height: 48px;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-.noteItemTitle {
+.note-item-title {
   margin-top: 4px;
   height: 20px;
   line-height: 20px;
@@ -112,7 +112,7 @@
   font-size: $fontsize-normal !important;
 }
 
-.noteItemDate {
+.note-item-date {
   margin-bottom: 4px;
   height: 20px;
   line-height: 20px;
@@ -121,11 +121,11 @@
   color: #aaaaaa;
 }
 
-.notePenImage {
-  width: 20px;
-  height: 20px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 9px;
+.note-item-actions {
+  margin: 0 40px 0 0;
+  width: 48px;
+  height: 48px;
+  line-height: 48px;
+  font-size: 20px;
+  font-family: material;
 }

@@ -1,26 +1,19 @@
 @import 'css/variables.scss';
 
-.headerMainContainer{
+.dialog-header{
     background-color: $color-darkgrey;
     margin: -24px -24px 24px -24px ! important;
     height: 64px;
     line-height: 64px;
 }
 
-.headerContentContainer {
+.dialog-header-content {
     position: relative;
     width: 100%;
     height: 100%;
 }
 
-.headerTitleText{
-    padding-left: 24px;
-    padding-right: 24px;
-    color: white;
-    font-size: 20px;
-}
-
-.headerContentContainerForeground {
+.dialog-header-content-foreground {
     position: absolute;
     top: 0;
     left: 0;
@@ -29,7 +22,14 @@
     z-index: 99;
 }
 
-.headerContentContainerBackground {
+.dialog-header-content-foreground-title{
+    padding-left: 24px;
+    padding-right: 24px;
+    color: white;
+    font-size: 20px;
+}
+
+.dialog-header-content-background {
     position: absolute;
     top: 0;
     left: 0;
@@ -38,7 +38,7 @@
     z-index: 1;
 }
 
-.headerPenImage {
+.dialog-header-content-background-pen {
     position: absolute;
     bottom: 12px;
     right: 12px;

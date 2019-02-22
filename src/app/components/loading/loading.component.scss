@@ -1,18 +1,19 @@
 @import 'css/variables.scss';
-.loadingContainer {
+
+.loading {
     width: 100%;
     height: 100%;
     background-color: $color-darkgrey;
     padding: 64px;
 }
 
-.loadingContentContainer {
+.loading-content {
     position: relative;
     width: 100%;
     height: 100%;
 }
 
-.loadingContentContainerForeground {
+.loading-content-foreground {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -25,7 +26,13 @@
     z-index: 99;
 }
 
-.loadingContentContainerBackground {
+.loading-content-foreground-text {
+    font-size: 16px;
+    color: #9fa2a5;
+    max-width: 600px;
+}
+
+.loading-content-background {
     position: absolute;
     top: 0;
     left: 0;
@@ -34,15 +41,9 @@
     z-index: 1;
 }
 
-.loadingPenImage {
+.loading-content-background-pen {
     position: absolute;
     bottom: 0;
     right: 0;
     opacity: 0.025;
-}
-
-.loadingText {
-    font-size: 16px;
-    color: #9fa2a5;
-    max-width: 600px;
 }

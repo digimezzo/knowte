@@ -1,36 +1,15 @@
 @import "css/variables.scss";
 
-.collectionContainerButtons {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.collectionContainer {
+.collection {
   width: 100%;
   height: 100%;
 }
 
-.collectionContainer .mat-tab-body-wrapper {
+.collection .mat-tab-body-wrapper {
   margin: 0 0 0 350px;
 }
 
-.countLabel {
-  margin: 0 0 10px 10px;
-  min-width: 22px;
-  height: 22px;
-  border-radius: 12px;
-  padding: 1px 7px 1px 7px;
-  background-color: $color-primary;
-  color: #fff;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.notebooksContainer {
+.collection-notebooks {
   position: absolute;
   background-color: $color-lightgrey;
   border-right: 1px solid $color-lightgrey-border;
@@ -46,16 +25,25 @@
   flex-direction: column;
 }
 
-.notebooksTitleContainer {
+.collection-notebooks-title {
   display: flex;
 }
 
-.notebooksListContainer {
+.collection-notebooks-list {
   flex: 1;
   position: relative;
 }
 
-.notebooksListContainerList {
+.collection-notebooks-list-buttons {
+  display: flex;
+  flex-direction: column;
+  position: absolute !important;
+  right: 0px !important;
+  bottom: 0px !important;
+  z-index: 1;
+}
+
+.collection-notebooks-list-list {
   position: absolute;
   left: 0px;
   top: 0px;
@@ -65,28 +53,31 @@
   overflow: auto;
 }
 
-.notebooksListButtonContainer {
-  display: flex;
-  flex-direction: column;
-  position: absolute !important;
-  right: 0px !important;
-  bottom: 0px !important;
-  z-index: 1;
+.count-label {
+  margin: 0 0 10px 10px;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 12px;
+  padding: 1px 7px 1px 7px;
+  background-color: $color-primary;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
 }
 
-.listButton {
+.list-button {
   margin-top: 8px !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
 
-.addItemIcon {
+.add-item-icon {
   font-family: material;
   font-size: 28px;
   color: #fff;
 }
 
-.editItemIcon {
+.edit-item-icon {
   font-family: material;
   font-size: 20px;
   color: $color-primary;
@@ -96,11 +87,11 @@
   font-size: $fontsize-normal !important;
 }
 
-.notebookName {
+.notebook-name {
   padding-left: 16px !important;
   padding-right: 16px !important;
 }
 
-.selectedItem {
+.selected-item {
   background-color: #e6e7e7;
 }

@@ -63,6 +63,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    // Workaround for auto reload
+    await this.collectionService.initializeDataStoreAsync();
+    
     // Get notebooks
     await this.getNotebooksAsync();
 

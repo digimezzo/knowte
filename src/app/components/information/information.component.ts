@@ -29,11 +29,6 @@ export class InformationComponent implements OnInit {
     let dialogRef: MatDialogRef<LicenseDialogComponent> = this.dialog.open(LicenseDialogComponent, {
       width: '450px'
     });
-
-    // dialogRef.afterClosed().subscribe(result => {
-    //   console.log('The dialog was closed');
-    //   this.animal = result;
-    // });
   }
 
   openDonateLink(): void {
