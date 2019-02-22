@@ -1,4 +1,6 @@
-import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, OnDestroy, HostListener } from '@angular/core';
+import { remote } from 'electron';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'note-content',
@@ -7,10 +9,24 @@ import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
     encapsulation: ViewEncapsulation.None
 })
 export class NoteComponent implements OnInit, OnDestroy {
-    constructor() {
+    constructor(private activatedRoute: ActivatedRoute) {
+    }
+
+    private globalEvents = remote.getGlobal('globalEvents');
+    private noteId: string;
+
+    // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
+    @HostListener('window:beforeunload', ['$event'])
+    beforeunloadHandler(event) {
+        this.globalEvents.emit('noteOpenChanged', this.noteId, false);
     }
 
     ngOnInit() {
+        this.activatedRoute.queryParams.subscribe(async (params) => {
+            this.noteId = params['id'];
+        });
+
+        this.globalEvents.emit('noteOpenChanged', this.noteId, true);
     }
 
     ngOnDestroy() {
@@ -21,6 +37,6 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public onNotetitleChange(newNoteTitle: string) {
-     
+
     }
 }

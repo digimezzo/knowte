@@ -26,9 +26,14 @@ import { NoteMarkResult } from './results/noteMarkResult';
 })
 export class CollectionService {
   constructor(private translateService: TranslateService, private searchService: SearchService, private dataStore: DataStore) {
+    this.globalEvents.on('noteOpenChanged', (noteId, isOpen) => {
+      this.setNoteOpen(noteId, isOpen);
+    });
   }
 
   private isInitializing: boolean = false;
+
+  private globalEvents = remote.getGlobal('globalEvents');
 
   private settings: Store = new Store();
 
