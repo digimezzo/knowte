@@ -167,21 +167,4 @@ export class DataStore {
         this.notebooks.update(notebook);
         this.db.saveDatabase();
     }
-
-    public getOpenNotes(): Note[] {
-        let notes: Note[] = this.notes.chain().find({ 'isOpen': true }).data();
-
-        return notes;
-    }
-
-    public closeAllNotes(): void {
-        let openNotes: Note[] = this.notes.chain().find({ 'isOpen': true }).data();
-
-        for (let openNote of openNotes) {
-            openNote.isOpen = false;
-            this.notes.update(openNote);
-        }
-
-        this.db.saveDatabase();
-    }
 }

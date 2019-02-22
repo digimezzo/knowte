@@ -67,9 +67,6 @@ export class NotesComponent implements OnInit, OnDestroy {
         // Workaround for auto reload
         await this.collectionService.initializeDataStoreAsync();
 
-        // In case we crashed on a previous run, make sure all notes are closed.
-        this.collectionService.closeAllNotes();
-
         // Get notes
         await this.getNotesAsync();
 

@@ -32,10 +32,9 @@ export class CollectionService {
   }
 
   private isInitializing: boolean = false;
-
   private globalEvents = remote.getGlobal('globalEvents');
-
   private settings: Store = new Store();
+  private openNoteIds: string[] = [];
 
   private collectionsChanged = new Subject();
   collectionsChanged$ = this.collectionsChanged.asObservable();
@@ -279,15 +278,19 @@ export class CollectionService {
   }
 
   public setNoteOpen(noteId: string, isOpen: boolean): void {
-    let note: Note = this.dataStore.getNoteById(noteId);
-    note.isOpen = isOpen;
-    this.dataStore.updateNote(note);
+    if (isOpen) {
+      if (!this.openNoteIds.includes(noteId)) {
+        this.openNoteIds.push(noteId);
+      }
+    } else {
+      if (this.openNoteIds.includes(noteId)) {
+        this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);
+      }
+    }
   }
 
   public noteIsOpen(noteId: string): boolean {
-    let openNotes: Note[] = this.dataStore.getOpenNotes();
-
-    if (openNotes.map(x => x.id).includes(noteId)) {
+    if (this.openNoteIds.includes(noteId)) {
       return true;
     }
 
@@ -295,17 +298,7 @@ export class CollectionService {
   }
 
   public hasOpenNotes(): boolean {
-    let openNotes: Note[] = this.dataStore.getOpenNotes();
-
-    if (openNotes && openNotes.length > 0) {
-      return true;
-    }
-
-    return false;
-  }
-
-  public closeAllNotes(): void {
-    this.dataStore.closeAllNotes();
+    return this.openNoteIds.length > 0;
   }
 
   private noteExists(noteTitle: string): boolean {
