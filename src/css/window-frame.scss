@@ -18,9 +18,11 @@
 
 .windowTitleBarDragArea {
   width: 100%;
-  height: 100%;
+  height: $titlebar-height;
+  line-height: $titlebar-height;
   flex: 1;
   -webkit-app-region: drag;
+  color: white;
 }
 
 .windowContent {

@@ -24,6 +24,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     private translateService: TranslateService, private snackBarService: SnackBarService, private zone: NgZone) {
   }
 
+  public applicationName: string = Constants.applicationName;
   private subscription: Subscription;
   public notebooksCount: number = 0;
   public allNotesCount: number = 0;
