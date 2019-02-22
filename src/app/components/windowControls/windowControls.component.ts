@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { remote, BrowserWindow } from 'electron';
-import { Utils } from '../../core/utils';
 import log from 'electron-log';
 
 @Component({
