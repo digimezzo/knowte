@@ -5,12 +5,12 @@
         <window-controls></window-controls>
     </div>
     <div class="window-frame-content">
-        <div class="welcomeContainer">
-            <div class="welcomeContentContainer">
-                <div class="welcomeContentContainerForeground">
+        <div class="welcome">
+            <div class="welcome-content">
+                <div class="welcome-content-foreground">
                     <logo-full [textColor]="'white'"></logo-full>
-                    <div class="welcomeTitle mt-4">{{ 'WelcomePage.Title' | translate }}</div>
-                    <div class="welcomeText mt-4">{{ 'WelcomePage.Text' | translate }}</div>
+                    <div class="welcome-content-foreground-title mt-4">{{ 'WelcomePage.Title' | translate }}</div>
+                    <div class="welcome-content-foreground-text mt-4">{{ 'WelcomePage.Text' | translate }}</div>
                     <div class="mt-4">
                         <button mat-raised-button color="primary" (click)="openDirectoryChooserAsync()" *ngIf="!isBusy">
                             {{ 'WelcomePage.SelectButton' | translate }}
@@ -18,8 +18,8 @@
                         <mat-spinner *ngIf="isBusy" [diameter]="40"></mat-spinner>
                     </div>
                 </div>
-                <div class="welcomeContentContainerBackground">
-                    <img class="welcomePenImage" src="./assets/images/pencil_256x256.svg">
+                <div class="welcome-content-background">
+                    <img class="welcome-content-background-pen" src="./assets/images/pencil_256x256.svg">
                 </div>
             </div>
         </div>

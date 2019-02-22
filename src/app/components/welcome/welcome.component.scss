@@ -1,19 +1,19 @@
 @import 'css/variables.scss';
 
-.welcomeContainer {
+.welcome {
     width: 100%;
     height: 100%;
     background-color: $color-darkgrey;
     padding: 64px;
 }
 
-.welcomeContentContainer {
+.welcome-content {
     position: relative;
     width: 100%;
     height: 100%;
 }
 
-.welcomeContentContainerForeground {
+.welcome-content-foreground {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -26,7 +26,7 @@
     z-index: 99;
 }
 
-.welcomeContentContainerBackground {
+.welcome-content-background {
     position: absolute;
     top: 0;
     left: 0;
@@ -35,19 +35,19 @@
     z-index: 1;
 }
 
-.welcomePenImage {
+.welcome-content-background-pen {
     position: absolute;
     bottom: 0;
     right: 0;
     opacity: 0.025;
 }
 
-.welcomeTitle {
+.welcome-content-foreground-title {
     font-size: 24px;
     color: white;
 }
 
-.welcomeText {
+.welcome-content-foreground-text {
     font-size: 16px;
     color: #9fa2a5;
     max-width: 600px;
