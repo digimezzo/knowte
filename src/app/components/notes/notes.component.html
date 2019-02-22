@@ -12,7 +12,7 @@
     </div>
     <div class="notesContainerContent">
         <!-- Note title & search -->
-        <div class="notesTitleAndSearchContainer p-2 noselect">
+        <div class="notesTitleAndSearchContainer p-2 no-select">
             <!-- Notes title -->
             <div class="notesTitleContainer">
                 <h2>{{ selectedNotebook?.name }}</h2>
@@ -30,7 +30,7 @@
             <mat-selection-list class="notesListContainerList">
                 <mat-list-option [ngClass]="{'selectedItem':note === selectedNote }" *ngFor="let note of notes"
                     role="option">
-                    <div class="noselect" (dblclick)="openNote()" (click)="setSelectedNote(note)">
+                    <div class="no-select" (dblclick)="openNote()" (click)="setSelectedNote(note)">
                         <div class="noteItem px-2">
                             <div class="noteItemIcon">
                                 <img class="notePenImage" src="./assets/images/pencil_256x256.svg">
