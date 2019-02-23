@@ -57,3 +57,17 @@
 .ql-toolbar.ql-snow {
   padding-right: 50px !important;
 }
+
+.notebook-changer{
+  display: flex;
+  -webkit-app-region: no-drag;
+  color: white;
+  cursor: pointer;
+  float: left;
+}
+
+.notebook-changer-icon {
+  margin-right: 8px;
+  font-family: Material;
+  font-size: 18px;
+}

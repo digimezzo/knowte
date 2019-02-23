@@ -20,15 +20,33 @@ import { SearchService } from './search.service';
 import * as sanitize from 'sanitize-filename';
 import { DataStore } from '../data/dataStore';
 import { NoteMarkResult } from './results/noteMarkResult';
+import { NoteDetailsResult } from './results/noteDetailsResult';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionService {
   constructor(private translateService: TranslateService, private searchService: SearchService, private dataStore: DataStore) {
-    this.globalEvents.on('noteOpenChanged', (noteId, isOpen) => {
-      this.setNoteOpen(noteId, isOpen);
-    });
+    this.globalEvents.on('noteOpenChanged', async (noteId, isOpen) => await this.handleNoteOpenChangedAsync(noteId, isOpen));
+  }
+
+  private async handleNoteOpenChangedAsync(noteId: string, isOpen: boolean): Promise<void> {
+    this.setNoteOpen(noteId, isOpen);
+
+    // A note was just opened, so lets send it some details.
+    if (isOpen) {
+      let note: Note = this.dataStore.getNoteById(noteId);
+
+      let notebookName: string = await this.translateService.get('MainPage.UnfiledNotes').toPromise();
+
+      if (note.notebookId) {
+        let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
+        notebookName = notebook.name;
+      }
+
+      // We use noteId as event title. This ensures that only the concerned note gets the details.
+      this.globalEvents.emit(noteId, new NoteDetailsResult(note.title, notebookName, note.isMarked));
+    }
   }
 
   private isInitializing: boolean = false;

@@ -1,6 +1,11 @@
 <div class="window-frame">
     <div class="window-frame-titlebar">
         <div class="window-frame-titlebar-dragarea">
+            <div class="notebook-changer no-select ml-1" (click)="changeNotebook()"
+                matTooltip="{{ 'Tooltips.ClickToChangeNotebook' | translate }}">
+                <span class="notebook-changer-icon">&#xE0E0;</span>
+                {{notebookName}}
+            </div>
         </div>
         <window-controls></window-controls>
     </div>

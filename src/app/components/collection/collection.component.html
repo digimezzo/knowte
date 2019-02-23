@@ -49,7 +49,7 @@
                 <mat-tab>
                     <ng-template mat-tab-label>
                         {{ 'NotesTabs.All' | translate }}
-                        <div class="countLabel">{{allNotesCount}}</div>
+                        <div class="count-label">{{allNotesCount}}</div>
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="allCategory"
                         [categoryChangedSubject]="tabChangedSubject"></notes-component>
@@ -57,7 +57,7 @@
                 <mat-tab>
                     <ng-template mat-tab-label>
                         {{ 'NotesTabs.Today' | translate }}
-                        <div class="countLabel">{{todayNotesCount}}</div>
+                        <div class="count-label">{{todayNotesCount}}</div>
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="todayCategory"
                         [categoryChangedSubject]="tabChangedSubject"></notes-component>
@@ -65,7 +65,7 @@
                 <mat-tab>
                     <ng-template mat-tab-label>
                         {{ 'NotesTabs.Yesterday' | translate }}
-                        <div class="countLabel">{{yesterdayNotesCount}}</div>
+                        <div class="count-label">{{yesterdayNotesCount}}</div>
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="yesterdayCategory"
                         [categoryChangedSubject]="tabChangedSubject"></notes-component>
@@ -73,7 +73,7 @@
                 <mat-tab>
                     <ng-template mat-tab-label>
                         {{ 'NotesTabs.ThisWeek' | translate }}
-                        <div class="countLabel">{{thisWeekNotesCount}}</div>
+                        <div class="count-label">{{thisWeekNotesCount}}</div>
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="thisWeekCategory"
                         [categoryChangedSubject]="tabChangedSubject"></notes-component>
@@ -81,7 +81,7 @@
                 <mat-tab>
                     <ng-template mat-tab-label>
                         {{ 'NotesTabs.Marked' | translate }}
-                        <div class="countLabel">{{markedNotesCount}}</div>
+                        <div class="count-label">{{markedNotesCount}}</div>
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="markedCategory"
                         [categoryChangedSubject]="tabChangedSubject"></notes-component>
