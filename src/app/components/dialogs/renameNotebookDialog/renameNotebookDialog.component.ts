@@ -1,7 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { CollectionService } from '../../../services/collection.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { NotebookOperation } from '../../../services/notebookOperation';
 import { ErrorDialogComponent } from '../errorDialog/errorDialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { Operation } from '../../../core/enums';
@@ -21,7 +20,7 @@ export class RenameNotebookDialogComponent implements OnInit {
     public notebookName: string = this.collectionService.getNotebookName(this.data.notebookId);
 
     public async renameNotebookAsync(): Promise<void> {
-        let operation: NotebookOperation = await this.collectionService.renameNotebookAsync(this.notebookId, this.notebookName);
+        let operation: Operation = await this.collectionService.renameNotebookAsync(this.notebookId, this.notebookName);
 
         if (operation === Operation.Error) {
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNotebookError', { notebookName: this.notebookName }).toPromise());
