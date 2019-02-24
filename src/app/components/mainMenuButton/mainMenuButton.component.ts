@@ -3,7 +3,6 @@ import { CollectionService } from '../../services/collection.service';
 import { InputDialogComponent } from '../dialogs/inputDialog/inputDialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
-import { Collection } from '../../data/entities/collection';
 import log from 'electron-log';
 import { RenameCollectionDialogComponent } from '../dialogs/renameCollectionDialog/renameCollectionDialog.component';
 import { SnackBarService } from '../../services/snackBar.service';
@@ -25,7 +24,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
     private snackBarService: SnackBarService, private translateService: TranslateService, public router: Router) {
   }
 
-  public collections: Collection[];
+  public collections: string[];
   public activeCollection: string = "";
 
   async ngOnInit() {
