@@ -16,6 +16,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 // Services
 import { ElectronService } from './services/electron.service';
 import { CollectionService } from './services/collection.service';
+import { EventService } from './services/event.service';
 
 // Stores
 import { DataStore } from './data/dataStore';
@@ -109,6 +110,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [
     ElectronService,
     CollectionService,
+    EventService,
     DataStore,
     {
       provide: ErrorHandler,
