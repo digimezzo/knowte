@@ -27,26 +27,8 @@ import { NoteDetailsResult } from './results/noteDetailsResult';
 })
 export class CollectionService {
   constructor(private translateService: TranslateService, private searchService: SearchService, private dataStore: DataStore) {
-    this.globalEvents.on('noteOpenChanged', async (noteId, isOpen) => await this.handleNoteOpenChangedAsync(noteId, isOpen));
-  }
-
-  private async handleNoteOpenChangedAsync(noteId: string, isOpen: boolean): Promise<void> {
-    this.setNoteOpen(noteId, isOpen);
-
-    // A note was just opened, so lets send it some details.
-    if (isOpen) {
-      let note: Note = this.dataStore.getNoteById(noteId);
-
-      let notebookName: string = await this.translateService.get('MainPage.UnfiledNotes').toPromise();
-
-      if (note.notebookId) {
-        let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
-        notebookName = notebook.name;
-      }
-
-      // We use noteId as event title. This ensures that only the concerned note gets the details.
-      this.globalEvents.emit(noteId, new NoteDetailsResult(note.title, notebookName, note.isMarked));
-    }
+    this.globalEvents.on('setNoteOpen', async (noteId, isOpen) => await this.setNoteOpenAsync(noteId, isOpen));
+    this.globalEvents.on('toggleNoteMark', (noteId) => this.toggleNoteMark(noteId));
   }
 
   private isInitializing: boolean = false;
@@ -295,11 +277,22 @@ export class CollectionService {
     return this.settings.get('activeCollection');
   }
 
-  public setNoteOpen(noteId: string, isOpen: boolean): void {
+  private async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
     if (isOpen) {
       if (!this.openNoteIds.includes(noteId)) {
         this.openNoteIds.push(noteId);
       }
+
+      let note: Note = this.dataStore.getNoteById(noteId);
+      let notebookName: string = await this.translateService.get('MainPage.UnfiledNotes').toPromise();
+
+      if (note.notebookId) {
+        let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
+        notebookName = notebook.name;
+      }
+
+      // We added noteId as event title. This ensures that only the concerned note gets the details.
+      this.globalEvents.emit(`noteDetailsFetched-${noteId}`, new NoteDetailsResult(note.title, notebookName, note.isMarked));
     } else {
       if (this.openNoteIds.includes(noteId)) {
         this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);
@@ -750,13 +743,15 @@ export class CollectionService {
     return notebook;
   }
 
-  public setNoteMark(noteId: string, isMarked: boolean): void {
+  public toggleNoteMark(noteId: string): void {
     let note: Note = this.dataStore.getNoteById(noteId);
-    note.isMarked = isMarked;
+    note.isMarked = !note.isMarked;
     this.dataStore.updateNote(note);
 
     let markedNotes: Note[] = this.dataStore.getMarkedNotes();
-    let result: NoteMarkResult = new NoteMarkResult(noteId, isMarked, markedNotes.length);
+    let result: NoteMarkResult = new NoteMarkResult(noteId, note.isMarked, markedNotes.length);
+
     this.noteMarkChanged.next(result);
+    this.globalEvents.emit(`noteMarkToggled-${noteId}`, note.isMarked);
   }
 }

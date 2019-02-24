@@ -23,7 +23,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
-        this.globalEvents.emit('noteOpenChanged', this.noteId, false);
+        this.globalEvents.emit('setNoteOpen', this.noteId, false);
     }
 
     ngOnDestroy() {
@@ -34,12 +34,13 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.noteId = params['id'];
         });
 
-        this.globalEvents.on(this.noteId, (result) => this.handleSendNoteDetails(result));
+        this.globalEvents.on(`noteDetailsFetched-${this.noteId}`, (result) => this.handleNoteDetailsFetched(result));
+        this.globalEvents.on(`noteMarkToggled-${this.noteId}`, (isNoteMarked) => this.handleNoteMarkToggled(isNoteMarked));
 
-        this.globalEvents.emit('noteOpenChanged', this.noteId, true);
+        this.globalEvents.emit('setNoteOpen', this.noteId, true);
     }
 
-    private handleSendNoteDetails(result: NoteDetailsResult) {
+    private handleNoteDetailsFetched(result: NoteDetailsResult) {
         this.zone.run(() => {
             this.noteTitle = result.noteTitle;
             this.notebookName = result.notebookName;
@@ -47,12 +48,16 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
     }
 
+    private handleNoteMarkToggled(isNoteMarked: boolean) {
+        this.zone.run(() => this.isMarked = isNoteMarked);
+    }
+
     public changeNotebook(): void {
 
     }
 
     public toggleNoteMark(): void {
-
+        this.globalEvents.emit('toggleNoteMark', this.noteId);
     }
 
     public onNotetitleChange(newNoteTitle: string) {

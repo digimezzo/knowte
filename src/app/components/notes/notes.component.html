@@ -44,7 +44,7 @@
                                 </div>
                             </div>
                             <div class="note-item-actions">
-                                <div (click)="ToggleNoteMark(note.id, note.isMarked)">
+                                <div (click)="toggleNoteMark(note.id)">
                                     <span class="note-item-actions-heart-marked" *ngIf="note.isMarked">&#xE87D;</span>
                                     <span class="note-item-actions-heart-unmarked" *ngIf="!note.isMarked">&#xE87E;</span>
                                 </div>
