@@ -25,7 +25,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
-        this.eventService.emitSetNoteOpen(this.noteId, false);
+        this.eventService.setNoteOpenEvent.send(this.noteId, false);
     }
 
     ngOnDestroy() {
@@ -36,11 +36,11 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.noteId = params['id'];
         });
 
-        this.eventService.onSendNoteDetails(this.noteId, this.handleNoteDetailsFetched.bind(this));
+        this.eventService.sendNoteDetailsEvent.receive(this.noteId, this.handleNoteDetailsFetched.bind(this));
 
         this.globalEvents.on(`noteMarkToggled-${this.noteId}`, (isNoteMarked) => this.handleNoteMarkToggled(isNoteMarked));
 
-        this.eventService.emitSetNoteOpen(this.noteId, true);
+        this.eventService.setNoteOpenEvent.send(this.noteId, true);
     }
 
     private handleNoteDetailsFetched(result: NoteDetailsResult) {

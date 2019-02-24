@@ -29,7 +29,7 @@ import { EventService } from './event.service';
 export class CollectionService {
   constructor(private translateService: TranslateService, private searchService: SearchService, private eventService: EventService,
     private dataStore: DataStore) {
-    this.eventService.onSetNoteOpen(this.setNoteOpenAsync.bind(this));
+    this.eventService.setNoteOpenEvent.receive(this.setNoteOpenAsync.bind(this));
     this.globalEvents.on(Constants.toggleNoteMarkEvent, (noteId) => this.toggleNoteMark(noteId));
   }
 
@@ -293,7 +293,7 @@ export class CollectionService {
         notebookName = notebook.name;
       }
 
-      this.eventService.emitSendNoteDetails(noteId, note.title, notebookName, note.isMarked);
+      this.eventService.sendNoteDetailsEvent.send(noteId, note.title, notebookName, note.isMarked);
     } else {
       if (this.openNoteIds.includes(noteId)) {
         this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);
