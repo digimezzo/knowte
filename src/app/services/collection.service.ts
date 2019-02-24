@@ -27,8 +27,8 @@ import { NoteDetailsResult } from './results/noteDetailsResult';
 })
 export class CollectionService {
   constructor(private translateService: TranslateService, private searchService: SearchService, private dataStore: DataStore) {
-    this.globalEvents.on('setNoteOpen', async (noteId, isOpen) => await this.setNoteOpenAsync(noteId, isOpen));
-    this.globalEvents.on('toggleNoteMark', (noteId) => this.toggleNoteMark(noteId));
+    this.globalEvents.on(Constants.setNoteOpenEvent, async (noteId, isOpen) => await this.setNoteOpenAsync(noteId, isOpen));
+    this.globalEvents.on(Constants.toggleNoteMarkEvent, (noteId) => this.toggleNoteMark(noteId));
   }
 
   private isInitializing: boolean = false;
@@ -291,8 +291,7 @@ export class CollectionService {
         notebookName = notebook.name;
       }
 
-      // We added noteId as event title. This ensures that only the concerned note gets the details.
-      this.globalEvents.emit(`noteDetailsFetched-${noteId}`, new NoteDetailsResult(note.title, notebookName, note.isMarked));
+      this.globalEvents.emit(`${Constants.noteDetailsFetchedEvent}-${noteId}`, new NoteDetailsResult(note.title, notebookName, note.isMarked));
     } else {
       if (this.openNoteIds.includes(noteId)) {
         this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);

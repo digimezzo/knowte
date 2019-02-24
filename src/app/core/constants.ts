@@ -14,6 +14,10 @@ export class Constants {
     static readonly allNotesNotebookId: string = "0";
     static readonly unfiledNotesNotebookId: string = "1";
 
+    static readonly setNoteOpenEvent: string = "e147265a-9de3-4440-8672-d91322fc5b03";
+    static readonly noteDetailsFetchedEvent: string = "3a2a25c2-c67c-4eb8-9bd3-db3a68d81369";
+    static readonly toggleNoteMarkEvent: string = "16700e61-70ac-4b67-8b54-1376f7c1b875";
+
     static readonly allCategory: string = "all";
     static readonly todayCategory: string = "today";
     static readonly yesterdayCategory: string = "yesterday";
