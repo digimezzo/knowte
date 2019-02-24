@@ -21,13 +21,15 @@ import * as sanitize from 'sanitize-filename';
 import { DataStore } from '../data/dataStore';
 import { NoteMarkResult } from './results/noteMarkResult';
 import { NoteDetailsResult } from './results/noteDetailsResult';
+import { EventService } from './event.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionService {
-  constructor(private translateService: TranslateService, private searchService: SearchService, private dataStore: DataStore) {
-    this.globalEvents.on(Constants.setNoteOpenEvent, async (noteId, isOpen) => await this.setNoteOpenAsync(noteId, isOpen));
+  constructor(private translateService: TranslateService, private searchService: SearchService, private eventService: EventService,
+    private dataStore: DataStore) {
+    this.eventService.onSetNoteOpen(this.setNoteOpenAsync.bind(this));
     this.globalEvents.on(Constants.toggleNoteMarkEvent, (noteId) => this.toggleNoteMark(noteId));
   }
 
@@ -291,7 +293,7 @@ export class CollectionService {
         notebookName = notebook.name;
       }
 
-      this.globalEvents.emit(`${Constants.noteDetailsFetchedEvent}-${noteId}`, new NoteDetailsResult(note.title, notebookName, note.isMarked));
+      this.eventService.emitSendNoteDetails(noteId, note.title, notebookName, note.isMarked);
     } else {
       if (this.openNoteIds.includes(noteId)) {
         this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);

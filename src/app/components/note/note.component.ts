@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/noteDetailsResult';
 import log from 'electron-log';
 import { Constants } from '../../core/constants';
+import { EventService } from '../../services/event.service';
 
 @Component({
     selector: 'note-content',
@@ -12,7 +13,7 @@ import { Constants } from '../../core/constants';
     encapsulation: ViewEncapsulation.None
 })
 export class NoteComponent implements OnInit, OnDestroy {
-    constructor(private activatedRoute: ActivatedRoute, private zone: NgZone) {
+    constructor(private eventService: EventService, private activatedRoute: ActivatedRoute, private zone: NgZone) {
     }
 
     private globalEvents = remote.getGlobal('globalEvents');
@@ -24,7 +25,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
-        this.globalEvents.emit(Constants.setNoteOpenEvent, this.noteId, false);
+        this.eventService.emitSetNoteOpen(this.noteId, false);
     }
 
     ngOnDestroy() {
@@ -35,10 +36,11 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.noteId = params['id'];
         });
 
-        this.globalEvents.on(`${Constants.noteDetailsFetchedEvent}-${this.noteId}`, (result) => this.handleNoteDetailsFetched(result));
+        this.eventService.onSendNoteDetails(this.noteId, this.handleNoteDetailsFetched.bind(this));
+
         this.globalEvents.on(`noteMarkToggled-${this.noteId}`, (isNoteMarked) => this.handleNoteMarkToggled(isNoteMarked));
 
-        this.globalEvents.emit(Constants.setNoteOpenEvent, this.noteId, true);
+        this.eventService.emitSetNoteOpen(this.noteId, true);
     }
 
     private handleNoteDetailsFetched(result: NoteDetailsResult) {
