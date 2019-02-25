@@ -1,15 +1,11 @@
-import { remote } from 'electron';
+import { GlobalEvent } from './globalEvent';
 
-export class SetNoteOpenEvent {
-    private globalEvents: any = remote.getGlobal('globalEvents');
-
-    private eventCode: string = "e147265a-9de3-4440-8672-d91322fc5b03";
-
+export class SetNoteOpenEvent extends GlobalEvent {
     public send(noteId: string, isOpen: boolean) {
-        this.globalEvents.emit(this.eventCode, noteId, isOpen);
+        this.globalEvents.emit(this.eventId, noteId, isOpen);
     }
 
     public receive(callback: any) {
-        this.globalEvents.on(this.eventCode, (noteId, isOpen) => callback(noteId, isOpen));
+        this.globalEvents.on(this.eventId, (noteId, isOpen) => callback(noteId, isOpen));
     }
 }
