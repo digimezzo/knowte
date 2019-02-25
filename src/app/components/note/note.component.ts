@@ -3,7 +3,6 @@ import { remote } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/noteDetailsResult';
 import log from 'electron-log';
-import { Constants } from '../../core/constants';
 import { EventService } from '../../services/event.service';
 
 @Component({
@@ -60,7 +59,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public toggleNoteMark(): void {
-        this.globalEmitter.emit(Constants.toggleNoteMarkEvent, this.noteId);
+        this.eventService.toggleNoteMarkEvent.send(this.noteId);
     }
 
     public onNotetitleChange(newNoteTitle: string) {

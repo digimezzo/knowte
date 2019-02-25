@@ -20,7 +20,6 @@ import { SearchService } from './search.service';
 import * as sanitize from 'sanitize-filename';
 import { DataStore } from '../data/dataStore';
 import { NoteMarkResult } from './results/noteMarkResult';
-import { NoteDetailsResult } from './results/noteDetailsResult';
 import { EventService } from './event.service';
 
 @Injectable({
@@ -30,7 +29,7 @@ export class CollectionService {
   constructor(private translateService: TranslateService, private searchService: SearchService, private eventService: EventService,
     private dataStore: DataStore) {
     this.eventService.setNoteOpenEvent.receive(this.setNoteOpenAsync.bind(this));
-    this.globalEmitter.on(Constants.toggleNoteMarkEvent, (noteId) => this.toggleNoteMark(noteId));
+    this.eventService.toggleNoteMarkEvent.receive(this.toggleNoteMark.bind(this));
   }
 
   private isInitializing: boolean = false;
