@@ -37,8 +37,6 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         this.eventService.sendNoteDetailsEvent.receive(this.noteId, this.handleSendNoteDetails.bind(this));
 
-        this.globalEmitter.on(`noteMarkToggled-${this.noteId}`, (isNoteMarked) => this.handleNoteMarkToggled(isNoteMarked));
-
         this.eventService.setNoteOpenEvent.send(this.noteId, true);
     }
 

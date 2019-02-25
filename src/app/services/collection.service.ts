@@ -278,21 +278,25 @@ export class CollectionService {
     return this.settings.get('activeCollection');
   }
 
+  private async sendNoteDetailsAsync(noteId: string) {
+    let note: Note = this.dataStore.getNoteById(noteId);
+    let notebookName: string = await this.translateService.get('MainPage.UnfiledNotes').toPromise();
+
+    if (note.notebookId) {
+      let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
+      notebookName = notebook.name;
+    }
+
+    this.eventService.sendNoteDetailsEvent.send(noteId, note.title, notebookName, note.isMarked);
+  }
+
   private async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
     if (isOpen) {
       if (!this.openNoteIds.includes(noteId)) {
         this.openNoteIds.push(noteId);
       }
 
-      let note: Note = this.dataStore.getNoteById(noteId);
-      let notebookName: string = await this.translateService.get('MainPage.UnfiledNotes').toPromise();
-
-      if (note.notebookId) {
-        let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
-        notebookName = notebook.name;
-      }
-
-      this.eventService.sendNoteDetailsEvent.send(noteId, note.title, notebookName, note.isMarked);
+      await this.sendNoteDetailsAsync(noteId);
     } else {
       if (this.openNoteIds.includes(noteId)) {
         this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);
@@ -752,6 +756,6 @@ export class CollectionService {
     let result: NoteMarkResult = new NoteMarkResult(noteId, note.isMarked, markedNotes.length);
 
     this.noteMarkChanged.next(result);
-    this.globalEmitter.emit(`noteMarkToggled-${noteId}`, note.isMarked);
+    this.sendNoteDetailsAsync(noteId);
   }
 }
