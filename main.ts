@@ -18,7 +18,7 @@ const globalAny: any = global;
 // Workaround to send messages between Electron windows
 const EventEmitter = require('events');
 class GlobalEventEmitter extends EventEmitter {};
-globalAny.globalEvents = new GlobalEventEmitter();
+globalAny.globalEmitter = new GlobalEventEmitter();
 
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 log.transports.file.level = 'info';

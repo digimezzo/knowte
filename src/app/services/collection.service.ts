@@ -30,11 +30,11 @@ export class CollectionService {
   constructor(private translateService: TranslateService, private searchService: SearchService, private eventService: EventService,
     private dataStore: DataStore) {
     this.eventService.setNoteOpenEvent.receive(this.setNoteOpenAsync.bind(this));
-    this.globalEvents.on(Constants.toggleNoteMarkEvent, (noteId) => this.toggleNoteMark(noteId));
+    this.globalEmitter.on(Constants.toggleNoteMarkEvent, (noteId) => this.toggleNoteMark(noteId));
   }
 
   private isInitializing: boolean = false;
-  private globalEvents = remote.getGlobal('globalEvents');
+  private globalEmitter = remote.getGlobal('globalEmitter');
   private settings: Store = new Store();
   private openNoteIds: string[] = [];
 
@@ -753,6 +753,6 @@ export class CollectionService {
     let result: NoteMarkResult = new NoteMarkResult(noteId, note.isMarked, markedNotes.length);
 
     this.noteMarkChanged.next(result);
-    this.globalEvents.emit(`noteMarkToggled-${noteId}`, note.isMarked);
+    this.globalEmitter.emit(`noteMarkToggled-${noteId}`, note.isMarked);
   }
 }

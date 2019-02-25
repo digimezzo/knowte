@@ -16,7 +16,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     constructor(private eventService: EventService, private activatedRoute: ActivatedRoute, private zone: NgZone) {
     }
 
-    private globalEvents = remote.getGlobal('globalEvents');
+    private globalEmitter = remote.getGlobal('globalEmitter');
     private noteId: string;
     public noteTitle: string;
     public notebookName: string;
@@ -38,7 +38,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         this.eventService.sendNoteDetailsEvent.receive(this.noteId, this.handleNoteDetailsFetched.bind(this));
 
-        this.globalEvents.on(`noteMarkToggled-${this.noteId}`, (isNoteMarked) => this.handleNoteMarkToggled(isNoteMarked));
+        this.globalEmitter.on(`noteMarkToggled-${this.noteId}`, (isNoteMarked) => this.handleNoteMarkToggled(isNoteMarked));
 
         this.eventService.setNoteOpenEvent.send(this.noteId, true);
     }
@@ -60,7 +60,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public toggleNoteMark(): void {
-        this.globalEvents.emit(Constants.toggleNoteMarkEvent, this.noteId);
+        this.globalEmitter.emit(Constants.toggleNoteMarkEvent, this.noteId);
     }
 
     public onNotetitleChange(newNoteTitle: string) {

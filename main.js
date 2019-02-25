@@ -36,7 +36,7 @@ var GlobalEventEmitter = /** @class */ (function (_super) {
     return GlobalEventEmitter;
 }(EventEmitter));
 ;
-globalAny.globalEvents = new GlobalEventEmitter();
+globalAny.globalEmitter = new GlobalEventEmitter();
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 electron_log_1.default.transports.file.level = 'info';
 function createWindow() {
