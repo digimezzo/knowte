@@ -35,14 +35,14 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.noteId = params['id'];
         });
 
-        this.eventService.sendNoteDetailsEvent.receive(this.noteId, this.handleNoteDetailsFetched.bind(this));
+        this.eventService.sendNoteDetailsEvent.receive(this.noteId, this.handleSendNoteDetails.bind(this));
 
         this.globalEmitter.on(`noteMarkToggled-${this.noteId}`, (isNoteMarked) => this.handleNoteMarkToggled(isNoteMarked));
 
         this.eventService.setNoteOpenEvent.send(this.noteId, true);
     }
 
-    private handleNoteDetailsFetched(result: NoteDetailsResult) {
+    private handleSendNoteDetails(result: NoteDetailsResult) {
         this.zone.run(() => {
             this.noteTitle = result.noteTitle;
             this.notebookName = result.notebookName;
