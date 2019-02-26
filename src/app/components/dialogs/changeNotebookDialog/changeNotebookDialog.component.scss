@@ -1,0 +1,9 @@
+@import "css/variables.scss";
+
+.notebooksList {
+  overflow-y: auto;
+}
+
+.notebook {
+  font-size: $fontsize-normal !important;
+}

@@ -30,6 +30,7 @@ export class CollectionService {
     private dataStore: DataStore) {
     this.eventService.setNoteOpenEvent.receive(this.setNoteOpenAsync.bind(this));
     this.eventService.toggleNoteMarkEvent.receive(this.toggleNoteMark.bind(this));
+    this.eventService.requestNotebooksEvent.receive(this.sendNotebooks.bind(this));
   }
 
   private isInitializing: boolean = false;
@@ -288,6 +289,10 @@ export class CollectionService {
     }
 
     this.eventService.sendNoteDetailsEvent.send(noteId, note.title, notebookName, note.isMarked);
+  }
+
+  private sendNotebooks(requestId: string) {
+   // TODO
   }
 
   private async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {

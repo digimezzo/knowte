@@ -4,6 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/noteDetailsResult';
 import log from 'electron-log';
 import { EventService } from '../../services/event.service';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { ChangeNotebookDialogComponent } from '../dialogs/changeNotebookDialog/changeNotebookDialog.component';
 
 @Component({
     selector: 'note-content',
@@ -12,7 +14,8 @@ import { EventService } from '../../services/event.service';
     encapsulation: ViewEncapsulation.None
 })
 export class NoteComponent implements OnInit, OnDestroy {
-    constructor(private eventService: EventService, private activatedRoute: ActivatedRoute, private zone: NgZone) {
+    constructor(private eventService: EventService, private activatedRoute: ActivatedRoute, private zone: NgZone,
+        private dialog: MatDialog) {
     }
 
     private globalEmitter = remote.getGlobal('globalEmitter');
@@ -53,7 +56,9 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public changeNotebook(): void {
-
+        let dialogRef: MatDialogRef<ChangeNotebookDialogComponent> = this.dialog.open(ChangeNotebookDialogComponent, {
+            width: '450px', data: { noteId: this.noteId }
+        });
     }
 
     public toggleNoteMark(): void {
