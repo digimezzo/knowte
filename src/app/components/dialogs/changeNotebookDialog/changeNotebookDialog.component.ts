@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Notebook } from '../../../data/entities/notebook';
 import { EventService } from '../../../services/event.service';
 import * as nanoid from 'nanoid';
+import log from 'electron-log';
 
 @Component({
     selector: 'changenotebook-dialog',
@@ -15,18 +16,18 @@ export class ChangeNotebookDialogComponent implements OnInit, OnDestroy {
     }
 
     public notebooks: Notebook[];
-    public eventId: string = nanoid();
+    public requestId: string = nanoid();
 
     ngOnDestroy() {
     }
 
     async ngOnInit() {
-        // await this.getNotebooksAsync();
-        this.eventService.requestNotebooksEvent.send(this.eventId);
+        this.eventService.sendNotebooksEvent.receive(this.requestId, this.populateNotebooks.bind(this));
+        this.eventService.requestNotebooksEvent.send(this.requestId);
     }
 
-    private async getNotebooksAsync(): Promise<void> {
-        // this.notebooks = await this.collectionService.getNotebooksAsync(false);
+    private populateNotebooks(notebooks: Notebook[]): void {
+        this.notebooks = notebooks;
     }
 
     public changeNotebook(notebook: Notebook) {

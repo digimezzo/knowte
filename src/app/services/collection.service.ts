@@ -21,6 +21,7 @@ import * as sanitize from 'sanitize-filename';
 import { DataStore } from '../data/dataStore';
 import { NoteMarkResult } from './results/noteMarkResult';
 import { EventService } from './event.service';
+import * as nanoid from 'nanoid';
 
 @Injectable({
   providedIn: 'root',
@@ -28,9 +29,6 @@ import { EventService } from './event.service';
 export class CollectionService {
   constructor(private translateService: TranslateService, private searchService: SearchService, private eventService: EventService,
     private dataStore: DataStore) {
-    this.eventService.setNoteOpenEvent.receive(this.setNoteOpenAsync.bind(this));
-    this.eventService.toggleNoteMarkEvent.receive(this.toggleNoteMark.bind(this));
-    this.eventService.requestNotebooksEvent.receive(this.sendNotebooks.bind(this));
   }
 
   private isInitializing: boolean = false;
@@ -180,6 +178,11 @@ export class CollectionService {
 
     //await Utils.sleep(2000);
 
+    // Only an initialized collectionService can process note requests
+    this.eventService.setNoteOpenEvent.receive(this.setNoteOpenAsync.bind(this));
+    this.eventService.toggleNoteMarkEvent.receive(this.toggleNoteMark.bind(this));
+    this.eventService.requestNotebooksEvent.receive(this.sendNotebooksAsync.bind(this));
+
     this.isInitializing = false;
   }
 
@@ -291,11 +294,13 @@ export class CollectionService {
     this.eventService.sendNoteDetailsEvent.send(noteId, note.title, notebookName, note.isMarked);
   }
 
-  private sendNotebooks(requestId: string) {
-   // TODO
+  private async sendNotebooksAsync(requestId: string) {
+    let notebooks: Notebook[] = await this.getNotebooksAsync(false);
+    this.eventService.sendNotebooksEvent.send(requestId, notebooks);
   }
 
   private async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
+    log.info(`COLLECTIONSERVICE: ${nanoid()}`);
     if (isOpen) {
       if (!this.openNoteIds.includes(noteId)) {
         this.openNoteIds.push(noteId);
