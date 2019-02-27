@@ -24,6 +24,7 @@ export class Constants {
     static readonly sendNoteDetailsEvent: string = "078ca0cb-f53f-41aa-b1bf-666c07ba9b7a";
     static readonly toggleNoteMarkEvent: string = "1386e290-1f5d-4ca8-b8c3-76c5991faeba";
     static readonly requestNotebooksEvent: string = "00169e63-412e-428b-b969-8dd4b3602a02";
+    static readonly sendNotebooksEvent: string = "6dbe8feb-2433-4df8-a911-3e7fd015b5d8";
     static readonly setNotebookEvent: string = "cf6f3e12-b435-4787-a81c-f40c99b176d9";
 
     static readonly externalComponents: any[] = [

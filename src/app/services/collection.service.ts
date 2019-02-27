@@ -302,9 +302,9 @@ export class CollectionService {
     this.globalEmitter.emit(`${Constants.sendNoteDetailsEvent}-${noteId}`, new NoteDetailsResult(note.title, notebookName, note.isMarked));
   }
 
-  private async sendNotebooksAsync(notebooksRequestId: string) {
+  private async sendNotebooksAsync(noteId: string) {
     let notebooks: Notebook[] = await this.getNotebooksAsync(false);
-    this.globalEmitter.emit(notebooksRequestId, notebooks);
+    this.globalEmitter.emit(`${Constants.sendNotebooksEvent}-${noteId}`, notebooks);
   }
 
   private async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
