@@ -68,6 +68,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         await this.collectionService.initializeAsync();
 
         this.subscription = this.collectionService.noteAdded$.subscribe(async () => await this.getNotesAsync());
+        this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(async () => this.zone.run(async () => await this.getNotesAsync())));
         this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => this.getNotesAsync()));
 
         this.subscription.add(this.collectionService.noteDeleted$.subscribe(async () => {
@@ -92,10 +93,11 @@ export class NotesComponent implements OnInit, OnDestroy {
         this.subscription.add(this.categoryChangedSubject.subscribe(async (selectedCategory) => {
             this.selectedCategory = selectedCategory;
             await this.getNotesAsync();
-        })); 
+        }));
     }
 
     private async getNotesAsync(): Promise<void> {
+
         // Only fetch notes list for selected category
         if (this.componentCategory !== this.selectedCategory) {
             return;

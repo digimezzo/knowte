@@ -20,6 +20,12 @@ export class Constants {
     static readonly thisWeekCategory: string = "thisweek";
     static readonly markedCategory: string = "marked";
 
+    static readonly setNoteOpenEvent: string = "b4a112dd-25ac-4ec6-bd08-3b8e7fbdedda";
+    static readonly sendNoteDetailsEvent: string = "078ca0cb-f53f-41aa-b1bf-666c07ba9b7a";
+    static readonly toggleNoteMarkEvent: string = "1386e290-1f5d-4ca8-b8c3-76c5991faeba";
+    static readonly requestNotebooksEvent: string = "00169e63-412e-428b-b969-8dd4b3602a02";
+    static readonly setNotebookEvent: string = "cf6f3e12-b435-4787-a81c-f40c99b176d9";
+
     static readonly externalComponents: any[] = [
         { name: "Angular", description: "Angular is a development platform for building mobile and desktop web applications using Typescript/JavaScript and other languages.", url: "https://angular.io/", licenseUrl: "https://github.com/angular/angular/blob/master/LICENSE" },
         { name: "Electron", description: "The Electron framework lets you write cross-platform desktop applications using JavaScript, HTML and CSS. It is based on Node.js and Chromium.", url: "https://electronjs.org/", licenseUrl: "https://github.com/electron/electron/blob/master/LICENSE" },

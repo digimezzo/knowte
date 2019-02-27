@@ -3,9 +3,9 @@ import { remote } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/noteDetailsResult';
 import log from 'electron-log';
-import { EventService } from '../../services/event.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ChangeNotebookDialogComponent } from '../dialogs/changeNotebookDialog/changeNotebookDialog.component';
+import { Constants } from '../../core/constants';
 
 @Component({
     selector: 'note-content',
@@ -14,7 +14,7 @@ import { ChangeNotebookDialogComponent } from '../dialogs/changeNotebookDialog/c
     encapsulation: ViewEncapsulation.None
 })
 export class NoteComponent implements OnInit, OnDestroy {
-    constructor(private eventService: EventService, private activatedRoute: ActivatedRoute, private zone: NgZone,
+    constructor(private activatedRoute: ActivatedRoute, private zone: NgZone,
         private dialog: MatDialog) {
     }
 
@@ -24,10 +24,13 @@ export class NoteComponent implements OnInit, OnDestroy {
     public notebookName: string;
     public isMarked: boolean;
 
+    private setNoteDetailsListener: any = this.setNoteDetails.bind(this);
+
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
-        this.eventService.setNoteOpenEvent.send(this.noteId, false);
+        this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, false);
+        this.globalEmitter.removeListener(`${Constants.sendNoteDetailsEvent}-${this.noteId}`, this.setNoteDetailsListener);
     }
 
     ngOnDestroy() {
@@ -36,14 +39,12 @@ export class NoteComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
+            this.globalEmitter.on(`${Constants.sendNoteDetailsEvent}-${this.noteId}`, this.setNoteDetailsListener);
+            this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, true);
         });
-
-        this.eventService.sendNoteDetailsEvent.receive(this.noteId, this.handleSendNoteDetails.bind(this));
-
-        this.eventService.setNoteOpenEvent.send(this.noteId, true);
     }
 
-    private handleSendNoteDetails(result: NoteDetailsResult) {
+    private setNoteDetails(result: NoteDetailsResult) {
         this.zone.run(() => {
             this.noteTitle = result.noteTitle;
             this.notebookName = result.notebookName;
@@ -62,7 +63,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public toggleNoteMark(): void {
-        this.eventService.toggleNoteMarkEvent.send(this.noteId);
+        this.globalEmitter.emit(Constants.toggleNoteMarkEvent, this.noteId);
     }
 
     public onNotetitleChange(newNoteTitle: string) {

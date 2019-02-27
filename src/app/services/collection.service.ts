@@ -20,14 +20,14 @@ import { SearchService } from './search.service';
 import * as sanitize from 'sanitize-filename';
 import { DataStore } from '../data/dataStore';
 import { NoteMarkResult } from './results/noteMarkResult';
-import { EventService } from './event.service';
 import * as nanoid from 'nanoid';
+import { NoteDetailsResult } from './results/noteDetailsResult';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionService {
-  constructor(private translateService: TranslateService, private searchService: SearchService, private eventService: EventService,
+  constructor(private translateService: TranslateService, private searchService: SearchService,
     private dataStore: DataStore) {
   }
 
@@ -59,6 +59,9 @@ export class CollectionService {
 
   private noteMarkChanged = new Subject<NoteMarkResult>();
   noteMarkChanged$ = this.noteMarkChanged.asObservable();
+
+  private noteNotebookChanged = new Subject();
+  noteNotebookChanged$ = this.noteNotebookChanged.asObservable();
 
   public get hasStorageDirectory(): boolean {
     // 1. Get the storage directory from the settings
@@ -182,10 +185,11 @@ export class CollectionService {
 
     //await Utils.sleep(2000);
 
-    // Only an initialized collectionService can process note requests
-    this.eventService.setNoteOpenEvent.receive(this.setNoteOpenAsync.bind(this));
-    this.eventService.toggleNoteMarkEvent.receive(this.toggleNoteMark.bind(this));
-    this.eventService.requestNotebooksEvent.receive(this.sendNotebooksAsync.bind(this));
+    // Only an initialized collectionService can process global requests
+    this.globalEmitter.on(Constants.setNoteOpenEvent, this.setNoteOpenAsync.bind(this));
+    this.globalEmitter.on(Constants.toggleNoteMarkEvent, this.toggleNoteMark.bind(this));
+    this.globalEmitter.on(Constants.requestNotebooksEvent, this.sendNotebooksAsync.bind(this));
+    this.globalEmitter.on(Constants.setNotebookEvent, this.setNotebook.bind(this));
 
     this.isInitializing = false;
   }
@@ -295,12 +299,12 @@ export class CollectionService {
       notebookName = notebook.name;
     }
 
-    this.eventService.sendNoteDetailsEvent.send(noteId, note.title, notebookName, note.isMarked);
+    this.globalEmitter.emit(`${Constants.sendNoteDetailsEvent}-${noteId}`, new NoteDetailsResult(note.title, notebookName, note.isMarked));
   }
 
-  private async sendNotebooksAsync(requestId: string) {
+  private async sendNotebooksAsync(notebooksRequestId: string) {
     let notebooks: Notebook[] = await this.getNotebooksAsync(false);
-    this.eventService.sendNotebooksEvent.send(requestId, notebooks);
+    this.globalEmitter.emit(notebooksRequestId, notebooks);
   }
 
   private async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
@@ -770,5 +774,31 @@ export class CollectionService {
 
     this.noteMarkChanged.next(result);
     this.sendNoteDetailsAsync(noteId);
+  }
+
+  public setNotebook(noteId: string, notebookId: string): Operation {
+    if (!noteId) {
+      log.error("setNotebook: noteId is null");
+      return Operation.Error;
+    }
+
+    if (!notebookId) {
+      log.error("setNotebook: notebookId is null");
+      return Operation.Error;
+    }
+
+    try {
+      let note: Note = this.dataStore.getNoteById(noteId);
+      note.notebookId = notebookId;
+      this.dataStore.updateNote(note);
+    } catch (error) {
+      log.error(`Could not set the notebook for the note with id='${noteId}' to notebook with id='${notebookId}'. Cause: ${error}`);
+      return Operation.Error;
+    }
+
+    this.noteNotebookChanged.next();
+    this.sendNoteDetailsAsync(noteId);
+
+    return Operation.Success;
   }
 }
