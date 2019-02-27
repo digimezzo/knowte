@@ -29,7 +29,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     // Workaround for auto reload
-    await this.collectionService.initializeDataStoreAsync();
+    await this.collectionService.initializeAsync();
     await this.getCollectionsAsync();
 
     this.subscription = this.collectionService.collectionsChanged$.subscribe(() => this.router.navigate(['/loading']));

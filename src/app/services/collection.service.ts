@@ -82,7 +82,7 @@ export class CollectionService {
     return true;
   }
 
-  public async initializeStorageDirectoryAsync(parentDirectory: string): Promise<boolean> {
+  public async setStorageDirectoryAsync(parentDirectory: string): Promise<boolean> {
     try {
       // Generate storage directory path based on parent directory
       let storageDirectory: string = path.join(parentDirectory, Constants.collectionsDirectory);
@@ -134,11 +134,15 @@ export class CollectionService {
     return collections;
   }
 
-  public async initializeDataStoreAsync(): Promise<void> {
+  public async initializeAsync(): Promise<void> {
     // Prevents initializing multiple times. To prevent calling 
     // functions before initialization is complete, force a wait.
-    while (this.isInitializing) {
-      await Utils.sleep(100);
+    if (this.isInitializing) {
+      while (this.isInitializing) {
+        await Utils.sleep(100);
+      }
+
+      return;
     }
 
     this.isInitializing = true;

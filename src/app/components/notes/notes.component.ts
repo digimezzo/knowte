@@ -65,10 +65,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     async ngOnInit() {
         // Workaround for auto reload
-        await this.collectionService.initializeDataStoreAsync();
-
-        // Get notes
-        await this.getNotesAsync();
+        await this.collectionService.initializeAsync();
 
         this.subscription = this.collectionService.noteAdded$.subscribe(async () => await this.getNotesAsync());
         this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => this.getNotesAsync()));

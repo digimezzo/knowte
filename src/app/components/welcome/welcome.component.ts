@@ -42,14 +42,14 @@ export class WelcomeComponent implements OnInit {
             this.zone.run(async () => {
                 this.isBusy = true;
 
-                if (!await this.collectionService.initializeStorageDirectoryAsync(selectedParentDirectory)) {
+                if (!await this.collectionService.setStorageDirectoryAsync(selectedParentDirectory)) {
                     let errorText: string = await this.translate.get('ErrorTexts.StorageDirectoryCreationError', {storageDirectory: selectedParentDirectory}).toPromise();
                     this.dialog.open(ErrorDialogComponent, {
                         width: '450px', data: { errorText: errorText }
                     });
                 }
 
-                await this.collectionService.initializeDataStoreAsync();
+                await this.collectionService.initializeAsync();
 
                 this.isBusy = false;
 
