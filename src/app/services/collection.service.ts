@@ -300,7 +300,6 @@ export class CollectionService {
   }
 
   private async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
-    log.info(`COLLECTIONSERVICE: ${nanoid()}`);
     if (isOpen) {
       if (!this.openNoteIds.includes(noteId)) {
         this.openNoteIds.push(noteId);
