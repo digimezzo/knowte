@@ -302,6 +302,24 @@ export class CollectionService {
     this.globalEmitter.emit(`${Constants.sendNoteDetailsEvent}-${noteId}`, new NoteDetailsResult(note.title, notebookName, note.isMarked));
   }
 
+  private sendNoteMark(noteId: string): void {
+    let note: Note = this.dataStore.getNoteById(noteId);
+   
+    this.globalEmitter.emit(`${Constants.sendNoteMarkEvent}-${noteId}`, note.isMarked);
+  }
+
+  private async sendNotebookNameAsync(noteId: string) {
+    let note: Note = this.dataStore.getNoteById(noteId);
+    let notebookName: string = await this.translateService.get('MainPage.UnfiledNotes').toPromise();
+
+    if (note.notebookId) {
+      let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
+      notebookName = notebook.name;
+    }
+
+    this.globalEmitter.emit(`${Constants.sendNotebookNameEvent}-${noteId}`, notebookName);
+  }
+
   private async sendNotebooksAsync(noteId: string) {
     let notebooks: Notebook[] = await this.getNotebooksAsync(false);
     this.globalEmitter.emit(`${Constants.sendNotebooksEvent}-${noteId}`, notebooks);
@@ -773,7 +791,7 @@ export class CollectionService {
     let result: NoteMarkResult = new NoteMarkResult(noteId, note.isMarked, markedNotes.length);
 
     this.noteMarkChanged.next(result);
-    this.sendNoteDetailsAsync(noteId);
+    this.sendNoteMark(noteId);
   }
 
   public setNotebook(noteId: string, notebookId: string): Operation {
@@ -789,6 +807,11 @@ export class CollectionService {
 
     try {
       let note: Note = this.dataStore.getNoteById(noteId);
+
+      if(notebookId === Constants.unfiledNotesNotebookId){
+        notebookId = "";
+      }
+      
       note.notebookId = notebookId;
       this.dataStore.updateNote(note);
     } catch (error) {
@@ -797,7 +820,7 @@ export class CollectionService {
     }
 
     this.noteNotebookChanged.next();
-    this.sendNoteDetailsAsync(noteId);
+    this.sendNotebookNameAsync(noteId);
 
     return Operation.Success;
   }
