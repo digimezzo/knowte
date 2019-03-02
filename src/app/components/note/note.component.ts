@@ -30,7 +30,6 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     public noteTitleChanged: Subject<string> = new Subject<string>();
 
-    private setNoteDetailsListener: any = this.setNoteDetails.bind(this);
     private setNoteMarkListener: any = this.setNoteMark.bind(this);
     private setNotebookListener: any = this.setNotebook.bind(this);
 
@@ -38,9 +37,10 @@ export class NoteComponent implements OnInit, OnDestroy {
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
         this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, false);
-        this.globalEmitter.removeListener(`${Constants.sendNoteDetailsEvent}-${this.noteId}`, this.setNoteDetailsListener);
+
         this.globalEmitter.removeListener(`${Constants.sendNoteMarkEvent}-${this.noteId}`, this.setNoteMarkListener);
         this.globalEmitter.removeListener(`${Constants.sendNotebookNameEvent}-${this.noteId}`, this.setNotebookListener);
+        
     }
 
     ngOnDestroy() {
@@ -49,10 +49,10 @@ export class NoteComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
-            this.globalEmitter.on(`${Constants.sendNoteDetailsEvent}-${this.noteId}`, this.setNoteDetailsListener);
             this.globalEmitter.on(`${Constants.sendNoteMarkEvent}-${this.noteId}`, this.setNoteMarkListener);
             this.globalEmitter.on(`${Constants.sendNotebookNameEvent}-${this.noteId}`, this.setNotebookListener);
             this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, true);
+            this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNoteDetailsCallback.bind(this));
         });
 
         this.noteTitleChanged
@@ -62,7 +62,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             });
     }
 
-    private setNoteDetails(result: NoteDetailsResult) {
+    private getNoteDetailsCallback(result: NoteDetailsResult) {
         this.zone.run(() => {
             this.noteTitle = result.noteTitle;
             this.notebookName = result.notebookName;

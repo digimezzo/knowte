@@ -188,9 +188,10 @@ export class CollectionService {
     // Only an initialized collectionService can process global requests
     this.globalEmitter.on(Constants.setNoteOpenEvent, this.setNoteOpenAsync.bind(this));
     this.globalEmitter.on(Constants.toggleNoteMarkEvent, this.toggleNoteMark.bind(this));
-    this.globalEmitter.on(Constants.requestNotebooksEvent, this.sendNotebooksAsync.bind(this));
     this.globalEmitter.on(Constants.setNotebookEvent, this.setNotebook.bind(this));
 
+    this.globalEmitter.on(Constants.getNoteDetailsEvent, this.getNoteDetailsEventHandler.bind(this));
+    this.globalEmitter.on(Constants.getNotebooksEvent, this.getNotebooksEventHandler.bind(this));
     this.isInitializing = false;
   }
 
@@ -290,7 +291,7 @@ export class CollectionService {
     return this.settings.get('activeCollection');
   }
 
-  private async sendNoteDetailsAsync(noteId: string) {
+  private async getNoteDetailsEventHandler(noteId: string, callback: any): Promise<void> {
     let note: Note = this.dataStore.getNoteById(noteId);
     let notebookName: string = await this.translateService.get('MainPage.UnfiledNotes').toPromise();
 
@@ -299,12 +300,12 @@ export class CollectionService {
       notebookName = notebook.name;
     }
 
-    this.globalEmitter.emit(`${Constants.sendNoteDetailsEvent}-${noteId}`, new NoteDetailsResult(note.title, notebookName, note.isMarked));
+    callback(new NoteDetailsResult(note.title, notebookName, note.isMarked));
   }
 
   private sendNoteMark(noteId: string): void {
     let note: Note = this.dataStore.getNoteById(noteId);
-   
+
     this.globalEmitter.emit(`${Constants.sendNoteMarkEvent}-${noteId}`, note.isMarked);
   }
 
@@ -320,18 +321,16 @@ export class CollectionService {
     this.globalEmitter.emit(`${Constants.sendNotebookNameEvent}-${noteId}`, notebookName);
   }
 
-  private async sendNotebooksAsync(noteId: string) {
+  private async getNotebooksEventHandler(noteId: string, callback: any): Promise<void> {
     let notebooks: Notebook[] = await this.getNotebooksAsync(false);
-    this.globalEmitter.emit(`${Constants.sendNotebooksEvent}-${noteId}`, notebooks);
+    callback(notebooks);
   }
 
-  private async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
+  private async setNoteOpenAsync(noteId: string, test: string, isOpen: boolean): Promise<void> {
     if (isOpen) {
       if (!this.openNoteIds.includes(noteId)) {
         this.openNoteIds.push(noteId);
       }
-
-      await this.sendNoteDetailsAsync(noteId);
     } else {
       if (this.openNoteIds.includes(noteId)) {
         this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);
@@ -808,10 +807,10 @@ export class CollectionService {
     try {
       let note: Note = this.dataStore.getNoteById(noteId);
 
-      if(notebookId === Constants.unfiledNotesNotebookId){
+      if (notebookId === Constants.unfiledNotesNotebookId) {
         notebookId = "";
       }
-      
+
       note.notebookId = notebookId;
       this.dataStore.updateNote(note);
     } catch (error) {

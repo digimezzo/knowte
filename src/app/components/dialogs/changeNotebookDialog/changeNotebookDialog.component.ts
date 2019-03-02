@@ -18,18 +18,14 @@ export class ChangeNotebookDialogComponent implements OnInit, OnDestroy {
     private globalEmitter = remote.getGlobal('globalEmitter');
     public notebooks: Notebook[];
 
-    private populateNotebooksListener: any = this.populateNotebooks.bind(this);
-
     ngOnDestroy() {
-        this.globalEmitter.removeListener(`${Constants.sendNotebooksEvent}-${this.data.noteId}`, this.populateNotebooksListener);
     }
 
     async ngOnInit() {
-        this.globalEmitter.on(`${Constants.sendNotebooksEvent}-${this.data.noteId}`, this.populateNotebooksListener);
-        this.globalEmitter.emit(Constants.requestNotebooksEvent, this.data.noteId);
+        this.globalEmitter.emit(Constants.getNotebooksEvent, this.data.noteId, this.getNotebooksCallback.bind(this));
     }
 
-    private populateNotebooks(notebooks: Notebook[]): void {
+    private getNotebooksCallback(notebooks: Notebook[]): void {
         this.notebooks = notebooks;
     }
 
