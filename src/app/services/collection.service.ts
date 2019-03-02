@@ -321,7 +321,7 @@ export class CollectionService {
     this.globalEmitter.emit(`${Constants.sendNotebookNameEvent}-${noteId}`, notebookName);
   }
 
-  private async getNotebooksEventHandler(noteId: string, callback: any): Promise<void> {
+  private async getNotebooksEventHandler(callback: any): Promise<void> {
     let notebooks: Notebook[] = await this.getNotebooksAsync(false);
     callback(notebooks);
   }

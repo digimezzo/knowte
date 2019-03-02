@@ -22,7 +22,7 @@ export class ChangeNotebookDialogComponent implements OnInit, OnDestroy {
     }
 
     async ngOnInit() {
-        this.globalEmitter.emit(Constants.getNotebooksEvent, this.data.noteId, this.getNotebooksCallback.bind(this));
+        this.globalEmitter.emit(Constants.getNotebooksEvent, this.getNotebooksCallback.bind(this));
     }
 
     private getNotebooksCallback(notebooks: Notebook[]): void {
