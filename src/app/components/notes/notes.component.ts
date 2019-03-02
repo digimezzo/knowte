@@ -171,7 +171,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         }
     }
 
-    public toggleNoteMark(noteId: string): void {
-        this.collectionService.toggleNoteMark(noteId);
+    public toggleNoteMark(note: Note): void {
+        this.collectionService.setNoteMark(note.id, !note.isMarked);
     }
 }

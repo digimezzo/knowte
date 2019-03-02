@@ -187,9 +187,8 @@ export class CollectionService {
 
     // Only an initialized collectionService can process global requests
     this.globalEmitter.on(Constants.setNoteOpenEvent, this.setNoteOpenAsync.bind(this));
-    this.globalEmitter.on(Constants.toggleNoteMarkEvent, this.toggleNoteMark.bind(this));
+    this.globalEmitter.on(Constants.setNoteMarkEvent, this.setNoteMark.bind(this));
     this.globalEmitter.on(Constants.setNotebookEvent, this.setNotebook.bind(this));
-
     this.globalEmitter.on(Constants.getNoteDetailsEvent, this.getNoteDetailsEventHandler.bind(this));
     this.globalEmitter.on(Constants.getNotebooksEvent, this.getNotebooksEventHandler.bind(this));
     this.isInitializing = false;
@@ -303,12 +302,6 @@ export class CollectionService {
     callback(new NoteDetailsResult(note.title, notebookName, note.isMarked));
   }
 
-  private sendNoteMark(noteId: string): void {
-    let note: Note = this.dataStore.getNoteById(noteId);
-
-    this.globalEmitter.emit(`${Constants.sendNoteMarkEvent}-${noteId}`, note.isMarked);
-  }
-
   private async sendNotebookNameAsync(noteId: string) {
     let note: Note = this.dataStore.getNoteById(noteId);
     let notebookName: string = await this.translateService.get('MainPage.UnfiledNotes').toPromise();
@@ -318,7 +311,7 @@ export class CollectionService {
       notebookName = notebook.name;
     }
 
-    this.globalEmitter.emit(`${Constants.sendNotebookNameEvent}-${noteId}`, notebookName);
+    this.globalEmitter.emit(Constants.notebookChangedEvent, noteId, notebookName);
   }
 
   private async getNotebooksEventHandler(callback: any): Promise<void> {
@@ -781,16 +774,16 @@ export class CollectionService {
     return notebook;
   }
 
-  public toggleNoteMark(noteId: string): void {
+  public setNoteMark(noteId: string, isMarked: boolean): void {
     let note: Note = this.dataStore.getNoteById(noteId);
-    note.isMarked = !note.isMarked;
+    note.isMarked = isMarked;
     this.dataStore.updateNote(note);
 
     let markedNotes: Note[] = this.dataStore.getMarkedNotes();
     let result: NoteMarkResult = new NoteMarkResult(noteId, note.isMarked, markedNotes.length);
 
     this.noteMarkChanged.next(result);
-    this.sendNoteMark(noteId);
+    this.globalEmitter.emit(Constants.noteMarkChangedEvent, note.id, note.isMarked);
   }
 
   public setNotebook(noteId: string, notebookId: string): Operation {

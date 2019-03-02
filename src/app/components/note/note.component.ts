@@ -30,17 +30,17 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     public noteTitleChanged: Subject<string> = new Subject<string>();
 
-    private setNoteMarkListener: any = this.setNoteMark.bind(this);
-    private setNotebookListener: any = this.setNotebook.bind(this);
+    private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
+    private notebookChangedListener: any = this.notebookChangedHandler.bind(this);
 
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
         this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, false);
 
-        this.globalEmitter.removeListener(`${Constants.sendNoteMarkEvent}-${this.noteId}`, this.setNoteMarkListener);
-        this.globalEmitter.removeListener(`${Constants.sendNotebookNameEvent}-${this.noteId}`, this.setNotebookListener);
-        
+        this.globalEmitter.removeListener(`${Constants.noteMarkChangedEvent}-${this.noteId}`, this.noteMarkChangedListener);
+        this.globalEmitter.removeListener(`${Constants.notebookChangedEvent}`, this.notebookChangedListener);
+
     }
 
     ngOnDestroy() {
@@ -49,8 +49,8 @@ export class NoteComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
-            this.globalEmitter.on(`${Constants.sendNoteMarkEvent}-${this.noteId}`, this.setNoteMarkListener);
-            this.globalEmitter.on(`${Constants.sendNotebookNameEvent}-${this.noteId}`, this.setNotebookListener);
+            this.globalEmitter.on(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
+            this.globalEmitter.on(Constants.notebookChangedEvent, this.notebookChangedListener);
             this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, true);
             this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNoteDetailsCallback.bind(this));
         });
@@ -70,16 +70,16 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
     }
 
-    private setNoteMark(isMarked: boolean) {
-        this.zone.run(() => {
-            this.isMarked = isMarked;
-        });
+    private noteMarkChangedHandler(noteId: string, isMarked: boolean) {
+        if (this.noteId === noteId) {
+            this.zone.run(() => this.isMarked = isMarked);
+        }
     }
 
-    private setNotebook(notebookName: string) {
-        this.zone.run(() => {
-            this.notebookName = notebookName;
-        });
+    private notebookChangedHandler(noteId: string, notebookName: string) {
+        if (this.noteId === noteId) {
+            this.zone.run(() => this.notebookName = notebookName);
+        }
     }
 
     private handleNoteMarkToggled(isNoteMarked: boolean) {
@@ -93,7 +93,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public toggleNoteMark(): void {
-        this.globalEmitter.emit(Constants.toggleNoteMarkEvent, this.noteId);
+        this.globalEmitter.emit(Constants.setNoteMarkEvent, this.noteId, !this.isMarked);
     }
 
     public onNotetitleChange(newNoteTitle: string) {
