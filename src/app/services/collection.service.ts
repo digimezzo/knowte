@@ -836,21 +836,24 @@ export class CollectionService {
     return Operation.Success;
   }
 
-  public setNoteTitleEventHandler(noteId: string, initialNoteTitle: string, finalNoteTitle: string, callback: any): NoteOperationResult {
+  public setNoteTitleEventHandler(noteId: string, initialNoteTitle: string, finalNoteTitle: string, callback: any) {
     if (!noteId || !initialNoteTitle) {
       log.error("renameNote: noteId or initialNoteTitle is null");
-      return new NoteOperationResult(Operation.Error);
+      callback(new NoteOperationResult(Operation.Error));
+      return;
     }
 
     let uniqueNoteTitle: string = finalNoteTitle.trim();
 
     if (uniqueNoteTitle.length === 0) {
-      return new NoteOperationResult(Operation.Blank);
+      callback(new NoteOperationResult(Operation.Blank));
+      return;
     }
 
     if (initialNoteTitle === uniqueNoteTitle) {
       log.error("Final title is the same as initial title. No rename required.");
-      return new NoteOperationResult(Operation.Aborted);
+      callback(new NoteOperationResult(Operation.Aborted));
+      return;
     }
 
     try {
@@ -865,7 +868,8 @@ export class CollectionService {
       log.info(`Renamed note with id=${noteId} from ${initialNoteTitle} to ${uniqueNoteTitle}.`);
     } catch (error) {
       log.error(`Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`);
-      return new NoteOperationResult(Operation.Error);
+      callback(new NoteOperationResult(Operation.Error));
+      return;
     }
 
     let result: NoteOperationResult = new NoteOperationResult(Operation.Success);
@@ -874,7 +878,5 @@ export class CollectionService {
 
     this.noteRenamed.next();
     callback(result);
-
-    return result;
   }
 }
