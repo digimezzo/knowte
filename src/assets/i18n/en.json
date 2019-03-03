@@ -133,7 +133,7 @@
         "Today": "Today",
         "Yesterday": "Yesterday",
         "DaysAgo": "{{count}} days ago",
-        "Last week": "Last week",
+        "LastWeek": "Last week",
         "WeeksAgo": "{{count}} weeks ago",
         "MonthsAgo": "{{count}} months ago",
         "LongAgo": "Long ago"
