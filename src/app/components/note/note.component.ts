@@ -8,6 +8,11 @@ import { ChangeNotebookDialogComponent } from '../dialogs/changeNotebookDialog/c
 import { Constants } from '../../core/constants';
 import { Subject } from 'rxjs';
 import { debounceTime } from "rxjs/internal/operators";
+import { Operation } from '../../core/enums';
+import { NoteOperationResult } from '../../services/results/noteOperationResult';
+import { SnackBarService } from '../../services/snackBar.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 
 @Component({
     selector: 'note-content',
@@ -16,14 +21,15 @@ import { debounceTime } from "rxjs/internal/operators";
     encapsulation: ViewEncapsulation.None
 })
 export class NoteComponent implements OnInit, OnDestroy {
-    constructor(private activatedRoute: ActivatedRoute, private zone: NgZone,
-        private dialog: MatDialog) {
+    constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, 
+        private snackBarService: SnackBarService, private translateService: TranslateService) {
     }
 
     private saveTimeoutMilliseconds: number = 5000;
 
     private globalEmitter = remote.getGlobal('globalEmitter');
     private noteId: string;
+    public initialNoteTitle: string;
     public noteTitle: string;
     public notebookName: string;
     public isMarked: boolean;
@@ -37,10 +43,8 @@ export class NoteComponent implements OnInit, OnDestroy {
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
         this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, false);
-
         this.globalEmitter.removeListener(`${Constants.noteMarkChangedEvent}-${this.noteId}`, this.noteMarkChangedListener);
         this.globalEmitter.removeListener(`${Constants.notebookChangedEvent}`, this.notebookChangedListener);
-
     }
 
     ngOnDestroy() {
@@ -57,13 +61,14 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         this.noteTitleChanged
             .pipe(debounceTime(this.saveTimeoutMilliseconds))
-            .subscribe(async (newNoteTitle) => {
-                await this.saveNoteTitleAsync(newNoteTitle);
+            .subscribe((finalNoteTitle) => {
+                this.globalEmitter.emit(Constants.setNoteTitleEvent, this.noteId, this.initialNoteTitle, finalNoteTitle, this.setNoteTitleCallback.bind(this));
             });
     }
 
     private getNoteDetailsCallback(result: NoteDetailsResult) {
         this.zone.run(() => {
+            this.initialNoteTitle = result.noteTitle;
             this.noteTitle = result.noteTitle;
             this.notebookName = result.notebookName;
             this.isMarked = result.isMarked;
@@ -100,27 +105,22 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.noteTitleChanged.next(newNoteTitle);
     }
 
-    private async saveNoteTitleAsync(newNoteTitle: string): Promise<void> {
-        // let result: OperationResult = this.Service.renameNote(this.noteId, this.originalNoteTitle, newNoteTitle);
+    private async setNoteTitleCallback(result: NoteOperationResult): Promise<void> {
+        if (result.operation === Operation.Blank) {
+            this.noteTitle = this.initialNoteTitle;
+            this.snackBarService.noteTitleCannotBeEmptyAsync();
+        } else if (result.operation === Operation.Error) {
+            this.noteTitle = this.initialNoteTitle;
+            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.initialNoteTitle }).toPromise());
 
-        // if (result.operation === Operation.Blank) {
-        //     this.noteTitle = this.originalNoteTitle;
-        //     this.snackBarService.noteTitleCannotBeEmptyAsync();
-        // } else if (result.operation === Operation.Error) {
-        //     this.noteTitle = this.originalNoteTitle;
-        //     let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.originalNoteTitle }).toPromise());
-
-        //     this.dialog.open(ErrorDialogComponent, {
-        //         width: '450px', data: { errorText: generatedErrorText }
-        //     });
-        // } else if (result.operation === Operation.Success) {
-        //     this.originalNoteTitle = result.noteTitle;
-        //     this.noteTitle = result.noteTitle;
-        // } else {
-        //     // Do nothing
-        // }
-
-        // TODO: global event
-        log.info("SAVING NOTE TITLE");
+            this.dialog.open(ErrorDialogComponent, {
+                width: '450px', data: { errorText: generatedErrorText }
+            });
+        } else if (result.operation === Operation.Success) {
+            this.initialNoteTitle = result.noteTitle;
+            this.noteTitle = result.noteTitle;
+        } else {
+            // Do nothing
+        }
     }
 }

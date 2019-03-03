@@ -68,6 +68,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         await this.collectionService.initializeAsync();
 
         this.subscription = this.collectionService.noteAdded$.subscribe(async () => await this.getNotesAsync());
+        this.subscription = this.collectionService.noteRenamed$.subscribe(async () => this.zone.run(async () => await this.getNotesAsync()));
         this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(async () => this.zone.run(async () => await this.getNotesAsync())));
         this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => this.getNotesAsync()));
 

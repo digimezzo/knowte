@@ -23,6 +23,7 @@ export class Constants {
     static readonly setNoteOpenEvent: string = "b4a112dd-25ac-4ec6-bd08-3b8e7fbdedda";
     static readonly setNotebookEvent: string = "cf6f3e12-b435-4787-a81c-f40c99b176d9";
     static readonly setNoteMarkEvent: string = "1386e290-1f5d-4ca8-b8c3-76c5991faeba";
+    static readonly setNoteTitleEvent: string = "d81c66b1-34f3-4b9d-9275-2aa6cee35201";
     static readonly getNotebooksEvent: string = "00169e63-412e-428b-b969-8dd4b3602a02";
     static readonly getNoteDetailsEvent: string = "db3595b0-0997-414e-a30e-c5921c8d9861";
     static readonly notebookChangedEvent: string = "2518f49c-50f0-4165-ad92-cfa00476d884";

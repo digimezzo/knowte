@@ -54,6 +54,9 @@ export class CollectionService {
   private noteDeleted = new Subject();
   noteDeleted$ = this.noteDeleted.asObservable();
 
+  private noteRenamed = new Subject();
+  noteRenamed$ = this.noteRenamed.asObservable();
+
   private notesCountChanged = new Subject<NotesCountResult>();
   notesCountChanged$ = this.notesCountChanged.asObservable();
 
@@ -191,6 +194,7 @@ export class CollectionService {
     this.globalEmitter.on(Constants.setNotebookEvent, this.setNotebook.bind(this));
     this.globalEmitter.on(Constants.getNoteDetailsEvent, this.getNoteDetailsEventHandler.bind(this));
     this.globalEmitter.on(Constants.getNotebooksEvent, this.getNotebooksEventHandler.bind(this));
+    this.globalEmitter.on(Constants.setNoteTitleEvent, this.setNoteTitleEventHandler.bind(this));
     this.isInitializing = false;
   }
 
@@ -732,6 +736,21 @@ export class CollectionService {
     return uniqueTitle;
   }
 
+  private getUniqueNoteNoteTitle(baseTitle: string): string {
+    let counter: number = 0;
+    let uniqueTitle: string = baseTitle;
+
+    let notesWithIdenticalBaseTitle: Note[] = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
+    let similarTitles: string[] = notesWithIdenticalBaseTitle.map(x => x.title);
+
+    while (similarTitles.includes(uniqueTitle)) {
+      counter++;
+      uniqueTitle = `${baseTitle} (${counter})`;
+    }
+
+    return uniqueTitle;
+  }
+
   public addNote(baseTitle: string, notebookId: string): NoteOperationResult {
     let uniqueTitle: string = "";
     let result: NoteOperationResult = new NoteOperationResult(Operation.Success);
@@ -815,5 +834,47 @@ export class CollectionService {
     this.sendNotebookNameAsync(noteId);
 
     return Operation.Success;
+  }
+
+  public setNoteTitleEventHandler(noteId: string, initialNoteTitle: string, finalNoteTitle: string, callback: any): NoteOperationResult {
+    if (!noteId || !initialNoteTitle) {
+      log.error("renameNote: noteId or initialNoteTitle is null");
+      return new NoteOperationResult(Operation.Error);
+    }
+
+    let uniqueNoteTitle: string = finalNoteTitle.trim();
+
+    if (uniqueNoteTitle.length === 0) {
+      return new NoteOperationResult(Operation.Blank);
+    }
+
+    if (initialNoteTitle === uniqueNoteTitle) {
+      log.error("Final title is the same as initial title. No rename required.");
+      return new NoteOperationResult(Operation.Aborted);
+    }
+
+    try {
+      // 1. Make sure the final title is unique
+      uniqueNoteTitle = this.getUniqueNoteNoteTitle(finalNoteTitle);
+
+      // 2. Rename the note
+      let note: Note = this.dataStore.getNoteById(noteId);
+      note.title = uniqueNoteTitle;
+      this.dataStore.updateNote(note);
+
+      log.info(`Renamed note with id=${noteId} from ${initialNoteTitle} to ${uniqueNoteTitle}.`);
+    } catch (error) {
+      log.error(`Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`);
+      return new NoteOperationResult(Operation.Error);
+    }
+
+    let result: NoteOperationResult = new NoteOperationResult(Operation.Success);
+    result.noteId = noteId;
+    result.noteTitle = uniqueNoteTitle;
+
+    this.noteRenamed.next();
+    callback(result);
+
+    return result;
   }
 }
