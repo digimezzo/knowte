@@ -379,29 +379,6 @@ export class CollectionService {
     return Operation.Success;
   }
 
-  public getNoteContent(noteId: string): NoteOperationResult {
-    if (!noteId) {
-      log.error("getNoteContent: noteId is null");
-      return new NoteOperationResult(Operation.Error);
-    }
-
-    let noteContent: string = "";
-
-    try {
-      let activeCollection: string = this.settings.get('activeCollection');
-      noteContent = fs.readFileSync(path.join(this.collectionToPath(activeCollection), `${noteId}${Constants.noteExtension}`), 'utf8');
-    } catch (error) {
-      log.error(`Could not get the content for the note with id='${noteId}'. Cause: ${error}`);
-      return new NoteOperationResult(Operation.Error);
-    }
-
-    let result: NoteOperationResult = new NoteOperationResult(Operation.Success);
-    result.noteId = noteId;
-    result.noteContent = noteContent;
-
-    return result;
-  }
-
   public async getNotebooksAsync(includeAllNotes: boolean): Promise<Notebook[]> {
     let notebooks: Notebook[] = [];
 

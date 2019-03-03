@@ -95,6 +95,8 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.globalEmitter.on(Constants.notebookChangedEvent, this.notebookChangedListener);
             this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, true);
             this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNoteDetailsCallback.bind(this));
+
+            this.getNoteContentAsync();
         });
 
         this.noteTitleChanged
@@ -176,9 +178,9 @@ export class NoteComponent implements OnInit, OnDestroy {
         if (operation === Operation.Success) {
             try {
                 // Update the note file on disk
-                let storageDirectory: string = this.settings.get('storageDirectory');
+                let activeCollection: string = this.settings.get('activeCollection');
                 let jsonContent: string = JSON.stringify(this.quill.getContents());
-                fs.writeFileSync(path.join(storageDirectory, `${this.noteId}${Constants.noteExtension}`), jsonContent);
+                fs.writeFileSync(path.join(this.collectionToPath(activeCollection), `${this.noteId}${Constants.noteExtension}`), jsonContent);
             } catch (error) {
                 log.error(`Could not set text for the note with id='${this.noteId}' in the note file. Cause: ${error}`);
                 showErrorDialog = true;
@@ -196,6 +198,32 @@ export class NoteComponent implements OnInit, OnDestroy {
                 this.dialog.open(ErrorDialogComponent, {
                     width: '450px', data: { errorText: generatedErrorText }
                 });
+            });
+        }
+    }
+
+    private collectionToPath(collection: string): string {
+        let storageDirectory: string = this.settings.get('storageDirectory');
+
+        return path.join(storageDirectory, collection);
+    }
+
+    public async getNoteContentAsync() {
+        try {
+            let activeCollection: string = this.settings.get('activeCollection');
+            let noteContent: string = fs.readFileSync(path.join(this.collectionToPath(activeCollection), `${this.noteId}${Constants.noteExtension}`), 'utf8');
+
+            if (noteContent) {
+                // We can only parse to json if there is content
+                this.quill.setContents(JSON.parse(noteContent), 'silent');
+            }
+        } catch (error) {
+            log.error(`Could not get the content for the note with id='${this.noteId}'. Cause: ${error}`);
+
+            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.GetNoteContentError').toPromise());
+
+            this.dialog.open(ErrorDialogComponent, {
+                width: '450px', data: { errorText: generatedErrorText }
             });
         }
     }
