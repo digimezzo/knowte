@@ -195,6 +195,7 @@ export class CollectionService {
     this.globalEmitter.on(Constants.getNoteDetailsEvent, this.getNoteDetailsEventHandler.bind(this));
     this.globalEmitter.on(Constants.getNotebooksEvent, this.getNotebooksEventHandler.bind(this));
     this.globalEmitter.on(Constants.setNoteTitleEvent, this.setNoteTitleEventHandler.bind(this));
+    this.globalEmitter.on(Constants.setNoteTextEvent, this.setNoteTextEventHandler.bind(this));
     this.isInitializing = false;
   }
 
@@ -877,5 +878,20 @@ export class CollectionService {
 
     this.noteRenamed.next();
     callback(result);
+  }
+
+  public setNoteTextEventHandler(noteId: string, noteText: string, callback: any) {
+    try {
+      let note: Note = this.dataStore.getNoteById(noteId);
+      note.text = noteText;
+      this.dataStore.updateNote(note);
+    } catch (error) {
+      log.error(`Could not set text for the note with id='${noteId}'. Cause: ${error}`);
+      callback(Operation.Error);
+      return;
+    }
+
+    callback(Operation.Success);
+    return;
   }
 }

@@ -102,7 +102,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.noteTextChanged
             .pipe(debounceTime(this.saveTimeoutMilliseconds))
             .subscribe(async (_) => {
-                // await this.saveNoteContentAsync();
+                this.globalEmitter.emit(Constants.setNoteTextEvent, this.noteId, this.quill.getText(), this.setNoteTextCallback.bind(this));
             });
     }
 
@@ -164,5 +164,9 @@ export class NoteComponent implements OnInit, OnDestroy {
         } else {
             // Do nothing
         }
+    }
+
+    private async setNoteTextCallback(operation: Operation): Promise<void> {
+        // TODO
     }
 }
