@@ -21,7 +21,7 @@ import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.compone
     encapsulation: ViewEncapsulation.None
 })
 export class NoteComponent implements OnInit, OnDestroy {
-    constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, 
+    constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog,
         private snackBarService: SnackBarService, private translateService: TranslateService) {
     }
 
@@ -113,8 +113,10 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.noteTitle = this.initialNoteTitle;
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.initialNoteTitle }).toPromise());
 
-            this.dialog.open(ErrorDialogComponent, {
-                width: '450px', data: { errorText: generatedErrorText }
+            this.zone.run(() => {
+                this.dialog.open(ErrorDialogComponent, {
+                    width: '450px', data: { errorText: generatedErrorText }
+                });
             });
         } else if (result.operation === Operation.Success) {
             this.initialNoteTitle = result.noteTitle;
