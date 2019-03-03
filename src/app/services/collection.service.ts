@@ -886,7 +886,7 @@ export class CollectionService {
       note.text = noteText;
       this.dataStore.updateNote(note);
     } catch (error) {
-      log.error(`Could not set text for the note with id='${noteId}'. Cause: ${error}`);
+      log.error(`Could not set text for the note with id='${noteId}' in the data store. Cause: ${error}`);
       callback(Operation.Error);
       return;
     }

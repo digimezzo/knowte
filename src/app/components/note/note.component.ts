@@ -14,6 +14,9 @@ import { SnackBarService } from '../../services/snackBar.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import * as Quill from 'quill';
+import * as path from 'path';
+import * as fs from 'fs-extra';
+import * as Store from 'electron-store';
 
 @Component({
     selector: 'note-content',
@@ -26,6 +29,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         private snackBarService: SnackBarService, private translateService: TranslateService) {
     }
 
+    private settings: Store = new Store();
     private saveTimeoutMilliseconds: number = 5000;
 
     private quill: Quill;
@@ -147,10 +151,10 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private async setNoteTitleCallback(result: NoteOperationResult): Promise<void> {
         if (result.operation === Operation.Blank) {
-            this.noteTitle = this.initialNoteTitle;
+            this.zone.run(() => this.noteTitle = this.initialNoteTitle);
             this.snackBarService.noteTitleCannotBeEmptyAsync();
         } else if (result.operation === Operation.Error) {
-            this.noteTitle = this.initialNoteTitle;
+            this.zone.run(() => this.noteTitle = this.initialNoteTitle);
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.initialNoteTitle }).toPromise());
 
             this.zone.run(() => {
@@ -160,13 +164,39 @@ export class NoteComponent implements OnInit, OnDestroy {
             });
         } else if (result.operation === Operation.Success) {
             this.initialNoteTitle = result.noteTitle;
-            this.noteTitle = result.noteTitle;
+            this.zone.run(() => this.noteTitle = result.noteTitle);
         } else {
             // Do nothing
         }
     }
 
     private async setNoteTextCallback(operation: Operation): Promise<void> {
-        // TODO
+        let showErrorDialog: boolean = false;
+
+        if (operation === Operation.Success) {
+            try {
+                // Update the note file on disk
+                let storageDirectory: string = this.settings.get('storageDirectory');
+                let jsonContent: string = JSON.stringify(this.quill.getContents());
+                fs.writeFileSync(path.join(storageDirectory, `${this.noteId}${Constants.noteExtension}`), jsonContent);
+            } catch (error) {
+                log.error(`Could not set text for the note with id='${this.noteId}' in the note file. Cause: ${error}`);
+                showErrorDialog = true;
+            }
+        } else if (operation === Operation.Error) {
+            showErrorDialog = true;
+        } else {
+            // Do nothing
+        }
+
+        if (showErrorDialog) {
+            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.UpdateNoteContentError').toPromise());
+
+            this.zone.run(() => {
+                this.dialog.open(ErrorDialogComponent, {
+                    width: '450px', data: { errorText: generatedErrorText }
+                });
+            });
+        }
     }
 }
