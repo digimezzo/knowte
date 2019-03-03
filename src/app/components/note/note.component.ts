@@ -13,6 +13,7 @@ import { NoteOperationResult } from '../../services/results/noteOperationResult'
 import { SnackBarService } from '../../services/snackBar.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
+import * as Quill from 'quill';
 
 @Component({
     selector: 'note-content',
@@ -27,6 +28,8 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private saveTimeoutMilliseconds: number = 5000;
 
+    private quill: Quill;
+
     private globalEmitter = remote.getGlobal('globalEmitter');
     private noteId: string;
     public initialNoteTitle: string;
@@ -35,6 +38,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     public isMarked: boolean;
 
     public noteTitleChanged: Subject<string> = new Subject<string>();
+    public noteTextChanged: Subject<string> = new Subject<string>();
 
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
     private notebookChangedListener: any = this.notebookChangedHandler.bind(this);
@@ -50,7 +54,37 @@ export class NoteComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        let notePlaceHolder: string = await this.translateService.get('Notes.NotePlaceholder').toPromise();
+
+        let toolbarOptions: any = [
+            [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+            ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+            [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            ['blockquote', 'code-block'],
+            // [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+            // [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
+            // [{ 'direction': 'rtl' }],                         // text direction
+            // [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+            // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            // [{ 'font': [] }],
+            // [{ 'align': [] }],
+            ['clean']                                         // remove formatting button
+        ];
+
+        this.quill = new Quill('#editor', {
+            modules: {
+                toolbar: toolbarOptions
+            },
+            placeholder: notePlaceHolder,
+            theme: 'snow',
+        });
+
+        this.quill.on('text-change', () => {
+            this.noteTextChanged.next("");
+        });
+
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
             this.globalEmitter.on(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
@@ -63,6 +97,12 @@ export class NoteComponent implements OnInit, OnDestroy {
             .pipe(debounceTime(this.saveTimeoutMilliseconds))
             .subscribe((finalNoteTitle) => {
                 this.globalEmitter.emit(Constants.setNoteTitleEvent, this.noteId, this.initialNoteTitle, finalNoteTitle, this.setNoteTitleCallback.bind(this));
+            });
+
+        this.noteTextChanged
+            .pipe(debounceTime(this.saveTimeoutMilliseconds))
+            .subscribe(async (_) => {
+                // await this.saveNoteContentAsync();
             });
     }
 
