@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, OnDestroy, HostListener, NgZone } from '@angular/core';
-import { remote } from 'electron';
+import { remote, BrowserWindow } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/noteDetailsResult';
 import log from 'electron-log';
@@ -31,6 +31,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private settings: Store = new Store();
     private saveTimeoutMilliseconds: number = 5000;
+    private windowCloseTimeoutMilliseconds: number = 500;
 
     private quill: Quill;
 
@@ -41,8 +42,12 @@ export class NoteComponent implements OnInit, OnDestroy {
     public notebookName: string;
     public isMarked: boolean;
 
+    private isTitleChanged: boolean = false;
+    private isTextChanged: boolean = false;
+
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteTextChanged: Subject<string> = new Subject<string>();
+    public saveChangesAndCloseNoteWindow: Subject<string> = new Subject<string>();
 
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
     private notebookChangedListener: any = this.notebookChangedHandler.bind(this);
@@ -50,6 +55,25 @@ export class NoteComponent implements OnInit, OnDestroy {
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
+        log.info(`Detected closing of note with id=${this.noteId}`);
+
+        // Prevents closing of the window
+        if (this.isTitleChanged || this.isTextChanged) {
+            this.isTitleChanged = false;
+            this.isTextChanged = false;
+
+            log.info(`Note with id=${this.noteId} is dirty. Preventing close to save changes first.`);
+            event.preventDefault();
+            event.returnValue = '';
+
+            this.saveChangesAndCloseNoteWindow.next("");
+        } else {
+            log.info(`Note with id=${this.noteId} is clean. Closing directly.`);
+            this.cleanup();
+        }
+    }
+
+    private cleanup(): void {
         this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, false);
         this.globalEmitter.removeListener(`${Constants.noteMarkChangedEvent}-${this.noteId}`, this.noteMarkChangedListener);
         this.globalEmitter.removeListener(`${Constants.notebookChangedEvent}`, this.notebookChangedListener);
@@ -86,6 +110,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
 
         this.quill.on('text-change', () => {
+            this.isTextChanged = true;
             this.noteTextChanged.next("");
         });
 
@@ -110,6 +135,23 @@ export class NoteComponent implements OnInit, OnDestroy {
             .subscribe(async (_) => {
                 this.globalEmitter.emit(Constants.setNoteTextEvent, this.noteId, this.quill.getText(), this.setNoteTextCallback.bind(this));
             });
+
+        this.saveChangesAndCloseNoteWindow
+            .pipe(debounceTime(this.windowCloseTimeoutMilliseconds))
+            .subscribe((_) => {
+                this.save();
+            });
+    }
+
+    private save(): void {
+        this.globalEmitter.emit(Constants.setNoteAllEvent, this.noteId, this.noteTitle, this.quill.getText(), () => {
+            this.writeTextToNoteFile();
+
+            log.info(`Closing note with id=${this.noteId} after saving changes.`);
+            this.cleanup();
+            let window: BrowserWindow = remote.getCurrentWindow();
+            window.close();
+        });
     }
 
     private getNoteDetailsCallback(result: NoteDetailsResult) {
@@ -148,6 +190,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public onNotetitleChange(newNoteTitle: string) {
+        this.isTitleChanged = true;
         this.noteTitleChanged.next(newNoteTitle);
     }
 
@@ -172,15 +215,19 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
+    private writeTextToNoteFile(): void {
+        // Update the note file on disk
+        let activeCollection: string = this.settings.get('activeCollection');
+        let jsonContent: string = JSON.stringify(this.quill.getContents());
+        fs.writeFileSync(path.join(this.collectionToPath(activeCollection), `${this.noteId}${Constants.noteExtension}`), jsonContent);
+    }
+
     private async setNoteTextCallback(operation: Operation): Promise<void> {
         let showErrorDialog: boolean = false;
 
         if (operation === Operation.Success) {
             try {
-                // Update the note file on disk
-                let activeCollection: string = this.settings.get('activeCollection');
-                let jsonContent: string = JSON.stringify(this.quill.getContents());
-                fs.writeFileSync(path.join(this.collectionToPath(activeCollection), `${this.noteId}${Constants.noteExtension}`), jsonContent);
+                this.writeTextToNoteFile();
             } catch (error) {
                 log.error(`Could not set text for the note with id='${this.noteId}' in the note file. Cause: ${error}`);
                 showErrorDialog = true;

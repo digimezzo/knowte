@@ -196,6 +196,7 @@ export class CollectionService {
     this.globalEmitter.on(Constants.getNotebooksEvent, this.getNotebooksEventHandler.bind(this));
     this.globalEmitter.on(Constants.setNoteTitleEvent, this.setNoteTitleEventHandler.bind(this));
     this.globalEmitter.on(Constants.setNoteTextEvent, this.setNoteTextEventHandler.bind(this));
+    this.globalEmitter.on(Constants.setNoteAllEvent, this.setNoteAllEventHandler.bind(this));
     this.isInitializing = false;
   }
 
@@ -352,31 +353,6 @@ export class CollectionService {
     let note: Note = this.dataStore.getNoteByTitle(noteTitle);
 
     return note != null;
-  }
-
-  public updateNoteContent(noteId: string, textContent: string, jsonContent: string): Operation {
-    if (!noteId) {
-      log.error("updateNoteContent: noteId is null");
-      return Operation.Error;
-    }
-
-    try {
-      // Update the note file on disk
-      let activeCollection: string = this.settings.get('activeCollection');
-      fs.writeFileSync(path.join(this.collectionToPath(activeCollection), `${noteId}${Constants.noteExtension}`), jsonContent);
-
-      // Update the note in the data store
-      let note: Note = this.dataStore.getNoteById(noteId);
-      note.text = textContent;
-      this.dataStore.updateNote(note);
-
-      log.info(`Updated content for note with id=${noteId}.`);
-    } catch (error) {
-      log.error(`Could not update the content for the note with id='${noteId}'. Cause: ${error}`);
-      return Operation.Error;
-    }
-
-    return Operation.Success;
   }
 
   public async getNotebooksAsync(includeAllNotes: boolean): Promise<Notebook[]> {
@@ -870,5 +846,19 @@ export class CollectionService {
 
     callback(Operation.Success);
     return;
+  }
+
+  public setNoteAllEventHandler(noteId: string, noteTitle: string, noteText: string, callback: any): void {
+    try {
+      let note: Note = this.dataStore.getNoteById(noteId);
+      note.title = noteTitle;
+      note.text = noteText;
+      this.dataStore.updateNote(note);
+    } catch (error) {
+      log.error(`Could not update the note with id='${noteId}'. Cause: ${error}`);
+    }
+
+    this.noteRenamed.next();
+    callback();
   }
 }
