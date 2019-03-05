@@ -20,7 +20,6 @@ import { SearchService } from './search.service';
 import * as sanitize from 'sanitize-filename';
 import { DataStore } from '../data/dataStore';
 import { NoteMarkResult } from './results/noteMarkResult';
-import * as nanoid from 'nanoid';
 import { NoteDetailsResult } from './results/noteDetailsResult';
 
 @Injectable({
@@ -39,23 +38,11 @@ export class CollectionService {
   private collectionsChanged = new Subject();
   collectionsChanged$ = this.collectionsChanged.asObservable();
 
-  private notebookAdded = new Subject();
-  notebookAdded$ = this.notebookAdded.asObservable();
+  private notebooksChanged = new Subject();
+  notebooksChanged$ = this.notebooksChanged.asObservable();
 
-  private notebookRenamed = new Subject();
-  notebookRenamed$ = this.notebookRenamed.asObservable();
-
-  private notebookDeleted = new Subject();
-  notebookDeleted$ = this.notebookDeleted.asObservable();
-
-  private noteAdded = new Subject();
-  noteAdded$ = this.noteAdded.asObservable();
-
-  private noteDeleted = new Subject();
-  noteDeleted$ = this.noteDeleted.asObservable();
-
-  private noteRenamed = new Subject();
-  noteRenamed$ = this.noteRenamed.asObservable();
+  private notesChanged = new Subject();
+  notesChanged$ = this.notesChanged.asObservable();
 
   private notesCountChanged = new Subject<NotesCountResult>();
   notesCountChanged$ = this.notesCountChanged.asObservable();
@@ -189,6 +176,12 @@ export class CollectionService {
     //await Utils.sleep(2000);
 
     // Only an initialized collectionService can process global requests
+    this.listenToNoteEvents();
+
+    this.isInitializing = false;
+  }
+
+  private listenToNoteEvents(): void {
     this.globalEmitter.on(Constants.setNoteOpenEvent, this.setNoteOpenAsync.bind(this));
     this.globalEmitter.on(Constants.setNoteMarkEvent, this.setNoteMark.bind(this));
     this.globalEmitter.on(Constants.setNotebookEvent, this.setNotebook.bind(this));
@@ -197,11 +190,9 @@ export class CollectionService {
     this.globalEmitter.on(Constants.setNoteTitleEvent, this.setNoteTitleEventHandler.bind(this));
     this.globalEmitter.on(Constants.setNoteTextEvent, this.setNoteTextEventHandler.bind(this));
     this.globalEmitter.on(Constants.setNoteAllEvent, this.setNoteAllEventHandler.bind(this));
-    this.isInitializing = false;
   }
 
   private async collectionExistsAsync(collection: string): Promise<boolean> {
-    let storageDirectory: string = this.settings.get('storageDirectory');
     let collections: string[] = await this.getCollectionsAsync();
     let existingCollections: string[] = collections.filter(x => x.toLocaleLowerCase() === collection.toLocaleLowerCase());
 
@@ -211,8 +202,6 @@ export class CollectionService {
   public async addCollectionAsync(possiblyDirtyCollection: string): Promise<Operation> {
     // Check if a collection name was provided
     if (!possiblyDirtyCollection) {
-      log.error("possiblyDirtyCollection is null");
-
       return Operation.Error;
     }
 
@@ -413,7 +402,7 @@ export class CollectionService {
       return Operation.Error;
     }
 
-    this.notebookAdded.next();
+    this.notebooksChanged.next();
 
     return Operation.Success;
   }
@@ -439,7 +428,7 @@ export class CollectionService {
       return Operation.Error;
     }
 
-    this.notebookRenamed.next();
+    this.notebooksChanged.next();
 
     return Operation.Success;
   }
@@ -461,7 +450,7 @@ export class CollectionService {
       return Operation.Error;
     }
 
-    this.notebookDeleted.next();
+    this.notebooksChanged.next();
     return Operation.Success;
   }
 
@@ -487,7 +476,7 @@ export class CollectionService {
       return Operation.Error;
     }
 
-    this.noteDeleted.next();
+    this.notesChanged.next();
     return Operation.Success;
   }
 
@@ -722,7 +711,7 @@ export class CollectionService {
       let activeCollection: string = this.settings.get('activeCollection');
       fs.writeFileSync(path.join(this.collectionToPath(activeCollection), `${result.noteId}${Constants.noteExtension}`), '');
 
-      this.noteAdded.next();
+      this.notesChanged.next();
     } catch (error) {
       log.error(`Could not add note '${uniqueTitle}'. Cause: ${error}`);
       result.operation = Operation.Error;
@@ -829,7 +818,7 @@ export class CollectionService {
     result.noteId = noteId;
     result.noteTitle = uniqueNoteTitle;
 
-    this.noteRenamed.next();
+    this.notesChanged.next();
     callback(result);
   }
 
@@ -858,7 +847,7 @@ export class CollectionService {
       log.error(`Could not update the note with id='${noteId}'. Cause: ${error}`);
     }
 
-    this.noteRenamed.next();
+    this.notesChanged.next();
     callback();
   }
 }

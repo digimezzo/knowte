@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { Notebook } from '../../data/entities/notebook';
 import { MatDialog, MatDialogRef, MatTabChangeEvent } from '@angular/material';
@@ -10,8 +10,9 @@ import { Subscription, Subject } from 'rxjs';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/renameNotebookDialog.component';
 import { Constants } from '../../core/constants';
-import log from 'electron-log';
 import { Operation } from '../../core/enums';
+import { NotesCountResult } from '../../services/results/notesCountResult';
+import { NoteMarkResult } from '../../services/results/noteMarkResult';
 
 @Component({
   selector: 'collection-page',
@@ -21,7 +22,7 @@ import { Operation } from '../../core/enums';
 })
 export class CollectionComponent implements OnInit, OnDestroy {
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
-    private translateService: TranslateService, private snackBarService: SnackBarService, private zone: NgZone) {
+    private translateService: TranslateService, private snackBarService: SnackBarService) {
   }
 
   public applicationName: string = Constants.applicationName;
@@ -73,11 +74,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.selectedNotebook = this.notebooks[0];
 
     // Subscriptions
-    this.subscription = this.collectionService.notebookAdded$.subscribe(async () => await this.getNotebooksAsync());
-    this.subscription.add(this.collectionService.notebookRenamed$.subscribe(async () => await this.getNotebooksAsync()));
-    this.subscription.add(this.collectionService.notebookDeleted$.subscribe(async () => await this.getNotebooksAsync()));
-
-    this.subscription.add(this.collectionService.notesCountChanged$.subscribe((result) => {
+    this.subscription = this.collectionService.notebooksChanged$.subscribe(async () => await this.getNotebooksAsync());
+    
+    this.subscription.add(this.collectionService.notesCountChanged$.subscribe((result: NotesCountResult) => {
       this.allNotesCount = result.allNotesCount;
       this.todayNotesCount = result.todayNotesCount;
       this.yesterdayNotesCount = result.yesterdayNotesCount;
@@ -85,10 +84,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
       this.markedNotesCount = result.markedNotesCount;
     }));
 
-    this.subscription.add(this.collectionService.noteMarkChanged$.subscribe((noteMarkChangedArgs) => {
-      this.zone.run(() => {
-        this.markedNotesCount = noteMarkChangedArgs.markedNotesCount;
-      });
+    this.subscription.add(this.collectionService.noteMarkChanged$.subscribe((result: NoteMarkResult) => {
+        this.markedNotesCount = result.markedNotesCount;
     }));
   }
 
@@ -129,7 +126,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
       width: '450px', data: { titleText: titleText, placeholderText: placeholderText }
     });
 
-    dialogRef.afterClosed().subscribe(async (result) => {
+    dialogRef.afterClosed().subscribe(async (result: any) => {
       if (result) {
         let notebookName: string = dialogRef.componentInstance.inputText;
 
@@ -172,7 +169,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
       width: '450px', data: { dialogTitle: title, dialogText: text }
     });
 
-    dialogRef.afterClosed().subscribe(async (result) => {
+    dialogRef.afterClosed().subscribe(async (result: any) => {
       if (result) {
         let operation: Operation = await this.collectionService.deleteNotebookAsync(this.selectedNotebook.id);
 

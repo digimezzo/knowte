@@ -13,7 +13,6 @@ export class LoadingComponent implements OnInit {
   }
 
   ngOnInit() {
-    log.info(`Loading`);
     this.showCollection();
   }
 

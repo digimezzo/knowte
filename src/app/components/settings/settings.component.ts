@@ -11,6 +11,5 @@ export class SettingsComponent implements OnInit {
   }
 
   ngOnInit() {
-    log.info("Showing settings page");
   }
 }

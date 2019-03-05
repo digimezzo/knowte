@@ -22,7 +22,6 @@ export class WelcomeComponent implements OnInit {
     public isBusy: boolean = false;
 
     ngOnInit() {
-        log.info(`Welcome`);
     }
 
     public async openDirectoryChooserAsync(): Promise<void> {

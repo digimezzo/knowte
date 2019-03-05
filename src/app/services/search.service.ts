@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from "rxjs/internal/operators";
-import log from 'electron-log';
 
 @Injectable({
     providedIn: 'root',
@@ -18,7 +17,6 @@ export class SearchService {
     private debouncingSearchTextChanged: Subject<string> = new Subject<string>();
     private searchTextChanged = new Subject<string>();
     searchTextChanged$ = this.searchTextChanged.asObservable();
-
     private timeoutMilliseconds: number = 500;
     private _searchText: string;
 
