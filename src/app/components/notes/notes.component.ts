@@ -67,15 +67,11 @@ export class NotesComponent implements OnInit, OnDestroy {
         // Workaround for auto reload
         await this.collectionService.initializeAsync();
 
-        this.subscription = this.collectionService.noteAdded$.subscribe(async () => await this.getNotesAsync());
-        this.subscription = this.collectionService.noteRenamed$.subscribe(async () => this.zone.run(async () => await this.getNotesAsync()));
+        this.subscription = this.collectionService.noteAdded$.subscribe(async () => this.zone.run(async () => await this.getNotesAsync()));
+        this.subscription.add(this.collectionService.noteDeleted$.subscribe(async () => this.zone.run(async () => await this.getNotesAsync())));
+        this.subscription.add(this.collectionService.noteRenamed$.subscribe(async () => this.zone.run(async () => await this.getNotesAsync())));
         this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(async () => this.zone.run(async () => await this.getNotesAsync())));
         this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => this.getNotesAsync()));
-
-        this.subscription.add(this.collectionService.noteDeleted$.subscribe(async () => {
-            this.setSelectedNote(null);
-            await this.getNotesAsync();
-        }));
 
         this.subscription.add(this.collectionService.noteMarkChanged$.subscribe(async (result) => {
             if (this.componentCategory === Constants.markedCategory) {

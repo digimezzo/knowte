@@ -28,7 +28,7 @@
         <div class="notes-content-list">
             <!-- Notes list -->
             <mat-selection-list class="notes-content-list-list">
-                <mat-list-option [ngClass]="{'selectedItem':note === selectedNote }" *ngFor="let note of notes"
+                <mat-list-option [ngClass]="{'selected-note':note === selectedNote }" *ngFor="let note of notes"
                     role="option">
                     <div class="no-select" (dblclick)="openNote()" (click)="setSelectedNote(note)">
                         <div class="note-item px-2">
