@@ -17,6 +17,7 @@ import * as Quill from 'quill';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as Store from 'electron-store';
+import { Utils } from '../../core/utils';
 
 @Component({
     selector: 'note-content',
@@ -219,7 +220,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         // Update the note file on disk
         let activeCollection: string = this.settings.get('activeCollection');
         let jsonContent: string = JSON.stringify(this.quill.getContents());
-        fs.writeFileSync(path.join(this.collectionToPath(activeCollection), `${this.noteId}${Constants.noteExtension}`), jsonContent);
+        fs.writeFileSync(path.join(Utils.collectionToPath(activeCollection), `${this.noteId}${Constants.noteExtension}`), jsonContent);
     }
 
     private async setNoteTextCallback(operation: Operation): Promise<void> {
@@ -249,16 +250,10 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    private collectionToPath(collection: string): string {
-        let storageDirectory: string = this.settings.get('storageDirectory');
-
-        return path.join(storageDirectory, collection);
-    }
-
     public async getNoteContentAsync() {
         try {
             let activeCollection: string = this.settings.get('activeCollection');
-            let noteContent: string = fs.readFileSync(path.join(this.collectionToPath(activeCollection), `${this.noteId}${Constants.noteExtension}`), 'utf8');
+            let noteContent: string = fs.readFileSync(path.join(Utils.collectionToPath(activeCollection), `${this.noteId}${Constants.noteExtension}`), 'utf8');
 
             if (noteContent) {
                 // We can only parse to json if there is content

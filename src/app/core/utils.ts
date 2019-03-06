@@ -1,3 +1,6 @@
+import * as path from 'path';
+import * as Store from 'electron-store';
+
 export class Utils {
     public static async sleep(milliseconds: number) {
         return new Promise(resolve => setTimeout(resolve, milliseconds));
@@ -29,5 +32,16 @@ export class Utils {
         }
 
         return true;
+    }
+
+    public static pathToCollection(collectionDirectoryPath: string): string {
+        return path.dirname(collectionDirectoryPath).split(path.sep).pop();
+    }
+
+    public static collectionToPath(collection: string): string {
+        let settings: Store = new Store();
+        let storageDirectory: string = settings.get('storageDirectory');
+
+        return path.join(storageDirectory, collection);
     }
 }

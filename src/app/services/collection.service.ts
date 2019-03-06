@@ -75,16 +75,6 @@ export class CollectionService {
     return true;
   }
 
-  private pathToCollection(collectionDirectoryPath: string): string {
-    return path.dirname(collectionDirectoryPath).split(path.sep).pop();
-  }
-
-  private collectionToPath(collection: string): string {
-    let storageDirectory: string = this.settings.get('storageDirectory');
-
-    return path.join(storageDirectory, collection);
-  }
-
   public async getCollectionsAsync() {
     let storageDirectory: string = this.settings.get('storageDirectory');
     let fileNames: string[] = await fs.readdir(storageDirectory);
@@ -156,10 +146,10 @@ export class CollectionService {
     let activeCollection: string = this.settings.get('activeCollection');
     let activeCollectionDirectory: string = "";
 
-    if (activeCollection && this.collectionToPath(activeCollection).includes(storageDirectory) &&
-      this.collectionToPath(activeCollection) !== storageDirectory && await fs.exists(this.collectionToPath(activeCollection))) {
+    if (activeCollection && Utils.collectionToPath(activeCollection).includes(storageDirectory) &&
+      Utils.collectionToPath(activeCollection) !== storageDirectory && await fs.exists(Utils.collectionToPath(activeCollection))) {
       // There is an active collection and the collection directory exists
-      activeCollectionDirectory = this.collectionToPath(activeCollection);
+      activeCollectionDirectory = Utils.collectionToPath(activeCollection);
     } else {
       // There is no active collection or no collection directory
       // Get all collection directories in the storage directory
@@ -168,10 +158,10 @@ export class CollectionService {
       if (collections && collections.length > 0) {
         // If there are collection directories, take the first one.
         activeCollectionDirectory = collections[0];
-        this.settings.set('activeCollection', this.pathToCollection(activeCollectionDirectory));
+        this.settings.set('activeCollection', Utils.pathToCollection(activeCollectionDirectory));
       } else {
         // If there are no collection directories, we must create a default collection.
-        activeCollectionDirectory = this.collectionToPath(Constants.defaultCollection);
+        activeCollectionDirectory = Utils.collectionToPath(Constants.defaultCollection);
         await fs.mkdir(activeCollectionDirectory);
         this.settings.set('activeCollection', Constants.defaultCollection);
       }
@@ -217,7 +207,7 @@ export class CollectionService {
     try {
       // Add the collection
       let storageDirectory: string = this.settings.get('storageDirectory');
-      await fs.mkdir(this.collectionToPath(`${sanitizedCollection}`));
+      await fs.mkdir(Utils.collectionToPath(`${sanitizedCollection}`));
 
       log.info(`Added collection '${sanitizedCollection}'`);
 
@@ -242,7 +232,7 @@ export class CollectionService {
     }
 
     try {
-      await fs.move(this.collectionToPath(initialCollection), this.collectionToPath(finalCollection));
+      await fs.move(Utils.collectionToPath(initialCollection), Utils.collectionToPath(finalCollection));
       this.settings.set('activeCollection', finalCollection);
     } catch (error) {
       log.error(`Could not rename the collection '${initialCollection}' to '${finalCollection}'. Cause: ${error}`);
@@ -256,7 +246,7 @@ export class CollectionService {
 
   public async deleteCollectionAsync(collection: string): Promise<Operation> {
     try {
-      await fs.remove(this.collectionToPath(collection));
+      await fs.remove(Utils.collectionToPath(collection));
       let collections: string[] = await this.getCollectionsAsync();
 
       if (collections && collections.length > 0) {
@@ -455,7 +445,7 @@ export class CollectionService {
 
       // 1. Delete all files from disk, which are related to the note.
       let activeCollection: string = this.settings.get('activeCollection');
-      fs.unlinkSync(path.join(this.collectionToPath(activeCollection), `${noteId}${Constants.noteExtension}`), '');
+      fs.unlinkSync(path.join(Utils.collectionToPath(activeCollection), `${noteId}${Constants.noteExtension}`), '');
 
       // 2. Delete note from data store
       this.dataStore.deleteNote(noteId);
@@ -673,7 +663,7 @@ export class CollectionService {
 
       // 2. Create note file
       let activeCollection: string = this.settings.get('activeCollection');
-      fs.writeFileSync(path.join(this.collectionToPath(activeCollection), `${result.noteId}${Constants.noteExtension}`), '');
+      fs.writeFileSync(path.join(Utils.collectionToPath(activeCollection), `${result.noteId}${Constants.noteExtension}`), '');
 
       this.notesChanged.next();
     } catch (error) {
