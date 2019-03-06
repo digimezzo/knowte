@@ -74,8 +74,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.selectedNotebook = this.notebooks[0];
 
     // Subscriptions
-    this.subscription = this.collectionService.notebooksChanged$.subscribe(async () => await this.getNotebooksAsync());
-    
+    this.subscription = this.collectionService.notebookEdited$.subscribe(async () => await this.getNotebooksAsync());
+    this.subscription = this.collectionService.notebookDeleted$.subscribe(async () => await this.getNotebooksAndResetSelectionAsync());
+
     this.subscription.add(this.collectionService.notesCountChanged$.subscribe((result: NotesCountResult) => {
       this.allNotesCount = result.allNotesCount;
       this.todayNotesCount = result.todayNotesCount;
@@ -113,7 +114,20 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.notebooksCount = this.notebooks.length;
   }
 
-  public async setSelectedNotebookAsync(notebook: Notebook) {
+  private async getNotebooksAndResetSelectionAsync(): Promise<void> {
+    await this.getNotebooksAsync();
+    this.selectFirstNotebook();
+}
+
+  public selectFirstNotebook() {
+    if (this.notebooks && this.notebooks.length > 0) {
+        this.setSelectedNotebook(this.notebooks[0]);
+    } else {
+        this.setSelectedNotebook(null);
+    }
+}
+
+  public setSelectedNotebook(notebook: Notebook) {
     this.selectedNotebook = notebook;
     this.canEditNotebook = this.selectedNotebook != null && !this.selectedNotebook.isDefault;
   }

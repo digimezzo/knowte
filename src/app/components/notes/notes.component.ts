@@ -67,8 +67,9 @@ export class NotesComponent implements OnInit, OnDestroy {
         // Workaround for auto reload
         await this.collectionService.initializeAsync();
 
-        this.subscription = this.collectionService.notesChanged$.subscribe(async () => await this.getNotesAsync());
-        this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(async () => await this.getNotesAsync()));
+        this.subscription = this.collectionService.noteEdited$.subscribe(async () => await this.getNotesAsync());
+        this.subscription = this.collectionService.noteDeleted$.subscribe(async () => await this.getNotesAndResetSelectionAsync());
+        this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(async () => await this.getNotesAndResetSelectionAsync()));
         this.subscription.add(this.searchService.searchTextChanged$.subscribe(async(_) => await this.getNotesAsync()));
 
         this.subscription.add(this.collectionService.noteMarkChanged$.subscribe(async (result: NoteMarkResult) => {
@@ -105,8 +106,12 @@ export class NotesComponent implements OnInit, OnDestroy {
         if (this.selectedNotebook) {
             this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, true);
             this.notesCount = this.notes.length;
-            this.selectFirstNote();
         }
+    }
+
+    private async getNotesAndResetSelectionAsync(): Promise<void> {
+        await this.getNotesAsync();
+        this.selectFirstNote();
     }
 
     public setSelectedNote(note: Note) {

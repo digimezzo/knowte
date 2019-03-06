@@ -23,7 +23,7 @@
                             *ngFor="let notebook of notebooks" role="option">
                             <p class="notebook-name no-select"
                                 [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
-                                (click)="setSelectedNotebookAsync(notebook)">
+                                (click)="setSelectedNotebook(notebook)">
                                 {{ notebook.name }}</p>
                         </mat-list-option>
                     </mat-selection-list>

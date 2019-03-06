@@ -38,11 +38,17 @@ export class CollectionService {
   private collectionsChanged = new Subject();
   collectionsChanged$ = this.collectionsChanged.asObservable();
 
-  private notebooksChanged = new Subject();
-  notebooksChanged$ = this.notebooksChanged.asObservable();
+  private notebookEdited = new Subject();
+  notebookEdited$ = this.notebookEdited.asObservable();
 
-  private notesChanged = new Subject();
-  notesChanged$ = this.notesChanged.asObservable();
+  private notebookDeleted = new Subject();
+  notebookDeleted$ = this.notebookDeleted.asObservable();
+
+  private noteEdited = new Subject();
+  noteEdited$ = this.noteEdited.asObservable();
+
+  private noteDeleted = new Subject();
+  noteDeleted$ = this.noteDeleted.asObservable();
 
   private notesCountChanged = new Subject<NotesCountResult>();
   notesCountChanged$ = this.notesCountChanged.asObservable();
@@ -389,7 +395,7 @@ export class CollectionService {
       return Operation.Error;
     }
 
-    this.notebooksChanged.next();
+    this.notebookEdited.next();
 
     return Operation.Success;
   }
@@ -416,7 +422,7 @@ export class CollectionService {
       return Operation.Error;
     }
 
-    this.notebooksChanged.next();
+    this.notebookEdited.next();
 
     return Operation.Success;
   }
@@ -433,7 +439,7 @@ export class CollectionService {
       return Operation.Error;
     }
 
-    this.notebooksChanged.next();
+    this.notebookDeleted.next();
     return Operation.Success;
   }
 
@@ -454,7 +460,7 @@ export class CollectionService {
       return Operation.Error;
     }
 
-    this.notesChanged.next();
+    this.noteDeleted.next();
     return Operation.Success;
   }
 
@@ -665,7 +671,7 @@ export class CollectionService {
       let activeCollection: string = this.settings.get('activeCollection');
       fs.writeFileSync(path.join(Utils.collectionToPath(activeCollection), `${result.noteId}${Constants.noteExtension}`), '');
 
-      this.notesChanged.next();
+      this.noteEdited.next();
     } catch (error) {
       log.error(`Could not add note '${uniqueTitle}'. Cause: ${error}`);
       result.operation = Operation.Error;
@@ -756,7 +762,7 @@ export class CollectionService {
     result.noteId = noteId;
     result.noteTitle = uniqueNoteTitle;
 
-    this.notesChanged.next();
+    this.noteEdited.next();
     callback(result);
   }
 
@@ -785,7 +791,7 @@ export class CollectionService {
       log.error(`Could not update the note with id='${noteId}'. Cause: ${error}`);
     }
 
-    this.notesChanged.next();
+    this.noteEdited.next();
     callback();
   }
 }
