@@ -200,7 +200,7 @@ export class CollectionService {
   }
 
   public async addCollectionAsync(possiblyDirtyCollection: string): Promise<Operation> {
-    // Check if a collection name was provided
+    // Check if a collection was provided
     if (!possiblyDirtyCollection) {
       log.error("possiblyDirtyCollection is null");
       return Operation.Error;
@@ -234,17 +234,18 @@ export class CollectionService {
     return Operation.Success;
   }
 
-  public async renameCollectionAsync(oldCollection: string, newCollection: string): Promise<Operation> {
-    if (!oldCollection || !newCollection) {
-      log.error("renameCollectionAsync: oldCollection or newCollection is null");
+  public async renameCollectionAsync(initialCollection: string, finalCollection: string): Promise<Operation> {
+    // Check if a final collection was provided
+    if (!initialCollection || !finalCollection) {
+      log.error("finalCollection is null");
       return Operation.Error;
     }
 
     try {
-      await fs.move(this.collectionToPath(oldCollection), this.collectionToPath(newCollection));
-      this.settings.set('activeCollection', newCollection);
+      await fs.move(this.collectionToPath(initialCollection), this.collectionToPath(finalCollection));
+      this.settings.set('activeCollection', finalCollection);
     } catch (error) {
-      log.error(`Could not rename the collection '${oldCollection}' to '${newCollection}'. Cause: ${error}`);
+      log.error(`Could not rename the collection '${initialCollection}' to '${finalCollection}'. Cause: ${error}`);
       return Operation.Error;
     }
 
@@ -254,11 +255,6 @@ export class CollectionService {
   }
 
   public async deleteCollectionAsync(collection: string): Promise<Operation> {
-    if (!collection) {
-      log.error("deleteCollectionAsync: collection is null");
-      return Operation.Error;
-    }
-
     try {
       await fs.remove(this.collectionToPath(collection));
       let collections: string[] = await this.getCollectionsAsync();
@@ -409,18 +405,19 @@ export class CollectionService {
   }
 
   public async renameNotebookAsync(notebookId: string, newNotebookName: string): Promise<Operation> {
-    if (!notebookId || !newNotebookName) {
-      log.error("renameNotebookAsync: notebookId or newNotebookName is null");
+    // Check if a notebook name was provided
+    if (!newNotebookName) {
+      log.error("newNotebookName is null");
       return Operation.Error;
     }
 
     try {
-      // 1. Check if there is already a notebook with that name
+      // Check if there is already a notebook with that name
       if (this.notebookExists(newNotebookName)) {
         return Operation.Duplicate;
       }
 
-      // 2. Rename the notebook
+      // Rename the notebook
       let notebook: Notebook = this.dataStore.getNotebookById(notebookId);
       notebook.name = newNotebookName;
       this.dataStore.updateNotebook(notebook);
@@ -439,11 +436,6 @@ export class CollectionService {
   }
 
   public async deleteNotebookAsync(notebookId: string): Promise<Operation> {
-    if (!notebookId) {
-      log.error("deleteNotebookAsync: notebookId is null");
-      return Operation.Error;
-    }
-
     try {
       this.dataStore.deleteNotebook(notebookId);
     } catch (error) {
@@ -456,11 +448,6 @@ export class CollectionService {
   }
 
   public async deleteNoteAsync(noteId: string): Promise<Operation> {
-    if (!noteId) {
-      log.error("deleteNoteAsync: noteId is null");
-      return Operation.Error;
-    }
-
     let noteTitle: string = "";
 
     try {
@@ -725,16 +712,6 @@ export class CollectionService {
   }
 
   public setNotebook(noteId: string, notebookId: string): Operation {
-    if (!noteId) {
-      log.error("setNotebook: noteId is null");
-      return Operation.Error;
-    }
-
-    if (!notebookId) {
-      log.error("setNotebook: notebookId is null");
-      return Operation.Error;
-    }
-
     try {
       let note: Note = this.dataStore.getNoteById(noteId);
 
@@ -756,12 +733,6 @@ export class CollectionService {
   }
 
   public setNoteTitleEventHandler(noteId: string, initialNoteTitle: string, finalNoteTitle: string, callback: any) {
-    if (!noteId || !initialNoteTitle) {
-      log.error("renameNote: noteId or initialNoteTitle is null");
-      callback(new NoteOperationResult(Operation.Error));
-      return;
-    }
-
     let uniqueNoteTitle: string = finalNoteTitle.trim();
 
     if (uniqueNoteTitle.length === 0) {
