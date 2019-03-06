@@ -75,31 +75,6 @@ export class CollectionService {
     return true;
   }
 
-  public async setStorageDirectoryAsync(parentDirectory: string): Promise<boolean> {
-    try {
-      // Generate storage directory path based on parent directory
-      let storageDirectory: string = path.join(parentDirectory, Constants.collectionsDirectory);
-
-      // Create storage directory if it doesn't exist
-      if (!await fs.exists(storageDirectory)) {
-        await fs.mkdir(storageDirectory);
-        log.info(`Created storageDirectory '${storageDirectory}' on disk`);
-      } else {
-        log.info(`StorageDirectory '${storageDirectory}' already exists on disk. No need to create it.`);
-      }
-
-      // Save storage directory in the settings store
-      this.settings.set('storageDirectory', storageDirectory);
-      log.info(`Saved storage directory '${storageDirectory}' in settings store`);
-    } catch (error) {
-      log.error(`Could not create storage directory on disk. Cause: ${error}`);
-
-      return false;
-    }
-
-    return true;
-  }
-
   private pathToCollection(collectionDirectoryPath: string): string {
     return path.dirname(collectionDirectoryPath).split(path.sep).pop();
   }
@@ -125,6 +100,42 @@ export class CollectionService {
     }
 
     return collections;
+  }
+
+  public async setStorageDirectoryAsync(parentDirectory: string): Promise<boolean> {
+    try {
+      // Generate storage directory path based on parent directory
+      let storageDirectory: string = path.join(parentDirectory, Constants.collectionsDirectory);
+
+      // Create storage directory if it doesn't exist
+      if (!await fs.exists(storageDirectory)) {
+        await fs.mkdir(storageDirectory);
+        log.info(`Created storageDirectory '${storageDirectory}' on disk`);
+      } else {
+        log.info(`StorageDirectory '${storageDirectory}' already exists on disk. No need to create it.`);
+      }
+
+      // Save storage directory in the settings store
+      this.settings.set('storageDirectory', storageDirectory);
+      log.info(`Saved storage directory '${storageDirectory}' in settings store`);
+    } catch (error) {
+      log.error(`Could not create storage directory on disk. Cause: ${error}`);
+
+      return false;
+    }
+
+    return true;
+  }
+
+  private listenToNoteEvents(): void {
+    this.globalEmitter.on(Constants.setNoteOpenEvent, this.setNoteOpenAsync.bind(this));
+    this.globalEmitter.on(Constants.setNoteMarkEvent, this.setNoteMark.bind(this));
+    this.globalEmitter.on(Constants.setNotebookEvent, this.setNotebook.bind(this));
+    this.globalEmitter.on(Constants.getNoteDetailsEvent, this.getNoteDetailsEventHandler.bind(this));
+    this.globalEmitter.on(Constants.getNotebooksEvent, this.getNotebooksEventHandler.bind(this));
+    this.globalEmitter.on(Constants.setNoteTitleEvent, this.setNoteTitleEventHandler.bind(this));
+    this.globalEmitter.on(Constants.setNoteTextEvent, this.setNoteTextEventHandler.bind(this));
+    this.globalEmitter.on(Constants.setNoteAllEvent, this.setNoteAllEventHandler.bind(this));
   }
 
   public async initializeAsync(): Promise<void> {
@@ -181,17 +192,6 @@ export class CollectionService {
     this.isInitializing = false;
   }
 
-  private listenToNoteEvents(): void {
-    this.globalEmitter.on(Constants.setNoteOpenEvent, this.setNoteOpenAsync.bind(this));
-    this.globalEmitter.on(Constants.setNoteMarkEvent, this.setNoteMark.bind(this));
-    this.globalEmitter.on(Constants.setNotebookEvent, this.setNotebook.bind(this));
-    this.globalEmitter.on(Constants.getNoteDetailsEvent, this.getNoteDetailsEventHandler.bind(this));
-    this.globalEmitter.on(Constants.getNotebooksEvent, this.getNotebooksEventHandler.bind(this));
-    this.globalEmitter.on(Constants.setNoteTitleEvent, this.setNoteTitleEventHandler.bind(this));
-    this.globalEmitter.on(Constants.setNoteTextEvent, this.setNoteTextEventHandler.bind(this));
-    this.globalEmitter.on(Constants.setNoteAllEvent, this.setNoteAllEventHandler.bind(this));
-  }
-
   private async collectionExistsAsync(collection: string): Promise<boolean> {
     let collections: string[] = await this.getCollectionsAsync();
     let existingCollections: string[] = collections.filter(x => x.toLocaleLowerCase() === collection.toLocaleLowerCase());
@@ -202,6 +202,7 @@ export class CollectionService {
   public async addCollectionAsync(possiblyDirtyCollection: string): Promise<Operation> {
     // Check if a collection name was provided
     if (!possiblyDirtyCollection) {
+      log.error("possiblyDirtyCollection is null");
       return Operation.Error;
     }
 
@@ -553,30 +554,6 @@ export class CollectionService {
     return result;
   }
 
-  private containsAny(text: string, items: string[]) {
-    for (let i: number = 0; i < items.length; i++) {
-      let item: string = items[i].toLowerCase();
-
-      if (text.toLowerCase().indexOf(item) > -1) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  private containsAll(text: string, items: string[]) {
-    for (let i: number = 0; i < items.length; i++) {
-      let item: string = items[i].toLowerCase();
-
-      if (text.toLowerCase().indexOf(item) < 0) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   private getFilteredNotes(unfilteredNotes: Note[], filter: string): Note[] {
     // When there is no filter, return the original collection.
     if (!filter || filter.trim().length === 0) {
@@ -585,7 +562,7 @@ export class CollectionService {
 
     let pieces: string[] = filter.trim().split(" ");
 
-    return unfilteredNotes.filter((x) => this.containsAll(`${x.title} ${x.text}`, pieces));
+    return unfilteredNotes.filter((x) => Utils.containsAll(`${x.title} ${x.text}`, pieces));
   }
 
   public async getNotesAsync(notebookId: string, category: string, useFuzzyDates: boolean): Promise<Note[]> {

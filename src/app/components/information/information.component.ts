@@ -22,7 +22,6 @@ export class InformationComponent implements OnInit {
   public externalComponents: any[] = Constants.externalComponents;
 
   ngOnInit() {
-    log.info("Showing information page");
   }
 
   openLicenseDialog(): void {
