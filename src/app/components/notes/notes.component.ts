@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { Note } from '../../data/entities/note';
 import { Subscription, Subject } from 'rxjs';
@@ -22,7 +22,7 @@ import { NoteMarkResult } from '../../services/results/noteMarkResult';
 })
 export class NotesComponent implements OnInit, OnDestroy {
     constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
-        private translateService: TranslateService, public searchService: SearchService) {
+        private translateService: TranslateService, public searchService: SearchService, private zone: NgZone) {
     }
 
     private _selectedNotebook: Notebook;
@@ -67,10 +67,10 @@ export class NotesComponent implements OnInit, OnDestroy {
         // Workaround for auto reload
         await this.collectionService.initializeAsync();
 
-        this.subscription = this.collectionService.noteEdited$.subscribe(async () => await this.getNotesAsync());
+        this.subscription = this.collectionService.noteEdited$.subscribe(async () => this.zone.run(async () => await this.getNotesAsync()));
         this.subscription = this.collectionService.noteDeleted$.subscribe(async () => await this.getNotesAndResetSelectionAsync());
         this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(async () => await this.getNotesAndResetSelectionAsync()));
-        this.subscription.add(this.searchService.searchTextChanged$.subscribe(async(_) => await this.getNotesAsync()));
+        this.subscription.add(this.searchService.searchTextChanged$.subscribe(async (_) => await this.getNotesAsync()));
 
         this.subscription.add(this.collectionService.noteMarkChanged$.subscribe(async (result: NoteMarkResult) => {
             if (this.componentCategory === Constants.markedCategory) {

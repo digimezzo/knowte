@@ -43,8 +43,8 @@ export class NoteComponent implements OnInit, OnDestroy {
     public notebookName: string;
     public isMarked: boolean;
 
-    private isTitleChanged: boolean = false;
-    private isTextChanged: boolean = false;
+    private isTitleDirty: boolean = false;
+    private isTextDirty: boolean = false;
 
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteTextChanged: Subject<string> = new Subject<string>();
@@ -59,9 +59,9 @@ export class NoteComponent implements OnInit, OnDestroy {
         log.info(`Detected closing of note with id=${this.noteId}`);
 
         // Prevents closing of the window
-        if (this.isTitleChanged || this.isTextChanged) {
-            this.isTitleChanged = false;
-            this.isTextChanged = false;
+        if (this.isTitleDirty || this.isTextDirty) {
+            this.isTitleDirty = false;
+            this.isTextDirty = false;
 
             log.info(`Note with id=${this.noteId} is dirty. Preventing close to save changes first.`);
             event.preventDefault();
@@ -111,7 +111,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
 
         this.quill.on('text-change', () => {
-            this.isTextChanged = true;
+            this.isTextDirty = true;
             this.noteTextChanged.next("");
         });
 
@@ -128,30 +128,39 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.noteTitleChanged
             .pipe(debounceTime(this.saveTimeoutMilliseconds))
             .subscribe((finalNoteTitle) => {
-                this.globalEmitter.emit(Constants.setNoteTitleEvent, this.noteId, this.initialNoteTitle, finalNoteTitle, this.setNoteTitleCallback.bind(this));
+                this.globalEmitter.emit(Constants.setNoteTitleEvent, this.noteId, this.initialNoteTitle, finalNoteTitle, this.setNoteTitleCallbackAsync.bind(this));
             });
 
         this.noteTextChanged
             .pipe(debounceTime(this.saveTimeoutMilliseconds))
             .subscribe(async (_) => {
-                this.globalEmitter.emit(Constants.setNoteTextEvent, this.noteId, this.quill.getText(), this.setNoteTextCallback.bind(this));
+                this.globalEmitter.emit(Constants.setNoteTextEvent, this.noteId, this.quill.getText(), this.setNoteTextCallbackAsync.bind(this));
             });
 
         this.saveChangesAndCloseNoteWindow
             .pipe(debounceTime(this.windowCloseTimeoutMilliseconds))
             .subscribe((_) => {
-                this.save();
+                this.saveAndClose();
             });
     }
 
-    private save(): void {
-        this.globalEmitter.emit(Constants.setNoteAllEvent, this.noteId, this.noteTitle, this.quill.getText(), () => {
-            this.writeTextToNoteFile();
+    private saveAndClose(): void {
+        this.globalEmitter.emit(Constants.setNoteTitleEvent, this.noteId, this.initialNoteTitle, this.noteTitle, async (result: NoteOperationResult) => {
+            let setTitleOperation: Operation = result.operation;
+            await this.setNoteTitleCallbackAsync(result);
 
-            log.info(`Closing note with id=${this.noteId} after saving changes.`);
-            this.cleanup();
-            let window: BrowserWindow = remote.getCurrentWindow();
-            window.close();
+            this.globalEmitter.emit(Constants.setNoteTextEvent, this.noteId, this.quill.getText(), async (operation: Operation) => {
+                let setTextOperation: Operation = operation;
+                await this.setNoteTextCallbackAsync(operation);
+
+                // Close is only allowed when saving both title and text is successful
+                if (setTitleOperation === Operation.Success && setTextOperation === Operation.Success) {
+                    log.info(`Closing note with id=${this.noteId} after saving changes.`);
+                    this.cleanup();
+                    let window: BrowserWindow = remote.getCurrentWindow();
+                    window.close();
+                }
+            });
         });
     }
 
@@ -191,11 +200,11 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public onNotetitleChange(newNoteTitle: string) {
-        this.isTitleChanged = true;
+        this.isTitleDirty = true;
         this.noteTitleChanged.next(newNoteTitle);
     }
 
-    private async setNoteTitleCallback(result: NoteOperationResult): Promise<void> {
+    private async setNoteTitleCallbackAsync(result: NoteOperationResult): Promise<void> {
         if (result.operation === Operation.Blank) {
             this.zone.run(() => this.noteTitle = this.initialNoteTitle);
             this.snackBarService.noteTitleCannotBeEmptyAsync();
@@ -209,11 +218,15 @@ export class NoteComponent implements OnInit, OnDestroy {
                 });
             });
         } else if (result.operation === Operation.Success) {
-            this.initialNoteTitle = result.noteTitle;
-            this.zone.run(() => this.noteTitle = result.noteTitle);
+            this.zone.run(() => {
+                this.initialNoteTitle = result.noteTitle;
+                this.noteTitle = result.noteTitle;
+            });
         } else {
             // Do nothing
         }
+
+        this.isTitleDirty = false;
     }
 
     private writeTextToNoteFile(): void {
@@ -223,7 +236,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         fs.writeFileSync(path.join(Utils.collectionToPath(activeCollection), `${this.noteId}${Constants.noteExtension}`), jsonContent);
     }
 
-    private async setNoteTextCallback(operation: Operation): Promise<void> {
+    private async setNoteTextCallbackAsync(operation: Operation): Promise<void> {
         let showErrorDialog: boolean = false;
 
         if (operation === Operation.Success) {
@@ -248,6 +261,8 @@ export class NoteComponent implements OnInit, OnDestroy {
                 });
             });
         }
+
+        this.isTextDirty = false;
     }
 
     public async getNoteContentAsync() {

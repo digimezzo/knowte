@@ -131,7 +131,6 @@ export class CollectionService {
     this.globalEmitter.on(Constants.getNotebooksEvent, this.getNotebooksEventHandler.bind(this));
     this.globalEmitter.on(Constants.setNoteTitleEvent, this.setNoteTitleEventHandler.bind(this));
     this.globalEmitter.on(Constants.setNoteTextEvent, this.setNoteTextEventHandler.bind(this));
-    this.globalEmitter.on(Constants.setNoteAllEvent, this.setNoteAllEventHandler.bind(this));
   }
 
   public async initializeAsync(): Promise<void> {
@@ -738,7 +737,7 @@ export class CollectionService {
 
     if (initialNoteTitle === uniqueNoteTitle) {
       log.error("Final title is the same as initial title. No rename required.");
-      callback(new NoteOperationResult(Operation.Aborted));
+      callback(new NoteOperationResult(Operation.Success));
       return;
     }
 
@@ -779,19 +778,5 @@ export class CollectionService {
 
     callback(Operation.Success);
     return;
-  }
-
-  public setNoteAllEventHandler(noteId: string, noteTitle: string, noteText: string, callback: any): void {
-    try {
-      let note: Note = this.dataStore.getNoteById(noteId);
-      note.title = noteTitle;
-      note.text = noteText;
-      this.dataStore.updateNote(note);
-    } catch (error) {
-      log.error(`Could not update the note with id='${noteId}'. Cause: ${error}`);
-    }
-
-    this.noteEdited.next();
-    callback();
   }
 }
