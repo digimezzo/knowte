@@ -50,7 +50,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     @Input()
     set selectedNotebook(val: Notebook) {
         this._selectedNotebook = val;
-        this.getNotesAsync();
+        this.getNotes();
     }
 
     private subscription: Subscription;
@@ -67,14 +67,14 @@ export class NotesComponent implements OnInit, OnDestroy {
         // Workaround for auto reload
         await this.collectionService.initializeAsync();
 
-        this.subscription = this.collectionService.noteEdited$.subscribe(async () => this.zone.run(async () => await this.getNotesAsync()));
-        this.subscription = this.collectionService.noteDeleted$.subscribe(async () => await this.getNotesAndResetSelectionAsync());
-        this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(async () => await this.getNotesAndResetSelectionAsync()));
-        this.subscription.add(this.searchService.searchTextChanged$.subscribe(async (_) => await this.getNotesAsync()));
+        this.subscription = this.collectionService.noteEdited$.subscribe(() => this.getNotes());
+        this.subscription = this.collectionService.noteDeleted$.subscribe(() => this.getNotesAndResetSelection());
+        this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(() => this.getNotesAndResetSelection()));
+        this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => this.getNotes()));
 
-        this.subscription.add(this.collectionService.noteMarkChanged$.subscribe(async (result: NoteMarkResult) => {
+        this.subscription.add(this.collectionService.noteMarkChanged$.subscribe((result: NoteMarkResult) => {
             if (this.componentCategory === Constants.markedCategory) {
-                await this.getNotesAsync();
+                this.getNotes();
             } else {
                 this.markNote(result);
             }
@@ -82,7 +82,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
         this.subscription.add(this.categoryChangedSubject.subscribe(async (selectedCategory: string) => {
             this.selectedCategory = selectedCategory;
-            await this.getNotesAsync();
+            this.getNotes;
         }));
     }
 
@@ -96,7 +96,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         }
     }
 
-    private async getNotesAsync(): Promise<void> {
+    private getNotes(): Promise<void> {
 
         // Only fetch notes list for selected category
         if (this.componentCategory !== this.selectedCategory) {
@@ -104,19 +104,23 @@ export class NotesComponent implements OnInit, OnDestroy {
         }
 
         if (this.selectedNotebook) {
-            this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, true);
-            this.notesCount = this.notes.length;
+            this.zone.run(async () => {
+                this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, true);
+                this.notesCount = this.notes.length;
+            });
         }
     }
 
-    private async getNotesAndResetSelectionAsync(): Promise<void> {
-        await this.getNotesAsync();
+    private getNotesAndResetSelection(): void {
+        this.getNotes();
         this.selectFirstNote();
     }
 
     public setSelectedNote(note: Note) {
-        this.selectedNote = note;
-        this.canEditNote = this.selectedNote != null;
+        this.zone.run(() => {
+            this.selectedNote = note;
+            this.canEditNote = this.selectedNote != null;
+        });
     }
 
     public selectFirstNote() {
