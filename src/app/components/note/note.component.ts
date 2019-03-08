@@ -91,7 +91,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
             [{ 'header': 1 }, { 'header': 2 }],               // custom button values
             [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            ['blockquote', 'code-block'],
+            ['blockquote', 'code-block', 'image'],
             // [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
             // [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
             // [{ 'direction': 'rtl' }],                         // text direction

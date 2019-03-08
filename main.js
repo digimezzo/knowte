@@ -99,7 +99,7 @@ function createNoteWindow(noteId) {
     var noteWindow = new electron_1.BrowserWindow({
         x: 50,
         y: 50,
-        width: 550,
+        width: 560,
         height: 400,
         backgroundColor: '#fff',
         frame: false,

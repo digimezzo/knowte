@@ -93,7 +93,7 @@ function createNoteWindow(noteId: string) {
   let noteWindow: BrowserWindow = new BrowserWindow({
     x: 50,
     y: 50,
-    width: 550,
+    width: 560,
     height: 400,
     backgroundColor: '#fff',
     frame: false,
