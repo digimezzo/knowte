@@ -31,6 +31,7 @@ export class CollectionService {
   }
 
   private isInitializing: boolean = false;
+  private isInitialized: boolean = false;
   private globalEmitter = remote.getGlobal('globalEmitter');
   private settings: Store = new Store();
   private openNoteIds: string[] = [];
@@ -124,6 +125,8 @@ export class CollectionService {
   }
 
   private listenToNoteEvents(): void {
+    log.info("Listening to note events");
+
     this.globalEmitter.on(Constants.setNoteOpenEvent, this.setNoteOpenAsync.bind(this));
     this.globalEmitter.on(Constants.setNoteMarkEvent, this.setNoteMark.bind(this));
     this.globalEmitter.on(Constants.setNotebookEvent, this.setNotebook.bind(this));
@@ -136,6 +139,10 @@ export class CollectionService {
   public async initializeAsync(): Promise<void> {
     // Prevents initializing multiple times. To prevent calling 
     // functions before initialization is complete, force a wait.
+    if (this.isInitialized) {
+      return;
+    }
+
     if (this.isInitializing) {
       while (this.isInitializing) {
         await Utils.sleep(100);
@@ -185,6 +192,7 @@ export class CollectionService {
     this.listenToNoteEvents();
 
     this.isInitializing = false;
+    this.isInitialized = true;
   }
 
   private async collectionExistsAsync(collection: string): Promise<boolean> {
