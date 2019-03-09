@@ -75,6 +75,7 @@
 .note-item-icon {
   margin: 4px;
   width: 40px;
+  min-width: 40px;
   height: 40px;
   border-radius: 20px;
   background-color: $color-primary;
@@ -87,6 +88,16 @@
   margin-left: auto;
   margin-right: auto;
   margin-top: 9px;
+}
+
+.note-item-actions {
+  margin: 0 75px 0 0;
+  width: 20px;
+  min-width: 20px;
+  height: 48px;
+  line-height: 48px;
+  font-size: 20px;
+  font-family: material;
 }
 
 .note-item-actions-heart-marked {
@@ -119,15 +130,6 @@
   width: 100%;
   font-size: $fontsize-normal !important;
   color: #aaaaaa;
-}
-
-.note-item-actions {
-  margin: 0 40px 0 0;
-  width: 48px;
-  height: 48px;
-  line-height: 48px;
-  font-size: 20px;
-  font-family: material;
 }
 
 .selected-note {
