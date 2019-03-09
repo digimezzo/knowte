@@ -5,8 +5,7 @@
             matTooltip="{{ 'MainPage.DeleteNote' | translate }}" *ngIf=canEditNote>
             <span class="edit-item-icon">&#xE872;</span>
         </button>
-        <button class="list-button" mat-fab (click)="addNoteAsync()"
-            matTooltip="{{ 'MainPage.AddNote' | translate }}">
+        <button class="list-button" mat-fab (click)="addNoteAsync()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
             <span class="add-item-icon">&#xE145;</span>
         </button>
     </div>
@@ -20,8 +19,11 @@
             </div>
             <!-- Search -->
             <mat-form-field class="notes-content-search">
-                <input matInput type="text" placeholder="{{ 'MainPage.Search' | translate }}" [(ngModel)]="searchService.searchText">
-                <span class="notes-content-search-clearbutton" *ngIf="searchService.searchText" matSuffix (click)="searchService.searchText=''" matTooltip="{{ 'MainPage.ClearSearch' | translate }}">&#xE5C9;</span>
+                <input matInput type="text" placeholder="{{ 'MainPage.Search' | translate }}"
+                    [(ngModel)]="searchService.searchText">
+                <span class="notes-content-search-clearbutton" *ngIf="searchService.searchText" matSuffix
+                    (click)="searchService.searchText=''"
+                    matTooltip="{{ 'MainPage.ClearSearch' | translate }}">&#xE5C9;</span>
             </mat-form-field>
         </div>
         <!-- Notes list container -->
@@ -35,18 +37,19 @@
                             <div class="note-item-icon">
                                 <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg">
                             </div>
-                            <div class="note-item-info pl-1">
+                            <div class="note-item-info px-1">
                                 <div class="note-item-title">
-                                    {{ note.title }}
+                                    <span>{{ note.title }}</span>
                                 </div>
                                 <div class="note-item-date">
-                                    {{ note.displayModificationDate }}
+                                    <span>{{ note.displayModificationDate }}</span>
                                 </div>
                             </div>
                             <div class="note-item-actions">
                                 <div (click)="toggleNoteMark(note)">
                                     <span class="note-item-actions-heart-marked" *ngIf="note.isMarked">&#xE87D;</span>
-                                    <span class="note-item-actions-heart-unmarked" *ngIf="!note.isMarked">&#xE87E;</span>
+                                    <span class="note-item-actions-heart-unmarked"
+                                        *ngIf="!note.isMarked">&#xE87E;</span>
                                 </div>
                             </div>
                         </div>

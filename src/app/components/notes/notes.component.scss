@@ -113,23 +113,36 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .note-item-title {
   margin-top: 4px;
   height: 20px;
-  line-height: 20px;
-  width: 100%;
   font-size: $fontsize-normal !important;
+  display: flex;
+  align-items: center;
+}
+
+.note-item-title > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .note-item-date {
   margin-bottom: 4px;
   height: 20px;
-  line-height: 20px;
-  width: 100%;
   font-size: $fontsize-normal !important;
   color: #aaaaaa;
+  display: flex;
+  align-items: center;
+}
+
+.note-item-date > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .selected-note {
