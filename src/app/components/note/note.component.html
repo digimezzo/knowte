@@ -12,7 +12,7 @@
     <div class="window-frame-content">
         <div class="note-content">
             <div class="note-content-floating">
-                <button mat-fab matTooltip="{{ 'MainPage.AddNote' | translate }}" (click)="toggleNoteMark()">
+                <button mat-fab (click)="toggleNoteMark()">
                     <span class="note-content-floating-hearticon" *ngIf="isMarked">&#xE87D;</span>
                     <span class="note-content-floating-hearticon" *ngIf="!isMarked">&#xE87E;</span>
                 </button>

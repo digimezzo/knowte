@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, OnDestroy, NgZone } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { Notebook } from '../../data/entities/notebook';
 import { MatDialog, MatDialogRef, MatTabChangeEvent } from '@angular/material';
@@ -22,7 +22,7 @@ import { NoteMarkResult } from '../../services/results/noteMarkResult';
 })
 export class CollectionComponent implements OnInit, OnDestroy {
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
-    private translateService: TranslateService, private snackBarService: SnackBarService) {
+    private translateService: TranslateService, private snackBarService: SnackBarService, private zone: NgZone) {
   }
 
   public applicationName: string = Constants.applicationName;
@@ -66,7 +66,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     // Workaround for auto reload
     await this.collectionService.initializeAsync();
-    
+
     // Get notebooks
     await this.getNotebooksAsync();
 
@@ -86,7 +86,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
     }));
 
     this.subscription.add(this.collectionService.noteMarkChanged$.subscribe((result: NoteMarkResult) => {
+      this.zone.run(() => {
         this.markedNotesCount = result.markedNotesCount;
+      });
     }));
   }
 
@@ -117,15 +119,15 @@ export class CollectionComponent implements OnInit, OnDestroy {
   private async getNotebooksAndResetSelectionAsync(): Promise<void> {
     await this.getNotebooksAsync();
     this.selectFirstNotebook();
-}
+  }
 
   public selectFirstNotebook() {
     if (this.notebooks && this.notebooks.length > 0) {
-        this.setSelectedNotebook(this.notebooks[0]);
+      this.setSelectedNotebook(this.notebooks[0]);
     } else {
-        this.setSelectedNotebook(null);
+      this.setSelectedNotebook(null);
     }
-}
+  }
 
   public setSelectedNotebook(notebook: Notebook) {
     this.selectedNotebook = notebook;

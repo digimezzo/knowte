@@ -82,7 +82,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
         this.subscription.add(this.categoryChangedSubject.subscribe(async (selectedCategory: string) => {
             this.selectedCategory = selectedCategory;
-            this.getNotes;
+            this.getNotes();
         }));
     }
 
@@ -96,8 +96,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         }
     }
 
-    private getNotes(): Promise<void> {
-
+    private getNotes(): void {
         // Only fetch notes list for selected category
         if (this.componentCategory !== this.selectedCategory) {
             return;
