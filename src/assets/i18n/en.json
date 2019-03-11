@@ -70,7 +70,9 @@
         "ViewLog": "VIEW LOG",
         "Yes": "YES",
         "No": "NO",
-        "Import": "IMPORT"
+        "Import": "IMPORT",
+        "Start": "START",
+        "Select": "SELECT"
     },
     "DialogTitles": {
         "AddCollection": "Add collection",
@@ -81,12 +83,15 @@
         "AddNotebook": "Add notebook",
         "RenameNotebook": "Rename notebook",
         "ConfirmDeleteNotebook": "Delete notebook?",
-        "ConfirmDeleteNote": "Delete note?"
+        "ConfirmDeleteNote": "Delete note?",
+        "Import": "Import"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Are you sure you want to delete the collection '{{collection}}'? If you continue, its notebooks and notes will be lost.",
         "ConfirmDeleteNote": "Are you sure you want to delete the note '{{noteTitle}}'?",
-        "ConfirmDeleteNotebook": "Are you sure you want to delete the notebook '{{notebookName}}'? Its notes will not be deleted. They will just become unfiled."
+        "ConfirmDeleteNotebook": "Are you sure you want to delete the notebook '{{notebookName}}'? Its notes will not be deleted. They will just become unfiled.",
+        "SelectDirectoryContainingOldVersionExports": "Please select the directory containing the files which were exported from Knowte 1.x.",
+        "YouHaveSelectedDirectory": "You have selected directory: "
     },
     "Input": {
         "Collection": "Collection",
