@@ -135,6 +135,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             .pipe(debounceTime(this.saveTimeoutMilliseconds))
             .subscribe(async (_) => {
                 this.globalEmitter.emit(Constants.setNoteTextEvent, this.noteId, this.quill.getText(), this.setNoteTextCallbackAsync.bind(this));
+                log.info(this.quill.root.innerHTML);
             });
 
         this.saveChangesAndCloseNoteWindow
@@ -142,6 +143,8 @@ export class NoteComponent implements OnInit, OnDestroy {
             .subscribe((_) => {
                 this.saveAndClose();
             });
+
+            this.quill.clipboard.dangerouslyPasteHTML(0, `<HTML><BODY><P STYLE="text-align:Left;font-family:Calibri;font-size:15;">This is a tet note for export. Let's try formatting:</P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;" /><P STYLE="text-align:Left;font-family:Calibri;font-size:15;"><SPAN STYLE="font-weight:bold;">Bold</SPAN></P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;"><SPAN STYLE="font-style:italic;">Italic</SPAN></P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;"><SPAN STYLE="text-decoration:underline;">Underline</SPAN></P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;"><SPAN STYLE="text-decoration:underline;">Strikeout</SPAN></P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;"><SPAN STYLE="font-family:Courier New;">Fixed width</SPAN></P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;"><SPAN STYLE="background-color:#FFFF00;">Highlight</SPAN></P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;"><SPAN STYLE="background-color:#FFFF00;" /></P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;"><SPAN STYLE="background-color:#FFFFFF;">A link to the web: </SPAN></P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;" /><P STYLE="text-align:Left;font-family:Calibri;font-size:15;">Lists</P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;" /><UL STYLE="text-align:Left;font-family:Calibri;font-size:15;"><LI><P>item</P></LI><LI><P>item</P><UL><LI><P>sub item</P></LI><LI><P>sub item</P><UL><LI><P>sub sub item</P></LI><LI><P>sub sub item</P></LI></UL></LI></UL></LI><LI><P>item</P><UL><LI><P>sub item</P></LI></UL></LI></UL><P STYLE="text-align:Left;font-family:Calibri;font-size:15;" /><P STYLE="text-align:Left;font-family:Calibri;font-size:15;">An image</P><P STYLE="text-align:Left;font-family:Calibri;font-size:15;" /><P STYLE="text-align:Left;font-family:Calibri;font-size:15;" /><P STYLE="text-align:Left;font-family:Calibri;font-size:15;">Text after the image</P></BODY></HTML>`);
     }
 
     private saveAndClose(): void {

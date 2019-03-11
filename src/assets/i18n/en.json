@@ -39,6 +39,10 @@
         "Email": "E-mail",
         "SocialNetworks": "Social networks"
     },
+    "SettingsPage": {
+        "Import": "Import",
+        "ImportFromOldVersion": "Import from Knowte 1.x"
+    },
     "ComponentsPage": {
         "Components": "Components"
     },
@@ -65,7 +69,8 @@
         "Donate": "DONATE",
         "ViewLog": "VIEW LOG",
         "Yes": "YES",
-        "No": "NO"
+        "No": "NO",
+        "Import": "IMPORT"
     },
     "DialogTitles": {
         "AddCollection": "Add collection",
