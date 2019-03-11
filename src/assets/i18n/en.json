@@ -71,8 +71,9 @@
         "Yes": "YES",
         "No": "NO",
         "Import": "IMPORT",
-        "Start": "START",
-        "Select": "SELECT"
+        "StartImport": "START IMPORT",
+        "Select": "SELECT",
+        "SelectAgain": "SELECT AGAIN"
     },
     "DialogTitles": {
         "AddCollection": "Add collection",

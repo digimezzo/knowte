@@ -5,10 +5,10 @@
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-raised-button color="primary" (click)=startImport()
-        *ngIf="isDirectoryChosen">{{ 'Buttons.Start' | translate }}</button>
+        *ngIf="isDirectoryChosen">{{ 'Buttons.StartImport' | translate }}</button>
     <button mat-raised-button color="primary" (click)=selectDirectory()
         *ngIf="!isDirectoryChosen">{{ 'Buttons.Select' | translate }}</button>
     <button mat-raised-button (click)=selectDirectory()
-        *ngIf="isDirectoryChosen">{{ 'Buttons.Select' | translate }}</button>
+        *ngIf="isDirectoryChosen">{{ 'Buttons.SelectAgain' | translate }}</button>
     <button mat-raised-button [mat-dialog-close]>{{ 'Buttons.Cancel' | translate }}</button>
 </mat-dialog-actions>
