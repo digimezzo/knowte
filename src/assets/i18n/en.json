@@ -73,7 +73,8 @@
         "Import": "IMPORT",
         "StartImport": "START IMPORT",
         "Select": "SELECT",
-        "SelectAgain": "SELECT AGAIN"
+        "SelectAgain": "SELECT AGAIN",
+        "Close": "CLOSE"
     },
     "DialogTitles": {
         "AddCollection": "Add collection",

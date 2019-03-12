@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { remote } from 'electron';
 import log from 'electron-log';
+import { Utils } from '../../../core/utils';
 
 @Component({
     selector: 'importfromoldversion-dialog',
@@ -13,6 +14,9 @@ export class ImportFromOldVersionDialogComponent implements OnInit {
 
     public isDirectoryChosen: boolean = false;
     public selectedDirectory: string = "";
+    public isBusy: boolean = false;
+    public isImportFinished: boolean = false;
+    public isImportSuccessful: boolean = true;
 
     ngOnInit() {
     }
@@ -26,7 +30,12 @@ export class ImportFromOldVersionDialogComponent implements OnInit {
         }
     }
 
-    public startImport(): void {
+    public async startImport(): Promise<void> {
+        this.isBusy = true;
 
+        await Utils.sleep(2000);
+
+        this.isBusy = false;
+        this.isImportFinished = true;
     }
 }

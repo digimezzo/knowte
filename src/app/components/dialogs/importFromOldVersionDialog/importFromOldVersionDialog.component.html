@@ -1,14 +1,33 @@
 <dialog-header titleText="{{ 'DialogTitles.Import' | translate }}"></dialog-header>
 <mat-dialog-content>
-    <p *ngIf="!isDirectoryChosen"> {{ 'DialogTexts.SelectDirectoryContainingOldVersionExports' | translate }}</p>
-    <p *ngIf="isDirectoryChosen"> {{ 'DialogTexts.YouHaveSelectedDirectory' | translate }}{{ selectedDirectory }}</p>
+    <div *ngIf="!isImportFinished">
+        <div class="nonBusyContent" *ngIf="!isBusy">
+            <p *ngIf="!isDirectoryChosen"> {{ 'DialogTexts.SelectDirectoryContainingOldVersionExports' | translate }}
+            </p>
+            <p *ngIf="isDirectoryChosen">
+                {{ 'DialogTexts.YouHaveSelectedDirectory' | translate }}{{ selectedDirectory }}
+            </p>
+        </div>
+        <div class="busyContent" *ngIf="isBusy">
+            Busy
+        </div>
+    </div>
+    <div *ngIf="isImportFinished">
+        <div *ngIf="isImportSuccessful">
+            Success!
+        </div>
+        <div *ngIf="!isImportSuccessful">
+            Failure!
+        </div>
+    </div>
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-raised-button color="primary" (click)=startImport()
-        *ngIf="isDirectoryChosen">{{ 'Buttons.StartImport' | translate }}</button>
+        *ngIf="isDirectoryChosen && !isBusy && !isImportFinished">{{ 'Buttons.StartImport' | translate }}</button>
     <button mat-raised-button color="primary" (click)=selectDirectory()
-        *ngIf="!isDirectoryChosen">{{ 'Buttons.Select' | translate }}</button>
+        *ngIf="!isDirectoryChosen && !isBusy && !isImportFinished">{{ 'Buttons.Select' | translate }}</button>
     <button mat-raised-button (click)=selectDirectory()
-        *ngIf="isDirectoryChosen">{{ 'Buttons.SelectAgain' | translate }}</button>
-    <button mat-raised-button [mat-dialog-close]>{{ 'Buttons.Cancel' | translate }}</button>
+        *ngIf="isDirectoryChosen && !isBusy && !isImportFinished">{{ 'Buttons.SelectAgain' | translate }}</button>
+    <button *ngIf="!isImportFinished" mat-raised-button [mat-dialog-close]>{{ 'Buttons.Cancel' | translate }}</button>
+    <button *ngIf="isImportFinished" mat-raised-button [mat-dialog-close]>{{ 'Buttons.Close' | translate }}</button>
 </mat-dialog-actions>
