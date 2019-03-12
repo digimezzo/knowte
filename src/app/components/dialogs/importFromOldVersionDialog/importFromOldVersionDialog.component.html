@@ -1,23 +1,24 @@
 <dialog-header titleText="{{ 'DialogTitles.Import' | translate }}"></dialog-header>
 <mat-dialog-content>
-    <div *ngIf="!isImportFinished">
+    <div class="importDialogContent" *ngIf="!isImportFinished">
         <div class="nonBusyContent" *ngIf="!isBusy">
             <p *ngIf="!isDirectoryChosen"> {{ 'DialogTexts.SelectDirectoryContainingOldVersionExports' | translate }}
             </p>
             <p *ngIf="isDirectoryChosen">
-                {{ 'DialogTexts.YouHaveSelectedDirectory' | translate }}{{ selectedDirectory }}
+                {{ 'DialogTexts.YouHaveSelectedDirectory' | translate }} {{ selectedDirectory }}
             </p>
         </div>
         <div class="busyContent" *ngIf="isBusy">
-            Busy
+            <mat-spinner class="mr-1" [diameter]="20"></mat-spinner>
+            <div>{{ 'DialogTexts.Importing' | translate }}</div>
         </div>
     </div>
-    <div *ngIf="isImportFinished">
+    <div class="importDialogContent" *ngIf="isImportFinished">
         <div *ngIf="isImportSuccessful">
-            Success!
+            {{ 'DialogTexts.ImportSuccessful' | translate }}
         </div>
         <div *ngIf="!isImportSuccessful">
-            Failure!
+            {{ 'DialogTexts.ImportFailed' | translate }}
         </div>
     </div>
 </mat-dialog-content>
@@ -29,5 +30,8 @@
     <button mat-raised-button (click)=selectDirectory()
         *ngIf="isDirectoryChosen && !isBusy && !isImportFinished">{{ 'Buttons.SelectAgain' | translate }}</button>
     <button *ngIf="!isImportFinished" mat-raised-button [mat-dialog-close]>{{ 'Buttons.Cancel' | translate }}</button>
-    <button *ngIf="isImportFinished" mat-raised-button [mat-dialog-close]>{{ 'Buttons.Close' | translate }}</button>
+    <button *ngIf="isImportFinished" color="primary" mat-raised-button
+        [mat-dialog-close]>{{ 'Buttons.Close' | translate }}</button>
+    <button *ngIf="isImportFinished && !isImportSuccessful" mat-raised-button [mat-dialog-close]
+        (click)=viewLog()>{{ 'Buttons.ViewLog' | translate }}</button>
 </mat-dialog-actions>

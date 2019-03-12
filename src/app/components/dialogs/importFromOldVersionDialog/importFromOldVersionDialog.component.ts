@@ -38,4 +38,9 @@ export class ImportFromOldVersionDialogComponent implements OnInit {
         this.isBusy = false;
         this.isImportFinished = true;
     }
+
+    public viewLog(): void {
+        // See: https://stackoverflow.com/questions/30381450/open-external-file-with-electron
+        remote.shell.openItem(remote.app.getPath("userData"));
+    }
 }
