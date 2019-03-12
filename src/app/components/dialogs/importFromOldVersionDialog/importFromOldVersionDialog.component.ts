@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { remote } from 'electron';
 import log from 'electron-log';
 import { Utils } from '../../../core/utils';
+import { CollectionService } from '../../../services/collection.service';
 
 @Component({
     selector: 'importfromoldversion-dialog',
@@ -9,7 +10,7 @@ import { Utils } from '../../../core/utils';
     styleUrls: ['./importFromOldVersionDialog.component.scss']
 })
 export class ImportFromOldVersionDialogComponent implements OnInit {
-    constructor() {
+    constructor(private collectionService: CollectionService) {
     }
 
     public isDirectoryChosen: boolean = false;
@@ -33,7 +34,7 @@ export class ImportFromOldVersionDialogComponent implements OnInit {
     public async startImport(): Promise<void> {
         this.isBusy = true;
 
-        await Utils.sleep(2000);
+        this.isImportSuccessful = await this.collectionService.importFromOldVersionAsync(this.selectedDirectory);
 
         this.isBusy = false;
         this.isImportFinished = true;

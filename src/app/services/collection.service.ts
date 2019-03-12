@@ -787,4 +787,10 @@ export class CollectionService {
     callback(Operation.Success);
     return;
   }
+
+  public async importFromOldVersionAsync(directoryContainingExportFiles: string): Promise<boolean> {
+    await Utils.sleep(5000);
+
+    return true;
+  }
 }
