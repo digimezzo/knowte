@@ -858,6 +858,7 @@ export class CollectionService {
 
                 let quillText: string = jsonNote.Text;
                 quillText = quillText.replace(/\n/g,"\\n");
+                quillText = quillText.replace(/\t/g,"\\t");
                 quillText = quillText.replace(/\"/g,'\\"');
                 quillText = `{"ops":[{"insert":"${quillText}"}]}`;
 

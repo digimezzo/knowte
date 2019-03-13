@@ -135,7 +135,6 @@ export class NoteComponent implements OnInit, OnDestroy {
             .pipe(debounceTime(this.saveTimeoutMilliseconds))
             .subscribe(async (_) => {
                 this.globalEmitter.emit(Constants.setNoteTextEvent, this.noteId, this.quill.getText(), this.setNoteTextCallbackAsync.bind(this));
-                log.info(this.quill.root.innerHTML);
             });
 
         this.saveChangesAndCloseNoteWindow
