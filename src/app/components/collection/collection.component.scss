@@ -83,15 +83,18 @@
   color: $color-primary;
 }
 
+.selected-notebook {
+  background-color: #e2e2e2;
+}
+
+
 .notebook {
   font-size: $fontsize-normal !important;
+  cursor: pointer;
+  height: 38px;
+  line-height: 38px;
 }
 
-.notebook-name {
-  padding-left: 16px !important;
-  padding-right: 16px !important;
-}
-
-.selected-notebook {
-  background-color: #e6e7e7;
+.notebook:hover {
+  background-color: #e7e7e7;
 }
