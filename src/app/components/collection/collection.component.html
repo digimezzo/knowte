@@ -18,16 +18,15 @@
                 <!-- Notebooks list container -->
                 <div class="collection-notebooks-list">
                     <!-- Notebooks list -->
-                    <ul class="collection-notebooks-list-list">
-                        <li>
-                            <div class="notebook px-2 no-select"
-                                [ngClass]="{'selected-notebook':notebook === selectedNotebook }"
-                                *ngFor="let notebook of notebooks"
+                    <mat-selection-list dense class="collection-notebooks-list-list">
+                        <mat-list-option [ngClass]="{'selected-notebook':notebook === selectedNotebook }" class="notebook"
+                            *ngFor="let notebook of notebooks" role="option">
+                            <p class="notebook-name no-select"
                                 [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
                                 (click)="setSelectedNotebook(notebook)">
-                                {{ notebook.name }}</div>
-                        </li>
-                    </ul>
+                                {{ notebook.name }}</p>
+                        </mat-list-option>
+                    </mat-selection-list>
                     <!-- Notebooks buttons -->
                     <div class="collection-notebooks-list-buttons m-2">
                         <button class="list-button" mat-mini-fab color="" (click)="renameNotebook()"

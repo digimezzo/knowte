@@ -66,19 +66,10 @@
   overflow: auto;
 }
 
-.selected-note {
-  background-color: #f0f0f0;
-}
-
 .note-item {
   height: 48px;
   display: flex;
   flex-direction: row;
-  cursor: pointer;
-}
-
-.note-item:hover {
-  background-color: #f5f5f5;
 }
 
 .note-item-icon {
@@ -152,4 +143,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.selected-note {
+  background-color: #f5f5f5;
 }
