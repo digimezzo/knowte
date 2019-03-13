@@ -789,8 +789,97 @@ export class CollectionService {
   }
 
   public async importFromOldVersionAsync(directoryContainingExportFiles: string): Promise<boolean> {
-    await Utils.sleep(5000);
+    let notebooksExportFile: string = path.join(directoryContainingExportFiles, "Notebooks.json");
+    let notesExportFile: string = path.join(directoryContainingExportFiles, "Notes.json");
 
-    return true;
+    let isImportSuccessful: boolean = true;
+
+    try {
+      // Notebooks
+      try {
+        if (await fs.exists(notebooksExportFile)) {
+          let notebooksJson: string = await fs.readFile(notebooksExportFile);
+          let jsonNotebooks = JSON.parse(notebooksJson);
+
+          log.info(`${notebooksExportFile} was found. Importing notebooks.`);
+
+          for (let jsonNotebook of jsonNotebooks) {
+            try {
+              if (!this.notebookExists(jsonNotebook.Name)) {
+                this.dataStore.addNotebook(jsonNotebook.Name);
+              }
+            } catch (error) {
+              log.error(`An error occurred while importing a notebook from an old version. Cause: ${error}`);
+              isImportSuccessful = false;
+            }
+          }
+        } else {
+          log.info(`${notebooksExportFile} was not found. Not importing notebooks.`);
+        }
+      } catch (error) {
+        log.error(`An error occurred while importing notebooks from an old version. Cause: ${error}`);
+        isImportSuccessful = false;
+      }
+
+
+      // Notes
+      try {
+        if (await fs.exists(notesExportFile)) {
+          let notesJson: string = await fs.readFile(notesExportFile);
+          let jsonNotes = JSON.parse(notesJson);
+
+          log.info(`${notesExportFile} was found. Importing notes.`);
+
+          for (let jsonNote of jsonNotes) {
+            try {
+              if (!this.notebookExists(jsonNote.Title)) {
+                let notebookId: string = "";
+
+                try {
+                  if (jsonNote.Notebook) {
+                    let notebook: Notebook = this.dataStore.getNotebookByName(jsonNote.Notebook);
+
+                    if (notebook) {
+                      notebookId = notebook.id;
+                    }
+                  }
+                } catch (error) {
+                  log.error(`An error occurred while trying to find a notebook for a note. Cause: ${error}`);
+                }
+
+                this.dataStore.addNote(jsonNote.Title, notebookId);
+
+                let note: Note = this.dataStore.getNoteByTitle(jsonNote.Title);
+                note.text = jsonNote.Text;
+                note.creationDate = jsonNote.CreationDate;
+                note.modificationDate = jsonNote.ModificationDate;
+                note.isMarked = jsonNote.IsMarked;
+                this.dataStore.updateNote(note);
+
+                let quillText: string = `{"ops":[{"insert":"${jsonNote.Text}"}]}`;
+                quillText = quillText.replace(/\n/g,"\\n");
+
+                let activeCollection: string = this.settings.get('activeCollection');
+                await fs.writeFile(path.join(Utils.collectionToPath(activeCollection), `${note.id}${Constants.noteExtension}`), quillText);
+              }
+            } catch (error) {
+              log.error(`An error occurred while importing a note from an old version. Cause: ${error}`);
+              isImportSuccessful = false;
+            }
+          }
+        } else {
+          log.info(`${notesExportFile} was not found. Not importing notes.`);
+        }
+      } catch (error) {
+        log.error(`An error occurred while importing notes from an old version. Cause: ${error}`);
+        isImportSuccessful = false;
+      }
+
+    } catch (error) {
+      log.error(`An error occurred while importing notebooks and/or notes from an old version. Cause: ${error}`);
+      isImportSuccessful = false;
+    }
+
+    return isImportSuccessful;
   }
 }
