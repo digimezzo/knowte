@@ -113,7 +113,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
   private async getNotebooksAsync(): Promise<void> {
     this.notebooks = await this.collectionService.getNotebooksAsync(true);
-    this.notebooksCount = this.notebooks.length;
+    this.notebooksCount = this.notebooks.length - 2;
   }
 
   private async getNotebooksAndResetSelectionAsync(): Promise<void> {
