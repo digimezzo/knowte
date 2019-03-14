@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { Note } from '../../data/entities/note';
-import { Subscription, Subject } from 'rxjs';
+import { Subscription, Subject, fromEvent } from 'rxjs';
 import { SnackBarService } from '../../services/snackBar.service';
 import { ipcRenderer } from 'electron';
 import { Notebook } from '../../data/entities/notebook';
@@ -14,6 +14,8 @@ import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../../services/results/noteOperationResult';
 import { SearchService } from '../../services/search.service';
 import { NoteMarkResult } from '../../services/results/noteMarkResult';
+import { debounceTime, takeUntil } from 'rxjs/internal/operators';
+import { Utils } from '../../core/utils';
 
 @Component({
     selector: 'notes-component',
@@ -25,6 +27,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         private translateService: TranslateService, public searchService: SearchService, private zone: NgZone) {
     }
 
+    private readonly destroy$ = new Subject();
     private _selectedNotebook: Notebook;
 
     private _value: string;
@@ -59,8 +62,12 @@ export class NotesComponent implements OnInit, OnDestroy {
     public notesCount: number = 0;
     public canEditNote: boolean = false;
 
+    public canShowList: boolean = true;
+
     ngOnDestroy() {
         this.subscription.unsubscribe();
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
     async ngOnInit() {
@@ -82,8 +89,27 @@ export class NotesComponent implements OnInit, OnDestroy {
 
         this.subscription.add(this.categoryChangedSubject.subscribe(async (selectedCategory: string) => {
             this.selectedCategory = selectedCategory;
+            this.refreshVirtuallScrollerAsync();
             this.getNotes();
         }));
+
+        fromEvent(window, 'resize')
+            .pipe(
+                debounceTime(10),
+                takeUntil(this.destroy$),
+            )
+            .subscribe(async () => this.zone.run(() => {
+                this.refreshVirtuallScrollerAsync();
+            }));
+        ;
+    }
+
+    private async refreshVirtuallScrollerAsync(): Promise<void> {
+        // cdk-virtual-scroll-viewport doesn't resize its viewport automatically,
+        // so we need to use a retarded workaround.
+        this.canShowList = false;
+        await Utils.sleep(50);
+        this.canShowList = true;
     }
 
     private markNote(result: NoteMarkResult): void {

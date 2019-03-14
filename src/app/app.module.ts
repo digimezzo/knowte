@@ -4,6 +4,7 @@ import '../polyfills';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, ErrorHandler } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
@@ -99,6 +100,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatSelectModule,
     BrowserAnimationsModule,
     BrowserModule,
+    ScrollingModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
