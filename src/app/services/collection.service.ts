@@ -856,11 +856,7 @@ export class CollectionService {
                 note.isMarked = jsonNote.IsMarked;
                 this.dataStore.updateNote(note);
 
-                let quillText: string = jsonNote.Text;
-                quillText = quillText.replace(/\n/g,"\\n");
-                quillText = quillText.replace(/\t/g,"\\t");
-                quillText = quillText.replace(/\"/g,'\\"');
-                quillText = `{"ops":[{"insert":"${quillText}"}]}`;
+                let quillText: string = `{"ops":[{"insert":${JSON.stringify(jsonNote.Text)}}]}`;
 
                 let activeCollection: string = this.settings.get('activeCollection');
                 await fs.writeFile(path.join(Utils.collectionToPath(activeCollection), `${note.id}${Constants.noteExtension}`), quillText);
