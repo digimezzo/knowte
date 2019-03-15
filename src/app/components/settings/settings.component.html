@@ -9,11 +9,11 @@
     </div>
     <div class="window-frame-content">
         <mat-tab-group>
-            <!-- <mat-tab label="{{ 'SettingsTabs.Appearance' | translate }}">
-                <p class="m-3">Work in progress</p>
-            </mat-tab>
-            <mat-tab label="{{ 'SettingsTabs.Behavior' | translate }}">
-                <p class="m-3">Work in progress</p>
+            <mat-tab label="{{ 'SettingsTabs.Notes' | translate }}">
+                <div class="m-3">
+                    <h1>{{ 'SettingsPage.Closing' | translate }}</h1>
+                    <mat-slide-toggle [(ngModel)]="closeNotesWithEscapeChecked">{{ 'SettingsPage.CloseNotesWithEscape' | translate }}</mat-slide-toggle>
+                </div>
             </mat-tab> -->
             <mat-tab label="{{ 'SettingsTabs.Advanced' | translate }}">
                 <div class="m-3">

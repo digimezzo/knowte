@@ -20,8 +20,7 @@
         "Marked": "Marked"
     },
     "SettingsTabs": {
-        "Appearance": "Appearance",
-        "Behavior": "Behavior",
+        "Notes": "Notes",
         "Advanced": "Advanced"
     },
     "InformationTabs": {
@@ -41,7 +40,9 @@
     },
     "SettingsPage": {
         "Import": "Import",
-        "ImportFromOldVersion": "Import from Knowte 1.x"
+        "ImportFromOldVersion": "Import from Knowte 1.x",
+        "Closing": "Closing",
+        "CloseNotesWithEscape": "Close notes with [Esc]"
     },
     "ComponentsPage": {
         "Components": "Components"
