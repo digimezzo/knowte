@@ -15,15 +15,18 @@ export class SettingsComponent implements OnInit {
 
   private settings: Store = new Store();
 
-  public get closeNotesWithEscapeChecked() : boolean {
+  public get closeNotesWithEscapeChecked(): boolean {
     return this.settings.get('closeNotesWithEscape');
   }
-  public set closeNotesWithEscapeChecked(v : boolean) {
+  public set closeNotesWithEscapeChecked(v: boolean) {
     this.settings.set('closeNotesWithEscape', v);
   }
-  
+
 
   ngOnInit() {
+    if (!this.settings.has('closeNotesWithEscape')) {
+      this.settings.set('closeNotesWithEscape', true);
+    }
   }
 
   public import(): void {
