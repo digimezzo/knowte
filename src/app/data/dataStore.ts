@@ -163,6 +163,11 @@ export class DataStore {
         this.db.saveDatabase();
     }
 
+    public updateNoteWithoutDate(note: Note): void {
+        this.notes.update(note);
+        this.db.saveDatabase();
+    }
+
     public updateNotebook(notebook: Notebook): void {
         this.notebooks.update(notebook);
         this.db.saveDatabase();

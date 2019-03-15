@@ -851,10 +851,10 @@ export class CollectionService {
 
                 let note: Note = this.dataStore.getNoteByTitle(jsonNote.Title);
                 note.text = jsonNote.Text;
-                note.creationDate = jsonNote.CreationDate;
-                note.modificationDate = jsonNote.ModificationDate;
+                note.creationDate = moment(jsonNote.CreationDate, 'YYYY-MM-DD HH:mm:ss').valueOf();
+                note.modificationDate = moment(jsonNote.ModificationDate, 'YYYY-MM-DD HH:mm:ss').valueOf();
                 note.isMarked = jsonNote.IsMarked;
-                this.dataStore.updateNote(note);
+                this.dataStore.updateNoteWithoutDate(note);
 
                 let quillText: string = `{"ops":[{"insert":${JSON.stringify(jsonNote.Text)}}]}`;
 
@@ -864,6 +864,17 @@ export class CollectionService {
             } catch (error) {
               log.error(`An error occurred while importing a note from an old version. Cause: ${error}`);
               isImportSuccessful = false;
+
+              try {
+                // Make sure there are no erroneous notes left in the data store
+                let note: Note = this.dataStore.getNoteByTitle(jsonNote.Title);
+
+                if (note) {
+                  this.dataStore.deleteNote(note.id);
+                }
+              } catch (error) {
+                log.error(`Could note delete note from data store. Cause: ${error}`);
+              }
             }
           }
         } else {
