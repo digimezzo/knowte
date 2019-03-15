@@ -71,6 +71,7 @@
   display: flex;
   flex-direction: row;
   width: calc(100vw - 350px);
+  cursor: default !important;
 }
 
 .note-item-icon {
@@ -99,6 +100,7 @@
   line-height: 48px;
   font-size: 20px;
   font-family: material;
+  cursor: pointer;
 }
 
 .note-item-actions-heart-marked {
