@@ -8,6 +8,10 @@ Knowte is a note taking application that allows you to quickly and easily organi
 [![Issues](https://img.shields.io/github/issues/digimezzo/Knowte-electron.svg?style=flat-square)](https://github.com/digimezzo/Knowte-electron/issues)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MQALEWTEZ7HX8)
 
+## Screenshot
+
+![Knowte2screenshot](Knowte2.png)
+
 ## Build instructions
 
 ```bash
