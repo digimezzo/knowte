@@ -15,6 +15,8 @@ export class SettingsComponent implements OnInit {
 
   private settings: Store = new Store();
 
+  public fontSizes: number[] = [14, 16, 18, 20, 22, 24];
+
   public get closeNotesWithEscapeChecked(): boolean {
     return this.settings.get('closeNotesWithEscape');
   }
@@ -22,10 +24,20 @@ export class SettingsComponent implements OnInit {
     this.settings.set('closeNotesWithEscape', v);
   }
 
+  public get selectedFontSize(): number {
+    return this.settings.get('fontSizeInNotes');
+  }
+  public set selectedFontSize(v: number) {
+    this.settings.set('fontSizeInNotes', v);
+  }
 
   ngOnInit() {
     if (!this.settings.has('closeNotesWithEscape')) {
       this.settings.set('closeNotesWithEscape', true);
+    }
+
+    if (!this.settings.has('fontSizeInNotes')) {
+      this.settings.set('fontSizeInNotes', 14);
     }
   }
 

@@ -22,7 +22,7 @@
                     <input class="note-content-fixed-title-text" type="text" [(ngModel)]="noteTitle"
                         (ngModelChange)="onNotetitleChange($event)" />
                 </div>
-                <div class="note-editor" id="editor">
+                <div class="note-editor" [ngStyle]="editorStyle" id="editor">
                 </div>
             </div>
         </div>

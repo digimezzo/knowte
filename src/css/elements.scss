@@ -1,55 +1,51 @@
-@import 'variables.scss';
+@import "variables.scss";
 
 * {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    vertical-align: baseline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+  outline: none; // Removes yellow outline on elements
 }
 
 html {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 *,
 *:before,
 *:after {
-    box-sizing: inherit;
+  box-sizing: inherit;
 }
 
 html,
 body {
-    height: 100%;
-    margin: 0;
+  height: 100%;
+  margin: 0;
 }
 
 body {
-    font-family: Roboto, Ubuntu, "Segoe UI", sans-serif;
-    background: #FFF;
-    color: #000;
-    overflow-y: hidden;
+  font-family: Roboto, Ubuntu, "Segoe UI", sans-serif;
+  background: #fff;
+  color: #000;
+  overflow-y: hidden;
 }
 
-
 h1 {
-    color: $color-primary;
-    font-size: 24px !important;
+  color: $color-primary;
+  font-size: 24px !important;
 }
 
 h2 {
-    color: #748393;
-    font-size: 24px !important;
+  color: #748393;
+  font-size: 24px !important;
 }
 
 a {
-    color: $color-primary;
-    outline: none; // Removes yellow outline on links
+  color: $color-primary;
+  outline: none; // Removes yellow outline on links
 }
 
 hr {
-    border-bottom: 1px solid #DEDEDE;
-}
-
-* {
-    outline: none; // Removes yellow outline on elements
+  border-bottom: 1px solid #dedede;
 }

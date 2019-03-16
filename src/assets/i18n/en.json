@@ -41,6 +41,9 @@
     "SettingsPage": {
         "Import": "Import",
         "ImportFromOldVersion": "Import from Knowte 1.x",
+        "FontSize": "Font size",
+        "FontSizeInNotes": "Font size in notes",
+        "PixelsShort": "px",
         "Closing": "Closing",
         "CloseNotesWithEscape": "Close notes with [Esc]"
     },

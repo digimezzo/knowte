@@ -53,6 +53,10 @@ export class NoteComponent implements OnInit, OnDestroy {
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
     private notebookChangedListener: any = this.notebookChangedHandler.bind(this);
 
+    public editorStyle = {
+        'font-size': this.settings.get("fontSizeInNotes") + 'px'
+    }
+
     @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
         if (this.settings.get('closeNotesWithEscape')) {
             let window: BrowserWindow = remote.getCurrentWindow();

@@ -11,12 +11,27 @@
         <mat-tab-group>
             <mat-tab label="{{ 'SettingsTabs.Notes' | translate }}">
                 <div class="m-3">
-                    <h1>{{ 'SettingsPage.Closing' | translate }}</h1>
-                    <mat-slide-toggle [(ngModel)]="closeNotesWithEscapeChecked">{{ 'SettingsPage.CloseNotesWithEscape' | translate }}</mat-slide-toggle>
+                    <!--Font size -->
+                    <h1>{{ 'SettingsPage.FontSize' | translate }}</h1>
+                    <p>{{ 'SettingsPage.FontSizeInNotes' | translate }}:
+                        <mat-form-field class="fontSizeSelector mx-1">
+                            <mat-select [(ngModel)]="selectedFontSize">
+                                <mat-option *ngFor="let fontSize of fontSizes" [value]="fontSize">
+                                    {{ fontSize }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        {{ 'SettingsPage.PixelsShort' | translate }}
+                    </p>
+                    <!-- Closing -->
+                    <h1 class="mt-2">{{ 'SettingsPage.Closing' | translate }}</h1>
+                    <mat-slide-toggle class="mt-2" [(ngModel)]="closeNotesWithEscapeChecked">
+                        {{ 'SettingsPage.CloseNotesWithEscape' | translate }}</mat-slide-toggle>
                 </div>
             </mat-tab> -->
             <mat-tab label="{{ 'SettingsTabs.Advanced' | translate }}">
                 <div class="m-3">
+                    <!-- Import -->
                     <h1>{{ 'SettingsPage.Import' | translate }}</h1>
                     <p>{{ 'SettingsPage.ImportFromOldVersion' | translate }}</p>
                     <button mat-raised-button color="primary" (click)="import()">
