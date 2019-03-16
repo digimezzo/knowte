@@ -16,6 +16,7 @@ import { SearchService } from '../../services/search.service';
 import { NoteMarkResult } from '../../services/results/noteMarkResult';
 import { debounceTime, takeUntil } from 'rxjs/internal/operators';
 import { Utils } from '../../core/utils';
+import * as Store from 'electron-store';
 
 @Component({
     selector: 'notes-component',
@@ -27,6 +28,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         private translateService: TranslateService, public searchService: SearchService, private zone: NgZone) {
     }
 
+    private settings: Store = new Store();
     private readonly destroy$ = new Subject();
     private _selectedNotebook: Notebook;
 
@@ -130,7 +132,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
         if (this.selectedNotebook) {
             this.zone.run(async () => {
-                this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, true);
+                this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, this.settings.get('showExactDatesInTheNotesList'));
                 this.notesCount = this.notes.length;
             });
         }

@@ -471,7 +471,7 @@ export class CollectionService {
     return Operation.Success;
   }
 
-  private async getNoteDateFormatAsync(millisecondsSinceEpoch: number, useFuzzyDates: boolean): Promise<NoteDateFormatResult> {
+  private async getNoteDateFormatAsync(millisecondsSinceEpoch: number, useExactDates: boolean): Promise<NoteDateFormatResult> {
     let result: NoteDateFormatResult = new NoteDateFormatResult();
     let nowDateonly: Moment = moment().startOf('day');
     let modificationDateOnly: Moment = moment(millisecondsSinceEpoch).startOf('day');
@@ -535,7 +535,7 @@ export class CollectionService {
       result.isThisWeekNote = true;
     }
 
-    if (!useFuzzyDates) {
+    if (useExactDates) {
       let m: Moment = moment(millisecondsSinceEpoch);
       let dateText: string = m.format("MMMM D, YYYY HH:mm");
       result.dateText = dateText;
@@ -555,7 +555,7 @@ export class CollectionService {
     return unfilteredNotes.filter((x) => Utils.containsAll(`${x.title} ${x.text}`, pieces));
   }
 
-  public async getNotesAsync(notebookId: string, category: string, useFuzzyDates: boolean): Promise<Note[]> {
+  public async getNotesAsync(notebookId: string, category: string, useExactDates: boolean): Promise<Note[]> {
     let notesCountResult: NotesCountResult = new NotesCountResult();
 
     let notes: Note[] = [];
@@ -591,7 +591,7 @@ export class CollectionService {
           notes.push(note);
         }
 
-        let result: NoteDateFormatResult = await this.getNoteDateFormatAsync(note.modificationDate, useFuzzyDates);
+        let result: NoteDateFormatResult = await this.getNoteDateFormatAsync(note.modificationDate, useExactDates);
 
         // More counts
         if (result.isTodayNote) {

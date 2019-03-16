@@ -27,6 +27,10 @@
                     <h1 class="mt-2">{{ 'SettingsPage.Closing' | translate }}</h1>
                     <mat-slide-toggle class="mt-2" [(ngModel)]="closeNotesWithEscapeChecked">
                         {{ 'SettingsPage.CloseNotesWithEscape' | translate }}</mat-slide-toggle>
+                    <!-- Dates -->
+                    <h1 class="mt-2">{{ 'SettingsPage.Dates' | translate }}</h1>
+                    <mat-slide-toggle class="mt-2" [(ngModel)]="showExactDatesInTheNotesListChecked">
+                        {{ 'SettingsPage.ShowExactDatesInTheNotesList' | translate }}</mat-slide-toggle>
                 </div>
             </mat-tab> -->
             <mat-tab label="{{ 'SettingsTabs.Advanced' | translate }}">

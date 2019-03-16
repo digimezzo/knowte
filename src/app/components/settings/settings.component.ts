@@ -31,6 +31,13 @@ export class SettingsComponent implements OnInit {
     this.settings.set('fontSizeInNotes', v);
   }
 
+  public get showExactDatesInTheNotesListChecked(): boolean {
+    return this.settings.get('showExactDatesInTheNotesList');
+  }
+  public set showExactDatesInTheNotesListChecked(v: boolean) {
+    this.settings.set('showExactDatesInTheNotesList', v);
+  }
+
   ngOnInit() {
     if (!this.settings.has('closeNotesWithEscape')) {
       this.settings.set('closeNotesWithEscape', true);
@@ -38,6 +45,10 @@ export class SettingsComponent implements OnInit {
 
     if (!this.settings.has('fontSizeInNotes')) {
       this.settings.set('fontSizeInNotes', 14);
+    }
+
+    if (!this.settings.has('showExactDatesInTheNotesList')) {
+      this.settings.set('showExactDatesInTheNotesList', false);
     }
   }
 
