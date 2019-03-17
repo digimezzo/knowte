@@ -1,6 +1,7 @@
 import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import * as windowStateKeeper from 'electron-window-state';
 
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
@@ -29,17 +30,28 @@ function createWindow() {
 
   log.info(app.getLocale());
 
-  // Create the browser window.
+  // Load the previous state with fallback to defaults
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: 850,
+    defaultHeight: 600
+  });
+
+  // Create the window using the state information
   mainWindow = new BrowserWindow({
-    x: 50,
-    y: 50,
-    width: 850,
-    height: 600,
+    'x': mainWindowState.x,
+    'y': mainWindowState.y,
+    'width': mainWindowState.width,
+    'height': mainWindowState.height,
     backgroundColor: '#fff',
     frame: false,
     icon: path.join(__dirname, 'build/icon/icon.png'),
     show: false
   });
+
+  // Let us register listeners on the window, so we can update the state
+  // automatically (the listeners will be removed when the window is closed)
+  // and restore the maximized or full screen state
+  mainWindowState.manage(mainWindow);
 
   if (serve) {
     require('electron-reload')(__dirname, {

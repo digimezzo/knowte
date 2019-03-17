@@ -16,6 +16,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var electron_1 = require("electron");
 var path = require("path");
 var url = require("url");
+var windowStateKeeper = require("electron-window-state");
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
@@ -43,17 +44,26 @@ function createWindow() {
     var electronScreen = electron_1.screen;
     var size = electronScreen.getPrimaryDisplay().workAreaSize;
     electron_log_1.default.info(electron_1.app.getLocale());
-    // Create the browser window.
+    // Load the previous state with fallback to defaults
+    var mainWindowState = windowStateKeeper({
+        defaultWidth: 850,
+        defaultHeight: 600
+    });
+    // Create the window using the state information
     mainWindow = new electron_1.BrowserWindow({
-        x: 50,
-        y: 50,
-        width: 850,
-        height: 600,
+        'x': mainWindowState.x,
+        'y': mainWindowState.y,
+        'width': mainWindowState.width,
+        'height': mainWindowState.height,
         backgroundColor: '#fff',
         frame: false,
         icon: path.join(__dirname, 'build/icon/icon.png'),
         show: false
     });
+    // Let us register listeners on the window, so we can update the state
+    // automatically (the listeners will be removed when the window is closed)
+    // and restore the maximized or full screen state
+    mainWindowState.manage(mainWindow);
     if (serve) {
         require('electron-reload')(__dirname, {
             electron: require(__dirname + "/node_modules/electron")
