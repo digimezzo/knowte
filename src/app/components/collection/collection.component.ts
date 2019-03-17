@@ -37,6 +37,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
   public selectedNotebook: Notebook;
   public canEditNotebook: boolean = false;
 
+  public notesCount: number = 0;
+
   public tabChangedSubject: Subject<any> = new Subject();
 
   get allCategory() {
@@ -197,5 +199,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  public onNotesCountChanged(notesCount: number): void{
+    this.notesCount = notesCount;
   }
 }

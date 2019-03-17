@@ -44,6 +44,10 @@
                     </div>
                 </div>
             </div>
+            <!-- Selected notebook and search -->
+            <selectednotebookandsearch-component class="selected-notebook-and-search" [selectedNotebook]="selectedNotebook"
+            [(notesCount)]="notesCount">
+            </selectednotebookandsearch-component>
             <!-- Tabs -->
             <mat-tab-group (selectedTabChange)="onSelectedTabChange($event)">
                 <mat-tab>
@@ -52,7 +56,7 @@
                         <div class="count-label">{{allNotesCount}}</div>
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="allCategory"
-                        [categoryChangedSubject]="tabChangedSubject"></notes-component>
+                        [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"></notes-component>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
@@ -60,7 +64,7 @@
                         <div class="count-label">{{todayNotesCount}}</div>
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="todayCategory"
-                        [categoryChangedSubject]="tabChangedSubject"></notes-component>
+                        [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"></notes-component>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
@@ -68,7 +72,7 @@
                         <div class="count-label">{{yesterdayNotesCount}}</div>
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="yesterdayCategory"
-                        [categoryChangedSubject]="tabChangedSubject"></notes-component>
+                        [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"></notes-component>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
@@ -76,7 +80,7 @@
                         <div class="count-label">{{thisWeekNotesCount}}</div>
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="thisWeekCategory"
-                        [categoryChangedSubject]="tabChangedSubject"></notes-component>
+                        [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"></notes-component>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
@@ -84,7 +88,7 @@
                         <div class="count-label">{{markedNotesCount}}</div>
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="markedCategory"
-                        [categoryChangedSubject]="tabChangedSubject"></notes-component>
+                        [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"></notes-component>
                 </mat-tab>
             </mat-tab-group>
         </div>

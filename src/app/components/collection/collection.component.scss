@@ -6,7 +6,7 @@
 }
 
 .collection .mat-tab-body-wrapper {
-  margin: 0 0 0 350px;
+  margin: 74px 0 0 350px;
 }
 
 .collection-notebooks {
@@ -95,4 +95,13 @@
 
 .selected-notebook {
   background-color: #e6e7e7;
+}
+
+.selected-notebook-and-search {
+  position: absolute;
+  top: 48px;
+  left: 351px;
+  z-index: 99;
+  background-color: #fff;
+  width: calc(100% - 351px);
 }

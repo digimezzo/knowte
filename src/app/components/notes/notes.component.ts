@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, NgZone, Output, EventEmitter } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { Note } from '../../data/entities/note';
 import { Subscription, Subject, fromEvent } from 'rxjs';
@@ -61,9 +61,11 @@ export class NotesComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
     public notes: Note[] = [];
     public selectedNote: Note;
-    public notesCount: number = 0;
-    public canEditNote: boolean = false;
 
+    @Output()
+    public notesCount: EventEmitter<number> = new EventEmitter<number>();
+
+    public canEditNote: boolean = false;
     public canShowList: boolean = true;
 
     ngOnDestroy() {
@@ -133,7 +135,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         if (this.selectedNotebook) {
             this.zone.run(async () => {
                 this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, this.settings.get('showExactDatesInTheNotesList'));
-                this.notesCount = this.notes.length;
+                this.notesCount.emit(this.notes.length);
             });
         }
     }

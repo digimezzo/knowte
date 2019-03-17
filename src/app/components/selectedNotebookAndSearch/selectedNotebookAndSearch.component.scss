@@ -1,0 +1,21 @@
+.notes-content-title-and-search {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.notes-content-title {
+  display: flex;
+}
+
+.notes-content-search {
+  margin-top: -8px;
+  width: 150px;
+}
+
+.notes-content-search-clearbutton {
+  font-family: material;
+  font-size: 18px;
+  color: #aaaaaa;
+  cursor: pointer;
+}

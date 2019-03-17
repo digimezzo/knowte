@@ -53,6 +53,7 @@ import { MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDivide
   MatDialogModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatSnackBarModule,
   MatListModule, MatSelectModule, MatSlideToggleModule } from '@angular/material';
 import { GlobalErrorHandler } from './globalErrorHandler';
+import { SelectedNotebookAndSearchComponent } from './components/selectedNotebookAndSearch/selectedNotebookAndSearch.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -81,6 +82,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ChangeNotebookDialogComponent,
     ImportFromOldVersionDialogComponent,
     LogoFullComponent,
+    SelectedNotebookAndSearchComponent,
     NoteComponent,
     WebviewDirective
   ],

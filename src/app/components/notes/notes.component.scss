@@ -17,49 +17,7 @@
   flex-direction: column;
 }
 
-.notes-content {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.notes-content-title-and-search {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.notes-content-title {
-  display: flex;
-}
-
-.notes-content-search {
-  margin-top: -8px;
-  width: 150px;
-}
-
-.notes-content-search-clearbutton {
-  font-family: material;
-  font-size: 18px;
-  color: #aaaaaa;
-  cursor: pointer;
-}
-
-.notes-content-list {
-  margin-top: -8px;
-  flex: 1;
-  position: relative;
-}
-
-.notes-content-list-list {
-  position: absolute;
-  left: 0px;
-  top: 0px;
+.notes-list {
   width: 100%;
   height: 100%;
   z-index: 0;
