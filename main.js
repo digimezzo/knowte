@@ -41,13 +41,12 @@ globalAny.globalEmitter = new GlobalEventEmitter();
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 electron_log_1.default.transports.file.level = 'info';
 function createWindow() {
-    var electronScreen = electron_1.screen;
-    var size = electronScreen.getPrimaryDisplay().workAreaSize;
-    electron_log_1.default.info(electron_1.app.getLocale());
     // Load the previous state with fallback to defaults
     var mainWindowState = windowStateKeeper({
         defaultWidth: 850,
-        defaultHeight: 600
+        defaultHeight: 600,
+        path: path.join(electron_1.app.getPath('userData'), "WindowStates"),
+        file: "main-window-state.json"
     });
     // Create the window using the state information
     mainWindow = new electron_1.BrowserWindow({
@@ -106,15 +105,27 @@ function createWindow() {
     mainWindow.webContents.on('new-window', handleRedirect);
 }
 function createNoteWindow(noteId) {
+    // Load the previous state with fallback to defaults
+    var noteWindowState = windowStateKeeper({
+        defaultWidth: 850,
+        defaultHeight: 600,
+        path: path.join(electron_1.app.getPath('userData'), "WindowStates"),
+        file: "note-window-state-" + noteId + ".json"
+    });
+    // Create the window using the state information
     var noteWindow = new electron_1.BrowserWindow({
-        x: 50,
-        y: 50,
-        width: 560,
-        height: 400,
+        'x': noteWindowState.x,
+        'y': noteWindowState.y,
+        'width': noteWindowState.width,
+        'height': noteWindowState.height,
         backgroundColor: '#fff',
         frame: false,
         show: false
     });
+    // Let us register listeners on the window, so we can update the state
+    // automatically (the listeners will be removed when the window is closed)
+    // and restore the maximized or full screen state
+    noteWindowState.manage(noteWindow);
     if (serve) {
         require('electron-reload')(__dirname, {
             electron: require(__dirname + "/node_modules/electron")

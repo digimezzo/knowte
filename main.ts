@@ -25,15 +25,12 @@ globalAny.globalEmitter = new GlobalEventEmitter();
 log.transports.file.level = 'info';
 
 function createWindow() {
-  const electronScreen = screen;
-  const size = electronScreen.getPrimaryDisplay().workAreaSize;
-
-  log.info(app.getLocale());
-
   // Load the previous state with fallback to defaults
   let mainWindowState = windowStateKeeper({
     defaultWidth: 850,
-    defaultHeight: 600
+    defaultHeight: 600,
+    path: path.join(app.getPath('userData'), "WindowStates"),
+    file: "main-window-state.json"
   });
 
   // Create the window using the state information
@@ -102,15 +99,29 @@ function createWindow() {
 }
 
 function createNoteWindow(noteId: string) {
+   // Load the previous state with fallback to defaults
+   let noteWindowState = windowStateKeeper({
+    defaultWidth: 560,
+    defaultHeight: 400,
+    path: path.join(app.getPath('userData'), "WindowStates"),
+    file: `note-window-state-${noteId}.json`
+  });
+
+  // Create the window using the state information
   let noteWindow: BrowserWindow = new BrowserWindow({
-    x: 50,
-    y: 50,
-    width: 560,
-    height: 400,
+    'x': noteWindowState.x,
+    'y': noteWindowState.y,
+    'width': noteWindowState.width,
+    'height': noteWindowState.height,
     backgroundColor: '#fff',
     frame: false,
     show: false
   });
+
+  // Let us register listeners on the window, so we can update the state
+  // automatically (the listeners will be removed when the window is closed)
+  // and restore the maximized or full screen state
+  noteWindowState.manage(noteWindow);
 
   if (serve) {
     require('electron-reload')(__dirname, {

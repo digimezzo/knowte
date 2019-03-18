@@ -12,7 +12,7 @@ export class SelectedNotebookAndSearchComponent implements OnInit, OnDestroy {
     }
 
     @Input()
-    public selectedNotebook: string;
+    public selectedNotebook: Notebook;
 
     @Input()
     public notesCount: number;
