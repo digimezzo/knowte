@@ -1,14 +1,4 @@
 <div class="notes">
-    <!-- Note buttons-->
-    <div class="notes-buttons m-2">
-        <button class="list-button" mat-mini-fab color="" (click)="deleteNoteAsync()"
-            matTooltip="{{ 'MainPage.DeleteNote' | translate }}" *ngIf=canEditNote>
-            <span class="edit-item-icon">&#xE872;</span>
-        </button>
-        <button class="list-button" mat-fab (click)="addNoteAsync()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
-            <span class="add-item-icon">&#xE145;</span>
-        </button>
-    </div>
     <!-- Notes list -->
     <mat-selection-list class="notes-list" *ngIf="canShowList">
         <cdk-virtual-scroll-viewport itemSize="48">

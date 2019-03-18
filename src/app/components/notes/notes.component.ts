@@ -6,12 +6,8 @@ import { SnackBarService } from '../../services/snackBar.service';
 import { ipcRenderer } from 'electron';
 import { Notebook } from '../../data/entities/notebook';
 import { TranslateService } from '@ngx-translate/core';
-import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
-import { MatDialogRef, MatDialog } from '@angular/material';
-import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
+import { MatDialog } from '@angular/material';
 import { Constants } from '../../core/constants';
-import { Operation } from '../../core/enums';
-import { NoteOperationResult } from '../../services/results/noteOperationResult';
 import { SearchService } from '../../services/search.service';
 import { NoteMarkResult } from '../../services/results/noteMarkResult';
 import { debounceTime, takeUntil } from 'rxjs/internal/operators';
@@ -66,7 +62,9 @@ export class NotesComponent implements OnInit, OnDestroy {
     @Output()
     public notesCount: EventEmitter<number> = new EventEmitter<number>();
 
-    public canEditNote: boolean = false;
+    @Output()
+    public selectedNoteOutput: EventEmitter<Note> = new EventEmitter<Note>();
+
     public canShowList: boolean = true;
 
     ngOnDestroy() {
@@ -94,7 +92,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
         this.subscription.add(this.categoryChangedSubject.subscribe(async (selectedCategory: string) => {
             this.selectedCategory = selectedCategory;
-            this.refreshVirtuallScrollerAsync();
+            await this.refreshVirtuallScrollerAsync();
             this.getNotes();
         }));
 
@@ -103,8 +101,8 @@ export class NotesComponent implements OnInit, OnDestroy {
                 debounceTime(10),
                 takeUntil(this.destroy$),
             )
-            .subscribe(async () => this.zone.run(() => {
-                this.refreshVirtuallScrollerAsync();
+            .subscribe(() => this.zone.run(async () => {
+                await this.refreshVirtuallScrollerAsync();
             }));
         ;
     }
@@ -137,6 +135,7 @@ export class NotesComponent implements OnInit, OnDestroy {
             this.zone.run(async () => {
                 this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, this.settings.get('showExactDatesInTheNotesList'));
                 this.notesCount.emit(this.notes.length);
+                this.setSelectedNote(this.selectedNote);
             });
         }
     }
@@ -149,7 +148,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     public setSelectedNote(note: Note) {
         this.zone.run(() => {
             this.selectedNote = note;
-            this.canEditNote = this.selectedNote != null;
+            this.selectedNoteOutput.next(note);
         });
     }
 
@@ -161,54 +160,11 @@ export class NotesComponent implements OnInit, OnDestroy {
         }
     }
 
-    public async addNoteAsync(): Promise<void> {
-        let baseTitle: string = await this.translateService.get('Notes.NewNote').toPromise();
-
-        // Create a new note
-        let result: NoteOperationResult = this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
-
-        if (result.operation === Operation.Success) {
-            let notePath: string = this.collectionService.getNotePath(result.noteId);
-            let arg: any = { notePath: notePath, noteId: result.noteId};
-
-            // Show the note window
-            ipcRenderer.send('open-note-window', arg);
-        }
-    }
-
-    public async deleteNoteAsync(): Promise<void> {
-        let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNote').toPromise();
-        let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNote', { noteTitle: this.selectedNote.title }).toPromise();
-
-        let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
-
-            width: '450px', data: { dialogTitle: title, dialogText: text }
-        });
-
-        dialogRef.afterClosed().subscribe(async (result) => {
-            if (result) {
-
-                if (!this.collectionService.noteIsOpen(this.selectedNote.id)) {
-                    let operation: Operation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
-
-                    if (operation === Operation.Error) {
-                        let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteNoteError', { noteTitle: this.selectedNote.title }).toPromise());
-                        this.dialog.open(ErrorDialogComponent, {
-                            width: '450px', data: { errorText: generatedErrorText }
-                        });
-                    }
-                } else {
-                    this.snackBarService.noteDeleteBlockedAsync(this.selectedNote.title);
-                }
-            }
-        });
-    }
-
     public openNote(): void {
         if (!this.collectionService.noteIsOpen(this.selectedNote.id)) {
             let notePath: string = this.collectionService.getNotePath(this.selectedNote.id);
             log.info(`note directory=${notePath}`);
-            let arg: any = { notePath: notePath, noteId: this.selectedNote.id};
+            let arg: any = { notePath: notePath, noteId: this.selectedNote.id };
             ipcRenderer.send('open-note-window', arg);
         } else {
             this.snackBarService.noteAlreadyOpenAsync();

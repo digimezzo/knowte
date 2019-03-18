@@ -13,11 +13,28 @@ import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
 import { NotesCountResult } from '../../services/results/notesCountResult';
 import { NoteMarkResult } from '../../services/results/noteMarkResult';
+import { NoteOperationResult } from '../../services/results/noteOperationResult';
+import { ipcRenderer } from 'electron';
+import { Note } from '../../data/entities/note';
+import { trigger, style, animate, state, transition } from '@angular/animations';
+import { Utils } from '../../core/utils';
 
 @Component({
   selector: 'collection-page',
   templateUrl: './collection.component.html',
   styleUrls: ['./collection.component.scss'],
+  animations: [
+    trigger('noteButtonsVisibility', [
+      state('visible', style({
+        opacity: 1
+      })),
+      state('hidden', style({
+        opacity: 0
+      })),
+      transition('hidden => visible', animate('.25s')),
+      transition('visible => hidden', animate('.05s'))
+    ])
+  ],
   encapsulation: ViewEncapsulation.None
 })
 export class CollectionComponent implements OnInit, OnDestroy {
@@ -37,7 +54,13 @@ export class CollectionComponent implements OnInit, OnDestroy {
   public selectedNotebook: Notebook;
   public canEditNotebook: boolean = false;
 
+  public noteButtonsVisibility: string = 'visible';
+
+  public selectedNote: Note;
+
   public notesCount: number = 0;
+
+  public canEditNote: boolean = false;
 
   public tabChangedSubject: Subject<any> = new Subject();
 
@@ -95,6 +118,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   }
 
   onSelectedTabChange(event: MatTabChangeEvent) {
+    this.hideNoteButtons();
     let tabIndex: number = event.index;
     let category: string = "";
 
@@ -111,6 +135,17 @@ export class CollectionComponent implements OnInit, OnDestroy {
     }
 
     this.tabChangedSubject.next(category);
+    
+    this.showNoteButtonsAsync();
+  }
+
+  private hideNoteButtons(): void {
+    this.noteButtonsVisibility = "hidden";
+  }
+
+  private async showNoteButtonsAsync(): Promise<void> {
+    await Utils.sleep(700);
+    this.noteButtonsVisibility = "visible";
   }
 
   private async getNotebooksAsync(): Promise<void> {
@@ -201,7 +236,55 @@ export class CollectionComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onNotesCountChanged(notesCount: number): void{
+  public onNotesCountChanged(notesCount: number): void {
     this.notesCount = notesCount;
+  }
+
+  public async addNoteAsync(): Promise<void> {
+    let baseTitle: string = await this.translateService.get('Notes.NewNote').toPromise();
+
+    // Create a new note
+    let result: NoteOperationResult = this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
+
+    if (result.operation === Operation.Success) {
+      let notePath: string = this.collectionService.getNotePath(result.noteId);
+      let arg: any = { notePath: notePath, noteId: result.noteId };
+
+      // Show the note window
+      ipcRenderer.send('open-note-window', arg);
+    }
+  }
+
+  public async deleteNoteAsync(): Promise<void> {
+    let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNote').toPromise();
+    let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNote', { noteTitle: this.selectedNote.title }).toPromise();
+
+    let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
+
+      width: '450px', data: { dialogTitle: title, dialogText: text }
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+
+        if (!this.collectionService.noteIsOpen(this.selectedNote.id)) {
+          let operation: Operation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
+
+          if (operation === Operation.Error) {
+            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteNoteError', { noteTitle: this.selectedNote.title }).toPromise());
+            this.dialog.open(ErrorDialogComponent, {
+              width: '450px', data: { errorText: generatedErrorText }
+            });
+          }
+        } else {
+          this.snackBarService.noteDeleteBlockedAsync(this.selectedNote.title);
+        }
+      }
+    });
+  }
+
+  public onSelectedNoteChanged(selectedNote: Note): void {
+    this.selectedNote = selectedNote;
+    this.canEditNote = this.selectedNote != null;
   }
 }
