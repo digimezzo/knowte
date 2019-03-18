@@ -18,6 +18,7 @@ import { ipcRenderer } from 'electron';
 import { Note } from '../../data/entities/note';
 import { trigger, style, animate, state, transition } from '@angular/animations';
 import { Utils } from '../../core/utils';
+import { debounceTime } from "rxjs/internal/operators";
 
 @Component({
   selector: 'collection-page',
@@ -63,6 +64,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   public canEditNote: boolean = false;
 
   public tabChangedSubject: Subject<any> = new Subject();
+  public showNoteButtonSubject: Subject<any> = new Subject();
 
   get allCategory() {
     return Constants.allCategory;
@@ -115,6 +117,12 @@ export class CollectionComponent implements OnInit, OnDestroy {
         this.markedNotesCount = result.markedNotesCount;
       });
     }));
+
+    this.showNoteButtonSubject
+      .pipe(debounceTime(700))
+      .subscribe((_) => {
+        this.showNoteButtons();
+      });
   }
 
   onSelectedTabChange(event: MatTabChangeEvent) {
@@ -135,16 +143,14 @@ export class CollectionComponent implements OnInit, OnDestroy {
     }
 
     this.tabChangedSubject.next(category);
-    
-    this.showNoteButtonsAsync();
+    this.showNoteButtonSubject.next("");
   }
 
   private hideNoteButtons(): void {
     this.noteButtonsVisibility = "hidden";
   }
 
-  private async showNoteButtonsAsync(): Promise<void> {
-    await Utils.sleep(700);
+  private showNoteButtons(): void {
     this.noteButtonsVisibility = "visible";
   }
 
