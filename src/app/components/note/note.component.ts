@@ -295,4 +295,14 @@ export class NoteComponent implements OnInit, OnDestroy {
             });
         }
     }
+
+    public onTitleKeydown(event): void {
+        if (event.key === "Enter") {
+            // Make sure enter is not applied to the editor
+            event.preventDefault();
+            
+            // Sets focus to editor when pressing enter on title
+            this.quill.setSelection(0,0);
+        }
+    }
 }

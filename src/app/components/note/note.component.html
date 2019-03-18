@@ -20,7 +20,7 @@
             <div class="note-content-fixed">
                 <div class="note-content-fixed-title">
                     <input class="note-content-fixed-title-text" type="text" [(ngModel)]="noteTitle"
-                        (ngModelChange)="onNotetitleChange($event)" />
+                        (ngModelChange)="onNotetitleChange($event)" (keydown)="onTitleKeydown($event)"/>
                 </div>
                 <div class="note-editor" [ngStyle]="editorStyle" id="editor">
                 </div>
