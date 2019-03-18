@@ -41,66 +41,81 @@ globalAny.globalEmitter = new GlobalEventEmitter();
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 electron_log_1.default.transports.file.level = 'info';
 function createWindow() {
-    // Load the previous state with fallback to defaults
-    var mainWindowState = windowStateKeeper({
-        defaultWidth: 850,
-        defaultHeight: 600
-    });
-    // Create the window using the state information
-    mainWindow = new electron_1.BrowserWindow({
-        'x': mainWindowState.x,
-        'y': mainWindowState.y,
-        'width': mainWindowState.width,
-        'height': mainWindowState.height,
-        backgroundColor: '#fff',
-        frame: false,
-        icon: path.join(__dirname, 'build/icon/icon.png'),
-        show: false
-    });
-    // Let us register listeners on the window, so we can update the state
-    // automatically (the listeners will be removed when the window is closed)
-    // and restore the maximized or full screen state
-    mainWindowState.manage(mainWindow);
-    if (serve) {
-        require('electron-reload')(__dirname, {
-            electron: require(__dirname + "/node_modules/electron")
-        });
-        mainWindow.loadURL('http://localhost:4200');
+    var gotTheLock = electron_1.app.requestSingleInstanceLock();
+    if (!gotTheLock) {
+        electron_1.app.quit();
     }
     else {
-        mainWindow.loadURL(url.format({
-            pathname: path.join(__dirname, 'dist/index.html'),
-            protocol: 'file:',
-            slashes: true
-        }));
-    }
-    //win.webContents.openDevTools();
-    // Emitted when the window is closed.
-    mainWindow.on('closed', function () {
-        // Dereference the window object, usually you would store window
-        // in an array if your app supports multi windows, this is the time
-        // when you should delete the corresponding element.
-        mainWindow = null;
-        electron_log_1.default.info("+++ Stopping +++");
-        // When the main window is closed, quit the app (This also closes all other windows)
-        electron_1.app.quit();
-    });
-    // 'ready-to-show' doesn't fire on Windows in dev mode. In prod it seems to work. 
-    // See: https://github.com/electron/electron/issues/7779
-    mainWindow.on('ready-to-show', function () {
-        mainWindow.show();
-        mainWindow.focus();
-    });
-    // Makes links open in external browser
-    var handleRedirect = function (e, url) {
-        // Check that the requested url is not the current page
-        if (url != mainWindow.webContents.getURL()) {
-            e.preventDefault();
-            require('electron').shell.openExternal(url);
+        electron_1.app.on('second-instance', function (event, commandLine, workingDirectory) {
+            // Someone tried to run a second instance, we should focus our window.
+            if (mainWindow) {
+                if (mainWindow.isMinimized()) {
+                    mainWindow.restore();
+                }
+                mainWindow.focus();
+            }
+        });
+        // Load the previous state with fallback to defaults
+        var mainWindowState = windowStateKeeper({
+            defaultWidth: 850,
+            defaultHeight: 600
+        });
+        // Create the window using the state information
+        mainWindow = new electron_1.BrowserWindow({
+            'x': mainWindowState.x,
+            'y': mainWindowState.y,
+            'width': mainWindowState.width,
+            'height': mainWindowState.height,
+            backgroundColor: '#fff',
+            frame: false,
+            icon: path.join(__dirname, 'build/icon/icon.png'),
+            show: false
+        });
+        // Let us register listeners on the window, so we can update the state
+        // automatically (the listeners will be removed when the window is closed)
+        // and restore the maximized or full screen state
+        mainWindowState.manage(mainWindow);
+        if (serve) {
+            require('electron-reload')(__dirname, {
+                electron: require(__dirname + "/node_modules/electron")
+            });
+            mainWindow.loadURL('http://localhost:4200');
         }
-    };
-    mainWindow.webContents.on('will-navigate', handleRedirect);
-    mainWindow.webContents.on('new-window', handleRedirect);
+        else {
+            mainWindow.loadURL(url.format({
+                pathname: path.join(__dirname, 'dist/index.html'),
+                protocol: 'file:',
+                slashes: true
+            }));
+        }
+        //win.webContents.openDevTools();
+        // Emitted when the window is closed.
+        mainWindow.on('closed', function () {
+            // Dereference the window object, usually you would store window
+            // in an array if your app supports multi windows, this is the time
+            // when you should delete the corresponding element.
+            mainWindow = null;
+            electron_log_1.default.info("+++ Stopping +++");
+            // When the main window is closed, quit the app (This also closes all other windows)
+            electron_1.app.quit();
+        });
+        // 'ready-to-show' doesn't fire on Windows in dev mode. In prod it seems to work. 
+        // See: https://github.com/electron/electron/issues/7779
+        mainWindow.on('ready-to-show', function () {
+            mainWindow.show();
+            mainWindow.focus();
+        });
+        // Makes links open in external browser
+        var handleRedirect = function (e, url) {
+            // Check that the requested url is not the current page
+            if (url != mainWindow.webContents.getURL()) {
+                e.preventDefault();
+                require('electron').shell.openExternal(url);
+            }
+        };
+        mainWindow.webContents.on('will-navigate', handleRedirect);
+        mainWindow.webContents.on('new-window', handleRedirect);
+    }
 }
 function createNoteWindow(notePath, noteId) {
     // Load the previous state with fallback to defaults
