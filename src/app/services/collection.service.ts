@@ -456,12 +456,21 @@ export class CollectionService {
     try {
       let noteToDelete: Note = this.dataStore.getNoteById(noteId);
 
-      // 1. Delete all files from disk, which are related to the note.
-      let activeCollection: string = this.settings.get('activeCollection');
-      fs.unlinkSync(path.join(Utils.collectionToPath(activeCollection), `${noteId}${Constants.noteExtension}`), '');
-
-      // 2. Delete note from data store
+      // 1. Delete note from data store
       this.dataStore.deleteNote(noteId);
+
+      // 2. Delete all files from disk, which are related to the note.
+      let notePath: string = this.getNotePath(noteId);
+      let noteFilePath: string = path.join(notePath, `${noteId}${Constants.noteExtension}`);
+      let noteStateFilePath: string = path.join(notePath, `${noteId}${Constants.stateExtension}`);
+
+      // Note file
+      fs.unlinkSync(noteFilePath, '');
+
+      // Note state file
+      if (fs.existsSync(noteStateFilePath)) {
+        fs.unlinkSync(noteStateFilePath, '');
+      }
     } catch (error) {
       log.error(`Could not delete the note with id='${noteId}'. Cause: ${error}`);
       return Operation.Error;
@@ -891,5 +900,10 @@ export class CollectionService {
     }
 
     return isImportSuccessful;
+  }
+
+  public getNotePath(noteId: string) {
+    let activeCollection: string = this.settings.get('activeCollection');
+    return Utils.collectionToPath(activeCollection);
   }
 }

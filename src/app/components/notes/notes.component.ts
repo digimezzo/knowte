@@ -17,6 +17,7 @@ import { NoteMarkResult } from '../../services/results/noteMarkResult';
 import { debounceTime, takeUntil } from 'rxjs/internal/operators';
 import { Utils } from '../../core/utils';
 import * as Store from 'electron-store';
+import log from 'electron-log';
 
 @Component({
     selector: 'notes-component',
@@ -167,8 +168,11 @@ export class NotesComponent implements OnInit, OnDestroy {
         let result: NoteOperationResult = this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
 
         if (result.operation === Operation.Success) {
+            let notePath: string = this.collectionService.getNotePath(result.noteId);
+            let arg: any = { notePath: notePath, noteId: result.noteId};
+
             // Show the note window
-            ipcRenderer.send('open-note-window', result.noteId);
+            ipcRenderer.send('open-note-window', arg);
         }
     }
 
@@ -202,7 +206,10 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     public openNote(): void {
         if (!this.collectionService.noteIsOpen(this.selectedNote.id)) {
-            ipcRenderer.send('open-note-window', this.selectedNote.id);
+            let notePath: string = this.collectionService.getNotePath(this.selectedNote.id);
+            log.info(`note directory=${notePath}`);
+            let arg: any = { notePath: notePath, noteId: this.selectedNote.id};
+            ipcRenderer.send('open-note-window', arg);
         } else {
             this.snackBarService.noteAlreadyOpenAsync();
         }

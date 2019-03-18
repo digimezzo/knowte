@@ -9,6 +9,7 @@ export class Constants {
     static readonly twitterUrl = "https://twitter.com/Digimezzo";
     static readonly collectionsDirectory: string = `${Constants.applicationName} collections`;
     static readonly noteExtension: string = ".knowte";
+    static readonly stateExtension: string = ".state";
     static readonly defaultCollection: string = "Default";
     static readonly unfiledNotebookName: string = "Unfiled";
     static readonly allNotesNotebookId: string = "0";

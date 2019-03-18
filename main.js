@@ -44,9 +44,7 @@ function createWindow() {
     // Load the previous state with fallback to defaults
     var mainWindowState = windowStateKeeper({
         defaultWidth: 850,
-        defaultHeight: 600,
-        path: path.join(electron_1.app.getPath('userData'), "WindowStates"),
-        file: "main-window-state.json"
+        defaultHeight: 600
     });
     // Create the window using the state information
     mainWindow = new electron_1.BrowserWindow({
@@ -104,13 +102,13 @@ function createWindow() {
     mainWindow.webContents.on('will-navigate', handleRedirect);
     mainWindow.webContents.on('new-window', handleRedirect);
 }
-function createNoteWindow(noteId) {
+function createNoteWindow(notePath, noteId) {
     // Load the previous state with fallback to defaults
     var noteWindowState = windowStateKeeper({
-        defaultWidth: 850,
-        defaultHeight: 600,
-        path: path.join(electron_1.app.getPath('userData'), "WindowStates"),
-        file: "note-window-state-" + noteId + ".json"
+        defaultWidth: 560,
+        defaultHeight: 400,
+        path: notePath,
+        file: noteId + ".state"
     });
     // Create the window using the state information
     var noteWindow = new electron_1.BrowserWindow({
@@ -154,7 +152,7 @@ try {
     electron_log_1.default.info("+++ Starting +++");
     // OPen note windows
     electron_1.ipcMain.on('open-note-window', function (event, arg) {
-        createNoteWindow(arg);
+        createNoteWindow(arg.notePath, arg.noteId);
     });
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
