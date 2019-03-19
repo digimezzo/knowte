@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, OnDestroy, HostListener, NgZone } from '@angular/core';
-import { remote, BrowserWindow } from 'electron';
+import { remote, BrowserWindow, Clipboard } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/noteDetailsResult';
 import log from 'electron-log';
@@ -153,6 +153,41 @@ export class NoteComponent implements OnInit, OnDestroy {
             .subscribe((_) => {
                 this.saveAndClose();
             });
+
+        // Image pasting based on: https://gist.github.com/dusanmarsa/2ca9f1df36e14864328a2bb0b353332e
+        document.onpaste = (e: ClipboardEvent) => {
+            this.handleImagePaste(e);
+            e.preventDefault()
+        }
+    }
+
+    private insertImage(file: any): void {
+        let reader: FileReader = new FileReader();
+
+        reader.onload = (e: any) => {
+            let img: HTMLImageElement = document.createElement('img');
+            img.src = e.target.result;
+
+            let range: Range = window.getSelection().getRangeAt(0);
+            range.deleteContents();
+            range.insertNode(img);
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    private handleImagePaste(e: ClipboardEvent): void {
+        let IMAGE_MIME_REGEX: RegExp = /^image\/(p?jpeg|gif|png)$/i;
+
+        let items: DataTransferItemList = e.clipboardData.items;
+
+        for (let i: number = 0; i < items.length; i++) {
+            if (IMAGE_MIME_REGEX.test(items[i].type)) {
+                this.insertImage(items[i].getAsFile());
+
+                return;
+            }
+        }
     }
 
     private saveAndClose(): void {
@@ -300,9 +335,9 @@ export class NoteComponent implements OnInit, OnDestroy {
         if (event.key === "Enter") {
             // Make sure enter is not applied to the editor
             event.preventDefault();
-            
+
             // Sets focus to editor when pressing enter on title
-            this.quill.setSelection(0,0);
+            this.quill.setSelection(0, 0);
         }
     }
 }
