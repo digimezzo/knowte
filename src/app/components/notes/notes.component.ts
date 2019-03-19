@@ -52,7 +52,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     @Input()
     set selectedNotebook(val: Notebook) {
         this._selectedNotebook = val;
-        this.getNotes();
+        this.getNotes(false);
     }
 
     private subscription: Subscription;
@@ -77,14 +77,14 @@ export class NotesComponent implements OnInit, OnDestroy {
         // Workaround for auto reload
         await this.collectionService.initializeAsync();
 
-        this.subscription = this.collectionService.noteEdited$.subscribe(() => this.getNotes());
-        this.subscription = this.collectionService.noteDeleted$.subscribe(() => this.getNotesAndResetSelection());
-        this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(() => this.getNotesAndResetSelection()));
-        this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => this.getNotes()));
+        this.subscription = this.collectionService.noteEdited$.subscribe(() => this.getNotes(false));
+        this.subscription = this.collectionService.noteDeleted$.subscribe(() => this.getNotes(true));
+        this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(() => this.getNotes(true)));
+        this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => this.getNotes(false)));
 
         this.subscription.add(this.collectionService.noteMarkChanged$.subscribe((result: NoteMarkResult) => {
             if (this.componentCategory === Constants.markedCategory) {
-                this.getNotes();
+                this.getNotes(false);
             } else {
                 this.markNote(result);
             }
@@ -93,7 +93,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         this.subscription.add(this.categoryChangedSubject.subscribe(async (selectedCategory: string) => {
             this.selectedCategory = selectedCategory;
             await this.refreshVirtuallScrollerAsync();
-            this.getNotes();
+            this.getNotes(false);
         }));
 
         fromEvent(window, 'resize')
@@ -125,7 +125,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         }
     }
 
-    private getNotes(): void {
+    private getNotes(resetSelection: boolean): void {
         // Only fetch notes list for selected category
         if (this.componentCategory !== this.selectedCategory) {
             return;
@@ -135,14 +135,14 @@ export class NotesComponent implements OnInit, OnDestroy {
             this.zone.run(async () => {
                 this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, this.settings.get('showExactDatesInTheNotesList'));
                 this.notesCount.emit(this.notes.length);
-                this.setSelectedNote(this.selectedNote);
+
+                if(resetSelection){
+                    this.selectFirstNote();
+                }
+
+                this.selectedNoteOutput.next(this.selectedNote);
             });
         }
-    }
-
-    private getNotesAndResetSelection(): void {
-        this.getNotes();
-        this.selectFirstNote();
     }
 
     public setSelectedNote(note: Note) {
@@ -152,7 +152,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         });
     }
 
-    public selectFirstNote() {
+    private selectFirstNote() {
         if (this.notes && this.notes.length > 0) {
             this.setSelectedNote(this.notes[0]);
         } else {
