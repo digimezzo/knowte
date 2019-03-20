@@ -14,11 +14,10 @@ import { Operation } from '../../core/enums';
 import { NotesCountResult } from '../../services/results/notesCountResult';
 import { NoteMarkResult } from '../../services/results/noteMarkResult';
 import { NoteOperationResult } from '../../services/results/noteOperationResult';
-import { ipcRenderer } from 'electron';
 import { Note } from '../../data/entities/note';
 import { trigger, style, animate, state, transition } from '@angular/animations';
-import { Utils } from '../../core/utils';
 import { debounceTime } from "rxjs/internal/operators";
+import { remote } from 'electron';
 
 @Component({
   selector: 'collection-page',
@@ -42,6 +41,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
     private translateService: TranslateService, private snackBarService: SnackBarService, private zone: NgZone) {
   }
+
+  private globalEmitter = remote.getGlobal('globalEmitter');
 
   public applicationName: string = Constants.applicationName;
   private subscription: Subscription;
@@ -253,11 +254,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     let result: NoteOperationResult = this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
 
     if (result.operation === Operation.Success) {
-      let notePath: string = this.collectionService.getNotePath(result.noteId);
-      let arg: any = { notePath: notePath, noteId: result.noteId };
-
-      // Show the note window
-      ipcRenderer.send('open-note-window', arg);
+      this.globalEmitter.emit(Constants.setNoteOpenEvent, result.noteId, true);
     }
   }
 

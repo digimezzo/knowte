@@ -21,6 +21,7 @@ import * as sanitize from 'sanitize-filename';
 import { DataStore } from '../data/dataStore';
 import { NoteMarkResult } from './results/noteMarkResult';
 import { NoteDetailsResult } from './results/noteDetailsResult';
+import { ipcRenderer } from 'electron';
 
 @Injectable({
   providedIn: 'root',
@@ -314,10 +315,15 @@ export class CollectionService {
     callback(notebooks);
   }
 
-  private async setNoteOpenAsync(noteId: string, test: string, isOpen: boolean): Promise<void> {
+  private async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
     if (isOpen) {
       if (!this.openNoteIds.includes(noteId)) {
         this.openNoteIds.push(noteId);
+
+        let notePath: string = this.getNotePath(noteId);
+        log.info(`note directory=${notePath}`);
+        let arg: any = { notePath: notePath, noteId: noteId };
+        ipcRenderer.send('open-note-window', arg);
       }
     } else {
       if (this.openNoteIds.includes(noteId)) {
@@ -902,7 +908,7 @@ export class CollectionService {
     return isImportSuccessful;
   }
 
-  public getNotePath(noteId: string) {
+  private getNotePath(noteId: string) {
     let activeCollection: string = this.settings.get('activeCollection');
     return Utils.collectionToPath(activeCollection);
   }

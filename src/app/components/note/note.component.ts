@@ -130,7 +130,6 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.noteId = params['id'];
             this.globalEmitter.on(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
             this.globalEmitter.on(Constants.notebookChangedEvent, this.notebookChangedListener);
-            this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, true);
             this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNoteDetailsCallback.bind(this));
 
             this.getNoteContentAsync();

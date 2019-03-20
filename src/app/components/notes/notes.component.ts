@@ -3,7 +3,6 @@ import { CollectionService } from '../../services/collection.service';
 import { Note } from '../../data/entities/note';
 import { Subscription, Subject, fromEvent } from 'rxjs';
 import { SnackBarService } from '../../services/snackBar.service';
-import { ipcRenderer } from 'electron';
 import { Notebook } from '../../data/entities/notebook';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material';
@@ -13,6 +12,7 @@ import { NoteMarkResult } from '../../services/results/noteMarkResult';
 import { debounceTime, takeUntil } from 'rxjs/internal/operators';
 import { Utils } from '../../core/utils';
 import * as Store from 'electron-store';
+import { remote } from 'electron';
 import log from 'electron-log';
 
 @Component({
@@ -24,6 +24,8 @@ export class NotesComponent implements OnInit, OnDestroy {
     constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
         private translateService: TranslateService, public searchService: SearchService, private zone: NgZone) {
     }
+
+    private globalEmitter = remote.getGlobal('globalEmitter');
 
     private settings: Store = new Store();
     private readonly destroy$ = new Subject();
@@ -162,10 +164,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     public openNote(): void {
         if (!this.collectionService.noteIsOpen(this.selectedNote.id)) {
-            let notePath: string = this.collectionService.getNotePath(this.selectedNote.id);
-            log.info(`note directory=${notePath}`);
-            let arg: any = { notePath: notePath, noteId: this.selectedNote.id };
-            ipcRenderer.send('open-note-window', arg);
+            this.globalEmitter.emit(Constants.setNoteOpenEvent, this.selectedNote.id, true);
         } else {
             this.snackBarService.noteAlreadyOpenAsync();
         }
