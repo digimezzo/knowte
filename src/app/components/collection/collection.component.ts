@@ -259,6 +259,13 @@ export class CollectionComponent implements OnInit, OnDestroy {
   }
 
   public async deleteNoteAsync(): Promise<void> {
+    // An open note cannot be deleted
+    if (this.collectionService.noteIsOpen(this.selectedNote.id)) {
+      this.snackBarService.noteDeleteBlockedAsync(this.selectedNote.title);
+
+      return;
+    }
+
     let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNote').toPromise();
     let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNote', { noteTitle: this.selectedNote.title }).toPromise();
 
@@ -270,17 +277,13 @@ export class CollectionComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
 
-        if (!this.collectionService.noteIsOpen(this.selectedNote.id)) {
-          let operation: Operation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
+        let operation: Operation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
 
-          if (operation === Operation.Error) {
-            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteNoteError', { noteTitle: this.selectedNote.title }).toPromise());
-            this.dialog.open(ErrorDialogComponent, {
-              width: '450px', data: { errorText: generatedErrorText }
-            });
-          }
-        } else {
-          this.snackBarService.noteDeleteBlockedAsync(this.selectedNote.title);
+        if (operation === Operation.Error) {
+          let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteNoteError', { noteTitle: this.selectedNote.title }).toPromise());
+          this.dialog.open(ErrorDialogComponent, {
+            width: '450px', data: { errorText: generatedErrorText }
+          });
         }
       }
     });

@@ -156,7 +156,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         // Image pasting based on: https://gist.github.com/dusanmarsa/2ca9f1df36e14864328a2bb0b353332e
         document.onpaste = (e: ClipboardEvent) => {
             this.handleImagePaste(e);
-            e.preventDefault()
         }
     }
 
@@ -182,6 +181,8 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         for (let i: number = 0; i < items.length; i++) {
             if (IMAGE_MIME_REGEX.test(items[i].type)) {
+                // The pasted item is an image, so prevent the default paste action.
+                e.preventDefault();
                 this.insertImage(items[i].getAsFile());
 
                 return;
