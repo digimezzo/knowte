@@ -86,8 +86,6 @@ function createWindow() {
       // when you should delete the corresponding element.
       mainWindow = null;
 
-      log.info(`+++ Stopping +++`);
-
       // When the main window is closed, quit the app (This also closes all other windows)
       app.quit();
     });

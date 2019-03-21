@@ -95,7 +95,6 @@ function createWindow() {
             // in an array if your app supports multi windows, this is the time
             // when you should delete the corresponding element.
             mainWindow = null;
-            electron_log_1.default.info("+++ Stopping +++");
             // When the main window is closed, quit the app (This also closes all other windows)
             electron_1.app.quit();
         });

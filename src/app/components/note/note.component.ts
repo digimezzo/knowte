@@ -18,6 +18,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as Store from 'electron-store';
 import { Utils } from '../../core/utils';
+import { NoteActionsDialogComponent } from '../dialogs/noteActionsDialog/noteActionsDialog.component';
 
 @Component({
     selector: 'note-content',
@@ -262,6 +263,12 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     public changeNotebook(): void {
         let dialogRef: MatDialogRef<ChangeNotebookDialogComponent> = this.dialog.open(ChangeNotebookDialogComponent, {
+            width: '450px', data: { noteId: this.noteId }
+        });
+    }
+
+    public showActions(): void{
+        let dialogRef: MatDialogRef<NoteActionsDialogComponent> = this.dialog.open(NoteActionsDialogComponent, {
             width: '450px', data: { noteId: this.noteId }
         });
     }
