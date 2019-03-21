@@ -166,7 +166,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         if (!this.collectionService.noteIsOpen(this.selectedNote.id)) {
             this.globalEmitter.emit(Constants.setNoteOpenEvent, this.selectedNote.id, true);
         } else {
-            this.snackBarService.noteAlreadyOpenAsync();
+            this.globalEmitter.emit(Constants.focusNoteEvent, this.selectedNote.id);
         }
     }
 

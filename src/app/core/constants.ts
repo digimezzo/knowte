@@ -30,6 +30,7 @@ export class Constants {
     static readonly getNoteDetailsEvent: string = "db3595b0-0997-414e-a30e-c5921c8d9861";
     static readonly notebookChangedEvent: string = "2518f49c-50f0-4165-ad92-cfa00476d884";
     static readonly noteMarkChangedEvent: string = "3b46bceb-dbcd-4013-935d-8e6f79e371a0";
+    static readonly focusNoteEvent: string = "f45748e7-a7af-4057-a712-b9b181212119";
 
     static readonly externalComponents: any[] = [
         { name: "Angular", description: "Angular is a development platform for building mobile and desktop web applications using Typescript/JavaScript and other languages.", url: "https://angular.io/", licenseUrl: "https://github.com/angular/angular/blob/master/LICENSE" },

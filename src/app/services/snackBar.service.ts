@@ -39,12 +39,6 @@ export class SnackBarService {
         this.showActionSnackBar(message, action, 2000);	
     }
 
-    public async noteAlreadyOpenAsync() {
-        let message: string = await this.translate.get('SnackBarMessages.NoteAlreadyOpen').toPromise();
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();	
-        this.showActionSnackBar(message, action, 2000);	
-    }
-
     public async noteTitleCannotBeEmptyAsync() {
         let message: string = await this.translate.get('SnackBarMessages.NoteTitleCannotBeEmpty').toPromise();
         let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();	
