@@ -33,12 +33,6 @@ export class SnackBarService {
         this.showActionSnackBar(message, action, 2000);	
     }
 
-    public async noteDeleteBlockedAsync(noteTitle: string) {
-        let message: string = await this.translate.get('SnackBarMessages.NoteDeleteBlocked', { noteTitle: noteTitle }).toPromise();
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();	
-        this.showActionSnackBar(message, action, 2000);	
-    }
-
     public async noteTitleCannotBeEmptyAsync() {
         let message: string = await this.translate.get('SnackBarMessages.NoteTitleCannotBeEmpty').toPromise();
         let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();	

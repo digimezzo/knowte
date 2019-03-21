@@ -53,6 +53,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
     private notebookChangedListener: any = this.notebookChangedHandler.bind(this);
     private focusNoteListener: any = this.focusNoteHandler.bind(this);
+    private closeNoteListener: any = this.closeNoteHandler.bind(this);
 
     public editorStyle = {
         'font-size': this.settings.get("fontSizeInNotes") + 'px'
@@ -91,6 +92,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.globalEmitter.removeListener(`${Constants.noteMarkChangedEvent}-${this.noteId}`, this.noteMarkChangedListener);
         this.globalEmitter.removeListener(`${Constants.notebookChangedEvent}`, this.notebookChangedListener);
         this.globalEmitter.removeListener(`${Constants.focusNoteEvent}`, this.focusNoteListener);
+        this.globalEmitter.removeListener(`${Constants.closeNoteEvent}`, this.closeNoteListener);
     }
 
     ngOnDestroy() {
@@ -133,6 +135,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.globalEmitter.on(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
             this.globalEmitter.on(Constants.notebookChangedEvent, this.notebookChangedListener);
             this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
+            this.globalEmitter.on(Constants.closeNoteEvent, this.closeNoteListener);
             this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNoteDetailsCallback.bind(this));
 
             this.getNoteContentAsync();
@@ -243,6 +246,13 @@ export class NoteComponent implements OnInit, OnDestroy {
             }
 
             window.focus();
+        }
+    }
+
+    private closeNoteHandler(noteId: string) {
+        if (this.noteId === noteId) {
+            let window: BrowserWindow = remote.getCurrentWindow();
+            window.close();
         }
     }
 

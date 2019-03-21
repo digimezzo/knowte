@@ -259,13 +259,6 @@ export class CollectionComponent implements OnInit, OnDestroy {
   }
 
   public async deleteNoteAsync(): Promise<void> {
-    // An open note cannot be deleted
-    if (this.collectionService.noteIsOpen(this.selectedNote.id)) {
-      this.snackBarService.noteDeleteBlockedAsync(this.selectedNote.title);
-
-      return;
-    }
-
     let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNote').toPromise();
     let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNote', { noteTitle: this.selectedNote.title }).toPromise();
 
@@ -276,7 +269,12 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
+        // Close the note window
+        if (this.collectionService.noteIsOpen(this.selectedNote.id)) {
+          this.globalEmitter.emit(Constants.closeNoteEvent, this.selectedNote.id);
+        }
 
+        // Delete the note
         let operation: Operation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
 
         if (operation === Operation.Error) {
