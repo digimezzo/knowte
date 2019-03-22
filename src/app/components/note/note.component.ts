@@ -400,4 +400,8 @@ export class NoteComponent implements OnInit, OnDestroy {
         await Utils.sleep(500);
         this.canPerformActions = false;
     }
+
+    public shareNote(): void {
+
+    }
 }

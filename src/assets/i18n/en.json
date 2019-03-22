@@ -65,9 +65,15 @@
         "Activate": "Activate",
         "ClickToChangeNotebook": "Click here to change the notebook",
         "Actions": "Actions",
-        "DeleteNote": "Delete note",
         "MarkNote": "Mark note",
-        "UnmarkNote": "Unmark note"
+        "UnmarkNote": "Unmark note",
+        "ShareNote": "Share note...",
+        "ImportNote": "Import note...",
+        "AddNotebook": "Add notebook...",
+        "RenameNotebook": "Rename notebook...",
+        "DeleteNotebook": "Delete notebook...",
+        "AddNote": "Add note",
+        "DeleteNote": "Delete note..."
     },
     "LicenseDialog": {
         "License": "License"
@@ -138,13 +144,8 @@
     },
     "MainPage": {
         "Notebooks": "Notebooks",
-        "AddNotebook": "Add notebook...",
-        "RenameNotebook": "Rename notebook...",
-        "DeleteNotebook": "Delete notebook...",
         "AllNotes": "All notes",
         "UnfiledNotes": "Unfiled notes",
-        "AddNote": "Add note",
-        "DeleteNote": "Delete note...",
         "Search": "Search",
         "ClearSearch": "Clear search"
     },

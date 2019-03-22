@@ -291,4 +291,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.selectedNote = selectedNote;
     this.canEditNote = this.selectedNote != null;
   }
+
+  public importNote(): void {
+
+  }
 }

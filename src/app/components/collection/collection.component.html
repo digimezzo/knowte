@@ -30,15 +30,15 @@
                     <!-- Notebooks buttons -->
                     <div class="collection-notebooks-list-buttons m-2">
                         <button class="list-button" mat-mini-fab color="" (click)="renameNotebook()"
-                            matTooltip="{{ 'MainPage.RenameNotebook' | translate }}" *ngIf=canEditNotebook>
+                            matTooltip="{{ 'Tooltips.RenameNotebook' | translate }}" *ngIf=canEditNotebook>
                             <span class="edit-item-icon">&#xE254;</span>
                         </button>
                         <button class="list-button" mat-mini-fab color="" (click)="deleteNotebookAsync()"
-                            matTooltip="{{ 'MainPage.DeleteNotebook' | translate }}" *ngIf=canEditNotebook>
+                            matTooltip="{{ 'Tooltips.DeleteNotebook' | translate }}" *ngIf=canEditNotebook>
                             <span class="edit-item-icon">&#xE872;</span>
                         </button>
                         <button class="list-button" mat-fab (click)="addNotebookAsync()"
-                            matTooltip="{{ 'MainPage.AddNotebook' | translate }}">
+                            matTooltip="{{ 'Tooltips.AddNotebook' | translate }}">
                             <span class="add-item-icon">&#xE145;</span>
                         </button>
                     </div>
@@ -51,10 +51,14 @@
             <!-- Note buttons -->
             <div class="note-buttons m-2" [@noteButtonsVisibility]="noteButtonsVisibility">
                 <button class="list-button" mat-mini-fab color="" (click)="deleteNoteAsync()"
-                    matTooltip="{{ 'MainPage.DeleteNote' | translate }}" *ngIf=canEditNote>
+                    matTooltip="{{ 'Tooltips.DeleteNote' | translate }}" *ngIf=canEditNote>
                     <span class="edit-item-icon">&#xE872;</span>
                 </button>
-                <button class="list-button" mat-fab (click)="addNoteAsync()" matTooltip="{{ 'MainPage.AddNote' | translate }}">
+                <button class="list-button" mat-mini-fab color="" (click)="importNote()"
+                    matTooltip="{{ 'Tooltips.ImportNote' | translate }}">
+                    <span class="edit-item-icon">&#xE2C4;</span>
+                </button>
+                <button class="list-button" mat-fab (click)="addNoteAsync()" matTooltip="{{ 'Tooltips.AddNote' | translate }}">
                     <span class="add-item-icon">&#xE145;</span>
                 </button>
             </div>
