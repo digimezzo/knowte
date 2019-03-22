@@ -7,6 +7,8 @@
 }
 
 .note-content-floating {
+  display: flex;
+  flex-direction: column;
   position: absolute;
   top: 16px;
   right: 16px;
@@ -15,8 +17,20 @@
   z-index: 1;
 }
 
-.note-content-floating-actions{
+.note-content-floating-button {
+  margin-bottom: 8px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.note-content-floating-button-icon{
   color: white;
+  font-family: material;
+  font-size: 24px;
+}
+
+.note-content-floating-button-icon-action{
+  color: $color-primary;
   font-family: material;
   font-size: 24px;
 }

@@ -64,7 +64,10 @@
         "Delete": "Delete",
         "Activate": "Activate",
         "ClickToChangeNotebook": "Click here to change the notebook",
-        "Actions": "Actions"
+        "Actions": "Actions",
+        "DeleteNote": "Delete note",
+        "MarkNote": "Mark note",
+        "UnmarkNote": "Unmark note"
     },
     "LicenseDialog": {
         "License": "License"

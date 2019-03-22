@@ -18,7 +18,6 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as Store from 'electron-store';
 import { Utils } from '../../core/utils';
-import { NoteActionsDialogComponent } from '../dialogs/noteActionsDialog/noteActionsDialog.component';
 
 @Component({
     selector: 'note-content',
@@ -56,16 +55,19 @@ export class NoteComponent implements OnInit, OnDestroy {
     private focusNoteListener: any = this.focusNoteHandler.bind(this);
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
 
+    public canPerformActions: boolean = false;
+
     public editorStyle = {
         'font-size': this.settings.get("fontSizeInNotes") + 'px'
     }
 
-    @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-        if (this.settings.get('closeNotesWithEscape')) {
-            let window: BrowserWindow = remote.getCurrentWindow();
-            window.close();
-        }
-    }
+    // @HostListener('document:click', ['$event'])
+    // onClick(event) {
+    //     log.info(`target=${event.target.tagName}`);
+    //     if (this.canPerformActions) {
+    //         this.canPerformActions = false;
+    //     }
+    // }
 
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
@@ -267,10 +269,8 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
     }
 
-    public showActions(): void{
-        let dialogRef: MatDialogRef<NoteActionsDialogComponent> = this.dialog.open(NoteActionsDialogComponent, {
-            width: '450px', data: { noteId: this.noteId }
-        });
+    public toggleShowActions(): void {
+        this.canPerformActions = !this.canPerformActions;
     }
 
     public toggleNoteMark(): void {
@@ -371,5 +371,9 @@ export class NoteComponent implements OnInit, OnDestroy {
             // Sets focus to editor when pressing enter on title
             this.quill.setSelection(0, 0);
         }
+    }
+
+    public deleteNote(): void {
+        // TODO
     }
 }
