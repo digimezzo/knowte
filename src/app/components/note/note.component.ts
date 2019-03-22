@@ -83,12 +83,23 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    private cleanup(): void {
-        this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, false);
+    private removeListeners(): void {
         this.globalEmitter.removeListener(`${Constants.noteMarkChangedEvent}-${this.noteId}`, this.noteMarkChangedListener);
         this.globalEmitter.removeListener(`${Constants.notebookChangedEvent}`, this.notebookChangedListener);
         this.globalEmitter.removeListener(`${Constants.focusNoteEvent}`, this.focusNoteListener);
         this.globalEmitter.removeListener(`${Constants.closeNoteEvent}`, this.closeNoteListener);
+    }
+
+    private addListeners(): void {
+        this.globalEmitter.on(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
+        this.globalEmitter.on(Constants.notebookChangedEvent, this.notebookChangedListener);
+        this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
+        this.globalEmitter.on(Constants.closeNoteEvent, this.closeNoteListener);
+    }
+
+    private cleanup(): void {
+        this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, false);
+        this.removeListeners();
     }
 
     ngOnDestroy() {
@@ -128,13 +139,9 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
-            this.globalEmitter.on(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
-            this.globalEmitter.on(Constants.notebookChangedEvent, this.notebookChangedListener);
-            this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
-            this.globalEmitter.on(Constants.closeNoteEvent, this.closeNoteListener);
-            this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNoteDetailsCallback.bind(this));
 
-            this.getNoteContentAsync();
+            this.addListeners();
+            await this.getNoteDetailsAsync();
         });
 
         this.noteTitleChanged
@@ -328,7 +335,16 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.isTextDirty = false;
     }
 
-    public async getNoteContentAsync() {
+    private async getNoteDetailsAsync(): Promise<void> {
+        // Details from data store
+        while (!this.noteTitle) {
+            // While, is a workaround for auto reload. CollectionService is not ready to
+            // listen to events after a auto reload. So we keep trying, until it responds.
+            await Utils.sleep(50);
+            this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNoteDetailsCallback.bind(this));
+        }
+
+        // Details from note file
         try {
             let activeCollection: string = this.settings.get('activeCollection');
             let noteContent: string = fs.readFileSync(path.join(Utils.collectionToPath(activeCollection), `${this.noteId}${Constants.noteExtension}`), 'utf8');
