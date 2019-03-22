@@ -18,6 +18,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as Store from 'electron-store';
 import { Utils } from '../../core/utils';
+import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 
 @Component({
     selector: 'note-content',
@@ -358,24 +359,44 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public toggleNoteMark(): void {
+        this.hideActionButtonsDelayedAsync();
         this.globalEmitter.emit(Constants.setNoteMarkEvent, this.noteId, !this.isMarked);
-        this.hideActionsButtonsAsync();
     }
 
-    public deleteNote(): void {
-        this.hideActionsButtonsAsync();
-        // TODO
+    public async deleteNoteAsync(): Promise<void> {
+        this.hideActionButtons();
+
+        let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNote').toPromise();
+        let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNote', { noteTitle: this.noteTitle }).toPromise();
+
+        let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
+
+            width: '450px', data: { dialogTitle: title, dialogText: text }
+        });
+
+        dialogRef.afterClosed().subscribe(async (result) => {
+            if (result) {
+                this.globalEmitter.emit(Constants.deleteNoteEvent, this.noteId);
+
+                let window: BrowserWindow = remote.getCurrentWindow();
+                window.close();
+            }
+        });
     }
 
     public onFixedContentClick(): void {
-        this.canPerformActions = false;
+        this.hideActionButtons();
     }
 
     public toggleShowActions(): void {
         this.canPerformActions = !this.canPerformActions;
     }
 
-    private async hideActionsButtonsAsync(): Promise<void> {
+    private hideActionButtons(): void {
+        this.canPerformActions = false;
+    }
+
+    private async hideActionButtonsDelayedAsync(): Promise<void> {
         await Utils.sleep(500);
         this.canPerformActions = false;
     }

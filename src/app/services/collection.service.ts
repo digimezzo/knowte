@@ -135,6 +135,7 @@ export class CollectionService {
     this.globalEmitter.on(Constants.getNotebooksEvent, this.getNotebooksEventHandler.bind(this));
     this.globalEmitter.on(Constants.setNoteTitleEvent, this.setNoteTitleEventHandler.bind(this));
     this.globalEmitter.on(Constants.setNoteTextEvent, this.setNoteTextEventHandler.bind(this));
+    this.globalEmitter.on(Constants.deleteNoteEvent, this.deleteNoteEventHandler.bind(this));
   }
 
   public async initializeAsync(): Promise<void> {
@@ -801,6 +802,10 @@ export class CollectionService {
 
     callback(Operation.Success);
     return;
+  }
+
+  public deleteNoteEventHandler(noteId: string) {
+    this.deleteNoteAsync(noteId);
   }
 
   public async importFromOldVersionAsync(directoryContainingExportFiles: string): Promise<boolean> {
