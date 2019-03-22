@@ -61,14 +61,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         'font-size': this.settings.get("fontSizeInNotes") + 'px'
     }
 
-    // @HostListener('document:click', ['$event'])
-    // onClick(event) {
-    //     log.info(`target=${event.target.tagName}`);
-    //     if (this.canPerformActions) {
-    //         this.canPerformActions = false;
-    //     }
-    // }
-
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
@@ -269,14 +261,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
     }
 
-    public toggleShowActions(): void {
-        this.canPerformActions = !this.canPerformActions;
-    }
-
-    public toggleNoteMark(): void {
-        this.globalEmitter.emit(Constants.setNoteMarkEvent, this.noteId, !this.isMarked);
-    }
-
     public onNotetitleChange(newNoteTitle: string) {
         this.isTitleDirty = true;
         this.noteTitleChanged.next(newNoteTitle);
@@ -373,7 +357,26 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
+    public toggleNoteMark(): void {
+        this.globalEmitter.emit(Constants.setNoteMarkEvent, this.noteId, !this.isMarked);
+        this.hideActionsButtonsAsync();
+    }
+
     public deleteNote(): void {
+        this.hideActionsButtonsAsync();
         // TODO
+    }
+
+    public onFixedContentClick(): void {
+        this.canPerformActions = false;
+    }
+
+    public toggleShowActions(): void {
+        this.canPerformActions = !this.canPerformActions;
+    }
+
+    private async hideActionsButtonsAsync(): Promise<void> {
+        await Utils.sleep(500);
+        this.canPerformActions = false;
     }
 }

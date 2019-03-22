@@ -24,12 +24,12 @@
                     matTooltip="{{ 'Tooltips.MarkNote' | translate }}">
                     <span class="note-content-floating-button-icon-action">&#xE87E;</span>
                 </button>
-                <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color="" (click)="deleteNote()"
+                <!-- <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color="" (click)="deleteNote()"
                     matTooltip="{{ 'Tooltips.DeleteNote' | translate }}">
                     <span class="note-content-floating-button-icon-action">&#xE872;</span>
-                </button>
+                </button> -->
             </div>
-            <div class="note-content-fixed">
+            <div class="note-content-fixed" (click)="onFixedContentClick()">
                 <div class="note-content-fixed-title">
                     <input class="note-content-fixed-title-text" type="text" [(ngModel)]="noteTitle"
                         (ngModelChange)="onNotetitleChange($event)" (keydown)="onTitleKeydown($event)" />
