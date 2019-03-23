@@ -1,5 +1,7 @@
 import * as path from 'path';
 import * as Store from 'electron-store';
+import * as sanitize from 'sanitize-filename';
+import { Constants } from './constants';
 
 export class Utils {
     public static async sleep(milliseconds: number) {
@@ -43,5 +45,9 @@ export class Utils {
         let storageDirectory: string = settings.get('storageDirectory');
 
         return path.join(storageDirectory, collection);
+    }
+
+    public static getNoteExportPath(exportDirectory: string, noteTitle: string) {
+        return path.join(exportDirectory, `${sanitize(noteTitle)}${Constants.noteExportExtension}`);
     }
 }

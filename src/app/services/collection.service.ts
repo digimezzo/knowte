@@ -468,8 +468,8 @@ export class CollectionService {
 
       // 2. Delete all files from disk, which are related to the note.
       let notePath: string = this.getNotePath(noteId);
-      let noteFilePath: string = path.join(notePath, `${noteId}${Constants.noteExtension}`);
-      let noteStateFilePath: string = path.join(notePath, `${noteId}${Constants.stateExtension}`);
+      let noteFilePath: string = path.join(notePath, `${noteId}${Constants.noteContentExtension}`);
+      let noteStateFilePath: string = path.join(notePath, `${noteId}${Constants.noteStateExtension}`);
 
       // Note file
       fs.unlinkSync(noteFilePath, '');
@@ -692,7 +692,7 @@ export class CollectionService {
 
       // 2. Create note file
       let activeCollection: string = this.settings.get('activeCollection');
-      fs.writeFileSync(path.join(Utils.collectionToPath(activeCollection), `${result.noteId}${Constants.noteExtension}`), '');
+      fs.writeFileSync(path.join(Utils.collectionToPath(activeCollection), `${result.noteId}${Constants.noteContentExtension}`), '');
 
       this.noteEdited.next();
     } catch (error) {
@@ -879,7 +879,7 @@ export class CollectionService {
                 let quillText: string = `{"ops":[{"insert":${JSON.stringify(jsonNote.Text)}}]}`;
 
                 let activeCollection: string = this.settings.get('activeCollection');
-                await fs.writeFile(path.join(Utils.collectionToPath(activeCollection), `${note.id}${Constants.noteExtension}`), quillText);
+                await fs.writeFile(path.join(Utils.collectionToPath(activeCollection), `${note.id}${Constants.noteContentExtension}`), quillText);
               }
             } catch (error) {
               log.error(`An error occurred while importing a note from an old version. Cause: ${error}`);

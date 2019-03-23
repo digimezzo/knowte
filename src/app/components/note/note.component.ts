@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, OnDestroy, HostListener, NgZone } from '@angular/core';
-import { remote, BrowserWindow, Clipboard } from 'electron';
+import { remote, BrowserWindow, Clipboard, SaveDialogOptions } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/noteDetailsResult';
 import log from 'electron-log';
@@ -303,7 +303,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         // Update the note file on disk
         let activeCollection: string = this.settings.get('activeCollection');
         let jsonContent: string = JSON.stringify(this.quill.getContents());
-        fs.writeFileSync(path.join(Utils.collectionToPath(activeCollection), `${this.noteId}${Constants.noteExtension}`), jsonContent);
+        fs.writeFileSync(path.join(Utils.collectionToPath(activeCollection), `${this.noteId}${Constants.noteContentExtension}`), jsonContent);
     }
 
     private async setNoteTextCallbackAsync(operation: Operation): Promise<void> {
@@ -347,7 +347,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         // Details from note file
         try {
             let activeCollection: string = this.settings.get('activeCollection');
-            let noteContent: string = fs.readFileSync(path.join(Utils.collectionToPath(activeCollection), `${this.noteId}${Constants.noteExtension}`), 'utf8');
+            let noteContent: string = fs.readFileSync(path.join(Utils.collectionToPath(activeCollection), `${this.noteId}${Constants.noteContentExtension}`), 'utf8');
 
             if (noteContent) {
                 // We can only parse to json if there is content
@@ -418,6 +418,13 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public shareNote(): void {
+        let options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
 
+        let savePath: string = remote.dialog.showSaveDialog(null, options);
+        log.info(`save path=${savePath}`);
+        // To export:
+        // Title
+        // Text
+        // Content
     }
 }

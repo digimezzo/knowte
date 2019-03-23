@@ -8,10 +8,10 @@ export class Constants {
     static readonly facebookUrl = "https://www.facebook.com/Digimezzo";
     static readonly twitterUrl = "https://twitter.com/Digimezzo";
     static readonly collectionsDirectory: string = `${Constants.applicationName} collections`;
-    static readonly noteExtension: string = ".knowte";
-    static readonly stateExtension: string = ".state";
+    static readonly noteContentExtension: string = ".content";
+    static readonly noteStateExtension: string = ".state";
+    static readonly noteExportExtension: string = ".knowte";
     static readonly defaultCollection: string = "Default";
-    static readonly unfiledNotebookName: string = "Unfiled";
     static readonly allNotesNotebookId: string = "0";
     static readonly unfiledNotesNotebookId: string = "1";
   
