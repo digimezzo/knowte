@@ -419,7 +419,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.canPerformActions = false;
     }
 
-    public async shareNoteAsync(): Promise<void> {
+    public async exportNoteAsync(): Promise<void> {
         this.hideActionButtons();
         this.isBusy = true;
 

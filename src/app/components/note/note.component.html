@@ -29,8 +29,8 @@
                         <span class="note-content-floating-button-icon-action">&#xE87E;</span>
                     </button>
                     <button *ngIf="canPerformActions && !isMarked" class="note-content-floating-button" mat-mini-fab
-                        color="" (click)="shareNoteAsync()" matTooltip="{{ 'Tooltips.ShareNote' | translate }}">
-                        <span class="note-content-floating-button-icon-action">&#xE80D;</span>
+                        color="" (click)="exportNoteAsync()" matTooltip="{{ 'Tooltips.ExportNote' | translate }}">
+                        <span class="note-content-floating-button-icon-action-export">&#xF56E;</span>
                     </button>
                     <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
                         (click)="deleteNoteAsync()" matTooltip="{{ 'Tooltips.DeleteNote' | translate }}">
