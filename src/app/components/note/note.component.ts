@@ -422,14 +422,17 @@ export class NoteComponent implements OnInit, OnDestroy {
     public async shareNoteAsync(): Promise<void> {
         this.hideActionButtons();
         this.isBusy = true;
-        
+
         let options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
         let savePath: string = remote.dialog.showSaveDialog(null, options);
         let noteExport: NoteExport = new NoteExport(this.noteTitle, this.quill.getText(), JSON.stringify(this.quill.getContents()));
 
         try {
-            await fs.writeFile(savePath, JSON.stringify(noteExport), 'utf-8');
-            this.snackBarService.noteExportedAsync(this.noteTitle);
+            if (savePath) {
+                await fs.writeFile(savePath, JSON.stringify(noteExport), 'utf-8');
+                this.snackBarService.noteExportedAsync(this.noteTitle);
+            }
+
             this.isBusy = false;
         } catch (error) {
             this.isBusy = false;

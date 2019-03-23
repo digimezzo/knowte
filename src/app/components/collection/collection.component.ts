@@ -18,6 +18,8 @@ import { Note } from '../../data/entities/note';
 import { trigger, style, animate, state, transition } from '@angular/animations';
 import { debounceTime } from "rxjs/internal/operators";
 import { remote } from 'electron';
+import log from 'electron-log';
+import * as path from 'path';
 
 @Component({
   selector: 'collection-page',
@@ -293,6 +295,16 @@ export class CollectionComponent implements OnInit, OnDestroy {
   }
 
   public importNote(): void {
+    let selectedFiles: string[] = remote.dialog.showOpenDialog({ properties: ['openFile'] });
 
+    if (selectedFiles && selectedFiles.length > 0) {
+      if (path.extname(selectedFiles[0]) === Constants.noteExportExtension) {
+        let selectedFile: string = selectedFiles[0];
+        log.info(`selected file=${selectedFile}`);
+      } else {
+        // TODO: dialog
+        log.info(`invalid file`);
+      }
+    }
   }
 }
