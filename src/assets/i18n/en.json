@@ -131,13 +131,15 @@
         "DeleteNoteError": "An error occurred while deleting the note '{{noteTitle}}'. Please verify the log if you need more information.",
         "SaveNoteError": "An error occurred while saving the note '{{noteTitle}}'. Please verify the log if you need more information.",
         "UpdateNoteContentError": "An error occurred while saving the note content. Please verify the log if you need more information.",
-        "GetNoteContentError": "An error occurred while getting the note content. Please verify the log if you need more information."
+        "GetNoteContentError": "An error occurred while getting the note content. Please verify the log if you need more information.",
+        "ExportNoteError": "An error occurred while exporting the note '{{noteTitle}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "There is already a collection with the name '{{collection}}'",
         "DuplicateNotebook": "There is already a notebook with the name '{{notebookName}}'",
         "NoteTitleCannotBeEmpty": "The note title cannot be empty",
-        "CloseNoteBeforeChangingCollections": "Please close all notes before changing collections"
+        "CloseNoteBeforeChangingCollections": "Please close all notes before changing collections",
+        "NoteExported": "Note '{{noteTitle}}' was exported"
     },
     "SnackBarActions": {
         "Ok": "OK"
@@ -151,7 +153,8 @@
     },
     "Notes": {
         "NewNote": "New note",
-        "NotePlaceholder": "Write your note here..."
+        "NotePlaceholder": "Write your note here...",
+        "Imported": "Imported"
     },
     "NoteDates": {
         "Today": "Today",

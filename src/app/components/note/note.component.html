@@ -24,7 +24,7 @@
                     matTooltip="{{ 'Tooltips.MarkNote' | translate }}">
                     <span class="note-content-floating-button-icon-action">&#xE87E;</span>
                 </button>
-                <button *ngIf="canPerformActions && !isMarked" class="note-content-floating-button" mat-mini-fab color="" (click)="shareNote()"
+                <button *ngIf="canPerformActions && !isMarked" class="note-content-floating-button" mat-mini-fab color="" (click)="shareNoteAsync()"
                     matTooltip="{{ 'Tooltips.ShareNote' | translate }}">
                     <span class="note-content-floating-button-icon-action">&#xE80D;</span>
                 </button>

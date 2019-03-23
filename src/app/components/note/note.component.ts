@@ -19,6 +19,7 @@ import * as fs from 'fs-extra';
 import * as Store from 'electron-store';
 import { Utils } from '../../core/utils';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
+import { NoteExport } from '../../core/noteExport';
 
 @Component({
     selector: 'note-content',
@@ -417,14 +418,24 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.canPerformActions = false;
     }
 
-    public shareNote(): void {
-        let options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
+    public async shareNoteAsync(): Promise<void> {
+        this.hideActionButtons();
 
+        let options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
         let savePath: string = remote.dialog.showSaveDialog(null, options);
-        log.info(`save path=${savePath}`);
-        // To export:
-        // Title
-        // Text
-        // Content
+        let noteExport: NoteExport = new NoteExport(this.noteTitle, this.quill.getText(), JSON.stringify(this.quill.getContents()));
+
+        try {
+            fs.writeFileAsync(savePath, JSON.stringify(noteExport), 'utf-8');
+            this.snackBarService.noteExportedAsync(this.noteTitle);
+        } catch (error) {
+            log.error(`An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`);
+
+            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }).toPromise());
+
+            this.dialog.open(ErrorDialogComponent, {
+                width: '450px', data: { errorText: generatedErrorText }
+            });
+        }
     }
 }
