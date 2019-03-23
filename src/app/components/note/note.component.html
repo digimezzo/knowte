@@ -1,44 +1,49 @@
-<div class="window-frame">
-    <div class="window-frame-titlebar">
-        <div class="window-frame-titlebar-dragarea">
-            <div class="notebook-changer no-select ml-1" (click)="changeNotebook()"
-                matTooltip="{{ 'Tooltips.ClickToChangeNotebook' | translate }}">
-                <span class="notebook-changer-icon">&#xE0E0;</span>
-                {{notebookName}}
-            </div>
-        </div>
-        <window-controls></window-controls>
+<div class="note-main">
+    <div class="note-busy-overlay" *ngIf="isBusy">
+        <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
     </div>
-    <div class="window-frame-content">
-        <div class="note-content">
-            <div class="note-content-floating">
-                <button class="note-content-floating-button" mat-fab (click)="toggleShowActions()"
-                    matTooltip="{{ 'Tooltips.Actions' | translate }}">
-                    <span class="note-content-floating-button-icon">&#xE8B8;</span>
-                </button>
-                <button *ngIf="canPerformActions && isMarked" class="note-content-floating-button" mat-mini-fab color="" (click)="toggleNoteMark()"
-                    matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">
-                    <span class="note-content-floating-button-icon-action">&#xE87D;</span>
-                </button>
-                <button *ngIf="canPerformActions && !isMarked" class="note-content-floating-button" mat-mini-fab color="" (click)="toggleNoteMark()"
-                    matTooltip="{{ 'Tooltips.MarkNote' | translate }}">
-                    <span class="note-content-floating-button-icon-action">&#xE87E;</span>
-                </button>
-                <button *ngIf="canPerformActions && !isMarked" class="note-content-floating-button" mat-mini-fab color="" (click)="shareNoteAsync()"
-                    matTooltip="{{ 'Tooltips.ShareNote' | translate }}">
-                    <span class="note-content-floating-button-icon-action">&#xE80D;</span>
-                </button>
-                <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color="" (click)="deleteNoteAsync()"
-                    matTooltip="{{ 'Tooltips.DeleteNote' | translate }}">
-                    <span class="note-content-floating-button-icon-action">&#xE872;</span>
-                </button>
-            </div>
-            <div class="note-content-fixed" (click)="onFixedContentClick()">
-                <div class="note-content-fixed-title">
-                    <input class="note-content-fixed-title-text" type="text" [(ngModel)]="noteTitle"
-                        (ngModelChange)="onNotetitleChange($event)" (keydown)="onTitleKeydown($event)" />
+    <div class="window-frame">
+        <div class="window-frame-titlebar">
+            <div class="window-frame-titlebar-dragarea">
+                <div class="notebook-changer no-select ml-1" (click)="changeNotebook()"
+                    matTooltip="{{ 'Tooltips.ClickToChangeNotebook' | translate }}">
+                    <span class="notebook-changer-icon">&#xE0E0;</span>
+                    {{notebookName}}
                 </div>
-                <div class="note-editor" [ngStyle]="editorStyle" id="editor">
+            </div>
+            <window-controls></window-controls>
+        </div>
+        <div class="window-frame-content">
+            <div class="note-content">
+                <div class="note-content-floating">
+                    <button class="note-content-floating-button" mat-fab (click)="toggleShowActions()"
+                        matTooltip="{{ 'Tooltips.Actions' | translate }}">
+                        <span class="note-content-floating-button-icon">&#xE8B8;</span>
+                    </button>
+                    <button *ngIf="canPerformActions && isMarked" class="note-content-floating-button" mat-mini-fab
+                        color="" (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">
+                        <span class="note-content-floating-button-icon-action">&#xE87D;</span>
+                    </button>
+                    <button *ngIf="canPerformActions && !isMarked" class="note-content-floating-button" mat-mini-fab
+                        color="" (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.MarkNote' | translate }}">
+                        <span class="note-content-floating-button-icon-action">&#xE87E;</span>
+                    </button>
+                    <button *ngIf="canPerformActions && !isMarked" class="note-content-floating-button" mat-mini-fab
+                        color="" (click)="shareNoteAsync()" matTooltip="{{ 'Tooltips.ShareNote' | translate }}">
+                        <span class="note-content-floating-button-icon-action">&#xE80D;</span>
+                    </button>
+                    <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
+                        (click)="deleteNoteAsync()" matTooltip="{{ 'Tooltips.DeleteNote' | translate }}">
+                        <span class="note-content-floating-button-icon-action">&#xE872;</span>
+                    </button>
+                </div>
+                <div class="note-content-fixed" (click)="onFixedContentClick()">
+                    <div class="note-content-fixed-title">
+                        <input class="note-content-fixed-title-text" type="text" [(ngModel)]="noteTitle"
+                            (ngModelChange)="onNotetitleChange($event)" (keydown)="onTitleKeydown($event)" />
+                    </div>
+                    <div class="note-editor" [ngStyle]="editorStyle" id="editor">
+                    </div>
                 </div>
             </div>
         </div>

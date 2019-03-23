@@ -58,6 +58,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
 
     public canPerformActions: boolean = false;
+    public isBusy: boolean = false;
 
     public editorStyle = {
         'font-size': this.settings.get("fontSizeInNotes") + 'px'
@@ -420,15 +421,18 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     public async shareNoteAsync(): Promise<void> {
         this.hideActionButtons();
-
+        this.isBusy = true;
+        
         let options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
         let savePath: string = remote.dialog.showSaveDialog(null, options);
         let noteExport: NoteExport = new NoteExport(this.noteTitle, this.quill.getText(), JSON.stringify(this.quill.getContents()));
 
         try {
-            fs.writeFileAsync(savePath, JSON.stringify(noteExport), 'utf-8');
+            await fs.writeFile(savePath, JSON.stringify(noteExport), 'utf-8');
             this.snackBarService.noteExportedAsync(this.noteTitle);
+            this.isBusy = false;
         } catch (error) {
+            this.isBusy = false;
             log.error(`An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`);
 
             let generatedErrorText: string = (await this.translateService.get('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }).toPromise());
