@@ -50,4 +50,10 @@ export class SnackBarService {
         let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();	
         this.showActionSnackBar(message, action, 2000);	
     }
+
+    public async invalidNoteFileAsync() {
+        let message: string = await this.translate.get('SnackBarMessages.InvalidNoteFile').toPromise();
+        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();	
+        this.showActionSnackBar(message, action, 2000);	
+    }
 }

@@ -54,7 +54,7 @@
                     matTooltip="{{ 'Tooltips.DeleteNote' | translate }}" *ngIf=canEditNote>
                     <span class="edit-item-icon">&#xE872;</span>
                 </button>
-                <button class="list-button" mat-mini-fab color="" (click)="importNote()"
+                <button class="list-button" mat-mini-fab color="" (click)="importNoteAsync()"
                     matTooltip="{{ 'Tooltips.ImportNote' | translate }}">
                     <span class="edit-item-icon">&#xE2C4;</span>
                 </button>

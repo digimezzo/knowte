@@ -139,7 +139,8 @@
         "DuplicateNotebook": "There is already a notebook with the name '{{notebookName}}'",
         "NoteTitleCannotBeEmpty": "The note title cannot be empty",
         "CloseNoteBeforeChangingCollections": "Please close all notes before changing collections",
-        "NoteExported": "Note '{{noteTitle}}' was exported"
+        "NoteExported": "Note '{{noteTitle}}' was exported",
+        "InvalidNoteFile": "This is not a valid note file"
     },
     "SnackBarActions": {
         "Ok": "OK"

@@ -917,4 +917,9 @@ export class CollectionService {
     let activeCollection: string = this.settings.get('activeCollection');
     return Utils.collectionToPath(activeCollection);
   }
+
+  public async importNoteFileAsync(noteFilePath: string): Promise<void> {
+    // TODO
+    await Utils.sleep(5000);
+  }
 }

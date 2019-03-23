@@ -294,16 +294,15 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.canEditNote = this.selectedNote != null;
   }
 
-  public importNote(): void {
+  public async importNoteAsync(): Promise<void> {
     let selectedFiles: string[] = remote.dialog.showOpenDialog({ properties: ['openFile'] });
 
     if (selectedFiles && selectedFiles.length > 0) {
       if (path.extname(selectedFiles[0]) === Constants.noteExportExtension) {
-        let selectedFile: string = selectedFiles[0];
-        log.info(`selected file=${selectedFile}`);
+        let noteFilePath: string = selectedFiles[0];
+        await this.collectionService.importNoteFileAsync(noteFilePath);
       } else {
-        // TODO: dialog
-        log.info(`invalid file`);
+        this.snackBarService.invalidNoteFileAsync();
       }
     }
   }
