@@ -17,7 +17,7 @@ export class RenameCollectionDialogComponent implements OnInit {
     }
 
     public oldCollection: string = this.data.oldCollection;
-    public newCollection: string = "";
+    public newCollection: string = this.data.oldCollection;
 
     public async renameCollectionAsync(): Promise<void> {
         let operation: Operation = await this.collectionService.renameCollectionAsync(this.oldCollection, this.newCollection);

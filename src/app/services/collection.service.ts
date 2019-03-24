@@ -241,8 +241,7 @@ export class CollectionService {
   }
 
   public async renameCollectionAsync(initialCollection: string, finalCollection: string): Promise<Operation> {
-    // Check if a final collection was provided
-    if (!initialCollection || !finalCollection) {
+    if (!finalCollection) {
       log.error("finalCollection is null");
       return Operation.Error;
     }
