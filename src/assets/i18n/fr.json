@@ -1,0 +1,170 @@
+{
+    "WelcomePage": {
+        "Title": "Bienvenue à Knowte!",
+        "Text": "Avant d'utiliser Knowte, veuillez sélectionner un répertoire dans lequel vous souhaitez enregistrer vos notes. Si vous souhaitez importer des notes existantes, sélectionnez simplement le répertoire qui les contient et Knowte les importera pour vous.",
+        "SelectButton": "SÉLECTIONNER..."
+    },
+    "LoadingPage": {
+        "Text": "Chargement..."
+    },
+    "Pages": {
+        "Collection": "Collection",
+        "Settings": "Paramètres",
+        "Information": "Information"
+    },
+    "NotesTabs": {
+        "All": "Toutes",
+        "Today": "Aujourd'hui",
+        "Yesterday": "Hier",
+        "ThisWeek": "Cette semaine",
+        "Marked": "Marquées"
+    },
+    "SettingsTabs": {
+        "Notes": "Notes",
+        "Advanced": "Avancé"
+    },
+    "InformationTabs": {
+        "About": "Sur",
+        "Components": "Composants"
+    },
+    "AboutPage": {
+        "About": "Sur",
+        "Donate": "Faire un don",
+        "ContactUs": "Nous contacter",
+        "Version": "Version",
+        "License": "Licence",
+        "IsKnowteUseful": "Knowte est utile? Prière d'envisager de faire un don. Merci!",
+        "Website": "Site web",
+        "Email": "Email",
+        "SocialNetworks": "Réseaux sociaux"
+    },
+    "SettingsPage": {
+        "Import": "Import",
+        "ImportFromOldVersion": "Importer de Knowte 1.x",
+        "FontSize": "Taille de police",
+        "FontSizeInNotes": "Taille de police dans les notes",
+        "PixelsShort": "px",
+        "Closing": "Fermeture",
+        "CloseNotesWithEscape": "Fermer les notes avec [Ech]",
+        "Dates": "Dates",
+        "ShowExactDatesInTheNotesList": "Afficher les dates exactes dans la liste des notest"
+    },
+    "ComponentsPage": {
+        "Components": "Composants"
+    },
+    "MainMenu": {
+        "Collections": "Collections",
+        "AddCollection": "Ajouter collection...",
+        "Settings": "Paramètres",
+        "Information": "Information"
+    },
+    "Tooltips": {
+        "Back": "Retour",
+        "Rename": "Renommer",
+        "Delete": "Supprimer",
+        "Activate": "Activer",
+        "ClickToChangeNotebook": "Cliquez ici pour changer de bloc-note",
+        "Actions": "Actions",
+        "MarkNote": "Marquer note",
+        "UnmarkNote": "Démarquer note",
+        "ExportNote": "Exporter note...",
+        "ImportNote": "Importer note...",
+        "AddNotebook": "Ajouter bloc-notes...",
+        "RenameNotebook": "Renommer bloc-notes...",
+        "DeleteNotebook": "Supprimer bloc-notes...",
+        "AddNote": "Ajouter note",
+        "DeleteNote": "Supprimer note..."
+    },
+    "LicenseDialog": {
+        "License": "Licence"
+    },
+    "Buttons": {
+        "Ok": "OK",
+        "Cancel": "ANNULER",
+        "License": "LICENCE",
+        "Donate": "FAIRE UN DON",
+        "ViewLog": "VÉRIFIER LOG",
+        "Yes": "OUI",
+        "No": "NON",
+        "Import": "IMPORTER",
+        "StartImport": "COMMENCER L'IMPORT",
+        "Select": "SÉLECTIONNER",
+        "SelectAgain": "SÉLECTIONNER À NOUVEAU",
+        "Close": "FERMER"
+    },
+    "DialogTitles": {
+        "AddCollection": "Ajouter collection",
+        "RenameCollection": "Renommer collection",
+        "SelectFolder": "Sélectionnez un dossier",
+        "Error": "Erreur",
+        "ConfirmDeleteCollection": "Supprimer collection?",
+        "AddNotebook": "Ajouter bloc-notes",
+        "RenameNotebook": "Renommer bloc-notes",
+        "ConfirmDeleteNotebook": "Supprimer bloc-notes?",
+        "ConfirmDeleteNote": "Supprimer note?",
+        "Import": "Importer"
+    },
+    "DialogTexts": {
+        "ConfirmDeleteCollection": "Êtes-vous sûr de vouloir supprimer la collection '{{collection}}'? Si vous continuez, ses bloc-notes et ses notes seront perdues.",
+        "ConfirmDeleteNote": "Êtes-vous sûr de vouloir supprimer la note '{{noteTitle}}'?",
+        "ConfirmDeleteNotebook": "Êtes-vous sûr de vouloir supprimer le bloc-notes '{{notebookName}}'? Ses notes ne seront pas supprimées. Elles seront juste non classées.",
+        "SelectDirectoryContainingOldVersionExports": "Veuillez sélectionner le répertoire contenant les fichiers exportés à partir de Knowte 1.x.",
+        "YouHaveSelectedDirectory": "Vous avez sélectionné le répertoire:",
+        "Importing": "Entrain d'importer",
+        "ImportSuccessful": "Import réussi!",
+        "ImportFailed": "Import échoué!"
+    },
+    "Input": {
+        "Collection": "Collection",
+        "NotebookName": "Nom du bloc-notes"
+    },
+    "ErrorTexts": {
+        "StorageDirectoryCreationError": "Le répertoire '{{storageDirectory}}' ne peut pas être utilisé pour enregistrer vos notes. Vous n’avez peut-être pas les autorisations nécessaires pour y créer des éléments. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "GlobalError": "Une erreur s'est produite qui entraînera la fermeture de l'application. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "AddCollectionError": "Une erreur s'est produite lors de l'ajout de la collection '{{collection}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "AddNotebookError": "Une erreur s'est produite lors de l'ajout du bloc-notes '{{notebookName}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "RenameNoteError": "Une erreur s'est produite lors du changement de nom de la note '{{noteTitle}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "RenameNotebookError": "Une erreur s'est produite lors du changement de nom du bloc-notes '{{notebookName}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "RenameCollectionError": "Une erreur s'est produite lors du changement de nom de la collection '{{collection}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "DeleteCollectionError": "Une erreur s'est produite lors de la suppression de la collection '{{collection}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "DeleteNotebookError": "Une erreur s'est produite lors de la suppression du bloc-notes '{{notebookName}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "DeleteNoteError": "Une erreur s'est produite lors de la suppression de la note '{{noteTitle}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "SaveNoteError": "Une erreur s'est produite lors de l'enregistrement de la note '{{noteTitle}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "UpdateNoteContentError": "Une erreur s'est produite lors de l'enregistrement du contenu de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "GetNoteContentError": "Une erreur s'est produite lors de l'obtention du contenu de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "ExportNoteError": "Une erreur s'est produite lors de l'export de la note '{{noteTitle}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "ImportNoteError": "Une erreur s'est produite lors de l'import de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations."
+    },
+    "SnackBarMessages": {
+        "DuplicateCollection": "Il existe déjà une collection portant le nom '{{collection}}'",
+        "DuplicateNotebook": "Il existe déjà un bloc-notes portant le nom '{{notebookName}}'",
+        "NoteTitleCannotBeEmpty": "Le titre de la note ne peut pas être vide",
+        "CloseNoteBeforeChangingCollections": "Veuillez fermer toutes les notes avant de changer de collection.",
+        "NoteExported": "La note '{{noteTitle}}' a été exportée",
+        "InvalidNoteFile": "Ceci n'est pas un fichier de note valide"
+    },
+    "SnackBarActions": {
+        "Ok": "OK"
+    },
+    "MainPage": {
+        "Notebooks": "Blocs-notes",
+        "AllNotes": "Toutes les notes",
+        "UnfiledNotes": "Notes non classées",
+        "Search": "Chercher",
+        "ClearSearch": "Effacer la recherche"
+    },
+    "Notes": {
+        "NewNote": "Nouvelle note",
+        "NotePlaceholder": "Écrivez votre note ici...",
+        "Imported": "Importée"
+    },
+    "NoteDates": {
+        "Today": "Aujourd'hui",
+        "Yesterday": "Hier",
+        "DaysAgo": "Il y à {{count}} jours",
+        "LastWeek": "La semaine dernière",
+        "WeeksAgo": "Il y à {{count}} semaines",
+        "MonthsAgo": "Il y à {{count}} mois",
+        "LongAgo": "Il y a longtemps"
+    }
+}
