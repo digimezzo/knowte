@@ -20,6 +20,7 @@ import { debounceTime } from "rxjs/internal/operators";
 import { remote } from 'electron';
 import log from 'electron-log';
 import * as path from 'path';
+import { Utils } from '../../core/utils';
 
 @Component({
   selector: 'collection-page',
@@ -68,6 +69,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
   public tabChangedSubject: Subject<any> = new Subject();
   public showNoteButtonSubject: Subject<any> = new Subject();
+
+  public isBusy: boolean = false;
 
   get allCategory() {
     return Constants.allCategory;
@@ -299,17 +302,21 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     if (selectedFiles && selectedFiles.length > 0) {
       if (path.extname(selectedFiles[0]) === Constants.noteExportExtension) {
+        this.isBusy = true;
         let noteFilePath: string = selectedFiles[0];
 
         let isImportSuccessful: boolean = await this.collectionService.importNoteFileAsync(noteFilePath);
 
-        if(!isImportSuccessful){
+        if (!isImportSuccessful) {
+          this.isBusy = false;
           let generatedErrorText: string = (await this.translateService.get('ErrorTexts.ImportNoteError').toPromise());
 
           this.dialog.open(ErrorDialogComponent, {
-              width: '450px', data: { errorText: generatedErrorText }
+            width: '450px', data: { errorText: generatedErrorText }
           });
         }
+
+        this.isBusy = false;
       } else {
         this.snackBarService.invalidNoteFileAsync();
       }

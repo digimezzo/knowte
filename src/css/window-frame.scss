@@ -25,6 +25,19 @@
   color: white;
 }
 
+.window-frame-overlay{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, .2);
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .window-frame-content {
   position: absolute;
   top: $titlebar-height;

@@ -6,6 +6,9 @@
         <main-menu-button></main-menu-button>
         <window-controls></window-controls>
     </div>
+    <div class="window-frame-overlay" *ngIf="isBusy">
+        <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
+    </div>
     <div class="window-frame-content">
         <div class="collection">
             <!-- Notebooks -->
