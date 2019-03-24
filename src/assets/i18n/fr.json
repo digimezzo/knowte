@@ -30,13 +30,11 @@
     "AboutPage": {
         "About": "Sur",
         "Donate": "Faire un don",
-        "ContactUs": "Nous contacter",
+        "FindUs": "Trouvez-nous",
         "Version": "Version",
         "License": "Licence",
         "IsKnowteUseful": "Knowte est utile? Prière d'envisager de faire un don. Merci!",
-        "Website": "Site web",
-        "Email": "Email",
-        "SocialNetworks": "Réseaux sociaux"
+        "Website": "Site web"
     },
     "SettingsPage": {
         "Import": "Import",

@@ -30,13 +30,11 @@
     "AboutPage": {
         "About": "About",
         "Donate": "Donate",
-        "ContactUs": "Contact us",
+        "FindUs": "Find us",
         "Version": "Version",
         "License": "License",
         "IsKnowteUseful": "Is Knowte useful? Please consider donating. Thank you!",
-        "Website": "Website",
-        "Email": "E-mail",
-        "SocialNetworks": "Social networks"
+        "Website": "Website"
     },
     "SettingsPage": {
         "Import": "Import",

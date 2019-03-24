@@ -4,9 +4,8 @@ export class Constants {
     static readonly applicationCopyright: string = "Copyright Digimezzo Ⓒ 2013 - 2018";
     static readonly donateUrl = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MQALEWTEZ7HX8";
     static readonly websiteUrl = "https://www.digimezzo.com";
-    static readonly emailAddress = "https://www.digimezzo.com/contact";
-    static readonly facebookUrl = "https://www.facebook.com/Digimezzo";
-    static readonly twitterUrl = "https://twitter.com/Digimezzo";
+    static readonly twitterUrl = "https://twitter.com/digimezzo";
+    static readonly githubUrl = "https://github.com/digimezzo";
     static readonly collectionsDirectory: string = `${Constants.applicationName} collections`;
     static readonly noteContentExtension: string = ".content";
     static readonly noteStateExtension: string = ".state";

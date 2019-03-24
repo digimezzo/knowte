@@ -16,9 +16,8 @@ export class InformationComponent implements OnInit {
   public applicationVersion: string = Constants.applicationVersion;
   public applicationCopyright: string = Constants.applicationCopyright;
   public websiteUrl: string = Constants.websiteUrl;
-  public emailAddress: string = Constants.emailAddress;
-  public facebookUrl: string  = Constants.facebookUrl;
   public twitterUrl: string = Constants.twitterUrl;
+  public githubUrl: string  = Constants.githubUrl;
   public externalComponents: any[] = Constants.externalComponents;
 
   ngOnInit() {
