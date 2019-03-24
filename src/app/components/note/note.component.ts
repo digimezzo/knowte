@@ -429,7 +429,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         try {
             if (savePath) {
-                await fs.writeFile(savePath, JSON.stringify(noteExport), 'utf-8');
+                await fs.writeFile(savePath, JSON.stringify(noteExport));
                 this.snackBarService.noteExportedAsync(this.noteTitle);
             }
 

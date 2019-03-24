@@ -300,7 +300,16 @@ export class CollectionComponent implements OnInit, OnDestroy {
     if (selectedFiles && selectedFiles.length > 0) {
       if (path.extname(selectedFiles[0]) === Constants.noteExportExtension) {
         let noteFilePath: string = selectedFiles[0];
-        await this.collectionService.importNoteFileAsync(noteFilePath);
+
+        let isImportSuccessful: boolean = await this.collectionService.importNoteFileAsync(noteFilePath);
+
+        if(!isImportSuccessful){
+          let generatedErrorText: string = (await this.translateService.get('ErrorTexts.ImportNoteError').toPromise());
+
+          this.dialog.open(ErrorDialogComponent, {
+              width: '450px', data: { errorText: generatedErrorText }
+          });
+        }
       } else {
         this.snackBarService.invalidNoteFileAsync();
       }

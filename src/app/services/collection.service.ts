@@ -22,6 +22,7 @@ import { DataStore } from '../data/dataStore';
 import { NoteMarkResult } from './results/noteMarkResult';
 import { NoteDetailsResult } from './results/noteDetailsResult';
 import { ipcRenderer } from 'electron';
+import { NoteExport } from '../core/noteExport';
 
 @Injectable({
   providedIn: 'root',
@@ -918,8 +919,27 @@ export class CollectionService {
     return Utils.collectionToPath(activeCollection);
   }
 
-  public async importNoteFileAsync(noteFilePath: string): Promise<void> {
-    // TODO
-    await Utils.sleep(5000);
+  public async importNoteFileAsync(noteFilePath: string): Promise<boolean> {
+    try {
+      let noteFileContent: string = await fs.readFile(noteFilePath);
+      let noteExport: NoteExport = JSON.parse(noteFileContent);
+      let proposedNoteTitle: string = `${noteExport.title} (${await this.translateService.get('Notes.Imported').toPromise()})`
+      let uniqueNoteTitle: string = this.getUniqueNoteNoteTitle(proposedNoteTitle);
+
+      this.dataStore.addNote(uniqueNoteTitle, "");
+
+      let note: Note = this.dataStore.getNoteByTitle(uniqueNoteTitle);
+      note.text = noteExport.text;
+      this.dataStore.updateNoteWithoutDate(note);
+
+      let activeCollection: string = this.settings.get('activeCollection');
+      await fs.writeFile(path.join(Utils.collectionToPath(activeCollection), `${note.id}${Constants.noteContentExtension}`), noteExport.content);
+    } catch (error) {
+      return false;
+    }
+
+    this.noteEdited.next();
+
+    return true;
   }
 }
