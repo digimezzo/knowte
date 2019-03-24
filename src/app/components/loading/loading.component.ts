@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CollectionService } from '../../services/collection.service';
 import log from 'electron-log';
+import { Utils } from '../../core/utils';
 
 @Component({
   selector: 'loading-page',

@@ -235,6 +235,7 @@ export class CollectionService {
       return Operation.Error;
     }
 
+    this.isInitialized = false;
     this.collectionsChanged.next();
 
     return Operation.Success;
@@ -247,6 +248,10 @@ export class CollectionService {
     }
 
     try {
+      // Rename database file
+      await fs.move(path.join(Utils.collectionToPath(initialCollection),`${initialCollection}.db`), path.join(Utils.collectionToPath(initialCollection),`${finalCollection}.db`));
+      
+      // Rename directory
       await fs.move(Utils.collectionToPath(initialCollection), Utils.collectionToPath(finalCollection));
       this.settings.set('activeCollection', finalCollection);
     } catch (error) {
@@ -254,6 +259,7 @@ export class CollectionService {
       return Operation.Error;
     }
 
+    this.isInitialized = false;
     this.collectionsChanged.next();
 
     return Operation.Success;
@@ -273,6 +279,7 @@ export class CollectionService {
       log.error(`Could not delete the collection '${collection}'. Cause: ${error}`);
     }
 
+    this.isInitialized = false;
     this.collectionsChanged.next();
 
     return Operation.Success;
@@ -280,6 +287,7 @@ export class CollectionService {
 
   public activateCollection(collection: string): void {
     this.settings.set('activeCollection', collection);
+    this.isInitialized = false;
     this.collectionsChanged.next();
   }
 

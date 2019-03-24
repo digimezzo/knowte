@@ -27,6 +27,10 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
   public collections: string[];
   public activeCollection: string = "";
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
   async ngOnInit() {
     // Workaround for auto reload
     await this.collectionService.initializeAsync();
@@ -130,9 +134,5 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
         }
       }
     });
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 }
