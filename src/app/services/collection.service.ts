@@ -216,7 +216,7 @@ export class CollectionService {
 
   private async collectionExistsAsync(collection: string): Promise<boolean> {
     let collections: string[] = await this.getCollectionsAsync();
-    let existingCollections: string[] = collections.filter(x => x.toLocaleLowerCase() === collection.toLocaleLowerCase());
+    let existingCollections: string[] = collections.filter(x => x.toLowerCase() === collection.toLowerCase());
 
     return existingCollections && existingCollections.length > 0;
   }
@@ -230,13 +230,13 @@ export class CollectionService {
 
     let sanitizedCollection: string = sanitize(possiblyDirtyCollection);
 
-    // Check if there is already a collection with that name
-    if (await this.collectionExistsAsync(sanitizedCollection)) {
-      log.info(`Not adding collection '${sanitizedCollection}' because it already exists`);
-      return Operation.Duplicate;
-    }
-
     try {
+      // Check if there is already a collection with that name
+      if (await this.collectionExistsAsync(sanitizedCollection)) {
+        log.info(`Not adding collection '${sanitizedCollection}' because it already exists`);
+        return Operation.Duplicate;
+      }
+
       // Add the collection
       let storageDirectory: string = this.settings.get('storageDirectory');
       await fs.mkdir(Utils.collectionToPath(`${sanitizedCollection}`));
@@ -263,7 +263,17 @@ export class CollectionService {
       return Operation.Error;
     }
 
+    // No rename required
+    if (initialCollection.toLowerCase() === finalCollection.toLowerCase()) {
+      return Operation.Aborted;
+    }
+
     try {
+
+      if (await this.collectionExistsAsync(finalCollection)) {
+        return Operation.Duplicate;
+      }
+
       // Rename database file
       await fs.move(path.join(Utils.collectionToPath(initialCollection), `${initialCollection}.db`), path.join(Utils.collectionToPath(initialCollection), `${finalCollection}.db`));
 
@@ -417,13 +427,13 @@ export class CollectionService {
       return Operation.Error;
     }
 
-    // Check if there is already a notebook with that name
-    if (this.notebookExists(notebookName)) {
-      log.info(`Not adding notebook '${notebookName}' to the data store because it already exists`);
-      return Operation.Duplicate;
-    }
-
     try {
+      // Check if there is already a notebook with that name
+      if (this.notebookExists(notebookName)) {
+        log.info(`Not adding notebook '${notebookName}' to the data store because it already exists`);
+        return Operation.Duplicate;
+      }
+
       // Add the notebook to the data store
       this.dataStore.addNotebook(notebookName);
       log.info(`Added notebook '${notebookName}' to the data store`);
@@ -451,8 +461,15 @@ export class CollectionService {
         return Operation.Duplicate;
       }
 
-      // Rename the notebook
+      // Get the notebook
       let notebook: Notebook = this.dataStore.getNotebookById(notebookId);
+
+      if (notebook.name === newNotebookName) {
+        // No rename required
+        return Operation.Aborted;
+      }
+
+      // Rename the notebook
       notebook.name = newNotebookName;
       this.dataStore.updateNotebook(notebook);
     } catch (error) {

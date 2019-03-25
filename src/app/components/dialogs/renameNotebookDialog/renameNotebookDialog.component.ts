@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../errorDialog/errorDialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { Operation } from '../../../core/enums';
+import { SnackBarService } from '../../../services/snackBar.service';
 
 @Component({
     selector: 'rename-notebook-dialog',
@@ -12,7 +13,8 @@ import { Operation } from '../../../core/enums';
 })
 export class RenameNotebookDialogComponent implements OnInit {
     constructor(private collectionService: CollectionService, private dialogRef: MatDialogRef<RenameNotebookDialogComponent>,
-        private translateService: TranslateService, @Inject(MAT_DIALOG_DATA) public data: any, private dialog: MatDialog) {
+        private translateService: TranslateService, @Inject(MAT_DIALOG_DATA) public data: any, private dialog: MatDialog,
+        private snackBarService: SnackBarService) {
         dialogRef.disableClose = true;
     }
 
@@ -28,6 +30,8 @@ export class RenameNotebookDialogComponent implements OnInit {
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: generatedErrorText }
             });
+        } else if (operation === Operation.Duplicate) {
+            this.snackBarService.duplicateNotebookAsync(this.notebookName);
         }
     }
 
