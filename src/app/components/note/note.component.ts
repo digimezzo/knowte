@@ -86,10 +86,10 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private removeListeners(): void {
-        this.globalEmitter.removeListener(`${Constants.noteMarkChangedEvent}-${this.noteId}`, this.noteMarkChangedListener);
-        this.globalEmitter.removeListener(`${Constants.notebookChangedEvent}`, this.notebookChangedListener);
-        this.globalEmitter.removeListener(`${Constants.focusNoteEvent}`, this.focusNoteListener);
-        this.globalEmitter.removeListener(`${Constants.closeNoteEvent}`, this.closeNoteListener);
+        this.globalEmitter.removeListener(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
+        this.globalEmitter.removeListener(Constants.notebookChangedEvent, this.notebookChangedListener);
+        this.globalEmitter.removeListener(Constants.focusNoteEvent, this.focusNoteListener);
+        this.globalEmitter.removeListener(Constants.closeNoteEvent, this.closeNoteListener);
     }
 
     private addListeners(): void {

@@ -62,6 +62,37 @@ export class CollectionService {
   private noteNotebookChanged = new Subject();
   noteNotebookChanged$ = this.noteNotebookChanged.asObservable();
 
+  private setNoteOpenEventListener: any = this.setNoteOpenAsync.bind(this);
+  private setNoteMarkEventListener: any = this.setNoteMark.bind(this);
+  private setNotebookEventListener: any = this.setNotebook.bind(this);
+  private getNoteDetailsEventListener: any = this.getNoteDetailsEventHandler.bind(this);
+  private getNotebooksEventListener: any = this.getNotebooksEventHandler.bind(this);
+  private setNoteTitleEventListener: any = this.setNoteTitleEventHandler.bind(this);
+  private setNoteTextEventListener: any = this.setNoteTextEventHandler.bind(this);
+  private deleteNoteEventListener: any = this.deleteNoteEventHandler.bind(this);
+
+  private listenToNoteEvents(): void {
+    // Remove listeners
+    this.globalEmitter.removeListener(Constants.setNoteOpenEvent, this.setNoteOpenEventListener);
+    this.globalEmitter.removeListener(Constants.setNoteMarkEvent, this.setNoteMarkEventListener);
+    this.globalEmitter.removeListener(Constants.setNotebookEvent, this.setNotebookEventListener);
+    this.globalEmitter.removeListener(Constants.getNoteDetailsEvent, this.getNoteDetailsEventListener);
+    this.globalEmitter.removeListener(Constants.getNotebooksEvent, this.getNotebooksEventListener);
+    this.globalEmitter.removeListener(Constants.setNoteTitleEvent, this.setNoteTitleEventListener);
+    this.globalEmitter.removeListener(Constants.setNoteTextEvent, this.setNoteTextEventListener);
+    this.globalEmitter.removeListener(Constants.deleteNoteEvent, this.deleteNoteEventListener);
+
+    // Add listeners
+    this.globalEmitter.on(Constants.setNoteOpenEvent, this.setNoteOpenEventListener);
+    this.globalEmitter.on(Constants.setNoteMarkEvent, this.setNoteMarkEventListener);
+    this.globalEmitter.on(Constants.setNotebookEvent, this.setNotebookEventListener);
+    this.globalEmitter.on(Constants.getNoteDetailsEvent, this.getNoteDetailsEventListener);
+    this.globalEmitter.on(Constants.getNotebooksEvent, this.getNotebooksEventListener);
+    this.globalEmitter.on(Constants.setNoteTitleEvent, this.setNoteTitleEventListener);
+    this.globalEmitter.on(Constants.setNoteTextEvent, this.setNoteTextEventListener);
+    this.globalEmitter.on(Constants.deleteNoteEvent, this.deleteNoteEventListener);
+  }
+
   public get hasStorageDirectory(): boolean {
     // 1. Get the storage directory from the settings
     let storageDirectory: string = this.settings.get('storageDirectory');
@@ -126,19 +157,6 @@ export class CollectionService {
     return true;
   }
 
-  private listenToNoteEvents(): void {
-    log.info("Listening to note events");
-
-    this.globalEmitter.on(Constants.setNoteOpenEvent, this.setNoteOpenAsync.bind(this));
-    this.globalEmitter.on(Constants.setNoteMarkEvent, this.setNoteMark.bind(this));
-    this.globalEmitter.on(Constants.setNotebookEvent, this.setNotebook.bind(this));
-    this.globalEmitter.on(Constants.getNoteDetailsEvent, this.getNoteDetailsEventHandler.bind(this));
-    this.globalEmitter.on(Constants.getNotebooksEvent, this.getNotebooksEventHandler.bind(this));
-    this.globalEmitter.on(Constants.setNoteTitleEvent, this.setNoteTitleEventHandler.bind(this));
-    this.globalEmitter.on(Constants.setNoteTextEvent, this.setNoteTextEventHandler.bind(this));
-    this.globalEmitter.on(Constants.deleteNoteEvent, this.deleteNoteEventHandler.bind(this));
-  }
-
   public async initializeAsync(): Promise<void> {
     // Prevents initializing multiple times. To prevent calling 
     // functions before initialization is complete, force a wait.
@@ -188,8 +206,6 @@ export class CollectionService {
 
     // Now initialize the data store.
     await this.dataStore.initializeAsync(databaseFile);
-
-    //await Utils.sleep(2000);
 
     // Only an initialized collectionService can process global requests
     this.listenToNoteEvents();
@@ -760,6 +776,7 @@ export class CollectionService {
   }
 
   public setNoteTitleEventHandler(noteId: string, initialNoteTitle: string, finalNoteTitle: string, callback: any) {
+    log.info("<<< NEW TITLE >>>");
     let uniqueNoteTitle: string = finalNoteTitle.trim();
 
     if (uniqueNoteTitle.length === 0) {
