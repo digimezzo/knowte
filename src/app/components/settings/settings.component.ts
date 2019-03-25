@@ -3,6 +3,9 @@ import log from 'electron-log';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { ImportFromOldVersionDialogComponent } from '../dialogs/importFromOldVersionDialog/importFromOldVersionDialog.component';
 import * as Store from 'electron-store';
+import { Language } from '../../core/language';
+import { Constants } from '../../core/constants';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'settings-page',
@@ -10,12 +13,23 @@ import * as Store from 'electron-store';
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
-  constructor(private dialog: MatDialog) {
+  constructor(private dialog: MatDialog, private translateService: TranslateService) {
   }
 
   private settings: Store = new Store();
 
+  public languages: Language[] = Constants.languages;
   public fontSizes: number[] = [14, 16, 18, 20, 22, 24];
+
+  public get selectedLanguage(): Language {
+    let languageCode: string = this.settings.get('language');
+    log.info(`lagnauge code=${languageCode}`);
+    return this.languages.find(x => x.code === languageCode);
+  }
+  public set selectedLanguage(v: Language) {
+    this.settings.set('language', v.code);
+    this.translateService.use(v.code);
+  }
 
   public get closeNotesWithEscapeChecked(): boolean {
     return this.settings.get('closeNotesWithEscape');
@@ -39,17 +53,6 @@ export class SettingsComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.settings.has('closeNotesWithEscape')) {
-      this.settings.set('closeNotesWithEscape', true);
-    }
-
-    if (!this.settings.has('fontSizeInNotes')) {
-      this.settings.set('fontSizeInNotes', 14);
-    }
-
-    if (!this.settings.has('showExactDatesInTheNotesList')) {
-      this.settings.set('showExactDatesInTheNotesList', false);
-    }
   }
 
   public import(): void {

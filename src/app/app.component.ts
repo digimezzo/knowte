@@ -5,6 +5,7 @@ import { AppConfig } from '../environments/environment';
 import { CollectionService } from './services/collection.service';
 import log from 'electron-log';
 import { Router } from '@angular/router';
+import * as Store from 'electron-store';
 
 @Component({
   selector: 'app-root',
@@ -13,11 +14,13 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   constructor(public electronService: ElectronService, public router: Router,
-    private translate: TranslateService, private collectionService: CollectionService) {
+    private translateService: TranslateService, private collectionService: CollectionService) {
 
-    translate.setDefaultLang('en');
-    translate.use('en');
-    
+    this.initializeSettings();
+
+    translateService.setDefaultLang('en');
+    translateService.use(this.settings.get('language'));
+
     console.log('AppConfig', AppConfig);
 
     if (electronService.isElectron()) {
@@ -29,6 +32,8 @@ export class AppComponent {
     }
   }
 
+  private settings: Store = new Store();
+
   ngOnInit() {
     let showWelcome: boolean = !this.collectionService.hasStorageDirectory;
 
@@ -38,5 +43,23 @@ export class AppComponent {
   }
 
   ngOnDestroy() {
+  }
+
+  private initializeSettings(): void {
+    if (!this.settings.has('language')) {
+      this.settings.set('language', 'en');
+    }
+
+    if (!this.settings.has('closeNotesWithEscape')) {
+      this.settings.set('closeNotesWithEscape', true);
+    }
+
+    if (!this.settings.has('fontSizeInNotes')) {
+      this.settings.set('fontSizeInNotes', 14);
+    }
+
+    if (!this.settings.has('showExactDatesInTheNotesList')) {
+      this.settings.set('showExactDatesInTheNotesList', false);
+    }
   }
 }

@@ -20,6 +20,7 @@
         "Marked": "Marked"
     },
     "SettingsTabs": {
+        "Appearance": "Appearance",
         "Notes": "Notes",
         "Advanced": "Advanced"
     },
@@ -45,7 +46,8 @@
         "Closing": "Closing",
         "CloseNotesWithEscape": "Close notes with [Esc]",
         "Dates": "Dates",
-        "ShowExactDatesInTheNotesList": "Show exact dates in the notes list"
+        "ShowExactDatesInTheNotesList": "Show exact dates in the notes list",
+        "Language": "Language"
     },
     "ComponentsPage": {
         "Components": "Components"

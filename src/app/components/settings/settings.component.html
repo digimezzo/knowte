@@ -9,6 +9,19 @@
     </div>
     <div class="window-frame-content">
         <mat-tab-group>
+            <mat-tab label="{{ 'SettingsTabs.Appearance' | translate }}">
+                <div class="m-3">
+                    <!--Font size -->
+                    <h1>{{ 'SettingsPage.Language' | translate }}</h1>
+                    <mat-form-field>
+                        <mat-select [(ngModel)]="selectedLanguage">
+                            <mat-option *ngFor="let language of languages" [value]="language">
+                                {{ language.name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </mat-tab>
             <mat-tab label="{{ 'SettingsTabs.Notes' | translate }}">
                 <div class="m-3">
                     <!--Font size -->
@@ -32,7 +45,7 @@
                     <mat-slide-toggle class="mt-2" [(ngModel)]="showExactDatesInTheNotesListChecked">
                         {{ 'SettingsPage.ShowExactDatesInTheNotesList' | translate }}</mat-slide-toggle>
                 </div>
-            </mat-tab> -->
+            </mat-tab>
             <mat-tab label="{{ 'SettingsTabs.Advanced' | translate }}">
                 <div class="m-3">
                     <!-- Import -->

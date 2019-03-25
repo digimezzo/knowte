@@ -249,8 +249,8 @@ export class CollectionService {
 
     try {
       // Rename database file
-      await fs.move(path.join(Utils.collectionToPath(initialCollection),`${initialCollection}.db`), path.join(Utils.collectionToPath(initialCollection),`${finalCollection}.db`));
-      
+      await fs.move(path.join(Utils.collectionToPath(initialCollection), `${initialCollection}.db`), path.join(Utils.collectionToPath(initialCollection), `${finalCollection}.db`));
+
       // Rename directory
       await fs.move(Utils.collectionToPath(initialCollection), Utils.collectionToPath(finalCollection));
       this.settings.set('activeCollection', finalCollection);
