@@ -111,19 +111,20 @@ export class NoteComponent implements OnInit, OnDestroy {
         let notePlaceHolder: string = await this.translateService.get('Notes.NotePlaceholder').toPromise();
 
         let toolbarOptions: any = [
-            [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-            ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-            [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+            [{ 'color': [] }, { 'background': [] }],         
+            ['bold', 'italic', 'underline', 'strike'], 
+            ['link'],  
+            [{ 'header': 1 }, { 'header': 2 }],           
             [{ 'list': 'ordered' }, { 'list': 'bullet' }],
             ['blockquote', 'code-block', 'image'],
-            // [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
-            // [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
-            // [{ 'direction': 'rtl' }],                         // text direction
-            // [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+            // [{ 'script': 'sub' }, { 'script': 'super' }], 
+            // [{ 'indent': '-1' }, { 'indent': '+1' }],   
+            // [{ 'direction': 'rtl' }],                      
+            // [{ 'size': ['small', false, 'large', 'huge'] }], 
             // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
             // [{ 'font': [] }],
             // [{ 'align': [] }],
-            ['clean']                                         // remove formatting button
+            ['clean']
         ];
 
         this.quill = new Quill('#editor', {
