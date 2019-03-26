@@ -23,8 +23,8 @@ export class SnackBarService {
 
     private calculateDuration(message: string): number {
         // See: https://ux.stackexchange.com/questions/11203/how-long-should-a-temporary-notification-toast-appear
-        // Estimate that 1 character is read every 75 milliseconds
-        // Reading speed of 150 words per minute, with an average of 5.8 characters per word.
+        // We assume a safe reading speed of 150 words per minute and an average of 5.8 characters per word in the English language.
+        // Then, approx. 1 character is read every 70 milliseconds. Adding a margin of 5 milliseconds, gives us 75 ms.
         return Math.min(Math.max(message.length * 75, 2000), 7000);
     }
 
