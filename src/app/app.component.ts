@@ -32,6 +32,8 @@ export class AppComponent {
     }
   }
 
+  public selectedTheme: string = "pink-theme";
+
   private settings: Store = new Store();
 
   ngOnInit() {

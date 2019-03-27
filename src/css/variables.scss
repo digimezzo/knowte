@@ -1,55 +1,107 @@
-@import '../../node_modules/@angular/material/theming';
+@import "~@angular/material/theming";
+@include mat-core();
 
-// Custom palette (Created with: http://mcg.mbitson.com/)
-$knowte-blue: (
-    50: #E4EFFA,
-    100: #BBD8F2,
-    200: #8EBEEA,
-    300: #61A4E1,
-    400: #3F91DA,
-    500: #1D7DD4,
-    600: #1A75CF,
-    700: #156AC9,
-    800: #1160C3,
-    900: #0A4DB9,
-    A100: #E5EDFF,
-    A200: #B2CCFF,
-    A400: #7FAAFF,
-    A700: #6599FF,
-    contrast: (
-        50: $black-87-opacity,
-        100: $black-87-opacity,
-        200: $black-87-opacity,
-        300: $black-87-opacity,
-        400: $black-87-opacity,
-        500: white,
-        600: white,
-        700: white,
-        800: white,
-        900: white,
-        A100: $black-87-opacity,
-        A200: $black-87-opacity,
-        A400: $black-87-opacity,
-        A700: white,
-    )
-);
+// Blue
+$blue-theme-primary: mat-palette($mat-blue);
+$blue-theme-accent: mat-palette($mat-blue);
+$blue-theme-warn: mat-palette($mat-blue);
+$blue-theme: mat-light-theme($blue-theme-primary, $blue-theme-accent, $blue-theme-warn);
+
+// Pink
+$pink-theme-primary: mat-palette($mat-pink);
+$pink-theme-accent: mat-palette($mat-pink);
+$pink-theme-warn: mat-palette($mat-pink);
+$pink-theme: mat-light-theme($pink-theme-primary, $pink-theme-accent, $pink-theme-warn);
+
+// Deep orange
+$deep-orange-theme-primary: mat-palette($mat-deep-orange);
+$deep-orange-theme-accent: mat-palette($mat-deep-orange);
+$deep-orange-theme-warn: mat-palette($mat-deep-orange);
+$deep-orange-theme: mat-light-theme($deep-orange-theme-primary, $deep-orange-theme-accent, $deep-orange-theme-warn);
+
+@mixin set-primary-color($theme-primary) {
+    .color-primary {
+        color: mat-color($theme-primary);
+    }
+
+    .background-color-primary {
+        color: mat-color($theme-primary);
+    }
+}
+
+$color-primary: red;
+
+// Default
+@include angular-material-theme($blue-theme);
+@include set-primary-color($blue-theme-primary);
+
+.blue-theme {
+  @include angular-material-theme($blue-theme);
+  @include set-primary-color($blue-theme-primary);
+}
+
+.pink-theme {
+  @include angular-material-theme($pink-theme);
+  @include set-primary-color($pink-theme-primary);
+}
+
+.deep-orange-theme {
+  @include angular-material-theme($deep-orange-theme);
+  @include set-primary-color($deep-orange-theme-primary);
+}
+
+// @import '~@angular/material/theming';
+
+// // Custom palette (Created with: http://mcg.mbitson.com/)
+// $knowte-blue: (
+//     50: #E4EFFA,
+//     100: #BBD8F2,
+//     200: #8EBEEA,
+//     300: #61A4E1,
+//     400: #3F91DA,
+//     500: #1D7DD4,
+//     600: #1A75CF,
+//     700: #156AC9,
+//     800: #1160C3,
+//     900: #0A4DB9,
+//     A100: #E5EDFF,
+//     A200: #B2CCFF,
+//     A400: #7FAAFF,
+//     A700: #6599FF,
+//     contrast: (
+//         50: $black-87-opacity,
+//         100: $black-87-opacity,
+//         200: $black-87-opacity,
+//         300: $black-87-opacity,
+//         400: $black-87-opacity,
+//         500: white,
+//         600: white,
+//         700: white,
+//         800: white,
+//         900: white,
+//         A100: $black-87-opacity,
+//         A200: $black-87-opacity,
+//         A400: $black-87-opacity,
+//         A700: white,
+//     )
+// );
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue.
 //$custom-theme-primary: mat-palette($mat-blue);
-$custom-theme-primary: mat-palette($knowte-blue);
-$custom-theme-accent: mat-palette($mat-pink, A200, A100, A400);
-$custom-theme-warn: mat-palette($mat-red);
+// $custom-theme-primary: mat-palette($knowte-blue);
+// $custom-theme-accent: mat-palette($knowte-blue);
+// $custom-theme-warn: mat-palette($knowte-blue);
 
 // Export Angular Material theme colors, so we can access them from our custom Angular Material theme.
 // See: https://medium.com/@aleixsuau/how-to-use-angular-material-2-sass-variables-in-your-components-76ce0203f126
-$color-primary: mat-color($custom-theme-primary);
-$color-accent: mat-color($custom-theme-accent);
-$color-warn: mat-color($custom-theme-warn);
+// $color-primary: mat-color($custom-theme-primary);
+// $color-accent: mat-color($custom-theme-accent);
+// $color-warn: mat-color($custom-theme-warn);
 
 // Our own colors
-$color-darkgrey: #272E36;
+$color-darkgrey: #272e36;
 $color-lightgrey: #f0f0f0;
 $color-lightgrey-border: #dedede;
 $color-grey-icon: #727272;

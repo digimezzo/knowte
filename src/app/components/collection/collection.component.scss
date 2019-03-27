@@ -78,7 +78,7 @@
 .edit-item-icon {
   font-family: material;
   font-size: 20px;
-  color: $color-primary;
+  @extend .color-primary;
 }
 
 .edit-item-icon-import {
