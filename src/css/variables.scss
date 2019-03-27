@@ -21,11 +21,11 @@ $deep-orange-theme: mat-light-theme($deep-orange-theme-primary, $deep-orange-the
 
 @mixin set-primary-color($theme-primary) {
     .color-primary {
-        color: mat-color($theme-primary);
+        color: mat-color($theme-primary) !important;
     }
 
     .background-color-primary {
-        background-color: mat-color($theme-primary);
+        background-color: mat-color($theme-primary) !important;
     }
 }
 
