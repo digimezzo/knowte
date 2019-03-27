@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, OnDestroy, HostListener, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, NgZone } from '@angular/core';
 import { remote, BrowserWindow, Clipboard, SaveDialogOptions } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/noteDetailsResult';
@@ -24,8 +24,7 @@ import { NoteExport } from '../../core/noteExport';
 @Component({
     selector: 'note-content',
     templateUrl: './note.component.html',
-    styleUrls: ['./note.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ['./note.component.scss']
 })
 export class NoteComponent implements OnInit, OnDestroy {
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog,

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { Notebook } from '../../data/entities/notebook';
 import { MatDialog, MatDialogRef, MatTabChangeEvent } from '@angular/material';
@@ -37,8 +37,7 @@ import { Utils } from '../../core/utils';
       transition('hidden => visible', animate('.25s')),
       transition('visible => hidden', animate('.05s'))
     ])
-  ],
-  encapsulation: ViewEncapsulation.None
+  ]
 })
 export class CollectionComponent implements OnInit, OnDestroy {
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
