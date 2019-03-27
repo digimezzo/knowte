@@ -23,12 +23,12 @@
 }
 
 .note-item-icon {
+  @extend .background-color-primary;
   margin: 4px;
   width: 40px;
   min-width: 40px;
   height: 40px;
   border-radius: 20px;
-  background-color: $color-primary;
 }
 
 .note-item-icon-pen {
@@ -52,7 +52,7 @@
 }
 
 .note-item-actions-heart-marked {
-  color: $color-primary;
+  @extend .color-primary;
 }
 
 .note-item-actions-heart-unmarked {

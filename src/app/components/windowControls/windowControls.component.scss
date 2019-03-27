@@ -8,5 +8,5 @@
 }
 
 .window-controls .close-button:hover {
-    background: $color-primary;
+    @extend .background-color-primary;
 }

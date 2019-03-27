@@ -23,7 +23,7 @@
 }
 
 .menu-icon.isActive {
-  color: $color-primary;
+  @extend .color-primary;
 }
 
 .menu-command-item {

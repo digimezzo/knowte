@@ -52,12 +52,12 @@
 }
 
 .count-label {
+  @extend .background-color-primary;
   margin: 0 0 10px 10px;
   min-width: 22px;
   height: 22px;
   border-radius: 12px;
   padding: 1px 7px 1px 7px;
-  background-color: $color-primary;
   color: #fff;
   font-size: 12px;
   font-weight: bold;
@@ -82,9 +82,9 @@
 }
 
 .edit-item-icon-import {
+  @extend .color-primary;
   font-family: fa-solid;
   font-size: 16px;
-  color: $color-primary;
   margin-right: 2px;
 }
 

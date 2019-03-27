@@ -5,5 +5,5 @@
 }
 
 .back-button:hover {
-  background: $color-primary;
+  @extend .background-color-primary;
 }

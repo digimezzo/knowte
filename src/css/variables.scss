@@ -25,11 +25,9 @@ $deep-orange-theme: mat-light-theme($deep-orange-theme-primary, $deep-orange-the
     }
 
     .background-color-primary {
-        color: mat-color($theme-primary);
+        background-color: mat-color($theme-primary);
     }
 }
-
-$color-primary: red;
 
 // Default
 @include angular-material-theme($blue-theme);
