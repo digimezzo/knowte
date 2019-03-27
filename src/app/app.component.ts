@@ -6,6 +6,7 @@ import { CollectionService } from './services/collection.service';
 import log from 'electron-log';
 import { Router } from '@angular/router';
 import * as Store from 'electron-store';
+import { Utils } from './core/utils';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +18,8 @@ export class AppComponent {
     private translateService: TranslateService, private collectionService: CollectionService) {
 
     this.initializeSettings();
-
+    this.testAsync();
+    
     translateService.setDefaultLang('en');
     translateService.use(this.settings.get('language'));
 
@@ -32,7 +34,7 @@ export class AppComponent {
     }
   }
 
-  public selectedTheme: string = "pink-theme";
+  public selectedTheme: string;
 
   private settings: Store = new Store();
 
@@ -45,6 +47,12 @@ export class AppComponent {
   }
 
   ngOnDestroy() {
+  }
+
+  private async testAsync(): Promise<void> {
+    this.selectedTheme =  "pink-theme";
+    await Utils.sleep(5000);
+    this.selectedTheme =  "deep-orange-theme";
   }
 
   private initializeSettings(): void {
