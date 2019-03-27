@@ -7,6 +7,7 @@ import log from 'electron-log';
 import { Router } from '@angular/router';
 import * as Store from 'electron-store';
 import { Utils } from './core/utils';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-root',
@@ -15,11 +16,11 @@ import { Utils } from './core/utils';
 })
 export class AppComponent {
   constructor(public electronService: ElectronService, public router: Router,
-    private translateService: TranslateService, private collectionService: CollectionService) {
+    private translateService: TranslateService, private collectionService: CollectionService, private overlayContainer: OverlayContainer) {
 
     this.initializeSettings();
     this.testAsync();
-    
+
     translateService.setDefaultLang('en');
     translateService.use(this.settings.get('language'));
 
@@ -50,9 +51,25 @@ export class AppComponent {
   }
 
   private async testAsync(): Promise<void> {
-    this.selectedTheme =  "pink-theme";
+    this.selectedTheme = "pink-theme";
+    // https://gist.github.com/tomastrajan/ee29cd8e180b14ce9bc120e2f7435db7
+    let overlayContainerClasses = this.overlayContainer.getContainerElement().classList;
+    let themeClassesToRemove = Array.from(overlayContainerClasses).filter((item: string) => item.includes('-theme'));
+    if (themeClassesToRemove.length) {
+      overlayContainerClasses.remove(...themeClassesToRemove);
+    }
+    overlayContainerClasses.add(this.selectedTheme);
+
     await Utils.sleep(5000);
-    this.selectedTheme =  "deep-orange-theme";
+
+    this.selectedTheme = "deep-orange-theme";
+
+    overlayContainerClasses = this.overlayContainer.getContainerElement().classList;
+    themeClassesToRemove = Array.from(overlayContainerClasses).filter((item: string) => item.includes('-theme'));
+    if (themeClassesToRemove.length) {
+      overlayContainerClasses.remove(...themeClassesToRemove);
+    }
+    overlayContainerClasses.add(this.selectedTheme);
   }
 
   private initializeSettings(): void {
