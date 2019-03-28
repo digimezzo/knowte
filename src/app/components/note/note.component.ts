@@ -113,10 +113,9 @@ export class NoteComponent implements OnInit, OnDestroy {
         let toolbarOptions: any = [
             [{ 'color': [] }, { 'background': [] }],         
             ['bold', 'italic', 'underline', 'strike'], 
-            ['link'],  
             [{ 'header': 1 }, { 'header': 2 }],           
             [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            ['blockquote', 'code-block', 'image'],
+            ['link', 'blockquote', 'code-block', 'image'],
             // [{ 'script': 'sub' }, { 'script': 'super' }], 
             // [{ 'indent': '-1' }, { 'indent': '+1' }],   
             // [{ 'direction': 'rtl' }],                      
