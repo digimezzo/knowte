@@ -6,6 +6,8 @@ import * as Store from 'electron-store';
 import { Language } from '../../core/language';
 import { Constants } from '../../core/constants';
 import { TranslateService } from '@ngx-translate/core';
+import { AppearanceService } from '../../services/appearance.service';
+import { Theme } from '../../core/theme';
 
 @Component({
   selector: 'settings-page',
@@ -13,17 +15,20 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
-  constructor(private dialog: MatDialog, private translateService: TranslateService) {
+  constructor(private dialog: MatDialog, private translateService: TranslateService, private appearanceService: AppearanceService) {
+  }
+
+  ngOnInit() {
   }
 
   private settings: Store = new Store();
 
   public languages: Language[] = Constants.languages;
+  public themes: Theme[] = Constants.themes;
   public fontSizes: number[] = [14, 16, 18, 20, 22, 24];
 
   public get selectedLanguage(): Language {
     let languageCode: string = this.settings.get('language');
-    log.info(`lagnauge code=${languageCode}`);
     return this.languages.find(x => x.code === languageCode);
   }
   public set selectedLanguage(v: Language) {
@@ -52,12 +57,13 @@ export class SettingsComponent implements OnInit {
     this.settings.set('showExactDatesInTheNotesList', v);
   }
 
-  ngOnInit() {
-  }
-
   public import(): void {
     let dialogRef: MatDialogRef<ImportFromOldVersionDialogComponent> = this.dialog.open(ImportFromOldVersionDialogComponent, {
       width: '450px'
     });
+  }
+
+  public setTheme(themeName: string): void {
+    this.appearanceService.setTheme(themeName);
   }
 }

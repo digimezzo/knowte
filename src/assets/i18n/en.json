@@ -47,7 +47,8 @@
         "CloseNotesWithEscape": "Close notes with [Esc]",
         "Dates": "Dates",
         "ShowExactDatesInTheNotesList": "Show exact dates in the notes list",
-        "Language": "Language"
+        "Language": "Language",
+        "Theme": "Theme"
     },
     "ComponentsPage": {
         "Components": "Components"

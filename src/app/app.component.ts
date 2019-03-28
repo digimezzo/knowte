@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import * as Store from 'electron-store';
 import { Utils } from './core/utils';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { AppearanceService } from './services/appearance.service';
 
 @Component({
   selector: 'app-root',
@@ -15,24 +16,15 @@ import { OverlayContainer } from '@angular/cdk/overlay';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(public electronService: ElectronService, public router: Router,
+  constructor(public electronService: ElectronService, public router: Router, private appearanceService: AppearanceService,
     private translateService: TranslateService, private collectionService: CollectionService, private overlayContainer: OverlayContainer) {
 
     this.initializeSettings();
-    this.testAsync();
 
-    translateService.setDefaultLang('en');
-    translateService.use(this.settings.get('language'));
+    this.applyTheme(this.settings.get('theme'));
 
-    console.log('AppConfig', AppConfig);
-
-    if (electronService.isElectron()) {
-      console.log('Mode electron');
-      console.log('Electron ipcRenderer', electronService.ipcRenderer);
-      console.log('NodeJS childProcess', electronService.childProcess);
-    } else {
-      console.log('Mode web');
-    }
+    this.translateService.setDefaultLang('en');
+    this.translateService.use(this.settings.get('language'));
   }
 
   public selectedTheme: string;
@@ -40,6 +32,8 @@ export class AppComponent {
   private settings: Store = new Store();
 
   ngOnInit() {
+    this.appearanceService.themeChanged$.subscribe((themeName) => this.applyTheme(themeName));
+
     let showWelcome: boolean = !this.collectionService.hasStorageDirectory;
 
     if (showWelcome) {
@@ -50,26 +44,20 @@ export class AppComponent {
   ngOnDestroy() {
   }
 
-  private async testAsync(): Promise<void> {
-    this.selectedTheme = "pink-theme";
+  private applyTheme(themeName: string): void {
+    // Apply theme to app container
+    this.selectedTheme = themeName;
+
+    // Apply theme to components in the overlay container
     // https://gist.github.com/tomastrajan/ee29cd8e180b14ce9bc120e2f7435db7
-    let overlayContainerClasses = this.overlayContainer.getContainerElement().classList;
-    let themeClassesToRemove = Array.from(overlayContainerClasses).filter((item: string) => item.includes('-theme'));
+    let overlayContainerClasses: DOMTokenList = this.overlayContainer.getContainerElement().classList;
+    let themeClassesToRemove: string[] = Array.from(overlayContainerClasses).filter((item: string) => item.includes('-theme'));
+
     if (themeClassesToRemove.length) {
       overlayContainerClasses.remove(...themeClassesToRemove);
     }
-    overlayContainerClasses.add(this.selectedTheme);
 
-    await Utils.sleep(5000);
-
-    this.selectedTheme = "deep-orange-theme";
-
-    overlayContainerClasses = this.overlayContainer.getContainerElement().classList;
-    themeClassesToRemove = Array.from(overlayContainerClasses).filter((item: string) => item.includes('-theme'));
-    if (themeClassesToRemove.length) {
-      overlayContainerClasses.remove(...themeClassesToRemove);
-    }
-    overlayContainerClasses.add(this.selectedTheme);
+    overlayContainerClasses.add(themeName);
   }
 
   private initializeSettings(): void {
@@ -87,6 +75,10 @@ export class AppComponent {
 
     if (!this.settings.has('showExactDatesInTheNotesList')) {
       this.settings.set('showExactDatesInTheNotesList', false);
+    }
+
+    if (!this.settings.has('theme')) {
+      this.settings.set('theme', "blue-theme");
     }
   }
 }

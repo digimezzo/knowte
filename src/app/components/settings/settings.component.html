@@ -11,8 +11,16 @@
         <mat-tab-group>
             <mat-tab label="{{ 'SettingsTabs.Appearance' | translate }}">
                 <div class="m-3">
-                    <!--Font size -->
-                    <h1>{{ 'SettingsPage.Language' | translate }}</h1>
+                    <!-- Theme -->
+                    <h1>{{ 'SettingsPage.Theme' | translate }}</h1>
+                    <div class="theme-switcher">
+                        <div *ngFor="let theme of themes">
+                            <div class="theme-switcher-button mr-1 mb-1" [ngStyle]="{'background-color': theme.color}"
+                                (click)="setTheme(theme.name)">
+                            </div>
+                        </div>
+                    </div>
+                    <h1 class="mt-2">{{ 'SettingsPage.Language' | translate }}</h1>
                     <mat-form-field>
                         <mat-select [(ngModel)]="selectedLanguage">
                             <mat-option *ngFor="let language of languages" [value]="language">
@@ -27,7 +35,7 @@
                     <!--Font size -->
                     <h1>{{ 'SettingsPage.FontSize' | translate }}</h1>
                     <p>{{ 'SettingsPage.FontSizeInNotes' | translate }}:
-                        <mat-form-field class="fontSizeSelector mx-1">
+                        <mat-form-field class="font-size-selector mx-1">
                             <mat-select [(ngModel)]="selectedFontSize">
                                 <mat-option *ngFor="let fontSize of fontSizes" [value]="fontSize">
                                     {{ fontSize }}
