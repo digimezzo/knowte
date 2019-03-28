@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, NgZone, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, NgZone, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { Note } from '../../data/entities/note';
 import { Subscription, Subject, fromEvent } from 'rxjs';
@@ -18,7 +18,8 @@ import log from 'electron-log';
 @Component({
     selector: 'notes-component',
     templateUrl: './notes.component.html',
-    styleUrls: ['./notes.component.scss']
+    styleUrls: ['./notes.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class NotesComponent implements OnInit, OnDestroy {
     constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,

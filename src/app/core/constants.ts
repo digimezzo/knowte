@@ -43,7 +43,7 @@ export class Constants {
 
     static readonly themes: Theme[] = [
         { name: "default-theme", displayName: "Default", color: "#1D7DD4" },
-        { name: "ubuntu-theme", displayName: "Ubuntu", color: "#E95420" },
+        { name: "ubuntu-theme", displayName: "Ubuntu", color: "#E95420" }//,
         // { name: "blue-theme", displayName: "Blue", color: "#03A9F4" },
         // { name: "pink-theme", displayName: "Pink", color: "#E91E63" },
         // { name: "deep-orange-theme", displayName: "Orange", color: "#FF5722" }

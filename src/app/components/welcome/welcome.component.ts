@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ViewEncapsulation } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { remote } from 'electron';
 import log from 'electron-log';
@@ -11,7 +11,8 @@ import { Router } from '@angular/router';
 @Component({
     selector: 'welcome-page',
     templateUrl: './welcome.component.html',
-    styleUrls: ['./welcome.component.scss']
+    styleUrls: ['./welcome.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class WelcomeComponent implements OnInit {
     constructor(private translate: TranslateService, private collectionService: CollectionService, private dialog: MatDialog, private zone: NgZone,

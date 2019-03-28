@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { InputDialogComponent } from '../dialogs/inputDialog/inputDialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material';
@@ -15,7 +15,8 @@ import { Operation } from '../../core/enums';
 @Component({
   selector: 'main-menu-button',
   templateUrl: './mainMenuButton.component.html',
-  styleUrls: ['./mainMenuButton.component.scss']
+  styleUrls: ['./mainMenuButton.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MainMenuButtonComponent implements OnInit, OnDestroy {
   private subscription: Subscription;

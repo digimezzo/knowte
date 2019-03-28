@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ViewEncapsulation } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { Notebook } from '../../data/entities/notebook';
 import { MatDialog, MatDialogRef, MatTabChangeEvent } from '@angular/material';
@@ -26,6 +26,7 @@ import { Utils } from '../../core/utils';
   selector: 'collection-page',
   templateUrl: './collection.component.html',
   styleUrls: ['./collection.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   animations: [
     trigger('noteButtonsVisibility', [
       state('visible', style({

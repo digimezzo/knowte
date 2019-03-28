@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Notebook } from '../../../data/entities/notebook';
 import * as nanoid from 'nanoid';
@@ -9,7 +9,8 @@ import { Constants } from '../../../core/constants';
 @Component({
     selector: 'changenotebook-dialog',
     templateUrl: './changeNotebookDialog.component.html',
-    styleUrls: ['./changeNotebookDialog.component.scss']
+    styleUrls: ['./changeNotebookDialog.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ChangeNotebookDialogComponent implements OnInit, OnDestroy {
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<ChangeNotebookDialogComponent>) {

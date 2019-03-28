@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { remote } from 'electron';
 import log from 'electron-log';
 import { Utils } from '../../../core/utils';
@@ -7,7 +7,8 @@ import { CollectionService } from '../../../services/collection.service';
 @Component({
     selector: 'importfromoldversion-dialog',
     templateUrl: './importFromOldVersionDialog.component.html',
-    styleUrls: ['./importFromOldVersionDialog.component.scss']
+    styleUrls: ['./importFromOldVersionDialog.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ImportFromOldVersionDialogComponent implements OnInit {
     constructor(private collectionService: CollectionService) {

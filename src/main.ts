@@ -10,7 +10,6 @@ if (AppConfig.production) {
 
 platformBrowserDynamic()
   .bootstrapModule(AppModule, {
-    preserveWhitespaces: false,
-    defaultEncapsulation: ViewEncapsulation.None
+    preserveWhitespaces: false
   })
   .catch(err => console.error(err));

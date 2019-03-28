@@ -1,11 +1,12 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { remote } from 'electron';
 
 @Component({
     selector: 'error-dialog',
     templateUrl: './errorDialog.component.html',
-    styleUrls: ['./errorDialog.component.scss']
+    styleUrls: ['./errorDialog.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ErrorDialogComponent implements OnInit {
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<ErrorDialogComponent>) {

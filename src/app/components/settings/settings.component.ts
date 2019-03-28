@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import log from 'electron-log';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { ImportFromOldVersionDialogComponent } from '../dialogs/importFromOldVersionDialog/importFromOldVersionDialog.component';
@@ -12,7 +12,8 @@ import { Theme } from '../../core/theme';
 @Component({
   selector: 'settings-page',
   templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss']
+  styleUrls: ['./settings.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class SettingsComponent implements OnInit {
   constructor(private dialog: MatDialog, private translateService: TranslateService, private appearanceService: AppearanceService) {

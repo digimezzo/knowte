@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'license-dialog',
     templateUrl: './licenseDialog.component.html',
-    styleUrls: ['./licenseDialog.component.scss']
+    styleUrls: ['./licenseDialog.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class LicenseDialogComponent implements OnInit {
 
