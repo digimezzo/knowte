@@ -16,7 +16,7 @@
                     <div class="theme-switcher">
                         <div *ngFor="let theme of themes">
                             <div class="theme-switcher-button mr-1 mb-1" [ngStyle]="{'background-color': theme.color}"
-                                (click)="setTheme(theme.name)">
+                            matTooltip="{{ theme.displayName }}" (click)="setTheme(theme.name)">
                             </div>
                         </div>
                     </div>

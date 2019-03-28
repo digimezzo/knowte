@@ -78,7 +78,7 @@ export class AppComponent {
     }
 
     if (!this.settings.has('theme')) {
-      this.settings.set('theme', "blue-theme");
+      this.settings.set('theme', "default-theme");
     }
   }
 }
