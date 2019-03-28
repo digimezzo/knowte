@@ -9,6 +9,7 @@ import * as Store from 'electron-store';
 import { Utils } from './core/utils';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { AppearanceService } from './services/appearance.service';
+import { Constants } from './core/constants';
 
 @Component({
   selector: 'app-root',
@@ -79,6 +80,14 @@ export class AppComponent {
 
     if (!this.settings.has('theme')) {
       this.settings.set('theme', "default-theme");
+    } else {
+      let settingsThemeName: string = this.settings.get('theme');
+
+      // Check if the themes in the settings still exists in the app (The themes might change between releases).
+      // If not, reset the settings to the default theme.
+      if (!Constants.themes.map(x => x.name).includes(settingsThemeName)) {
+        this.settings.set('theme', "default-theme");
+      }
     }
   }
 }

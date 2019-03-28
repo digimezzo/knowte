@@ -2,7 +2,7 @@
 @include mat-core();
 
 // Custom palette (Created with: http://mcg.mbitson.com/)
-$default-blue: (
+$default: (
     50: #E4EFFA,
     100: #BBD8F2,
     200: #8EBEEA,
@@ -35,11 +35,50 @@ $default-blue: (
     )
 );
 
+$ubuntu: (
+    50: #FCEAE4,
+    100: #F8CCBC,
+    200: #F4AA90,
+    300: #F08763,
+    400: #EC6E41,
+    500: #E95420,
+    600: #E64D1C,
+    700: #E34318,
+    800: #DF3A13,
+    900: #D9290B,
+    A100: #FFFFFF,
+    A200: #FFD6D1,
+    A400: #FFA99E,
+    A700: #FF9285,
+    contrast: (
+        50: $black-87-opacity,
+        100: $black-87-opacity,
+        200: $black-87-opacity,
+        300: $black-87-opacity,
+        400: $black-87-opacity,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white,
+        A100: $black-87-opacity,
+        A200: $black-87-opacity,
+        A400: $black-87-opacity,
+        A700: white,
+    )
+);
+
 // Default
-$default-theme-primary: mat-palette($default-blue);
-$default-theme-accent: mat-palette($default-blue);
-$default-theme-warn: mat-palette($default-blue);
+$default-theme-primary: mat-palette($default);
+$default-theme-accent: mat-palette($default);
+$default-theme-warn: mat-palette($default);
 $default-theme: mat-light-theme($default-theme-primary, $default-theme-accent, $default-theme-warn);
+
+// Ubuntu
+$ubuntu-theme-primary: mat-palette($ubuntu);
+$ubuntu-theme-accent: mat-palette($ubuntu);
+$ubuntu-theme-warn: mat-palette($ubuntu);
+$ubuntu-theme: mat-light-theme($ubuntu-theme-primary, $ubuntu-theme-accent, $ubuntu-theme-warn);
 
 // Material Blue
 $blue-theme-primary: mat-palette($mat-blue);
@@ -78,17 +117,22 @@ $deep-orange-theme: mat-light-theme($deep-orange-theme-primary, $deep-orange-the
   @include set-primary-color($default-theme-primary);
 }
 
-.blue-theme {
-  @include angular-material-theme($blue-theme);
-  @include set-primary-color($blue-theme-primary);
+.ubuntu-theme {
+  @include angular-material-theme($ubuntu-theme);
+  @include set-primary-color($ubuntu-theme-primary);
 }
 
-.pink-theme {
-  @include angular-material-theme($pink-theme);
-  @include set-primary-color($pink-theme-primary);
-}
+// .blue-theme {
+//   @include angular-material-theme($blue-theme);
+//   @include set-primary-color($blue-theme-primary);
+// }
 
-.deep-orange-theme {
-  @include angular-material-theme($deep-orange-theme);
-  @include set-primary-color($deep-orange-theme-primary);
-}
+// .pink-theme {
+//   @include angular-material-theme($pink-theme);
+//   @include set-primary-color($pink-theme-primary);
+// }
+
+// .deep-orange-theme {
+//   @include angular-material-theme($deep-orange-theme);
+//   @include set-primary-color($deep-orange-theme-primary);
+// }
