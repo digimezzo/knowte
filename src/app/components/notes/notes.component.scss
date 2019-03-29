@@ -30,15 +30,14 @@
   min-width: 40px;
   height: 40px;
   border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .note-item-icon-pen {
   width: 20px;
   height: 20px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 9px;
 }
 
 .note-item-actions {
