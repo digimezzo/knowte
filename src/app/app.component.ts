@@ -1,15 +1,11 @@
 import { Component } from '@angular/core';
 import { ElectronService } from './services/electron.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AppConfig } from '../environments/environment';
 import { CollectionService } from './services/collection.service';
-import log from 'electron-log';
 import { Router } from '@angular/router';
-import * as Store from 'electron-store';
-import { Utils } from './core/utils';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { AppearanceService } from './services/appearance.service';
-import { Constants } from './core/constants';
+import { SettingsService } from './services/settings.service';
 
 @Component({
   selector: 'app-root',
@@ -18,21 +14,23 @@ import { Constants } from './core/constants';
 })
 export class AppComponent {
   constructor(public electronService: ElectronService, public router: Router, private appearanceService: AppearanceService,
-    private translateService: TranslateService, private collectionService: CollectionService, private overlayContainer: OverlayContainer) {
+    private translateService: TranslateService, private collectionService: CollectionService,
+    private settingsService: SettingsService, private overlayContainer: OverlayContainer) {
 
-    this.initializeSettings();
+    this.settingsService.initialize();
 
-    this.applyTheme(this.settings.get('theme'));
+    this.applyTheme(this.settingsService.theme);
 
-    this.translateService.setDefaultLang('en');
-    this.translateService.use(this.settings.get('language'));
+    this.translateService.setDefaultLang(this.settingsService.defaultLanguage);
+    this.translateService.use(this.settingsService.language);
   }
 
   public selectedTheme: string;
 
-  private settings: Store = new Store();
+  public ngOnDestroy(): void {
+  }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.appearanceService.themeChanged$.subscribe((themeName) => this.applyTheme(themeName));
 
     let showWelcome: boolean = !this.collectionService.hasStorageDirectory;
@@ -40,9 +38,6 @@ export class AppComponent {
     if (showWelcome) {
       this.router.navigate(['/welcome']);
     }
-  }
-
-  ngOnDestroy() {
   }
 
   private applyTheme(themeName: string): void {
@@ -59,35 +54,5 @@ export class AppComponent {
     }
 
     overlayContainerClasses.add(themeName);
-  }
-
-  private initializeSettings(): void {
-    if (!this.settings.has('language')) {
-      this.settings.set('language', 'en');
-    }
-
-    if (!this.settings.has('closeNotesWithEscape')) {
-      this.settings.set('closeNotesWithEscape', true);
-    }
-
-    if (!this.settings.has('fontSizeInNotes')) {
-      this.settings.set('fontSizeInNotes', 14);
-    }
-
-    if (!this.settings.has('showExactDatesInTheNotesList')) {
-      this.settings.set('showExactDatesInTheNotesList', false);
-    }
-
-    if (!this.settings.has('theme')) {
-      this.settings.set('theme', "default-theme");
-    } else {
-      let settingsThemeName: string = this.settings.get('theme');
-
-      // Check if the themes in the settings still exists in the app (The themes might change between releases).
-      // If not, reset the settings to the default theme.
-      if (!Constants.themes.map(x => x.name).includes(settingsThemeName)) {
-        this.settings.set('theme', "default-theme");
-      }
-    }
   }
 }

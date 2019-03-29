@@ -54,6 +54,7 @@ import { MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDivide
   MatListModule, MatSelectModule, MatSlideToggleModule } from '@angular/material';
 import { GlobalErrorHandler } from './globalErrorHandler';
 import { SelectedNotebookAndSearchComponent } from './components/selectedNotebookAndSearch/selectedNotebookAndSearch.component';
+import { SettingsService } from './services/settings.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -118,6 +119,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [
     ElectronService,
     CollectionService,
+    SettingsService,
     DataStore,
     {
       provide: ErrorHandler,

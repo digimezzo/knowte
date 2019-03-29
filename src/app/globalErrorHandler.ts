@@ -7,12 +7,13 @@ import { remote, BrowserWindow } from 'electron';
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
     constructor(private injector: Injector) { }
-    handleError(error) {
+
+    public handleError(error): void {
         log.error(`Handling global error. Cause: ${error}.`);
         this.showGlobalErrorDialog();
     }
 
-    showGlobalErrorDialog(): void {
+    public showGlobalErrorDialog(): void {
         log.info("Showing global error dialog");
 
         let dialog: MatDialog = this.injector.get(MatDialog);
@@ -24,13 +25,13 @@ export class GlobalErrorHandler implements ErrorHandler {
                 // So we use a workaround where the translation happens in the error dialog itself.
                 width: '450px', data: { isGlobalError: true }
             });
-        
+
             dialogRef.afterClosed().subscribe(result => {
                 // Quit the application
                 log.info("Closing application");
-                //let win: BrowserWindow = remote.getCurrentWindow();
-                //win.close();
+                let win: BrowserWindow = remote.getCurrentWindow();
+                win.close();
             });
         });
-      }
+    }
 }
