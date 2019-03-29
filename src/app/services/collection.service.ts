@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import log from 'electron-log';
 import * as Store from 'electron-store';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { Utils } from '../core/utils';
 import { Notebook } from '../data/entities/notebook';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,40 +28,19 @@ import { NoteExport } from '../core/noteExport';
   providedIn: 'root',
 })
 export class CollectionService {
-  constructor(private translateService: TranslateService, private searchService: SearchService,
-    private dataStore: DataStore) {
-  }
-
   private isInitializing: boolean = false;
   private isInitialized: boolean = false;
   private globalEmitter = remote.getGlobal('globalEmitter');
   private settings: Store = new Store();
   private openNoteIds: string[] = [];
-
   private collectionsChanged = new Subject();
-  collectionsChanged$ = this.collectionsChanged.asObservable();
-
   private notebookEdited = new Subject();
-  notebookEdited$ = this.notebookEdited.asObservable();
-
   private notebookDeleted = new Subject();
-  notebookDeleted$ = this.notebookDeleted.asObservable();
-
   private noteEdited = new Subject();
-  noteEdited$ = this.noteEdited.asObservable();
-
   private noteDeleted = new Subject();
-  noteDeleted$ = this.noteDeleted.asObservable();
-
   private notesCountChanged = new Subject<NotesCountResult>();
-  notesCountChanged$ = this.notesCountChanged.asObservable();
-
   private noteMarkChanged = new Subject<NoteMarkResult>();
-  noteMarkChanged$ = this.noteMarkChanged.asObservable();
-
   private noteNotebookChanged = new Subject();
-  noteNotebookChanged$ = this.noteNotebookChanged.asObservable();
-
   private setNoteOpenEventListener: any = this.setNoteOpenAsync.bind(this);
   private setNoteMarkEventListener: any = this.setNoteMark.bind(this);
   private setNotebookEventListener: any = this.setNotebook.bind(this);
@@ -70,6 +49,19 @@ export class CollectionService {
   private setNoteTitleEventListener: any = this.setNoteTitleEventHandler.bind(this);
   private setNoteTextEventListener: any = this.setNoteTextEventHandler.bind(this);
   private deleteNoteEventListener: any = this.deleteNoteEventHandler.bind(this);
+
+  constructor(private translateService: TranslateService, private searchService: SearchService,
+    private dataStore: DataStore) {
+  }
+
+  public collectionsChanged$: Observable<{}> = this.collectionsChanged.asObservable();
+  public notebookEdited$: Observable<{}> = this.notebookEdited.asObservable();
+  public notebookDeleted$: Observable<{}> = this.notebookDeleted.asObservable();
+  public noteEdited$: Observable<{}> = this.noteEdited.asObservable();
+  public noteDeleted$: Observable<{}> = this.noteDeleted.asObservable();
+  public notesCountChanged$: Observable<NotesCountResult> = this.notesCountChanged.asObservable();
+  public noteMarkChanged$: Observable<NoteMarkResult> = this.noteMarkChanged.asObservable();
+  public noteNotebookChanged$: Observable<{}> = this.noteNotebookChanged.asObservable();
 
   private listenToNoteEvents(): void {
     // Remove listeners
@@ -214,13 +206,6 @@ export class CollectionService {
     this.isInitialized = true;
   }
 
-  private async collectionExistsAsync(collection: string): Promise<boolean> {
-    let collections: string[] = await this.getCollectionsAsync();
-    let existingCollections: string[] = collections.filter(x => x.toLowerCase() === collection.toLowerCase());
-
-    return existingCollections && existingCollections.length > 0;
-  }
-
   public async addCollectionAsync(possiblyDirtyCollection: string): Promise<Operation> {
     // Check if a collection was provided
     if (!possiblyDirtyCollection) {
@@ -321,52 +306,6 @@ export class CollectionService {
     return this.settings.get('activeCollection');
   }
 
-  private async getNoteDetailsEventHandler(noteId: string, callback: any): Promise<void> {
-    let note: Note = this.dataStore.getNoteById(noteId);
-    let notebookName: string = await this.translateService.get('MainPage.UnfiledNotes').toPromise();
-
-    if (note.notebookId) {
-      let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
-      notebookName = notebook.name;
-    }
-
-    callback(new NoteDetailsResult(note.title, notebookName, note.isMarked));
-  }
-
-  private async sendNotebookNameAsync(noteId: string) {
-    let note: Note = this.dataStore.getNoteById(noteId);
-    let notebookName: string = await this.translateService.get('MainPage.UnfiledNotes').toPromise();
-
-    if (note.notebookId) {
-      let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
-      notebookName = notebook.name;
-    }
-
-    this.globalEmitter.emit(Constants.notebookChangedEvent, noteId, notebookName);
-  }
-
-  private async getNotebooksEventHandler(callback: any): Promise<void> {
-    let notebooks: Notebook[] = await this.getNotebooksAsync(false);
-    callback(notebooks);
-  }
-
-  private async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
-    if (isOpen) {
-      if (!this.openNoteIds.includes(noteId)) {
-        this.openNoteIds.push(noteId);
-
-        let notePath: string = this.getNotePath(noteId);
-        log.info(`note directory=${notePath}`);
-        let arg: any = { notePath: notePath, noteId: noteId };
-        ipcRenderer.send('open-note-window', arg);
-      }
-    } else {
-      if (this.openNoteIds.includes(noteId)) {
-        this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);
-      }
-    }
-  }
-
   public noteIsOpen(noteId: string): boolean {
     if (this.openNoteIds.includes(noteId)) {
       return true;
@@ -377,12 +316,6 @@ export class CollectionService {
 
   public hasOpenNotes(): boolean {
     return this.openNoteIds.length > 0;
-  }
-
-  private noteExists(noteTitle: string): boolean {
-    let note: Note = this.dataStore.getNoteByTitle(noteTitle);
-
-    return note != null;
   }
 
   public async getNotebooksAsync(includeAllNotes: boolean): Promise<Notebook[]> {
@@ -412,12 +345,6 @@ export class CollectionService {
     }
 
     return notebooks;
-  }
-
-  private notebookExists(notebookName: string): boolean {
-    let notebook: Notebook = this.dataStore.getNotebookByName(notebookName);
-
-    return notebook != null;
   }
 
   public addNotebook(notebookName: string): Operation {
@@ -528,90 +455,6 @@ export class CollectionService {
     return Operation.Success;
   }
 
-  private async getNoteDateFormatAsync(millisecondsSinceEpoch: number, useExactDates: boolean): Promise<NoteDateFormatResult> {
-    let result: NoteDateFormatResult = new NoteDateFormatResult();
-    let nowDateonly: Moment = moment().startOf('day');
-    let modificationDateOnly: Moment = moment(millisecondsSinceEpoch).startOf('day');
-    let duration: Duration = moment.duration(nowDateonly.diff(modificationDateOnly));
-
-    if (duration.asMonths() >= 12) {
-      result.dateText = await this.translateService.get('NoteDates.LongAgo').toPromise();
-    } else if (duration.asMonths() >= 11) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 11 }).toPromise();
-    } else if (duration.asMonths() >= 10) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 10 }).toPromise();
-    } else if (duration.asMonths() >= 9) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 9 }).toPromise();
-    } else if (duration.asMonths() >= 8) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 8 }).toPromise();
-    } else if (duration.asMonths() >= 7) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 7 }).toPromise();
-    } else if (duration.asMonths() >= 6) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 6 }).toPromise();
-    } else if (duration.asMonths() >= 5) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 5 }).toPromise();
-    } else if (duration.asMonths() >= 4) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 4 }).toPromise();
-    } else if (duration.asMonths() >= 3) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 3 }).toPromise();
-    } else if (duration.asMonths() >= 2) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 2 }).toPromise();
-    } else if (duration.asMonths() >= 1) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 1 }).toPromise();
-    } else if (duration.asDays() >= 21) {
-      result.dateText = await this.translateService.get('NoteDates.WeeksAgo', { count: 3 }).toPromise();
-    } else if (duration.asDays() >= 14) {
-      result.dateText = await this.translateService.get('NoteDates.WeeksAgo', { count: 2 }).toPromise();
-    } else if (duration.asDays() >= 8) {
-      result.dateText = await this.translateService.get('NoteDates.LastWeek').toPromise();
-    } else if (duration.asDays() >= 7) {
-      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 7 }).toPromise();
-      result.isThisWeekNote = true;
-    } else if (duration.asDays() >= 6) {
-      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 6 }).toPromise();
-      result.isThisWeekNote = true;
-    } else if (duration.asDays() >= 5) {
-      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 5 }).toPromise();
-      result.isThisWeekNote = true;
-    } else if (duration.asDays() >= 4) {
-      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 4 }).toPromise();
-      result.isThisWeekNote = true;
-    } else if (duration.asDays() >= 3) {
-      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 3 }).toPromise();
-      result.isThisWeekNote = true;
-    } else if (duration.asDays() >= 2) {
-      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 2 }).toPromise();
-      result.isThisWeekNote = true;
-    } else if (duration.asDays() >= 1) {
-      result.dateText = await this.translateService.get('NoteDates.Yesterday').toPromise();
-      result.isYesterdayNote = true;
-      result.isThisWeekNote = true;
-    } else if (duration.asDays() >= 0) {
-      result.dateText = await this.translateService.get('NoteDates.Today').toPromise();
-      result.isTodayNote = true;
-      result.isThisWeekNote = true;
-    }
-
-    if (useExactDates) {
-      let m: Moment = moment(millisecondsSinceEpoch);
-      let dateText: string = m.format("MMMM D, YYYY HH:mm");
-      result.dateText = dateText;
-    }
-
-    return result;
-  }
-
-  private getFilteredNotes(unfilteredNotes: Note[], filter: string): Note[] {
-    // When there is no filter, return the original collection.
-    if (!filter || filter.trim().length === 0) {
-      return unfilteredNotes;
-    }
-
-    let pieces: string[] = filter.trim().split(" ");
-
-    return unfilteredNotes.filter((x) => Utils.containsAll(`${x.title} ${x.text}`, pieces));
-  }
-
   public async getNotesAsync(notebookId: string, category: string, useExactDates: boolean): Promise<Note[]> {
     let notesCountResult: NotesCountResult = new NotesCountResult();
 
@@ -685,36 +528,6 @@ export class CollectionService {
     }
 
     return notes;
-  }
-
-  private getUniqueNewNoteNoteTitle(baseTitle: string): string {
-    let counter: number = 1;
-    let uniqueTitle: string = `${baseTitle} ${counter}`;
-
-    let notesWithIdenticalBaseTitle: Note[] = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
-    let similarTitles: string[] = notesWithIdenticalBaseTitle.map(x => x.title);
-
-    while (similarTitles.includes(uniqueTitle)) {
-      counter++;
-      uniqueTitle = `${baseTitle} ${counter}`;
-    }
-
-    return uniqueTitle;
-  }
-
-  private getUniqueNoteNoteTitle(baseTitle: string): string {
-    let counter: number = 0;
-    let uniqueTitle: string = baseTitle;
-
-    let notesWithIdenticalBaseTitle: Note[] = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
-    let similarTitles: string[] = notesWithIdenticalBaseTitle.map(x => x.title);
-
-    while (similarTitles.includes(uniqueTitle)) {
-      counter++;
-      uniqueTitle = `${baseTitle} (${counter})`;
-    }
-
-    return uniqueTitle;
   }
 
   public addNote(baseTitle: string, notebookId: string): NoteOperationResult {
@@ -955,11 +768,6 @@ export class CollectionService {
     return isImportSuccessful;
   }
 
-  private getNotePath(noteId: string) {
-    let activeCollection: string = this.settings.get('activeCollection');
-    return Utils.collectionToPath(activeCollection);
-  }
-
   public async importNoteFileAsync(noteFilePath: string): Promise<boolean> {
     try {
       let noteFileContent: string = await fs.readFile(noteFilePath);
@@ -982,5 +790,189 @@ export class CollectionService {
     this.noteEdited.next();
 
     return true;
+  }
+
+  private getNotePath(noteId: string) {
+    let activeCollection: string = this.settings.get('activeCollection');
+    return Utils.collectionToPath(activeCollection);
+  }
+
+  private async collectionExistsAsync(collection: string): Promise<boolean> {
+    let collections: string[] = await this.getCollectionsAsync();
+    let existingCollections: string[] = collections.filter(x => x.toLowerCase() === collection.toLowerCase());
+
+    return existingCollections && existingCollections.length > 0;
+  }
+
+  private async getNoteDetailsEventHandler(noteId: string, callback: any): Promise<void> {
+    let note: Note = this.dataStore.getNoteById(noteId);
+    let notebookName: string = await this.translateService.get('MainPage.UnfiledNotes').toPromise();
+
+    if (note.notebookId) {
+      let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
+      notebookName = notebook.name;
+    }
+
+    callback(new NoteDetailsResult(note.title, notebookName, note.isMarked));
+  }
+
+  private async sendNotebookNameAsync(noteId: string) {
+    let note: Note = this.dataStore.getNoteById(noteId);
+    let notebookName: string = await this.translateService.get('MainPage.UnfiledNotes').toPromise();
+
+    if (note.notebookId) {
+      let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
+      notebookName = notebook.name;
+    }
+
+    this.globalEmitter.emit(Constants.notebookChangedEvent, noteId, notebookName);
+  }
+
+  private async getNotebooksEventHandler(callback: any): Promise<void> {
+    let notebooks: Notebook[] = await this.getNotebooksAsync(false);
+    callback(notebooks);
+  }
+
+  private async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
+    if (isOpen) {
+      if (!this.openNoteIds.includes(noteId)) {
+        this.openNoteIds.push(noteId);
+
+        let notePath: string = this.getNotePath(noteId);
+        log.info(`note directory=${notePath}`);
+        let arg: any = { notePath: notePath, noteId: noteId };
+        ipcRenderer.send('open-note-window', arg);
+      }
+    } else {
+      if (this.openNoteIds.includes(noteId)) {
+        this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);
+      }
+    }
+  }
+
+  private getUniqueNewNoteNoteTitle(baseTitle: string): string {
+    let counter: number = 1;
+    let uniqueTitle: string = `${baseTitle} ${counter}`;
+
+    let notesWithIdenticalBaseTitle: Note[] = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
+    let similarTitles: string[] = notesWithIdenticalBaseTitle.map(x => x.title);
+
+    while (similarTitles.includes(uniqueTitle)) {
+      counter++;
+      uniqueTitle = `${baseTitle} ${counter}`;
+    }
+
+    return uniqueTitle;
+  }
+
+  private getUniqueNoteNoteTitle(baseTitle: string): string {
+    let counter: number = 0;
+    let uniqueTitle: string = baseTitle;
+
+    let notesWithIdenticalBaseTitle: Note[] = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
+    let similarTitles: string[] = notesWithIdenticalBaseTitle.map(x => x.title);
+
+    while (similarTitles.includes(uniqueTitle)) {
+      counter++;
+      uniqueTitle = `${baseTitle} (${counter})`;
+    }
+
+    return uniqueTitle;
+  }
+
+  private notebookExists(notebookName: string): boolean {
+    let notebook: Notebook = this.dataStore.getNotebookByName(notebookName);
+
+    return notebook != null;
+  }
+
+  private noteExists(noteTitle: string): boolean {
+    let note: Note = this.dataStore.getNoteByTitle(noteTitle);
+
+    return note != null;
+  }
+
+  private async getNoteDateFormatAsync(millisecondsSinceEpoch: number, useExactDates: boolean): Promise<NoteDateFormatResult> {
+    let result: NoteDateFormatResult = new NoteDateFormatResult();
+    let nowDateonly: Moment = moment().startOf('day');
+    let modificationDateOnly: Moment = moment(millisecondsSinceEpoch).startOf('day');
+    let duration: Duration = moment.duration(nowDateonly.diff(modificationDateOnly));
+
+    if (duration.asMonths() >= 12) {
+      result.dateText = await this.translateService.get('NoteDates.LongAgo').toPromise();
+    } else if (duration.asMonths() >= 11) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 11 }).toPromise();
+    } else if (duration.asMonths() >= 10) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 10 }).toPromise();
+    } else if (duration.asMonths() >= 9) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 9 }).toPromise();
+    } else if (duration.asMonths() >= 8) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 8 }).toPromise();
+    } else if (duration.asMonths() >= 7) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 7 }).toPromise();
+    } else if (duration.asMonths() >= 6) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 6 }).toPromise();
+    } else if (duration.asMonths() >= 5) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 5 }).toPromise();
+    } else if (duration.asMonths() >= 4) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 4 }).toPromise();
+    } else if (duration.asMonths() >= 3) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 3 }).toPromise();
+    } else if (duration.asMonths() >= 2) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 2 }).toPromise();
+    } else if (duration.asMonths() >= 1) {
+      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 1 }).toPromise();
+    } else if (duration.asDays() >= 21) {
+      result.dateText = await this.translateService.get('NoteDates.WeeksAgo', { count: 3 }).toPromise();
+    } else if (duration.asDays() >= 14) {
+      result.dateText = await this.translateService.get('NoteDates.WeeksAgo', { count: 2 }).toPromise();
+    } else if (duration.asDays() >= 8) {
+      result.dateText = await this.translateService.get('NoteDates.LastWeek').toPromise();
+    } else if (duration.asDays() >= 7) {
+      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 7 }).toPromise();
+      result.isThisWeekNote = true;
+    } else if (duration.asDays() >= 6) {
+      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 6 }).toPromise();
+      result.isThisWeekNote = true;
+    } else if (duration.asDays() >= 5) {
+      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 5 }).toPromise();
+      result.isThisWeekNote = true;
+    } else if (duration.asDays() >= 4) {
+      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 4 }).toPromise();
+      result.isThisWeekNote = true;
+    } else if (duration.asDays() >= 3) {
+      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 3 }).toPromise();
+      result.isThisWeekNote = true;
+    } else if (duration.asDays() >= 2) {
+      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 2 }).toPromise();
+      result.isThisWeekNote = true;
+    } else if (duration.asDays() >= 1) {
+      result.dateText = await this.translateService.get('NoteDates.Yesterday').toPromise();
+      result.isYesterdayNote = true;
+      result.isThisWeekNote = true;
+    } else if (duration.asDays() >= 0) {
+      result.dateText = await this.translateService.get('NoteDates.Today').toPromise();
+      result.isTodayNote = true;
+      result.isThisWeekNote = true;
+    }
+
+    if (useExactDates) {
+      let m: Moment = moment(millisecondsSinceEpoch);
+      let dateText: string = m.format("MMMM D, YYYY HH:mm");
+      result.dateText = dateText;
+    }
+
+    return result;
+  }
+
+  private getFilteredNotes(unfilteredNotes: Note[], filter: string): Note[] {
+    // When there is no filter, return the original collection.
+    if (!filter || filter.trim().length === 0) {
+      return unfilteredNotes;
+    }
+
+    let pieces: string[] = filter.trim().split(" ");
+
+    return unfilteredNotes.filter((x) => Utils.containsAll(`${x.title} ${x.text}`, pieces));
   }
 }
