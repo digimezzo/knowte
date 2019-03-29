@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import log from 'electron-log';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { ImportFromOldVersionDialogComponent } from '../dialogs/importFromOldVersionDialog/importFromOldVersionDialog.component';
 import * as Store from 'electron-store';
@@ -16,13 +15,10 @@ import { Theme } from '../../core/theme';
   encapsulation: ViewEncapsulation.None
 })
 export class SettingsComponent implements OnInit {
+  private settings: Store = new Store();
+
   constructor(private dialog: MatDialog, private translateService: TranslateService, private appearanceService: AppearanceService) {
   }
-
-  ngOnInit() {
-  }
-
-  private settings: Store = new Store();
 
   public languages: Language[] = Constants.languages;
   public themes: Theme[] = Constants.themes;
@@ -56,6 +52,9 @@ export class SettingsComponent implements OnInit {
   }
   public set showExactDatesInTheNotesListChecked(v: boolean) {
     this.settings.set('showExactDatesInTheNotesList', v);
+  }
+
+  public ngOnInit(): void {
   }
 
   public import(): void {

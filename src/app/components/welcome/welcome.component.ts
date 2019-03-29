@@ -22,7 +22,7 @@ export class WelcomeComponent implements OnInit {
     public applicationName: string = Constants.applicationName.toUpperCase();
     public isBusy: boolean = false;
 
-    ngOnInit() {
+    public ngOnInit(): void {
     }
 
     public async openDirectoryChooserAsync(): Promise<void> {
@@ -43,7 +43,7 @@ export class WelcomeComponent implements OnInit {
                 this.isBusy = true;
 
                 if (!await this.collectionService.setStorageDirectoryAsync(selectedParentDirectory)) {
-                    let errorText: string = await this.translate.get('ErrorTexts.StorageDirectoryCreationError', {storageDirectory: selectedParentDirectory}).toPromise();
+                    let errorText: string = await this.translate.get('ErrorTexts.StorageDirectoryCreationError', { storageDirectory: selectedParentDirectory }).toPromise();
                     this.dialog.open(ErrorDialogComponent, {
                         width: '450px', data: { errorText: errorText }
                     });

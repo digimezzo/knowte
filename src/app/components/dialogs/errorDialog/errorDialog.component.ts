@@ -10,10 +10,10 @@ import { remote } from 'electron';
 })
 export class ErrorDialogComponent implements OnInit {
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<ErrorDialogComponent>) {
-        dialogRef.disableClose = true;
+        this.dialogRef.disableClose = true;
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
     }
 
     public viewLog(): void {

@@ -1,8 +1,6 @@
 import { Component, OnInit, Inject, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Notebook } from '../../../data/entities/notebook';
-import * as nanoid from 'nanoid';
-import log from 'electron-log';
 import { remote } from 'electron';
 import { Constants } from '../../../core/constants';
 
@@ -13,25 +11,26 @@ import { Constants } from '../../../core/constants';
     encapsulation: ViewEncapsulation.None
 })
 export class ChangeNotebookDialogComponent implements OnInit, OnDestroy {
+    private globalEmitter = remote.getGlobal('globalEmitter');
+
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<ChangeNotebookDialogComponent>) {
     }
 
-    private globalEmitter = remote.getGlobal('globalEmitter');
     public notebooks: Notebook[];
 
-    ngOnDestroy() {
+    public ngOnDestroy(): void {
     }
 
-    async ngOnInit() {
+    public async ngOnInit(): Promise<void> {
         this.globalEmitter.emit(Constants.getNotebooksEvent, this.getNotebooksCallback.bind(this));
-    }
-
-    private getNotebooksCallback(notebooks: Notebook[]): void {
-        this.notebooks = notebooks;
     }
 
     public changeNotebook(notebook: Notebook) {
         this.globalEmitter.emit(Constants.setNotebookEvent, this.data.noteId, notebook.id);
         this.dialogRef.close(true); // Force return "true"
+    }
+
+    private getNotebooksCallback(notebooks: Notebook[]): void {
+        this.notebooks = notebooks;
     }
 }

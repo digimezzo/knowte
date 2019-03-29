@@ -3,7 +3,6 @@ import { CollectionService } from '../../services/collection.service';
 import { InputDialogComponent } from '../dialogs/inputDialog/inputDialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
-import log from 'electron-log';
 import { RenameCollectionDialogComponent } from '../dialogs/renameCollectionDialog/renameCollectionDialog.component';
 import { SnackBarService } from '../../services/snackBar.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
@@ -28,21 +27,16 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
   public collections: string[];
   public activeCollection: string = "";
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  async ngOnInit() {
+  public async ngOnInit(): Promise<void> {
     // Workaround for auto reload
     await this.collectionService.initializeAsync();
     await this.getCollectionsAsync();
 
     this.subscription = this.collectionService.collectionsChanged$.subscribe(() => this.router.navigate(['/loading']));
-  }
-
-  private async getCollectionsAsync(): Promise<void> {
-    this.collections = await this.collectionService.getCollectionsAsync();
-    this.activeCollection = this.collectionService.getActiveCollection();
   }
 
   public async addCollectionAsync(): Promise<void> {
@@ -135,5 +129,10 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  private async getCollectionsAsync(): Promise<void> {
+    this.collections = await this.collectionService.getCollectionsAsync();
+    this.activeCollection = this.collectionService.getActiveCollection();
   }
 }

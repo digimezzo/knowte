@@ -1,4 +1,3 @@
-import * as Store from 'electron-store';
 import * as loki from 'lokijs';
 import { Notebook } from './entities/notebook';
 import { Note } from './entities/note';
@@ -10,8 +9,6 @@ import { Injectable } from '@angular/core';
     providedIn: 'root',
   })
 export class DataStore {
-    private settings: Store = new Store();
-
     constructor() {
     }
 

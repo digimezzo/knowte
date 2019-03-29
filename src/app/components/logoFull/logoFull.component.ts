@@ -11,9 +11,9 @@ export class LogoFullComponent implements OnInit {
   constructor() {
   }
 
-  public applicationName: string = Constants.applicationName.toUpperCase();
   @Input() textColor: string;
+  public applicationName: string = Constants.applicationName.toUpperCase();
 
-  ngOnInit() {
+  public ngOnInit(): void {
   }
 }

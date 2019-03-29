@@ -16,10 +16,10 @@ import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.compone
 import * as Quill from 'quill';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import * as Store from 'electron-store';
 import { Utils } from '../../core/utils';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { NoteExport } from '../../core/noteExport';
+import { SettingsService } from '../../services/settings.service';
 
 @Component({
     selector: 'note-content',
@@ -28,92 +28,46 @@ import { NoteExport } from '../../core/noteExport';
     encapsulation: ViewEncapsulation.None
 })
 export class NoteComponent implements OnInit, OnDestroy {
-    constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog,
-        private snackBarService: SnackBarService, private translateService: TranslateService) {
-    }
-
-    private settings: Store = new Store();
     private saveTimeoutMilliseconds: number = 5000;
     private windowCloseTimeoutMilliseconds: number = 500;
-
     private quill: Quill;
-
     private globalEmitter = remote.getGlobal('globalEmitter');
     private noteId: string;
-    public initialNoteTitle: string;
-    public noteTitle: string;
-    public notebookName: string;
-    public isMarked: boolean;
-
     private isTitleDirty: boolean = false;
     private isTextDirty: boolean = false;
-
-    public noteTitleChanged: Subject<string> = new Subject<string>();
-    public noteTextChanged: Subject<string> = new Subject<string>();
-    public saveChangesAndCloseNoteWindow: Subject<string> = new Subject<string>();
-
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
     private notebookChangedListener: any = this.notebookChangedHandler.bind(this);
     private focusNoteListener: any = this.focusNoteHandler.bind(this);
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
 
+    constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog,
+        private snackBarService: SnackBarService, private translateService: TranslateService, private settingsService: SettingsService) {
+    }
+
+    public initialNoteTitle: string;
+    public noteTitle: string;
+    public notebookName: string;
+    public isMarked: boolean;
+    public noteTitleChanged: Subject<string> = new Subject<string>();
+    public noteTextChanged: Subject<string> = new Subject<string>();
+    public saveChangesAndCloseNoteWindow: Subject<string> = new Subject<string>();
     public canPerformActions: boolean = false;
     public isBusy: boolean = false;
 
     public editorStyle = {
-        'font-size': this.settings.get("fontSizeInNotes") + 'px'
+        'font-size': this.settingsService.fontSizeInNotes + 'px'
     }
 
-    // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
-    @HostListener('window:beforeunload', ['$event'])
-    beforeunloadHandler(event) {
-        log.info(`Detected closing of note with id=${this.noteId}`);
-
-        // Prevents closing of the window
-        if (this.isTitleDirty || this.isTextDirty) {
-            this.isTitleDirty = false;
-            this.isTextDirty = false;
-
-            log.info(`Note with id=${this.noteId} is dirty. Preventing close to save changes first.`);
-            event.preventDefault();
-            event.returnValue = '';
-
-            this.saveChangesAndCloseNoteWindow.next("");
-        } else {
-            log.info(`Note with id=${this.noteId} is clean. Closing directly.`);
-            this.cleanup();
-        }
+    public ngOnDestroy(): void {
     }
 
-    private removeListeners(): void {
-        this.globalEmitter.removeListener(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
-        this.globalEmitter.removeListener(Constants.notebookChangedEvent, this.notebookChangedListener);
-        this.globalEmitter.removeListener(Constants.focusNoteEvent, this.focusNoteListener);
-        this.globalEmitter.removeListener(Constants.closeNoteEvent, this.closeNoteListener);
-    }
-
-    private addListeners(): void {
-        this.globalEmitter.on(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
-        this.globalEmitter.on(Constants.notebookChangedEvent, this.notebookChangedListener);
-        this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
-        this.globalEmitter.on(Constants.closeNoteEvent, this.closeNoteListener);
-    }
-
-    private cleanup(): void {
-        this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, false);
-        this.removeListeners();
-    }
-
-    ngOnDestroy() {
-    }
-
-    async ngOnInit() {
+    public async ngOnInit(): Promise<void> {
         let notePlaceHolder: string = await this.translateService.get('Notes.NotePlaceholder').toPromise();
 
         let toolbarOptions: any = [
-            [{ 'color': [] }, { 'background': [] }],         
-            ['bold', 'italic', 'underline', 'strike'], 
-            [{ 'header': 1 }, { 'header': 2 }],           
+            [{ 'color': [] }, { 'background': [] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'header': 1 }, { 'header': 2 }],
             [{ 'list': 'ordered' }, { 'list': 'bullet' }],
             ['link', 'blockquote', 'code-block', 'image'],
             // [{ 'script': 'sub' }, { 'script': 'super' }], 
@@ -168,6 +122,128 @@ export class NoteComponent implements OnInit, OnDestroy {
         document.onpaste = (e: ClipboardEvent) => {
             this.handleImagePaste(e);
         }
+    }
+
+    public changeNotebook(): void {
+        let dialogRef: MatDialogRef<ChangeNotebookDialogComponent> = this.dialog.open(ChangeNotebookDialogComponent, {
+            width: '450px', data: { noteId: this.noteId }
+        });
+    }
+
+    public onNotetitleChange(newNoteTitle: string) {
+        this.isTitleDirty = true;
+        this.noteTitleChanged.next(newNoteTitle);
+    }
+
+    // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
+    @HostListener('window:beforeunload', ['$event'])
+    public beforeunloadHandler(event): void {
+        log.info(`Detected closing of note with id=${this.noteId}`);
+
+        // Prevents closing of the window
+        if (this.isTitleDirty || this.isTextDirty) {
+            this.isTitleDirty = false;
+            this.isTextDirty = false;
+
+            log.info(`Note with id=${this.noteId} is dirty. Preventing close to save changes first.`);
+            event.preventDefault();
+            event.returnValue = '';
+
+            this.saveChangesAndCloseNoteWindow.next("");
+        } else {
+            log.info(`Note with id=${this.noteId} is clean. Closing directly.`);
+            this.cleanup();
+        }
+    }
+
+    public onTitleKeydown(event): void {
+        if (event.key === "Enter") {
+            // Make sure enter is not applied to the editor
+            event.preventDefault();
+
+            // Sets focus to editor when pressing enter on title
+            this.quill.setSelection(0, 0);
+        }
+    }
+
+    public toggleNoteMark(): void {
+        this.hideActionButtonsDelayedAsync();
+        this.globalEmitter.emit(Constants.setNoteMarkEvent, this.noteId, !this.isMarked);
+    }
+
+    public async deleteNoteAsync(): Promise<void> {
+        this.hideActionButtons();
+
+        let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNote').toPromise();
+        let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNote', { noteTitle: this.noteTitle }).toPromise();
+
+        let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
+
+            width: '450px', data: { dialogTitle: title, dialogText: text }
+        });
+
+        dialogRef.afterClosed().subscribe(async (result) => {
+            if (result) {
+                this.globalEmitter.emit(Constants.deleteNoteEvent, this.noteId);
+
+                let window: BrowserWindow = remote.getCurrentWindow();
+                window.close();
+            }
+        });
+    }
+
+    public onFixedContentClick(): void {
+        this.hideActionButtons();
+    }
+
+    public toggleShowActions(): void {
+        this.canPerformActions = !this.canPerformActions;
+    }
+
+    public async exportNoteAsync(): Promise<void> {
+        this.hideActionButtons();
+        this.isBusy = true;
+
+        let options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
+        let savePath: string = remote.dialog.showSaveDialog(null, options);
+        let noteExport: NoteExport = new NoteExport(this.noteTitle, this.quill.getText(), JSON.stringify(this.quill.getContents()));
+
+        try {
+            if (savePath) {
+                await fs.writeFile(savePath, JSON.stringify(noteExport));
+                this.snackBarService.noteExportedAsync(this.noteTitle);
+            }
+
+            this.isBusy = false;
+        } catch (error) {
+            this.isBusy = false;
+            log.error(`An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`);
+
+            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }).toPromise());
+
+            this.dialog.open(ErrorDialogComponent, {
+                width: '450px', data: { errorText: generatedErrorText }
+            });
+        }
+    }
+
+    private removeListeners(): void {
+        this.globalEmitter.removeListener(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
+        this.globalEmitter.removeListener(Constants.notebookChangedEvent, this.notebookChangedListener);
+        this.globalEmitter.removeListener(Constants.focusNoteEvent, this.focusNoteListener);
+        this.globalEmitter.removeListener(Constants.closeNoteEvent, this.closeNoteListener);
+    }
+
+    private addListeners(): void {
+        this.globalEmitter.on(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
+        this.globalEmitter.on(Constants.notebookChangedEvent, this.notebookChangedListener);
+        this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
+        this.globalEmitter.on(Constants.closeNoteEvent, this.closeNoteListener);
+    }
+
+    private cleanup(): void {
+        this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, false);
+        this.removeListeners();
     }
 
     private insertImage(file: any): void {
@@ -265,17 +341,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.zone.run(() => this.isMarked = isNoteMarked);
     }
 
-    public changeNotebook(): void {
-        let dialogRef: MatDialogRef<ChangeNotebookDialogComponent> = this.dialog.open(ChangeNotebookDialogComponent, {
-            width: '450px', data: { noteId: this.noteId }
-        });
-    }
-
-    public onNotetitleChange(newNoteTitle: string) {
-        this.isTitleDirty = true;
-        this.noteTitleChanged.next(newNoteTitle);
-    }
-
     private async setNoteTitleCallbackAsync(result: NoteOperationResult): Promise<void> {
         if (result.operation === Operation.Blank) {
             this.zone.run(() => this.noteTitle = this.initialNoteTitle);
@@ -303,9 +368,10 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private writeTextToNoteFile(): void {
         // Update the note file on disk
-        let activeCollection: string = this.settings.get('activeCollection');
+        let activeCollection: string = this.settingsService.activeCollection;
+        let storageDirectory: string = this.settingsService.storageDirectory;
         let jsonContent: string = JSON.stringify(this.quill.getContents());
-        fs.writeFileSync(path.join(Utils.collectionToPath(activeCollection), `${this.noteId}${Constants.noteContentExtension}`), jsonContent);
+        fs.writeFileSync(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${this.noteId}${Constants.noteContentExtension}`), jsonContent);
     }
 
     private async setNoteTextCallbackAsync(operation: Operation): Promise<void> {
@@ -348,8 +414,9 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         // Details from note file
         try {
-            let activeCollection: string = this.settings.get('activeCollection');
-            let noteContent: string = fs.readFileSync(path.join(Utils.collectionToPath(activeCollection), `${this.noteId}${Constants.noteContentExtension}`), 'utf8');
+            let activeCollection: string = this.settingsService.activeCollection;
+            let storageDirectory: string = this.settingsService.storageDirectory;
+            let noteContent: string = fs.readFileSync(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${this.noteId}${Constants.noteContentExtension}`), 'utf8');
 
             if (noteContent) {
                 // We can only parse to json if there is content
@@ -366,50 +433,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    public onTitleKeydown(event): void {
-        if (event.key === "Enter") {
-            // Make sure enter is not applied to the editor
-            event.preventDefault();
-
-            // Sets focus to editor when pressing enter on title
-            this.quill.setSelection(0, 0);
-        }
-    }
-
-    public toggleNoteMark(): void {
-        this.hideActionButtonsDelayedAsync();
-        this.globalEmitter.emit(Constants.setNoteMarkEvent, this.noteId, !this.isMarked);
-    }
-
-    public async deleteNoteAsync(): Promise<void> {
-        this.hideActionButtons();
-
-        let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNote').toPromise();
-        let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNote', { noteTitle: this.noteTitle }).toPromise();
-
-        let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
-
-            width: '450px', data: { dialogTitle: title, dialogText: text }
-        });
-
-        dialogRef.afterClosed().subscribe(async (result) => {
-            if (result) {
-                this.globalEmitter.emit(Constants.deleteNoteEvent, this.noteId);
-
-                let window: BrowserWindow = remote.getCurrentWindow();
-                window.close();
-            }
-        });
-    }
-
-    public onFixedContentClick(): void {
-        this.hideActionButtons();
-    }
-
-    public toggleShowActions(): void {
-        this.canPerformActions = !this.canPerformActions;
-    }
-
     private hideActionButtons(): void {
         this.canPerformActions = false;
     }
@@ -417,32 +440,5 @@ export class NoteComponent implements OnInit, OnDestroy {
     private async hideActionButtonsDelayedAsync(): Promise<void> {
         await Utils.sleep(500);
         this.canPerformActions = false;
-    }
-
-    public async exportNoteAsync(): Promise<void> {
-        this.hideActionButtons();
-        this.isBusy = true;
-
-        let options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
-        let savePath: string = remote.dialog.showSaveDialog(null, options);
-        let noteExport: NoteExport = new NoteExport(this.noteTitle, this.quill.getText(), JSON.stringify(this.quill.getContents()));
-
-        try {
-            if (savePath) {
-                await fs.writeFile(savePath, JSON.stringify(noteExport));
-                this.snackBarService.noteExportedAsync(this.noteTitle);
-            }
-
-            this.isBusy = false;
-        } catch (error) {
-            this.isBusy = false;
-            log.error(`An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`);
-
-            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }).toPromise());
-
-            this.dialog.open(ErrorDialogComponent, {
-                width: '450px', data: { errorText: generatedErrorText }
-            });
-        }
     }
 }

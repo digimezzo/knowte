@@ -1,5 +1,4 @@
 import * as path from 'path';
-import * as Store from 'electron-store';
 import * as sanitize from 'sanitize-filename';
 import { Constants } from './constants';
 
@@ -40,10 +39,7 @@ export class Utils {
         return path.dirname(collectionDirectoryPath).split(path.sep).pop();
     }
 
-    public static collectionToPath(collection: string): string {
-        let settings: Store = new Store();
-        let storageDirectory: string = settings.get('storageDirectory');
-
+    public static collectionToPath(storageDirectory: string, collection: string): string {
         return path.join(storageDirectory, collection);
     }
 

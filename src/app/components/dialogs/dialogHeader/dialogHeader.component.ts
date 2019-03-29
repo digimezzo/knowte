@@ -12,6 +12,6 @@ export class DialogHeaderComponent implements OnInit {
 
     @Input() public titleText: string;
 
-    ngOnInit() {
+    public ngOnInit(): void {
     }
 }

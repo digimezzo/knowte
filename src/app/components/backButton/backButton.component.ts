@@ -11,10 +11,10 @@ export class BackButtonComponent implements OnInit, OnDestroy {
   constructor(public router: Router) {
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
   }
 
   public goToNotes(): void {

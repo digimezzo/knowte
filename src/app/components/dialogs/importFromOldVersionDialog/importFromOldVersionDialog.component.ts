@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { remote } from 'electron';
-import log from 'electron-log';
-import { Utils } from '../../../core/utils';
 import { CollectionService } from '../../../services/collection.service';
 
 @Component({
@@ -20,7 +18,7 @@ export class ImportFromOldVersionDialogComponent implements OnInit {
     public isImportFinished: boolean = false;
     public isImportSuccessful: boolean = true;
 
-    ngOnInit() {
+    public ngOnInit(): void {
     }
 
     public selectDirectory(): void {

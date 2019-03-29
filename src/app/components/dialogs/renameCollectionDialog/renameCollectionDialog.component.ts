@@ -22,6 +22,9 @@ export class RenameCollectionDialogComponent implements OnInit {
     public oldCollection: string = this.data.oldCollection;
     public newCollection: string = this.data.oldCollection;
 
+    public ngOnInit(): void {
+    }
+
     public async renameCollectionAsync(): Promise<void> {
         let operation: Operation = await this.collectionService.renameCollectionAsync(this.oldCollection, this.newCollection);
 
@@ -31,7 +34,7 @@ export class RenameCollectionDialogComponent implements OnInit {
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: generatedErrorText }
             });
-        }else if(operation === Operation.Duplicate){
+        } else if (operation === Operation.Duplicate) {
             this.snackBarService.duplicateCollectionAsync(this.newCollection);
         }
     }
@@ -39,8 +42,5 @@ export class RenameCollectionDialogComponent implements OnInit {
     public async renameCollectionAndCloseAsync(): Promise<void> {
         await this.renameCollectionAsync();
         this.dialogRef.close();
-    }
-
-    ngOnInit() {
     }
 }

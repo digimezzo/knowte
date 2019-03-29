@@ -18,9 +18,7 @@ import { Note } from '../../data/entities/note';
 import { trigger, style, animate, state, transition } from '@angular/animations';
 import { debounceTime } from "rxjs/internal/operators";
 import { remote } from 'electron';
-import log from 'electron-log';
 import * as path from 'path';
-import { Utils } from '../../core/utils';
 
 @Component({
   selector: 'collection-page',
@@ -41,14 +39,14 @@ import { Utils } from '../../core/utils';
   ]
 })
 export class CollectionComponent implements OnInit, OnDestroy {
+  private globalEmitter = remote.getGlobal('globalEmitter');
+  private subscription: Subscription;
+
   constructor(private dialog: MatDialog, private collectionService: CollectionService,
     private translateService: TranslateService, private snackBarService: SnackBarService, private zone: NgZone) {
   }
 
-  private globalEmitter = remote.getGlobal('globalEmitter');
-
   public applicationName: string = Constants.applicationName;
-  private subscription: Subscription;
   public notebooksCount: number = 0;
   public allNotesCount: number = 0;
   public todayNotesCount: number = 0;
@@ -58,45 +56,39 @@ export class CollectionComponent implements OnInit, OnDestroy {
   public notebooks: Notebook[];
   public selectedNotebook: Notebook;
   public canEditNotebook: boolean = false;
-
   public noteButtonsVisibility: string = 'visible';
-
   public selectedNote: Note;
-
   public notesCount: number = 0;
-
   public canEditNote: boolean = false;
-
   public tabChangedSubject: Subject<any> = new Subject();
   public showNoteButtonSubject: Subject<any> = new Subject();
-
   public isBusy: boolean = false;
 
-  get allCategory() {
+  public get allCategory(): string {
     return Constants.allCategory;
   }
 
-  get todayCategory() {
+  public get todayCategory(): string {
     return Constants.todayCategory;
   }
 
-  get yesterdayCategory() {
+  public get yesterdayCategory(): string {
     return Constants.yesterdayCategory;
   }
 
-  get thisWeekCategory() {
+  public get thisWeekCategory(): string {
     return Constants.thisWeekCategory;
   }
 
-  get markedCategory() {
+  public get markedCategory(): string {
     return Constants.markedCategory;
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  async ngOnInit() {
+  public async ngOnInit(): Promise<void> {
     // Workaround for auto reload
     await this.collectionService.initializeAsync();
 
@@ -129,45 +121,6 @@ export class CollectionComponent implements OnInit, OnDestroy {
       .subscribe((_) => {
         this.showNoteButtons();
       });
-  }
-
-  onSelectedTabChange(event: MatTabChangeEvent) {
-    this.hideNoteButtons();
-    let tabIndex: number = event.index;
-    let category: string = "";
-
-    if (tabIndex === 0) {
-      category = Constants.allCategory;
-    } else if (tabIndex === 1) {
-      category = Constants.todayCategory;
-    } else if (tabIndex === 2) {
-      category = Constants.yesterdayCategory;
-    } else if (tabIndex === 3) {
-      category = Constants.thisWeekCategory;
-    } else if (tabIndex === 4) {
-      category = Constants.markedCategory;
-    }
-
-    this.tabChangedSubject.next(category);
-    this.showNoteButtonSubject.next("");
-  }
-
-  private hideNoteButtons(): void {
-    this.noteButtonsVisibility = "hidden";
-  }
-
-  private showNoteButtons(): void {
-    this.noteButtonsVisibility = "visible";
-  }
-
-  private async getNotebooksAsync(): Promise<void> {
-    this.notebooks = await this.collectionService.getNotebooksAsync(true);
-    this.notebooksCount = this.notebooks.length - 2;
-  }
-
-  private async getNotebooksAndResetSelectionAsync(): Promise<void> {
-    await this.getNotebooksAsync();
-    this.selectFirstNotebook();
   }
 
   public selectFirstNotebook() {
@@ -321,5 +274,44 @@ export class CollectionComponent implements OnInit, OnDestroy {
         this.snackBarService.invalidNoteFileAsync();
       }
     }
+  }
+
+  public onSelectedTabChange(event: MatTabChangeEvent): void {
+    this.hideNoteButtons();
+    let tabIndex: number = event.index;
+    let category: string = "";
+
+    if (tabIndex === 0) {
+      category = Constants.allCategory;
+    } else if (tabIndex === 1) {
+      category = Constants.todayCategory;
+    } else if (tabIndex === 2) {
+      category = Constants.yesterdayCategory;
+    } else if (tabIndex === 3) {
+      category = Constants.thisWeekCategory;
+    } else if (tabIndex === 4) {
+      category = Constants.markedCategory;
+    }
+
+    this.tabChangedSubject.next(category);
+    this.showNoteButtonSubject.next("");
+  }
+
+  private hideNoteButtons(): void {
+    this.noteButtonsVisibility = "hidden";
+  }
+
+  private showNoteButtons(): void {
+    this.noteButtonsVisibility = "visible";
+  }
+
+  private async getNotebooksAsync(): Promise<void> {
+    this.notebooks = await this.collectionService.getNotebooksAsync(true);
+    this.notebooksCount = this.notebooks.length - 2;
+  }
+
+  private async getNotebooksAndResetSelectionAsync(): Promise<void> {
+    await this.getNotebooksAsync();
+    this.selectFirstNotebook();
   }
 }

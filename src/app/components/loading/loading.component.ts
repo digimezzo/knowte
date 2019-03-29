@@ -1,8 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { CollectionService } from '../../services/collection.service';
-import log from 'electron-log';
-import { Utils } from '../../core/utils';
 
 @Component({
   selector: 'loading-page',
@@ -14,7 +12,7 @@ export class LoadingComponent implements OnInit {
   constructor(private collectionService: CollectionService, public router: Router) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.showCollection();
   }
 

@@ -60,8 +60,29 @@ export class SettingsService {
     public set showExactDatesInTheNotesList(v : boolean) {
         this.settings.set('showExactDatesInTheNotesList', v);
     }
-    
+
+    // storageDirectory
+    public get storageDirectory() : string {
+        return this.settings.get('storageDirectory');
+    }
+
+    public set storageDirectory(v : string) {
+        this.settings.set('storageDirectory', v);
+    }
+
+    // activeCollection
+    public get activeCollection() : string {
+        return this.settings.get('activeCollection');
+    }
+
+    public set activeCollection(v : string) {
+        this.settings.set('activeCollection', v);
+    }
+
     public initialize(): void {
+        // storageDirectory and activeCollection cannot be initialized here.
+        // Their value is set later, depending on user action.
+
         if (!this.settings.has('language')) {
             this.settings.set('language', 'en');
         }

@@ -3,7 +3,6 @@ import { Constants } from '../core/constants';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import log from 'electron-log';
-import * as Store from 'electron-store';
 import { Subject, Observable } from 'rxjs';
 import { Utils } from '../core/utils';
 import { Notebook } from '../data/entities/notebook';
@@ -23,6 +22,7 @@ import { NoteMarkResult } from './results/noteMarkResult';
 import { NoteDetailsResult } from './results/noteDetailsResult';
 import { ipcRenderer } from 'electron';
 import { NoteExport } from '../core/noteExport';
+import { SettingsService } from './settings.service';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +31,6 @@ export class CollectionService {
   private isInitializing: boolean = false;
   private isInitialized: boolean = false;
   private globalEmitter = remote.getGlobal('globalEmitter');
-  private settings: Store = new Store();
   private openNoteIds: string[] = [];
   private collectionsChanged = new Subject();
   private notebookEdited = new Subject();
@@ -51,7 +50,7 @@ export class CollectionService {
   private deleteNoteEventListener: any = this.deleteNoteEventHandler.bind(this);
 
   constructor(private translateService: TranslateService, private searchService: SearchService,
-    private dataStore: DataStore) {
+    private settingsService: SettingsService, private dataStore: DataStore) {
   }
 
   public collectionsChanged$: Observable<{}> = this.collectionsChanged.asObservable();
@@ -87,7 +86,7 @@ export class CollectionService {
 
   public get hasStorageDirectory(): boolean {
     // 1. Get the storage directory from the settings
-    let storageDirectory: string = this.settings.get('storageDirectory');
+    let storageDirectory: string = this.settingsService.storageDirectory;
 
     if (!storageDirectory) {
       // Storage directory is empty
@@ -108,7 +107,7 @@ export class CollectionService {
   }
 
   public async getCollectionsAsync() {
-    let storageDirectory: string = this.settings.get('storageDirectory');
+    let storageDirectory: string = this.settingsService.storageDirectory;
     let fileNames: string[] = await fs.readdir(storageDirectory);
     let collections: string[] = [];
 
@@ -138,7 +137,7 @@ export class CollectionService {
       }
 
       // Save storage directory in the settings store
-      this.settings.set('storageDirectory', storageDirectory);
+      this.settingsService.storageDirectory = storageDirectory;
       log.info(`Saved storage directory '${storageDirectory}' in settings store`);
     } catch (error) {
       log.error(`Could not create storage directory on disk. Cause: ${error}`);
@@ -167,14 +166,14 @@ export class CollectionService {
     this.isInitializing = true;
 
     // Get the active collection from the settings
-    let storageDirectory: string = this.settings.get('storageDirectory');
-    let activeCollection: string = this.settings.get('activeCollection');
+    let storageDirectory: string = this.settingsService.storageDirectory;
+    let activeCollection: string = this.settingsService.activeCollection;
     let activeCollectionDirectory: string = "";
 
-    if (activeCollection && Utils.collectionToPath(activeCollection).includes(storageDirectory) &&
-      Utils.collectionToPath(activeCollection) !== storageDirectory && await fs.exists(Utils.collectionToPath(activeCollection))) {
+    if (activeCollection && Utils.collectionToPath(storageDirectory, activeCollection).includes(storageDirectory) &&
+      Utils.collectionToPath(storageDirectory, activeCollection) !== storageDirectory && await fs.exists(Utils.collectionToPath(storageDirectory, activeCollection))) {
       // There is an active collection and the collection directory exists
-      activeCollectionDirectory = Utils.collectionToPath(activeCollection);
+      activeCollectionDirectory = Utils.collectionToPath(storageDirectory, activeCollection);
     } else {
       // There is no active collection or no collection directory
       // Get all collection directories in the storage directory
@@ -183,12 +182,12 @@ export class CollectionService {
       if (collections && collections.length > 0) {
         // If there are collection directories, take the first one.
         activeCollectionDirectory = collections[0];
-        this.settings.set('activeCollection', Utils.pathToCollection(activeCollectionDirectory));
+        this.settingsService.activeCollection = Utils.pathToCollection(activeCollectionDirectory);
       } else {
         // If there are no collection directories, we must create a default collection.
-        activeCollectionDirectory = Utils.collectionToPath(Constants.defaultCollection);
+        activeCollectionDirectory = Utils.collectionToPath(storageDirectory, Constants.defaultCollection);
         await fs.mkdir(activeCollectionDirectory);
-        this.settings.set('activeCollection', Constants.defaultCollection);
+        this.settingsService.activeCollection = Constants.defaultCollection;
       }
     }
 
@@ -223,13 +222,13 @@ export class CollectionService {
       }
 
       // Add the collection
-      let storageDirectory: string = this.settings.get('storageDirectory');
-      await fs.mkdir(Utils.collectionToPath(`${sanitizedCollection}`));
+      let storageDirectory: string = this.settingsService.storageDirectory;
+      await fs.mkdir(Utils.collectionToPath(storageDirectory, sanitizedCollection));
 
       log.info(`Added collection '${sanitizedCollection}'`);
 
       // Activate the added collection
-      this.settings.set('activeCollection', sanitizedCollection);
+      this.settingsService.activeCollection = sanitizedCollection;
     } catch (error) {
       log.error(`Could not add collection '${sanitizedCollection}'. Cause: ${error}`);
 
@@ -259,12 +258,14 @@ export class CollectionService {
         return Operation.Duplicate;
       }
 
+      let storageDirectory: string = this.settingsService.storageDirectory;
+
       // Rename database file
-      await fs.move(path.join(Utils.collectionToPath(initialCollection), `${initialCollection}.db`), path.join(Utils.collectionToPath(initialCollection), `${finalCollection}.db`));
+      await fs.move(path.join(Utils.collectionToPath(storageDirectory, initialCollection), `${initialCollection}.db`), path.join(Utils.collectionToPath(storageDirectory, initialCollection), `${finalCollection}.db`));
 
       // Rename directory
-      await fs.move(Utils.collectionToPath(initialCollection), Utils.collectionToPath(finalCollection));
-      this.settings.set('activeCollection', finalCollection);
+      await fs.move(Utils.collectionToPath(storageDirectory, initialCollection), Utils.collectionToPath(storageDirectory, finalCollection));
+      this.settingsService.activeCollection = finalCollection;
     } catch (error) {
       log.error(`Could not rename the collection '${initialCollection}' to '${finalCollection}'. Cause: ${error}`);
       return Operation.Error;
@@ -278,13 +279,14 @@ export class CollectionService {
 
   public async deleteCollectionAsync(collection: string): Promise<Operation> {
     try {
-      await fs.remove(Utils.collectionToPath(collection));
+      let storageDirectory: string = this.settingsService.storageDirectory;
+      await fs.remove(Utils.collectionToPath(storageDirectory, collection));
       let collections: string[] = await this.getCollectionsAsync();
 
       if (collections && collections.length > 0) {
-        this.settings.set('activeCollection', collections[0]);
+        this.settingsService.activeCollection = collections[0];
       } else {
-        this.settings.set('activeCollection', "");
+        this.settingsService.activeCollection = "";
       }
     } catch (error) {
       log.error(`Could not delete the collection '${collection}'. Cause: ${error}`);
@@ -297,13 +299,13 @@ export class CollectionService {
   }
 
   public activateCollection(collection: string): void {
-    this.settings.set('activeCollection', collection);
+    this.settingsService.activeCollection = collection;
     this.isInitialized = false;
     this.collectionsChanged.next();
   }
 
   public getActiveCollection(): string {
-    return this.settings.get('activeCollection');
+    return this.settingsService.activeCollection;
   }
 
   public noteIsOpen(noteId: string): boolean {
@@ -545,8 +547,9 @@ export class CollectionService {
       result.noteId = this.dataStore.addNote(uniqueTitle, notebookId);
 
       // 2. Create note file
-      let activeCollection: string = this.settings.get('activeCollection');
-      fs.writeFileSync(path.join(Utils.collectionToPath(activeCollection), `${result.noteId}${Constants.noteContentExtension}`), '');
+      let activeCollection: string = this.settingsService.activeCollection;
+      let storageDirectory: string = this.settingsService.storageDirectory;
+      fs.writeFileSync(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${result.noteId}${Constants.noteContentExtension}`), '');
 
       this.noteEdited.next();
     } catch (error) {
@@ -733,8 +736,9 @@ export class CollectionService {
 
                 let quillText: string = `{"ops":[{"insert":${JSON.stringify(jsonNote.Text)}}]}`;
 
-                let activeCollection: string = this.settings.get('activeCollection');
-                await fs.writeFile(path.join(Utils.collectionToPath(activeCollection), `${note.id}${Constants.noteContentExtension}`), quillText);
+                let activeCollection: string = this.settingsService.activeCollection;
+                let storageDirectory: string = this.settingsService.storageDirectory;
+                await fs.writeFile(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${note.id}${Constants.noteContentExtension}`), quillText);
               }
             } catch (error) {
               log.error(`An error occurred while importing a note from an old version. Cause: ${error}`);
@@ -781,8 +785,9 @@ export class CollectionService {
       note.text = noteExport.text;
       this.dataStore.updateNoteWithoutDate(note);
 
-      let activeCollection: string = this.settings.get('activeCollection');
-      await fs.writeFile(path.join(Utils.collectionToPath(activeCollection), `${note.id}${Constants.noteContentExtension}`), noteExport.content);
+      let activeCollection: string = this.settingsService.activeCollection;
+      let storageDirectory: string = this.settingsService.storageDirectory;
+      await fs.writeFile(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${note.id}${Constants.noteContentExtension}`), noteExport.content);
     } catch (error) {
       return false;
     }
@@ -793,8 +798,9 @@ export class CollectionService {
   }
 
   private getNotePath(noteId: string) {
-    let activeCollection: string = this.settings.get('activeCollection');
-    return Utils.collectionToPath(activeCollection);
+    let activeCollection: string = this.settingsService.activeCollection;
+    let storageDirectory: string = this.settingsService.storageDirectory;
+    return Utils.collectionToPath(storageDirectory, activeCollection);
   }
 
   private async collectionExistsAsync(collection: string): Promise<boolean> {

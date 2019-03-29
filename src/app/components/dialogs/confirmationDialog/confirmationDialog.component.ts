@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { remote } from 'electron';
 
 @Component({
     selector: 'confirmation-dialog',
@@ -13,6 +12,6 @@ export class ConfirmationDialogComponent implements OnInit {
         dialogRef.disableClose = true;
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
     }
 }

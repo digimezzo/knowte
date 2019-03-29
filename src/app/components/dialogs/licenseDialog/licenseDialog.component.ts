@@ -8,11 +8,10 @@ import { MatDialogRef } from '@angular/material';
     encapsulation: ViewEncapsulation.None
 })
 export class LicenseDialogComponent implements OnInit {
-
     constructor(private dialogRef: MatDialogRef<LicenseDialogComponent>) {
         dialogRef.disableClose = true;
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
     }
 }

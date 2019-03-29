@@ -14,6 +14,7 @@ import { Utils } from '../../core/utils';
 import * as Store from 'electron-store';
 import { remote } from 'electron';
 import log from 'electron-log';
+import { SettingsService } from '../../services/settings.service';
 
 @Component({
     selector: 'notes-component',
@@ -22,25 +23,14 @@ import log from 'electron-log';
     encapsulation: ViewEncapsulation.None
 })
 export class NotesComponent implements OnInit, OnDestroy {
-    constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
-        private translateService: TranslateService, public searchService: SearchService, private zone: NgZone) {
-    }
-
     private globalEmitter = remote.getGlobal('globalEmitter');
-
-    private settings: Store = new Store();
+    private subscription: Subscription;
     private readonly destroy$ = new Subject();
     private _selectedNotebook: Notebook;
 
-    private _value: string;
-    public get value(): string {
-        return this._value;
+    constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
+        public searchService: SearchService, private settingsService: SettingsService, private zone: NgZone) {
     }
-    public set value(v: string) {
-        this._value = v;
-    }
-
-    public selectedCategory: string = Constants.allCategory;
 
     @Input()
     public categoryChangedSubject: Subject<string>;
@@ -48,19 +38,17 @@ export class NotesComponent implements OnInit, OnDestroy {
     @Input()
     public componentCategory: string;
 
-    get selectedNotebook(): Notebook {
+    public selectedCategory: string = Constants.allCategory;
+
+    public get selectedNotebook(): Notebook {
         return this._selectedNotebook;
     }
 
     @Input()
-    set selectedNotebook(val: Notebook) {
+    public set selectedNotebook(val: Notebook) {
         this._selectedNotebook = val;
         this.getNotes(false);
     }
-
-    private subscription: Subscription;
-    public notes: Note[] = [];
-    public selectedNote: Note;
 
     @Output()
     public notesCount: EventEmitter<number> = new EventEmitter<number>();
@@ -68,15 +56,17 @@ export class NotesComponent implements OnInit, OnDestroy {
     @Output()
     public selectedNoteOutput: EventEmitter<Note> = new EventEmitter<Note>();
 
+    public notes: Note[] = [];
+    public selectedNote: Note;
     public canShowList: boolean = true;
 
-    ngOnDestroy() {
+    public ngOnDestroy(): void {
         this.subscription.unsubscribe();
         this.destroy$.next();
         this.destroy$.complete();
     }
 
-    async ngOnInit() {
+    public async ngOnInit(): Promise<void> {
         // Workaround for auto reload
         await this.collectionService.initializeAsync();
 
@@ -110,6 +100,25 @@ export class NotesComponent implements OnInit, OnDestroy {
         ;
     }
 
+    public setSelectedNote(note: Note) {
+        this.zone.run(() => {
+            this.selectedNote = note;
+            this.selectedNoteOutput.next(note);
+        });
+    }
+
+    public openNote(): void {
+        if (!this.collectionService.noteIsOpen(this.selectedNote.id)) {
+            this.globalEmitter.emit(Constants.setNoteOpenEvent, this.selectedNote.id, true);
+        } else {
+            this.globalEmitter.emit(Constants.focusNoteEvent, this.selectedNote.id);
+        }
+    }
+
+    public toggleNoteMark(note: Note): void {
+        this.collectionService.setNoteMark(note.id, !note.isMarked);
+    }
+
     private async refreshVirtuallScrollerAsync(): Promise<void> {
         // cdk-virtual-scroll-viewport doesn't resize its viewport automatically,
         // so we need to use a retarded workaround.
@@ -136,10 +145,10 @@ export class NotesComponent implements OnInit, OnDestroy {
 
         if (this.selectedNotebook) {
             this.zone.run(async () => {
-                this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, this.settings.get('showExactDatesInTheNotesList'));
+                this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, this.settingsService.showExactDatesInTheNotesList);
                 this.notesCount.emit(this.notes.length);
 
-                if(resetSelection){
+                if (resetSelection) {
                     this.selectFirstNote();
                 }
 
@@ -148,30 +157,11 @@ export class NotesComponent implements OnInit, OnDestroy {
         }
     }
 
-    public setSelectedNote(note: Note) {
-        this.zone.run(() => {
-            this.selectedNote = note;
-            this.selectedNoteOutput.next(note);
-        });
-    }
-
     private selectFirstNote() {
         if (this.notes && this.notes.length > 0) {
             this.setSelectedNote(this.notes[0]);
         } else {
             this.setSelectedNote(null);
         }
-    }
-
-    public openNote(): void {
-        if (!this.collectionService.noteIsOpen(this.selectedNote.id)) {
-            this.globalEmitter.emit(Constants.setNoteOpenEvent, this.selectedNote.id, true);
-        } else {
-            this.globalEmitter.emit(Constants.focusNoteEvent, this.selectedNote.id);
-        }
-    }
-
-    public toggleNoteMark(note: Note): void {
-        this.collectionService.setNoteMark(note.id, !note.isMarked);
     }
 }

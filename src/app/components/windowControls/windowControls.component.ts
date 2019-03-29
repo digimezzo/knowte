@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { remote, BrowserWindow } from 'electron';
-import log from 'electron-log';
 
 @Component({
     selector: 'window-controls',
@@ -10,12 +9,11 @@ import log from 'electron-log';
 })
 export class WindowControlsComponent implements OnInit {
     constructor() {
-
     }
- 
+
     public canMaximize: boolean = false;
 
-    ngOnInit() {
+    public ngOnInit(): void {
         let window: BrowserWindow = remote.getCurrentWindow();
         this.canMaximize = !window.isMaximized();
     }

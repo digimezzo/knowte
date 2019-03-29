@@ -8,7 +8,7 @@ import { Notebook } from '../../data/entities/notebook';
     styleUrls: ['./selectedNotebookAndSearch.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class SelectedNotebookAndSearchComponent implements OnInit, OnDestroy {
+export class SelectedNotebookAndSearchComponent implements OnInit {
     constructor(public searchService: SearchService) {
     }
 
@@ -18,8 +18,6 @@ export class SelectedNotebookAndSearchComponent implements OnInit, OnDestroy {
     @Input()
     public notesCount: number;
 
-    ngOnDestroy(): void {
-    }
-    ngOnInit(): void {
+    public ngOnInit(): void {
     }
 }

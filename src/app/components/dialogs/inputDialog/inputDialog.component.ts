@@ -14,12 +14,12 @@ export class InputDialogComponent implements OnInit {
 
     public inputText: string;
 
+    public ngOnInit(): void {
+    }
+
     public closeDialog(): void {
         if (this.inputText) {
             this.dialogRef.close(true); // Force return "true"
         }
-    }
-
-    ngOnInit() {
     }
 }

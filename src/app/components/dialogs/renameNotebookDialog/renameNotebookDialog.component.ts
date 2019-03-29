@@ -22,6 +22,9 @@ export class RenameNotebookDialogComponent implements OnInit {
     public notebookId: string = this.data.notebookId;
     public notebookName: string = this.collectionService.getNotebookName(this.data.notebookId);
 
+    public ngOnInit(): void {
+    }
+
     public async renameNotebookAsync(): Promise<void> {
         let operation: Operation = await this.collectionService.renameNotebookAsync(this.notebookId, this.notebookName);
 
@@ -39,8 +42,5 @@ export class RenameNotebookDialogComponent implements OnInit {
     public async renameNotebookAndCloseAsync(): Promise<void> {
         await this.renameNotebookAsync();
         this.dialogRef.close();
-    }
-
-    ngOnInit() {
     }
 }
