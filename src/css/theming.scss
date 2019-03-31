@@ -1,84 +1,9 @@
 @import "~@angular/material/theming";
 @include mat-core();
 
-// Custom palette (Created with: http://mcg.mbitson.com/)
-$default-palette: (
-    50: #E4EFFA,
-    100: #BBD8F2,
-    200: #8EBEEA,
-    300: #61A4E1,
-    400: #3F91DA,
-    500: #1D7DD4,
-    600: #1A75CF,
-    700: #156AC9,
-    800: #1160C3,
-    900: #0A4DB9,
-    A100: #E5EDFF,
-    A200: #B2CCFF,
-    A400: #7FAAFF,
-    A700: #6599FF,
-    contrast: (
-        50: $black-87-opacity,
-        100: $black-87-opacity,
-        200: $black-87-opacity,
-        300: $black-87-opacity,
-        400: $black-87-opacity,
-        500: white,
-        600: white,
-        700: white,
-        800: white,
-        900: white,
-        A100: $black-87-opacity,
-        A200: $black-87-opacity,
-        A400: $black-87-opacity,
-        A700: white,
-    )
-);
+@import 'themes/default-theme.scss';
+@import 'themes/ubuntu-theme.scss';
 
-$ubuntu-palette: (
-    50: #FCEAE4,
-    100: #F8CCBC,
-    200: #F4AA90,
-    300: #F08763,
-    400: #EC6E41,
-    500: #E95420,
-    600: #E64D1C,
-    700: #E34318,
-    800: #DF3A13,
-    900: #D9290B,
-    A100: #FFFFFF,
-    A200: #FFD6D1,
-    A400: #FFA99E,
-    A700: #FF9285,
-    contrast: (
-        50: $black-87-opacity,
-        100: $black-87-opacity,
-        200: $black-87-opacity,
-        300: $black-87-opacity,
-        400: $black-87-opacity,
-        500: white,
-        600: white,
-        700: white,
-        800: white,
-        900: white,
-        A100: $black-87-opacity,
-        A200: $black-87-opacity,
-        A400: $black-87-opacity,
-        A700: white,
-    )
-);
-
-// Default
-$default-theme-primary: mat-palette($default-palette);
-$default-theme-accent: mat-palette($default-palette);
-$default-theme-warn: mat-palette($default-palette);
-$default-theme: mat-light-theme($default-theme-primary, $default-theme-accent, $default-theme-warn);
-
-// Ubuntu
-$ubuntu-theme-primary: mat-palette($ubuntu-palette);
-$ubuntu-theme-accent: mat-palette($ubuntu-palette);
-$ubuntu-theme-warn: mat-palette($ubuntu-palette);
-$ubuntu-theme: mat-light-theme($ubuntu-theme-primary, $ubuntu-theme-accent, $ubuntu-theme-warn);
 
 // Material Blue
 // $blue-theme-primary: mat-palette($mat-blue);
@@ -99,13 +24,13 @@ $ubuntu-theme: mat-light-theme($ubuntu-theme-primary, $ubuntu-theme-accent, $ubu
 // $deep-orange-theme: mat-light-theme($deep-orange-theme-primary, $deep-orange-theme-accent, $deep-orange-theme-warn);
 
 @mixin set-primary-color($theme-primary) {
-    .color-primary {
-        color: mat-color($theme-primary) !important;
-    }
+  .color-primary {
+    color: mat-color($theme-primary) !important;
+  }
 
-    .background-color-primary {
-        background-color: mat-color($theme-primary) !important;
-    }
+  .background-color-primary {
+    background-color: mat-color($theme-primary) !important;
+  }
 }
 
 // Default

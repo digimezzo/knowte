@@ -1,0 +1,38 @@
+// Created with: http://mcg.mbitson.com/
+$ubuntu-palette: (
+  50: #fceae4,
+  100: #f8ccbc,
+  200: #f4aa90,
+  300: #f08763,
+  400: #ec6e41,
+  500: #e95420,
+  600: #e64d1c,
+  700: #e34318,
+  800: #df3a13,
+  900: #d9290b,
+  A100: #ffffff,
+  A200: #ffd6d1,
+  A400: #ffa99e,
+  A700: #ff9285,
+  contrast: (
+    50: $black-87-opacity,
+    100: $black-87-opacity,
+    200: $black-87-opacity,
+    300: $black-87-opacity,
+    400: $black-87-opacity,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: $black-87-opacity,
+    A200: $black-87-opacity,
+    A400: $black-87-opacity,
+    A700: white
+  )
+);
+
+$ubuntu-theme-primary: mat-palette($ubuntu-palette);
+$ubuntu-theme-accent: mat-palette($ubuntu-palette);
+$ubuntu-theme-warn: mat-palette($ubuntu-palette);
+$ubuntu-theme: mat-light-theme($ubuntu-theme-primary, $ubuntu-theme-accent, $ubuntu-theme-warn);
