@@ -164,4 +164,9 @@ export class NotesComponent implements OnInit, OnDestroy {
             this.setSelectedNote(null);
         }
     }
+
+    public drag(event: any, note: Note): void {
+        // log.info(note.id);
+        event.dataTransfer.setData('text', note.id);
+    }
 }

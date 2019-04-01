@@ -19,6 +19,7 @@ import { trigger, style, animate, state, transition } from '@angular/animations'
 import { debounceTime } from "rxjs/internal/operators";
 import { remote } from 'electron';
 import * as path from 'path';
+import log from 'electron-log';
 
 @Component({
   selector: 'collection-page',
@@ -313,5 +314,17 @@ export class CollectionComponent implements OnInit, OnDestroy {
   private async getNotebooksAndResetSelectionAsync(): Promise<void> {
     await this.getNotebooksAsync();
     this.selectFirstNotebook();
+  }
+
+  public allowDrop(event: any, notebook: Notebook): void {
+    event.preventDefault();
+    log.info(notebook.id);
+  }
+
+  public drop(event: any, notebook: Notebook): void {
+    event.preventDefault();
+    let noteId: string = event.dataTransfer.getData('text');
+    log.info(noteId);
+    log.info(notebook.id);
   }
 }

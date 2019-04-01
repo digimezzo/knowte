@@ -23,8 +23,8 @@
                     <!-- Notebooks list -->
                     <mat-selection-list dense class="collection-notebooks-list-list">
                         <mat-list-option [ngClass]="{'selected-notebook':notebook === selectedNotebook }" class="notebook"
-                            *ngFor="let notebook of notebooks" role="option">
-                            <p class="notebook-name no-select"
+                            *ngFor="let notebook of notebooks" role="option" (drop)="drop($event, notebook)" (dragover)="allowDrop($event, notebook)">
+                            <p class="notebook-name no-select" 
                                 [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
                                 (click)="setSelectedNotebook(notebook)">
                                 {{ notebook.name }}</p>

@@ -4,24 +4,22 @@
         <cdk-virtual-scroll-viewport itemSize="48">
             <mat-list-option [ngClass]="{'selected-note':note === selectedNote }" *cdkVirtualFor="let note of notes"
                 role="option">
-                <div class="no-select" (dblclick)="openNote()" (click)="setSelectedNote(note)">
-                    <div class="note-item px-2">
-                        <div class="note-item-icon">
-                            <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg">
+                <div class="note-item no-select px-2" (dblclick)="openNote()" (click)="setSelectedNote(note)" draggable="true" (dragstart)="drag($event, note)">
+                    <div class="note-item-icon">
+                        <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg">
+                    </div>
+                    <div class="note-item-info px-1">
+                        <div class="note-item-title">
+                            <span>{{ note.title }}</span>
                         </div>
-                        <div class="note-item-info px-1">
-                            <div class="note-item-title">
-                                <span>{{ note.title }}</span>
-                            </div>
-                            <div class="note-item-date">
-                                <span>{{ note.displayModificationDate }}</span>
-                            </div>
+                        <div class="note-item-date">
+                            <span>{{ note.displayModificationDate }}</span>
                         </div>
-                        <div class="note-item-actions">
-                            <div (click)="toggleNoteMark(note)">
-                                <span class="note-item-actions-heart-marked" *ngIf="note.isMarked">&#xE87D;</span>
-                                <span class="note-item-actions-heart-unmarked" *ngIf="!note.isMarked">&#xE87E;</span>
-                            </div>
+                    </div>
+                    <div class="note-item-actions">
+                        <div (click)="toggleNoteMark(note)">
+                            <span class="note-item-actions-heart-marked" *ngIf="note.isMarked">&#xE87D;</span>
+                            <span class="note-item-actions-heart-unmarked" *ngIf="!note.isMarked">&#xE87E;</span>
                         </div>
                     </div>
                 </div>
