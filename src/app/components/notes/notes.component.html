@@ -1,6 +1,11 @@
 <div class="notes">
     <!-- Drag image -->
-    <div id="drag-image">&#xE02F;</div>
+    <div class="drag-image" id="drag-image">
+        <div class="drag-image-icon">
+            <img class="drag-image-icon-pen" src="./assets/images/pencil_256x256.svg">
+        </div>
+        <div class="drag-image-text mx-1">{{ draggedNote?.title }}</div>
+    </div>
     <!-- Notes list -->
     <mat-selection-list class="notes-list" *ngIf="canShowList">
         <cdk-virtual-scroll-viewport itemSize="48">

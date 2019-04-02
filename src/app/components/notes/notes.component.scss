@@ -9,15 +9,39 @@
   width: 100%;
 }
 
-#drag-image {
+.drag-image {
   position: absolute;
   top: -500px;
   left: 0;
-  font-family: material;
-  font-size: 32px;
-  line-height: 32px;
-  @extend .color-primary;
   z-index: 0; // z-index is required. Otherwise the image isn't displayed while dragging. The value of z-index doesn't seem to matter.
+  border: 1px solid $color-lightgrey-border;
+  height: 38px;
+  display: flex;
+  flex-direction: row;
+  background: white;
+  align-items: center;
+  justify-content: center;
+}
+
+.drag-image-icon {
+  @extend .background-color-primary;
+  margin: 4px;
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drag-image-icon-pen {
+  width: 14px;
+  height: 14px;
+}
+
+.drag-image-text{
+  flex: 1;
 }
 
 .notes-list {

@@ -59,6 +59,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     public notes: Note[] = [];
     public selectedNote: Note;
+    public draggedNote: Note;
     public canShowList: boolean = true;
 
     public ngOnDestroy(): void {
@@ -172,7 +173,8 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     public drag(event: any, note: Note): void {
         //event.dataTransfer.setDragImage(this.dragImage, 0, 0);
-        event.dataTransfer.setDragImage(document.getElementById('drag-image'), 0, 0);
+        this.draggedNote = note;
+        event.dataTransfer.setDragImage(document.getElementById('drag-image'), -10, -10);
         event.dataTransfer.setData('text', note.id);
     }
 }
