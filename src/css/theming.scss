@@ -1,9 +1,9 @@
 @import "~@angular/material/theming";
 @include mat-core();
 
-@import 'themes/default-theme.scss';
-@import 'themes/ubuntu-theme.scss';
-
+@import 'themes/default-blue-theme.scss';
+@import 'themes/ubuntu-orange-theme.scss';
+@import 'themes/linuxmint-green-theme.scss';
 
 // Material Blue
 // $blue-theme-primary: mat-palette($mat-blue);
@@ -34,17 +34,22 @@
 }
 
 // Default
-@include angular-material-theme($default-theme);
-@include set-primary-color($default-theme-primary);
+@include angular-material-theme($default-blue-theme);
+@include set-primary-color($default-blue-theme-primary);
 
-.default-theme {
-  @include angular-material-theme($default-theme);
-  @include set-primary-color($default-theme-primary);
+.default-blue-theme {
+  @include angular-material-theme($default-blue-theme);
+  @include set-primary-color($default-blue-theme-primary);
 }
 
-.ubuntu-theme {
-  @include angular-material-theme($ubuntu-theme);
-  @include set-primary-color($ubuntu-theme-primary);
+.ubuntu-orange-theme {
+  @include angular-material-theme($ubuntu-orange-theme);
+  @include set-primary-color($ubuntu-orange-theme-primary);
+}
+
+.linuxmint-green-theme {
+  @include angular-material-theme($linuxmint-green-theme);
+  @include set-primary-color($linuxmint-green-theme-primary);
 }
 
 // .blue-theme {

@@ -1,5 +1,5 @@
 // Created with: http://mcg.mbitson.com/
-$default-palette: (
+$default-blue-palette: (
   50: #e4effa,
   100: #bbd8f2,
   200: #8ebeea,
@@ -32,7 +32,7 @@ $default-palette: (
   )
 );
 
-$default-theme-primary: mat-palette($default-palette);
-$default-theme-accent: mat-palette($default-palette);
-$default-theme-warn: mat-palette($default-palette);
-$default-theme: mat-light-theme($default-theme-primary, $default-theme-accent, $default-theme-warn);
+$default-blue-theme-primary: mat-palette($default-blue-palette);
+$default-blue-theme-accent: mat-palette($default-blue-palette);
+$default-blue-theme-warn: mat-palette($default-blue-palette);
+$default-blue-theme: mat-light-theme($default-blue-theme-primary, $default-blue-theme-accent, $default-blue-theme-warn);

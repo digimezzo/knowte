@@ -1,5 +1,5 @@
 // Created with: http://mcg.mbitson.com/
-$ubuntu-palette: (
+$ubuntu-orange-palette: (
   50: #fceae4,
   100: #f8ccbc,
   200: #f4aa90,
@@ -32,7 +32,7 @@ $ubuntu-palette: (
   )
 );
 
-$ubuntu-theme-primary: mat-palette($ubuntu-palette);
-$ubuntu-theme-accent: mat-palette($ubuntu-palette);
-$ubuntu-theme-warn: mat-palette($ubuntu-palette);
-$ubuntu-theme: mat-light-theme($ubuntu-theme-primary, $ubuntu-theme-accent, $ubuntu-theme-warn);
+$ubuntu-orange-theme-primary: mat-palette($ubuntu-orange-palette);
+$ubuntu-orange-theme-accent: mat-palette($ubuntu-orange-palette);
+$ubuntu-orange-theme-warn: mat-palette($ubuntu-orange-palette);
+$ubuntu-orange-theme: mat-light-theme($ubuntu-orange-theme-primary, $ubuntu-orange-theme-accent, $ubuntu-orange-theme-warn);
