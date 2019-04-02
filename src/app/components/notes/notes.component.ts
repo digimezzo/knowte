@@ -27,6 +27,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
     private readonly destroy$ = new Subject();
     private _selectedNotebook: Notebook;
+    private dragImage: HTMLImageElement;
 
     constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
         public searchService: SearchService, private settingsService: SettingsService, private zone: NgZone) {
@@ -67,6 +68,10 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public async ngOnInit(): Promise<void> {
+        // Drag image
+        this.dragImage = document.createElement("img");
+        this.dragImage.src = "assets/icons/png/64x64.png";
+
         // Workaround for auto reload
         await this.collectionService.initializeAsync();
 
@@ -166,7 +171,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public drag(event: any, note: Note): void {
-        // log.info(note.id);
+        event.dataTransfer.setDragImage(this.dragImage, 0, 0);
         event.dataTransfer.setData('text', note.id);
     }
 }
