@@ -22,9 +22,11 @@
                 <div class="collection-notebooks-list">
                     <!-- Notebooks list -->
                     <mat-selection-list dense class="collection-notebooks-list-list">
-                        <mat-list-option [ngClass]="{'selected-notebook':notebook === selectedNotebook }" class="notebook"
-                            *ngFor="let notebook of notebooks" role="option" (drop)="drop($event, notebook)" (dragover)="allowDrop($event, notebook)">
-                            <p class="notebook-name no-select" 
+                        <mat-list-option class="notebook"
+                            [ngClass]="{'selected-notebook':notebook === selectedNotebook, 'hovered-notebook':notebook === hoveredNotebook }"
+                            *ngFor="let notebook of notebooks" role="option" (drop)="drop($event, notebook)"
+                            (dragover)="dragOver($event, notebook)" (dragleave)="dragLeave($event)">
+                            <p class="notebook-name no-select"
                                 [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
                                 (click)="setSelectedNotebook(notebook)">
                                 {{ notebook.name }}</p>
@@ -48,8 +50,8 @@
                 </div>
             </div>
             <!-- Selected notebook and search -->
-            <selectednotebookandsearch-component class="selected-notebook-and-search" [selectedNotebook]="selectedNotebook"
-            [(notesCount)]="notesCount">
+            <selectednotebookandsearch-component class="selected-notebook-and-search"
+                [selectedNotebook]="selectedNotebook" [(notesCount)]="notesCount">
             </selectednotebookandsearch-component>
             <!-- Note buttons -->
             <div class="note-buttons m-2" [@noteButtonsVisibility]="noteButtonsVisibility">
@@ -61,7 +63,8 @@
                     matTooltip="{{ 'Tooltips.ImportNote' | translate }}">
                     <span class="edit-item-icon-import">&#xF56F;</span>
                 </button>
-                <button class="list-button" mat-fab (click)="addNoteAsync()" matTooltip="{{ 'Tooltips.AddNote' | translate }}">
+                <button class="list-button" mat-fab (click)="addNoteAsync()"
+                    matTooltip="{{ 'Tooltips.AddNote' | translate }}">
                     <span class="add-item-icon">&#xE145;</span>
                 </button>
             </div>
@@ -73,7 +76,7 @@
                         <div class="count-label">{{allNotesCount}}</div>
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="allCategory"
-                        [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)" 
+                        [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
                         (selectedNoteOutput)="onSelectedNoteChanged($event)"></notes-component>
                 </mat-tab>
                 <mat-tab>

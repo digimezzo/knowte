@@ -56,6 +56,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   public markedNotesCount: number = 0;
   public notebooks: Notebook[];
   public selectedNotebook: Notebook;
+  public hoveredNotebook: Notebook;
   public canEditNotebook: boolean = false;
   public noteButtonsVisibility: string = 'visible';
   public selectedNote: Note;
@@ -316,15 +317,25 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.selectFirstNotebook();
   }
 
-  public allowDrop(event: any, notebook: Notebook): void {
+  public dragOver(event: any, notebook: Notebook): void {
     event.preventDefault();
-    log.info(notebook.id);
+
+    // We cannot drop into "All notes"
+    if(notebook.id !== Constants.allNotesNotebookId){
+      this.hoveredNotebook = notebook;
+    } 
+  }
+
+  public dragLeave(event: any): void {
+    event.preventDefault();
+    this.hoveredNotebook = null;
   }
 
   public drop(event: any, notebook: Notebook): void {
     event.preventDefault();
     let noteId: string = event.dataTransfer.getData('text');
-    log.info(noteId);
-    log.info(notebook.id);
+    this.hoveredNotebook = null;
+
+    this.collectionService.setNotebook(noteId, notebook.id);
   }
 }

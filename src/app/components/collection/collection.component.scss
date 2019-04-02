@@ -107,6 +107,11 @@
   background-color: #e6e7e7;
 }
 
+.hovered-notebook {
+  background-color: #e6e7e7;
+  @extend .color-primary;
+}
+
 .selected-notebook-and-search {
   position: absolute;
   top: 48px;
