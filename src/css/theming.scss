@@ -31,6 +31,11 @@
   .background-color-primary {
     background-color: mat-color($theme-primary) !important;
   }
+
+  .hovered-color-primary {
+    color: mat-color($theme-primary) !important;
+    background-color: mat-color($theme-primary, 0.1) !important;
+  }
 }
 
 // Default

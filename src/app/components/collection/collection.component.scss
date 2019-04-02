@@ -108,8 +108,7 @@
 }
 
 .hovered-notebook {
-  background-color: #e6e7e7;
-  @extend .color-primary;
+  @extend .hovered-color-primary;
 }
 
 .selected-notebook-and-search {
