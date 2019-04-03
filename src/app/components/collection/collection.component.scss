@@ -107,8 +107,8 @@
   background-color: $color-mediumgrey;
 }
 
-.hovered-notebook {
-  @extend .hovered-color-primary;
+.drop-notebook {
+  @extend .drop-background-color-primary;
 }
 
 .selected-notebook-and-search {

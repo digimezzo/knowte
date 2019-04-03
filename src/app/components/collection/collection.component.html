@@ -23,7 +23,7 @@
                     <!-- Notebooks list -->
                     <mat-selection-list dense class="collection-notebooks-list-list">
                         <mat-list-option class="notebook"
-                            [ngClass]="{'selected-notebook':notebook === selectedNotebook, 'hovered-notebook':notebook === hoveredNotebook }"
+                            [ngClass]="{'selected-notebook':notebook === selectedNotebook, 'drop-notebook':notebook === hoveredNotebook }"
                             *ngFor="let notebook of notebooks" role="option" (drop)="drop($event, notebook)"
                             (dragover)="dragOver($event, notebook)" (dragleave)="dragLeave($event)">
                             <p class="notebook-name no-select"
