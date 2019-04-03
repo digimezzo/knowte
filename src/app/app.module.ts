@@ -56,6 +56,7 @@ import { GlobalErrorHandler } from './globalErrorHandler';
 import { SelectedNotebookAndSearchComponent } from './components/selectedNotebookAndSearch/selectedNotebookAndSearch.component';
 import { SettingsService } from './services/settings.service';
 import { TruncatePipe } from './pipes/truncatePipe';
+import { FileService } from './services/file.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -122,6 +123,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ElectronService,
     CollectionService,
     SettingsService,
+    FileService,
     DataStore,
     {
       provide: ErrorHandler,

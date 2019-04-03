@@ -776,29 +776,38 @@ export class CollectionService {
     return isImportSuccessful;
   }
 
-  public async importNoteFileAsync(noteFilePath: string): Promise<boolean> {
-    try {
-      let noteFileContent: string = await fs.readFile(noteFilePath);
-      let noteExport: NoteExport = JSON.parse(noteFileContent);
-      let proposedNoteTitle: string = `${noteExport.title} (${await this.translateService.get('Notes.Imported').toPromise()})`
-      let uniqueNoteTitle: string = this.getUniqueNoteNoteTitle(proposedNoteTitle);
+  public async importNoteFilesAsync(noteFilePaths: string[]): Promise<boolean> {
+    let numberofImportedNoteFiles: number = 0;
+    let isImportSuccessful: boolean = true;
 
-      this.dataStore.addNote(uniqueNoteTitle, "");
+    for (let noteFilePath of noteFilePaths) {
+      try {
+        let noteFileContent: string = await fs.readFile(noteFilePath);
+        let noteExport: NoteExport = JSON.parse(noteFileContent);
+        let proposedNoteTitle: string = `${noteExport.title} (${await this.translateService.get('Notes.Imported').toPromise()})`
+        let uniqueNoteTitle: string = this.getUniqueNoteNoteTitle(proposedNoteTitle);
 
-      let note: Note = this.dataStore.getNoteByTitle(uniqueNoteTitle);
-      note.text = noteExport.text;
-      this.dataStore.updateNoteWithoutDate(note);
+        this.dataStore.addNote(uniqueNoteTitle, "");
 
-      let activeCollection: string = this.settingsService.activeCollection;
-      let storageDirectory: string = this.settingsService.storageDirectory;
-      await fs.writeFile(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${note.id}${Constants.noteContentExtension}`), noteExport.content);
-    } catch (error) {
-      return false;
+        let note: Note = this.dataStore.getNoteByTitle(uniqueNoteTitle);
+        note.text = noteExport.text;
+        this.dataStore.updateNoteWithoutDate(note);
+
+        let activeCollection: string = this.settingsService.activeCollection;
+        let storageDirectory: string = this.settingsService.storageDirectory;
+        await fs.writeFile(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${note.id}${Constants.noteContentExtension}`), noteExport.content);
+        numberofImportedNoteFiles++;
+      } catch (error) {
+        log.error(`An error occurred while importing note file '${noteFilePath}'. Cause: ${error}`);
+        isImportSuccessful = false;
+      }
     }
 
-    this.noteEdited.next();
+    if (numberofImportedNoteFiles > 0) {
+      this.noteEdited.next();
+    }
 
-    return true;
+    return isImportSuccessful;
   }
 
   private getNotePath(noteId: string) {

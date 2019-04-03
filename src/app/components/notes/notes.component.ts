@@ -15,6 +15,7 @@ import * as Store from 'electron-store';
 import { remote } from 'electron';
 import log from 'electron-log';
 import { SettingsService } from '../../services/settings.service';
+import { FileService } from '../../services/file.service';
 
 @Component({
     selector: 'notes-component',
@@ -30,7 +31,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     private dragImage: HTMLImageElement;
 
     constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
-        public searchService: SearchService, private settingsService: SettingsService, private zone: NgZone) {
+        public searchService: SearchService, private settingsService: SettingsService, private fileService: FileService, private zone: NgZone) {
     }
 
     @Input()
@@ -179,29 +180,14 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public drop(event: any): void {
-        log.info("File dropped");
         event.preventDefault();
 
-        if (event.dataTransfer.items) {
-            // Use DataTransferItemList interface to access the file(s)
-            for (let i: number = 0; i < event.dataTransfer.items.length; i++) {
-                // If dropped items aren't files, reject them.
-                if (event.dataTransfer.items[i].kind === 'file') {
-                    let file: any = event.dataTransfer.items[i].getAsFile();
-                    log.info('... file[' + i + '].name = ' + file.path);
-                }
-            }
-        } else {
-            // Use DataTransfer interface to access the file(s)
-            for (let i: number = 0; i < event.dataTransfer.files.length; i++) {
-                log.info('... file[' + i + '].name = ' + event.dataTransfer.files[i].path);
-            }
-        }
+        let pathsOfDroppedFiles: string[] = this.fileService.getPathsOfDroppedFiles(event);
+
+        // TODO
     }
 
     public dragOver(event: any): void {
-        log.info("File(s) in drop zone");
-
         // Prevent default behavior (Prevent file from being opened)
         event.preventDefault();
     }

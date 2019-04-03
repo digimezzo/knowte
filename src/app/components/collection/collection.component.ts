@@ -259,19 +259,16 @@ export class CollectionComponent implements OnInit, OnDestroy {
       if (path.extname(selectedFiles[0]) === Constants.noteExportExtension) {
         this.isBusy = true;
         let noteFilePath: string = selectedFiles[0];
+        let isImportSuccessful: boolean = await this.collectionService.importNoteFilesAsync([noteFilePath]);
+        this.isBusy = false;
 
-        let isImportSuccessful: boolean = await this.collectionService.importNoteFileAsync(noteFilePath);
-
-        if (!isImportSuccessful) {
-          this.isBusy = false;
+        if (!isImportSuccessful) {          
           let generatedErrorText: string = (await this.translateService.get('ErrorTexts.ImportNoteError').toPromise());
 
           this.dialog.open(ErrorDialogComponent, {
             width: '450px', data: { errorText: generatedErrorText }
           });
         }
-
-        this.isBusy = false;
       } else {
         this.snackBarService.invalidNoteFileAsync();
       }
@@ -321,9 +318,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
     event.preventDefault();
 
     // We cannot drop into "All notes"
-    if(notebook.id !== Constants.allNotesNotebookId){
+    if (notebook.id !== Constants.allNotesNotebookId) {
       this.hoveredNotebook = notebook;
-    } 
+    }
   }
 
   public dragLeave(event: any): void {
@@ -338,7 +335,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     let operation: Operation = this.collectionService.setNotebook(noteId, notebook.id);
 
-    if(operation === Operation.Success){
+    if (operation === Operation.Success) {
       this.snackBarService.noteMovedToNotebook(notebook.name);
     }
   }
