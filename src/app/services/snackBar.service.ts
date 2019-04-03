@@ -45,6 +45,12 @@ export class SnackBarService {
         this.showActionSnackBar(message, action);
     }
 
+    public async noteMovedToNotebook(notebookName: string) {
+        let message: string = await this.translate.get('SnackBarMessages.noteMovedToNotebook', { notebookName: notebookName }).toPromise();
+        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();
+        this.showActionSnackBar(message, action);
+    }
+
     private showActionLessSnackBar(message: string) {
         this.zone.run(() => {
             this.snackBar.open(message, '', { duration: this.calculateDuration(message) });

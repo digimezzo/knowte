@@ -591,8 +591,8 @@ export class CollectionService {
     try {
       let note: Note = this.dataStore.getNoteById(noteId);
 
-      if (notebookId === Constants.allNotesNotebookId) {
-        return;
+      if (notebookId === Constants.allNotesNotebookId || notebookId === note.notebookId) {
+        return Operation.Aborted;
       }
 
       if (notebookId === Constants.unfiledNotesNotebookId) {

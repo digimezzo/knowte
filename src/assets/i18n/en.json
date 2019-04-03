@@ -142,7 +142,8 @@
         "NoteTitleCannotBeEmpty": "The note title cannot be empty",
         "CloseNoteBeforeChangingCollections": "Please close all notes before changing collections",
         "NoteExported": "Note '{{noteTitle}}' was exported",
-        "InvalidNoteFile": "This is not a valid note file"
+        "InvalidNoteFile": "This is not a valid note file",
+        "noteMovedToNotebook": "The note was moved to '{{notebookName}}'"
     },
     "SnackBarActions": {
         "Ok": "OK"

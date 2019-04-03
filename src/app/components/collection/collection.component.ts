@@ -336,6 +336,10 @@ export class CollectionComponent implements OnInit, OnDestroy {
     let noteId: string = event.dataTransfer.getData('text');
     this.hoveredNotebook = null;
 
-    this.collectionService.setNotebook(noteId, notebook.id);
+    let operation: Operation = this.collectionService.setNotebook(noteId, notebook.id);
+
+    if(operation === Operation.Success){
+      this.snackBarService.noteMovedToNotebook(notebook.name);
+    }
   }
 }
