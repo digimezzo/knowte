@@ -55,6 +55,7 @@ import { MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDivide
 import { GlobalErrorHandler } from './globalErrorHandler';
 import { SelectedNotebookAndSearchComponent } from './components/selectedNotebookAndSearch/selectedNotebookAndSearch.component';
 import { SettingsService } from './services/settings.service';
+import { TruncatePipe } from './pipes/truncatePipe';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -85,7 +86,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     LogoFullComponent,
     SelectedNotebookAndSearchComponent,
     NoteComponent,
-    WebviewDirective
+    WebviewDirective,
+    TruncatePipe
   ],
   imports: [
     MatListModule,

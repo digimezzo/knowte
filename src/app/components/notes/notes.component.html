@@ -4,7 +4,7 @@
         <div class="drag-image-icon">
             <img class="drag-image-icon-pen" src="./assets/images/pencil_256x256.svg">
         </div>
-        <div class="drag-image-text mx-1">{{ draggedNote?.title }}</div>
+        <div class="drag-image-text mx-1">{{ draggedNote?.title | truncate: 30 : true }}</div>
     </div>
     <!-- Notes list -->
     <mat-selection-list class="notes-list" *ngIf="canShowList">
