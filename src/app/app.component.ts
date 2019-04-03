@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { AppearanceService } from './services/appearance.service';
 import { SettingsService } from './services/settings.service';
+import { remote } from 'electron';
+import { Constants } from './core/constants';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +15,9 @@ import { SettingsService } from './services/settings.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  private globalEmitter = remote.getGlobal('globalEmitter');
+  private themeChangedListener: any = this.applyTheme.bind(this);
+
   constructor(public electronService: ElectronService, public router: Router, private appearanceService: AppearanceService,
     private translateService: TranslateService, private collectionService: CollectionService,
     private settingsService: SettingsService, private overlayContainer: OverlayContainer) {
@@ -28,11 +33,12 @@ export class AppComponent {
   public selectedTheme: string;
 
   public ngOnDestroy(): void {
+    this.globalEmitter.on(Constants.themeChangedEvent, this.themeChangedListener);
   }
 
   public ngOnInit(): void {
-    this.appearanceService.themeChanged$.subscribe((themeName) => this.applyTheme(themeName));
-
+    this.globalEmitter.on(Constants.themeChangedEvent, this.themeChangedListener);
+    
     let showWelcome: boolean = !this.collectionService.hasStorageDirectory;
 
     if (showWelcome) {
