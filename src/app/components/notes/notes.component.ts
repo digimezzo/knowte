@@ -177,4 +177,32 @@ export class NotesComponent implements OnInit, OnDestroy {
         event.dataTransfer.setDragImage(document.getElementById('drag-image'), -10, -10);
         event.dataTransfer.setData('text', note.id);
     }
+
+    public drop(event: any): void {
+        log.info("File dropped");
+        event.preventDefault();
+
+        if (event.dataTransfer.items) {
+            // Use DataTransferItemList interface to access the file(s)
+            for (let i: number = 0; i < event.dataTransfer.items.length; i++) {
+                // If dropped items aren't files, reject them.
+                if (event.dataTransfer.items[i].kind === 'file') {
+                    let file: any = event.dataTransfer.items[i].getAsFile();
+                    log.info('... file[' + i + '].name = ' + file.path);
+                }
+            }
+        } else {
+            // Use DataTransfer interface to access the file(s)
+            for (let i: number = 0; i < event.dataTransfer.files.length; i++) {
+                log.info('... file[' + i + '].name = ' + event.dataTransfer.files[i].path);
+            }
+        }
+    }
+
+    public dragOver(event: any): void {
+        log.info("File(s) in drop zone");
+
+        // Prevent default behavior (Prevent file from being opened)
+        event.preventDefault();
+    }
 }
