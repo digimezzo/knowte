@@ -158,9 +158,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
             break;
           }
           case Operation.Error: {
-            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.AddNotebookError', { notebookName: notebookName }).toPromise());
+            let errorText: string = (await this.translateService.get('ErrorTexts.AddNotebookError', { notebookName: notebookName }).toPromise());
             this.dialog.open(ErrorDialogComponent, {
-              width: '450px', data: { errorText: generatedErrorText }
+              width: '450px', data: { errorText: errorText }
             });
             break;
           }
@@ -194,9 +194,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
         let operation: Operation = await this.collectionService.deleteNotebookAsync(this.selectedNotebook.id);
 
         if (operation === Operation.Error) {
-          let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteNotebookError', { notebookName: notebookName }).toPromise());
+          let errorText: string = (await this.translateService.get('ErrorTexts.DeleteNotebookError', { notebookName: notebookName }).toPromise());
           this.dialog.open(ErrorDialogComponent, {
-            width: '450px', data: { errorText: generatedErrorText }
+            width: '450px', data: { errorText: errorText }
           });
         }
       }
@@ -238,9 +238,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
         let operation: Operation = await this.collectionService.deleteNoteAsync(this.selectedNote.id);
 
         if (operation === Operation.Error) {
-          let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteNoteError', { noteTitle: this.selectedNote.title }).toPromise());
+          let errorText: string = (await this.translateService.get('ErrorTexts.DeleteNoteError', { noteTitle: this.selectedNote.title }).toPromise());
           this.dialog.open(ErrorDialogComponent, {
-            width: '450px', data: { errorText: generatedErrorText }
+            width: '450px', data: { errorText: errorText }
           });
         }
       }
@@ -262,11 +262,11 @@ export class CollectionComponent implements OnInit, OnDestroy {
         let isImportSuccessful: boolean = await this.collectionService.importNoteFilesAsync([noteFilePath]);
         this.isBusy = false;
 
-        if (!isImportSuccessful) {          
-          let generatedErrorText: string = (await this.translateService.get('ErrorTexts.ImportNoteError').toPromise());
+        if (!isImportSuccessful) {
+          let errorText: string = (await this.translateService.get('ErrorTexts.ImportNoteError').toPromise());
 
           this.dialog.open(ErrorDialogComponent, {
-            width: '450px', data: { errorText: generatedErrorText }
+            width: '450px', data: { errorText: errorText }
           });
         }
       } else {
@@ -328,15 +328,21 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.hoveredNotebook = null;
   }
 
-  public drop(event: any, notebook: Notebook): void {
+  public async drop(event: any, notebook: Notebook): Promise<void> {
     event.preventDefault();
     let noteId: string = event.dataTransfer.getData('text');
     this.hoveredNotebook = null;
 
-    let operation: Operation = this.collectionService.setNotebook(noteId, notebook.id);
+    let operation: Operation = this.collectionService.setNotebook(notebook.id, [noteId]);
 
     if (operation === Operation.Success) {
       this.snackBarService.noteMovedToNotebook(notebook.name);
+    } else if (operation === Operation.Error) {
+      let errorText: string = (await this.translateService.get('ErrorTexts.ChangeNotebookError').toPromise());
+
+      this.dialog.open(ErrorDialogComponent, {
+        width: '450px', data: { errorText: errorText }
+      });
     }
   }
 }

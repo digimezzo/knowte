@@ -134,7 +134,8 @@
         "UpdateNoteContentError": "Une erreur s'est produite lors de l'enregistrement du contenu de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "GetNoteContentError": "Une erreur s'est produite lors de l'obtention du contenu de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "ExportNoteError": "Une erreur s'est produite lors de l'export de la note '{{noteTitle}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
-        "ImportNoteError": "Une erreur s'est produite lors de l'import de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations."
+        "ImportNoteError": "Une erreur s'est produite lors de l'import de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "ChangeNotebookError": "Une erreur s'est produite lors du changement de bloc-note. Veuillez vérifier le log si vous avez besoin de plus d'informations."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "Il existe déjà une collection portant le nom '{{collection}}'",

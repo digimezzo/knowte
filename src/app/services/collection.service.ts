@@ -587,29 +587,34 @@ export class CollectionService {
     this.globalEmitter.emit(Constants.noteMarkChangedEvent, note.id, note.isMarked);
   }
 
-  public setNotebook(noteId: string, notebookId: string): Operation {
-    try {
-      let note: Note = this.dataStore.getNoteById(noteId);
+  public setNotebook(notebookId: string, noteIds: string[]): Operation {
+    let setNotebookOperation: Operation = Operation.Success;
 
-      if (notebookId === Constants.allNotesNotebookId || notebookId === note.notebookId) {
-        return Operation.Aborted;
+    for (let noteId of noteIds) {
+      try {
+        let note: Note = this.dataStore.getNoteById(noteId);
+  
+        if (notebookId === Constants.allNotesNotebookId || notebookId === note.notebookId) {
+          // Skip this note
+          continue;
+        }
+  
+        if (notebookId === Constants.unfiledNotesNotebookId) {
+          notebookId = "";
+        }
+  
+        note.notebookId = notebookId;
+        this.dataStore.updateNote(note);
+        this.sendNotebookNameAsync(noteId);
+      } catch (error) {
+        log.error(`Could not set the notebook for the note with id='${noteId}' to notebook with id='${notebookId}'. Cause: ${error}`);
+        setNotebookOperation = Operation.Error;
       }
-
-      if (notebookId === Constants.unfiledNotesNotebookId) {
-        notebookId = "";
-      }
-
-      note.notebookId = notebookId;
-      this.dataStore.updateNote(note);
-    } catch (error) {
-      log.error(`Could not set the notebook for the note with id='${noteId}' to notebook with id='${notebookId}'. Cause: ${error}`);
-      return Operation.Error;
     }
 
     this.noteNotebookChanged.next();
-    this.sendNotebookNameAsync(noteId);
 
-    return Operation.Success;
+    return setNotebookOperation;
   }
 
   public setNoteTitleEventHandler(noteId: string, initialNoteTitle: string, finalNoteTitle: string, callback: any) {

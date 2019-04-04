@@ -219,10 +219,10 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.isBusy = false;
             log.error(`An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`);
 
-            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }).toPromise());
+            let errorText: string = (await this.translateService.get('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }).toPromise());
 
             this.dialog.open(ErrorDialogComponent, {
-                width: '450px', data: { errorText: generatedErrorText }
+                width: '450px', data: { errorText: errorText }
             });
         }
     }
@@ -347,11 +347,11 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.snackBarService.noteTitleCannotBeEmptyAsync();
         } else if (result.operation === Operation.Error) {
             this.zone.run(() => this.noteTitle = this.initialNoteTitle);
-            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.initialNoteTitle }).toPromise());
+            let errorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.initialNoteTitle }).toPromise());
 
             this.zone.run(() => {
                 this.dialog.open(ErrorDialogComponent, {
-                    width: '450px', data: { errorText: generatedErrorText }
+                    width: '450px', data: { errorText: errorText }
                 });
             });
         } else if (result.operation === Operation.Success) {
@@ -391,11 +391,11 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
 
         if (showErrorDialog) {
-            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.UpdateNoteContentError').toPromise());
+            let errorText: string = (await this.translateService.get('ErrorTexts.UpdateNoteContentError').toPromise());
 
             this.zone.run(() => {
                 this.dialog.open(ErrorDialogComponent, {
-                    width: '450px', data: { errorText: generatedErrorText }
+                    width: '450px', data: { errorText: errorText }
                 });
             });
         }
@@ -425,10 +425,10 @@ export class NoteComponent implements OnInit, OnDestroy {
         } catch (error) {
             log.error(`Could not get the content for the note with id='${this.noteId}'. Cause: ${error}`);
 
-            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.GetNoteContentError').toPromise());
+            let errorText: string = (await this.translateService.get('ErrorTexts.GetNoteContentError').toPromise());
 
             this.dialog.open(ErrorDialogComponent, {
-                width: '450px', data: { errorText: generatedErrorText }
+                width: '450px', data: { errorText: errorText }
             });
         }
     }

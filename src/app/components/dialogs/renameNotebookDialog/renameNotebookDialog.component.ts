@@ -29,10 +29,10 @@ export class RenameNotebookDialogComponent implements OnInit {
         let operation: Operation = await this.collectionService.renameNotebookAsync(this.notebookId, this.notebookName);
 
         if (operation === Operation.Error) {
-            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameNotebookError', { notebookName: this.notebookName }).toPromise());
+            let errorText: string = (await this.translateService.get('ErrorTexts.RenameNotebookError', { notebookName: this.notebookName }).toPromise());
 
             this.dialog.open(ErrorDialogComponent, {
-                width: '450px', data: { errorText: generatedErrorText }
+                width: '450px', data: { errorText: errorText }
             });
         } else if (operation === Operation.Duplicate) {
             this.snackBarService.duplicateNotebookAsync(this.notebookName);

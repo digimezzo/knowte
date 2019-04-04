@@ -29,10 +29,10 @@ export class RenameCollectionDialogComponent implements OnInit {
         let operation: Operation = await this.collectionService.renameCollectionAsync(this.oldCollection, this.newCollection);
 
         if (operation === Operation.Error) {
-            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.RenameCollectionError', { collection: this.newCollection }).toPromise());
+            let errorText: string = (await this.translateService.get('ErrorTexts.RenameCollectionError', { collection: this.newCollection }).toPromise());
 
             this.dialog.open(ErrorDialogComponent, {
-                width: '450px', data: { errorText: generatedErrorText }
+                width: '450px', data: { errorText: errorText }
             });
         } else if (operation === Operation.Duplicate) {
             this.snackBarService.duplicateCollectionAsync(this.newCollection);

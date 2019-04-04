@@ -134,7 +134,8 @@
         "UpdateNoteContentError": "An error occurred while saving the note content. Please verify the log if you need more information.",
         "GetNoteContentError": "An error occurred while getting the note content. Please verify the log if you need more information.",
         "ExportNoteError": "An error occurred while exporting the note '{{noteTitle}}'. Please verify the log if you need more information.",
-        "ImportNoteError": "An error occurred while importing the note. Please verify the log if you need more information."
+        "ImportNoteError": "An error occurred while importing the note. Please verify the log if you need more information.",
+        "ChangeNotebookError": "An error occurred while changing the notebook. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "There is already a collection with the name '{{collection}}'",

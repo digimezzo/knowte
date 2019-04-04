@@ -64,9 +64,9 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
             break;
           }
           case Operation.Error: {
-            let generatedErrorText: string = (await this.translateService.get('ErrorTexts.AddCollectionError', { collection: collection }).toPromise());
+            let errorText: string = (await this.translateService.get('ErrorTexts.AddCollectionError', { collection: collection }).toPromise());
             this.dialog.open(ErrorDialogComponent, {
-              width: '450px', data: { errorText: generatedErrorText }
+              width: '450px', data: { errorText: errorText }
             });
             break;
           }
@@ -122,9 +122,9 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
         let operation: Operation = await this.collectionService.deleteCollectionAsync(collection);
 
         if (operation === Operation.Error) {
-          let generatedErrorText: string = (await this.translateService.get('ErrorTexts.DeleteCollectionError', { collection: collection }).toPromise());
+          let errorText: string = (await this.translateService.get('ErrorTexts.DeleteCollectionError', { collection: collection }).toPromise());
           this.dialog.open(ErrorDialogComponent, {
-            width: '450px', data: { errorText: generatedErrorText }
+            width: '450px', data: { errorText: errorText }
           });
         }
       }

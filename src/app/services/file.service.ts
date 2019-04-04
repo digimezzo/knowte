@@ -6,7 +6,11 @@ import log from 'electron-log';
     providedIn: 'root',
 })
 export class FileService {
-    constructor() { }
+    constructor(private collectionService: CollectionService) { }
+
+    public isDroppingFiles(dropEvent: any): boolean {
+        return this.getPathsOfDroppedFiles(dropEvent).length > 0;
+    }
 
     public getPathsOfDroppedFiles(dropEvent: any): string[] {
         let pathsOfDroppedFiles: string[] = [];
