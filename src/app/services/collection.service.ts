@@ -776,7 +776,7 @@ export class CollectionService {
     return isImportSuccessful;
   }
 
-  public async importNoteFilesAsync(noteFilePaths: string[]): Promise<boolean> {
+  public async importNoteFilesAsync(noteFilePaths: string[], notebookId: string = null): Promise<boolean> {
     let numberofImportedNoteFiles: number = 0;
     let isImportSuccessful: boolean = true;
 
@@ -791,6 +791,11 @@ export class CollectionService {
 
         let note: Note = this.dataStore.getNoteByTitle(uniqueNoteTitle);
         note.text = noteExport.text;
+
+        if (notebookId && notebookId !== Constants.allNotesNotebookId && notebookId !== Constants.unfiledNotesNotebookId) {
+          note.notebookId = notebookId;
+        }
+
         this.dataStore.updateNoteWithoutDate(note);
 
         let activeCollection: string = this.settingsService.activeCollection;
