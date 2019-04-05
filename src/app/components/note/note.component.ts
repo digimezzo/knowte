@@ -136,6 +136,13 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.noteTitleChanged.next(newNoteTitle);
     }
 
+    @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+        if (this.settingsService.closeNotesWithEscape) {
+            let window: BrowserWindow = remote.getCurrentWindow();
+            window.close();
+        }
+    }
+
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     public beforeunloadHandler(event): void {
