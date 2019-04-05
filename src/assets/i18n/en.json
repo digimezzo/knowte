@@ -68,6 +68,7 @@
         "Actions": "Actions",
         "MarkNote": "Mark note",
         "UnmarkNote": "Unmark note",
+        "PrintNote": "Print note...",
         "ExportNote": "Export note...",
         "ImportNote": "Import note...",
         "AddNotebook": "Add notebook...",

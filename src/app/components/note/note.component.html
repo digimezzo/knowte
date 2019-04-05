@@ -27,9 +27,13 @@
                     color="" (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.MarkNote' | translate }}">
                     <span class="note-content-floating-button-icon-action">&#xE87E;</span>
                 </button>
-                <button *ngIf="canPerformActions && !isMarked" class="note-content-floating-button" mat-mini-fab
+                <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab
                     color="" (click)="exportNoteAsync()" matTooltip="{{ 'Tooltips.ExportNote' | translate }}">
                     <span class="note-content-floating-button-icon-action-export">&#xF56E;</span>
+                </button>
+                <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab
+                    color="" (click)="printNote()" matTooltip="{{ 'Tooltips.PrintNote' | translate }}">
+                    <span class="note-content-floating-button-icon-action">&#xE555;</span>
                 </button>
                 <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
                     (click)="deleteNoteAsync()" matTooltip="{{ 'Tooltips.DeleteNote' | translate }}">

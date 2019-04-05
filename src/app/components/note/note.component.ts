@@ -20,6 +20,7 @@ import { Utils } from '../../core/utils';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { NoteExport } from '../../core/noteExport';
 import { SettingsService } from '../../services/settings.service';
+import { ipcRenderer } from 'electron';
 
 @Component({
     selector: 'note-content',
@@ -169,6 +170,50 @@ export class NoteComponent implements OnInit, OnDestroy {
     public toggleNoteMark(): void {
         this.hideActionButtonsDelayedAsync();
         this.globalEmitter.emit(Constants.setNoteMarkEvent, this.noteId, !this.isMarked);
+    }
+
+    public printNote(): void {
+        this.hideActionButtons();
+        this.sendCommandToWorker("print", `<div>${this.createPrintCss()}<p style="font-size: 30px;">${this.noteTitle}</p><hr><p>${this.quill.root.innerHTML}</p></div>`);
+    }
+
+    private createPrintCss(): string {
+        return `<style type="text/css" scoped>
+                    * {
+                        font-family: sans-serif;
+                    }
+
+                    h1,
+                    a {
+                        color: #1d7dd4;
+                    }
+
+                    h2{
+                        color: #748393;
+                    }
+
+                    pre {
+                        background-color: #f0f0f0;
+                        border-radius: 3px;
+                        white-space: pre-wrap;
+                        margin: 5px 0 5px 0;
+                        padding: 5px 10px;
+                    }
+
+                    pre.ql-syntax {
+                        background-color: #23241f;
+                        color: #f8f8f2;
+                        overflow: visible;
+
+                        font-family: monospace;
+                    }
+
+                    blockquote {
+                        border-left: 4px solid #ccc;
+                        margin: 5px 0 5px 0;
+                        padding: 0 0 0 16px;
+                    }
+                </style>`;
     }
 
     public async deleteNoteAsync(): Promise<void> {
@@ -440,5 +485,9 @@ export class NoteComponent implements OnInit, OnDestroy {
     private async hideActionButtonsDelayedAsync(): Promise<void> {
         await Utils.sleep(500);
         this.canPerformActions = false;
+    }
+
+    private sendCommandToWorker(command: string, content: any): void {
+        ipcRenderer.send(command, content);
     }
 }

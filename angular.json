@@ -17,13 +17,13 @@
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
             "assets": [
+              "src/worker.html",
               "src/assets",
               "src/favicon.ico",
               "src/favicon.png",
               "src/favicon.icns",
               "src/favicon.256x256.png",
-              "src/favicon.512x512.png",
-              "src/note.html"
+              "src/favicon.512x512.png"
             ],
             "styles": [
               "src/styles.scss",
@@ -102,6 +102,7 @@
               "src/styles.scss"
             ],
             "assets": [
+              "src/worker.html",
               "src/assets",
               "src/favicon.ico",
               "src/favicon.png",

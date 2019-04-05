@@ -1,0 +1,18 @@
+<html>
+
+<head>
+</head>
+</head>
+
+<body>
+    <script>
+        const ipcRenderer = require("electron").ipcRenderer;
+
+        ipcRenderer.on("print", (event, content) => {
+            document.body.innerHTML = content;
+            ipcRenderer.send("readyToPrint");
+        });
+    </script>
+</body>
+
+</html>

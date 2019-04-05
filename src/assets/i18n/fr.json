@@ -68,6 +68,7 @@
         "Actions": "Actions",
         "MarkNote": "Marquer note",
         "UnmarkNote": "Démarquer note",
+        "PrintNote": "Imprimer note...",
         "ExportNote": "Exporter note...",
         "ImportNote": "Importer note...",
         "AddNotebook": "Ajouter bloc-notes...",

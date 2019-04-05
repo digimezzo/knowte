@@ -21,7 +21,7 @@ var windowStateKeeper = require("electron-window-state");
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
 var electron_log_1 = require("electron-log");
-var mainWindow, serve;
+var mainWindow, workerWindow, serve;
 var args = process.argv.slice(1);
 serve = args.some(function (val) { return val === '--serve'; });
 // Workaround: Global does not allow setting custom properties.
@@ -88,6 +88,15 @@ function createWindow() {
                 slashes: true
             }));
         }
+        workerWindow = new electron_1.BrowserWindow({ show: false });
+        workerWindow.loadURL(url.format({
+            pathname: path.join(__dirname, 'dist/worker.html'),
+            protocol: 'file:',
+            slashes: true
+        }));
+        workerWindow.on("closed", function () {
+            workerWindow = undefined;
+        });
         // mainWindow.webContents.openDevTools();
         // Emitted when the window is closed.
         mainWindow.on('closed', function () {
@@ -167,6 +176,12 @@ try {
     // OPen note windows
     electron_1.ipcMain.on('open-note-window', function (event, arg) {
         createNoteWindow(arg.notePath, arg.noteId);
+    });
+    electron_1.ipcMain.on('print', function (event, content) {
+        workerWindow.webContents.send('print', content);
+    });
+    electron_1.ipcMain.on('readyToPrint', function (event) {
+        workerWindow.webContents.print({ silent: false, printBackground: true });
     });
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.

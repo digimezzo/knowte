@@ -8,7 +8,7 @@ import * as windowStateKeeper from 'electron-window-state';
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
 import log from 'electron-log';
 
-let mainWindow, serve;
+let mainWindow, workerWindow, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
 
@@ -76,6 +76,17 @@ function createWindow() {
         slashes: true
       }));
     }
+
+    workerWindow = new BrowserWindow({ show: false });
+    workerWindow.loadURL(url.format({
+      pathname: path.join(__dirname, 'dist/worker.html'),
+      protocol: 'file:',
+      slashes: true
+    }));
+
+    workerWindow.on("closed", () => {
+      workerWindow = undefined;
+    });
 
     // mainWindow.webContents.openDevTools();
 
@@ -169,6 +180,14 @@ try {
   // OPen note windows
   ipcMain.on('open-note-window', (event, arg) => {
     createNoteWindow(arg.notePath, arg.noteId);
+  });
+
+  ipcMain.on('print', (event, content) => {
+    workerWindow.webContents.send('print', content);
+  });
+
+  ipcMain.on('readyToPrint', (event) => {
+    workerWindow.webContents.print({ silent: false, printBackground: true });
   });
 
   // This method will be called when Electron has finished
