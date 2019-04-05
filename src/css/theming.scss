@@ -4,6 +4,7 @@
 @import 'themes/default-blue-theme.scss';
 @import 'themes/ubuntu-orange-theme.scss';
 @import 'themes/linuxmint-green-theme.scss';
+@import 'themes/windows10-blue-theme.scss';
 
 // Material Blue
 // $blue-theme-primary: mat-palette($mat-blue);
@@ -54,6 +55,11 @@
 .linuxmint-green-theme {
   @include angular-material-theme($linuxmint-green-theme);
   @include set-primary-color($linuxmint-green-theme-primary);
+}
+
+.windows10-blue-theme {
+  @include angular-material-theme($windows10-blue-theme);
+  @include set-primary-color($windows10-blue-theme-primary);
 }
 
 // .blue-theme {

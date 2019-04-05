@@ -45,7 +45,8 @@ export class Constants {
     static readonly themes: Theme[] = [
         { name: "default-blue-theme", displayName: "Default blue", color: "#1D7DD4" },
         { name: "ubuntu-orange-theme", displayName: "Ubuntu orange", color: "#E95420" },
-        { name: "linuxmint-green-theme", displayName: "Linux Mint green", color: "#8bb158" }
+        { name: "linuxmint-green-theme", displayName: "Linux Mint green", color: "#8bb158" },
+        { name: "windows10-blue-theme", displayName: "Windows 10 blue", color: "#0078d7" }
         // { name: "blue-theme", displayName: "Blue", color: "#03A9F4" },
         // { name: "pink-theme", displayName: "Pink", color: "#E91E63" },
         // { name: "deep-orange-theme", displayName: "Orange", color: "#FF5722" }
