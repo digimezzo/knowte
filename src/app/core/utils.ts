@@ -46,4 +46,8 @@ export class Utils {
     public static getNoteExportPath(exportDirectory: string, noteTitle: string) {
         return path.join(exportDirectory, `${sanitize(noteTitle)}${Constants.noteExportExtension}`);
     }
+
+    public static getPdfExportPath(exportDirectory: string, noteTitle: string) {
+        return path.join(exportDirectory, `${sanitize(noteTitle)}.pdf`);
+    }
 }

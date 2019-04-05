@@ -172,6 +172,22 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.globalEmitter.emit(Constants.setNoteMarkEvent, this.noteId, !this.isMarked);
     }
 
+    public async exportNoteToPdfAsync(): Promise<void> {
+        this.hideActionButtons();
+
+        let options: SaveDialogOptions = { defaultPath: Utils.getPdfExportPath(remote.app.getPath('documents'), this.noteTitle) };
+        let savePath: string = remote.dialog.showSaveDialog(null, options);
+
+        if (savePath) {
+            let content: any = {
+                savePath: savePath,
+                text: `<div>${this.createPrintCss()}<p class="page-title">${this.noteTitle}</p><p>${this.quill.root.innerHTML}</p></div>`
+            }
+
+            this.sendCommandToWorker("printPDF", content);
+        }
+    }
+
     public printNote(): void {
         this.hideActionButtons();
         this.sendCommandToWorker("print", `<div>${this.createPrintCss()}<p class="page-title">${this.noteTitle}</p><p>${this.quill.root.innerHTML}</p></div>`);

@@ -1,12 +1,14 @@
-import { app, BrowserWindow, screen, ipcMain } from 'electron';
+import { app, BrowserWindow, screen, ipcMain, shell, SaveDialogOptions } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as windowStateKeeper from 'electron-window-state';
+import * as fs from 'fs-extra';
 
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
 import log from 'electron-log';
+import { Utils } from './src/app/core/utils';
 
 let mainWindow, workerWindow, serve;
 const args = process.argv.slice(1);
@@ -177,17 +179,39 @@ function createNoteWindow(notePath: string, noteId: string) {
 try {
   log.info(`+++ Starting +++`);
 
-  // OPen note windows
-  ipcMain.on('open-note-window', (event, arg) => {
+  // Open note windows
+  ipcMain.on('open-note-window', (event: any, arg: any) => {
     createNoteWindow(arg.notePath, arg.noteId);
   });
 
-  ipcMain.on('print', (event, content) => {
+  // Print
+  ipcMain.on('print', (event: any, content: any) => {
     workerWindow.webContents.send('print', content);
   });
 
-  ipcMain.on('readyToPrint', (event) => {
+  ipcMain.on('readyToPrint', (event: any) => {
     workerWindow.webContents.print({ silent: false, printBackground: true });
+  });
+
+  // PrintPDF
+  ipcMain.on('printPDF', (event: any, content: any) => {
+    workerWindow.webContents.send('printPDF', content);
+  });
+
+  ipcMain.on('readyToPrintPDF', (event: any, safePath: string) => {
+    workerWindow.webContents.printToPDF({}, function (error: any, data: any) {
+      if (error) {
+        throw error;
+      }
+
+      fs.writeFile(safePath, data, function (error: any) {
+        if (error) {
+          throw error;
+        }
+
+        shell.openItem(safePath);
+      })
+    })
   });
 
   // This method will be called when Electron has finished

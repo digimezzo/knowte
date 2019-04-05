@@ -17,6 +17,7 @@ var electron_1 = require("electron");
 var path = require("path");
 var url = require("url");
 var windowStateKeeper = require("electron-window-state");
+var fs = require("fs-extra");
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
@@ -173,15 +174,33 @@ function createNoteWindow(notePath, noteId) {
 }
 try {
     electron_log_1.default.info("+++ Starting +++");
-    // OPen note windows
+    // Open note windows
     electron_1.ipcMain.on('open-note-window', function (event, arg) {
         createNoteWindow(arg.notePath, arg.noteId);
     });
+    // Print
     electron_1.ipcMain.on('print', function (event, content) {
         workerWindow.webContents.send('print', content);
     });
     electron_1.ipcMain.on('readyToPrint', function (event) {
         workerWindow.webContents.print({ silent: false, printBackground: true });
+    });
+    // PrintPDF
+    electron_1.ipcMain.on('printPDF', function (event, content) {
+        workerWindow.webContents.send('printPDF', content);
+    });
+    electron_1.ipcMain.on('readyToPrintPDF', function (event, safePath) {
+        workerWindow.webContents.printToPDF({}, function (error, data) {
+            if (error) {
+                throw error;
+            }
+            fs.writeFile(safePath, data, function (error) {
+                if (error) {
+                    throw error;
+                }
+                electron_1.shell.openItem(safePath);
+            });
+        });
     });
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.

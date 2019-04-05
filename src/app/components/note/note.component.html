@@ -32,6 +32,10 @@
                     <span class="note-content-floating-button-icon-action-export">&#xF56E;</span>
                 </button>
                 <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab
+                    color="" (click)="exportNoteToPdfAsync()" matTooltip="{{ 'Tooltips.ExportNoteToPdf' | translate }}">
+                    <span class="note-content-floating-button-icon-action-pdf">&#xF1C1;</span>
+                </button>
+                <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab
                     color="" (click)="printNote()" matTooltip="{{ 'Tooltips.PrintNote' | translate }}">
                     <span class="note-content-floating-button-icon-action">&#xE555;</span>
                 </button>

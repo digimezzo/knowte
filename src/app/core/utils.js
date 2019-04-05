@@ -35,6 +35,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var path = require("path");
+var sanitize = require("sanitize-filename");
+var constants_1 = require("./constants");
 var Utils = /** @class */ (function () {
     function Utils() {
     }
@@ -47,6 +50,36 @@ var Utils = /** @class */ (function () {
     };
     Utils.caseInsensitiveNameSort = function (object1, object2) {
         return object1.name.toLowerCase().localeCompare(object2.name.toLowerCase());
+    };
+    Utils.containsAny = function (text, items) {
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i].toLowerCase();
+            if (text.toLowerCase().indexOf(item) > -1) {
+                return true;
+            }
+        }
+        return false;
+    };
+    Utils.containsAll = function (text, items) {
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i].toLowerCase();
+            if (text.toLowerCase().indexOf(item) < 0) {
+                return false;
+            }
+        }
+        return true;
+    };
+    Utils.pathToCollection = function (collectionDirectoryPath) {
+        return path.dirname(collectionDirectoryPath).split(path.sep).pop();
+    };
+    Utils.collectionToPath = function (storageDirectory, collection) {
+        return path.join(storageDirectory, collection);
+    };
+    Utils.getNoteExportPath = function (exportDirectory, noteTitle) {
+        return path.join(exportDirectory, "" + sanitize(noteTitle) + constants_1.Constants.noteExportExtension);
+    };
+    Utils.getPdfExportPath = function (exportDirectory, noteTitle) {
+        return path.join(exportDirectory, sanitize(noteTitle) + ".pdf");
     };
     return Utils;
 }());

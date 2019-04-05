@@ -36,6 +36,12 @@
   font-size: 20px;
 }
 
+.note-content-floating-button-icon-action-pdf{
+  @extend .color-primary;
+  font-family: fa-solid;
+  font-size: 18px;
+}
+
 .note-content-floating-button-icon-action-export{
   @extend .color-primary;
   font-family: fa-solid;

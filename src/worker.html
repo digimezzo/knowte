@@ -12,6 +12,11 @@
             document.body.innerHTML = content;
             ipcRenderer.send("readyToPrint");
         });
+
+        ipcRenderer.on("printPDF", (event, content) => {
+            document.body.innerHTML = content.text;
+            ipcRenderer.send("readyToPrintPDF", content.savePath);
+        });
     </script>
 </body>
 
