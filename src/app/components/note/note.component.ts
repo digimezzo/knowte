@@ -174,13 +174,17 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     public printNote(): void {
         this.hideActionButtons();
-        this.sendCommandToWorker("print", `<div>${this.createPrintCss()}<p style="font-size: 30px;">${this.noteTitle}</p><hr><p>${this.quill.root.innerHTML}</p></div>`);
+        this.sendCommandToWorker("print", `<div>${this.createPrintCss()}<p style="font-size: 30px;">${this.noteTitle}</p><p>${this.quill.root.innerHTML}</p></div>`);
     }
 
     private createPrintCss(): string {
         return `<style type="text/css" scoped>
                     * {
                         font-family: sans-serif;
+                    }
+
+                    body {
+                        -webkit-print-color-adjust:exact;
                     }
 
                     h1,
