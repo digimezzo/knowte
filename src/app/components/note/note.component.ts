@@ -174,13 +174,14 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     public printNote(): void {
         this.hideActionButtons();
-        this.sendCommandToWorker("print", `<div>${this.createPrintCss()}<p style="font-size: 30px;">${this.noteTitle}</p><p>${this.quill.root.innerHTML}</p></div>`);
+        this.sendCommandToWorker("print", `<div>${this.createPrintCss()}<p class="page-title">${this.noteTitle}</p><p>${this.quill.root.innerHTML}</p></div>`);
     }
 
     private createPrintCss(): string {
+        // Font stacks from: https://gist.github.com/001101/a8b0e5ce8fd81225bed7
         return `<style type="text/css" scoped>
                     * {
-                        font-family: sans-serif;
+                        font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans serif;
                     }
 
                     body {
@@ -209,13 +210,17 @@ export class NoteComponent implements OnInit, OnDestroy {
                         color: #f8f8f2;
                         overflow: visible;
 
-                        font-family: monospace;
+                        font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
                     }
 
                     blockquote {
                         border-left: 4px solid #ccc;
                         margin: 5px 0 5px 0;
                         padding: 0 0 0 16px;
+                    }
+
+                    .page-title{
+                        font-size: 30px;
                     }
                 </style>`;
     }
