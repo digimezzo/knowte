@@ -70,10 +70,6 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public async ngOnInit(): Promise<void> {
-        // Drag image
-        // this.dragImage = document.createElement("img");
-        // this.dragImage.src = "assets/icons/png/64x64.png";
-
         // Workaround for auto reload
         await this.collectionService.initializeAsync();
 
@@ -172,23 +168,9 @@ export class NotesComponent implements OnInit, OnDestroy {
         }
     }
 
-    public drag(event: any, note: Note): void {
-        //event.dataTransfer.setDragImage(this.dragImage, 0, 0);
+    public dragStart(event: any, note: Note): void {
         this.draggedNote = note;
         event.dataTransfer.setDragImage(document.getElementById('drag-image'), -10, -10);
         event.dataTransfer.setData('text', note.id);
-    }
-
-    public drop(event: any): void {
-        event.preventDefault();
-
-        let pathsOfDroppedFiles: string[] = this.fileService.getDroppedFilesPaths(event);
-
-        // TODO
-    }
-
-    public dragOver(event: any): void {
-        // Prevent default behavior (Prevent file from being opened)
-        event.preventDefault();
     }
 }

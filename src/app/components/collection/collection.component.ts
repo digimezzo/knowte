@@ -341,6 +341,21 @@ export class CollectionComponent implements OnInit, OnDestroy {
     }
   }
 
+  public async notesDrop(event: any): Promise<void> {
+    event.preventDefault();
+    let droppedFilesPaths: string[] = this.fileService.getDroppedFilesPaths(event);
+
+    if (this.fileService.isDroppingFiles(event)) {
+      // Dropping files
+      let pathsOfDroppedFiles: string[] = this.fileService.getDroppedFilesPaths(event);
+      await this.importNoteFilesAsync(pathsOfDroppedFiles, this.selectedNotebook);
+    }
+  }
+
+  public notesDragOver(event: any): void {
+    event.preventDefault();
+  }
+
   private async importNoteFilesAsync(filePaths: string[], notebook: Notebook): Promise<void> {
     let noteFilePaths: string[] = this.fileService.getNoteFilePaths(filePaths);
 
