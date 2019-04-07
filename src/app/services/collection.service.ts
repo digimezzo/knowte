@@ -593,16 +593,16 @@ export class CollectionService {
     for (let noteId of noteIds) {
       try {
         let note: Note = this.dataStore.getNoteById(noteId);
-  
+
         if (notebookId === Constants.allNotesNotebookId || notebookId === note.notebookId) {
           // Skip this note
           continue;
         }
-  
+
         if (notebookId === Constants.unfiledNotesNotebookId) {
           notebookId = "";
         }
-  
+
         note.notebookId = notebookId;
         this.dataStore.updateNote(note);
         this.sendNotebookNameAsync(noteId);
@@ -781,9 +781,9 @@ export class CollectionService {
     return isImportSuccessful;
   }
 
-  public async importNoteFilesAsync(noteFilePaths: string[], notebookId: string = null): Promise<boolean> {
+  public async importNoteFilesAsync(noteFilePaths: string[], notebookId: string = null): Promise<Operation> {
     let numberofImportedNoteFiles: number = 0;
-    let isImportSuccessful: boolean = true;
+    let operation: Operation = Operation.Success;
 
     for (let noteFilePath of noteFilePaths) {
       try {
@@ -809,7 +809,7 @@ export class CollectionService {
         numberofImportedNoteFiles++;
       } catch (error) {
         log.error(`An error occurred while importing note file '${noteFilePath}'. Cause: ${error}`);
-        isImportSuccessful = false;
+        operation = Operation.Error;
       }
     }
 
@@ -817,7 +817,7 @@ export class CollectionService {
       this.noteEdited.next();
     }
 
-    return isImportSuccessful;
+    return operation;
   }
 
   private getNotePath(noteId: string) {

@@ -182,7 +182,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     public drop(event: any): void {
         event.preventDefault();
 
-        let pathsOfDroppedFiles: string[] = this.fileService.getPathsOfDroppedFiles(event);
+        let pathsOfDroppedFiles: string[] = this.fileService.getDroppedFilesPaths(event);
 
         // TODO
     }

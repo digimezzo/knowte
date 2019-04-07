@@ -71,7 +71,7 @@
         "PrintNote": "Print note...",
         "ExportNote": "Export note...",
         "ExportNoteToPdf": "Export note to PDF...",
-        "ImportNote": "Import note...",
+        "ImportNotes": "Import notes...",
         "AddNotebook": "Add notebook...",
         "RenameNotebook": "Rename notebook...",
         "DeleteNotebook": "Delete notebook...",
@@ -136,7 +136,7 @@
         "UpdateNoteContentError": "An error occurred while saving the note content. Please verify the log if you need more information.",
         "GetNoteContentError": "An error occurred while getting the note content. Please verify the log if you need more information.",
         "ExportNoteError": "An error occurred while exporting the note '{{noteTitle}}'. Please verify the log if you need more information.",
-        "ImportNoteError": "An error occurred while importing the note. Please verify the log if you need more information.",
+        "ImportNotesError": "An error occurred while importing notes. Please verify the log if you need more information.",
         "ChangeNotebookError": "An error occurred while changing the notebook. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
@@ -145,8 +145,10 @@
         "NoteTitleCannotBeEmpty": "The note title cannot be empty",
         "CloseNoteBeforeChangingCollections": "Please close all notes before changing collections",
         "NoteExported": "Note '{{noteTitle}}' was exported",
-        "InvalidNoteFile": "This is not a valid note file",
-        "noteMovedToNotebook": "The note was moved to '{{notebookName}}'"
+        "NoteMovedToNotebook": "The note was moved to '{{notebookName}}'",
+        "NotesImportedIntoNotebook": "Notes were imported into notebook '{{notebookName}}'",
+        "NotesImported": "Notes were imported",
+        "NoNoteFilesToImport": "There were no note files to import"
     },
     "SnackBarActions": {
         "Ok": "OK"

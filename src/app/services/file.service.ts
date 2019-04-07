@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CollectionService } from './collection.service';
 import log from 'electron-log';
+import { Constants } from '../core/constants';
+import * as path from 'path';
 
 @Injectable({
     providedIn: 'root',
@@ -9,11 +11,11 @@ export class FileService {
     constructor(private collectionService: CollectionService) { }
 
     public isDroppingFiles(dropEvent: any): boolean {
-        return this.getPathsOfDroppedFiles(dropEvent).length > 0;
+        return this.getDroppedFilesPaths(dropEvent).length > 0;
     }
 
-    public getPathsOfDroppedFiles(dropEvent: any): string[] {
-        let pathsOfDroppedFiles: string[] = [];
+    public getDroppedFilesPaths(dropEvent: any): string[] {
+        let droppedFilesPaths: string[] = [];
 
         if (dropEvent.dataTransfer.items) {
             // Use DataTransferItemList interface to access the file(s)
@@ -21,18 +23,22 @@ export class FileService {
                 // If dropped items aren't files, reject them.
                 if (dropEvent.dataTransfer.items[i].kind === 'file') {
                     let file: any = dropEvent.dataTransfer.items[i].getAsFile();
-                    pathsOfDroppedFiles.push(file.path);
+                    droppedFilesPaths.push(file.path);
                 }
             }
         } else {
             // Use DataTransfer interface to access the file(s)
             for (let i: number = 0; i < dropEvent.dataTransfer.files.length; i++) {
-                pathsOfDroppedFiles.push(dropEvent.dataTransfer.files[i].path);
+                droppedFilesPaths.push(dropEvent.dataTransfer.files[i].path);
             }
         }
 
-        log.info(`Paths of dropped files: ${pathsOfDroppedFiles}`);
+        return droppedFilesPaths;
+    }
 
-        return pathsOfDroppedFiles;
+    public getNoteFilePaths(filePaths: string[]): string[] {
+        let noteFilePaths: string[] = filePaths.filter(x =>  path.extname(x) === Constants.noteExportExtension);
+
+        return noteFilePaths;
     }
 }

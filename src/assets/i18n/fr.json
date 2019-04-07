@@ -71,7 +71,7 @@
         "PrintNote": "Imprimer note...",
         "ExportNote": "Exporter note...",
         "ExportNoteToPdf": "Exporter note en PDF...",
-        "ImportNote": "Importer note...",
+        "ImportNotes": "Importer notes...",
         "AddNotebook": "Ajouter bloc-notes...",
         "RenameNotebook": "Renommer bloc-notes...",
         "DeleteNotebook": "Supprimer bloc-notes...",
@@ -136,7 +136,7 @@
         "UpdateNoteContentError": "Une erreur s'est produite lors de l'enregistrement du contenu de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "GetNoteContentError": "Une erreur s'est produite lors de l'obtention du contenu de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "ExportNoteError": "Une erreur s'est produite lors de l'export de la note '{{noteTitle}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
-        "ImportNoteError": "Une erreur s'est produite lors de l'import de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "ImportNotesError": "Une erreur s'est produite lors de l'import de notes. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "ChangeNotebookError": "Une erreur s'est produite lors du changement de bloc-note. Veuillez vérifier le log si vous avez besoin de plus d'informations."
     },
     "SnackBarMessages": {
@@ -145,8 +145,10 @@
         "NoteTitleCannotBeEmpty": "Le titre de la note ne peut pas être vide",
         "CloseNoteBeforeChangingCollections": "Veuillez fermer toutes les notes avant de changer de collection.",
         "NoteExported": "La note '{{noteTitle}}' a été exportée",
-        "InvalidNoteFile": "Ceci n'est pas un fichier de note valide",
-        "noteMovedToNotebook": "La note a été déplacée vers '{{notebookName}}'"
+        "NoteMovedToNotebook": "La note a été déplacée vers '{{notebookName}}'",
+        "NotesImportedIntoNotebook": "Les notes ont été importées dans le bloc-notes '{{notebookName}}'",
+        "NotesImported": "Les notes ont été importées",
+        "NoNoteFilesToImport": "Il n'y avait aucun fichier de note à importer"
     },
     "SnackBarActions": {
         "Ok": "OK"

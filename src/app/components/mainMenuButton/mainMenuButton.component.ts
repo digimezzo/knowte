@@ -41,7 +41,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
   public async addCollectionAsync(): Promise<void> {
     if (this.collectionService.hasOpenNotes()) {
-      this.snackBarService.closeNoteBeforeChangingCollections();
+      this.snackBarService.closeNoteBeforeChangingCollectionsAsync();
       return;
     }
 
@@ -85,7 +85,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
     }
 
     if (this.collectionService.hasOpenNotes()) {
-      this.snackBarService.closeNoteBeforeChangingCollections();
+      this.snackBarService.closeNoteBeforeChangingCollectionsAsync();
       return;
     }
 
@@ -94,7 +94,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
   public renameCollection(collection: string) {
     if (this.collectionService.hasOpenNotes()) {
-      this.snackBarService.closeNoteBeforeChangingCollections();
+      this.snackBarService.closeNoteBeforeChangingCollectionsAsync();
       return;
     }
 
@@ -105,7 +105,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
   public async deleteCollectionAsync(collection: string): Promise<void> {
     if (this.collectionService.hasOpenNotes()) {
-      this.snackBarService.closeNoteBeforeChangingCollections();
+      this.snackBarService.closeNoteBeforeChangingCollectionsAsync();
       return;
     }
 

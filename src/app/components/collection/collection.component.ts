@@ -20,6 +20,7 @@ import { debounceTime } from "rxjs/internal/operators";
 import { remote } from 'electron';
 import * as path from 'path';
 import log from 'electron-log';
+import { FileService } from '../../services/file.service';
 
 @Component({
   selector: 'collection-page',
@@ -43,7 +44,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   private globalEmitter = remote.getGlobal('globalEmitter');
   private subscription: Subscription;
 
-  constructor(private dialog: MatDialog, private collectionService: CollectionService,
+  constructor(private dialog: MatDialog, private collectionService: CollectionService, private fileService: FileService,
     private translateService: TranslateService, private snackBarService: SnackBarService, private zone: NgZone) {
   }
 
@@ -252,26 +253,17 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.canEditNote = this.selectedNote != null;
   }
 
-  public async importNoteAsync(): Promise<void> {
-    let selectedFiles: string[] = remote.dialog.showOpenDialog({ properties: ['openFile'] });
+  public async importNotesAsync(): Promise<void> {
+    let selectedFiles: string[] = remote.dialog.showOpenDialog({
+      filters: [
+        { name: 'Knowte', extensions: ['knowte'] },
+        { name: 'All Files', extensions: ['*'] }
+      ],
+      properties: ['openFile']
+    });
 
-    if (selectedFiles && selectedFiles.length > 0) {
-      if (path.extname(selectedFiles[0]) === Constants.noteExportExtension) {
-        this.isBusy = true;
-        let noteFilePath: string = selectedFiles[0];
-        let isImportSuccessful: boolean = await this.collectionService.importNoteFilesAsync([noteFilePath]);
-        this.isBusy = false;
-
-        if (!isImportSuccessful) {
-          let errorText: string = (await this.translateService.get('ErrorTexts.ImportNoteError').toPromise());
-
-          this.dialog.open(ErrorDialogComponent, {
-            width: '450px', data: { errorText: errorText }
-          });
-        }
-      } else {
-        this.snackBarService.invalidNoteFileAsync();
-      }
+    if (selectedFiles) {
+      await this.importNoteFilesAsync(selectedFiles, this.selectedNotebook);
     }
   }
 
@@ -316,11 +308,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
   public dragOver(event: any, notebook: Notebook): void {
     event.preventDefault();
-
-    // We cannot drop into "All notes"
-    if (notebook.id !== Constants.allNotesNotebookId) {
-      this.hoveredNotebook = notebook;
-    }
+    this.hoveredNotebook = notebook;
   }
 
   public dragLeave(event: any): void {
@@ -328,21 +316,49 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.hoveredNotebook = null;
   }
 
-  public async drop(event: any, notebook: Notebook): Promise<void> {
-    event.preventDefault();
-    let noteId: string = event.dataTransfer.getData('text');
-    this.hoveredNotebook = null;
+  private async importNoteFilesAsync(filePaths: string[], notebook: Notebook): Promise<void> {
+    let noteFilePaths: string[] = this.fileService.getNoteFilePaths(filePaths);
 
-    let operation: Operation = this.collectionService.setNotebook(notebook.id, [noteId]);
+    if (noteFilePaths.length === 0) {
+      await this.snackBarService.noNoteFilesToImportAsync();
+      return;
+    }
 
-    if (operation === Operation.Success) {
-      this.snackBarService.noteMovedToNotebook(notebook.name);
-    } else if (operation === Operation.Error) {
-      let errorText: string = (await this.translateService.get('ErrorTexts.ChangeNotebookError').toPromise());
+    let importOperation: Operation = await this.collectionService.importNoteFilesAsync(noteFilePaths, notebook.id);
+
+    if (importOperation === Operation.Success) {
+      await this.snackBarService.notesImportedIntoNotebookAsync(notebook.name);
+    } else if (importOperation === Operation.Error) {
+      let errorText: string = (await this.translateService.get('ErrorTexts.ImportNotesError').toPromise());
 
       this.dialog.open(ErrorDialogComponent, {
         width: '450px', data: { errorText: errorText }
       });
+    }
+  }
+
+  public async drop(event: any, notebook: Notebook): Promise<void> {
+    event.preventDefault();
+    this.hoveredNotebook = null;
+
+    if (this.fileService.isDroppingFiles(event)) {
+      // Dropping files
+      let pathsOfDroppedFiles: string[] = this.fileService.getDroppedFilesPaths(event);
+      await this.importNoteFilesAsync(pathsOfDroppedFiles, notebook);
+    } else {
+      // Dropping notes (we only support dropping of 1 notes at this time)
+      let noteId: string = event.dataTransfer.getData('text');
+      let operation: Operation = this.collectionService.setNotebook(notebook.id, [noteId]);
+
+      if (operation === Operation.Success) {
+        this.snackBarService.noteMovedToNotebookAsync(notebook.name);
+      } else if (operation === Operation.Error) {
+        let errorText: string = (await this.translateService.get('ErrorTexts.ChangeNotebookError').toPromise());
+
+        this.dialog.open(ErrorDialogComponent, {
+          width: '450px', data: { errorText: errorText }
+        });
+      }
     }
   }
 }
