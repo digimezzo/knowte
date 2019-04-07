@@ -306,38 +306,17 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.selectFirstNotebook();
   }
 
-  public dragOver(event: any, notebook: Notebook): void {
+  public notebookDragOver(event: any, notebook: Notebook): void {
     event.preventDefault();
     this.hoveredNotebook = notebook;
   }
 
-  public dragLeave(event: any): void {
+  public notebookDragLeave(event: any): void {
     event.preventDefault();
     this.hoveredNotebook = null;
   }
 
-  private async importNoteFilesAsync(filePaths: string[], notebook: Notebook): Promise<void> {
-    let noteFilePaths: string[] = this.fileService.getNoteFilePaths(filePaths);
-
-    if (noteFilePaths.length === 0) {
-      await this.snackBarService.noNoteFilesToImportAsync();
-      return;
-    }
-
-    let importOperation: Operation = await this.collectionService.importNoteFilesAsync(noteFilePaths, notebook.id);
-
-    if (importOperation === Operation.Success) {
-      await this.snackBarService.notesImportedIntoNotebookAsync(notebook.name);
-    } else if (importOperation === Operation.Error) {
-      let errorText: string = (await this.translateService.get('ErrorTexts.ImportNotesError').toPromise());
-
-      this.dialog.open(ErrorDialogComponent, {
-        width: '450px', data: { errorText: errorText }
-      });
-    }
-  }
-
-  public async drop(event: any, notebook: Notebook): Promise<void> {
+  public async notebookDrop(event: any, notebook: Notebook): Promise<void> {
     event.preventDefault();
     this.hoveredNotebook = null;
 
@@ -359,6 +338,27 @@ export class CollectionComponent implements OnInit, OnDestroy {
           width: '450px', data: { errorText: errorText }
         });
       }
+    }
+  }
+
+  private async importNoteFilesAsync(filePaths: string[], notebook: Notebook): Promise<void> {
+    let noteFilePaths: string[] = this.fileService.getNoteFilePaths(filePaths);
+
+    if (noteFilePaths.length === 0) {
+      await this.snackBarService.noNoteFilesToImportAsync();
+      return;
+    }
+
+    let importOperation: Operation = await this.collectionService.importNoteFilesAsync(noteFilePaths, notebook.id);
+
+    if (importOperation === Operation.Success) {
+      await this.snackBarService.notesImportedIntoNotebookAsync(notebook.name);
+    } else if (importOperation === Operation.Error) {
+      let errorText: string = (await this.translateService.get('ErrorTexts.ImportNotesError').toPromise());
+
+      this.dialog.open(ErrorDialogComponent, {
+        width: '450px', data: { errorText: errorText }
+      });
     }
   }
 }
