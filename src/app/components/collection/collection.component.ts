@@ -259,7 +259,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
         { name: 'Knowte', extensions: ['knowte'] },
         { name: 'All Files', extensions: ['*'] }
       ],
-      properties: ['openFile']
+      properties: ['openFile', 'multiSelections']
     });
 
     if (selectedFiles) {
