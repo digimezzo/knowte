@@ -115,7 +115,8 @@
         "YouHaveSelectedDirectory": "Vous avez sélectionné le répertoire:",
         "Importing": "Entrain d'importer",
         "ImportSuccessful": "Import réussi!",
-        "ImportFailed": "Import échoué!"
+        "ImportFailed": "Import échoué!",
+        "AllFiles": "Tous les fichiers"
     },
     "Input": {
         "Collection": "Collection",

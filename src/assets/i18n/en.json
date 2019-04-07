@@ -115,7 +115,8 @@
         "YouHaveSelectedDirectory": "You have selected directory:",
         "Importing": "Importing",
         "ImportSuccessful": "Import successful!",
-        "ImportFailed": "Import failed!"
+        "ImportFailed": "Import failed!",
+        "AllFiles": "All files"
     },
     "Input": {
         "Collection": "Collection",

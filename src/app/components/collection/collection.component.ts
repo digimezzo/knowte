@@ -256,8 +256,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
   public async importNotesAsync(): Promise<void> {
     let selectedFiles: string[] = remote.dialog.showOpenDialog({
       filters: [
-        { name: 'Knowte', extensions: ['knowte'] },
-        { name: 'All Files', extensions: ['*'] }
+        { name: Constants.applicationName, extensions: [Constants.noteExportExtension.replace(".", "")] },
+        { name: await this.translateService.get('DialogTexts.AllFiles').toPromise(), extensions: ['*'] }
       ],
       properties: ['openFile', 'multiSelections']
     });
