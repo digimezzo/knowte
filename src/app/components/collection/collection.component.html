@@ -21,8 +21,8 @@
                 <!-- Notebooks list container -->
                 <div class="collection-notebooks-list">
                     <!-- Notebooks list -->
-                    <mat-selection-list dense class="collection-notebooks-list-list">
-                        <mat-list-option class="notebook"
+                    <ul class="collection-notebooks-list-list">
+                        <li class="notebook"
                             [ngClass]="{'selected-notebook':notebook === selectedNotebook, 'drop-notebook':notebook === hoveredNotebook }"
                             *ngFor="let notebook of notebooks" role="option" (drop)="notebookDrop($event, notebook)"
                             (dragover)="notebookDragOver($event, notebook)" (dragleave)="notebookDragLeave($event)">
@@ -30,8 +30,8 @@
                                 [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
                                 (click)="setSelectedNotebook(notebook)">
                                 {{ notebook.name }}</p>
-                        </mat-list-option>
-                    </mat-selection-list>
+                        </li>
+                    </ul>
                     <!-- Notebooks buttons -->
                     <div class="collection-notebooks-list-buttons m-2">
                         <button class="list-button" mat-mini-fab color="" (click)="renameNotebook()"

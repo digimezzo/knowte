@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, NgZone, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, NgZone, Output, EventEmitter, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { Note } from '../../data/entities/note';
 import { Subscription, Subject, fromEvent } from 'rxjs';
@@ -28,7 +28,8 @@ export class NotesComponent implements OnInit, OnDestroy {
     private _selectedNotebook: Notebook;
 
     constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
-        public searchService: SearchService, private settingsService: SettingsService, private fileService: FileService, private zone: NgZone) {
+        public searchService: SearchService, private settingsService: SettingsService, private fileService: FileService, private zone: NgZone,
+        private ref: ChangeDetectorRef) {
     }
 
     @Input()
@@ -117,8 +118,12 @@ export class NotesComponent implements OnInit, OnDestroy {
                 }
             }
 
+            
+
             this.selectedNoteIds.next(this.getSelectedNoteIds());
         });
+
+        this.ref.detectChanges();
     }
 
     public openNote(note: Note): void {

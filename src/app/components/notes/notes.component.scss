@@ -48,7 +48,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  margin-top: -2px;
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -135,13 +134,12 @@
   text-overflow: ellipsis;
 }
 
-.selected-note {
-  background-color: #f5f5f5;
-}
-
 cdk-virtual-scroll-viewport {
   height: 100%;
   width: 100%;
   overflow-x: hidden !important;
 }
 
+.selected-note {
+  background-color: $color-mediumgrey;
+}

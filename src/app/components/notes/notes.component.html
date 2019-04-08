@@ -7,10 +7,9 @@
         <div class="drag-image-text mx-1">{{ draggedNote?.title | truncate: 30 : true }}</div>
     </div>
     <!-- Notes list -->
-    <mat-selection-list class="notes-list" *ngIf="canShowList">
+    <ul class="notes-list" *ngIf="canShowList">
         <cdk-virtual-scroll-viewport itemSize="48">
-            <mat-list-option [ngClass]="{'selected-note':note.isSelected}" *cdkVirtualFor="let note of notes"
-                role="option">
+            <li [ngClass]="{'selected-note':note.isSelected}" *cdkVirtualFor="let note of notes">
                 <div class="note-item no-select px-2" (dblclick)="openNote(note)" (click)="setSelectedNote(note, $event)"
                     draggable="true" (dragstart)="dragStart($event, note)">
                     <div class="note-item-icon">
@@ -31,7 +30,7 @@
                         </div>
                     </div>
                 </div>
-            </mat-list-option>
+            </li>
         </cdk-virtual-scroll-viewport>
-    </mat-selection-list>
+    </ul>
 </div>
