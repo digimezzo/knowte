@@ -6,4 +6,7 @@
 
 .notebook {
   font-size: $fontsize-normal !important;
-}
+  height: 40px;
+  line-height: 40px; 
+  cursor: pointer;
+} 

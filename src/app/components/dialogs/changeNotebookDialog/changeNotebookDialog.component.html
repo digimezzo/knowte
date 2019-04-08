@@ -1,9 +1,9 @@
 <mat-dialog-content>
-    <mat-selection-list dense class="notebooksList">
-        <mat-list-option *ngFor="let notebook of notebooks" role="option" class="notebook">
+    <ul class="notebooksList">
+        <li *ngFor="let notebook of notebooks" class="notebook" matRipple>
             <div class="noselect px-2" (click)="changeNotebook(notebook)">
                 {{ notebook.name }}
             </div>
-        </mat-list-option>
-    </mat-selection-list>
+        </li>
+    </ul>
 </mat-dialog-content>
