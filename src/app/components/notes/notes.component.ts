@@ -109,10 +109,10 @@ export class NotesComponent implements OnInit, OnDestroy {
             } else {
                 // No modifier key is pressed: clear previous selection
                 for (let collectionNote of this.notes) {
-                    note.isSelected = false;
+                    collectionNote.isSelected = false;
 
                     if (collectionNote.id === note.id) {
-                        note.isSelected = true;
+                        collectionNote.isSelected = true;
                     }
                 }
             }
