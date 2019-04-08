@@ -160,7 +160,8 @@
         "AllNotes": "Toutes les notes",
         "UnfiledNotes": "Notes non classées",
         "Search": "Chercher",
-        "ClearSearch": "Effacer la recherche"
+        "ClearSearch": "Effacer la recherche",
+        "DragNotesCount": "{{noteCount}} notes"
     },
     "Notes": {
         "NewNote": "Nouvelle note",
