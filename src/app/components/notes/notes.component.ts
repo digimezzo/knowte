@@ -197,7 +197,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         }
     }
 
-    private getSelectedNoteIds() {
+    public getSelectedNoteIds() {
         return this.notes.filter(x => x.isSelected).map(x => x.id);
     }
 
