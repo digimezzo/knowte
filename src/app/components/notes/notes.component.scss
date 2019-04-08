@@ -61,6 +61,10 @@
   cursor: default !important;
 }
 
+.note-item:hover{
+  background: $color-verylightgrey;
+}
+
 .note-item-icon {
   @extend .background-color-primary;
   margin: 4px;

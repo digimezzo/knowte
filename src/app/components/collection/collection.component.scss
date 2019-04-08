@@ -100,6 +100,10 @@
   height: 40px;
 }
 
+.notebook:hover{
+  background: $color-mediumlightgrey;
+}
+
 .notebook-name {
   padding-left: 16px !important;
   padding-right: 16px !important;
