@@ -11,4 +11,5 @@ export class Note{
     public modificationDate: number = moment().valueOf();
     public text: string = "";
     public displayModificationDate: string;
+    public isSelected: boolean;
 }

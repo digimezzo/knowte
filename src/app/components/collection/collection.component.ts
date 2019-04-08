@@ -60,7 +60,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   public hoveredNotebook: Notebook;
   public canEditNotebook: boolean = false;
   public noteButtonsVisibility: string = 'visible';
-  public selectedNotes: Note[];
+  public selectedNoteIds: string[];
   public notesCount: number = 0;
   public canEditNotes: boolean = false;
   public tabChangedSubject: Subject<any> = new Subject();
@@ -225,14 +225,15 @@ export class CollectionComponent implements OnInit, OnDestroy {
     // Assume multiple selected notes
     let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteMultipleNotes').toPromise();
 
-    if (!this.selectedNotes || this.selectedNotes.length === 0) {
+    if (!this.selectedNoteIds || this.selectedNoteIds.length === 0) {
       // This situation should not happen
       log.warn("User requested to delete notes, but there are not selected notes.");
       return;
     }
 
-    if (this.selectedNotes.length === 1) {
-      text = await this.translateService.get('DialogTexts.ConfirmDeleteSingleNote', { noteTitle: this.selectedNotes[0].title }).toPromise();
+    if (this.selectedNoteIds.length === 1) {
+      let note: Note = await this.collectionService.getNote(this.selectedNoteIds[0]);
+      text = await this.translateService.get('DialogTexts.ConfirmDeleteSingleNote', { noteTitle: note.title }).toPromise();
     }
 
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
@@ -242,15 +243,15 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        for (let selectedNote of this.selectedNotes) {
+        for (let selectedNoteId of this.selectedNoteIds) {
           // Close the note window
-          if (this.collectionService.noteIsOpen(selectedNote.id)) {
-            this.globalEmitter.emit(Constants.closeNoteEvent, selectedNote.id);
+          if (this.collectionService.noteIsOpen(selectedNoteId)) {
+            this.globalEmitter.emit(Constants.closeNoteEvent, selectedNoteId);
           }
         }
 
         // Delete the notes
-        let operation: Operation = await this.collectionService.deleteNotesAsync(this.selectedNotes.map(x => x.id));
+        let operation: Operation = await this.collectionService.deleteNotesAsync(this.selectedNoteIds);
 
         if (operation === Operation.Error) {
           let errorText: string = (await this.translateService.get('ErrorTexts.DeleteNotesError').toPromise());
@@ -262,10 +263,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onSelectedNotesChanged(selectedNotes: Note[]): void {
-    log.info(selectedNotes);
-    this.selectedNotes = selectedNotes;
-    this.canEditNotes = this.selectedNotes != null && this.selectedNotes.length > 0;
+  public onSelectedNotesChanged(selectedNoteIds: string[]): void {
+    this.selectedNoteIds = selectedNoteIds;
+    this.canEditNotes = this.selectedNoteIds != null && this.selectedNoteIds.length > 0;
   }
 
   public async importNotesAsync(): Promise<void> {

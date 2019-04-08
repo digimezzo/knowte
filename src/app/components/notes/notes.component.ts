@@ -4,14 +4,12 @@ import { Note } from '../../data/entities/note';
 import { Subscription, Subject, fromEvent } from 'rxjs';
 import { SnackBarService } from '../../services/snackBar.service';
 import { Notebook } from '../../data/entities/notebook';
-import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material';
 import { Constants } from '../../core/constants';
 import { SearchService } from '../../services/search.service';
 import { NoteMarkResult } from '../../services/results/noteMarkResult';
 import { debounceTime, takeUntil } from 'rxjs/internal/operators';
 import { Utils } from '../../core/utils';
-import * as Store from 'electron-store';
 import { remote } from 'electron';
 import log from 'electron-log';
 import { SettingsService } from '../../services/settings.service';
@@ -28,7 +26,6 @@ export class NotesComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
     private readonly destroy$ = new Subject();
     private _selectedNotebook: Notebook;
-    private dragImage: HTMLImageElement;
 
     constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
         public searchService: SearchService, private settingsService: SettingsService, private fileService: FileService, private zone: NgZone) {
@@ -56,10 +53,9 @@ export class NotesComponent implements OnInit, OnDestroy {
     public notesCount: EventEmitter<number> = new EventEmitter<number>();
 
     @Output()
-    public selectedNotesOutput: EventEmitter<Note[]> = new EventEmitter<Note[]>();
+    public selectedNoteIds: EventEmitter<string[]> = new EventEmitter<string[]>();
 
     public notes: Note[] = [];
-    public selectedNotes: Note[];
     public draggedNote: Note;
     public canShowList: boolean = true;
 
@@ -107,20 +103,21 @@ export class NotesComponent implements OnInit, OnDestroy {
         this.zone.run(() => {
             if (event && event.ctrlKey) {
                 // CTRL is pressed: add note to or remove from selection
-                if (this.selectedNotes.includes(note)) {
-                    this.selectedNotes.splice(this.selectedNotes.indexOf(note), 1);
-                } else {
-                    this.selectedNotes.push(note);
-                }
+                note.isSelected = !note.isSelected;
             } else if (event && event.shiftKey) {
                 // SHIFT is pressed: select a range
             } else {
                 // No modifier key is pressed: clear previous selection
-                this.selectedNotes = [];
-                this.selectedNotes.push(note);
+                for (let collectionNote of this.notes) {
+                    note.isSelected = false;
+
+                    if (collectionNote.id === note.id) {
+                        note.isSelected = true;
+                    }
+                }
             }
 
-            this.selectedNotesOutput.next(this.selectedNotes);
+            this.selectedNoteIds.next(this.getSelectedNoteIds());
         });
     }
 
@@ -169,9 +166,13 @@ export class NotesComponent implements OnInit, OnDestroy {
                     this.selectFirstNote();
                 }
 
-                this.selectedNotesOutput.next(this.selectedNotes);
+                this.selectedNoteIds.next(this.getSelectedNoteIds());
             });
         }
+    }
+
+    private getSelectedNoteIds() {
+        return this.notes.filter(x => x.isSelected).map(x => x.id);
     }
 
     private selectFirstNote() {
