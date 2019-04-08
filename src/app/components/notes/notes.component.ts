@@ -47,7 +47,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     @Input()
     public set selectedNotebook(val: Notebook) {
         this._selectedNotebook = val;
-        this.getNotes(false);
+        this.getNotes();
     }
 
     @Output()
@@ -70,14 +70,14 @@ export class NotesComponent implements OnInit, OnDestroy {
         // Workaround for auto reload
         await this.collectionService.initializeAsync();
 
-        this.subscription = this.collectionService.noteEdited$.subscribe(() => this.getNotes(false));
-        this.subscription = this.collectionService.noteDeleted$.subscribe(() => this.getNotes(true));
-        this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(() => this.getNotes(true)));
-        this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => this.getNotes(false)));
+        this.subscription = this.collectionService.noteEdited$.subscribe(() => this.getNotes());
+        this.subscription = this.collectionService.noteDeleted$.subscribe(() => this.getNotes());
+        this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(() => this.getNotes()));
+        this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => this.getNotes()));
 
         this.subscription.add(this.collectionService.noteMarkChanged$.subscribe((result: NoteMarkResult) => {
             if (this.componentCategory === Constants.markedCategory) {
-                this.getNotes(false);
+                this.getNotes();
             } else {
                 this.markNote(result);
             }
@@ -86,7 +86,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         this.subscription.add(this.categoryChangedSubject.subscribe(async (selectedCategory: string) => {
             this.selectedCategory = selectedCategory;
             await this.refreshVirtuallScrollerAsync();
-            this.getNotes(false);
+            this.getNotes();
         }));
 
         fromEvent(window, 'resize')

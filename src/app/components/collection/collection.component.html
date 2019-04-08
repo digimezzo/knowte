@@ -22,7 +22,7 @@
                 <div class="collection-notebooks-list">
                     <!-- Notebooks list -->
                     <ul class="collection-notebooks-list-list">
-                        <li class="notebook"
+                        <li class="notebook" matRipple
                             [ngClass]="{'selected-notebook':notebook === selectedNotebook, 'drop-notebook':notebook === hoveredNotebook }"
                             *ngFor="let notebook of notebooks" (drop)="notebookDrop($event, notebook)"
                             (dragover)="notebookDragOver($event, notebook)" (dragleave)="notebookDragLeave($event)">

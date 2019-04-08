@@ -51,7 +51,7 @@ import { ImportFromOldVersionDialogComponent } from './components/dialogs/import
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, MatTooltipModule, 
   MatDialogModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatSnackBarModule,
-  MatListModule, MatSelectModule, MatSlideToggleModule } from '@angular/material';
+  MatListModule, MatSelectModule, MatSlideToggleModule, MatRippleModule } from '@angular/material';
 import { GlobalErrorHandler } from './globalErrorHandler';
 import { SelectedNotebookAndSearchComponent } from './components/selectedNotebookAndSearch/selectedNotebookAndSearch.component';
 import { SettingsService } from './services/settings.service';
@@ -105,6 +105,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatSnackBarModule,
     MatSelectModule,
     MatSlideToggleModule,
+    MatRippleModule,
     BrowserAnimationsModule,
     BrowserModule,
     ScrollingModule,
