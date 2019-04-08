@@ -107,6 +107,33 @@ export class NotesComponent implements OnInit, OnDestroy {
                 note.isSelected = !note.isSelected;
             } else if (event && event.shiftKey) {
                 // SHIFT is pressed: select a range
+                let selectedNotes: Note[] = this.notes.filter(x => x.isSelected);
+                let selectedIndices: number[] = [];
+
+                for (const selectedNote of selectedNotes) {
+                    let index: number = this.notes.indexOf(selectedNote);
+                    selectedIndices.push(index);
+                }
+
+                let minIndex: number = Math.min.apply(null, selectedIndices);
+                let maxIndex: number = Math.max.apply(null, selectedIndices);
+                let clickedIndex: number = this.notes.indexOf(note);
+
+                for (let collectionNote of this.notes) {
+                    collectionNote.isSelected = false;
+
+                    let collectionNoteIndex: number = this.notes.indexOf(collectionNote);
+
+                    if (clickedIndex >= minIndex) {
+                        if (collectionNoteIndex >= minIndex && collectionNoteIndex <= collectionNoteIndex) {
+                            collectionNote.isSelected = true;
+                        }
+                    } else {
+                        if (collectionNoteIndex <= maxIndex && collectionNoteIndex >= collectionNoteIndex) {
+                            collectionNote.isSelected = true;
+                        }
+                    }
+                }
             } else {
                 // No modifier key is pressed: clear previous selection
                 for (let collectionNote of this.notes) {
@@ -117,8 +144,6 @@ export class NotesComponent implements OnInit, OnDestroy {
                     }
                 }
             }
-
-            
 
             this.selectedNoteIds.next(this.getSelectedNoteIds());
         });
@@ -156,7 +181,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         }
     }
 
-    private getNotes(resetSelection: boolean): void {
+    private getNotes(): void {
         // Only fetch notes list for selected category
         if (this.componentCategory !== this.selectedCategory) {
             return;
@@ -167,10 +192,6 @@ export class NotesComponent implements OnInit, OnDestroy {
                 this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, this.settingsService.showExactDatesInTheNotesList);
                 this.notesCount.emit(this.notes.length);
 
-                if (resetSelection) {
-                    this.selectFirstNote();
-                }
-
                 this.selectedNoteIds.next(this.getSelectedNoteIds());
             });
         }
@@ -178,14 +199,6 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     private getSelectedNoteIds() {
         return this.notes.filter(x => x.isSelected).map(x => x.id);
-    }
-
-    private selectFirstNote() {
-        if (this.notes && this.notes.length > 0) {
-            this.setSelectedNote(this.notes[0]);
-        } else {
-            this.setSelectedNote(null);
-        }
     }
 
     public dragStart(event: any, note: Note): void {
