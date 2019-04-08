@@ -109,7 +109,8 @@
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Êtes-vous sûr de vouloir supprimer la collection '{{collection}}'? Si vous continuez, ses bloc-notes et ses notes seront perdues.",
-        "ConfirmDeleteNote": "Êtes-vous sûr de vouloir supprimer la note '{{noteTitle}}'?",
+        "ConfirmDeleteSingleNote": "Êtes-vous sûr de vouloir supprimer la note '{{noteTitle}}'?",
+        "ConfirmDeleteMultipleNotes": "Êtes-vous sûr de vouloir supprimer ces notes?",
         "ConfirmDeleteNotebook": "Êtes-vous sûr de vouloir supprimer le bloc-notes '{{notebookName}}'? Ses notes ne seront pas supprimées. Elles seront juste non classées.",
         "SelectDirectoryContainingOldVersionExports": "Veuillez sélectionner le répertoire contenant les fichiers exportés à partir de Knowte 1.x.",
         "YouHaveSelectedDirectory": "Vous avez sélectionné le répertoire:",
@@ -132,7 +133,7 @@
         "RenameCollectionError": "Une erreur s'est produite lors du changement de nom de la collection '{{collection}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "DeleteCollectionError": "Une erreur s'est produite lors de la suppression de la collection '{{collection}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "DeleteNotebookError": "Une erreur s'est produite lors de la suppression du bloc-notes '{{notebookName}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
-        "DeleteNoteError": "Une erreur s'est produite lors de la suppression de la note '{{noteTitle}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "DeleteNotesError": "Une erreur s'est produite lors de la suppression des notes. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "SaveNoteError": "Une erreur s'est produite lors de l'enregistrement de la note '{{noteTitle}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "UpdateNoteContentError": "Une erreur s'est produite lors de l'enregistrement du contenu de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "GetNoteContentError": "Une erreur s'est produite lors de l'obtention du contenu de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations.",

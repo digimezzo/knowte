@@ -56,10 +56,10 @@ export class NotesComponent implements OnInit, OnDestroy {
     public notesCount: EventEmitter<number> = new EventEmitter<number>();
 
     @Output()
-    public selectedNoteOutput: EventEmitter<Note> = new EventEmitter<Note>();
+    public selectedNotesOutput: EventEmitter<Note[]> = new EventEmitter<Note[]>();
 
     public notes: Note[] = [];
-    public selectedNote: Note;
+    public selectedNotes: Note[];
     public draggedNote: Note;
     public canShowList: boolean = true;
 
@@ -103,18 +103,32 @@ export class NotesComponent implements OnInit, OnDestroy {
         ;
     }
 
-    public setSelectedNote(note: Note) {
+    public setSelectedNote(note: Note, event: MouseEvent = null) {
         this.zone.run(() => {
-            this.selectedNote = note;
-            this.selectedNoteOutput.next(note);
+            if (event && event.ctrlKey) {
+                // CTRL is pressed: add note to or remove from selection
+                if (this.selectedNotes.includes(note)) {
+                    this.selectedNotes.splice(this.selectedNotes.indexOf(note), 1);
+                } else {
+                    this.selectedNotes.push(note);
+                }
+            } else if (event && event.shiftKey) {
+                // SHIFT is pressed: select a range
+            } else {
+                // No modifier key is pressed: clear previous selection
+                this.selectedNotes = [];
+                this.selectedNotes.push(note);
+            }
+
+            this.selectedNotesOutput.next(this.selectedNotes);
         });
     }
 
-    public openNote(): void {
-        if (!this.collectionService.noteIsOpen(this.selectedNote.id)) {
-            this.globalEmitter.emit(Constants.setNoteOpenEvent, this.selectedNote.id, true);
+    public openNote(note: Note): void {
+        if (!this.collectionService.noteIsOpen(note.id)) {
+            this.globalEmitter.emit(Constants.setNoteOpenEvent, note.id, true);
         } else {
-            this.globalEmitter.emit(Constants.focusNoteEvent, this.selectedNote.id);
+            this.globalEmitter.emit(Constants.focusNoteEvent, note.id);
         }
     }
 
@@ -155,7 +169,7 @@ export class NotesComponent implements OnInit, OnDestroy {
                     this.selectFirstNote();
                 }
 
-                this.selectedNoteOutput.next(this.selectedNote);
+                this.selectedNotesOutput.next(this.selectedNotes);
             });
         }
     }

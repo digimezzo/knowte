@@ -55,8 +55,8 @@
             </selectednotebookandsearch-component>
             <!-- Note buttons -->
             <div class="note-buttons m-2" [@noteButtonsVisibility]="noteButtonsVisibility">
-                <button class="list-button" mat-mini-fab color="" (click)="deleteNoteAsync()"
-                    matTooltip="{{ 'Tooltips.DeleteNote' | translate }}" *ngIf=canEditNote>
+                <button class="list-button" mat-mini-fab color="" (click)="deleteNotesAsync()"
+                    matTooltip="{{ 'Tooltips.DeleteNotes' | translate }}" *ngIf=canEditNotes>
                     <span class="edit-item-icon">&#xE872;</span>
                 </button>
                 <button class="list-button" mat-mini-fab color="" (click)="importNotesAsync()"
@@ -77,7 +77,7 @@
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="allCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
-                        (selectedNoteOutput)="onSelectedNoteChanged($event)" (drop)="notesDrop($event)"
+                        (selectedNotesOutput)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
                         (dragover)="notesDragOver($event)"></notes-component>
                 </mat-tab>
                 <mat-tab>
@@ -87,7 +87,7 @@
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="todayCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
-                        (selectedNoteOutput)="onSelectedNoteChanged($event)" (drop)="notesDrop($event)"
+                        (selectedNotesOutput)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
                         (dragover)="notesDragOver($event)"></notes-component>
                 </mat-tab>
                 <mat-tab>
@@ -97,7 +97,7 @@
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="yesterdayCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
-                        (selectedNoteOutput)="onSelectedNoteChanged($event)" (drop)="notesDrop($event)"
+                        (selectedNotesOutput)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
                         (dragover)="notesDragOver($event)"></notes-component>
                 </mat-tab>
                 <mat-tab>
@@ -107,7 +107,7 @@
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="thisWeekCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
-                        (selectedNoteOutput)="onSelectedNoteChanged($event)" (drop)="notesDrop($event)"
+                        (selectedNotesOutput)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
                         (dragover)="notesDragOver($event)"></notes-component>
                 </mat-tab>
                 <mat-tab>
@@ -117,7 +117,7 @@
                     </ng-template>
                     <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="markedCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
-                        (selectedNoteOutput)="onSelectedNoteChanged($event)" (drop)="notesDrop($event)"
+                        (selectedNotesOutput)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
                         (dragover)="notesDragOver($event)"></notes-component>
                 </mat-tab>
             </mat-tab-group>

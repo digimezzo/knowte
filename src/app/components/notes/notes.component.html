@@ -9,9 +9,9 @@
     <!-- Notes list -->
     <mat-selection-list class="notes-list" *ngIf="canShowList">
         <cdk-virtual-scroll-viewport itemSize="48">
-            <mat-list-option [ngClass]="{'selected-note':note === selectedNote }" *cdkVirtualFor="let note of notes"
+            <mat-list-option [ngClass]="{'selected-note':selectedNotes?.includes(note)}" *cdkVirtualFor="let note of notes"
                 role="option">
-                <div class="note-item no-select px-2" (dblclick)="openNote()" (click)="setSelectedNote(note)"
+                <div class="note-item no-select px-2" (dblclick)="openNote(note)" (click)="setSelectedNote(note, $event)"
                     draggable="true" (dragstart)="dragStart($event, note)">
                     <div class="note-item-icon">
                         <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg">

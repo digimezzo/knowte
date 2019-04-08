@@ -427,34 +427,35 @@ export class CollectionService {
     return Operation.Success;
   }
 
-  public async deleteNoteAsync(noteId: string): Promise<Operation> {
-    let noteTitle: string = "";
+  public async deleteNotesAsync(noteIds: string[]): Promise<Operation> {
+    let operation: Operation = Operation.Success;
 
-    try {
-      let noteToDelete: Note = this.dataStore.getNoteById(noteId);
+    for (const noteId of noteIds) {
+      try {
+        // 1. Delete note from data store
+        this.dataStore.deleteNote(noteId);
 
-      // 1. Delete note from data store
-      this.dataStore.deleteNote(noteId);
+        // 2. Delete all files from disk, which are related to the note.
+        let notePath: string = this.getNotePath(noteId);
+        let noteFilePath: string = path.join(notePath, `${noteId}${Constants.noteContentExtension}`);
+        let noteStateFilePath: string = path.join(notePath, `${noteId}${Constants.noteStateExtension}`);
 
-      // 2. Delete all files from disk, which are related to the note.
-      let notePath: string = this.getNotePath(noteId);
-      let noteFilePath: string = path.join(notePath, `${noteId}${Constants.noteContentExtension}`);
-      let noteStateFilePath: string = path.join(notePath, `${noteId}${Constants.noteStateExtension}`);
+        // Note file
+        fs.unlinkSync(noteFilePath, '');
 
-      // Note file
-      fs.unlinkSync(noteFilePath, '');
-
-      // Note state file
-      if (fs.existsSync(noteStateFilePath)) {
-        fs.unlinkSync(noteStateFilePath, '');
+        // Note state file
+        if (fs.existsSync(noteStateFilePath)) {
+          fs.unlinkSync(noteStateFilePath, '');
+        }
+      } catch (error) {
+        log.error(`Could not delete the note with id='${noteId}'. Cause: ${error}`);
+        operation = Operation.Error;
       }
-    } catch (error) {
-      log.error(`Could not delete the note with id='${noteId}'. Cause: ${error}`);
-      return Operation.Error;
     }
 
     this.noteDeleted.next();
-    return Operation.Success;
+
+    return operation;
   }
 
   public async getNotesAsync(notebookId: string, category: string, useExactDates: boolean): Promise<Note[]> {
@@ -672,7 +673,7 @@ export class CollectionService {
   }
 
   public deleteNoteEventHandler(noteId: string) {
-    this.deleteNoteAsync(noteId);
+    this.deleteNotesAsync([noteId]);
   }
 
   public async importFromOldVersionAsync(directoryContainingExportFiles: string): Promise<boolean> {
