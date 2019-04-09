@@ -26,10 +26,10 @@ export class NotesComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
     private readonly destroy$ = new Subject();
     private _selectedNotebook: Notebook;
+    private lastSelectedNote: Note;
 
-    constructor(private dialog: MatDialog, private collectionService: CollectionService, private snackBarService: SnackBarService,
-        public searchService: SearchService, private settingsService: SettingsService, private fileService: FileService, private zone: NgZone,
-        private ref: ChangeDetectorRef) {
+    constructor(private collectionService: CollectionService, private snackBarService: SnackBarService, public searchService: SearchService,
+        private settingsService: SettingsService, private fileService: FileService, private zone: NgZone) {
     }
 
     @Input()
@@ -101,54 +101,51 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public setSelectedNote(note: Note, event: MouseEvent = null) {
-        this.zone.run(() => {
-            if (event && event.ctrlKey) {
-                // CTRL is pressed: add note to or remove from selection
-                note.isSelected = !note.isSelected;
-            } else if (event && event.shiftKey) {
-                // SHIFT is pressed: select a range
-                let selectedNotes: Note[] = this.notes.filter(x => x.isSelected);
-                let selectedIndices: number[] = [];
+        if (!this.lastSelectedNote) {
+            this.lastSelectedNote = note;
+            return;
+        }
 
-                for (const selectedNote of selectedNotes) {
-                    let index: number = this.notes.indexOf(selectedNote);
-                    selectedIndices.push(index);
-                }
+        if (event && event.ctrlKey) {
+            // CTRL is pressed: add note to or remove from selection
+            note.isSelected = !note.isSelected;
 
-                let minIndex: number = Math.min.apply(null, selectedIndices);
-                let maxIndex: number = Math.max.apply(null, selectedIndices);
-                let clickedIndex: number = this.notes.indexOf(note);
+            if (note.isSelected) {
+                this.lastSelectedNote = note;
+            }
+        } else if (event && event.shiftKey) {
+            // SHIFT is pressed: select a range
+            let currentNoteIndex: number = this.notes.indexOf(note);
+            let lastSelectedNoteIndex: number = this.notes.indexOf(this.lastSelectedNote);
 
-                for (let collectionNote of this.notes) {
-                    collectionNote.isSelected = false;
+            let lowIndex: number = currentNoteIndex;
+            let highIndex: number = lastSelectedNoteIndex;
 
-                    let collectionNoteIndex: number = this.notes.indexOf(collectionNote);
+            if (currentNoteIndex > lastSelectedNoteIndex) {
+                lowIndex = lastSelectedNoteIndex;
+                highIndex = currentNoteIndex;
+            }
 
-                    if (clickedIndex >= minIndex) {
-                        if (collectionNoteIndex >= minIndex && collectionNoteIndex <= collectionNoteIndex) {
-                            collectionNote.isSelected = true;
-                        }
-                    } else {
-                        if (collectionNoteIndex <= maxIndex && collectionNoteIndex >= collectionNoteIndex) {
-                            collectionNote.isSelected = true;
-                        }
-                    }
-                }
-            } else {
-                // No modifier key is pressed: clear previous selection
-                for (let collectionNote of this.notes) {
-                    collectionNote.isSelected = false;
-
-                    if (collectionNote.id === note.id) {
-                        collectionNote.isSelected = true;
-                    }
+            for (var i = 0; i < this.notes.length; i++) {
+                if (lowIndex <= i && i <= highIndex) {
+                    this.notes[i].isSelected = true;
                 }
             }
 
-            this.selectedNoteIds.next(this.getSelectedNoteIds());
-        });
+            this.lastSelectedNote = note;
+        } else {
+            // No modifier key is pressed: clear previous selection
+            for (let collectionNote of this.notes) {
+                collectionNote.isSelected = false;
 
-        this.ref.detectChanges();
+                if (collectionNote.id === note.id) {
+                    collectionNote.isSelected = true;
+                    this.lastSelectedNote = collectionNote;
+                }
+            }
+        }
+
+        this.selectedNoteIds.next(this.getSelectedNoteIds());
     }
 
     public openNote(note: Note): void {
