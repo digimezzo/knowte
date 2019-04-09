@@ -220,9 +220,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
   }
 
   public async deleteNotesAsync(): Promise<void> {
-    let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNote').toPromise();
-
     // Assume multiple selected notes
+    let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNotes').toPromise();
     let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteMultipleNotes').toPromise();
 
     if (!this.selectedNoteIds || this.selectedNoteIds.length === 0) {
@@ -233,6 +232,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     if (this.selectedNoteIds.length === 1) {
       let note: Note = await this.collectionService.getNote(this.selectedNoteIds[0]);
+      title = await this.translateService.get('DialogTitles.ConfirmDeleteNote').toPromise();
       text = await this.translateService.get('DialogTexts.ConfirmDeleteSingleNote', { noteTitle: note.title }).toPromise();
     }
 

@@ -103,8 +103,9 @@
         "ConfirmDeleteCollection": "Delete collection?",
         "AddNotebook": "Add notebook",
         "RenameNotebook": "Rename notebook",
-        "ConfirmDeleteNotebook": "Delete notebook?",
+        "ConfirmDeleteNotebook": "Delete notebooks?",
         "ConfirmDeleteNote": "Delete note?",
+        "ConfirmDeleteNotes": "Delete notes?",
         "Import": "Import"
     },
     "DialogTexts": {

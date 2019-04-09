@@ -105,6 +105,7 @@
         "RenameNotebook": "Renommer bloc-notes",
         "ConfirmDeleteNotebook": "Supprimer bloc-notes?",
         "ConfirmDeleteNote": "Supprimer note?",
+        "ConfirmDeleteNotes": "Supprimer notes?",
         "Import": "Importer"
     },
     "DialogTexts": {
