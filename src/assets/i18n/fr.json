@@ -117,7 +117,8 @@
         "Importing": "Entrain d'importer",
         "ImportSuccessful": "Import réussi!",
         "ImportFailed": "Import échoué!",
-        "AllFiles": "Tous les fichiers"
+        "AllFiles": "Tous les fichiers",
+        "ChooseNotebook": "Choisissez un bloc-notes"
     },
     "Input": {
         "Collection": "Collection",

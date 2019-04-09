@@ -1,7 +1,16 @@
 @import "css/variables.scss";
 
-.notebooksList {
+.dialog-content{
+  display: flex;
+  flex-direction: column;
+}
+
+.notebooks-list {
+  flex: 1;
   overflow-y: auto;
+  margin-left: -16px !important;
+  margin-right: -24px !important;
+  padding-right: 8px !important;
 }
 
 .notebook {

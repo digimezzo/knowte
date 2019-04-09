@@ -117,7 +117,8 @@
         "Importing": "Importing",
         "ImportSuccessful": "Import successful!",
         "ImportFailed": "Import failed!",
-        "AllFiles": "All files"
+        "AllFiles": "All files",
+        "ChooseNotebook": "Choose a notebook"
     },
     "Input": {
         "Collection": "Collection",

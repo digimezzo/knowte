@@ -1,7 +1,8 @@
-<mat-dialog-content>
-    <ul class="notebooksList">
+<mat-dialog-content class="dialog-content">
+    <b>{{ 'DialogTexts.ChooseNotebook' | translate }}</b>
+    <ul class="notebooks-list mt-2">
         <li *ngFor="let notebook of notebooks" class="notebook" matRipple>
-            <div class="noselect px-2" (click)="changeNotebook(notebook)">
+            <div class="no-select px-2" (click)="changeNotebook(notebook)">
                 {{ notebook.name }}
             </div>
         </li>
