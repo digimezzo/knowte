@@ -62,7 +62,7 @@
 }
 
 .note-item:hover{
-  background: $color-verylightgrey;
+  background: $color-hover;
 }
 
 .note-item-icon {
@@ -145,5 +145,5 @@ cdk-virtual-scroll-viewport {
 }
 
 .selected-note {
-  background-color: $color-mediumgrey;
+  background-color: $color-selected;
 }

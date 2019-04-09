@@ -101,7 +101,7 @@
 }
 
 .notebook:hover{
-  background: $color-mediumlightgrey;
+  background: $color-hover;
 }
 
 .notebook-name {
@@ -112,7 +112,7 @@
 }
 
 .selected-notebook {
-  background-color: $color-mediumgrey;
+  background-color: $color-selected;
 }
 
 .drop-notebook {
