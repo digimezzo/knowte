@@ -154,7 +154,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         if (this.selectedNotebook) {
             this.zone.run(async () => {
                 this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, this.settingsService.showExactDatesInTheNotesList);
-                this.selectionWatcher.watch(this.notes);
+                this.selectionWatcher.reset(this.notes);
                 this.notesCount.emit(this.notes.length);
 
                 this.selectedNoteIds.next(this.getSelectedNoteIds());

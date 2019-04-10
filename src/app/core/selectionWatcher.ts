@@ -1,17 +1,26 @@
 export class SelectionWatcher {
-    constructor() {}
+    constructor() { }
 
     private items: any[];
     private isWatching: boolean = false;
     private lastSelectedItem: any;
 
-    public watch(items: any[]): void {
+    public reset(items: any[], selectFirstItem: boolean = false): void {
         this.items = items;
+
+        if (this.items.length > 0) {
+            this.items.forEach(x => x.isSelected = false);
+
+            if (selectFirstItem) {
+                this.items[0].isSelected = true;
+            }
+        }
+
         this.isWatching = true;
     }
 
     public selectItemsInBetween(item: any): void {
-        if(!this.isWatching){
+        if (!this.isWatching) {
             return;
         }
 
@@ -39,7 +48,7 @@ export class SelectionWatcher {
     }
 
     public selectSingleItem(item: any): void {
-        if(!this.isWatching){
+        if (!this.isWatching) {
             return;
         }
 
@@ -56,10 +65,10 @@ export class SelectionWatcher {
     }
 
     public toggleItemSelection(item: any): void {
-        if(!this.isWatching){
+        if (!this.isWatching) {
             return;
         }
-        
+
         item.isSelected = !item.isSelected;
 
         if (item.isSelected) {

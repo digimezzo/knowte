@@ -523,7 +523,6 @@ export class CollectionService {
 
         // Date text
         note.displayModificationDate = result.dateText;
-        note.isSelected = false;
       }
 
       this.notesCountChanged.next(notesCountResult);
