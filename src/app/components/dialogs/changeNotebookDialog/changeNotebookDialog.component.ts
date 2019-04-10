@@ -26,7 +26,7 @@ export class ChangeNotebookDialogComponent implements OnInit, OnDestroy {
     }
 
     public changeNotebook(notebook: Notebook) {
-        this.globalEmitter.emit(Constants.setNotebookEvent, this.data.noteId, notebook.id);
+        this.globalEmitter.emit(Constants.setNotebookEvent, notebook.id, [this.data.noteId]);
         this.dialogRef.close(true); // Force return "true"
     }
 
