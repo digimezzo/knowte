@@ -1,19 +1,18 @@
-import { Component, OnInit, Input, OnDestroy, NgZone, Output, EventEmitter, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, NgZone, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 import { Note } from '../../data/entities/note';
 import { Subscription, Subject, fromEvent } from 'rxjs';
 import { SnackBarService } from '../../services/snackBar.service';
 import { Notebook } from '../../data/entities/notebook';
-import { MatDialog } from '@angular/material';
 import { Constants } from '../../core/constants';
 import { SearchService } from '../../services/search.service';
 import { NoteMarkResult } from '../../services/results/noteMarkResult';
 import { debounceTime, takeUntil } from 'rxjs/internal/operators';
 import { Utils } from '../../core/utils';
 import { remote } from 'electron';
-import log from 'electron-log';
 import { SettingsService } from '../../services/settings.service';
 import { FileService } from '../../services/file.service';
+import { SelectionWatcher } from '../../core/selectionWatcher';
 
 @Component({
     selector: 'notes-component',
@@ -26,10 +25,11 @@ export class NotesComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
     private readonly destroy$ = new Subject();
     private _selectedNotebook: Notebook;
-    private lastSelectedNote: Note;
+    private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
-    constructor(private collectionService: CollectionService, private snackBarService: SnackBarService, public searchService: SearchService,
-        private settingsService: SettingsService, private fileService: FileService, private zone: NgZone) {
+    constructor(private collectionService: CollectionService, private snackBarService: SnackBarService, 
+        public searchService: SearchService, private settingsService: SettingsService, 
+        private fileService: FileService, private zone: NgZone) {
     }
 
     @Input()
@@ -103,59 +103,16 @@ export class NotesComponent implements OnInit, OnDestroy {
     public setSelectedNote(note: Note, event: MouseEvent = null) {
         if (event && event.ctrlKey) {
             // CTRL is pressed: add item to, or remove item from selection
-            this.toggleItemSelection(note);
+            this.selectionWatcher.toggleItemSelection(note); 
         } else if (event && event.shiftKey) {
             // SHIFT is pressed: select a range of items
-            this.selectItemsInBetween(note, this.lastSelectedNote, this.notes);
+            this.selectionWatcher.selectItemsInBetween(note);
         } else {
             // No modifier key is pressed: select only 1 item
-            this.selectSingleItem(note, this.notes);
-        }
-
-        if (note.isSelected) {
-            this.lastSelectedNote = note;
+            this.selectionWatcher.selectSingleItem(note);
         }
 
         this.selectedNoteIds.next(this.getSelectedNoteIds());
-    }
-
-    public selectItemsInBetween(currentItem: any, lastSelectedItem: any, items: any[]) {
-        let currentItemIndex: number = items.indexOf(currentItem);
-        let lastSelectedItemIndex: number = items.indexOf(currentItem);
-
-        if (lastSelectedItem) {
-            lastSelectedItemIndex = items.indexOf(lastSelectedItem);
-        }
-
-        let lowIndex: number = currentItemIndex;
-        let highIndex: number = lastSelectedItemIndex;
-
-        if (currentItemIndex > lastSelectedItemIndex) {
-            lowIndex = lastSelectedItemIndex;
-            highIndex = currentItemIndex;
-        }
-
-        for (var i = 0; i < items.length; i++) {
-            if (lowIndex <= i && i <= highIndex) {
-                items[i].isSelected = true;
-            }
-        }
-    }
-
-    public selectSingleItem(currentItem: any, items: any[]) {
-        let currentItemIndex: number = items.indexOf(currentItem);
-
-        for (var i = 0; i < items.length; i++) {
-            items[i].isSelected = false;
-
-            if (i === currentItemIndex) {
-                items[i].isSelected = true;
-            }
-        }
-    }
-
-    public toggleItemSelection(currentItem: any) {
-        currentItem.isSelected = !currentItem.isSelected;
     }
 
     public openNote(note: Note): void {
@@ -197,6 +154,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         if (this.selectedNotebook) {
             this.zone.run(async () => {
                 this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, this.settingsService.showExactDatesInTheNotesList);
+                this.selectionWatcher.watch(this.notes);
                 this.notesCount.emit(this.notes.length);
 
                 this.selectedNoteIds.next(this.getSelectedNoteIds());
