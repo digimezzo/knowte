@@ -101,51 +101,61 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public setSelectedNote(note: Note, event: MouseEvent = null) {
-        if (!this.lastSelectedNote) {
-            this.lastSelectedNote = note;
-            return;
+        if (event && event.ctrlKey) {
+            // CTRL is pressed: add item to, or remove item from selection
+            this.toggleItemSelection(note);
+        } else if (event && event.shiftKey) {
+            // SHIFT is pressed: select a range of items
+            this.selectItemsInBetween(note, this.lastSelectedNote, this.notes);
+        } else {
+            // No modifier key is pressed: select only 1 item
+            this.selectSingleItem(note, this.notes);
         }
 
-        if (event && event.ctrlKey) {
-            // CTRL is pressed: add note to or remove from selection
-            note.isSelected = !note.isSelected;
-
-            if (note.isSelected) {
-                this.lastSelectedNote = note;
-            }
-        } else if (event && event.shiftKey) {
-            // SHIFT is pressed: select a range
-            let currentNoteIndex: number = this.notes.indexOf(note);
-            let lastSelectedNoteIndex: number = this.notes.indexOf(this.lastSelectedNote);
-
-            let lowIndex: number = currentNoteIndex;
-            let highIndex: number = lastSelectedNoteIndex;
-
-            if (currentNoteIndex > lastSelectedNoteIndex) {
-                lowIndex = lastSelectedNoteIndex;
-                highIndex = currentNoteIndex;
-            }
-
-            for (var i = 0; i < this.notes.length; i++) {
-                if (lowIndex <= i && i <= highIndex) {
-                    this.notes[i].isSelected = true;
-                }
-            }
-
+        if (note.isSelected) {
             this.lastSelectedNote = note;
-        } else {
-            // No modifier key is pressed: clear previous selection
-            for (let collectionNote of this.notes) {
-                collectionNote.isSelected = false;
-
-                if (collectionNote.id === note.id) {
-                    collectionNote.isSelected = true;
-                    this.lastSelectedNote = collectionNote;
-                }
-            }
         }
 
         this.selectedNoteIds.next(this.getSelectedNoteIds());
+    }
+
+    public selectItemsInBetween(currentItem: any, lastSelectedItem: any, items: any[]) {
+        let currentItemIndex: number = items.indexOf(currentItem);
+        let lastSelectedItemIndex: number = items.indexOf(currentItem);
+
+        if (lastSelectedItem) {
+            lastSelectedItemIndex = items.indexOf(lastSelectedItem);
+        }
+
+        let lowIndex: number = currentItemIndex;
+        let highIndex: number = lastSelectedItemIndex;
+
+        if (currentItemIndex > lastSelectedItemIndex) {
+            lowIndex = lastSelectedItemIndex;
+            highIndex = currentItemIndex;
+        }
+
+        for (var i = 0; i < items.length; i++) {
+            if (lowIndex <= i && i <= highIndex) {
+                items[i].isSelected = true;
+            }
+        }
+    }
+
+    public selectSingleItem(currentItem: any, items: any[]) {
+        let currentItemIndex: number = items.indexOf(currentItem);
+
+        for (var i = 0; i < items.length; i++) {
+            items[i].isSelected = false;
+
+            if (i === currentItemIndex) {
+                items[i].isSelected = true;
+            }
+        }
+    }
+
+    public toggleItemSelection(currentItem: any) {
+        currentItem.isSelected = !currentItem.isSelected;
     }
 
     public openNote(note: Note): void {
