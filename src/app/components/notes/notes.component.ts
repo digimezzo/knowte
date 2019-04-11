@@ -24,7 +24,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     private globalEmitter = remote.getGlobal('globalEmitter');
     private subscription: Subscription;
     private readonly destroy$ = new Subject();
-    private _selectedNotebook: Notebook;
+    private _activeNotebook: Notebook;
     private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
     constructor(private collectionService: CollectionService, private snackBarService: SnackBarService, 
@@ -40,13 +40,13 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     public selectedCategory: string = Constants.allCategory;
 
-    public get selectedNotebook(): Notebook {
-        return this._selectedNotebook;
+    public get activeNotebook(): Notebook {
+        return this._activeNotebook;
     }
 
     @Input()
-    public set selectedNotebook(val: Notebook) {
-        this._selectedNotebook = val;
+    public set activeNotebook(val: Notebook) {
+        this._activeNotebook = val;
         this.getNotes();
     }
 
@@ -151,9 +151,9 @@ export class NotesComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if (this.selectedNotebook) {
+        if (this.activeNotebook) {
             this.zone.run(async () => {
-                this.notes = await this.collectionService.getNotesAsync(this.selectedNotebook.id, this.componentCategory, this.settingsService.showExactDatesInTheNotesList);
+                this.notes = await this.collectionService.getNotesAsync(this.activeNotebook.id, this.componentCategory, this.settingsService.showExactDatesInTheNotesList);
                 this.selectionWatcher.reset(this.notes);
                 this.notesCount.emit(this.notes.length);
 

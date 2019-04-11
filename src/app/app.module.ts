@@ -53,7 +53,7 @@ import { MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDivide
   MatDialogModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatSnackBarModule,
   MatListModule, MatSelectModule, MatSlideToggleModule, MatRippleModule } from '@angular/material';
 import { GlobalErrorHandler } from './globalErrorHandler';
-import { SelectedNotebookAndSearchComponent } from './components/selectedNotebookAndSearch/selectedNotebookAndSearch.component';
+import { ActiveNotebookAndSearchComponent } from './components/activeNotebookAndSearch/activeNotebookAndSearch.component';
 import { SettingsService } from './services/settings.service';
 import { TruncatePipe } from './pipes/truncatePipe';
 import { FileService } from './services/file.service';
@@ -85,7 +85,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ChangeNotebookDialogComponent,
     ImportFromOldVersionDialogComponent,
     LogoFullComponent,
-    SelectedNotebookAndSearchComponent,
+    ActiveNotebookAndSearchComponent,
     NoteComponent,
     WebviewDirective,
     TruncatePipe

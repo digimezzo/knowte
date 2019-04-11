@@ -57,7 +57,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   public thisWeekNotesCount: number = 0;
   public markedNotesCount: number = 0;
   public notebooks: Notebook[];
-  public selectedNotebook: Notebook;
+  public activeNotebook: Notebook;
   public hoveredNotebook: Notebook;
   public noteButtonsVisibility: string = 'visible';
   public selectedNoteIds: string[];
@@ -100,9 +100,6 @@ export class CollectionComponent implements OnInit, OnDestroy {
     // Get notebooks
     await this.getNotebooksAsync();
 
-    // Select 1st notebook by default
-    this.selectedNotebook = this.notebooks[0];
-
     // Subscriptions
     this.subscription = this.collectionService.notebookEdited$.subscribe(async () => await this.getNotebooksAsync());
     this.subscription = this.collectionService.notebookDeleted$.subscribe(async () => await this.getNotebooksAndResetSelectionAsync());
@@ -140,6 +137,11 @@ export class CollectionComponent implements OnInit, OnDestroy {
       this.selectionWatcher.addItemToSelection(notebook);
     }
 
+    if(this.selectionWatcher.selectedItemsCount > 0){
+      // If no notebook is selected, keep the current notebook active.
+      this.activeNotebook = this.selectionWatcher.selectedItems[0];
+    }
+    
     this.zone.run(() => {
       this.canRenameNotebook = this.selectionWatcher.selectedItemsCount === 1 && !this.selectionWatcher.selectedItems[0].isDefault;
       this.canDeleteNotebooks = this.selectionWatcher.selectedItemsCount > 1 || (this.selectionWatcher.selectedItemsCount === 1 && !this.selectionWatcher.selectedItems[0].isDefault);
@@ -183,12 +185,12 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
   public renameNotebook(): void {
     let dialogRef: MatDialogRef<RenameNotebookDialogComponent> = this.dialog.open(RenameNotebookDialogComponent, {
-      width: '450px', data: { notebookId: this.selectedNotebook.id }
+      width: '450px', data: { notebookId: this.activeNotebook.id }
     });
   }
 
   public async deleteNotebookAsync(): Promise<void> {
-    let notebookName: string = this.collectionService.getNotebookName(this.selectedNotebook.id);
+    let notebookName: string = this.collectionService.getNotebookName(this.activeNotebook.id);
     let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNotebook').toPromise();
     let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNotebook', { notebookName: notebookName }).toPromise();
 
@@ -199,7 +201,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(async (result: any) => {
       if (result) {
-        let operation: Operation = await this.collectionService.deleteNotebookAsync(this.selectedNotebook.id);
+        let operation: Operation = await this.collectionService.deleteNotebookAsync(this.activeNotebook.id);
 
         if (operation === Operation.Error) {
           let errorText: string = (await this.translateService.get('ErrorTexts.DeleteNotebookError', { notebookName: notebookName }).toPromise());
@@ -219,7 +221,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     let baseTitle: string = await this.translateService.get('Notes.NewNote').toPromise();
 
     // Create a new note
-    let result: NoteOperationResult = this.collectionService.addNote(baseTitle, this.selectedNotebook.id);
+    let result: NoteOperationResult = this.collectionService.addNote(baseTitle, this.activeNotebook.id);
 
     if (result.operation === Operation.Success) {
       this.globalEmitter.emit(Constants.setNoteOpenEvent, result.noteId, true);
@@ -285,7 +287,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     });
 
     if (selectedFiles) {
-      await this.importNoteFilesAsync(selectedFiles, this.selectedNotebook);
+      await this.importNoteFilesAsync(selectedFiles, this.activeNotebook);
     }
   }
 
@@ -321,6 +323,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
   private async getNotebooksAsync(): Promise<void> {
     this.notebooks = await this.collectionService.getNotebooksAsync(true);
     this.selectionWatcher.reset(this.notebooks, true);
+
+    // Set 1st notebook active by default
+    this.activeNotebook = this.selectionWatcher.selectedItems[0];
     this.notebooksCount = this.notebooks.length - 2;
   }
 
@@ -370,7 +375,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     if (this.fileService.isDroppingFiles(event)) {
       // Dropping files
       let pathsOfDroppedFiles: string[] = this.fileService.getDroppedFilesPaths(event);
-      await this.importNoteFilesAsync(pathsOfDroppedFiles, this.selectedNotebook);
+      await this.importNoteFilesAsync(pathsOfDroppedFiles, this.activeNotebook);
     }
   }
 

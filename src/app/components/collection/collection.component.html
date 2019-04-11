@@ -50,9 +50,9 @@
                 </div>
             </div>
             <!-- Selected notebook and search -->
-            <selectednotebookandsearch-component class="selected-notebook-and-search"
-                [selectedNotebook]="selectedNotebook" [(notesCount)]="notesCount">
-            </selectednotebookandsearch-component>
+            <activenotebookandsearch-component class="active-notebook-and-search"
+                [activeNotebook]="activeNotebook" [(notesCount)]="notesCount">
+            </activenotebookandsearch-component>
             <!-- Note buttons -->
             <div class="note-buttons m-2" [@noteButtonsVisibility]="noteButtonsVisibility">
                 <button class="list-button" mat-mini-fab color="" (click)="deleteNotesAsync()"
@@ -75,7 +75,7 @@
                         {{ 'NotesTabs.All' | translate }}
                         <div class="count-label">{{allNotesCount}}</div>
                     </ng-template>
-                    <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="allCategory"
+                    <notes-component [activeNotebook]="activeNotebook" [componentCategory]="allCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
                         (selectedNoteIds)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
                         (dragover)="notesDragOver($event)"></notes-component>
@@ -85,7 +85,7 @@
                         {{ 'NotesTabs.Today' | translate }}
                         <div class="count-label">{{todayNotesCount}}</div>
                     </ng-template>
-                    <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="todayCategory"
+                    <notes-component [activeNotebook]="activeNotebook" [componentCategory]="todayCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
                         (selectedNoteIds)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
                         (dragover)="notesDragOver($event)"></notes-component>
@@ -95,7 +95,7 @@
                         {{ 'NotesTabs.Yesterday' | translate }}
                         <div class="count-label">{{yesterdayNotesCount}}</div>
                     </ng-template>
-                    <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="yesterdayCategory"
+                    <notes-component [activeNotebook]="activeNotebook" [componentCategory]="yesterdayCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
                         (selectedNoteIds)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
                         (dragover)="notesDragOver($event)"></notes-component>
@@ -105,7 +105,7 @@
                         {{ 'NotesTabs.ThisWeek' | translate }}
                         <div class="count-label">{{thisWeekNotesCount}}</div>
                     </ng-template>
-                    <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="thisWeekCategory"
+                    <notes-component [activeNotebook]="activeNotebook" [componentCategory]="thisWeekCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
                         (selectedNoteIds)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
                         (dragover)="notesDragOver($event)"></notes-component>
@@ -115,7 +115,7 @@
                         {{ 'NotesTabs.Marked' | translate }}
                         <div class="count-label">{{markedNotesCount}}</div>
                     </ng-template>
-                    <notes-component [selectedNotebook]="selectedNotebook" [componentCategory]="markedCategory"
+                    <notes-component [activeNotebook]="activeNotebook" [componentCategory]="markedCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
                         (selectedNoteIds)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
                         (dragover)="notesDragOver($event)"></notes-component>
