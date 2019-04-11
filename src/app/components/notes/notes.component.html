@@ -12,7 +12,7 @@
     <!-- Notes list -->
     <ul class="notes-list" *ngIf="canShowList">
         <cdk-virtual-scroll-viewport itemSize="48">
-            <li [ngClass]="{'selected-note':note.isSelected}" *cdkVirtualFor="let note of notes" matRipple>
+            <li [ngClass]="{'selected-item':note.isSelected}" *cdkVirtualFor="let note of notes" matRipple>
                 <div class="note-item no-select px-2" (dblclick)="openNote(note)"
                     (click)="setSelectedNotes(note, $event)" draggable="true" (dragstart)="dragStart($event, note)">
                     <div class="note-item-icon">

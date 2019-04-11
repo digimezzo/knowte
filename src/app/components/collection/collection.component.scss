@@ -111,10 +111,6 @@
   line-height: 40px;
 }
 
-.selected-notebook {
-  background-color: $color-selected;
-}
-
 .drop-notebook {
   @extend .drop-background-color-primary;
 }

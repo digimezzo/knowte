@@ -23,23 +23,23 @@
                     <!-- Notebooks list -->
                     <ul class="collection-notebooks-list-list">
                         <li class="notebook" matRipple
-                            [ngClass]="{'selected-notebook':notebook === selectedNotebook, 'drop-notebook':notebook === hoveredNotebook }"
+                            [ngClass]="{'selected-item':notebook.isSelected, 'drop-notebook':notebook === hoveredNotebook }"
                             *ngFor="let notebook of notebooks" (drop)="notebookDrop($event, notebook)"
                             (dragover)="notebookDragOver($event, notebook)" (dragleave)="notebookDragLeave($event)">
                             <p class="notebook-name no-select"
                                 [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
-                                (click)="setSelectedNotebook(notebook)">
+                                (click)="setSelectedNotebooks(notebook, $event)">
                                 {{ notebook.name }}</p>
                         </li>
                     </ul>
                     <!-- Notebooks buttons -->
                     <div class="collection-notebooks-list-buttons m-2">
                         <button class="list-button" mat-mini-fab color="" (click)="renameNotebook()"
-                            matTooltip="{{ 'Tooltips.RenameNotebook' | translate }}" *ngIf=canEditNotebook>
+                            matTooltip="{{ 'Tooltips.RenameNotebook' | translate }}" *ngIf="canRenameNotebook">
                             <span class="edit-item-icon">&#xE254;</span>
                         </button>
                         <button class="list-button" mat-mini-fab color="" (click)="deleteNotebookAsync()"
-                            matTooltip="{{ 'Tooltips.DeleteNotebook' | translate }}" *ngIf=canEditNotebook>
+                            matTooltip="{{ 'Tooltips.DeleteNotebook' | translate }}" *ngIf="canDeleteNotebooks">
                             <span class="edit-item-icon">&#xE872;</span>
                         </button>
                         <button class="list-button" mat-fab (click)="addNotebookAsync()"
@@ -56,7 +56,7 @@
             <!-- Note buttons -->
             <div class="note-buttons m-2" [@noteButtonsVisibility]="noteButtonsVisibility">
                 <button class="list-button" mat-mini-fab color="" (click)="deleteNotesAsync()"
-                    matTooltip="{{ 'Tooltips.DeleteNotes' | translate }}" *ngIf=canEditNotes>
+                    matTooltip="{{ 'Tooltips.DeleteNotes' | translate }}" *ngIf=canDeleteNotes>
                     <span class="edit-item-icon">&#xE872;</span>
                 </button>
                 <button class="list-button" mat-mini-fab color="" (click)="importNotesAsync()"

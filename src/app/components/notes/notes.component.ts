@@ -106,10 +106,10 @@ export class NotesComponent implements OnInit, OnDestroy {
             this.selectionWatcher.toggleItemSelection(note); 
         } else if (event && event.shiftKey) {
             // SHIFT is pressed: select a range of items
-            this.selectionWatcher.selectItemsInBetween(note);
+            this.selectionWatcher.selectItemsRange(note);
         } else {
             // No modifier key is pressed: select only 1 item
-            this.selectionWatcher.selectSingleItem(note);
+            this.selectionWatcher.addItemToSelection(note);
         }
 
         this.selectedNoteIds.next(this.getSelectedNoteIds());

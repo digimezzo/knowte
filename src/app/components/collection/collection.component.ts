@@ -18,9 +18,9 @@ import { Note } from '../../data/entities/note';
 import { trigger, style, animate, state, transition } from '@angular/animations';
 import { debounceTime } from "rxjs/internal/operators";
 import { remote } from 'electron';
-import * as path from 'path';
 import log from 'electron-log';
 import { FileService } from '../../services/file.service';
+import { SelectionWatcher } from '../../core/selectionWatcher';
 
 @Component({
   selector: 'collection-page',
@@ -43,6 +43,7 @@ import { FileService } from '../../services/file.service';
 export class CollectionComponent implements OnInit, OnDestroy {
   private globalEmitter = remote.getGlobal('globalEmitter');
   private subscription: Subscription;
+  private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
   constructor(private dialog: MatDialog, private collectionService: CollectionService, private fileService: FileService,
     private translateService: TranslateService, private snackBarService: SnackBarService, private zone: NgZone) {
@@ -58,14 +59,15 @@ export class CollectionComponent implements OnInit, OnDestroy {
   public notebooks: Notebook[];
   public selectedNotebook: Notebook;
   public hoveredNotebook: Notebook;
-  public canEditNotebook: boolean = false;
   public noteButtonsVisibility: string = 'visible';
   public selectedNoteIds: string[];
   public notesCount: number = 0;
-  public canEditNotes: boolean = false;
+  public canDeleteNotes: boolean = false;
   public tabChangedSubject: Subject<any> = new Subject();
   public showNoteButtonSubject: Subject<any> = new Subject();
   public isBusy: boolean = false;
+  public canRenameNotebook: boolean = false;
+  public canDeleteNotebooks: boolean = false;
 
   public get allCategory(): string {
     return Constants.allCategory;
@@ -126,17 +128,22 @@ export class CollectionComponent implements OnInit, OnDestroy {
       });
   }
 
-  public selectFirstNotebook() {
-    if (this.notebooks && this.notebooks.length > 0) {
-      this.setSelectedNotebook(this.notebooks[0]);
+  public setSelectedNotebooks(notebook: Notebook, event: MouseEvent = null) {
+    if (event && event.ctrlKey) {
+      // CTRL is pressed: add item to, or remove item from selection
+      this.selectionWatcher.toggleItemSelection(notebook);
+    } else if (event && event.shiftKey) {
+      // SHIFT is pressed: select a range of items
+      this.selectionWatcher.selectItemsRange(notebook);
     } else {
-      this.setSelectedNotebook(null);
+      // No modifier key is pressed: select only 1 item
+      this.selectionWatcher.addItemToSelection(notebook);
     }
-  }
 
-  public setSelectedNotebook(notebook: Notebook) {
-    this.selectedNotebook = notebook;
-    this.canEditNotebook = this.selectedNotebook != null && !this.selectedNotebook.isDefault;
+    this.zone.run(() => {
+      this.canRenameNotebook = this.selectionWatcher.selectedItemsCount === 1 && !this.selectionWatcher.selectedItems[0].isDefault;
+      this.canDeleteNotebooks = this.selectionWatcher.selectedItemsCount > 1 || (this.selectionWatcher.selectedItemsCount === 1 && !this.selectionWatcher.selectedItems[0].isDefault);
+    });
   }
 
   public async addNotebookAsync(): Promise<void> {
@@ -265,7 +272,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
   public onSelectedNotesChanged(selectedNoteIds: string[]): void {
     this.selectedNoteIds = selectedNoteIds;
-    this.canEditNotes = this.selectedNoteIds != null && this.selectedNoteIds.length > 0;
+    this.canDeleteNotes = this.selectedNoteIds != null && this.selectedNoteIds.length > 0;
   }
 
   public async importNotesAsync(): Promise<void> {
@@ -313,12 +320,12 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
   private async getNotebooksAsync(): Promise<void> {
     this.notebooks = await this.collectionService.getNotebooksAsync(true);
+    this.selectionWatcher.reset(this.notebooks, true);
     this.notebooksCount = this.notebooks.length - 2;
   }
 
   private async getNotebooksAndResetSelectionAsync(): Promise<void> {
     await this.getNotebooksAsync();
-    this.selectFirstNotebook();
   }
 
   public notebookDragOver(event: any, notebook: Notebook): void {
