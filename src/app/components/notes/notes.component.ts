@@ -100,7 +100,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         ;
     }
 
-    public setSelectedNote(note: Note, event: MouseEvent = null) {
+    public setSelectedNotes(note: Note, event: MouseEvent = null) {
         if (event && event.ctrlKey) {
             // CTRL is pressed: add item to, or remove item from selection
             this.selectionWatcher.toggleItemSelection(note); 
