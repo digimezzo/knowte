@@ -1001,8 +1001,8 @@ export class CollectionService {
       return unfilteredNotes;
     }
 
-    let pieces: string[] = filter.trim().split(" ");
+    let searchTextPieces: string[] = filter.trim().split(" ");
 
-    return unfilteredNotes.filter((x) => Utils.containsAll(`${x.title} ${x.text}`, pieces));
+    return unfilteredNotes.filter((x) => Utils.containsAll(`${x.title} ${x.text}`, searchTextPieces));
   }
 }

@@ -35,6 +35,7 @@ var Constants = /** @class */ (function () {
     Constants.closeNoteEvent = "0b7877ac-ca71-4cf5-a5a5-96798be7c5be";
     Constants.deleteNoteEvent = "0896531e-ee16-4407-b4e5-120b55c6e82f";
     Constants.themeChangedEvent = "f132f4ce-ae3c-4e1d-958a-a9cd28517b68";
+    Constants.searchTextChangedEvent = "22c2fc1d-6a81-459b-8829-2ee04c8d9c03";
     Constants.languages = [
         { code: "en", name: "English" },
         { code: "fr", name: "Français" }

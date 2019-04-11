@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
 import { SettingsService } from './settings.service';
 import { remote } from 'electron';
 import { Constants } from '../core/constants';

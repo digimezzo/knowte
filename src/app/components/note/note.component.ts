@@ -91,6 +91,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         this.quill.on('text-change', () => {
             this.isTextDirty = true;
+            this.clearSearch();
             this.noteTextChanged.next("");
         });
 
@@ -99,6 +100,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
             this.addListeners();
             await this.getNoteDetailsAsync();
+            this.applySearch();
         });
 
         this.noteTitleChanged
@@ -411,6 +413,29 @@ export class NoteComponent implements OnInit, OnDestroy {
         if (this.noteId === noteId) {
             let window: BrowserWindow = remote.getCurrentWindow();
             window.close();
+        }
+    }
+
+    private clearSearch(){
+        let window: BrowserWindow = remote.getCurrentWindow();
+        window.webContents.stopFindInPage("keepSelection");
+    }
+
+    private applySearch() {
+        this.globalEmitter.emit(Constants.getSearchTextEvent, this.getSearchTextCallback.bind(this));
+    }
+
+    private getSearchTextCallback(searchText: string) {
+        let window: BrowserWindow = remote.getCurrentWindow();
+
+        window.webContents.stopFindInPage("keepSelection");
+
+        if (searchText && searchText.length > 0) {
+            window.webContents.findInPage(searchText);
+
+            let searchTextPieces: string[] = searchText.trim().split(" ");
+            // For now, we can only search for 1 word.
+            window.webContents.findInPage(searchTextPieces[0]);
         }
     }
 
