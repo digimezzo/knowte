@@ -29,13 +29,13 @@ var Constants = /** @class */ (function () {
     Constants.setNoteTextEvent = "7188b946-484c-4b6e-89d3-3e8a16ff33cd";
     Constants.getNotebooksEvent = "00169e63-412e-428b-b969-8dd4b3602a02";
     Constants.getNoteDetailsEvent = "db3595b0-0997-414e-a30e-c5921c8d9861";
+    Constants.getSearchTextEvent = "22c2fc1d-6a81-459b-8829-2ee04c8d9c03";
     Constants.notebookChangedEvent = "2518f49c-50f0-4165-ad92-cfa00476d884";
     Constants.noteMarkChangedEvent = "3b46bceb-dbcd-4013-935d-8e6f79e371a0";
     Constants.focusNoteEvent = "f45748e7-a7af-4057-a712-b9b181212119";
     Constants.closeNoteEvent = "0b7877ac-ca71-4cf5-a5a5-96798be7c5be";
     Constants.deleteNoteEvent = "0896531e-ee16-4407-b4e5-120b55c6e82f";
     Constants.themeChangedEvent = "f132f4ce-ae3c-4e1d-958a-a9cd28517b68";
-    Constants.searchTextChangedEvent = "22c2fc1d-6a81-459b-8829-2ee04c8d9c03";
     Constants.languages = [
         { code: "en", name: "English" },
         { code: "fr", name: "Français" }
@@ -133,6 +133,12 @@ var Constants = /** @class */ (function () {
             description: "Sanitize a string to be safe for use as a filename by removing directory paths and invalid characters.",
             url: "https://github.com/parshap/node-sanitize-filename",
             licenseUrl: "https://github.com/parshap/node-sanitize-filename/blob/master/LICENSE.md"
+        },
+        {
+            name: "SpinKit",
+            description: "A collection of loading indicators animated with CSS.",
+            url: "https://github.com/tobiasahlin/SpinKit",
+            licenseUrl: "https://github.com/tobiasahlin/SpinKit/blob/master/LICENSE"
         }
     ];
     return Constants;

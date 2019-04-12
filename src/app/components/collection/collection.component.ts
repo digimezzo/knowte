@@ -134,7 +134,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
       this.selectionWatcher.selectItemsRange(notebook);
     } else {
       // No modifier key is pressed: select only 1 item
-      this.selectionWatcher.addItemToSelection(notebook);
+      this.selectionWatcher.selectSingleItem(notebook);
     }
 
     if(this.selectionWatcher.selectedItemsCount > 0){

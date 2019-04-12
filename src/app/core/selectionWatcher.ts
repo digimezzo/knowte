@@ -64,7 +64,7 @@ export class SelectionWatcher {
         }
     }
 
-    public addItemToSelection(item: any): void {
+    public selectSingleItem(item: any): void {
         if (!this.hasItems) {
             return;
         }

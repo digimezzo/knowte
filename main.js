@@ -142,7 +142,7 @@ function createNoteWindow(notePath, noteId) {
         'height': noteWindowState.height,
         backgroundColor: '#fff',
         frame: false,
-        show: false
+        show: true
     });
     // Let us register listeners on the window, so we can update the state
     // automatically (the listeners will be removed when the window is closed)

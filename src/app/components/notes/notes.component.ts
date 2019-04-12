@@ -13,6 +13,7 @@ import { remote } from 'electron';
 import { SettingsService } from '../../services/settings.service';
 import { FileService } from '../../services/file.service';
 import { SelectionWatcher } from '../../core/selectionWatcher';
+import log from 'electron-log';
 
 @Component({
     selector: 'notes-component',
@@ -27,8 +28,8 @@ export class NotesComponent implements OnInit, OnDestroy {
     private _activeNotebook: Notebook;
     private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
-    constructor(private collectionService: CollectionService, private snackBarService: SnackBarService, 
-        public searchService: SearchService, private settingsService: SettingsService, 
+    constructor(private collectionService: CollectionService, private snackBarService: SnackBarService,
+        public searchService: SearchService, private settingsService: SettingsService,
         private fileService: FileService, private zone: NgZone) {
     }
 
@@ -103,13 +104,13 @@ export class NotesComponent implements OnInit, OnDestroy {
     public setSelectedNotes(note: Note, event: MouseEvent = null) {
         if (event && event.ctrlKey) {
             // CTRL is pressed: add item to, or remove item from selection
-            this.selectionWatcher.toggleItemSelection(note); 
+            this.selectionWatcher.toggleItemSelection(note);
         } else if (event && event.shiftKey) {
             // SHIFT is pressed: select a range of items
             this.selectionWatcher.selectItemsRange(note);
         } else {
             // No modifier key is pressed: select only 1 item
-            this.selectionWatcher.addItemToSelection(note);
+            this.selectionWatcher.selectSingleItem(note);
         }
 
         this.selectedNoteIds.next(this.getSelectedNoteIds());
@@ -167,6 +168,12 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public dragStart(event: any, note: Note): void {
+        // This makes sure the selection is ok if we immediately start 
+        // dragging after loading populating the notes collection
+        if (this.selectionWatcher.selectedItemsCount === 0) {
+            this.setSelectedNotes(note);
+        }
+
         this.draggedNote = note;
         event.dataTransfer.setDragImage(document.getElementById('drag-image'), -10, -10);
         event.dataTransfer.setData('text', note.id);

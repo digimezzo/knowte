@@ -137,6 +137,12 @@ export class Constants {
             description: "Sanitize a string to be safe for use as a filename by removing directory paths and invalid characters.",
             url: "https://github.com/parshap/node-sanitize-filename",
             licenseUrl: "https://github.com/parshap/node-sanitize-filename/blob/master/LICENSE.md"
+        },
+        {
+            name: "SpinKit",
+            description: "A collection of loading indicators animated with CSS.",
+            url: "https://github.com/tobiasahlin/SpinKit",
+            licenseUrl: "https://github.com/tobiasahlin/SpinKit/blob/master/LICENSE"
         }
     ];
 }
