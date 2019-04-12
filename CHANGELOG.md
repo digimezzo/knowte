@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multiple text colors
 - Multiple text highlight colors
 - Dragging and dropping of notes to notebooks
-- Dropping of export notes to notebooks and notes list to import them
+- Dropping of exported notes to notebooks and notes list to import them
+- Multi-select of notes and notebooks
 ### Changed
 - The notes storage folder is no longer in a hidden folder and must be selected the first time the application starts. This allows storage of notes on a cloud folder.
 ### Removed
