@@ -845,7 +845,10 @@ export class CollectionService {
 
     if (note.notebookId) {
       let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
-      notebookName = notebook.name;
+
+      if (notebook) {
+        notebookName = notebook.name;
+      }
     }
 
     callback(new NoteDetailsResult(note.title, notebookName, note.isMarked));
@@ -857,7 +860,10 @@ export class CollectionService {
 
     if (note.notebookId) {
       let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
-      notebookName = notebook.name;
+
+      if (notebook) {
+        notebookName = notebook.name;
+      }
     }
 
     this.globalEmitter.emit(Constants.notebookChangedEvent, noteId, notebookName);
