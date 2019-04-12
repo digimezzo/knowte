@@ -38,8 +38,8 @@
                             matTooltip="{{ 'Tooltips.RenameNotebook' | translate }}" *ngIf="canRenameNotebook">
                             <span class="edit-item-icon">&#xE254;</span>
                         </button>
-                        <button class="list-button" mat-mini-fab color="" (click)="deleteNotebookAsync()"
-                            matTooltip="{{ 'Tooltips.DeleteNotebook' | translate }}" *ngIf="canDeleteNotebooks">
+                        <button class="list-button" mat-mini-fab color="" (click)="deleteNotebooksAsync()"
+                            matTooltip="{{ 'Tooltips.DeleteNotebooks' | translate }}" *ngIf="canDeleteNotebooks">
                             <span class="edit-item-icon">&#xE872;</span>
                         </button>
                         <button class="list-button" mat-fab (click)="addNotebookAsync()"

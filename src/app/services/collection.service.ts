@@ -415,16 +415,21 @@ export class CollectionService {
     return this.dataStore.getNotebookById(notebookId).name;
   }
 
-  public async deleteNotebookAsync(notebookId: string): Promise<Operation> {
-    try {
-      this.dataStore.deleteNotebook(notebookId);
-    } catch (error) {
-      log.error(`Could not delete the notebook with id='${notebookId}'. Cause: ${error}`);
-      return Operation.Error;
+  public async deleteNotebooksAsync(notebookIds: string[]): Promise<Operation> {
+    let operation: Operation = Operation.Success;
+
+    for (const notebookId of notebookIds) {
+      try {
+        this.dataStore.deleteNotebook(notebookId);
+      } catch (error) {
+        log.error(`Could not delete the notebook with id='${notebookId}'. Cause: ${error}`);
+        operation = Operation.Error;
+      }
     }
 
     this.notebookDeleted.next();
-    return Operation.Success;
+
+    return operation;
   }
 
   public async deleteNotesAsync(noteIds: string[]): Promise<Operation> {

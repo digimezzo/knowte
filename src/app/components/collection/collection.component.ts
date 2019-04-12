@@ -137,11 +137,11 @@ export class CollectionComponent implements OnInit, OnDestroy {
       this.selectionWatcher.selectSingleItem(notebook);
     }
 
-    if(this.selectionWatcher.selectedItemsCount > 0){
+    if (this.selectionWatcher.selectedItemsCount > 0) {
       // If no notebook is selected, keep the current notebook active.
       this.activeNotebook = this.selectionWatcher.selectedItems[0];
     }
-    
+
     this.zone.run(() => {
       this.canRenameNotebook = this.selectionWatcher.selectedItemsCount === 1 && !this.selectionWatcher.selectedItems[0].isDefault;
       this.canDeleteNotebooks = this.selectionWatcher.selectedItemsCount > 1 || (this.selectionWatcher.selectedItemsCount === 1 && !this.selectionWatcher.selectedItems[0].isDefault);
@@ -189,11 +189,16 @@ export class CollectionComponent implements OnInit, OnDestroy {
     });
   }
 
-  public async deleteNotebookAsync(): Promise<void> {
-    let notebookName: string = this.collectionService.getNotebookName(this.activeNotebook.id);
-    let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNotebook').toPromise();
-    let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNotebook', { notebookName: notebookName }).toPromise();
+  public async deleteNotebooksAsync(): Promise<void> {
+    // Assume multiple selected notebooks
+    let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNotebooks').toPromise();
+    let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNotebooks').toPromise();
 
+    if (this.selectionWatcher.selectedItemsCount === 1) {
+      title = await this.translateService.get('DialogTitles.ConfirmDeleteNotebook').toPromise();
+      text = await this.translateService.get('DialogTexts.ConfirmDeleteNotebook', { notebookName: this.selectionWatcher.selectedItems[0].name }).toPromise();
+    }
+    
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
 
       width: '450px', data: { dialogTitle: title, dialogText: text }
@@ -201,10 +206,10 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(async (result: any) => {
       if (result) {
-        let operation: Operation = await this.collectionService.deleteNotebookAsync(this.activeNotebook.id);
+        let operation: Operation = await this.collectionService.deleteNotebooksAsync(this.selectionWatcher.selectedItems.map(x => x.id));
 
         if (operation === Operation.Error) {
-          let errorText: string = (await this.translateService.get('ErrorTexts.DeleteNotebookError', { notebookName: notebookName }).toPromise());
+          let errorText: string = (await this.translateService.get('ErrorTexts.DeleteNotebooksError').toPromise());
           this.dialog.open(ErrorDialogComponent, {
             width: '450px', data: { errorText: errorText }
           });
@@ -231,7 +236,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   public async deleteNotesAsync(): Promise<void> {
     // Assume multiple selected notes
     let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNotes').toPromise();
-    let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteMultipleNotes').toPromise();
+    let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNotes').toPromise();
 
     if (!this.selectedNoteIds || this.selectedNoteIds.length === 0) {
       // This situation should not happen
@@ -242,7 +247,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     if (this.selectedNoteIds.length === 1) {
       let note: Note = await this.collectionService.getNote(this.selectedNoteIds[0]);
       title = await this.translateService.get('DialogTitles.ConfirmDeleteNote').toPromise();
-      text = await this.translateService.get('DialogTexts.ConfirmDeleteSingleNote', { noteTitle: note.title }).toPromise();
+      text = await this.translateService.get('DialogTexts.ConfirmDeleteNote', { noteTitle: note.title }).toPromise();
     }
 
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
