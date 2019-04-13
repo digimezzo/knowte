@@ -35,6 +35,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  border-left: 1px solid $color-lightgrey-border;
+  border-bottom: 1px solid $color-lightgrey-border;
+  border-right: 1px solid $color-lightgrey-border;
 }
 
 .spinner {
