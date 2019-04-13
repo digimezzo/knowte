@@ -3,11 +3,7 @@ import { Notebook } from './entities/notebook';
 import { Note } from './entities/note';
 import * as moment from 'moment'
 import { Utils } from '../core/utils';
-import { Injectable } from '@angular/core';
 
-@Injectable({
-    providedIn: 'root',
-  })
 export class DataStore {
     constructor() {
     }
@@ -54,11 +50,6 @@ export class DataStore {
     }
 
     public async initializeAsync(databaseFile: string) {
-        if (this.databaseFile && this.databaseFile === databaseFile && this.isLoaded) {
-            // This database file is already loaded
-            return;
-        }
-
         this.loadDatabase(databaseFile);
 
         while (!this.isLoaded) {

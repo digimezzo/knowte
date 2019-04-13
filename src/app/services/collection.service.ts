@@ -28,6 +28,7 @@ import { SettingsService } from './settings.service';
   providedIn: 'root',
 })
 export class CollectionService {
+  private dataStore: DataStore = new DataStore();
   private isInitializing: boolean = false;
   private isInitialized: boolean = false;
   private globalEmitter = remote.getGlobal('globalEmitter');
@@ -50,7 +51,7 @@ export class CollectionService {
   private deleteNoteEventListener: any = this.deleteNoteEventHandler.bind(this);
 
   constructor(private translateService: TranslateService, private searchService: SearchService,
-    private settingsService: SettingsService, private dataStore: DataStore) {
+    private settingsService: SettingsService) {
   }
 
   public collectionsChanged$: Observable<{}> = this.collectionsChanged.asObservable();
@@ -181,22 +182,24 @@ export class CollectionService {
 
       if (collections && collections.length > 0) {
         // If there are collection directories, take the first one.
+        activeCollection = Utils.pathToCollection(collections[0]);
         activeCollectionDirectory = collections[0];
-        this.settingsService.activeCollection = Utils.pathToCollection(activeCollectionDirectory);
+        this.settingsService.activeCollection = activeCollection;
       } else {
         // If there are no collection directories, we must create a default collection.
+        activeCollection = Constants.defaultCollection;
         activeCollectionDirectory = Utils.collectionToPath(storageDirectory, Constants.defaultCollection);
         await fs.mkdir(activeCollectionDirectory);
-        this.settingsService.activeCollection = Constants.defaultCollection;
+        this.settingsService.activeCollection = activeCollection;
       }
     }
 
     let databaseFile: string = path.join(activeCollectionDirectory, `${activeCollection}.db`);
 
-    log.info(`${databaseFile}`);
-
     // Now initialize the data store.
     await this.dataStore.initializeAsync(databaseFile);
+
+    log.info(`Initialized data store: ${databaseFile}`);
 
     // Only an initialized collectionService can process global requests
     this.listenToNoteEvents();
