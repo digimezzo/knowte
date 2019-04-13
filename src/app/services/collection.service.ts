@@ -182,15 +182,18 @@ export class CollectionService {
 
       if (collections && collections.length > 0) {
         // If there are collection directories, take the first one.
-        activeCollection = Utils.pathToCollection(collections[0]);
-        activeCollectionDirectory = collections[0];
-        this.settingsService.activeCollection = activeCollection;
+        activeCollection = collections[0];
       } else {
-        // If there are no collection directories, we must create a default collection.
+        // If there are no collection directories, create a default collection.
         activeCollection = Constants.defaultCollection;
-        activeCollectionDirectory = Utils.collectionToPath(storageDirectory, Constants.defaultCollection);
+      }
+
+      activeCollectionDirectory = Utils.collectionToPath(storageDirectory, activeCollection);
+      this.settingsService.activeCollection = activeCollection;
+
+      // If the collection directory doesn't exsist, create it.
+      if (!await fs.exists(activeCollectionDirectory)) {
         await fs.mkdir(activeCollectionDirectory);
-        this.settingsService.activeCollection = activeCollection;
       }
     }
 
