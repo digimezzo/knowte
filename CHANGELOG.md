@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.0] - 2019-04-06
+## [2.0.0-beta.1] - 2019-04-13
 ### Added
 - GNU/Linux compatibility (Knowte now runs on Windows and GNU/Linux)
 - Collections (e.g. allows separating home and work notes)
