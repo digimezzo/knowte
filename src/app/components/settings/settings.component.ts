@@ -7,6 +7,7 @@ import { Constants } from '../../core/constants';
 import { TranslateService } from '@ngx-translate/core';
 import { AppearanceService } from '../../services/appearance.service';
 import { Theme } from '../../core/theme';
+import { SettingsService } from '../../services/settings.service';
 
 @Component({
   selector: 'settings-page',
@@ -15,46 +16,47 @@ import { Theme } from '../../core/theme';
   encapsulation: ViewEncapsulation.None
 })
 export class SettingsComponent implements OnInit {
-  private settings: Store = new Store();
-
-  constructor(private dialog: MatDialog, private translateService: TranslateService, private appearanceService: AppearanceService) {
+  constructor(private dialog: MatDialog, private translateService: TranslateService, private appearanceService: AppearanceService,
+    private settingsService: SettingsService) {
   }
 
   public languages: Language[] = Constants.languages;
   public themes: Theme[] = Constants.themes;
   public fontSizes: number[] = [14, 16, 18, 20, 22, 24];
+  public selectedTheme: string;
 
   public get selectedLanguage(): Language {
-    let languageCode: string = this.settings.get('language');
+    let languageCode: string = this.settingsService.language;
     return this.languages.find(x => x.code === languageCode);
   }
   public set selectedLanguage(v: Language) {
-    this.settings.set('language', v.code);
+    this.settingsService.language = v.code;
     this.translateService.use(v.code);
   }
 
   public get closeNotesWithEscapeChecked(): boolean {
-    return this.settings.get('closeNotesWithEscape');
+    return this.settingsService.closeNotesWithEscape;
   }
   public set closeNotesWithEscapeChecked(v: boolean) {
-    this.settings.set('closeNotesWithEscape', v);
+    this.settingsService.closeNotesWithEscape = v;
   }
 
   public get selectedFontSize(): number {
-    return this.settings.get('fontSizeInNotes');
+    return this.settingsService.fontSizeInNotes;
   }
   public set selectedFontSize(v: number) {
-    this.settings.set('fontSizeInNotes', v);
+    this.settingsService.fontSizeInNotes = v;
   }
 
   public get showExactDatesInTheNotesListChecked(): boolean {
-    return this.settings.get('showExactDatesInTheNotesList');
+    return this.settingsService.showExactDatesInTheNotesList;
   }
   public set showExactDatesInTheNotesListChecked(v: boolean) {
-    this.settings.set('showExactDatesInTheNotesList', v);
+    this.settingsService.showExactDatesInTheNotesList = v;
   }
 
   public ngOnInit(): void {
+    this.selectedTheme = this.settingsService.theme;
   }
 
   public import(): void {
@@ -64,6 +66,7 @@ export class SettingsComponent implements OnInit {
   }
 
   public setTheme(themeName: string): void {
+    this.selectedTheme = themeName;
     this.appearanceService.setTheme(themeName);
   }
 }

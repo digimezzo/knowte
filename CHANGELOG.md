@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0-beta.2] - 2019-04-15
+### Added
+- The theme selector now indicates which theme is currently selected
+### Changed
+### Removed
+### Fixed
+
 ## [2.0.0-beta.1] - 2019-04-13
 ### Added
 - GNU/Linux compatibility (Knowte now runs on Windows and GNU/Linux)
