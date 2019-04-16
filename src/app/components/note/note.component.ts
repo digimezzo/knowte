@@ -135,6 +135,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     public onNotetitleChange(newNoteTitle: string) {
         this.isTitleDirty = true;
+        this.clearSearch();
         this.noteTitleChanged.next(newNoteTitle);
     }
 
@@ -428,11 +429,9 @@ export class NoteComponent implements OnInit, OnDestroy {
     private getSearchTextCallback(searchText: string) {
         let window: BrowserWindow = remote.getCurrentWindow();
 
-        window.webContents.stopFindInPage("keepSelection");
+        // window.webContents.stopFindInPage("keepSelection");
 
         if (searchText && searchText.length > 0) {
-            window.webContents.findInPage(searchText);
-
             let searchTextPieces: string[] = searchText.trim().split(" ");
             // For now, we can only search for 1 word.
             window.webContents.findInPage(searchTextPieces[0]);
