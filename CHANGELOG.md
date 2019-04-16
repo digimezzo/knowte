@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0-beta.2] - 2019-04-15
 ### Added
 - The theme selector now indicates which theme is currently selected
+- Fixed problems with the search highlight
 ### Changed
 ### Removed
 ### Fixed
