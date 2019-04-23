@@ -2,10 +2,9 @@
   "name": "Knowte",
   "version": "2.0.0-beta.2",
   "description": "Note taking",
-  "homepage": "https://github.com/digimezzo/Knowte2",
+  "homepage": "https://github.com/digimezzo/knowte-electron",
   "author": {
-    "name": "Digimezzo",
-    "email": "info@digimezzo.com"
+    "name": "Digimezzo"
   },
   "keywords": [
     "angular",
