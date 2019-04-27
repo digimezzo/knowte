@@ -76,6 +76,7 @@
         "RenameNotebook": "Renommer bloc-notes...",
         "DeleteNotebooks": "Supprimer blocs-notes...",
         "AddNote": "Ajouter note",
+        "DeleteNote": "Supprimer note...",
         "DeleteNotes": "Supprimer notes..."
     },
     "LicenseDialog": {

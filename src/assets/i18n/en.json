@@ -76,6 +76,7 @@
         "RenameNotebook": "Rename notebook...",
         "DeleteNotebooks": "Delete notebooks...",
         "AddNote": "Add note",
+        "DeleteNote": "Delete note..."
         "DeleteNotes": "Delete notes..."
     },
     "LicenseDialog": {
