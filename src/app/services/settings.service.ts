@@ -88,7 +88,7 @@ export class SettingsService {
         }
 
         if (!this.settings.has('theme')) {
-            this.settings.set('theme', "default-theme");
+            this.settings.set('theme', "default-blue-theme");
         } else {
             let settingsThemeName: string = this.settings.get('theme');
 
@@ -96,7 +96,7 @@ export class SettingsService {
             // in the app (The themes might change between releases).
             // If not, reset the theme setting to the default theme.
             if (!Constants.themes.map(x => x.name).includes(settingsThemeName)) {
-                this.settings.set('theme', "default-theme");
+                this.settings.set('theme', "default-blue-theme");
             }
         }
 
