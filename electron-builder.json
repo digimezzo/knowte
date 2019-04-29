@@ -23,7 +23,8 @@
   "linux": {
     "target": [
       "AppImage",
-      "deb"
+      "deb",
+      "rpm"
     ]
   }
 }
