@@ -4,7 +4,8 @@
   "description": "Note taking",
   "homepage": "https://github.com/digimezzo/knowte-electron",
   "author": {
-    "name": "Digimezzo"
+    "name": "Digimezzo",
+    "email": "info@digimezzo.com"
   },
   "keywords": [
     "angular",
