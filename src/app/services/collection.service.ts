@@ -534,6 +534,7 @@ export class CollectionService {
 
         // Date text
         note.displayModificationDate = result.dateText;
+        note.displayExactModificationDate = this.getFormattedDate(note.modificationDate);
       }
 
       this.notesCountChanged.next(notesCountResult);
@@ -1004,12 +1005,15 @@ export class CollectionService {
     }
 
     if (useExactDates) {
-      let m: Moment = moment(millisecondsSinceEpoch);
-      let dateText: string = m.format("MMMM D, YYYY HH:mm");
-      result.dateText = dateText;
+      result.dateText = this.getFormattedDate(millisecondsSinceEpoch);
     }
 
     return result;
+  }
+
+  private getFormattedDate(millisecondsSinceEpoch: number) {
+    let m: Moment = moment(millisecondsSinceEpoch);
+    return m.format("MMMM D, YYYY");
   }
 
   private getFilteredNotes(unfilteredNotes: Note[], filter: string): Note[] {

@@ -77,7 +77,8 @@
         "DeleteNotebooks": "Delete notebooks...",
         "AddNote": "Add note",
         "DeleteNote": "Delete note...",
-        "DeleteNotes": "Delete notes..."
+        "DeleteNotes": "Delete notes...",
+        "LastChanged": "Last changed"
     },
     "LicenseDialog": {
         "License": "License"

@@ -77,7 +77,8 @@
         "DeleteNotebooks": "Supprimer blocs-notes...",
         "AddNote": "Ajouter note",
         "DeleteNote": "Supprimer note...",
-        "DeleteNotes": "Supprimer notes..."
+        "DeleteNotes": "Supprimer notes...",
+        "LastChanged": "Dernière modification"
     },
     "LicenseDialog": {
         "License": "Licence"
