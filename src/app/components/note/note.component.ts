@@ -546,4 +546,8 @@ export class NoteComponent implements OnInit, OnDestroy {
     private sendCommandToWorker(command: string, content: any): void {
         ipcRenderer.send(command, content);
     }
+
+    public strikeThrough(event: any){
+        // TODO: add formatting
+    }
 }

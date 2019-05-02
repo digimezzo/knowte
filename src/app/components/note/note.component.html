@@ -49,7 +49,7 @@
                     <input class="note-content-fixed-title-text" type="text" [(ngModel)]="noteTitle"
                         (ngModelChange)="onNotetitleChange($event)" (keydown)="onTitleKeydown($event)" />
                 </div>
-                <div class="note-editor" [ngStyle]="editorStyle" id="editor">
+                <div class="note-editor" [ngStyle]="editorStyle" id="editor" (keydown.control.s)=strikeThrough($event)>
                 </div>
             </div>
         </div>
