@@ -417,7 +417,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    private clearSearch(){
+    private clearSearch() {
         let window: BrowserWindow = remote.getCurrentWindow();
         window.webContents.stopFindInPage("keepSelection");
     }
@@ -547,7 +547,12 @@ export class NoteComponent implements OnInit, OnDestroy {
         ipcRenderer.send(command, content);
     }
 
-    public strikeThrough(event: any){
-        // TODO: add formatting
+    public strikeThrough(event: any) {
+        let range: any = this.quill.getSelection();
+        let format: any = this.quill.getFormat(range.index, range.length);
+        let formatString: string = JSON.stringify(format);
+        
+        let applyStrikeThrough: boolean = !formatString.includes("strike");
+        this.quill.formatText(range.index, range.length, 'strike', applyStrikeThrough);
     }
 }
