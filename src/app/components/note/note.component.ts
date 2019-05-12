@@ -168,7 +168,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public onTitleKeydown(event): void {
-        if (event.key === "Enter") {
+        if (event.key === "Enter" || event.key === "Tab") {
             // Make sure enter is not applied to the editor
             event.preventDefault();
 
