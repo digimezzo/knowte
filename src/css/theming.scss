@@ -5,6 +5,7 @@
 @import 'themes/ubuntu-orange-theme.scss';
 @import 'themes/linuxmint-green-theme.scss';
 @import 'themes/windows10-blue-theme.scss';
+@import 'themes/material-red-theme.scss';
 
 // Material Blue
 // $blue-theme-primary: mat-palette($mat-blue);
@@ -60,6 +61,11 @@
 .windows10-blue-theme {
   @include angular-material-theme($windows10-blue-theme);
   @include set-primary-color($windows10-blue-theme-primary);
+}
+
+.material-red-theme {
+  @include angular-material-theme($material-red-theme);
+  @include set-primary-color($material-red-theme-primary);
 }
 
 // .blue-theme {
