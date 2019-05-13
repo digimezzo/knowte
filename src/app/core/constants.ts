@@ -48,7 +48,8 @@ export class Constants {
         { name: "ubuntu-orange-theme", displayName: "Ubuntu orange", color: "#E95420" },
         { name: "linuxmint-green-theme", displayName: "Linux Mint green", color: "#8bb158" },
         { name: "windows10-blue-theme", displayName: "Windows 10 blue", color: "#0078d7" },
-        { name: "material-red-theme", displayName: "Material red", color: "#F44336" }
+        { name: "material-red-theme", displayName: "Material red", color: "#F44336" },
+        { name: "material-pink-theme", displayName: "Material pink", color: "#E91E63" }
         // { name: "blue-theme", displayName: "Blue", color: "#03A9F4" },
         // { name: "pink-theme", displayName: "Pink", color: "#E91E63" },
         // { name: "deep-orange-theme", displayName: "Orange", color: "#FF5722" }
