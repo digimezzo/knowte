@@ -7,6 +7,20 @@
 @import 'themes/windows10-blue-theme.scss';
 @import 'themes/material-red-theme.scss';
 @import 'themes/material-pink-theme.scss';
+@import 'themes/material-purple-theme.scss';
+@import 'themes/material-deep-purple-theme.scss';
+@import 'themes/material-indigo-theme.scss';
+@import 'themes/material-blue-theme.scss';
+@import 'themes/material-light-blue-theme.scss';
+@import 'themes/material-cyan-theme.scss';
+@import 'themes/material-teal-theme.scss';
+@import 'themes/material-green-theme.scss';
+@import 'themes/material-light-green-theme.scss';
+@import 'themes/material-lime-theme.scss';
+@import 'themes/material-yellow-theme.scss';
+@import 'themes/material-amber-theme.scss';
+@import 'themes/material-orange-theme.scss';
+@import 'themes/material-deep-orange-theme.scss';
 
 // Material Blue
 // $blue-theme-primary: mat-palette($mat-blue);
@@ -72,6 +86,76 @@
 .material-pink-theme {
   @include angular-material-theme($material-pink-theme);
   @include set-primary-color($material-pink-theme-primary);
+}
+
+.material-purple-theme {
+  @include angular-material-theme($material-purple-theme);
+  @include set-primary-color($material-purple-theme-primary);
+}
+
+.material-deep-purple-theme {
+  @include angular-material-theme($material-deep-purple-theme);
+  @include set-primary-color($material-deep-purple-theme-primary);
+}
+
+.material-indigo-theme {
+  @include angular-material-theme($material-indigo-theme);
+  @include set-primary-color($material-indigo-theme-primary);
+}
+
+.material-blue-theme {
+  @include angular-material-theme($material-blue-theme);
+  @include set-primary-color($material-blue-theme-primary);
+}
+
+.material-light-blue-theme {
+  @include angular-material-theme($material-light-blue-theme);
+  @include set-primary-color($material-light-blue-theme-primary);
+}
+
+.material-cyan-theme {
+  @include angular-material-theme($material-cyan-theme);
+  @include set-primary-color($material-cyan-theme-primary);
+}
+
+.material-teal-theme {
+  @include angular-material-theme($material-teal-theme);
+  @include set-primary-color($material-teal-theme-primary);
+}
+
+.material-green-theme {
+  @include angular-material-theme($material-green-theme);
+  @include set-primary-color($material-green-theme-primary);
+}
+
+.material-light-green-theme {
+  @include angular-material-theme($material-light-green-theme);
+  @include set-primary-color($material-light-green-theme-primary);
+}
+
+.material-lime-theme {
+  @include angular-material-theme($material-lime-theme);
+  @include set-primary-color($material-lime-theme-primary);
+}
+
+.material-yellow-theme {
+  @include angular-material-theme($material-yellow-theme);
+  @include set-primary-color($material-yellow-theme-primary);
+}
+
+.material-amber-theme {
+  @include angular-material-theme($material-amber-theme);
+  @include set-primary-color($material-amber-theme-primary);
+}
+
+.material-orange-theme {
+  @include angular-material-theme($material-orange-theme);
+  @include set-primary-color($material-orange-theme-primary);
+}
+
+.material-deep-orange-theme {
+  @include angular-material-theme($material-deep-orange-theme);
+  @include set-primary-color($material-deep-orange-theme-primary);
 }
 
 // .blue-theme {
