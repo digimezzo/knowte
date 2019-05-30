@@ -157,6 +157,10 @@ function createNoteWindow(notePath, noteId) {
     else {
         noteWindow.loadURL("file://" + __dirname + "/dist/index.html#/note?id=" + noteId);
     }
+    noteWindow.on('page-title-updated', function (e) {
+        // Prevents overwriting the window title by the title which is set in index.html
+        e.preventDefault();
+    });
     noteWindow.on('ready-to-show', function () {
         noteWindow.show();
         noteWindow.focus();

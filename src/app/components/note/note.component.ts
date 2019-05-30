@@ -383,7 +383,14 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.noteTitle = result.noteTitle;
             this.notebookName = result.notebookName;
             this.isMarked = result.isMarked;
+
+            this.setWindowTitle(result.noteTitle);
         });
+    }
+
+    private setWindowTitle(noteTitle: string): void {
+        let window: BrowserWindow = remote.getCurrentWindow();
+        window.setTitle(noteTitle);
     }
 
     private noteMarkChangedHandler(noteId: string, isMarked: boolean) {
@@ -459,6 +466,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.zone.run(() => {
                 this.initialNoteTitle = result.noteTitle;
                 this.noteTitle = result.noteTitle;
+                this.setWindowTitle(result.noteTitle);
             });
         } else {
             // Do nothing
@@ -551,7 +559,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         let range: any = this.quill.getSelection();
         let format: any = this.quill.getFormat(range.index, range.length);
         let formatString: string = JSON.stringify(format);
-        
+
         let applyStrikeThrough: boolean = !formatString.includes("strike");
         this.quill.formatText(range.index, range.length, 'strike', applyStrikeThrough);
     }
