@@ -21,6 +21,7 @@ import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confi
 import { NoteExport } from '../../core/noteExport';
 import { SettingsService } from '../../services/settings.service';
 import { ipcRenderer } from 'electron';
+import { NoteActionsDialogComponent } from '../dialogs/noteActionsDialog/noteActionsDialog.component';
 
 @Component({
     selector: 'note-content',
@@ -130,6 +131,12 @@ export class NoteComponent implements OnInit, OnDestroy {
     public changeNotebook(): void {
         let dialogRef: MatDialogRef<ChangeNotebookDialogComponent> = this.dialog.open(ChangeNotebookDialogComponent, {
             width: '450px', data: { noteId: this.noteId }
+        });
+    }
+
+    public showNoteActions(): void{
+        let dialogRef: MatDialogRef<NoteActionsDialogComponent> = this.dialog.open(NoteActionsDialogComponent, {
+            width: '450px'
         });
     }
 
