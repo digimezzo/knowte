@@ -1,3 +1,26 @@
 <mat-dialog-content class="dialog-content">
-    
+    <button *ngIf="isMarked" class="note-content-floating-button" mat-mini-fab color="" (click)="setNoteActionToggleMark()"
+        matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">
+        <span class="note-content-floating-button-icon-action">&#xE87D;</span>
+    </button>
+    <button *ngIf="!isMarked" class="note-content-floating-button" mat-mini-fab color="" (click)="setNoteActionToggleMark()"
+        matTooltip="{{ 'Tooltips.MarkNote' | translate }}">
+        <span class="note-content-floating-button-icon-action">&#xE87E;</span>
+    </button>
+    <button class="note-content-floating-button" mat-mini-fab color="" (click)="setNoteActionExport()"
+        matTooltip="{{ 'Tooltips.ExportNote' | translate }}">
+        <span class="note-content-floating-button-icon-action-export">&#xF56E;</span>
+    </button>
+    <button class="note-content-floating-button" mat-mini-fab color="" (click)="setNoteActionExportToPdf()"
+        matTooltip="{{ 'Tooltips.ExportNoteToPdf' | translate }}">
+        <span class="note-content-floating-button-icon-action-pdf">&#xF1C1;</span>
+    </button>
+    <button class="note-content-floating-button" mat-mini-fab color="" (click)="setNoteActionPrint()"
+        matTooltip="{{ 'Tooltips.PrintNote' | translate }}">
+        <span class="note-content-floating-button-icon-action">&#xE555;</span>
+    </button>
+    <button class="note-content-floating-button" mat-mini-fab color="" (click)="setNoteActionDelete()"
+        matTooltip="{{ 'Tooltips.DeleteNote' | translate }}">
+        <span class="note-content-floating-button-icon-action">&#xE872;</span>
+    </button>
 </mat-dialog-content>

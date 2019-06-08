@@ -22,6 +22,7 @@ import { NoteExport } from '../../core/noteExport';
 import { SettingsService } from '../../services/settings.service';
 import { ipcRenderer } from 'electron';
 import { NoteActionsDialogComponent } from '../dialogs/noteActionsDialog/noteActionsDialog.component';
+import { NoteAction } from '../dialogs/noteActionsDialog/noteAction';
 
 @Component({
     selector: 'note-content',
@@ -53,7 +54,6 @@ export class NoteComponent implements OnInit, OnDestroy {
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteTextChanged: Subject<string> = new Subject<string>();
     public saveChangesAndCloseNoteWindow: Subject<string> = new Subject<string>();
-    public canPerformActions: boolean = false;
     public isBusy: boolean = false;
 
     public editorStyle = {
@@ -134,10 +134,46 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
     }
 
-    public showNoteActions(): void{
+    public showNoteActions(): void {
         let dialogRef: MatDialogRef<NoteActionsDialogComponent> = this.dialog.open(NoteActionsDialogComponent, {
             width: '450px'
         });
+
+        dialogRef.afterClosed().subscribe(async (result) => {
+            if (result) {
+                let noteAction: NoteAction = dialogRef.componentInstance.selectedNoteAction;
+                this.handleNoteAction(noteAction);
+            }
+        });
+    }
+
+    private handleNoteAction(noteAction: NoteAction): void {
+        switch (noteAction) {
+            case NoteAction.Delete: {
+                this.deleteNoteAsync();
+                break;
+            }
+            case NoteAction.Export: {
+                this.exportNoteAsync();
+                break;
+            }
+            case NoteAction.ExportToPdf: {
+                this.exportNoteToPdfAsync();
+                break;
+            }
+            case NoteAction.Print: {
+                this.printNote();
+                break;
+            }
+            case NoteAction.ToggleMark: {
+                this.toggleNoteMark();
+                break;
+            }
+            default: {
+                // Do nothing
+                break;
+            }
+        }
     }
 
     public onNotetitleChange(newNoteTitle: string) {
@@ -185,13 +221,10 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public toggleNoteMark(): void {
-        this.hideActionButtonsDelayedAsync();
         this.globalEmitter.emit(Constants.setNoteMarkEvent, this.noteId, !this.isMarked);
     }
 
     public async exportNoteToPdfAsync(): Promise<void> {
-        this.hideActionButtons();
-
         let options: SaveDialogOptions = { defaultPath: Utils.getPdfExportPath(remote.app.getPath('documents'), this.noteTitle) };
         let savePath: string = remote.dialog.showSaveDialog(null, options);
 
@@ -206,7 +239,6 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public printNote(): void {
-        this.hideActionButtons();
         this.sendCommandToWorker("print", `<div>${this.createPrintCss()}<p class="page-title">${this.noteTitle}</p><p>${this.quill.root.innerHTML}</p></div>`);
     }
 
@@ -259,8 +291,6 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public async deleteNoteAsync(): Promise<void> {
-        this.hideActionButtons();
-
         let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNote').toPromise();
         let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNote', { noteTitle: this.noteTitle }).toPromise();
 
@@ -279,16 +309,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
     }
 
-    public onFixedContentClick(): void {
-        this.hideActionButtons();
-    }
-
-    public toggleShowActions(): void {
-        this.canPerformActions = !this.canPerformActions;
-    }
-
     public async exportNoteAsync(): Promise<void> {
-        this.hideActionButtons();
         this.isBusy = true;
 
         let options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
@@ -547,15 +568,6 @@ export class NoteComponent implements OnInit, OnDestroy {
                 width: '450px', data: { errorText: errorText }
             });
         }
-    }
-
-    private hideActionButtons(): void {
-        this.canPerformActions = false;
-    }
-
-    private async hideActionButtonsDelayedAsync(): Promise<void> {
-        await Utils.sleep(500);
-        this.canPerformActions = false;
     }
 
     private sendCommandToWorker(command: string, content: any): void {

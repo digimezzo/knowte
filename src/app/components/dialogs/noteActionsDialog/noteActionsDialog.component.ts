@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { remote } from 'electron';
+import { NoteAction } from './noteAction';
 
 @Component({
     selector: 'noteactions-dialog',
@@ -14,11 +15,44 @@ export class NoteActionsDialogComponent implements OnInit, OnDestroy {
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NoteActionsDialogComponent>) {
     }
 
-   
+    public selectedNoteAction: NoteAction;
+
+
     public ngOnDestroy(): void {
     }
 
     public async ngOnInit(): Promise<void> {
-        
+
+    }
+
+    public closeDialog(): void {
+        if (this.selectedNoteAction) {
+            this.dialogRef.close(true); // Force return "true"
+        }
+    }
+
+    public setNoteActionToggleMark(): void {
+        this.selectedNoteAction = NoteAction.ToggleMark;
+        this.closeDialog();
+    }
+
+    public setNoteActionExport(): void {
+        this.selectedNoteAction = NoteAction.Export;
+        this.closeDialog();
+    }
+
+    public setNoteActionExportToPdf(): void {
+        this.selectedNoteAction = NoteAction.ExportToPdf;
+        this.closeDialog();
+    }
+
+    public setNoteActionPrint(): void {
+        this.selectedNoteAction = NoteAction.Print;
+        this.closeDialog();
+    }
+
+    public setNoteActionDelete(): void {
+        this.selectedNoteAction = NoteAction.Delete;
+        this.closeDialog();
     }
 }
