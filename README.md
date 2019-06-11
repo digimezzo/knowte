@@ -21,5 +21,5 @@ $ npm install            # Download dependencies
 $ npm start              # Start Knowte
 $ npm run electron:windows   # Build for Windows
 $ npm run electron:linux     # Build for Linux
-$ npm run electron:mac       # Build for Linux
+$ npm run electron:mac       # Build for Mac
 ```
