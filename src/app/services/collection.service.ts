@@ -631,7 +631,6 @@ export class CollectionService {
   }
 
   public setNoteTitleEventHandler(noteId: string, initialNoteTitle: string, finalNoteTitle: string, callback: any) {
-    log.info("<<< NEW TITLE >>>");
     let uniqueNoteTitle: string = finalNoteTitle.trim();
 
     if (uniqueNoteTitle.length === 0) {
@@ -641,7 +640,7 @@ export class CollectionService {
 
     if (initialNoteTitle === uniqueNoteTitle) {
       log.error("Final title is the same as initial title. No rename required.");
-      callback(new NoteOperationResult(Operation.Success));
+      callback(new NoteOperationResult(Operation.Aborted));
       return;
     }
 
