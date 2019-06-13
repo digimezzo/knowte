@@ -638,26 +638,24 @@ export class CollectionService {
       return;
     }
 
-    if (initialNoteTitle === uniqueNoteTitle) {
-      log.error("Final title is the same as initial title. No rename required.");
-      callback(new NoteOperationResult(Operation.Aborted));
-      return;
-    }
+    if (initialNoteTitle !== uniqueNoteTitle) {
+      try {
+        // 1. Make sure the final title is unique
+        uniqueNoteTitle = this.getUniqueNoteNoteTitle(finalNoteTitle);
 
-    try {
-      // 1. Make sure the final title is unique
-      uniqueNoteTitle = this.getUniqueNoteNoteTitle(finalNoteTitle);
+        // 2. Rename the note
+        let note: Note = this.dataStore.getNoteById(noteId);
+        note.title = uniqueNoteTitle;
+        this.dataStore.updateNote(note);
 
-      // 2. Rename the note
-      let note: Note = this.dataStore.getNoteById(noteId);
-      note.title = uniqueNoteTitle;
-      this.dataStore.updateNote(note);
-
-      log.info(`Renamed note with id=${noteId} from ${initialNoteTitle} to ${uniqueNoteTitle}.`);
-    } catch (error) {
-      log.error(`Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`);
-      callback(new NoteOperationResult(Operation.Error));
-      return;
+        log.info(`Renamed note with id=${noteId} from ${initialNoteTitle} to ${uniqueNoteTitle}.`);
+      } catch (error) {
+        log.error(`Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`);
+        callback(new NoteOperationResult(Operation.Error));
+        return;
+      }
+    }else{
+      log.info("Final title is the same as initial title. No rename required.");
     }
 
     let result: NoteOperationResult = new NoteOperationResult(Operation.Success);
