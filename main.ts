@@ -127,7 +127,7 @@ function createWindow() {
 function createNoteWindow(notePath: string, noteId: string) {
   // Load the previous state with fallback to defaults
   let noteWindowState = windowStateKeeper({
-    defaultWidth: 600,
+    defaultWidth: 620,
     defaultHeight: 400,
     path: notePath,
     file: `${noteId}.state`

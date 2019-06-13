@@ -69,7 +69,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             [{ 'color': [] }, { 'background': [] }],
             ['bold', 'italic', 'underline', 'strike'],
             [{ 'header': 1 }, { 'header': 2 }],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
             ['link', 'blockquote', 'code-block', 'image'],
             // [{ 'script': 'sub' }, { 'script': 'super' }], 
             // [{ 'indent': '-1' }, { 'indent': '+1' }],   
