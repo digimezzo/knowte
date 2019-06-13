@@ -1,4 +1,4 @@
-export enum NoteAction{
+export enum NoteAction {
     ToggleMark,
     Export,
     ExportToPdf,

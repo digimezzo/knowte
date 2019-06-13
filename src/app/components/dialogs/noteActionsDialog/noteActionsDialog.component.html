@@ -1,26 +1,26 @@
 <mat-dialog-content class="dialog-content">
-    <button *ngIf="isMarked" class="note-content-floating-button" mat-mini-fab color="" (click)="setNoteActionToggleMark()"
+    <button *ngIf="isMarked" mat-fab (click)="setNoteActionToggleMark()"
         matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">
-        <span class="note-content-floating-button-icon-action">&#xE87D;</span>
+        <span class="action-icon">&#xE87D;</span>
     </button>
-    <button *ngIf="!isMarked" class="note-content-floating-button" mat-mini-fab color="" (click)="setNoteActionToggleMark()"
+    <button *ngIf="!isMarked" mat-fab (click)="setNoteActionToggleMark()"
         matTooltip="{{ 'Tooltips.MarkNote' | translate }}">
-        <span class="note-content-floating-button-icon-action">&#xE87E;</span>
+        <span class="action-icon">&#xE87E;</span>
     </button>
-    <button class="note-content-floating-button" mat-mini-fab color="" (click)="setNoteActionExport()"
+    <button mat-fab (click)="setNoteActionExport()"
         matTooltip="{{ 'Tooltips.ExportNote' | translate }}">
-        <span class="note-content-floating-button-icon-action-export">&#xF56E;</span>
+        <span class="action-icon-export">&#xF56E;</span>
     </button>
-    <button class="note-content-floating-button" mat-mini-fab color="" (click)="setNoteActionExportToPdf()"
+    <button mat-fab (click)="setNoteActionExportToPdf()"
         matTooltip="{{ 'Tooltips.ExportNoteToPdf' | translate }}">
-        <span class="note-content-floating-button-icon-action-pdf">&#xF1C1;</span>
+        <span class="action-icon-pdf">&#xF1C1;</span>
     </button>
-    <button class="note-content-floating-button" mat-mini-fab color="" (click)="setNoteActionPrint()"
+    <button mat-fab (click)="setNoteActionPrint()"
         matTooltip="{{ 'Tooltips.PrintNote' | translate }}">
-        <span class="note-content-floating-button-icon-action">&#xE555;</span>
+        <span class="action-icon">&#xE555;</span>
     </button>
-    <button class="note-content-floating-button" mat-mini-fab color="" (click)="setNoteActionDelete()"
+    <button mat-fab (click)="setNoteActionDelete()"
         matTooltip="{{ 'Tooltips.DeleteNote' | translate }}">
-        <span class="note-content-floating-button-icon-action">&#xE872;</span>
+        <span class="action-icon">&#xE872;</span>
     </button>
 </mat-dialog-content>

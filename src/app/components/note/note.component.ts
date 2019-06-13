@@ -136,7 +136,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     public showNoteActions(): void {
         let dialogRef: MatDialogRef<NoteActionsDialogComponent> = this.dialog.open(NoteActionsDialogComponent, {
-            width: '450px'
+            width: '450px', data: { isMarked: this.isMarked }
         });
 
         dialogRef.afterClosed().subscribe(async (result) => {

@@ -16,19 +16,17 @@ export class NoteActionsDialogComponent implements OnInit, OnDestroy {
     }
 
     public selectedNoteAction: NoteAction;
-
+    public isMarked: boolean;
 
     public ngOnDestroy(): void {
     }
 
     public async ngOnInit(): Promise<void> {
-
+        this.isMarked = this.data.isMarked;
     }
 
     public closeDialog(): void {
-        if (this.selectedNoteAction) {
-            this.dialogRef.close(true); // Force return "true"
-        }
+        this.dialogRef.close(true); // Force return "true"
     }
 
     public setNoteActionToggleMark(): void {
