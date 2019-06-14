@@ -645,16 +645,21 @@ export class CollectionService {
 
         // 2. Rename the note
         let note: Note = this.dataStore.getNoteById(noteId);
-        note.title = uniqueNoteTitle;
-        this.dataStore.updateNote(note);
 
-        log.info(`Renamed note with id=${noteId} from ${initialNoteTitle} to ${uniqueNoteTitle}.`);
+        if (note) {
+          note.title = uniqueNoteTitle;
+          this.dataStore.updateNote(note);
+
+          log.info(`Renamed note with id=${noteId} from ${initialNoteTitle} to ${uniqueNoteTitle}.`);
+        } else {
+          log.warn(`Note with id=${noteId} could not be found. It was probably deleted.`);
+        }
       } catch (error) {
         log.error(`Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`);
         callback(new NoteOperationResult(Operation.Error));
         return;
       }
-    }else{
+    } else {
       log.info("Final title is the same as initial title. No rename required.");
     }
 
@@ -669,8 +674,15 @@ export class CollectionService {
   public setNoteTextEventHandler(noteId: string, noteText: string, callback: any) {
     try {
       let note: Note = this.dataStore.getNoteById(noteId);
-      note.text = noteText;
-      this.dataStore.updateNote(note);
+
+      if (note) {
+        note.text = noteText;
+        this.dataStore.updateNote(note);
+
+        log.info(`Set text of note with id=${noteId}.`);
+      } else {
+        log.warn(`Note with id=${noteId} could not be found. It was probably deleted.`);
+      }
     } catch (error) {
       log.error(`Could not set text for the note with id='${noteId}' in the data store. Cause: ${error}`);
       callback(Operation.Error);
