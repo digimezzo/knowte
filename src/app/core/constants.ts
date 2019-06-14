@@ -47,6 +47,7 @@ export class Constants {
         { name: "default-blue-theme", displayName: "Default blue", color: "#1D7DD4" },
         { name: "ubuntu-orange-theme", displayName: "Ubuntu orange", color: "#E95420" },
         { name: "linuxmint-green-theme", displayName: "Linux Mint green", color: "#8bb158" },
+        { name: "manjaro-green-theme", displayName: "Manjaro green", color: "#16a085" },
         { name: "windows10-blue-theme", displayName: "Windows 10 blue", color: "#0078d7" },
         { name: "material-red-theme", displayName: "Material red", color: "#F44336" },
         { name: "material-pink-theme", displayName: "Material pink", color: "#E91E63" },
@@ -59,14 +60,11 @@ export class Constants {
         { name: "material-teal-theme", displayName: "Material teal", color: "#009688" },
         { name: "material-green-theme", displayName: "Material green", color: "#4CAF50" },
         { name: "material-light-green-theme", displayName: "Material light green", color: "#8BC34A" },
-        { name: "material-lime-theme", displayName: "Material lime", color: "#CDDC39" },
-        { name: "material-yellow-theme", displayName: "Material yellow", color: "#FFEB3B" },
+        // { name: "material-lime-theme", displayName: "Material lime", color: "#CDDC39" },
+        // { name: "material-yellow-theme", displayName: "Material yellow", color: "#FFEB3B" },
         { name: "material-amber-theme", displayName: "Material amber", color: "#FFC107" },
         { name: "material-orange-theme", displayName: "Material orange", color: "#FF9800" },
         { name: "material-deep-orange-theme", displayName: "Material deep orange", color: "#FF5722" }
-        // { name: "blue-theme", displayName: "Blue", color: "#03A9F4" },
-        // { name: "pink-theme", displayName: "Pink", color: "#E91E63" },
-        // { name: "deep-orange-theme", displayName: "Orange", color: "#FF5722" }
     ];
 
     static readonly externalComponents: any[] = [

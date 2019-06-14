@@ -7,13 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.0-beta.2] - 2019-04-15
+## [2.0.0-beta.2] - 2019-06-14
 ### Added
-- The theme selector now indicates which theme is currently selected
-- Fixed problems with the search highlight
+- Many more color themes
+- Checkbox lists (allows creating TODO's)
 ### Changed
+- Theme selector now indicates which theme is currently selected
 ### Removed
 ### Fixed
+- Search highlight doesn't work correctly
 
 ## [2.0.0-beta.1] - 2019-04-13
 ### Added
