@@ -92,11 +92,13 @@
 }
 
 .ql-editor ul[data-checked="false"] > li::before {
-  font-size: 1.2rem;
+  font-family: fa-regular;
+  content: '\f0c8';
 }
 
 .ql-editor ul[data-checked="true"] li::before {
-  font-size: 1.2rem;
+  font-family: fa-regular;
+  content: '\f14a';
 }
 
 .notebook-changer{
