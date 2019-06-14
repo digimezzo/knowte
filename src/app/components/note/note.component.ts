@@ -410,6 +410,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             let window: BrowserWindow = remote.getCurrentWindow();
 
             if (window.isMinimized()) {
+                window.minimize(); // Workaround for notes not getting restored on Linux
                 window.restore();
             }
 

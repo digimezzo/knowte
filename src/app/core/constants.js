@@ -57,8 +57,8 @@ var Constants = /** @class */ (function () {
         { name: "material-teal-theme", displayName: "Material teal", color: "#009688" },
         { name: "material-green-theme", displayName: "Material green", color: "#4CAF50" },
         { name: "material-light-green-theme", displayName: "Material light green", color: "#8BC34A" },
-        { name: "material-lime-theme", displayName: "Material lime", color: "#CDDC39" },
-        { name: "material-yellow-theme", displayName: "Material yellow", color: "#FFEB3B" },
+        // { name: "material-lime-theme", displayName: "Material lime", color: "#CDDC39" },
+        // { name: "material-yellow-theme", displayName: "Material yellow", color: "#FFEB3B" },
         { name: "material-amber-theme", displayName: "Material amber", color: "#FFC107" },
         { name: "material-orange-theme", displayName: "Material orange", color: "#FF9800" },
         { name: "material-deep-orange-theme", displayName: "Material deep orange", color: "#FF5722" }
