@@ -1,5 +1,5 @@
 <mat-dialog-content class="dialog-content">
-    <button *ngIf="isMarked" mat-fab (click)="setNoteActionToggleMark()"
+    <!-- <button *ngIf="isMarked" mat-fab (click)="setNoteActionToggleMark()"
         matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">
         <span class="action-icon">&#xE87D;</span>
     </button>
@@ -22,5 +22,29 @@
     <button mat-fab (click)="setNoteActionDelete()"
         matTooltip="{{ 'Tooltips.DeleteNote' | translate }}">
         <span class="action-icon">&#xE872;</span>
+    </button> -->
+    <button *ngIf="isMarked" mat-button color="primary" class="action-button">
+        <div class="action-icon">&#xE87D;</div>
+        <div>{{ 'Tooltips.UnmarkNote' | translate }}</div>
+    </button>
+    <button *ngIf="!isMarked" mat-button color="primary" class="action-button">
+        <div class="action-icon">&#xE87E;</div>
+        <div>{{ 'Tooltips.MarkNote' | translate }}</div>
+    </button>
+    <button mat-button color="primary" class="action-button">
+        <div class="action-icon-export">&#xF56E;</div>
+        <div>{{ 'Tooltips.ExportNote' | translate }}</div>
+    </button>
+    <button mat-button color="primary" class="action-button">
+        <div class="action-icon-pdf">&#xF1C1;</div>
+        <div>{{ 'Tooltips.ExportNoteToPdf' | translate }}</div>
+    </button>
+    <button mat-button color="primary" class="action-button">
+        <div class="action-icon">&#xE555;</div>
+        <div>{{ 'Tooltips.PrintNote' | translate }}</div>
+    </button>
+    <button mat-button color="primary" class="action-button">
+        <div class="action-icon">&#xE872;</div>
+        <div>{{ 'Tooltips.DeleteNote' | translate }}</div>
     </button>
 </mat-dialog-content>
