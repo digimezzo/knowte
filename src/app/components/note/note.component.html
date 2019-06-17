@@ -17,7 +17,8 @@
             <div class="note-content-floating">
                 <button class="note-content-floating-button" mat-fab (click)="toggleShowActions()"
                     matTooltip="{{ 'Tooltips.Actions' | translate }}">
-                    <span class="note-content-floating-button-icon">&#xE8B8;</span>
+                    <span *ngIf="!canPerformActions" class="note-content-floating-button-icon">&#xE8B8;</span>
+                    <span *ngIf="canPerformActions" class="note-content-floating-button-icon">&#xE5CD;</span>
                 </button>
                 <button *ngIf="canPerformActions && isMarked" class="note-content-floating-button" mat-mini-fab color=""
                     (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">
