@@ -45,6 +45,7 @@ import { RenameNotebookDialogComponent } from './components/dialogs/renameNotebo
 import { ConfirmationDialogComponent } from './components/dialogs/confirmationDialog/confirmationDialog.component';
 import { DialogHeaderComponent } from './components/dialogs/dialogHeader/dialogHeader.component';
 import { ChangeNotebookDialogComponent } from './components/dialogs/changeNotebookDialog/changeNotebookDialog.component';
+import { NoteActionsDialogComponent } from './components/dialogs/noteActionsDialog/noteActionsDialog.component';
 import { ImportFromOldVersionDialogComponent } from './components/dialogs/importFromOldVersionDialog/importFromOldVersionDialog.component';
 
 // Modules
@@ -83,6 +84,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ConfirmationDialogComponent,
     DialogHeaderComponent,
     ChangeNotebookDialogComponent,
+    NoteActionsDialogComponent,
     ImportFromOldVersionDialogComponent,
     LogoFullComponent,
     ActiveNotebookAndSearchComponent,
@@ -135,7 +137,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   entryComponents: [
     LicenseDialogComponent, InputDialogComponent, ErrorDialogComponent, RenameCollectionDialogComponent, 
     ImportFromOldVersionDialogComponent, RenameNotebookDialogComponent, ConfirmationDialogComponent, 
-    ChangeNotebookDialogComponent
+    ChangeNotebookDialogComponent, NoteActionsDialogComponent
   ],
 })
 export class AppModule { }

@@ -1,0 +1,21 @@
+.action-button-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.action-button {
+  margin: 8px;
+  padding-top: 12px;
+}
+
+.action-icon {
+  font-family: material;
+  font-size: 32px;
+}
+
+.action-icon-export {
+  font-family: fa-solid;
+  font-size: 24px;
+}
