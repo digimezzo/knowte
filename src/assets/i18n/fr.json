@@ -70,7 +70,7 @@
         "UnmarkNote": "Démarquer note",
         "PrintNote": "Imprimer note...",
         "ExportNote": "Exporter note...",
-        "ExportToPdf": "Exporter en PDF...",
+        "ExportNoteToPdf": "Exporter note en PDF...",
         "ImportNotes": "Importer notes...",
         "AddNotebook": "Ajouter bloc-notes...",
         "RenameNotebook": "Renommer bloc-notes...",
