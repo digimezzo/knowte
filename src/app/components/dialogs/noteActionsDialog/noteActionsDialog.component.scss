@@ -1,19 +1,21 @@
-  .action-button{
-    padding-top: 8px;
-  }
+.action-button-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 
-  .action-icon{
-    font-family: material;
-    font-size: 48px;
-  }
-  
-  .action-icon-pdf{
-    font-family: fa-solid;
-    font-size: 44px;
-  }
-  
-  .action-icon-export{
-    font-family: fa-solid;
-    font-size: 40px;
-    margin-left: 4px;
-  }
+.action-button {
+  margin: 8px;
+  padding-top: 12px;
+}
+
+.action-icon {
+  font-family: material;
+  font-size: 36px;
+}
+
+.action-icon-export {
+  font-family: fa-solid;
+  font-size: 28px;
+}

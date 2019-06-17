@@ -23,28 +23,30 @@
         matTooltip="{{ 'Tooltips.DeleteNote' | translate }}">
         <span class="action-icon">&#xE872;</span>
     </button> -->
-    <button *ngIf="isMarked" mat-button color="primary" class="action-button">
-        <div class="action-icon">&#xE87D;</div>
-        <div>{{ 'Tooltips.UnmarkNote' | translate }}</div>
-    </button>
-    <button *ngIf="!isMarked" mat-button color="primary" class="action-button">
-        <div class="action-icon">&#xE87E;</div>
-        <div>{{ 'Tooltips.MarkNote' | translate }}</div>
-    </button>
-    <button mat-button color="primary" class="action-button">
-        <div class="action-icon-export">&#xF56E;</div>
-        <div>{{ 'Tooltips.ExportNote' | translate }}</div>
-    </button>
-    <button mat-button color="primary" class="action-button">
-        <div class="action-icon-pdf">&#xF1C1;</div>
-        <div>{{ 'Tooltips.ExportNoteToPdf' | translate }}</div>
-    </button>
-    <button mat-button color="primary" class="action-button">
-        <div class="action-icon">&#xE555;</div>
-        <div>{{ 'Tooltips.PrintNote' | translate }}</div>
-    </button>
-    <button mat-button color="primary" class="action-button">
-        <div class="action-icon">&#xE872;</div>
-        <div>{{ 'Tooltips.DeleteNote' | translate }}</div>
-    </button>
+    <div class="action-button-container">
+        <button *ngIf="isMarked" mat-button color="primary" class="action-button" (click)="setNoteActionToggleMark()">
+            <div class="action-icon">&#xE87D;</div>
+            <div>{{ 'Tooltips.UnmarkNote' | translate }}</div>
+        </button>
+        <button *ngIf="!isMarked" mat-button color="primary" class="action-button" (click)="setNoteActionToggleMark()">
+            <div class="action-icon">&#xE87E;</div>
+            <div>{{ 'Tooltips.MarkNote' | translate }}</div>
+        </button>
+        <button mat-button color="primary" class="action-button" (click)="setNoteActionExport()">
+            <div class="action-icon-export">&#xF56E;</div>
+            <div>{{ 'Tooltips.ExportNote' | translate }}</div>
+        </button>
+        <button mat-button color="primary" class="action-button" (click)="setNoteActionExportToPdf()">
+            <div class="action-icon-export">&#xF1C1;</div>
+            <div>{{ 'Tooltips.ExportToPdf' | translate }}</div>
+        </button>
+        <button mat-button color="primary" class="action-button" (click)="setNoteActionPrint()">
+            <div class="action-icon">&#xE555;</div>
+            <div>{{ 'Tooltips.PrintNote' | translate }}</div>
+        </button>
+        <button mat-button color="primary" class="action-button" (click)="setNoteActionDelete()">
+            <div class="action-icon">&#xE872;</div>
+            <div>{{ 'Tooltips.DeleteNote' | translate }}</div>
+        </button>
+    </div>
 </mat-dialog-content>
