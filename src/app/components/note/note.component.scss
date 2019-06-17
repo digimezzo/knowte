@@ -24,26 +24,39 @@
   margin-right: auto !important;
 }
 
-.note-content-floating-button-icon{
+.note-content-floating-button:focus span {
+  animation: rotate 0.25s ease-in-out 0s;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(90deg);
+  }
+}
+
+.note-content-floating-button-icon {
   color: white;
   font-family: material;
   font-size: 24px;
 }
 
-.note-content-floating-button-icon-action{
-  @extend .color-primary;
+.note-content-floating-button-icon-action {
+  color: $color-grey-icon;
   font-family: material;
   font-size: 20px;
 }
 
-.note-content-floating-button-icon-action-pdf{
-  @extend .color-primary;
+.note-content-floating-button-icon-action-pdf {
+  color: $color-grey-icon;
   font-family: fa-solid;
   font-size: 18px;
 }
 
-.note-content-floating-button-icon-action-export{
-  @extend .color-primary;
+.note-content-floating-button-icon-action-export {
+  color: $color-grey-icon;
   font-family: fa-solid;
   font-size: 16px;
   margin-left: 4px;
@@ -93,15 +106,15 @@
 
 .ql-editor ul[data-checked="false"] > li::before {
   font-family: fa-regular;
-  content: '\f0c8';
+  content: "\f0c8";
 }
 
 .ql-editor ul[data-checked="true"] li::before {
   font-family: fa-regular;
-  content: '\f14a';
+  content: "\f14a";
 }
 
-.notebook-changer{
+.notebook-changer {
   display: flex;
   -webkit-app-region: no-drag;
   color: white;
@@ -114,4 +127,3 @@
   font-family: Material;
   font-size: 18px;
 }
-

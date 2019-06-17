@@ -84,14 +84,14 @@
 .edit-item-icon {
   font-family: material;
   font-size: 20px;
-  @extend .color-primary;
+  color: $color-grey-icon;
 }
 
 .edit-item-icon-import {
-  @extend .color-primary;
   font-family: fa-solid;
   font-size: 16px;
   margin-right: 2px;
+  color: $color-grey-icon;
 }
 
 .notebook {
