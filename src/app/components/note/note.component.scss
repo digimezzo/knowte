@@ -24,17 +24,10 @@
   margin-right: auto !important;
 }
 
-.note-content-floating-button:focus span {
-  animation: rotate 0.25s ease-in-out 0s;
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(90deg);
-  }
+.note-content-floating-button-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .note-content-floating-button-icon {

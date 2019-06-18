@@ -21,12 +21,21 @@ import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confi
 import { NoteExport } from '../../core/noteExport';
 import { SettingsService } from '../../services/settings.service';
 import { ipcRenderer } from 'electron';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
     selector: 'note-content',
     templateUrl: './note.component.html',
     styleUrls: ['./note.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    animations: [
+        trigger('actionIconRotation', [
+            state('default', style({ transform: 'rotate(0)' })),
+            state('rotated', style({ transform: 'rotate(90deg)' })),
+            transition('rotated => default', animate('250ms ease-out')),
+            transition('default => rotated', animate('250ms ease-in'))
+        ])
+    ],
 })
 export class NoteComponent implements OnInit, OnDestroy {
     private saveTimeoutMilliseconds: number = 5000;
@@ -54,6 +63,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     public saveChangesAndCloseNoteWindow: Subject<string> = new Subject<string>();
     public canPerformActions: boolean = false;
     public isBusy: boolean = false;
+    public actionIconRotation: string = 'default';
 
     public editorStyle = {
         'font-size': this.settingsService.fontSizeInNotes + 'px'
@@ -278,6 +288,11 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     public toggleShowActions(): void {
         this.canPerformActions = !this.canPerformActions;
+        this.rotateActionsButton();
+    }
+
+    public rotateActionsButton(): void {
+        this.actionIconRotation = this.canPerformActions ? 'rotated' : 'default';
     }
 
     public async exportNoteAsync(): Promise<void> {
@@ -545,11 +560,14 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private hideActionButtons(): void {
         this.canPerformActions = false;
+        this.rotateActionsButton();
+
     }
 
     private async hideActionButtonsDelayedAsync(): Promise<void> {
         await Utils.sleep(500);
         this.canPerformActions = false;
+        this.rotateActionsButton();
     }
 
     private sendCommandToWorker(command: string, content: any): void {

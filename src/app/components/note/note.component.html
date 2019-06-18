@@ -17,8 +17,10 @@
             <div class="note-content-floating">
                 <button class="note-content-floating-button" mat-fab (click)="toggleShowActions()"
                     matTooltip="{{ 'Tooltips.Actions' | translate }}">
-                    <span *ngIf="!canPerformActions" class="note-content-floating-button-icon">&#xE8B8;</span>
-                    <span *ngIf="canPerformActions" class="note-content-floating-button-icon">&#xE5CD;</span>
+                    <div class="note-content-floating-button-icon-container" [@actionIconRotation]="actionIconRotation">
+                        <span *ngIf="!canPerformActions" class="note-content-floating-button-icon">&#xE8B8;</span>
+                        <span *ngIf="canPerformActions" class="note-content-floating-button-icon">&#xE5CD;</span>
+                    </div>
                 </button>
                 <button *ngIf="canPerformActions && isMarked" class="note-content-floating-button" mat-mini-fab color=""
                     (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">
@@ -28,16 +30,16 @@
                     color="" (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.MarkNote' | translate }}">
                     <span class="note-content-floating-button-icon-action">&#xE87E;</span>
                 </button>
-                <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab
-                    color="" (click)="exportNoteAsync()" matTooltip="{{ 'Tooltips.ExportNote' | translate }}">
+                <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
+                    (click)="exportNoteAsync()" matTooltip="{{ 'Tooltips.ExportNote' | translate }}">
                     <span class="note-content-floating-button-icon-action-export">&#xF56E;</span>
                 </button>
-                <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab
-                    color="" (click)="exportNoteToPdfAsync()" matTooltip="{{ 'Tooltips.ExportNoteToPdf' | translate }}">
+                <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
+                    (click)="exportNoteToPdfAsync()" matTooltip="{{ 'Tooltips.ExportNoteToPdf' | translate }}">
                     <span class="note-content-floating-button-icon-action-pdf">&#xF1C1;</span>
                 </button>
-                <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab
-                    color="" (click)="printNote()" matTooltip="{{ 'Tooltips.PrintNote' | translate }}">
+                <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
+                    (click)="printNote()" matTooltip="{{ 'Tooltips.PrintNote' | translate }}">
                     <span class="note-content-floating-button-icon-action">&#xE555;</span>
                 </button>
                 <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
