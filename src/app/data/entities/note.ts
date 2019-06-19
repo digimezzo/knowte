@@ -13,4 +13,6 @@ export class Note{
     public displayModificationDate: string;
     public displayExactModificationDate: string;
     public isSelected: boolean;
+    public closedTasksCount: number = 0;
+    public totalTasksCount: number = 0;
 }

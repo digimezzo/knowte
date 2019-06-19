@@ -23,6 +23,7 @@ import { NoteDetailsResult } from './results/noteDetailsResult';
 import { ipcRenderer } from 'electron';
 import { NoteExport } from '../core/noteExport';
 import { SettingsService } from './settings.service';
+import { TasksCount } from '../core/tasksCount';
 
 @Injectable({
   providedIn: 'root',
@@ -671,12 +672,14 @@ export class CollectionService {
     callback(result);
   }
 
-  public setNoteTextEventHandler(noteId: string, noteText: string, callback: any) {
+  public setNoteTextEventHandler(noteId: string, noteText: string, tasksCount: TasksCount, callback: any) {
     try {
       let note: Note = this.dataStore.getNoteById(noteId);
 
       if (note) {
         note.text = noteText;
+        note.closedTasksCount = tasksCount.closedTasksCount;
+        note.totalTasksCount = tasksCount.totalTasksCount;
         this.dataStore.updateNote(note);
 
         log.info(`Set text of note with id=${noteId}.`);

@@ -22,6 +22,7 @@ import { NoteExport } from '../../core/noteExport';
 import { SettingsService } from '../../services/settings.service';
 import { ipcRenderer } from 'electron';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { TasksCount } from '../../core/tasksCount';
 
 @Component({
     selector: 'note-content',
@@ -122,7 +123,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.noteTextChanged
             .pipe(debounceTime(this.saveTimeoutMilliseconds))
             .subscribe(async (_) => {
-                this.globalEmitter.emit(Constants.setNoteTextEvent, this.noteId, this.quill.getText(), this.setNoteTextCallbackAsync.bind(this));
+                this.globalEmitter.emit(Constants.setNoteTextEvent, this.noteId, this.quill.getText(), this.getTasksCount(), this.setNoteTextCallbackAsync.bind(this));
             });
 
         this.saveChangesAndCloseNoteWindow
@@ -377,7 +378,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             let setTitleOperation: Operation = result.operation;
             await this.setNoteTitleCallbackAsync(result);
 
-            this.globalEmitter.emit(Constants.setNoteTextEvent, this.noteId, this.quill.getText(), async (operation: Operation) => {
+            this.globalEmitter.emit(Constants.setNoteTextEvent, this.noteId, this.quill.getText(), this.getTasksCount(), async (operation: Operation) => {
                 let setTextOperation: Operation = operation;
                 await this.setNoteTextCallbackAsync(operation);
 
@@ -581,5 +582,13 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         let applyStrikeThrough: boolean = !formatString.includes("strike");
         this.quill.formatText(range.index, range.length, 'strike', applyStrikeThrough);
+    }
+
+    private getTasksCount(): TasksCount {
+        let noteContent: string = JSON.stringify(this.quill.getContents());
+        let openTasksCount: number = (noteContent.match(/"list":"unchecked"/g) || []).length;
+        let closedTasksCount: number = (noteContent.match(/"list":"checked"/g) || []).length;
+       
+        return new TasksCount(openTasksCount, closedTasksCount);
     }
 }

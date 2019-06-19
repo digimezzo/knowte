@@ -167,7 +167,8 @@
         "UnfiledNotes": "Notes non classées",
         "Search": "Chercher",
         "ClearSearch": "Effacer la recherche",
-        "DragNotesCount": "{{noteCount}} notes"
+        "DragNotesCount": "{{noteCount}} notes",
+        "TasksCount": "{{closedTasksCount}} de {{totalTasksCount}}"
     },
     "Notes": {
         "NewNote": "Nouvelle note",
