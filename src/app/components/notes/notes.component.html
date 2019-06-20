@@ -25,8 +25,9 @@
                         </div>
                         <div class="note-item-date-and-tasks">
                             <span>{{ note.displayModificationDate }}</span>
-                            <span *ngIf="note.totalTasksCount > 0" class="ml-1">
-                            {{ 'MainPage.TasksCount' | translate:{ closedTasksCount: note.closedTasksCount, totalTasksCount: note.totalTasksCount } }}</span>
+                            <tasks-progress-component *ngIf="note.totalTasksCount > 0" class="ml-1"
+                                [closedTasksCount]="note.closedTasksCount" [totalTasksCount]="note.totalTasksCount">
+                            </tasks-progress-component>
                         </div>
                     </div>
                     <div class="note-item-actions">

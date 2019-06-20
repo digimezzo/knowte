@@ -57,6 +57,7 @@ import { ActiveNotebookAndSearchComponent } from './components/activeNotebookAnd
 import { SettingsService } from './services/settings.service';
 import { TruncatePipe } from './pipes/truncatePipe';
 import { FileService } from './services/file.service';
+import { TasksProgressComponent } from './components/tasksProgressComponent/tasksProgress.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -86,6 +87,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ImportFromOldVersionDialogComponent,
     LogoFullComponent,
     ActiveNotebookAndSearchComponent,
+    TasksProgressComponent,
     NoteComponent,
     WebviewDirective,
     TruncatePipe
