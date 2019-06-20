@@ -1,0 +1,37 @@
+@import "css/variables.scss";
+.tasks-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tasks-progress-icon {
+  color: $color-grey;
+  font-size: 20px;
+  font-family: material;
+}
+
+.tasks-progress-bar{
+    height: 10px;
+    width: 100px;
+    position: relative;
+}
+
+.tasks-progress-bar-handle{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 10px;
+    background-color: $color-grey;
+    z-index: 1;
+}
+
+.tasks-progress-bar-track{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 10px;
+    width: 100px;
+    background-color: $color-lightgrey;
+    z-index: 0;
+}

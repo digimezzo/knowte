@@ -12,10 +12,10 @@
 
 .collection-notebooks {
   position: absolute;
-  background-color: $color-lightgrey;
-  border-right: 1px solid $color-lightgrey-border;
-  border-bottom: 1px solid $color-lightgrey-border;
-  border-left: 1px solid $color-lightgrey-border;
+  background-color: $color-lightergrey;
+  border-right: 1px solid $color-lightgrey;
+  border-bottom: 1px solid $color-lightgrey;
+  border-left: 1px solid $color-lightgrey;
   top: 0;
   left: 0;
   margin: 48px 0 0 0;
@@ -121,7 +121,7 @@
   left: 351px;
   background-color: #fff;
   width: calc(100% - 351px);
-  border-right: 1px solid $color-lightgrey-border;
+  border-right: 1px solid $color-lightgrey;
 }
 
 .note-buttons {

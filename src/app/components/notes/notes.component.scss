@@ -14,7 +14,7 @@
   top: -500px;
   left: 0;
   z-index: 0; // z-index is required. Otherwise the image isn't displayed while dragging. The value of z-index doesn't seem to matter.
-  border: 1px solid $color-lightgrey-border;
+  border: 1px solid $color-lightgrey;
   height: 38px;
   display: flex;
   flex-direction: row;
@@ -98,7 +98,7 @@
 }
 
 .note-item-actions-heart-unmarked {
-  color: #aaaaaa;
+  color: $color-grey;
 }
 
 .note-item-info {
@@ -127,7 +127,7 @@
   margin-bottom: 4px;
   height: 20px;
   font-size: $fontsize-normal !important;
-  color: #aaaaaa;
+  color: $color-grey;
   display: flex;
   align-items: center;
 }

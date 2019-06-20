@@ -1,3 +1,12 @@
-<span>
-    {{ 'MainPage.TasksCount' | translate:{ closedTasksCount: closedTasksCount, totalTasksCount: totalTasksCount } }}
-</span>
+<div class="tasks-progress">
+    <span class="tasks-progress-icon">&#xE065;</span>
+    <span class="ml-1">{{ 'MainPage.TasksCount' | translate:{ closedTasksCount: closedTasksCount, totalTasksCount: totalTasksCount } }}</span>
+    <div class="tasks-progress-bar ml-1">
+        <div class="tasks-progress-bar-handle" [style.width.px]="width">
+
+        </div>
+        <div class="tasks-progress-bar-track">
+
+        </div>
+    </div>
+</div>
