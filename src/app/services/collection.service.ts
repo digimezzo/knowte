@@ -692,6 +692,7 @@ export class CollectionService {
       return;
     }
 
+    this.noteEdited.next();
     callback(Operation.Success);
     return;
   }
