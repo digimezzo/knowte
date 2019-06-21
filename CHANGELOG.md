@@ -7,10 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.0-beta.2] - 2019-06-14
+## [2.0.0-beta.2] - 2019-06-21
 ### Added
 - Many more color themes
-- Checkbox lists (allows creating TODO's)
+- Task lists
 ### Changed
 - Theme selector now indicates which theme is currently selected
 ### Removed
