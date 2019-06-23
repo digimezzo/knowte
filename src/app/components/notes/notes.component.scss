@@ -109,7 +109,7 @@
   min-width: 0;
 }
 
-.note-item-title {
+.note-item-info-title {
   margin-top: 4px;
   height: 20px;
   font-size: $fontsize-normal !important;
@@ -117,13 +117,13 @@
   align-items: center;
 }
 
-// .note-item-title > span {
+// .note-item-info-title > span {
 //   white-space: nowrap;
 //   overflow: hidden;
 //   text-overflow: ellipsis;
 // }
 
-.note-item-date-and-tasks {
+.note-item-info-date-and-tasks {
   margin-bottom: 4px;
   height: 20px;
   font-size: $fontsize-normal !important;
@@ -132,7 +132,7 @@
   align-items: center;
 }
 
-// .note-item-date > span {
+// .note-item-info-date-and-tasks > span {
 //   white-space: nowrap;
 //   overflow: hidden;
 //   text-overflow: ellipsis;

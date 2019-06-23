@@ -20,10 +20,10 @@
                         <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg">
                     </div>
                     <div class="note-item-info px-1">
-                        <div class="note-item-title">
+                        <div class="note-item-info-title">
                             <span>{{ note.title }}</span>
                         </div>
-                        <div class="note-item-date-and-tasks">
+                        <div class="note-item-info-date-and-tasks">
                             <span>{{ note.displayModificationDate }}</span>
                             <tasks-progress-component *ngIf="note.totalTasksCount > 0" class="ml-2"
                                 [closedTasksCount]="note.closedTasksCount" [totalTasksCount]="note.totalTasksCount">

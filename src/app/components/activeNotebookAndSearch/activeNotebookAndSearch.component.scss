@@ -8,9 +8,14 @@
   display: flex;
 }
 
+.notes-content-title-text {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .notes-content-search {
   margin-top: -8px;
-  width: 200px;
+  width: 150px;
 }
 
 .notes-content-search-clearbutton {
