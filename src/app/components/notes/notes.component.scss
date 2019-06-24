@@ -57,7 +57,7 @@
   height: 48px;
   display: flex;
   flex-direction: row;
-  width: 100%;
+  width: calc(100vw - 351px); // TODO: this is the only way to contain a note-item an enable ellipsis
   cursor: default !important;
 }
 
@@ -117,11 +117,11 @@
   align-items: center;
 }
 
-// .note-item-info-title > span {
-//   white-space: nowrap;
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-// }
+.note-item-info-title > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 .note-item-info-date-and-tasks {
   margin-bottom: 4px;
@@ -132,11 +132,11 @@
   align-items: center;
 }
 
-// .note-item-info-date-and-tasks > span {
-//   white-space: nowrap;
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-// }
+.note-item-info-date-and-tasks > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 cdk-virtual-scroll-viewport {
   height: 100%;

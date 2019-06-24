@@ -5,6 +5,12 @@
   justify-content: center;
 }
 
+.tasks-progress-count{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .tasks-progress-icon {
   color: $color-grey;
   font-size: 20px;
