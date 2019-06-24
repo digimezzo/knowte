@@ -57,7 +57,7 @@
   height: 48px;
   display: flex;
   flex-direction: row;
-  width: calc(100vw - 351px); // TODO: this is the only way to contain a note-item an enable ellipsis
+  width: calc(100vw - 351px); // HACK: cdk-virtual-scroll-viewport doesn't enforce a width to its components
   cursor: default !important;
 }
 
