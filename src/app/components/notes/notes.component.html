@@ -4,10 +4,10 @@
         <div class="drag-image-icon">
             <img class="drag-image-icon-pen" src="./assets/images/pencil_256x256.svg">
         </div>
-        <div class="drag-image-text mx-1" *ngIf="getSelectedNoteIds().length === 1">
-            {{ draggedNote?.title | truncate: 30 : true }}</div>
-        <div class="drag-image-text mx-1" *ngIf="getSelectedNoteIds().length > 1">
-            {{ 'MainPage.DragNotesCount' | translate:{ noteCount: getSelectedNoteIds().length } }}</div>
+        <div class="drag-image-text mx-1" *ngIf="draggableNoteIds.length === 1">
+            {{ draggedNote.title | truncate: 30 : true }}</div>
+        <div class="drag-image-text mx-1" *ngIf="draggableNoteIds.length > 1">
+            {{ 'MainPage.DragNotesCount' | translate:{ noteCount: draggableNoteIds.length } }}</div>
     </div>
     <!-- Notes list -->
     <ul class="notes-list" *ngIf="canShowList">

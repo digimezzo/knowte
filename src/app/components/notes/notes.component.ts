@@ -58,6 +58,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     public selectedNoteIds: EventEmitter<string[]> = new EventEmitter<string[]>();
 
     public notes: Note[] = [];
+    public draggableNoteIds: string[] = [];
     public draggedNote: Note;
     public canShowList: boolean = true;
 
@@ -167,15 +168,15 @@ export class NotesComponent implements OnInit, OnDestroy {
         return this.notes.filter(x => x.isSelected).map(x => x.id);
     }
 
-    public dragStart(event: any, note: Note): void {
-        // This makes sure the selection is ok if we immediately start 
-        // dragging after loading populating the notes collection
-        if (this.selectionWatcher.selectedItemsCount === 0) {
-            this.setSelectedNotes(note);
+    public dragStart(event: any, draggedNote: Note): void {
+        this.draggedNote = draggedNote;
+        this.draggableNoteIds = this.getSelectedNoteIds();
+
+        if (!this.draggableNoteIds.includes(draggedNote.id)) {
+            this.draggableNoteIds.push(draggedNote.id);
         }
 
-        this.draggedNote = note;
         event.dataTransfer.setDragImage(document.getElementById('drag-image'), -10, -10);
-        event.dataTransfer.setData('text', note.id);
+        event.dataTransfer.setData('text', JSON.stringify(this.draggableNoteIds));
     }
 }
