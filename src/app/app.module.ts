@@ -16,7 +16,9 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 // Services
 import { ElectronService } from './services/electron.service';
+import { DataService } from './services/data.service';
 import { CollectionService } from './services/collection.service';
+import { SettingsService } from './services/settings.service';
 
 // Stores
 import { DataStore } from './data/dataStore';
@@ -54,7 +56,6 @@ import { MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDivide
   MatListModule, MatSelectModule, MatSlideToggleModule, MatRippleModule } from '@angular/material';
 import { GlobalErrorHandler } from './globalErrorHandler';
 import { ActiveNotebookAndSearchComponent } from './components/activeNotebookAndSearch/activeNotebookAndSearch.component';
-import { SettingsService } from './services/settings.service';
 import { TruncatePipe } from './pipes/truncatePipe';
 import { FileService } from './services/file.service';
 import { TasksProgressComponent } from './components/tasksProgressComponent/tasksProgress.component';
@@ -124,6 +125,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   providers: [
     ElectronService,
+    DataService,
     CollectionService,
     SettingsService,
     FileService,
