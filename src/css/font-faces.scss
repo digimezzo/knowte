@@ -4,13 +4,14 @@
 }
 
 @font-face {
-    font-family: roboto-thin;
-    src: url(assets/fonts/Roboto-Thin.ttf) format('truetype');
+    font-family: roboto;
+    src: url(assets/fonts/Roboto-Regular.ttf) format('truetype');
 }
 
 @font-face {
     font-family: roboto;
-    src: url(assets/fonts/Roboto-Regular.ttf) format('truetype');
+    font-weight: 100;
+    src: url(assets/fonts/Roboto-Thin.ttf) format('truetype');
 }
 
 @font-face {
@@ -31,4 +32,15 @@
 @font-face {
     font-family: fa-solid;
     src: url(assets/fonts/fa-solid-900.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: opensans;
+    src: url(assets/fonts/OpenSans-Regular.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: opensans;
+    font-weight: 100;
+    src: url(assets/fonts/OpenSans-Light.ttf) format('truetype');
 }

@@ -13,7 +13,8 @@
 .logo-text {
   flex-grow: 1;
   margin: auto 0px auto 20px;
-  font-family: roboto-thin;
+  font-family: roboto !important;
+  font-weight: lighter !important;
   font-size: 48px;
 }
 

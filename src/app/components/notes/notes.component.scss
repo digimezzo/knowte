@@ -88,17 +88,19 @@
   min-width: 20px;
   height: 48px;
   line-height: 48px;
-  font-size: 20px;
-  font-family: material;
   cursor: pointer;
 }
 
 .note-item-actions-heart-marked {
   @extend .color-primary;
+  font-family: material !important;
+  font-size: 20px;
 }
 
 .note-item-actions-heart-unmarked {
   color: $color-grey;
+  font-family: material !important;
+  font-size: 20px;
 }
 
 .note-item-info {

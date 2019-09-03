@@ -8,7 +8,7 @@
     <mat-form-field class="notes-content-search">
         <input matInput type="text" placeholder="{{ 'MainPage.Search' | translate }}"
             [(ngModel)]="searchService.searchText">
-        <span class="notes-content-search-clearbutton" *ngIf="searchService.searchText" matSuffix
+        <span class="notes-content-search-clearbutton custom-font" *ngIf="searchService.searchText" matSuffix
             (click)="searchService.searchText=''"
             matTooltip="{{ 'MainPage.ClearSearch' | translate }}">&#xE5C9;</span>
     </mat-form-field>
