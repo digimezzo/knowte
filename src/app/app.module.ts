@@ -18,7 +18,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ElectronService } from './services/electron.service';
 import { DataService } from './services/data.service';
 import { CollectionService } from './services/collection.service';
-import { SettingsService } from './services/settings.service';
 
 // Stores
 import { DataStore } from './data/dataStore';
@@ -59,6 +58,7 @@ import { ActiveNotebookAndSearchComponent } from './components/activeNotebookAnd
 import { TruncatePipe } from './pipes/truncatePipe';
 import { FileService } from './services/file.service';
 import { TasksProgressComponent } from './components/tasksProgressComponent/tasksProgress.component';
+import { Settings } from './core/settings';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -127,7 +127,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ElectronService,
     DataService,
     CollectionService,
-    SettingsService,
+    Settings,
     FileService,
     DataStore,
     {

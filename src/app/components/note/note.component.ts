@@ -19,10 +19,10 @@ import * as fs from 'fs-extra';
 import { Utils } from '../../core/utils';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { NoteExport } from '../../core/noteExport';
-import { SettingsService } from '../../services/settings.service';
 import { ipcRenderer } from 'electron';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { TasksCount } from '../../core/tasksCount';
+import { Settings } from '../../core/settings';
 
 @Component({
     selector: 'note-content',
@@ -52,7 +52,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
 
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog,
-        private snackBarService: SnackBarService, private translateService: TranslateService, private settingsService: SettingsService) {
+        private snackBarService: SnackBarService, private translateService: TranslateService, private settings: Settings) {
     }
 
     public initialNoteTitle: string;
@@ -67,7 +67,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     public actionIconRotation: string = 'default';
 
     public editorStyle = {
-        'font-size': this.settingsService.fontSizeInNotes + 'px'
+        'font-size': this.settings.fontSizeInNotes + 'px'
     }
 
     public ngOnDestroy(): void {
@@ -151,7 +151,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-        if (this.settingsService.closeNotesWithEscape) {
+        if (this.settings.closeNotesWithEscape) {
             let window: BrowserWindow = remote.getCurrentWindow();
             window.close();
         }
@@ -494,8 +494,8 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private writeTextToNoteFile(): void {
         // Update the note file on disk
-        let activeCollection: string = this.settingsService.activeCollection;
-        let storageDirectory: string = this.settingsService.storageDirectory;
+        let activeCollection: string = this.settings.activeCollection;
+        let storageDirectory: string = this.settings.storageDirectory;
         let jsonContent: string = JSON.stringify(this.quill.getContents());
         fs.writeFileSync(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${this.noteId}${Constants.noteContentExtension}`), jsonContent);
     }
@@ -540,8 +540,8 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         // Details from note file
         try {
-            let activeCollection: string = this.settingsService.activeCollection;
-            let storageDirectory: string = this.settingsService.storageDirectory;
+            let activeCollection: string = this.settings.activeCollection;
+            let storageDirectory: string = this.settings.storageDirectory;
             let noteContent: string = fs.readFileSync(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${this.noteId}${Constants.noteContentExtension}`), 'utf8');
 
             if (noteContent) {

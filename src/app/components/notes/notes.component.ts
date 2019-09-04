@@ -10,10 +10,9 @@ import { NoteMarkResult } from '../../services/results/noteMarkResult';
 import { debounceTime, takeUntil } from 'rxjs/internal/operators';
 import { Utils } from '../../core/utils';
 import { remote } from 'electron';
-import { SettingsService } from '../../services/settings.service';
 import { FileService } from '../../services/file.service';
 import { SelectionWatcher } from '../../core/selectionWatcher';
-import log from 'electron-log';
+import { Settings } from '../../core/settings';
 
 @Component({
     selector: 'notes-component',
@@ -29,7 +28,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
     constructor(private collectionService: CollectionService, private snackBarService: SnackBarService,
-        public searchService: SearchService, private settingsService: SettingsService,
+        public searchService: SearchService, private settings: Settings,
         private fileService: FileService, private zone: NgZone) {
     }
 
@@ -155,7 +154,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
         if (this.activeNotebook) {
             this.zone.run(async () => {
-                this.notes = await this.collectionService.getNotesAsync(this.activeNotebook.id, this.componentCategory, this.settingsService.showExactDatesInTheNotesList);
+                this.notes = await this.collectionService.getNotesAsync(this.activeNotebook.id, this.componentCategory, this.settings.showExactDatesInTheNotesList);
                 this.selectionWatcher.reset(this.notes);
                 this.notesCount.emit(this.notes.length);
 

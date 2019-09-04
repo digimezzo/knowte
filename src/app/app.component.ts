@@ -5,9 +5,9 @@ import { CollectionService } from './services/collection.service';
 import { Router } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { AppearanceService } from './services/appearance.service';
-import { SettingsService } from './services/settings.service';
 import { remote } from 'electron';
 import { Constants } from './core/constants';
+import { Settings } from './core/settings';
 
 @Component({
   selector: 'app-root',
@@ -20,14 +20,12 @@ export class AppComponent {
 
   constructor(public electronService: ElectronService, public router: Router, private appearanceService: AppearanceService,
     private translateService: TranslateService, private collectionService: CollectionService,
-    private settingsService: SettingsService, private overlayContainer: OverlayContainer) {
+    private settings: Settings, private overlayContainer: OverlayContainer) {
 
-    this.settingsService.initialize();
+    this.applyTheme(this.settings.theme);
 
-    this.applyTheme(this.settingsService.theme);
-
-    this.translateService.setDefaultLang(this.settingsService.defaultLanguage);
-    this.translateService.use(this.settingsService.language);
+    this.translateService.setDefaultLang(this.settings.defaultLanguage);
+    this.translateService.use(this.settings.language);
   }
 
   public selectedTheme: string;

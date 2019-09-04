@@ -22,8 +22,8 @@ import { NoteMarkResult } from './results/noteMarkResult';
 import { NoteDetailsResult } from './results/noteDetailsResult';
 import { ipcRenderer } from 'electron';
 import { NoteExport } from '../core/noteExport';
-import { SettingsService } from './settings.service';
 import { TasksCount } from '../core/tasksCount';
+import { Settings } from '../core/settings';
 
 @Injectable({
   providedIn: 'root',
@@ -52,7 +52,7 @@ export class CollectionService {
   private deleteNoteEventListener: any = this.deleteNoteEventHandler.bind(this);
 
   constructor(private translateService: TranslateService, private searchService: SearchService,
-    private settingsService: SettingsService) {
+    private settings: Settings) {
   }
 
   public collectionsChanged$: Observable<{}> = this.collectionsChanged.asObservable();
@@ -88,7 +88,7 @@ export class CollectionService {
 
   public get hasStorageDirectory(): boolean {
     // 1. Get the storage directory from the settings
-    let storageDirectory: string = this.settingsService.storageDirectory;
+    let storageDirectory: string = this.settings.storageDirectory;
 
     if (!storageDirectory) {
       // Storage directory is empty
@@ -109,7 +109,7 @@ export class CollectionService {
   }
 
   public async getCollectionsAsync() {
-    let storageDirectory: string = this.settingsService.storageDirectory;
+    let storageDirectory: string = this.settings.storageDirectory;
     let fileNames: string[] = await fs.readdir(storageDirectory);
     let collections: string[] = [];
 
@@ -139,7 +139,7 @@ export class CollectionService {
       }
 
       // Save storage directory in the settings store
-      this.settingsService.storageDirectory = storageDirectory;
+      this.settings.storageDirectory = storageDirectory;
       log.info(`Saved storage directory '${storageDirectory}' in settings store`);
     } catch (error) {
       log.error(`Could not create storage directory on disk. Cause: ${error}`);
@@ -168,8 +168,8 @@ export class CollectionService {
     this.isInitializing = true;
 
     // Get the active collection from the settings
-    let storageDirectory: string = this.settingsService.storageDirectory;
-    let activeCollection: string = this.settingsService.activeCollection;
+    let storageDirectory: string = this.settings.storageDirectory;
+    let activeCollection: string = this.settings.activeCollection;
     let activeCollectionDirectory: string = "";
 
     if (activeCollection && Utils.collectionToPath(storageDirectory, activeCollection).includes(storageDirectory) &&
@@ -190,7 +190,7 @@ export class CollectionService {
       }
 
       activeCollectionDirectory = Utils.collectionToPath(storageDirectory, activeCollection);
-      this.settingsService.activeCollection = activeCollection;
+      this.settings.activeCollection = activeCollection;
 
       // If the collection directory doesn't exsist, create it.
       if (!await fs.exists(activeCollectionDirectory)) {
@@ -229,13 +229,13 @@ export class CollectionService {
       }
 
       // Add the collection
-      let storageDirectory: string = this.settingsService.storageDirectory;
+      let storageDirectory: string = this.settings.storageDirectory;
       await fs.mkdir(Utils.collectionToPath(storageDirectory, sanitizedCollection));
 
       log.info(`Added collection '${sanitizedCollection}'`);
 
       // Activate the added collection
-      this.settingsService.activeCollection = sanitizedCollection;
+      this.settings.activeCollection = sanitizedCollection;
     } catch (error) {
       log.error(`Could not add collection '${sanitizedCollection}'. Cause: ${error}`);
 
@@ -265,14 +265,14 @@ export class CollectionService {
         return Operation.Duplicate;
       }
 
-      let storageDirectory: string = this.settingsService.storageDirectory;
+      let storageDirectory: string = this.settings.storageDirectory;
 
       // Rename database file
       await fs.move(path.join(Utils.collectionToPath(storageDirectory, initialCollection), `${initialCollection}.db`), path.join(Utils.collectionToPath(storageDirectory, initialCollection), `${finalCollection}.db`));
 
       // Rename directory
       await fs.move(Utils.collectionToPath(storageDirectory, initialCollection), Utils.collectionToPath(storageDirectory, finalCollection));
-      this.settingsService.activeCollection = finalCollection;
+      this.settings.activeCollection = finalCollection;
     } catch (error) {
       log.error(`Could not rename the collection '${initialCollection}' to '${finalCollection}'. Cause: ${error}`);
       return Operation.Error;
@@ -286,14 +286,14 @@ export class CollectionService {
 
   public async deleteCollectionAsync(collection: string): Promise<Operation> {
     try {
-      let storageDirectory: string = this.settingsService.storageDirectory;
+      let storageDirectory: string = this.settings.storageDirectory;
       await fs.remove(Utils.collectionToPath(storageDirectory, collection));
       let collections: string[] = await this.getCollectionsAsync();
 
       if (collections && collections.length > 0) {
-        this.settingsService.activeCollection = collections[0];
+        this.settings.activeCollection = collections[0];
       } else {
-        this.settingsService.activeCollection = "";
+        this.settings.activeCollection = "";
       }
     } catch (error) {
       log.error(`Could not delete the collection '${collection}'. Cause: ${error}`);
@@ -306,13 +306,13 @@ export class CollectionService {
   }
 
   public activateCollection(collection: string): void {
-    this.settingsService.activeCollection = collection;
+    this.settings.activeCollection = collection;
     this.isInitialized = false;
     this.collectionsChanged.next();
   }
 
   public getActiveCollection(): string {
-    return this.settingsService.activeCollection;
+    return this.settings.activeCollection;
   }
 
   public noteIsOpen(noteId: string): boolean {
@@ -561,8 +561,8 @@ export class CollectionService {
       result.noteId = this.dataStore.addNote(uniqueTitle, notebookId);
 
       // 2. Create note file
-      let activeCollection: string = this.settingsService.activeCollection;
-      let storageDirectory: string = this.settingsService.storageDirectory;
+      let activeCollection: string = this.settings.activeCollection;
+      let storageDirectory: string = this.settings.storageDirectory;
       fs.writeFileSync(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${result.noteId}${Constants.noteContentExtension}`), '');
 
       this.noteEdited.next();
@@ -771,8 +771,8 @@ export class CollectionService {
 
                 let quillText: string = `{"ops":[{"insert":${JSON.stringify(jsonNote.Text)}}]}`;
 
-                let activeCollection: string = this.settingsService.activeCollection;
-                let storageDirectory: string = this.settingsService.storageDirectory;
+                let activeCollection: string = this.settings.activeCollection;
+                let storageDirectory: string = this.settings.storageDirectory;
                 await fs.writeFile(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${note.id}${Constants.noteContentExtension}`), quillText);
               }
             } catch (error) {
@@ -829,8 +829,8 @@ export class CollectionService {
 
         this.dataStore.updateNoteWithoutDate(note);
 
-        let activeCollection: string = this.settingsService.activeCollection;
-        let storageDirectory: string = this.settingsService.storageDirectory;
+        let activeCollection: string = this.settings.activeCollection;
+        let storageDirectory: string = this.settings.storageDirectory;
         await fs.writeFile(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${note.id}${Constants.noteContentExtension}`), noteExport.content);
         numberofImportedNoteFiles++;
       } catch (error) {
@@ -847,8 +847,8 @@ export class CollectionService {
   }
 
   private getNotePath(noteId: string) {
-    let activeCollection: string = this.settingsService.activeCollection;
-    let storageDirectory: string = this.settingsService.storageDirectory;
+    let activeCollection: string = this.settings.activeCollection;
+    let storageDirectory: string = this.settings.storageDirectory;
     return Utils.collectionToPath(storageDirectory, activeCollection);
   }
 

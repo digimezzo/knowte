@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import * as Store from 'electron-store';
-import { Constants } from '../core/constants';
+import { Constants } from './constants';
+import { SettingsInterface } from './settingsInterface';
 
 @Injectable({
     providedIn: 'root',
 })
-export class SettingsService {
-    private settings: Store = new Store();
+export class Settings implements SettingsInterface {
+    private settings: Store<any> = new Store();
 
     constructor() {
+        this.initialize();
     }
 
     // Default language
@@ -16,7 +18,7 @@ export class SettingsService {
         return 'en';
     }
 
-    // language
+    // Language
     public get language() : string {
         return this.settings.get('language');
     }
@@ -25,7 +27,7 @@ export class SettingsService {
         this.settings.set('language', v);
     }
 
-    // theme
+    // Theme
     public get theme() : string {
         return this.settings.get('theme');
     }
@@ -34,7 +36,7 @@ export class SettingsService {
         this.settings.set('theme', v);
     }
 
-    // closeNotesWithEscape
+    // CloseNotesWithEscape
     public get closeNotesWithEscape() : boolean {
         return this.settings.get('closeNotesWithEscape');
     }
@@ -43,7 +45,7 @@ export class SettingsService {
         this.settings.set('closeNotesWithEscape', v);
     }
 
-    // fontSizeInNotes
+    // FontSizeInNotes
     public get fontSizeInNotes() : number {
         return this.settings.get('fontSizeInNotes');
     }
@@ -52,7 +54,7 @@ export class SettingsService {
         this.settings.set('fontSizeInNotes', v);
     }
 
-    // showExactDatesInTheNotesList
+    // ShowExactDatesInTheNotesList
     public get showExactDatesInTheNotesList() : boolean {
         return this.settings.get('showExactDatesInTheNotesList');
     }
@@ -61,7 +63,7 @@ export class SettingsService {
         this.settings.set('showExactDatesInTheNotesList', v);
     }
 
-    // storageDirectory
+    // StorageDirectory
     public get storageDirectory() : string {
         return this.settings.get('storageDirectory');
     }
@@ -70,7 +72,7 @@ export class SettingsService {
         this.settings.set('storageDirectory', v);
     }
 
-    // activeCollection
+    // ActiveCollection
     public get activeCollection() : string {
         return this.settings.get('activeCollection');
     }
@@ -79,7 +81,7 @@ export class SettingsService {
         this.settings.set('activeCollection', v);
     }
 
-    public initialize(): void {
+    private initialize(): void {
         // storageDirectory and activeCollection cannot be initialized here.
         // Their value is set later, depending on user action.
 
