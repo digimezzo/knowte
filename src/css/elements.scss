@@ -37,19 +37,22 @@ body {
 
 h1 {
   @extend .color-primary;
-  font-size: 24px !important;
+  font-size: $fontsize-larger !important;
   font-weight: 500 !important;
+  margin-bottom: 0.65em !important;
 }
 
 h2 {
   color: #748393;
   font-size: $fontsize-large !important;
+  margin-bottom: 0.75em !important;
 }
 
 h3 {
   color: #748393;
   font-size: $fontsize-larger !important;
   font-weight: 500 !important;
+  margin-bottom: 0.67em !important;
 }
 
 a {

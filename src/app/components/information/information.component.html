@@ -14,19 +14,19 @@
                     <h1>{{ 'AboutPage.About' | translate }}</h1>
                     <logo-full class="mt-3" [textColor]="'black'"></logo-full>
                     <div class="mt-3">
-                        <p>{{ 'AboutPage.Version' | translate }}:
-                            <strong> {{applicationVersion}}</strong>
-                            <br />{{applicationCopyright}}</p>
+                        {{ 'AboutPage.Version' | translate }}:
+                        <strong> {{applicationVersion}}</strong>
+                        <br />{{applicationCopyright}}
                     </div>
-                    <button mat-raised-button color="primary" (click)="openLicenseDialog()">
+                    <button class="mt-2" mat-raised-button color="primary" (click)="openLicenseDialog()">
                         {{ 'Buttons.License' | translate }}
                     </button>
                 </div>
                 <hr>
                 <div class="m-3">
                     <h1>{{ 'AboutPage.Donate' | translate }}</h1>
-                    <p>{{ 'AboutPage.IsKnowteUseful' | translate }}</p>
-                    <button mat-raised-button color="primary" (click)="openDonateLink()">
+                    <div>{{ 'AboutPage.IsKnowteUseful' | translate }}</div>
+                    <button class="mt-2" mat-raised-button color="primary" (click)="openDonateLink()">
                         {{ 'Buttons.Donate' | translate }}
                     </button>
                 </div>
@@ -34,11 +34,12 @@
                 <div class="m-3">
                     <h1>{{ 'AboutPage.GetInTouch' | translate }}</h1>
 
-                    <div class="contact-item mb-2">
+                    <div class="contact-item mb-1">
                         <span class="contact-item-icon-solid custom-font mr-1">&#xF0AC;</span>
-                        <a href="{{ websiteUrl }}" matTooltip="{{ websiteUrl }}">{{ 'AboutPage.Website' | translate }}</a>
+                        <a href="{{ websiteUrl }}"
+                            matTooltip="{{ websiteUrl }}">{{ 'AboutPage.Website' | translate }}</a>
                     </div>
-                    <div class="contact-item mb-2">
+                    <div class="contact-item mb-1">
                         <span class="contact-item-icon-brands custom-font mr-1">&#xF099;</span>
                         <a href="{{ twitterUrl }}" matTooltip="{{ twitterUrl }}">Twitter</a>
                     </div>
@@ -52,13 +53,13 @@
                 <div class="m-3">
                     <h1>{{ 'ComponentsPage.Components' | translate }}</h1>
 
-                    <p *ngFor="let externalComponent of externalComponents">
+                    <div class="mb-2" *ngFor="let externalComponent of externalComponents">
                         <strong>{{externalComponent.name}}</strong><br />
                         {{externalComponent.description}}<br />
                         <a href="{{externalComponent.url}}">{{ 'AboutPage.Website' | translate }}</a>
                         <a class="ml-1"
                             href="{{externalComponent.licenseUrl}}">{{ 'AboutPage.License' | translate }}</a>
-                    </p>
+                    </div>
 
                 </div>
             </mat-tab>

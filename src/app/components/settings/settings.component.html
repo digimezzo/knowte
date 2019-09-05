@@ -44,7 +44,7 @@
                 <!--Font size -->
                 <div class="m-3">
                     <h1>{{ 'SettingsPage.FontSize' | translate }}</h1>
-                    <p>{{ 'SettingsPage.FontSizeInNotes' | translate }}:
+                    <div>{{ 'SettingsPage.FontSizeInNotes' | translate }}:
                         <mat-form-field class="font-size-selector mx-1">
                             <mat-select [(ngModel)]="selectedFontSize">
                                 <mat-option *ngFor="let fontSize of fontSizes" [value]="fontSize">
@@ -53,7 +53,7 @@
                             </mat-select>
                         </mat-form-field>
                         {{ 'SettingsPage.PixelsShort' | translate }}
-                    </p>
+                    </div>
                 </div>
                 <hr>
                 <!-- Closing -->
@@ -75,7 +75,7 @@
                 <div class="m-3">
                     <h1>{{ 'SettingsPage.Import' | translate }}</h1>
                     <p>{{ 'SettingsPage.ImportFromOldVersion' | translate }}</p>
-                    <button mat-raised-button color="primary" (click)="import()">
+                    <button class="mt-2" mat-raised-button color="primary" (click)="import()">
                         {{ 'Buttons.Import' | translate }}
                     </button>
                 </div>
