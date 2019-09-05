@@ -37,22 +37,24 @@ body {
 
 h1 {
   @extend .color-primary;
+  @extend .mb-1;
   font-size: $fontsize-larger !important;
-  font-weight: 500 !important;
-  margin-bottom: 0.65em !important;
+  font-weight: normal !important;
+  margin-bottom: 8px !important;
 }
 
 h2 {
+  @extend .mb-1;
   color: #748393;
   font-size: $fontsize-large !important;
-  margin-bottom: 0.75em !important;
+  font-weight: normal !important;
 }
 
 h3 {
+  @extend .mb-1;
   color: #748393;
   font-size: $fontsize-larger !important;
-  font-weight: 500 !important;
-  margin-bottom: 0.67em !important;
+  font-weight: normal !important;
 }
 
 a {
