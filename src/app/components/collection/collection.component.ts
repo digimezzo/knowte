@@ -18,9 +18,9 @@ import { Note } from '../../data/entities/note';
 import { trigger, style, animate, state, transition } from '@angular/animations';
 import { debounceTime } from "rxjs/internal/operators";
 import { remote } from 'electron';
-import log from 'electron-log';
 import { FileService } from '../../services/file.service';
 import { SelectionWatcher } from '../../core/selectionWatcher';
+import { Logger } from '../../core/logger';
 
 @Component({
   selector: 'collection-page',
@@ -46,7 +46,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
   constructor(private dialog: MatDialog, private collectionService: CollectionService, private fileService: FileService,
-    private translateService: TranslateService, private snackBarService: SnackBarService, private zone: NgZone) {
+    private translateService: TranslateService, private snackBarService: SnackBarService, private zone: NgZone, private logger: Logger) {
   }
 
   public applicationName: string = Constants.applicationName;
@@ -198,7 +198,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
       title = await this.translateService.get('DialogTitles.ConfirmDeleteNotebook').toPromise();
       text = await this.translateService.get('DialogTexts.ConfirmDeleteNotebook', { notebookName: this.selectionWatcher.selectedItems[0].name }).toPromise();
     }
-    
+
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
 
       width: '450px', data: { dialogTitle: title, dialogText: text }
@@ -240,7 +240,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     if (!this.selectedNoteIds || this.selectedNoteIds.length === 0) {
       // This situation should not happen
-      log.warn("User requested to delete notes, but there are not selected notes.");
+      this.logger.warn("User requested to delete notes, but there are not selected notes.", "CollectionComponent", "deleteNotesAsync");
       return;
     }
 

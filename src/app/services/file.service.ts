@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { CollectionService } from './collection.service';
-import log from 'electron-log';
 import { Constants } from '../core/constants';
 import * as path from 'path';
 

@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy, HostListener, NgZone, ViewEncapsulation }
 import { remote, BrowserWindow, Clipboard, SaveDialogOptions } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/noteDetailsResult';
-import log from 'electron-log';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ChangeNotebookDialogComponent } from '../dialogs/changeNotebookDialog/changeNotebookDialog.component';
 import { Constants } from '../../core/constants';
@@ -23,6 +22,7 @@ import { ipcRenderer } from 'electron';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { TasksCount } from '../../core/tasksCount';
 import { Settings } from '../../core/settings';
+import { Logger } from '../../core/logger';
 
 @Component({
     selector: 'note-content',
@@ -51,7 +51,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private focusNoteListener: any = this.focusNoteHandler.bind(this);
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
 
-    constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog,
+    constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
         private snackBarService: SnackBarService, private translateService: TranslateService, private settings: Settings) {
     }
 
@@ -160,20 +160,20 @@ export class NoteComponent implements OnInit, OnDestroy {
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     public beforeunloadHandler(event): void {
-        log.info(`Detected closing of note with id=${this.noteId}`);
+        this.logger.info(`Detected closing of note with id=${this.noteId}`, "NoteComponent", "beforeunloadHandler");
 
         // Prevents closing of the window
         if (this.isTitleDirty || this.isTextDirty) {
             this.isTitleDirty = false;
             this.isTextDirty = false;
 
-            log.info(`Note with id=${this.noteId} is dirty. Preventing close to save changes first.`);
+            this.logger.info(`Note with id=${this.noteId} is dirty. Preventing close to save changes first.`, "NoteComponent", "beforeunloadHandler");
             event.preventDefault();
             event.returnValue = '';
 
             this.saveChangesAndCloseNoteWindow.next("");
         } else {
-            log.info(`Note with id=${this.noteId} is clean. Closing directly.`);
+            this.logger.info(`Note with id=${this.noteId} is clean. Closing directly.`, "NoteComponent", "beforeunloadHandler");
             this.cleanup();
         }
     }
@@ -313,7 +313,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.isBusy = false;
         } catch (error) {
             this.isBusy = false;
-            log.error(`An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`);
+            this.logger.error(`An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`, "NoteComponent", "exportNoteAsync");
 
             let errorText: string = (await this.translateService.get('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }).toPromise());
 
@@ -384,7 +384,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
                 // Close is only allowed when saving both title and text is successful
                 if (setTitleOperation === Operation.Success && setTextOperation === Operation.Success) {
-                    log.info(`Closing note with id=${this.noteId} after saving changes.`);
+                    this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, "NoteComponent", "saveAndClose");
                     this.cleanup();
                     let window: BrowserWindow = remote.getCurrentWindow();
                     window.close();
@@ -507,7 +507,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             try {
                 this.writeTextToNoteFile();
             } catch (error) {
-                log.error(`Could not set text for the note with id='${this.noteId}' in the note file. Cause: ${error}`);
+                this.logger.error(`Could not set text for the note with id='${this.noteId}' in the note file. Cause: ${error}`, "NoteComponent", "setNoteTextCallbackAsync");
                 showErrorDialog = true;
             }
         } else if (operation === Operation.Error) {
@@ -549,7 +549,7 @@ export class NoteComponent implements OnInit, OnDestroy {
                 this.quill.setContents(JSON.parse(noteContent), 'silent');
             }
         } catch (error) {
-            log.error(`Could not get the content for the note with id='${this.noteId}'. Cause: ${error}`);
+            this.logger.error(`Could not get the content for the note with id='${this.noteId}'. Cause: ${error}`, "NoteComponent", "getNoteDetailsAsync");
 
             let errorText: string = (await this.translateService.get('ErrorTexts.GetNoteContentError').toPromise());
 
@@ -588,7 +588,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         let noteContent: string = JSON.stringify(this.quill.getContents());
         let openTasksCount: number = (noteContent.match(/"list":"unchecked"/g) || []).length;
         let closedTasksCount: number = (noteContent.match(/"list":"checked"/g) || []).length;
-       
+
         return new TasksCount(openTasksCount, closedTasksCount);
     }
 }

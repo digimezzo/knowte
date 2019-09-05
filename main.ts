@@ -8,7 +8,10 @@ import * as fs from 'fs-extra';
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
 import log from 'electron-log';
-import { Utils } from './src/app/core/utils';
+import { Logger } from './src/app/core/logger';
+
+// Create our own logger here. We don't have access to Angular injection here yet.
+let logger: Logger = new Logger();
 
 let mainWindow, workerWindow, serve;
 const args = process.argv.slice(1);
@@ -182,7 +185,7 @@ function createNoteWindow(notePath: string, noteId: string) {
 }
 
 try {
-  log.info(`+++ Starting +++`);
+  logger.info("+++ Starting +++", "Main", "");
 
   // Open note windows
   ipcMain.on('open-note-window', (event: any, arg: any) => {
@@ -226,7 +229,7 @@ try {
 
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
-    log.info(`+++ Stopping +++`);
+    logger.info("+++ Stopping +++", "App", "window-all-closed'");
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     // if (process.platform !== 'darwin') {
