@@ -7,17 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.0-beta.2] - 2019-06-21
-### Added
-- Many more color themes
-- Task lists
-### Changed
-- Theme selector now indicates which theme is currently selected
-### Removed
-### Fixed
-- Search highlight doesn't work correctly
-
-## [2.0.0-beta.1] - 2019-04-13
+## [2.0.0] - 2019-09-05
 ### Added
 - GNU/Linux compatibility (Knowte now runs on Windows and GNU/Linux)
 - Collections (e.g. allows separating home and work notes)
@@ -27,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dragging and dropping of notes to notebooks
 - Dropping of exported notes to notebooks and notes list to import them
 - Multi-select of notes and notebooks
+- Task lists
 ### Changed
 - The notes storage folder is no longer in a hidden folder and must be selected the first time the application starts. This allows storage of notes on a cloud folder.
 ### Removed
