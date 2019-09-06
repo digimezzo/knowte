@@ -66,14 +66,12 @@ export class NoteComponent implements OnInit, OnDestroy {
     public isBusy: boolean = false;
     public actionIconRotation: string = 'default';
 
-    public editorStyle = {
-        'font-size': this.settings.fontSizeInNotes + 'px'
-    }
-
     public ngOnDestroy(): void {
     }
 
     public async ngOnInit(): Promise<void> {
+        document.body.setAttribute('editor-font-size', this.settings.fontSizeInNotes.toString());
+
         let notePlaceHolder: string = await this.translateService.get('Notes.NotePlaceholder').toPromise();
 
         let toolbarOptions: any = [
