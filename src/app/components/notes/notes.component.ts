@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, OnDestroy, NgZone, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { CollectionService } from '../../services/collection.service';
+import { CollectionService } from '../../services/collection/collection.service';
 import { Note } from '../../data/entities/note';
 import { Subscription, Subject, fromEvent } from 'rxjs';
-import { SnackBarService } from '../../services/snackBar.service';
+import { SnackBarService } from '../../services/snackBar/snackBar.service';
 import { Notebook } from '../../data/entities/notebook';
 import { Constants } from '../../core/constants';
-import { SearchService } from '../../services/search.service';
+import { SearchService } from '../../services/search/search.service';
 import { NoteMarkResult } from '../../services/results/noteMarkResult';
 import { debounceTime, takeUntil } from 'rxjs/internal/operators';
 import { Utils } from '../../core/utils';

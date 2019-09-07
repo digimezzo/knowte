@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { CollectionService } from '../../services/collection.service';
+import { CollectionService } from '../../services/collection/collection.service';
 import { InputDialogComponent } from '../dialogs/inputDialog/inputDialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
 import { RenameCollectionDialogComponent } from '../dialogs/renameCollectionDialog/renameCollectionDialog.component';
-import { SnackBarService } from '../../services/snackBar.service';
+import { SnackBarService } from '../../services/snackBar/snackBar.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';

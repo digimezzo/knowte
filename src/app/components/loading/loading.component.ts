@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { CollectionService } from '../../services/collection.service';
+import { CollectionService } from '../../services/collection/collection.service';
 
 @Component({
   selector: 'loading-page',

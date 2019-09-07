@@ -35,14 +35,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var constants_1 = require("../core/constants");
+var constants_1 = require("../../core/constants");
 var path = require("path");
 var fs = require("fs-extra");
 var electron_log_1 = require("electron-log");
 var Store = require("electron-store");
 var rxjs_1 = require("rxjs");
 var collectionOperation_1 = require("./collectionOperation");
-var utils_1 = require("../core/utils");
+var utils_1 = require("../../core/utils");
 var notebook_1 = require("../data/notebook");
 var notebookOperation_1 = require("./notebookOperation");
 var noteOperation_1 = require("./noteOperation");
@@ -52,7 +52,7 @@ var noteDateFormatResult_1 = require("./noteDateFormatResult");
 var noteCountersArgs_1 = require("./noteCountersArgs");
 var noteMarkChangedArgs_1 = require("./noteMarkChangedArgs");
 var noteRenamedArgs_1 = require("./noteRenamedArgs");
-var dataStore_1 = require("../data/dataStore");
+var dataStore_1 = require("../../data/dataStore");
 var CollectionService = /** @class */ (function () {
     function CollectionService() {
         this.openNoteIds = [];

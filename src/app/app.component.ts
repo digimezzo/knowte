@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { ElectronService } from './services/electron.service';
 import { TranslateService } from '@ngx-translate/core';
-import { CollectionService } from './services/collection.service';
+import { CollectionService } from './services/collection/collection.service';
 import { Router } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { AppearanceService } from './services/appearance.service';
+import { AppearanceService } from './services/appearance/appearance.service';
 import { remote } from 'electron';
 import { Constants } from './core/constants';
 import { Settings } from './core/settings';

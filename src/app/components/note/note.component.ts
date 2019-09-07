@@ -9,7 +9,7 @@ import { Subject } from 'rxjs';
 import { debounceTime } from "rxjs/internal/operators";
 import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../../services/results/noteOperationResult';
-import { SnackBarService } from '../../services/snackBar.service';
+import { SnackBarService } from '../../services/snackBar/snackBar.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import * as Quill from 'quill';

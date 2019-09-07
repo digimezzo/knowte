@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { CollectionService } from './collection/collection.service';
-import { Constants } from '../core/constants';
 import * as path from 'path';
+import { CollectionService } from '../collection/collection.service';
+import { Constants } from '../../core/constants';
 
 @Injectable({
     providedIn: 'root',

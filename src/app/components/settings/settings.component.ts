@@ -4,7 +4,7 @@ import { ImportFromOldVersionDialogComponent } from '../dialogs/importFromOldVer
 import { Language } from '../../core/language';
 import { Constants } from '../../core/constants';
 import { TranslateService } from '@ngx-translate/core';
-import { AppearanceService } from '../../services/appearance.service';
+import { AppearanceService } from '../../services/appearance/appearance.service';
 import { Theme } from '../../core/theme';
 import { Settings } from '../../core/settings';
 

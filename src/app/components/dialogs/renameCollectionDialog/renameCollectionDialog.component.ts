@@ -1,10 +1,10 @@
 import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
-import { CollectionService } from '../../../services/collection.service';
+import { CollectionService } from '../../../services/collection/collection.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorDialogComponent } from '../errorDialog/errorDialog.component';
 import { Operation } from '../../../core/enums';
-import { SnackBarService } from '../../../services/snackBar.service';
+import { SnackBarService } from '../../../services/snackBar/snackBar.service';
 
 @Component({
     selector: 'rename-collection-dialog',

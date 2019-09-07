@@ -2,7 +2,7 @@ import { Component, OnInit, NgZone, ViewEncapsulation } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { remote } from 'electron';
 import { Constants } from '../../core/constants';
-import { CollectionService } from '../../services/collection.service';
+import { CollectionService } from '../../services/collection/collection.service';
 import { MatDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { Router } from '@angular/router';

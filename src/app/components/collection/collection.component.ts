@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, NgZone, ViewEncapsulation } from '@angular/core';
-import { CollectionService } from '../../services/collection.service';
+import { CollectionService } from '../../services/collection/collection.service';
 import { Notebook } from '../../data/entities/notebook';
 import { MatDialog, MatDialogRef, MatTabChangeEvent } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { InputDialogComponent } from '../dialogs/inputDialog/inputDialog.component';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
-import { SnackBarService } from '../../services/snackBar.service';
+import { SnackBarService } from '../../services/snackBar/snackBar.service';
 import { Subscription, Subject } from 'rxjs';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/renameNotebookDialog.component';

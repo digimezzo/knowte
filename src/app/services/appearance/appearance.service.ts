@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { remote } from 'electron';
-import { Constants } from '../core/constants';
-import { Settings } from '../core/settings';
+import { Constants } from '../../core/constants';
+import { Settings } from '../../core/settings';
 
 @Injectable({
     providedIn: 'root',

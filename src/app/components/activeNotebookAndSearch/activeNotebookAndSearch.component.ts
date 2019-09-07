@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
-import { SearchService } from '../../services/search.service';
+import { SearchService } from '../../services/search/search.service';
 import { Notebook } from '../../data/entities/notebook';
 
 @Component({

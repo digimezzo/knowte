@@ -1,29 +1,29 @@
 import { Injectable } from '@angular/core';
-import { Constants } from '../core/constants';
+import { Constants } from '../../core/constants';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { Subject, Observable } from 'rxjs';
-import { Utils } from '../core/utils';
-import { Notebook } from '../data/entities/notebook';
+import { Utils } from '../../core/utils';
+import { Notebook } from '../../data/entities/notebook';
 import { TranslateService } from '@ngx-translate/core';
 import { remote } from 'electron';
-import { Note } from '../data/entities/note';
+import { Note } from '../../data/entities/note';
 import * as moment from 'moment'
 import { Moment, Duration } from 'moment';
-import { NoteDateFormatResult } from './results/noteDateFormatResult';
-import { Operation } from '../core/enums';
-import { NoteOperationResult } from './results/noteOperationResult';
-import { NotesCountResult } from './results/notesCountResult';
-import { SearchService } from './search.service';
+import { NoteDateFormatResult } from '../results/noteDateFormatResult';
+import { Operation } from '../../core/enums';
+import { NoteOperationResult } from '../results/noteOperationResult';
+import { NotesCountResult } from '../results/notesCountResult';
+import { SearchService } from '../search/search.service';
 import * as sanitize from 'sanitize-filename';
-import { DataStore } from '../data/dataStore';
-import { NoteMarkResult } from './results/noteMarkResult';
-import { NoteDetailsResult } from './results/noteDetailsResult';
+import { DataStore } from '../../data/dataStore';
+import { NoteMarkResult } from '../results/noteMarkResult';
+import { NoteDetailsResult } from '../results/noteDetailsResult';
 import { ipcRenderer } from 'electron';
-import { NoteExport } from '../core/noteExport';
-import { TasksCount } from '../core/tasksCount';
-import { Settings } from '../core/settings';
-import { Logger } from '../core/logger';
+import { NoteExport } from '../../core/noteExport';
+import { TasksCount } from '../../core/tasksCount';
+import { Settings } from '../../core/settings';
+import { Logger } from '../../core/logger';
 
 @Injectable({
   providedIn: 'root',

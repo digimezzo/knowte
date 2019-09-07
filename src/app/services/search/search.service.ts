@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from "rxjs/internal/operators";
-import { Constants } from '../core/constants';
 import { remote } from 'electron';
+import { Constants } from '../../core/constants';
 
 @Injectable({
     providedIn: 'root',
