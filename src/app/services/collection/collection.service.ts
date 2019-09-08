@@ -51,7 +51,7 @@ export class CollectionService {
   private setNoteTextEventListener: any = this.setNoteTextEventHandler.bind(this);
   private deleteNoteEventListener: any = this.deleteNoteEventHandler.bind(this);
 
-  constructor(private translateService: TranslateService, private searchService: SearchService,
+  constructor(private translate: TranslateService, private search: SearchService,
     private settings: Settings, private logger: Logger) {
   }
 
@@ -333,13 +333,13 @@ export class CollectionService {
     try {
       // Add the default notebooks
       if (includeAllNotes) {
-        let allNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.AllNotes').toPromise());
+        let allNotesNotebook: Notebook = new Notebook(await this.translate.get('MainPage.AllNotes').toPromise());
         allNotesNotebook.id = Constants.allNotesNotebookId;
         allNotesNotebook.isDefault = true;
         notebooks.push(allNotesNotebook);
       }
 
-      let unfiledNotesNotebook: Notebook = new Notebook(await this.translateService.get('MainPage.UnfiledNotes').toPromise());
+      let unfiledNotesNotebook: Notebook = new Notebook(await this.translate.get('MainPage.UnfiledNotes').toPromise());
       unfiledNotesNotebook.id = Constants.unfiledNotesNotebookId;
       unfiledNotesNotebook.isDefault = true;
       notebooks.push(unfiledNotesNotebook);
@@ -488,7 +488,7 @@ export class CollectionService {
       }
 
       // TODO: filter uncategorizedNotes by search text
-      uncategorizedNotes = this.getFilteredNotes(uncategorizedNotes, this.searchService.searchText);
+      uncategorizedNotes = this.getFilteredNotes(uncategorizedNotes, this.search.searchText);
 
       // Fill in count
       notesCountResult.allNotesCount = uncategorizedNotes.length;
@@ -583,7 +583,7 @@ export class CollectionService {
     let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
 
     if (!note.notebookId || !notebook) {
-      notebook = new Notebook(await this.translateService.get('MainPage.UnfiledNotes').toPromise());
+      notebook = new Notebook(await this.translate.get('MainPage.UnfiledNotes').toPromise());
     }
 
     return notebook;
@@ -815,7 +815,7 @@ export class CollectionService {
       try {
         let noteFileContent: string = await fs.readFile(noteFilePath);
         let noteExport: NoteExport = JSON.parse(noteFileContent);
-        let proposedNoteTitle: string = `${noteExport.title} (${await this.translateService.get('Notes.Imported').toPromise()})`
+        let proposedNoteTitle: string = `${noteExport.title} (${await this.translate.get('Notes.Imported').toPromise()})`
         let uniqueNoteTitle: string = this.getUniqueNoteNoteTitle(proposedNoteTitle);
 
         this.dataStore.addNote(uniqueNoteTitle, "");
@@ -861,7 +861,7 @@ export class CollectionService {
 
   private async getNoteDetailsEventHandler(noteId: string, callback: any): Promise<void> {
     let note: Note = this.dataStore.getNoteById(noteId);
-    let notebookName: string = await this.translateService.get('MainPage.UnfiledNotes').toPromise();
+    let notebookName: string = await this.translate.get('MainPage.UnfiledNotes').toPromise();
 
     if (note.notebookId) {
       let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
@@ -876,7 +876,7 @@ export class CollectionService {
 
   private async sendNotebookNameAsync(noteId: string) {
     let note: Note = this.dataStore.getNoteById(noteId);
-    let notebookName: string = await this.translateService.get('MainPage.UnfiledNotes').toPromise();
+    let notebookName: string = await this.translate.get('MainPage.UnfiledNotes').toPromise();
 
     if (note.notebookId) {
       let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
@@ -960,59 +960,59 @@ export class CollectionService {
     let duration: Duration = moment.duration(nowDateonly.diff(modificationDateOnly));
 
     if (duration.asMonths() >= 12) {
-      result.dateText = await this.translateService.get('NoteDates.LongAgo').toPromise();
+      result.dateText = await this.translate.get('NoteDates.LongAgo').toPromise();
     } else if (duration.asMonths() >= 11) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 11 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.MonthsAgo', { count: 11 }).toPromise();
     } else if (duration.asMonths() >= 10) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 10 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.MonthsAgo', { count: 10 }).toPromise();
     } else if (duration.asMonths() >= 9) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 9 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.MonthsAgo', { count: 9 }).toPromise();
     } else if (duration.asMonths() >= 8) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 8 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.MonthsAgo', { count: 8 }).toPromise();
     } else if (duration.asMonths() >= 7) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 7 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.MonthsAgo', { count: 7 }).toPromise();
     } else if (duration.asMonths() >= 6) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 6 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.MonthsAgo', { count: 6 }).toPromise();
     } else if (duration.asMonths() >= 5) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 5 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.MonthsAgo', { count: 5 }).toPromise();
     } else if (duration.asMonths() >= 4) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 4 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.MonthsAgo', { count: 4 }).toPromise();
     } else if (duration.asMonths() >= 3) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 3 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.MonthsAgo', { count: 3 }).toPromise();
     } else if (duration.asMonths() >= 2) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 2 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.MonthsAgo', { count: 2 }).toPromise();
     } else if (duration.asMonths() >= 1) {
-      result.dateText = await this.translateService.get('NoteDates.MonthsAgo', { count: 1 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.MonthsAgo', { count: 1 }).toPromise();
     } else if (duration.asDays() >= 21) {
-      result.dateText = await this.translateService.get('NoteDates.WeeksAgo', { count: 3 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.WeeksAgo', { count: 3 }).toPromise();
     } else if (duration.asDays() >= 14) {
-      result.dateText = await this.translateService.get('NoteDates.WeeksAgo', { count: 2 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.WeeksAgo', { count: 2 }).toPromise();
     } else if (duration.asDays() >= 8) {
-      result.dateText = await this.translateService.get('NoteDates.LastWeek').toPromise();
+      result.dateText = await this.translate.get('NoteDates.LastWeek').toPromise();
     } else if (duration.asDays() >= 7) {
-      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 7 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.DaysAgo', { count: 7 }).toPromise();
       result.isThisWeekNote = true;
     } else if (duration.asDays() >= 6) {
-      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 6 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.DaysAgo', { count: 6 }).toPromise();
       result.isThisWeekNote = true;
     } else if (duration.asDays() >= 5) {
-      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 5 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.DaysAgo', { count: 5 }).toPromise();
       result.isThisWeekNote = true;
     } else if (duration.asDays() >= 4) {
-      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 4 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.DaysAgo', { count: 4 }).toPromise();
       result.isThisWeekNote = true;
     } else if (duration.asDays() >= 3) {
-      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 3 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.DaysAgo', { count: 3 }).toPromise();
       result.isThisWeekNote = true;
     } else if (duration.asDays() >= 2) {
-      result.dateText = await this.translateService.get('NoteDates.DaysAgo', { count: 2 }).toPromise();
+      result.dateText = await this.translate.get('NoteDates.DaysAgo', { count: 2 }).toPromise();
       result.isThisWeekNote = true;
     } else if (duration.asDays() >= 1) {
-      result.dateText = await this.translateService.get('NoteDates.Yesterday').toPromise();
+      result.dateText = await this.translate.get('NoteDates.Yesterday').toPromise();
       result.isYesterdayNote = true;
       result.isThisWeekNote = true;
     } else if (duration.asDays() >= 0) {
-      result.dateText = await this.translateService.get('NoteDates.Today').toPromise();
+      result.dateText = await this.translate.get('NoteDates.Today').toPromise();
       result.isTodayNote = true;
       result.isThisWeekNote = true;
     }

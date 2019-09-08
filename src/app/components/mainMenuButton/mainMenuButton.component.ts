@@ -20,8 +20,8 @@ import { Operation } from '../../core/enums';
 export class MainMenuButtonComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
-  constructor(private dialog: MatDialog, private collectionService: CollectionService,
-    private snackBarService: SnackBarService, private translateService: TranslateService, public router: Router) {
+  constructor(private dialog: MatDialog, private collection: CollectionService,
+    private snackBar: SnackBarService, private translate: TranslateService, public router: Router) {
   }
 
   public collections: string[];
@@ -33,20 +33,20 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
   public async ngOnInit(): Promise<void> {
     // Workaround for auto reload
-    await this.collectionService.initializeAsync();
+    await this.collection.initializeAsync();
     await this.getCollectionsAsync();
 
-    this.subscription = this.collectionService.collectionsChanged$.subscribe(() => this.router.navigate(['/loading']));
+    this.subscription = this.collection.collectionsChanged$.subscribe(() => this.router.navigate(['/loading']));
   }
 
   public async addCollectionAsync(): Promise<void> {
-    if (this.collectionService.hasOpenNotes()) {
-      this.snackBarService.closeNoteBeforeChangingCollectionsAsync();
+    if (this.collection.hasOpenNotes()) {
+      this.snackBar.closeNoteBeforeChangingCollectionsAsync();
       return;
     }
 
-    let titleText: string = await this.translateService.get('DialogTitles.AddCollection').toPromise();
-    let placeholderText: string = await this.translateService.get('Input.Collection').toPromise();
+    let titleText: string = await this.translate.get('DialogTitles.AddCollection').toPromise();
+    let placeholderText: string = await this.translate.get('Input.Collection').toPromise();
 
     let dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
       width: '450px', data: { titleText: titleText, placeholderText: placeholderText }
@@ -56,15 +56,15 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
       if (result) {
         let collection: string = dialogRef.componentInstance.inputText;
 
-        let operation: Operation = await this.collectionService.addCollectionAsync(collection);
+        let operation: Operation = await this.collection.addCollectionAsync(collection);
 
         switch (operation) {
           case Operation.Duplicate: {
-            this.snackBarService.duplicateCollectionAsync(collection);
+            this.snackBar.duplicateCollectionAsync(collection);
             break;
           }
           case Operation.Error: {
-            let errorText: string = (await this.translateService.get('ErrorTexts.AddCollectionError', { collection: collection }).toPromise());
+            let errorText: string = (await this.translate.get('ErrorTexts.AddCollectionError', { collection: collection }).toPromise());
             this.dialog.open(ErrorDialogComponent, {
               width: '450px', data: { errorText: errorText }
             });
@@ -84,17 +84,17 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.collectionService.hasOpenNotes()) {
-      this.snackBarService.closeNoteBeforeChangingCollectionsAsync();
+    if (this.collection.hasOpenNotes()) {
+      this.snackBar.closeNoteBeforeChangingCollectionsAsync();
       return;
     }
 
-    this.collectionService.activateCollection(collection);
+    this.collection.activateCollection(collection);
   }
 
   public renameCollection(collection: string) {
-    if (this.collectionService.hasOpenNotes()) {
-      this.snackBarService.closeNoteBeforeChangingCollectionsAsync();
+    if (this.collection.hasOpenNotes()) {
+      this.snackBar.closeNoteBeforeChangingCollectionsAsync();
       return;
     }
 
@@ -104,13 +104,13 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
   }
 
   public async deleteCollectionAsync(collection: string): Promise<void> {
-    if (this.collectionService.hasOpenNotes()) {
-      this.snackBarService.closeNoteBeforeChangingCollectionsAsync();
+    if (this.collection.hasOpenNotes()) {
+      this.snackBar.closeNoteBeforeChangingCollectionsAsync();
       return;
     }
 
-    let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteCollection').toPromise();
-    let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteCollection', { collection: collection }).toPromise();
+    let title: string = await this.translate.get('DialogTitles.ConfirmDeleteCollection').toPromise();
+    let text: string = await this.translate.get('DialogTexts.ConfirmDeleteCollection', { collection: collection }).toPromise();
 
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
 
@@ -119,10 +119,10 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        let operation: Operation = await this.collectionService.deleteCollectionAsync(collection);
+        let operation: Operation = await this.collection.deleteCollectionAsync(collection);
 
         if (operation === Operation.Error) {
-          let errorText: string = (await this.translateService.get('ErrorTexts.DeleteCollectionError', { collection: collection }).toPromise());
+          let errorText: string = (await this.translate.get('ErrorTexts.DeleteCollectionError', { collection: collection }).toPromise());
           this.dialog.open(ErrorDialogComponent, {
             width: '450px', data: { errorText: errorText }
           });
@@ -132,7 +132,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
   }
 
   private async getCollectionsAsync(): Promise<void> {
-    this.collections = await this.collectionService.getCollectionsAsync();
-    this.activeCollection = this.collectionService.getActiveCollection();
+    this.collections = await this.collection.getCollectionsAsync();
+    this.activeCollection = this.collection.getActiveCollection();
   }
 }

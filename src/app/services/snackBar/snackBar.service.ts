@@ -6,7 +6,7 @@ import { MatSnackBar } from "@angular/material";
     providedIn: 'root',
 })
 export class SnackBarService {
-    constructor(private zone: NgZone, private translate: TranslateService, private snackBar: MatSnackBar) {
+    constructor(private zone: NgZone, private translate: TranslateService, private matSnackBar: MatSnackBar) {
     }
 
     public async duplicateCollectionAsync(collection: string): Promise<void> {
@@ -65,13 +65,13 @@ export class SnackBarService {
 
     private showActionLessSnackBar(message: string) {
         this.zone.run(() => {
-            this.snackBar.open(message, '', { duration: this.calculateDuration(message) });
+            this.matSnackBar.open(message, '', { duration: this.calculateDuration(message) });
         });
     }
 
     private showActionSnackBar(message: string, action: string) {
         this.zone.run(() => {
-            this.snackBar.open(message, action, { duration: this.calculateDuration(message) });
+            this.matSnackBar.open(message, action, { duration: this.calculateDuration(message) });
         });
     }
 

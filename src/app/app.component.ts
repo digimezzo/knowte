@@ -18,14 +18,14 @@ export class AppComponent {
   private globalEmitter = remote.getGlobal('globalEmitter');
   private themeChangedListener: any = this.applyTheme.bind(this);
 
-  constructor(public electronService: ElectronService, public router: Router, private appearanceService: AppearanceService,
-    private translateService: TranslateService, private collectionService: CollectionService,
+  constructor(public electron: ElectronService, public router: Router, private appearance: AppearanceService,
+    private translate: TranslateService, private collection: CollectionService,
     private settings: Settings, private overlayContainer: OverlayContainer) {
 
     this.applyTheme(this.settings.theme);
 
-    this.translateService.setDefaultLang(this.settings.defaultLanguage);
-    this.translateService.use(this.settings.language);
+    this.translate.setDefaultLang(this.settings.defaultLanguage);
+    this.translate.use(this.settings.language);
   }
 
   public selectedTheme: string;
@@ -37,7 +37,7 @@ export class AppComponent {
   public ngOnInit(): void {
     this.globalEmitter.on(Constants.themeChangedEvent, this.themeChangedListener);
     
-    let showWelcome: boolean = !this.collectionService.hasStorageDirectory;
+    let showWelcome: boolean = !this.collection.hasStorageDirectory;
 
     if (showWelcome) {
       this.router.navigate(['/welcome']);

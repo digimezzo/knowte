@@ -7,7 +7,7 @@ import { Constants } from '../../core/constants';
     providedIn: 'root',
 })
 export class FileService {
-    constructor(private collectionService: CollectionService) { }
+    constructor(private collection: CollectionService) { }
 
     public isDroppingFiles(dropEvent: any): boolean {
         return this.getDroppedFilesPaths(dropEvent).length > 0;

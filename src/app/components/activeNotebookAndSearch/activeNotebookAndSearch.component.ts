@@ -9,7 +9,7 @@ import { Notebook } from '../../data/entities/notebook';
     encapsulation: ViewEncapsulation.None
 })
 export class ActiveNotebookAndSearchComponent implements OnInit {
-    constructor(public searchService: SearchService) {
+    constructor(public search: SearchService) {
     }
 
     @Input()

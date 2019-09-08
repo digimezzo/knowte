@@ -55,7 +55,7 @@ import { MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDivide
 import { GlobalErrorHandler } from './globalErrorHandler';
 import { ActiveNotebookAndSearchComponent } from './components/activeNotebookAndSearch/activeNotebookAndSearch.component';
 import { TruncatePipe } from './pipes/truncatePipe';
-import { FileService } from './services/file.service';
+import { FileService } from './services/file/file.service';
 import { TasksProgressComponent } from './components/tasksProgressComponent/tasksProgress.component';
 import { Settings } from './core/settings';
 

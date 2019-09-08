@@ -15,7 +15,7 @@ import { Logger } from '../../core/logger';
     encapsulation: ViewEncapsulation.None
 })
 export class WelcomeComponent implements OnInit {
-    constructor(private translate: TranslateService, private collectionService: CollectionService, private dialog: MatDialog, private zone: NgZone,
+    constructor(private translate: TranslateService, private collection: CollectionService, private dialog: MatDialog, private zone: NgZone,
         public router: Router, private logger: Logger) {
     }
 
@@ -42,14 +42,14 @@ export class WelcomeComponent implements OnInit {
             this.zone.run(async () => {
                 this.isBusy = true;
 
-                if (!await this.collectionService.setStorageDirectoryAsync(selectedParentDirectory)) {
+                if (!await this.collection.setStorageDirectoryAsync(selectedParentDirectory)) {
                     let errorText: string = await this.translate.get('ErrorTexts.StorageDirectoryCreationError', { storageDirectory: selectedParentDirectory }).toPromise();
                     this.dialog.open(ErrorDialogComponent, {
                         width: '450px', data: { errorText: errorText }
                     });
                 }
 
-                await this.collectionService.initializeAsync();
+                await this.collection.initializeAsync();
 
                 this.isBusy = false;
 

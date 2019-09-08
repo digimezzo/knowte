@@ -15,7 +15,7 @@ import { Settings } from '../../core/settings';
   encapsulation: ViewEncapsulation.None
 })
 export class SettingsComponent implements OnInit {
-  constructor(private dialog: MatDialog, private translateService: TranslateService, private appearanceService: AppearanceService,
+  constructor(private dialog: MatDialog, private translate: TranslateService, private appearance: AppearanceService,
     private settings: Settings) {
   }
 
@@ -30,7 +30,7 @@ export class SettingsComponent implements OnInit {
   }
   public set selectedLanguage(v: Language) {
     this.settings.language = v.code;
-    this.translateService.use(v.code);
+    this.translate.use(v.code);
   }
 
   public get closeNotesWithEscapeChecked(): boolean {
@@ -66,6 +66,6 @@ export class SettingsComponent implements OnInit {
 
   public setTheme(themeName: string): void {
     this.selectedTheme = themeName;
-    this.appearanceService.setTheme(themeName);
+    this.appearance.setTheme(themeName);
   }
 }

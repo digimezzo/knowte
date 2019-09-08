@@ -9,7 +9,7 @@ import { CollectionService } from '../../../services/collection/collection.servi
     encapsulation: ViewEncapsulation.None
 })
 export class ImportFromOldVersionDialogComponent implements OnInit {
-    constructor(private collectionService: CollectionService) {
+    constructor(private collection: CollectionService) {
     }
 
     public isDirectoryChosen: boolean = false;
@@ -33,7 +33,7 @@ export class ImportFromOldVersionDialogComponent implements OnInit {
     public async startImport(): Promise<void> {
         this.isBusy = true;
 
-        this.isImportSuccessful = await this.collectionService.importFromOldVersionAsync(this.selectedDirectory);
+        this.isImportSuccessful = await this.collection.importFromOldVersionAsync(this.selectedDirectory);
 
         this.isBusy = false;
         this.isImportFinished = true;

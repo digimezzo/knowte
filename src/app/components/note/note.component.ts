@@ -52,7 +52,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
 
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
-        private snackBarService: SnackBarService, private translateService: TranslateService, private settings: Settings) {
+        private snackBar: SnackBarService, private translate: TranslateService, private settings: Settings) {
     }
 
     public initialNoteTitle: string;
@@ -72,7 +72,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     public async ngOnInit(): Promise<void> {
         document.body.setAttribute('editor-font-size', this.settings.fontSizeInNotes.toString());
 
-        let notePlaceHolder: string = await this.translateService.get('Notes.NotePlaceholder').toPromise();
+        let notePlaceHolder: string = await this.translate.get('Notes.NotePlaceholder').toPromise();
 
         let toolbarOptions: any = [
             [{ 'color': [] }, { 'background': [] }],
@@ -263,8 +263,8 @@ export class NoteComponent implements OnInit, OnDestroy {
     public async deleteNoteAsync(): Promise<void> {
         this.hideActionButtons();
 
-        let title: string = await this.translateService.get('DialogTitles.ConfirmDeleteNote').toPromise();
-        let text: string = await this.translateService.get('DialogTexts.ConfirmDeleteNote', { noteTitle: this.noteTitle }).toPromise();
+        let title: string = await this.translate.get('DialogTitles.ConfirmDeleteNote').toPromise();
+        let text: string = await this.translate.get('DialogTexts.ConfirmDeleteNote', { noteTitle: this.noteTitle }).toPromise();
 
         let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
 
@@ -305,7 +305,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         try {
             if (savePath) {
                 await fs.writeFile(savePath, JSON.stringify(noteExport));
-                this.snackBarService.noteExportedAsync(this.noteTitle);
+                this.snackBar.noteExportedAsync(this.noteTitle);
             }
 
             this.isBusy = false;
@@ -313,7 +313,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.isBusy = false;
             this.logger.error(`An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`, "NoteComponent", "exportNoteAsync");
 
-            let errorText: string = (await this.translateService.get('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }).toPromise());
+            let errorText: string = (await this.translate.get('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }).toPromise());
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: errorText }
@@ -467,10 +467,10 @@ export class NoteComponent implements OnInit, OnDestroy {
     private async setNoteTitleCallbackAsync(result: NoteOperationResult): Promise<void> {
         if (result.operation === Operation.Blank) {
             this.zone.run(() => this.noteTitle = this.initialNoteTitle);
-            this.snackBarService.noteTitleCannotBeEmptyAsync();
+            this.snackBar.noteTitleCannotBeEmptyAsync();
         } else if (result.operation === Operation.Error) {
             this.zone.run(() => this.noteTitle = this.initialNoteTitle);
-            let errorText: string = (await this.translateService.get('ErrorTexts.RenameNoteError', { noteTitle: this.initialNoteTitle }).toPromise());
+            let errorText: string = (await this.translate.get('ErrorTexts.RenameNoteError', { noteTitle: this.initialNoteTitle }).toPromise());
 
             this.zone.run(() => {
                 this.dialog.open(ErrorDialogComponent, {
@@ -515,7 +515,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
 
         if (showErrorDialog) {
-            let errorText: string = (await this.translateService.get('ErrorTexts.UpdateNoteContentError').toPromise());
+            let errorText: string = (await this.translate.get('ErrorTexts.UpdateNoteContentError').toPromise());
 
             this.zone.run(() => {
                 this.dialog.open(ErrorDialogComponent, {
@@ -549,7 +549,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         } catch (error) {
             this.logger.error(`Could not get the content for the note with id='${this.noteId}'. Cause: ${error}`, "NoteComponent", "getNoteDetailsAsync");
 
-            let errorText: string = (await this.translateService.get('ErrorTexts.GetNoteContentError').toPromise());
+            let errorText: string = (await this.translate.get('ErrorTexts.GetNoteContentError').toPromise());
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: errorText }

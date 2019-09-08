@@ -10,7 +10,7 @@ import { NoteMarkResult } from '../../services/results/noteMarkResult';
 import { debounceTime, takeUntil } from 'rxjs/internal/operators';
 import { Utils } from '../../core/utils';
 import { remote } from 'electron';
-import { FileService } from '../../services/file.service';
+import { FileService } from '../../services/file/file.service';
 import { SelectionWatcher } from '../../core/selectionWatcher';
 import { Settings } from '../../core/settings';
 
@@ -27,9 +27,9 @@ export class NotesComponent implements OnInit, OnDestroy {
     private _activeNotebook: Notebook;
     private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
-    constructor(private collectionService: CollectionService, private snackBarService: SnackBarService,
-        public searchService: SearchService, private settings: Settings,
-        private fileService: FileService, private zone: NgZone) {
+    constructor(private collection: CollectionService, private snackBar: SnackBarService,
+        public search: SearchService, private settings: Settings,
+        private file: FileService, private zone: NgZone) {
     }
 
     @Input()
@@ -69,14 +69,14 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     public async ngOnInit(): Promise<void> {
         // Workaround for auto reload
-        await this.collectionService.initializeAsync();
+        await this.collection.initializeAsync();
 
-        this.subscription = this.collectionService.noteEdited$.subscribe(() => this.getNotes());
-        this.subscription = this.collectionService.noteDeleted$.subscribe(() => this.getNotes());
-        this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(() => this.getNotes()));
-        this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => this.getNotes()));
+        this.subscription = this.collection.noteEdited$.subscribe(() => this.getNotes());
+        this.subscription = this.collection.noteDeleted$.subscribe(() => this.getNotes());
+        this.subscription.add(this.collection.noteNotebookChanged$.subscribe(() => this.getNotes()));
+        this.subscription.add(this.search.searchTextChanged$.subscribe((_) => this.getNotes()));
 
-        this.subscription.add(this.collectionService.noteMarkChanged$.subscribe((result: NoteMarkResult) => {
+        this.subscription.add(this.collection.noteMarkChanged$.subscribe((result: NoteMarkResult) => {
             if (this.componentCategory === Constants.markedCategory) {
                 this.getNotes();
             } else {
@@ -117,7 +117,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public openNote(note: Note): void {
-        if (!this.collectionService.noteIsOpen(note.id)) {
+        if (!this.collection.noteIsOpen(note.id)) {
             this.globalEmitter.emit(Constants.setNoteOpenEvent, note.id, true);
         } else {
             this.globalEmitter.emit(Constants.focusNoteEvent, note.id);
@@ -125,7 +125,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public toggleNoteMark(note: Note): void {
-        this.collectionService.setNoteMark(note.id, !note.isMarked);
+        this.collection.setNoteMark(note.id, !note.isMarked);
     }
 
     private async refreshVirtuallScrollerAsync(): Promise<void> {
@@ -154,7 +154,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
         if (this.activeNotebook) {
             this.zone.run(async () => {
-                this.notes = await this.collectionService.getNotesAsync(this.activeNotebook.id, this.componentCategory, this.settings.showExactDatesInTheNotesList);
+                this.notes = await this.collection.getNotesAsync(this.activeNotebook.id, this.componentCategory, this.settings.showExactDatesInTheNotesList);
                 this.selectionWatcher.reset(this.notes);
                 this.notesCount.emit(this.notes.length);
 

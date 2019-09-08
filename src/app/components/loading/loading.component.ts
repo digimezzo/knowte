@@ -9,7 +9,7 @@ import { CollectionService } from '../../services/collection/collection.service'
   encapsulation: ViewEncapsulation.None
 })
 export class LoadingComponent implements OnInit {
-  constructor(private collectionService: CollectionService, public router: Router) {
+  constructor(private collection: CollectionService, public router: Router) {
   }
 
   public ngOnInit(): void {
@@ -17,7 +17,7 @@ export class LoadingComponent implements OnInit {
   }
 
   private async showCollection(): Promise<void> {
-    await this.collectionService.initializeAsync();
+    await this.collection.initializeAsync();
     this.router.navigate(['/collection']);
   }
 }
