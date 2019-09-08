@@ -14,11 +14,13 @@ import { ColorTheme } from '../../core/colorTheme';
   encapsulation: ViewEncapsulation.None
 })
 export class SettingsComponent implements OnInit {
-  constructor(private dialog: MatDialog, public translator: TranslatorService, public appearance: AppearanceService,
+  constructor(private dialog: MatDialog, private translator: TranslatorService, private appearance: AppearanceService,
     private settings: Settings) {
   }
 
+  public colorThemes: ColorTheme[] = Constants.colorThemes;
   public fontSizes: number[] = [14, 16, 18, 20, 22, 24];
+  public selectedTheme: string;
 
   public get closeNotesWithEscapeChecked(): boolean {
     return this.settings.closeNotesWithEscape;
@@ -42,6 +44,7 @@ export class SettingsComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.selectedTheme = this.settings.colorTheme;
   }
 
   public import(): void {
@@ -50,7 +53,8 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  public setColorTheme(colorTheme: ColorTheme): void {
-    this.appearance.selectedColorTheme = colorTheme;
+  public setTheme(themeName: string): void {
+    this.selectedTheme = themeName;
+    this.appearance.setTheme(themeName);
   }
 }
