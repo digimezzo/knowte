@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { ElectronService } from './services/electron.service';
-import { TranslateService } from '@ngx-translate/core';
 import { CollectionService } from './services/collection/collection.service';
 import { Router } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -8,6 +7,7 @@ import { AppearanceService } from './services/appearance/appearance.service';
 import { remote } from 'electron';
 import { Constants } from './core/constants';
 import { Settings } from './core/settings';
+import { TranslatorService } from './services/translator/translator.service';
 
 @Component({
   selector: 'app-root',
@@ -19,13 +19,11 @@ export class AppComponent {
   private themeChangedListener: any = this.applyTheme.bind(this);
 
   constructor(public electron: ElectronService, public router: Router, private appearance: AppearanceService,
-    private translate: TranslateService, private collection: CollectionService,
+    private translator: TranslatorService, private collection: CollectionService,
     private settings: Settings, private overlayContainer: OverlayContainer) {
 
     this.applyTheme(this.settings.theme);
-
-    this.translate.setDefaultLang(this.settings.defaultLanguage);
-    this.translate.use(this.settings.language);
+    this.translator.applyLanguage();
   }
 
   public selectedTheme: string;
