@@ -14,14 +14,14 @@
                 <div class="m-3">
                     <h1>{{ 'SettingsPage.Theme' | translate }}</h1>
                     <div class="theme-switcher">
-                        <div *ngFor="let theme of themes">
+                        <div *ngFor="let colorTheme of colorThemes">
                             <div class="theme-switcher-button mr-1 mb-1">
-                                <div class="theme-switcher-button-selector custom-font" *ngIf="theme.name === selectedTheme">
+                                <div class="theme-switcher-button-selector custom-font" *ngIf="colorTheme.name === selectedTheme">
                                         &#xF00C;
                                 </div>
                                 <div class="theme-switcher-button-color"
-                                    [ngStyle]="{'background-color': theme.color}" matTooltip="{{ theme.displayName }}"
-                                    (click)="setTheme(theme.name)">
+                                    [ngStyle]="{'background-color': colorTheme.color}" matTooltip="{{ colorTheme.displayName }}"
+                                    (click)="setTheme(colorTheme.name)">
                                 </div>
                             </div>
                         </div>

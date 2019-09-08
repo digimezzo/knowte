@@ -1,5 +1,5 @@
 import { Language } from "./language";
-import { Theme } from "./theme";
+import { ColorTheme } from "./colorTheme";
 
 export class Constants {
     static readonly applicationName: string = require("../../../package.json").name;
@@ -43,7 +43,7 @@ export class Constants {
         { code: "fr", name: "Français" }
     ];
 
-    static readonly themes: Theme[] = [
+    static readonly colorThemes: ColorTheme[] = [
         { name: "default-blue-theme", displayName: "Default blue", color: "#1D7DD4" },
         { name: "ubuntu-orange-theme", displayName: "Ubuntu orange", color: "#E95420" },
         { name: "linuxmint-green-theme", displayName: "Linux Mint green", color: "#8bb158" },

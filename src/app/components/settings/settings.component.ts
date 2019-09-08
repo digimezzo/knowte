@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { ImportFromOldVersionDialogComponent } from '../dialogs/importFromOldVersionDialog/importFromOldVersionDialog.component';
-import { Language } from '../../core/language';
 import { Constants } from '../../core/constants';
 import { AppearanceService } from '../../services/appearance/appearance.service';
-import { Theme } from '../../core/theme';
 import { Settings } from '../../core/settings';
 import { TranslatorService } from '../../services/translator/translator.service';
+import { ColorTheme } from '../../core/colorTheme';
 
 @Component({
   selector: 'settings-page',
@@ -19,7 +18,7 @@ export class SettingsComponent implements OnInit {
     private settings: Settings) {
   }
 
-  public themes: Theme[] = Constants.themes;
+  public colorThemes: ColorTheme[] = Constants.colorThemes;
   public fontSizes: number[] = [14, 16, 18, 20, 22, 24];
   public selectedTheme: string;
 
