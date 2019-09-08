@@ -10,7 +10,6 @@ import { debounceTime } from "rxjs/internal/operators";
 import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../../services/results/noteOperationResult';
 import { SnackBarService } from '../../services/snackBar/snackBar.service';
-import { TranslateService } from '@ngx-translate/core';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import * as Quill from 'quill';
 import * as path from 'path';
@@ -23,6 +22,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { TasksCount } from '../../core/tasksCount';
 import { Settings } from '../../core/settings';
 import { Logger } from '../../core/logger';
+import { TranslatorService } from '../../services/translator/translator.service';
 
 @Component({
     selector: 'note-content',
@@ -52,7 +52,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
 
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
-        private snackBar: SnackBarService, private translate: TranslateService, private settings: Settings) {
+        private snackBar: SnackBarService, private translator: TranslatorService, private settings: Settings) {
     }
 
     public initialNoteTitle: string;
@@ -72,7 +72,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     public async ngOnInit(): Promise<void> {
         document.body.setAttribute('editor-font-size', this.settings.fontSizeInNotes.toString());
 
-        let notePlaceHolder: string = await this.translate.get('Notes.NotePlaceholder').toPromise();
+        let notePlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
 
         let toolbarOptions: any = [
             [{ 'color': [] }, { 'background': [] }],
@@ -263,8 +263,8 @@ export class NoteComponent implements OnInit, OnDestroy {
     public async deleteNoteAsync(): Promise<void> {
         this.hideActionButtons();
 
-        let title: string = await this.translate.get('DialogTitles.ConfirmDeleteNote').toPromise();
-        let text: string = await this.translate.get('DialogTexts.ConfirmDeleteNote', { noteTitle: this.noteTitle }).toPromise();
+        let title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteNote');
+        let text: string = await this.translator.getAsync('DialogTexts.ConfirmDeleteNote', { noteTitle: this.noteTitle });
 
         let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
 
@@ -313,7 +313,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.isBusy = false;
             this.logger.error(`An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`, "NoteComponent", "exportNoteAsync");
 
-            let errorText: string = (await this.translate.get('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }).toPromise());
+            let errorText: string = (await this.translator.getAsync('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }));
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: errorText }
@@ -470,7 +470,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.snackBar.noteTitleCannotBeEmptyAsync();
         } else if (result.operation === Operation.Error) {
             this.zone.run(() => this.noteTitle = this.initialNoteTitle);
-            let errorText: string = (await this.translate.get('ErrorTexts.RenameNoteError', { noteTitle: this.initialNoteTitle }).toPromise());
+            let errorText: string = await this.translator.getAsync('ErrorTexts.RenameNoteError', { noteTitle: this.initialNoteTitle });
 
             this.zone.run(() => {
                 this.dialog.open(ErrorDialogComponent, {
@@ -515,7 +515,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
 
         if (showErrorDialog) {
-            let errorText: string = (await this.translate.get('ErrorTexts.UpdateNoteContentError').toPromise());
+            let errorText: string = await this.translator.getAsync('ErrorTexts.UpdateNoteContentError');
 
             this.zone.run(() => {
                 this.dialog.open(ErrorDialogComponent, {
@@ -549,7 +549,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         } catch (error) {
             this.logger.error(`Could not get the content for the note with id='${this.noteId}'. Cause: ${error}`, "NoteComponent", "getNoteDetailsAsync");
 
-            let errorText: string = (await this.translate.get('ErrorTexts.GetNoteContentError').toPromise());
+            let errorText: string = await this.translator.getAsync('ErrorTexts.GetNoteContentError');
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: errorText }

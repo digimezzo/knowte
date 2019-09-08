@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy, NgZone, ViewEncapsulation } from '@angula
 import { CollectionService } from '../../services/collection/collection.service';
 import { Notebook } from '../../data/entities/notebook';
 import { MatDialog, MatDialogRef, MatTabChangeEvent } from '@angular/material';
-import { TranslateService } from '@ngx-translate/core';
 import { InputDialogComponent } from '../dialogs/inputDialog/inputDialog.component';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { SnackBarService } from '../../services/snackBar/snackBar.service';
@@ -21,6 +20,7 @@ import { remote } from 'electron';
 import { FileService } from '../../services/file/file.service';
 import { SelectionWatcher } from '../../core/selectionWatcher';
 import { Logger } from '../../core/logger';
+import { TranslatorService } from '../../services/translator/translator.service';
 
 @Component({
   selector: 'collection-page',
@@ -46,7 +46,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
   constructor(private dialog: MatDialog, private collection: CollectionService, private file: FileService,
-    private translate: TranslateService, private snackBar: SnackBarService, private zone: NgZone, private logger: Logger) {
+    private translator: TranslatorService, private snackBar: SnackBarService, private zone: NgZone, private logger: Logger) {
   }
 
   public applicationName: string = Constants.applicationName;
@@ -149,8 +149,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
   }
 
   public async addNotebookAsync(): Promise<void> {
-    let titleText: string = await this.translate.get('DialogTitles.AddNotebook').toPromise();
-    let placeholderText: string = await this.translate.get('Input.NotebookName').toPromise();
+    let titleText: string = await this.translator.getAsync('DialogTitles.AddNotebook');
+    let placeholderText: string = await this.translator.getAsync('Input.NotebookName');
 
     let dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
       width: '450px', data: { titleText: titleText, placeholderText: placeholderText }
@@ -168,7 +168,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
             break;
           }
           case Operation.Error: {
-            let errorText: string = (await this.translate.get('ErrorTexts.AddNotebookError', { notebookName: notebookName }).toPromise());
+            let errorText: string = await this.translator.getAsync('ErrorTexts.AddNotebookError', { notebookName: notebookName });
             this.dialog.open(ErrorDialogComponent, {
               width: '450px', data: { errorText: errorText }
             });
@@ -191,12 +191,12 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
   public async deleteNotebooksAsync(): Promise<void> {
     // Assume multiple selected notebooks
-    let title: string = await this.translate.get('DialogTitles.ConfirmDeleteNotebooks').toPromise();
-    let text: string = await this.translate.get('DialogTexts.ConfirmDeleteNotebooks').toPromise();
+    let title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteNotebooks');
+    let text: string = await this.translator.getAsync('DialogTexts.ConfirmDeleteNotebooks');
 
     if (this.selectionWatcher.selectedItemsCount === 1) {
-      title = await this.translate.get('DialogTitles.ConfirmDeleteNotebook').toPromise();
-      text = await this.translate.get('DialogTexts.ConfirmDeleteNotebook', { notebookName: this.selectionWatcher.selectedItems[0].name }).toPromise();
+      title = await this.translator.getAsync('DialogTitles.ConfirmDeleteNotebook');
+      text = await this.translator.getAsync('DialogTexts.ConfirmDeleteNotebook', { notebookName: this.selectionWatcher.selectedItems[0].name });
     }
 
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
@@ -209,7 +209,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
         let operation: Operation = await this.collection.deleteNotebooksAsync(this.selectionWatcher.selectedItems.map(x => x.id));
 
         if (operation === Operation.Error) {
-          let errorText: string = (await this.translate.get('ErrorTexts.DeleteNotebooksError').toPromise());
+          let errorText: string = (await this.translator.getAsync('ErrorTexts.DeleteNotebooksError'));
           this.dialog.open(ErrorDialogComponent, {
             width: '450px', data: { errorText: errorText }
           });
@@ -223,7 +223,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   }
 
   public async addNoteAsync(): Promise<void> {
-    let baseTitle: string = await this.translate.get('Notes.NewNote').toPromise();
+    let baseTitle: string = await this.translator.getAsync('Notes.NewNote');
 
     // Create a new note
     let result: NoteOperationResult = this.collection.addNote(baseTitle, this.activeNotebook.id);
@@ -235,8 +235,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
   public async deleteNotesAsync(): Promise<void> {
     // Assume multiple selected notes
-    let title: string = await this.translate.get('DialogTitles.ConfirmDeleteNotes').toPromise();
-    let text: string = await this.translate.get('DialogTexts.ConfirmDeleteNotes').toPromise();
+    let title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteNotes');
+    let text: string = await this.translator.getAsync('DialogTexts.ConfirmDeleteNotes');
 
     if (!this.selectedNoteIds || this.selectedNoteIds.length === 0) {
       // This situation should not happen
@@ -246,8 +246,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     if (this.selectedNoteIds.length === 1) {
       let note: Note = await this.collection.getNote(this.selectedNoteIds[0]);
-      title = await this.translate.get('DialogTitles.ConfirmDeleteNote').toPromise();
-      text = await this.translate.get('DialogTexts.ConfirmDeleteNote', { noteTitle: note.title }).toPromise();
+      title = await this.translator.getAsync('DialogTitles.ConfirmDeleteNote');
+      text = await this.translator.getAsync('DialogTexts.ConfirmDeleteNote', { noteTitle: note.title });
     }
 
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
@@ -268,7 +268,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
         let operation: Operation = await this.collection.deleteNotesAsync(this.selectedNoteIds);
 
         if (operation === Operation.Error) {
-          let errorText: string = (await this.translate.get('ErrorTexts.DeleteNotesError').toPromise());
+          let errorText: string = (await this.translator.getAsync('ErrorTexts.DeleteNotesError'));
           this.dialog.open(ErrorDialogComponent, {
             width: '450px', data: { errorText: errorText }
           });
@@ -286,7 +286,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     let selectedFiles: string[] = remote.dialog.showOpenDialog({
       filters: [
         { name: Constants.applicationName, extensions: [Constants.noteExportExtension.replace(".", "")] },
-        { name: await this.translate.get('DialogTexts.AllFiles').toPromise(), extensions: ['*'] }
+        { name: await this.translator.getAsync('DialogTexts.AllFiles'), extensions: ['*'] }
       ],
       properties: ['openFile', 'multiSelections']
     });
@@ -364,7 +364,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
       if (operation === Operation.Success) {
         this.snackBar.noteMovedToNotebookAsync(notebook.name);
       } else if (operation === Operation.Error) {
-        let errorText: string = (await this.translate.get('ErrorTexts.ChangeNotebookError').toPromise());
+        let errorText: string = (await this.translator.getAsync('ErrorTexts.ChangeNotebookError'));
 
         this.dialog.open(ErrorDialogComponent, {
           width: '450px', data: { errorText: errorText }
@@ -401,7 +401,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     if (importOperation === Operation.Success) {
       await this.snackBar.notesImportedIntoNotebookAsync(notebook.name);
     } else if (importOperation === Operation.Error) {
-      let errorText: string = (await this.translate.get('ErrorTexts.ImportNotesError').toPromise());
+      let errorText: string = (await this.translator.getAsync('ErrorTexts.ImportNotesError'));
 
       this.dialog.open(ErrorDialogComponent, {
         width: '450px', data: { errorText: errorText }

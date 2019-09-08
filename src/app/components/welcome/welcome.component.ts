@@ -1,5 +1,4 @@
 import { Component, OnInit, NgZone, ViewEncapsulation } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { remote } from 'electron';
 import { Constants } from '../../core/constants';
 import { CollectionService } from '../../services/collection/collection.service';
@@ -7,6 +6,7 @@ import { MatDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { Router } from '@angular/router';
 import { Logger } from '../../core/logger';
+import { TranslatorService } from '../../services/translator/translator.service';
 
 @Component({
     selector: 'welcome-page',
@@ -15,7 +15,7 @@ import { Logger } from '../../core/logger';
     encapsulation: ViewEncapsulation.None
 })
 export class WelcomeComponent implements OnInit {
-    constructor(private translate: TranslateService, private collection: CollectionService, private dialog: MatDialog, private zone: NgZone,
+    constructor(private translator: TranslatorService, private collection: CollectionService, private dialog: MatDialog, private zone: NgZone,
         public router: Router, private logger: Logger) {
     }
 
@@ -28,7 +28,7 @@ export class WelcomeComponent implements OnInit {
     public async openDirectoryChooserAsync(): Promise<void> {
         this.logger.info("Opening directory chooser", "WelcomeComponent", "openDirectoryChooserAsync");
 
-        let selectFolderText: string = await this.translate.get('DialogTitles.SelectFolder').toPromise();
+        let selectFolderText: string = await this.translator.getAsync('DialogTitles.SelectFolder');
 
         remote.dialog.showOpenDialog({ title: selectFolderText, properties: ['openDirectory'] }, (folderPath) => {
             if (folderPath === undefined) {
@@ -43,7 +43,7 @@ export class WelcomeComponent implements OnInit {
                 this.isBusy = true;
 
                 if (!await this.collection.setStorageDirectoryAsync(selectedParentDirectory)) {
-                    let errorText: string = await this.translate.get('ErrorTexts.StorageDirectoryCreationError', { storageDirectory: selectedParentDirectory }).toPromise();
+                    let errorText: string = await this.translator.getAsync('ErrorTexts.StorageDirectoryCreationError', { storageDirectory: selectedParentDirectory });
                     this.dialog.open(ErrorDialogComponent, {
                         width: '450px', data: { errorText: errorText }
                     });

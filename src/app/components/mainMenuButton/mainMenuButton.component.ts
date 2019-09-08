@@ -6,10 +6,10 @@ import { Subscription } from 'rxjs';
 import { RenameCollectionDialogComponent } from '../dialogs/renameCollectionDialog/renameCollectionDialog.component';
 import { SnackBarService } from '../../services/snackBar/snackBar.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
-import { TranslateService } from '@ngx-translate/core';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { Router } from '@angular/router';
 import { Operation } from '../../core/enums';
+import { TranslatorService } from '../../services/translator/translator.service';
 
 @Component({
   selector: 'main-menu-button',
@@ -21,7 +21,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   constructor(private dialog: MatDialog, private collection: CollectionService,
-    private snackBar: SnackBarService, private translate: TranslateService, public router: Router) {
+    private snackBar: SnackBarService, private translator: TranslatorService, public router: Router) {
   }
 
   public collections: string[];
@@ -45,8 +45,8 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let titleText: string = await this.translate.get('DialogTitles.AddCollection').toPromise();
-    let placeholderText: string = await this.translate.get('Input.Collection').toPromise();
+    let titleText: string = await this.translator.getAsync('DialogTitles.AddCollection');
+    let placeholderText: string = await this.translator.getAsync('Input.Collection');
 
     let dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
       width: '450px', data: { titleText: titleText, placeholderText: placeholderText }
@@ -64,7 +64,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
             break;
           }
           case Operation.Error: {
-            let errorText: string = (await this.translate.get('ErrorTexts.AddCollectionError', { collection: collection }).toPromise());
+            let errorText: string = await this.translator.getAsync('ErrorTexts.AddCollectionError', { collection: collection });
             this.dialog.open(ErrorDialogComponent, {
               width: '450px', data: { errorText: errorText }
             });
@@ -109,8 +109,8 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let title: string = await this.translate.get('DialogTitles.ConfirmDeleteCollection').toPromise();
-    let text: string = await this.translate.get('DialogTexts.ConfirmDeleteCollection', { collection: collection }).toPromise();
+    let title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteCollection');
+    let text: string = await this.translator.getAsync('DialogTexts.ConfirmDeleteCollection', { collection: collection });
 
     let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
 
@@ -122,7 +122,7 @@ export class MainMenuButtonComponent implements OnInit, OnDestroy {
         let operation: Operation = await this.collection.deleteCollectionAsync(collection);
 
         if (operation === Operation.Error) {
-          let errorText: string = (await this.translate.get('ErrorTexts.DeleteCollectionError', { collection: collection }).toPromise());
+          let errorText: string = await this.translator.getAsync('ErrorTexts.DeleteCollectionError', { collection: collection });
           this.dialog.open(ErrorDialogComponent, {
             width: '450px', data: { errorText: errorText }
           });

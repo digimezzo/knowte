@@ -32,8 +32,8 @@
                 <div class="m-3">
                     <h1 class="mt-2">{{ 'SettingsPage.Language' | translate }}</h1>
                     <mat-form-field>
-                        <mat-select [(ngModel)]="selectedLanguage">
-                            <mat-option *ngFor="let language of languages" [value]="language">
+                        <mat-select [(ngModel)]="translator.selectedLanguage">
+                            <mat-option *ngFor="let language of translator.languages" [value]="language">
                                 {{ language.name }}
                             </mat-option>
                         </mat-select>

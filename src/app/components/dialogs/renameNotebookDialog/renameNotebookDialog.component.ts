@@ -2,9 +2,9 @@ import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 import { CollectionService } from '../../../services/collection/collection.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../errorDialog/errorDialog.component';
-import { TranslateService } from '@ngx-translate/core';
 import { Operation } from '../../../core/enums';
 import { SnackBarService } from '../../../services/snackBar/snackBar.service';
+import { TranslatorService } from '../../../services/translator/translator.service';
 
 @Component({
     selector: 'rename-notebook-dialog',
@@ -14,7 +14,7 @@ import { SnackBarService } from '../../../services/snackBar/snackBar.service';
 })
 export class RenameNotebookDialogComponent implements OnInit {
     constructor(private collection: CollectionService, private dialogRef: MatDialogRef<RenameNotebookDialogComponent>,
-        private translate: TranslateService, @Inject(MAT_DIALOG_DATA) public data: any, private dialog: MatDialog,
+        private translator: TranslatorService, @Inject(MAT_DIALOG_DATA) public data: any, private dialog: MatDialog,
         private snackBar: SnackBarService) {
         dialogRef.disableClose = true;
     }
@@ -29,7 +29,7 @@ export class RenameNotebookDialogComponent implements OnInit {
         let operation: Operation = await this.collection.renameNotebookAsync(this.notebookId, this.notebookName);
 
         if (operation === Operation.Error) {
-            let errorText: string = (await this.translate.get('ErrorTexts.RenameNotebookError', { notebookName: this.notebookName }).toPromise());
+            let errorText: string = await this.translator.getAsync('ErrorTexts.RenameNotebookError', { notebookName: this.notebookName });
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: errorText }

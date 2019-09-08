@@ -1,65 +1,65 @@
 import { Injectable, NgZone } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
 import { MatSnackBar } from "@angular/material";
+import { TranslatorService } from "../translator/translator.service";
 
 @Injectable({
     providedIn: 'root',
 })
 export class SnackBarService {
-    constructor(private zone: NgZone, private translate: TranslateService, private matSnackBar: MatSnackBar) {
+    constructor(private zone: NgZone, private translator: TranslatorService, private matSnackBar: MatSnackBar) {
     }
 
     public async duplicateCollectionAsync(collection: string): Promise<void> {
-        let message: string = await this.translate.get('SnackBarMessages.DuplicateCollection', { collection: collection }).toPromise();
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();
+        let message: string = await this.translator.getAsync('SnackBarMessages.DuplicateCollection', { collection: collection });
+        let action: string = await this.translator.getAsync('SnackBarActions.Ok');
         this.showActionSnackBar(message, action);
     }
 
     public async duplicateNotebookAsync(notebookName: string): Promise<void> {
-        let message: string = await this.translate.get('SnackBarMessages.DuplicateNotebook', { notebookName: notebookName }).toPromise();
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();
+        let message: string = await this.translator.getAsync('SnackBarMessages.DuplicateNotebook', { notebookName: notebookName });
+        let action: string = await this.translator.getAsync('SnackBarActions.Ok');
         this.showActionSnackBar(message, action);
     }
 
     public async noteTitleCannotBeEmptyAsync(): Promise<void> {
-        let message: string = await this.translate.get('SnackBarMessages.NoteTitleCannotBeEmpty').toPromise();
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();
+        let message: string = await this.translator.getAsync('SnackBarMessages.NoteTitleCannotBeEmpty');
+        let action: string = await this.translator.getAsync('SnackBarActions.Ok');
         this.showActionSnackBar(message, action);
     }
 
     public async closeNoteBeforeChangingCollectionsAsync(): Promise<void> {
-        let message: string = await this.translate.get('SnackBarMessages.CloseNoteBeforeChangingCollections').toPromise();
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();
+        let message: string = await this.translator.getAsync('SnackBarMessages.CloseNoteBeforeChangingCollections');
+        let action: string = await this.translator.getAsync('SnackBarActions.Ok');
         this.showActionSnackBar(message, action);
     }
 
     public async noteExportedAsync(noteTitle: string): Promise<void> {
-        let message: string = await this.translate.get('SnackBarMessages.NoteExported', { noteTitle: noteTitle }).toPromise();
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();
+        let message: string = await this.translator.getAsync('SnackBarMessages.NoteExported', { noteTitle: noteTitle });
+        let action: string = await this.translator.getAsync('SnackBarActions.Ok');
         this.showActionSnackBar(message, action);
     }
 
     public async noteMovedToNotebookAsync(notebookName: string): Promise<void> {
-        let message: string = await this.translate.get('SnackBarMessages.NoteMovedToNotebook', { notebookName: notebookName }).toPromise();
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();
+        let message: string = await this.translator.getAsync('SnackBarMessages.NoteMovedToNotebook', { notebookName: notebookName });
+        let action: string = await this.translator.getAsync('SnackBarActions.Ok');
         this.showActionSnackBar(message, action);
     }
 
     public async notesImportedIntoNotebookAsync(notebookName: string): Promise<void> {
-        let message: string = await this.translate.get('SnackBarMessages.NotesImportedIntoNotebook', { notebookName: notebookName }).toPromise();
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();
+        let message: string = await this.translator.getAsync('SnackBarMessages.NotesImportedIntoNotebook', { notebookName: notebookName });
+        let action: string = await this.translator.getAsync('SnackBarActions.Ok');
         this.showActionSnackBar(message, action);
     }
 
     public async notesImportedAsync(): Promise<void> {
-        let message: string = await this.translate.get('SnackBarMessages.NotesImported').toPromise();
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();
+        let message: string = await this.translator.getAsync('SnackBarMessages.NotesImported');
+        let action: string = await this.translator.getAsync('SnackBarActions.Ok');
         this.showActionSnackBar(message, action);
     }
 
     public async noNoteFilesToImportAsync(): Promise<void> {
-        let message: string = await this.translate.get('SnackBarMessages.NoNoteFilesToImport').toPromise();
-        let action: string = await this.translate.get('SnackBarActions.Ok').toPromise();
+        let message: string = await this.translator.getAsync('SnackBarMessages.NoNoteFilesToImport');
+        let action: string = await this.translator.getAsync('SnackBarActions.Ok');
         this.showActionSnackBar(message, action);
     }
 

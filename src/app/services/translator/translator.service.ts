@@ -27,4 +27,8 @@ export class TranslatorService {
   public applyLanguage(): void {
     this.translate.use(this.settings.language);
   }
+
+  public getAsync(key: string | Array<string>, interpolateParams?: Object): Promise<string> {
+    return this.translate.get(key, interpolateParams).toPromise();
+  }
 }
