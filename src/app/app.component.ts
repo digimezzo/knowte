@@ -22,7 +22,7 @@ export class AppComponent {
     private translator: TranslatorService, private collection: CollectionService,
     private settings: Settings, private overlayContainer: OverlayContainer) {
 
-    this.applyTheme(this.settings.theme);
+    this.applyTheme(this.settings.colorTheme);
     this.translator.applyLanguage();
   }
 

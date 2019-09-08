@@ -14,70 +14,70 @@ export class Settings implements SettingsInterface {
     }
 
     // Default language
-    public get defaultLanguage() : string {
+    public get defaultLanguage(): string {
         return 'en';
     }
 
     // Language
-    public get language() : string {
+    public get language(): string {
         return this.settings.get('language');
     }
 
-    public set language(v : string) {
+    public set language(v: string) {
         this.settings.set('language', v);
     }
 
-    // Theme
-    public get theme() : string {
-        return this.settings.get('theme');
+    // Color theme
+    public get colorTheme(): string {
+        return this.settings.get('colorTheme');
     }
 
-    public set theme(v : string) {
-        this.settings.set('theme', v);
+    public set colorTheme(v: string) {
+        this.settings.set('colorTheme', v);
     }
 
-    // CloseNotesWithEscape
-    public get closeNotesWithEscape() : boolean {
+    // Close notes with escape
+    public get closeNotesWithEscape(): boolean {
         return this.settings.get('closeNotesWithEscape');
     }
 
-    public set closeNotesWithEscape(v : boolean) {
+    public set closeNotesWithEscape(v: boolean) {
         this.settings.set('closeNotesWithEscape', v);
     }
 
-    // FontSizeInNotes
-    public get fontSizeInNotes() : number {
+    // Font size in notes
+    public get fontSizeInNotes(): number {
         return this.settings.get('fontSizeInNotes');
     }
 
-    public set fontSizeInNotes(v : number) {
+    public set fontSizeInNotes(v: number) {
         this.settings.set('fontSizeInNotes', v);
     }
 
-    // ShowExactDatesInTheNotesList
-    public get showExactDatesInTheNotesList() : boolean {
+    // Show exact dates in the notes list
+    public get showExactDatesInTheNotesList(): boolean {
         return this.settings.get('showExactDatesInTheNotesList');
     }
 
-    public set showExactDatesInTheNotesList(v : boolean) {
+    public set showExactDatesInTheNotesList(v: boolean) {
         this.settings.set('showExactDatesInTheNotesList', v);
     }
 
-    // StorageDirectory
-    public get storageDirectory() : string {
+    // Storage directory
+    public get storageDirectory(): string {
         return this.settings.get('storageDirectory');
     }
 
-    public set storageDirectory(v : string) {
+    public set storageDirectory(v: string) {
         this.settings.set('storageDirectory', v);
     }
 
-    // ActiveCollection
-    public get activeCollection() : string {
+    // Active collection
+    public get activeCollection(): string {
         return this.settings.get('activeCollection');
     }
 
-    public set activeCollection(v : string) {
+    public set activeCollection(v: string) {
         this.settings.set('activeCollection', v);
     }
 
@@ -89,16 +89,16 @@ export class Settings implements SettingsInterface {
             this.settings.set('language', 'en');
         }
 
-        if (!this.settings.has('theme')) {
-            this.settings.set('theme', "default-blue-theme");
+        if (!this.settings.has('colorTheme')) {
+            this.settings.set('colorTheme', "default-blue-theme");
         } else {
-            let settingsThemeName: string = this.settings.get('theme');
+            let settingsColorThemeName: string = this.settings.get('colorTheme');
 
-            // Check if the theme which is saved in the settings still exists 
-            // in the app (The themes might change between releases).
-            // If not, reset the theme setting to the default theme.
-            if (!Constants.colorThemes.map(x => x.name).includes(settingsThemeName)) {
-                this.settings.set('theme', "default-blue-theme");
+            // Check if the color theme which is saved in the settings still exists 
+            // in the app (The color themes might change between releases).
+            // If not, reset the color theme setting to the default color theme.
+            if (!Constants.colorThemes.map(x => x.name).includes(settingsColorThemeName)) {
+                this.settings.set('colorTheme', "default-blue-theme");
             }
         }
 

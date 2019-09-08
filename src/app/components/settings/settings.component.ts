@@ -44,7 +44,7 @@ export class SettingsComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.selectedTheme = this.settings.theme;
+    this.selectedTheme = this.settings.colorTheme;
   }
 
   public import(): void {

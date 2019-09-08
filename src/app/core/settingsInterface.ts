@@ -1,7 +1,7 @@
 export interface SettingsInterface {
     defaultLanguage: string;
     language: string;
-    theme: string;
+    colorTheme: string;
     closeNotesWithEscape: boolean;
     fontSizeInNotes: number;
     showExactDatesInTheNotesList: boolean;
