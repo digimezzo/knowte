@@ -11,14 +11,12 @@ import { TranslatorService } from './services/translator/translator.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(public electron: ElectronService, public router: Router, private appearance: AppearanceService,
+  constructor(public electron: ElectronService, public router: Router, public appearance: AppearanceService,
     private translator: TranslatorService, private collection: CollectionService) {
 
     this.appearance.applyTheme();
     this.translator.applyLanguage();
   }
-
-  public selectedTheme: string;
 
   public ngOnDestroy(): void {
   }

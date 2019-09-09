@@ -58,6 +58,7 @@ import { TruncatePipe } from './pipes/truncatePipe';
 import { FileService } from './services/file/file.service';
 import { TasksProgressComponent } from './components/tasksProgressComponent/tasksProgress.component';
 import { Settings } from './core/settings';
+import { ColorThemeSwitcherComponent } from './components/color-theme-switcher/color-theme-switcher.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -90,7 +91,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     TasksProgressComponent,
     NoteComponent,
     WebviewDirective,
-    TruncatePipe
+    TruncatePipe,
+    ColorThemeSwitcherComponent
   ],
   imports: [
     MatListModule,
