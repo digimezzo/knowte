@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { ImportFromOldVersionDialogComponent } from '../dialogs/importFromOldVersionDialog/importFromOldVersionDialog.component';
+import { Constants } from '../../core/constants';
 import { AppearanceService } from '../../services/appearance/appearance.service';
 import { Settings } from '../../core/settings';
 import { TranslatorService } from '../../services/translator/translator.service';
+import { ColorTheme } from '../../core/colorTheme';
 
 @Component({
   selector: 'settings-page',
@@ -46,5 +48,9 @@ export class SettingsComponent implements OnInit {
     let dialogRef: MatDialogRef<ImportFromOldVersionDialogComponent> = this.dialog.open(ImportFromOldVersionDialogComponent, {
       width: '450px'
     });
+  }
+
+  public setColorTheme(colorTheme: ColorTheme): void {
+    this.appearance.selectedColorTheme = colorTheme;
   }
 }

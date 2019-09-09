@@ -31,28 +31,31 @@ export class AppearanceService {
     }
 
     public applyTheme(): void {
-        let themeName: string = this.settings.colorTheme;
+        // let themeNameWithBackground: string = `${this.settings.colorTheme}-${this.settings.useLightBackgroundTheme ? "light" : "dark"}`;
+        let themeNameWithBackground: string = this.settings.colorTheme;
 
         // Apply theme to components in the overlay container: https://gist.github.com/tomastrajan/ee29cd8e180b14ce9bc120e2f7435db7
         let overlayContainerClasses: DOMTokenList = this.overlayContainer.getContainerElement().classList;
+        // let overlayContainerClassesToRemove: string[] = Array.from(overlayContainerClasses).filter((item: string) => item.includes('-theme-'));
         let overlayContainerClassesToRemove: string[] = Array.from(overlayContainerClasses).filter((item: string) => item.includes('-theme'));
 
         if (overlayContainerClassesToRemove.length) {
             overlayContainerClasses.remove(...overlayContainerClassesToRemove);
         }
 
-        overlayContainerClasses.add(themeName);
+        overlayContainerClasses.add(themeNameWithBackground);
 
         // Apply theme to body
         let bodyClasses: DOMTokenList = document.body.classList;
+        // let bodyClassesToRemove: string[] = Array.from(bodyClasses).filter((item: string) => item.includes('-theme-'));
         let bodyClassesToRemove: string[] = Array.from(bodyClasses).filter((item: string) => item.includes('-theme'));
 
         if (bodyClassesToRemove.length) {
             bodyClasses.remove(...bodyClassesToRemove);
         }
 
-        document.body.classList.add(themeName);
+        document.body.classList.add(themeNameWithBackground);
 
-        this.logger.info(`Applied theme '${themeName}'`, "AppearanceService", "applyTheme");
+        this.logger.info(`Applied theme '${themeNameWithBackground}'`, "AppearanceService", "applyTheme");
     }
 }

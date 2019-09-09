@@ -13,7 +13,19 @@
                 <!-- Theme -->
                 <div class="m-3">
                     <h1>{{ 'SettingsPage.Theme' | translate }}</h1>
-                    <app-color-theme-switcher></app-color-theme-switcher>
+                    <div class="theme-switcher">
+                        <div *ngFor="let colorTheme of appearance.colorThemes">
+                            <div class="theme-switcher-button mr-1 mb-1">
+                                <div class="theme-switcher-button-selector custom-font" *ngIf="colorTheme.name === appearance.selectedColorTheme.name">
+                                        &#xF00C;
+                                </div>
+                                <div class="theme-switcher-button-color"
+                                    [ngStyle]="{'background-color': colorTheme.color}" matTooltip="{{ colorTheme.displayName }}"
+                                    (click)="setColorTheme(colorTheme)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <hr>
                 <!-- Language -->
