@@ -14,7 +14,7 @@ import { ColorTheme } from '../../core/colorTheme';
   encapsulation: ViewEncapsulation.None
 })
 export class SettingsComponent implements OnInit {
-  constructor(private dialog: MatDialog, private translator: TranslatorService, private appearance: AppearanceService,
+  constructor(private dialog: MatDialog, public translator: TranslatorService, private appearance: AppearanceService,
     private settings: Settings) {
   }
 
