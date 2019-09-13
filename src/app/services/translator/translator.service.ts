@@ -8,6 +8,7 @@ import { Constants } from '../../core/constants';
   providedIn: 'root'
 })
 export class TranslatorService {
+  private _selectedLanguage: Language;
 
   constructor(private translate: TranslateService, private settings: Settings) {
     this.translate.setDefaultLang(this.settings.defaultLanguage);
@@ -16,16 +17,21 @@ export class TranslatorService {
   public languages: Language[] = Constants.languages;
 
   public get selectedLanguage(): Language {
-    return this.languages.find(x => x.code === this.settings.language);
+    return this._selectedLanguage;
   }
 
   public set selectedLanguage(v: Language) {
+    this._selectedLanguage = v;
     this.settings.language = v.code;
     this.applyLanguage();
   }
 
   public applyLanguage(): void {
-    this.translate.use(this.settings.language);
+    if (!this._selectedLanguage) {
+      this._selectedLanguage = this.languages.find(x => x.code === this.settings.language);
+    }
+
+    this.translate.use(this._selectedLanguage.code);
   }
 
   public getAsync(key: string | Array<string>, interpolateParams?: Object): Promise<string> {
