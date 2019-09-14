@@ -15,10 +15,14 @@ export class AppearanceService {
     private _selectedColorThemeName: string;
 
     constructor(private settings: Settings, private logger: Logger, private overlayContainer: OverlayContainer) {
-        this.globalEmitter.on(Constants.themeChangedEvent, this.themeChangedListener);
+        this.initialize();
+    }
 
+    private initialize(): void {
         this._selectedColorThemeName = this.settings.colorTheme;
         this.themeChangedHandler(this.settings.colorTheme);
+
+        this.globalEmitter.on(Constants.themeChangedEvent, this.themeChangedListener);
     }
 
     public colorThemes: ColorTheme[] = Constants.colorThemes;
