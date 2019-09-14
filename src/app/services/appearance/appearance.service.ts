@@ -11,34 +11,31 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 })
 export class AppearanceService {
     private globalEmitter = remote.getGlobal('globalEmitter');
-    private themeChangedListener: any = this.applyTheme.bind(this);
-    private _selectedColorTheme: ColorTheme;
+    private themeChangedListener: any = this.themeChangedHandler.bind(this);
+    private _selectedColorThemeName: string;
 
-    constructor(private settings: Settings, private logger: Logger, private overlayContainer: OverlayContainer) { 
+    constructor(private settings: Settings, private logger: Logger, private overlayContainer: OverlayContainer) {
         this.globalEmitter.on(Constants.themeChangedEvent, this.themeChangedListener);
+
+        this._selectedColorThemeName = this.settings.colorTheme;
+        this.themeChangedHandler(this.settings.colorTheme);
     }
-   
+
     public colorThemes: ColorTheme[] = Constants.colorThemes;
-    
-    public get selectedColorTheme(): ColorTheme {
-        return this._selectedColorTheme;
+
+    public get selectedColorThemeName(): string {
+        return this._selectedColorThemeName;
     }
 
-    public set selectedColorTheme(v: ColorTheme) {
-        this._selectedColorTheme = v;
-        this.settings.colorTheme = v.name;
-       
+    public set selectedColorThemeName(v: string) {
+        this._selectedColorThemeName = v;
+        this.settings.colorTheme = v;
+
         // Global event because all windows need to be notified
-        this.globalEmitter.emit(Constants.themeChangedEvent, v.name);
+        this.globalEmitter.emit(Constants.themeChangedEvent, v);
     }
 
-    public applyTheme(): void {
-        if(!this._selectedColorTheme){
-            this._selectedColorTheme = this.colorThemes.find(x => x.name === this.settings.colorTheme);
-        }
-
-        let themeName: string = this._selectedColorTheme.name;
-
+    public themeChangedHandler(colorThemeName: string): void {
         // Apply theme to components in the overlay container: https://gist.github.com/tomastrajan/ee29cd8e180b14ce9bc120e2f7435db7
         let overlayContainerClasses: DOMTokenList = this.overlayContainer.getContainerElement().classList;
         let overlayContainerClassesToRemove: string[] = Array.from(overlayContainerClasses).filter((item: string) => item.includes('-theme'));
@@ -47,7 +44,7 @@ export class AppearanceService {
             overlayContainerClasses.remove(...overlayContainerClassesToRemove);
         }
 
-        overlayContainerClasses.add(themeName);
+        overlayContainerClasses.add(colorThemeName);
 
         // Apply theme to body
         let bodyClasses: DOMTokenList = document.body.classList;
@@ -57,8 +54,8 @@ export class AppearanceService {
             bodyClasses.remove(...bodyClassesToRemove);
         }
 
-        document.body.classList.add(themeName);
+        document.body.classList.add(colorThemeName);
 
-        this.logger.info(`Applied theme '${themeName}'`, "AppearanceService", "applyTheme");
-      }
+        this.logger.info(`Applied theme '${colorThemeName}'`, "AppearanceService", "applyTheme");
+    }
 }

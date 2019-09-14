@@ -19,7 +19,6 @@ export class AppComponent implements OnInit {
     private translator: TranslatorService, private collection: CollectionService,
     private settings: Settings, private overlayContainer: OverlayContainer) {
 
-    this.appearance.applyTheme();
     this.translator.applyLanguage();
   }
 

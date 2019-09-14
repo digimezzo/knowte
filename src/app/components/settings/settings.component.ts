@@ -44,10 +44,6 @@ export class SettingsComponent implements OnInit {
   public ngOnInit(): void {
   }
 
-  public setColorTheme(colorTheme: ColorTheme): void {
-    this.appearance.selectedColorTheme = colorTheme;
-  }
-
   public import(): void {
     let dialogRef: MatDialogRef<ImportFromOldVersionDialogComponent> = this.dialog.open(ImportFromOldVersionDialogComponent, {
       width: '450px'
