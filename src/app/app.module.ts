@@ -89,10 +89,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     LogoFullComponent,
     ActiveNotebookAndSearchComponent,
     TasksProgressComponent,
+    ColorThemeSwitcherComponent,
     NoteComponent,
     WebviewDirective,
-    TruncatePipe,
-    ColorThemeSwitcherComponent
+    TruncatePipe
   ],
   imports: [
     MatListModule,
