@@ -18,8 +18,6 @@ export class AppComponent implements OnInit {
   constructor(public electron: ElectronService, public router: Router, public appearance: AppearanceService,
     private translator: TranslatorService, private collection: CollectionService,
     private settings: Settings, private overlayContainer: OverlayContainer) {
-
-    this.translator.applyLanguage();
   }
 
   public ngOnInit(): void {
