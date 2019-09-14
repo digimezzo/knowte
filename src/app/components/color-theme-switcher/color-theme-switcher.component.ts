@@ -17,6 +17,6 @@ export class ColorThemeSwitcherComponent implements OnInit {
   }
 
   public setColorTheme(colorTheme: ColorTheme): void {
-    this.appearance.selectedColorThemeName = colorTheme.name;
+    this.appearance.selectedColorTheme = colorTheme;
   }
 }

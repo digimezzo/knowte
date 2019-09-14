@@ -12,34 +12,29 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 export class AppearanceService {
     private globalEmitter = remote.getGlobal('globalEmitter');
     private themeChangedListener: any = this.themeChangedHandler.bind(this);
-    private _selectedColorThemeName: string;
+    private _selectedColorTheme: ColorTheme;
 
     constructor(private settings: Settings, private logger: Logger, private overlayContainer: OverlayContainer) {
         this.initialize();
     }
 
-    private initialize(): void {
-        this._selectedColorThemeName = this.settings.colorTheme;
-        this.themeChangedHandler(this.settings.colorTheme);
-
-        this.globalEmitter.on(Constants.themeChangedEvent, this.themeChangedListener);
-    }
-
     public colorThemes: ColorTheme[] = Constants.colorThemes;
 
-    public get selectedColorThemeName(): string {
-        return this._selectedColorThemeName;
+    public get selectedColorTheme(): ColorTheme {
+        return this._selectedColorTheme;
     }
 
-    public set selectedColorThemeName(v: string) {
-        this._selectedColorThemeName = v;
-        this.settings.colorTheme = v;
+    public set selectedColorTheme(v: ColorTheme) {
+        this._selectedColorTheme = v;
+        this.settings.colorTheme = v.name;
 
         // Global event because all windows need to be notified
         this.globalEmitter.emit(Constants.themeChangedEvent, v);
     }
 
-    public themeChangedHandler(colorThemeName: string): void {
+    public themeChangedHandler(colorTheme: ColorTheme): void {
+        let colorThemeName: string = colorTheme.name;
+
         // Apply theme to components in the overlay container: https://gist.github.com/tomastrajan/ee29cd8e180b14ce9bc120e2f7435db7
         let overlayContainerClasses: DOMTokenList = this.overlayContainer.getContainerElement().classList;
         let overlayContainerClassesToRemove: string[] = Array.from(overlayContainerClasses).filter((item: string) => item.includes('-theme'));
@@ -61,5 +56,12 @@ export class AppearanceService {
         document.body.classList.add(colorThemeName);
 
         this.logger.info(`Applied theme '${colorThemeName}'`, "AppearanceService", "applyTheme");
+    }
+
+    private initialize(): void {
+        this._selectedColorTheme = this.colorThemes.find(x => x.name === this.settings.colorTheme);
+        this.themeChangedHandler(this._selectedColorTheme);
+
+        this.globalEmitter.on(Constants.themeChangedEvent, this.themeChangedListener);
     }
 }
