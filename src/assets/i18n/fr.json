@@ -48,7 +48,7 @@
         "Dates": "Dates",
         "ShowExactDatesInTheNotesList": "Afficher les dates exactes dans la liste des notest",
         "Language": "Langue",
-        "Theme": "Theme"
+        "Color": "Couleur"
     },
     "ComponentsPage": {
         "Components": "Composants"
@@ -67,7 +67,7 @@
         "ClickToChangeNotebook": "Cliquez ici pour changer de bloc-note",
         "Actions": "Actions",
         "MarkNote": "Marquer note",
-        "UnmarkNote": "Démarquer note",
+        "UnmarkNote": "Enlever la marque",
         "PrintNote": "Imprimer note...",
         "ExportNote": "Exporter note...",
         "ExportNoteToPdf": "Exporter note en PDF...",

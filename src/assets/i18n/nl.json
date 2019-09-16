@@ -1,0 +1,187 @@
+{
+    "WelcomePage": {
+        "Title": "Welkom bij Knowte!",
+        "Text": "Voordat u Knowte gebruikt, selecteer een map waarin u uw notities wilt opslaan. Als u bestaande notities wilt importeren, selecteert u eenvoudig de map die ze bevat en Knowte zal ze voor u importeren.",
+        "SelectButton": "SELECTEER..."
+    },
+    "LoadingPage": {
+        "Text": "Laden..."
+    },
+    "Pages": {
+        "Collection": "Collectie",
+        "Settings": "Instellingen",
+        "Information": "Informatie"
+    },
+    "NotesTabs": {
+        "All": "Alle",
+        "Today": "Vandaag",
+        "Yesterday": "Gisteren",
+        "ThisWeek": "Deze week",
+        "Marked": "Gemarkeerd"
+    },
+    "SettingsTabs": {
+        "Appearance": "Uitzicht",
+        "Notes": "Notities",
+        "Advanced": "Geavanceerd"
+    },
+    "InformationTabs": {
+        "About": "Over",
+        "Components": "Componenten"
+    },
+    "AboutPage": {
+        "About": "Over",
+        "Donate": "Donatie",
+        "GetInTouch": "Neem contact op",
+        "Version": "Versie",
+        "License": "Licentie",
+        "IsKnowteUseful": "Is Knowte nuttig? Overweeg alstublieft om te doneren. Bedankt!",
+        "Website": "Website"
+    },
+    "SettingsPage": {
+        "Import": "Importeren",
+        "ImportFromOldVersion": "Importeren van Knowte 1.x",
+        "FontSize": "Lettergrootte",
+        "FontSizeInNotes": "Lettergrootte in de notities",
+        "PixelsShort": "px",
+        "Closing": "Afsluiten",
+        "CloseNotesWithEscape": "Sluiten van notities met [Esc]",
+        "Dates": "Data",
+        "ShowExactDatesInTheNotesList": "Geef exacte data weer in de lijst met notities",
+        "Language": "Taal",
+        "Color": "Kleur"
+    },
+    "ComponentsPage": {
+        "Components": "Componenten"
+    },
+    "MainMenu": {
+        "Collections": "Collecties",
+        "AddCollection": "Collectie toevoegen...",
+        "Settings": "Instellingen",
+        "Information": "Informatie"
+    },
+    "Tooltips": {
+        "Back": "Terug",
+        "Rename": "Hernoemen",
+        "Delete": "Verijderen",
+        "Activate": "Activateren",
+        "ClickToChangeNotebook": "Klik hier om het notitieboek te wijzigen",
+        "Actions": "Acties",
+        "MarkNote": "Notitie markeren",
+        "UnmarkNote": "Markering verwijderen",
+        "PrintNote": "Notitie afdrukken...",
+        "ExportNote": "Notitie exporteren...",
+        "ExportNoteToPdf": "Notitie exporteren naar PDF...",
+        "ImportNotes": "Notities importeren...",
+        "AddNotebook": "Notitieboek toevoegen...",
+        "RenameNotebook": "Notitieboek hernoemen...",
+        "DeleteNotebooks": "Notitieboek verwijderen...",
+        "AddNote": "Notitie toevoegen",
+        "DeleteNote": "Notitie verwijderen...",
+        "DeleteNotes": "Notities verwijderen...",
+        "LastChanged": "Laatst gewijzigd"
+    },
+    "LicenseDialog": {
+        "License": "Licentie"
+    },
+    "Buttons": {
+        "Ok": "OK",
+        "Cancel": "ANNULEREN",
+        "License": "LICENTIE",
+        "Donate": "DONATIE",
+        "ViewLog": "BEKIJK LOG",
+        "Yes": "JA",
+        "No": "NEE",
+        "Import": "IMPORTEREN",
+        "StartImport": "IMPORTEREN STARTEN",
+        "Select": "SELECTEER",
+        "SelectAgain": "SELECTEER OPNIEUW",
+        "Close": "SLUITEN"
+    },
+    "DialogTitles": {
+        "AddCollection": "Collectie toevoegen",
+        "RenameCollection": "Collectie hernoemen",
+        "SelectFolder": "Map selecteren",
+        "Error": "Fout",
+        "ConfirmDeleteCollection": "Collectie verwijderen?",
+        "AddNotebook": "Notitieboek toevoegen",
+        "RenameNotebook": "Notitieboek hernoemen",
+        "ConfirmDeleteNotebook": "Notitieboek verwijderen?",
+        "ConfirmDeleteNotebooks": "Notitieboeken verwijderen?",
+        "ConfirmDeleteNote": "Notitie verwijderen?",
+        "ConfirmDeleteNotes": "Notities verwijderen?",
+        "Import": "Importeren"
+    },
+    "DialogTexts": {
+        "ConfirmDeleteCollection": "Weet u zeker dat u de collectie '{{collection}}' wilt verwijderen? Als u doorgaat, gaan de notitieboeken en notities verloren.",
+        "ConfirmDeleteNote": "Weet u zeker dat u de notitie '{{noteTitle}}' wilt verwijderen?",
+        "ConfirmDeleteNotes": "Weet u zeker dat u deze notities wilt verwijderen?",
+        "ConfirmDeleteNotebook": "Weet u zeker dat u het notitieboek '{{notebookName}}' wilt verwijderen? De notities worden niet verwijderd. Ze worden gewoon losse notities.",
+        "ConfirmDeleteNotebooks": "Weet u zeker dat u deze notitieboeken wilt verwijderen? Hun aantekeningen worden niet verwijderd. Ze worden gewoon losse notities.",
+        "SelectDirectoryContainingOldVersionExports": "Selecteer de map met de bestanden die zijn geëxporteerd vanuit Knowte 1.x.",
+        "YouHaveSelectedDirectory": "U hebt deze map geselecteerd:",
+        "Importing": "Importeren",
+        "ImportSuccessful": "Import succesvol!",
+        "ImportFailed": "Importeren mislukt!",
+        "AllFiles": "Alle bestanden",
+        "ChooseNotebook": "Kies een notitieboek"
+    },
+    "Input": {
+        "Collection": "Collectie",
+        "NotebookName": "Naam notitieboek"
+    },
+    "ErrorTexts": {
+        "StorageDirectoryCreationError": "The directory '{{storageDirectory}}' cannot be used to save your notes. You might not have sufficient permissions to create items in it. Please verify the log if you need more information.",
+        "GlobalError": "An error has occurred which will cause the application to close. Please verify the log if you need more information.",
+        "AddCollectionError": "An error occurred while adding the collection '{{collection}}'. Please verify the log if you need more information.",
+        "AddNotebookError": "An error occurred while adding the notebook '{{notebookName}}'. Please verify the log if you need more information.",
+        "RenameNoteError": "An error occurred while renaming the note '{{noteTitle}}'. Please verify the log if you need more information.",
+        "RenameNotebookError": "An error occurred while renaming the notebook '{{notebookName}}'. Please verify the log if you need more information.",
+        "RenameCollectionError": "An error occurred while renaming the collection '{{collection}}'. Please verify the log if you need more information.",
+        "DeleteCollectionError": "An error occurred while deleting the collection '{{collection}}'. Please verify the log if you need more information.",
+        "DeleteNotebooksError": "An error occurred while deleting the notebooks. Please verify the log if you need more information.",
+        "DeleteNotesError": "An error occurred while deleting the notes. Please verify the log if you need more information.",
+        "SaveNoteError": "An error occurred while saving the note '{{noteTitle}}'. Please verify the log if you need more information.",
+        "UpdateNoteContentError": "An error occurred while saving the note content. Please verify the log if you need more information.",
+        "GetNoteContentError": "An error occurred while getting the note content. Please verify the log if you need more information.",
+        "ExportNoteError": "An error occurred while exporting the note '{{noteTitle}}'. Please verify the log if you need more information.",
+        "ImportNotesError": "An error occurred while importing notes. Please verify the log if you need more information.",
+        "ChangeNotebookError": "An error occurred while changing the notebook. Please verify the log if you need more information."
+    },
+    "SnackBarMessages": {
+        "DuplicateCollection": "Er is al een collectie met de naam '{{collection}}'",
+        "DuplicateNotebook": "Er is al een notitieboek met de naam '{{notebookName}}'",
+        "NoteTitleCannotBeEmpty": "De titel van de notitie mag niet leeg zijn",
+        "CloseNoteBeforeChangingCollections": "Sluit alle notities voordat u collecties wijzigt",
+        "NoteExported": "Notitie '{{noteTitle}}' is geëxporteerd",
+        "NoteMovedToNotebook": "De notitie is verplaatst naar '{{notebookName}}'",
+        "NotesImportedIntoNotebook": "Notities zijn geïmporteerd in notitieboek '{{notebookName}}'",
+        "NotesImported": "Notities zijn geïmporteerd",
+        "NoNoteFilesToImport": "Er waren geen notitiebestanden om te importeren"
+    },
+    "SnackBarActions": {
+        "Ok": "OK"
+    },
+    "MainPage": {
+        "Notebooks": "Notitieboeken",
+        "AllNotes": "Alle notities",
+        "UnfiledNotes": "Losse notities",
+        "Search": "Zoeken",
+        "ClearSearch": "Zoeken wissen",
+        "DragNotesCount": "{{noteCount}} notitities",
+        "TasksCount": "{{closedTasksCount}} van {{totalTasksCount}}"
+    },
+    "Notes": {
+        "NewNote": "Nieuwe notitie",
+        "NotePlaceholder": "Schrijf je notitie hier...",
+        "Imported": "Geïmporteerd"
+    },
+    "NoteDates": {
+        "Today": "Vandaag",
+        "Yesterday": "Gisteren",
+        "DaysAgo": "{{count}} dagen geleden",
+        "LastWeek": "Vorige week",
+        "WeeksAgo": "{{count}} weken geleden",
+        "MonthsAgo": "{{count}} maanden geleden",
+        "LongAgo": "Lang geleden"
+    }
+}

@@ -12,7 +12,7 @@
             <mat-tab label="{{ 'SettingsTabs.Appearance' | translate }}">
                 <!-- Theme -->
                 <div class="m-3">
-                    <h1>{{ 'SettingsPage.Theme' | translate }}</h1>
+                    <h1>{{ 'SettingsPage.Color' | translate }}</h1>
                     <app-color-theme-switcher class="mt-2"></app-color-theme-switcher>
                 </div>
                 <hr>
@@ -22,7 +22,7 @@
                     <mat-form-field>
                         <mat-select [(ngModel)]="translator.selectedLanguage">
                             <mat-option *ngFor="let language of translator.languages" [value]="language">
-                                {{ language.name }}
+                                {{ language.localizedName }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>

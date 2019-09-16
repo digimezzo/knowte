@@ -40,8 +40,8 @@ export class Constants {
     static readonly languageChangedEvent: string = "0f8d004f-080d-4901-b813-477432809519";
 
     static readonly languages: Language[] = [
-        { code: "en", name: "English" },
-        { code: "fr", name: "Français" }
+        { code: "en", englishName: "English", localizedName: "English" },
+        { code: "fr", englishName: "French", localizedName: "Français" }
     ];
 
     static readonly colorThemes: ColorTheme[] = [
