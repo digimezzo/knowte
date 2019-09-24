@@ -41,7 +41,8 @@ export class Constants {
 
     static readonly languages: Language[] = [
         { code: "en", englishName: "English", localizedName: "English" },
-        { code: "fr", englishName: "French", localizedName: "Français" }
+        { code: "fr", englishName: "French", localizedName: "Français" },
+        { code: "nl", englishName: "Dutch", localizedName: "Nederlands" }
     ];
 
     static readonly colorThemes: ColorTheme[] = [
