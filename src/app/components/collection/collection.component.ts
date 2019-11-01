@@ -357,12 +357,15 @@ export class CollectionComponent implements OnInit, OnDestroy {
       let pathsOfDroppedFiles: string[] = this.file.getDroppedFilesPaths(event);
       await this.importNoteFilesAsync(pathsOfDroppedFiles, notebook);
     } else {
-      // Dropping notes (we only support dropping of 1 notes at this time)
       let noteIds: string[] = JSON.parse(event.dataTransfer.getData('text'));
       let operation: Operation = this.collection.setNotebook(notebook.id, noteIds);
 
       if (operation === Operation.Success) {
-        this.snackBar.noteMovedToNotebookAsync(notebook.name);
+        if(noteIds.length > 1){
+          this.snackBar.notesMovedToNotebookAsync(notebook.name);
+        }else{
+          this.snackBar.noteMovedToNotebookAsync(notebook.name);
+        }
       } else if (operation === Operation.Error) {
         let errorText: string = (await this.translator.getAsync('ErrorTexts.ChangeNotebookError'));
 

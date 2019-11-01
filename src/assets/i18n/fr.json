@@ -154,6 +154,7 @@
         "CloseNoteBeforeChangingCollections": "Veuillez fermer toutes les notes avant de changer de collection.",
         "NoteExported": "La note '{{noteTitle}}' a été exportée",
         "NoteMovedToNotebook": "La note a été déplacée vers '{{notebookName}}'",
+        "NotesMovedToNotebook": "Les notes ont été déplacées vers '{{notebookName}}'",
         "NotesImportedIntoNotebook": "Les notes ont été importées dans le bloc-notes '{{notebookName}}'",
         "NotesImported": "Les notes ont été importées",
         "NoNoteFilesToImport": "Il n'y avait aucun fichier de note à importer"

@@ -45,6 +45,12 @@ export class SnackBarService {
         this.showActionSnackBar(message, action);
     }
 
+    public async notesMovedToNotebookAsync(notebookName: string): Promise<void> {
+        let message: string = await this.translator.getAsync('SnackBarMessages.NotesMovedToNotebook', { notebookName: notebookName });
+        let action: string = await this.translator.getAsync('SnackBarActions.Ok');
+        this.showActionSnackBar(message, action);
+    }
+
     public async notesImportedIntoNotebookAsync(notebookName: string): Promise<void> {
         let message: string = await this.translator.getAsync('SnackBarMessages.NotesImportedIntoNotebook', { notebookName: notebookName });
         let action: string = await this.translator.getAsync('SnackBarActions.Ok');

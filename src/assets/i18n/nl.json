@@ -154,6 +154,7 @@
         "CloseNoteBeforeChangingCollections": "Sluit alle notities voordat u collecties wijzigt",
         "NoteExported": "Notitie '{{noteTitle}}' is geëxporteerd",
         "NoteMovedToNotebook": "De notitie is verplaatst naar '{{notebookName}}'",
+        "NotesMovedToNotebook": "De notities werden verplaatst naar '{{notebookName}}'",
         "NotesImportedIntoNotebook": "Notities zijn geïmporteerd in notitieboek '{{notebookName}}'",
         "NotesImported": "Notities zijn geïmporteerd",
         "NoNoteFilesToImport": "Er waren geen notitiebestanden om te importeren"
