@@ -121,7 +121,7 @@ export class Constants {
         {
             name: "LokiJS",
             description: "A fast, in-memory document-oriented datastore for node.js, browser and cordova.",
-            url: "http://lokijs.org/",
+            url: "https://github.com/techfort/LokiJS",
             licenseUrl: "https://github.com/techfort/LokiJS/blob/master/LICENSE.txt"
         },
         {
