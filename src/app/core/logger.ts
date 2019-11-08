@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { LoggerInterface } from './loggerInterface';
 import log from 'electron-log';
 
 @Injectable({
     providedIn: 'root'
 })
-export class Logger implements LoggerInterface {
+export class Logger {
     constructor() { }
 
     public info(message: string, callerClass: string, callerMethod: string): void {

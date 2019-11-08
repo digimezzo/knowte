@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import * as Store from 'electron-store';
 import { Constants } from './constants';
-import { SettingsInterface } from './settingsInterface';
 
 @Injectable({
     providedIn: 'root',
 })
-export class Settings implements SettingsInterface {
+export class Settings {
     private settings: Store<any> = new Store();
 
     constructor() {
