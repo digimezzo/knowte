@@ -8,14 +8,16 @@ mat-tab-group {
     background-color: #fff !important;
     height: 100%;
     border-style: solid;
-    border-width: 0 1px 1px 1px;
+    border-width: 0 1px 1px 0;
     border-color: $color-lightgrey;
 }
 
 .mat-tab-label {
+    min-width: 0!important;
     color: #aaa !important; 
     opacity: 1 !important;
     user-select: none; // Prevents accidental selection of the header text
+    padding: 0 12px !important;
 }
 
 .mat-tab-label.mat-tab-label-active {

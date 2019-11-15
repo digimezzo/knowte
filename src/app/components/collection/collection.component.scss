@@ -12,30 +12,43 @@
 
 .collection-notebooks {
   position: absolute;
-  background-color: $color-lightergrey;
-  border-right: 1px solid $color-lightgrey;
+  background-color: white;
   border-bottom: 1px solid $color-lightgrey;
   border-left: 1px solid $color-lightgrey;
+  border-right: 1px solid transparent;
   top: 0;
   left: 0;
   margin: 48px 0 0 0;
   height: calc(100% - 48px);
   width: 351px;
   display: flex;
+  flex-direction: row;
+}
+
+.collection-notebooks-content {
+  flex: 1;
+  display: flex;
   flex-direction: column;
 }
 
-.collection-notebooks-title {
+.collection-notebooks-separator{
+  display: flex;
+  width: 1px;
+  height: calc(100% - 48px);
+  border-right: 1px solid $color-lightgrey;
+}
+
+.collection-notebooks-content-title {
   display: flex;
 }
 
-.collection-notebooks-list {
+.collection-notebooks-content-list {
   flex: 1;
   position: relative;
   margin-top: 2px;
 }
 
-.collection-notebooks-list-buttons {
+.collection-notebooks-content-list-buttons {
   display: flex;
   flex-direction: column;
   position: absolute !important;
@@ -44,7 +57,7 @@
   z-index: 2;
 }
 
-.collection-notebooks-list-list {
+.collection-notebooks-content-list-list {
   position: absolute;
   left: 0px;
   top: 0px;
@@ -105,8 +118,6 @@
 }
 
 .notebook-name {
-  padding-left: 16px !important;
-  padding-right: 16px !important;
   height: 40px;
   line-height: 40px;
 }

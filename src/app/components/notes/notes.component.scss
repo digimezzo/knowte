@@ -57,7 +57,7 @@
   height: 48px;
   display: flex;
   flex-direction: row;
-  width: calc(100vw - 351px); // HACK: cdk-virtual-scroll-viewport doesn't enforce a width to its components
+  // width: calc(100vw - 382px); // HACK: cdk-virtual-scroll-viewport doesn't enforce a width to its components
   cursor: default !important;
 }
 
@@ -142,6 +142,6 @@
 
 cdk-virtual-scroll-viewport {
   height: 100%;
-  width: 100%;
+  width: calc(100% - 32px);
   overflow-x: hidden !important;
 }
