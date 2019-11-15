@@ -1026,7 +1026,7 @@ export class CollectionService {
 
   private getFormattedDate(millisecondsSinceEpoch: number) {
     let m: Moment = moment(millisecondsSinceEpoch);
-    return m.format("MMMM D, YYYY");
+    return m.format("dddd, MMMM D, YYYY");
   }
 
   private getFilteredNotes(unfilteredNotes: Note[], filter: string): Note[] {

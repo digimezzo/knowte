@@ -9,7 +9,10 @@
     </div>
     <div class="window-frame-content">
         <mat-tab-group>
-            <mat-tab label="{{ 'InformationTabs.About' | translate }}">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <h4>{{ 'InformationTabs.About' | translate }}</h4>
+                </ng-template>
                 <div class="m-3">
                     <h1>{{ 'AboutPage.About' | translate }}</h1>
                     <logo-full class="mt-3" [textColor]="'black'"></logo-full>
@@ -49,7 +52,10 @@
                     </div>
                 </div>
             </mat-tab>
-            <mat-tab label="{{ 'InformationTabs.Components' | translate }}">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <h4>{{ 'InformationTabs.Components' | translate }}</h4>
+                </ng-template>
                 <div class="m-3">
                     <h1>{{ 'ComponentsPage.Components' | translate }}</h1>
 

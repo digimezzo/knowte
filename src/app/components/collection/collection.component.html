@@ -1,7 +1,7 @@
 <div class="window-frame">
     <div class="window-frame-titlebar">
         <div class="window-frame-titlebar-dragarea pl-1">
-            {{ applicationName }}
+            <!-- {{ applicationName }} -->
         </div>
         <main-menu-button></main-menu-button>
         <window-controls></window-controls>
@@ -72,7 +72,7 @@
             <mat-tab-group (selectedTabChange)="onSelectedTabChange($event)">
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        {{ 'NotesTabs.All' | translate }}
+                        <h4>{{ 'NotesTabs.All' | translate }}</h4>
                         <div class="count-label">{{allNotesCount}}</div>
                     </ng-template>
                     <notes-component [activeNotebook]="activeNotebook" [componentCategory]="allCategory"
@@ -82,7 +82,7 @@
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        {{ 'NotesTabs.Today' | translate }}
+                        <h4>{{ 'NotesTabs.Today' | translate }}</h4>
                         <div class="count-label">{{todayNotesCount}}</div>
                     </ng-template>
                     <notes-component [activeNotebook]="activeNotebook" [componentCategory]="todayCategory"
@@ -92,7 +92,7 @@
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        {{ 'NotesTabs.Yesterday' | translate }}
+                        <h4>{{ 'NotesTabs.Yesterday' | translate }}</h4>
                         <div class="count-label">{{yesterdayNotesCount}}</div>
                     </ng-template>
                     <notes-component [activeNotebook]="activeNotebook" [componentCategory]="yesterdayCategory"
@@ -102,7 +102,7 @@
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        {{ 'NotesTabs.ThisWeek' | translate }}
+                        <h4>{{ 'NotesTabs.ThisWeek' | translate }}</h4>
                         <div class="count-label">{{thisWeekNotesCount}}</div>
                     </ng-template>
                     <notes-component [activeNotebook]="activeNotebook" [componentCategory]="thisWeekCategory"
@@ -112,7 +112,7 @@
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        {{ 'NotesTabs.Marked' | translate }}
+                        <h4>{{ 'NotesTabs.Marked' | translate }}</h4>
                         <div class="count-label">{{markedNotesCount}}</div>
                     </ng-template>
                     <notes-component [activeNotebook]="activeNotebook" [componentCategory]="markedCategory"

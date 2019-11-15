@@ -9,7 +9,10 @@
     </div>
     <div class="window-frame-content">
         <mat-tab-group>
-            <mat-tab label="{{ 'SettingsTabs.Appearance' | translate }}">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <h4>{{ 'SettingsTabs.Appearance' | translate }}</h4>
+                </ng-template>
                 <!-- Theme -->
                 <div class="m-3">
                     <h1>{{ 'SettingsPage.Color' | translate }}</h1>
@@ -28,7 +31,10 @@
                     </mat-form-field>
                 </div>
             </mat-tab>
-            <mat-tab label="{{ 'SettingsTabs.Notes' | translate }}">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <h4>{{ 'SettingsTabs.Notes' | translate }}</h4>
+                </ng-template>
                 <!--Font size -->
                 <div class="m-3">
                     <h1>{{ 'SettingsPage.FontSize' | translate }}</h1>
@@ -58,7 +64,10 @@
                         {{ 'SettingsPage.ShowExactDatesInTheNotesList' | translate }}</mat-slide-toggle>
                 </div>
             </mat-tab>
-            <mat-tab label="{{ 'SettingsTabs.Advanced' | translate }}">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <h4>{{ 'SettingsTabs.Advanced' | translate }}</h4>
+                </ng-template>
                 <!-- Import -->
                 <div class="m-3">
                     <h1>{{ 'SettingsPage.Import' | translate }}</h1>

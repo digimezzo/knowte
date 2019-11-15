@@ -13,14 +13,18 @@ mat-tab-group {
 }
 
 .mat-tab-label {
-    color: #fff !important;
+    color: #aaa !important; 
     opacity: 1 !important;
     user-select: none; // Prevents accidental selection of the header text
 }
 
+.mat-tab-label.mat-tab-label-active {
+    color: #fff !important;
+}
+
 .mat-tab-group.mat-primary .mat-ink-bar,
 .mat-tab-nav-bar.mat-primary .mat-ink-bar {
-    height: 3px;
+    height: 0px;
 }
 
 .mat-tab-header {
