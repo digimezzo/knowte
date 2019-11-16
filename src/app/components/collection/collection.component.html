@@ -20,7 +20,7 @@
                         <div class="count-label">{{notebooksCount}}</div>
                     </div>
                     <!-- Notebooks list container -->
-                    <div class="collection-notebooks-content-list mx-2">
+                    <div class="collection-notebooks-content-list mx-2 mb-2">
                         <!-- Notebooks list -->
                         <ul class="collection-notebooks-content-list-list">
                             <li class="notebook" matRipple
@@ -58,7 +58,7 @@
                 [(notesCount)]="notesCount">
             </activenotebookandsearch-component>
             <!-- Note buttons -->
-            <div class="note-buttons m-2" [@noteButtonsVisibility]="noteButtonsVisibility">
+            <div class="note-buttons m-4" [@noteButtonsVisibility]="noteButtonsVisibility">
                 <button class="list-button" mat-mini-fab color="" (click)="deleteNotesAsync()"
                     matTooltip="{{ 'Tooltips.DeleteNotes' | translate }}" *ngIf=canDeleteNotes>
                     <span class="edit-item-icon custom-font">&#xE872;</span>
@@ -73,7 +73,7 @@
                 </button>
             </div>
             <!-- Tabs -->
-            <mat-tab-group class="tabs-margin-left" (selectedTabChange)="onSelectedTabChange($event)">
+            <mat-tab-group (selectedTabChange)="onSelectedTabChange($event)">
                 <mat-tab>
                     <ng-template mat-tab-label>
                         <h4>{{ 'NotesTabs.All' | translate }}</h4>

@@ -1,4 +1,4 @@
-<div class="notes mx-1">
+<div class="notes mx-2 mb-2">
     <!-- Drag image -->
     <div class="drag-image no-select" id="drag-image">
         <div class="drag-image-icon">
@@ -9,8 +9,9 @@
         <div class="drag-image-text mx-1" *ngIf="draggableNoteIds.length > 1">
             {{ 'MainPage.DragNotesCount' | translate:{ noteCount: draggableNoteIds.length } }}</div>
     </div>
-    <!-- Notes list -->
-    <ul class="notes-list ml-1" *ngIf="canShowList">
+    <!-- Notes list --> 
+     
+    <ul class="notes-list" *ngIf="canShowList">
         <cdk-virtual-scroll-viewport itemSize="48">
             <li [ngClass]="{'selected-item':note.isSelected}" *cdkVirtualFor="let note of notes" matRipple>
                 <div class="note-item no-select" (dblclick)="openNote(note)"

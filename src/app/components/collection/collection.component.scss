@@ -4,17 +4,11 @@
 .collection {
   width: 100%;
   height: 100%;
-  background: $color-darkgrey;
 }
 
 .collection .mat-tab-body-wrapper {
-  margin: 74px 0 0 200px;
+  margin: 74px 0 0 350px;
 }
-
-.tabs-margin-left{
-  margin-left: 150px;
-}
-
 
 .collection-notebooks {
   position: absolute;
@@ -40,7 +34,7 @@
 .collection-notebooks-separator{
   display: flex;
   width: 1px;
-  height: calc(100% - 48px);
+  height: calc(100% - 32px);
   border-right: 1px solid $color-lightgrey;
 }
 

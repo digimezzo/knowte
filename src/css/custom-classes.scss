@@ -5,5 +5,6 @@
 }
 
 .selected-item {
+  @extend .color-primary;
   background-color: $color-selected;
 }

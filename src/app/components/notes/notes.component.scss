@@ -5,7 +5,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  height: 100%;
+  height: calc(100% - 16px);
   width: 100%;
 }
 
@@ -57,7 +57,7 @@
   height: 48px;
   display: flex;
   flex-direction: row;
-  // width: calc(100vw - 382px); // HACK: cdk-virtual-scroll-viewport doesn't enforce a width to its components
+  width: calc(100vw - 382px); // HACK: cdk-virtual-scroll-viewport doesn't enforce a width to its components
   cursor: default !important;
 }
 
@@ -83,7 +83,7 @@
 }
 
 .note-item-actions {
-  margin: 0 75px 0 0;
+  margin: 0 100px 0 0;
   width: 20px;
   min-width: 20px;
   height: 48px;
