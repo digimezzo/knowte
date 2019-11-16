@@ -1,13 +1,30 @@
 @import "variables";
 @import "theming";
 
+.main-logo{
+  @extend .background-color-primary;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 80px;
+  margin-top: 8px;
+  border-radius: 40px;
+  z-index: 1;
+}
+
 .collection {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  z-index: 0;
 }
 
 .collection .mat-tab-body-wrapper {
   margin: 74px 0 0 350px;
+  border-width: 0 1px 1px 0 !important;
 }
 
 .collection-notebooks {

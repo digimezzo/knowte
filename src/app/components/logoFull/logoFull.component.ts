@@ -3,6 +3,7 @@ import { Constants } from '../../core/constants';
 
 @Component({
   selector: 'logo-full',
+  host: { 'style': 'display: block' },
   templateUrl: './logoFull.component.html',
   styleUrls: ['./logoFull.component.scss'],
   encapsulation: ViewEncapsulation.None
