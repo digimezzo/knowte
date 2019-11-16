@@ -46,7 +46,11 @@ export class Constants {
     ];
 
     static readonly colorThemes: ColorTheme[] = [
-        { name: "default-blue-theme", displayName: "Default blue", color: "#1D7DD4" },
+        { name: "default-blue-theme", displayName: "Knowte blue", color: "#1D7DD4" },
+        { name: "default-green-theme", displayName: "Knowte green", color: "#7FB718" },
+        { name: "default-yellow-theme", displayName: "Knowte yellow", color: "#F09609" },
+        { name: "default-purple-theme", displayName: "Knowte purple", color: "#A835B2" },
+        { name: "default-pink-theme", displayName: "Knowte pink", color: "#CE0058" },
         { name: "ubuntu-orange-theme", displayName: "Ubuntu orange", color: "#E95420" },
         { name: "linuxmint-green-theme", displayName: "Linux Mint green", color: "#8bb158" },
         { name: "manjaro-green-theme", displayName: "Manjaro green", color: "#16a085" },
