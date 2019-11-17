@@ -12,16 +12,13 @@ mat-tab-group {
   border-color: $color-lightgrey;
 }
 
-// Prevents showing of horizontal scrollbar when switching tabs (might be related to cdk virtual scroll)
-// Found on: https://github.com/angular/components/issues/6104
 .mat-tab-body-content {
+  padding-top: 30px;
+  // Prevents showing of horizontal scrollbar when switching tabs (might be related to cdk virtual scroll)
+  // Found on: https://github.com/angular/components/issues/6104
   &.ng-animating {
     overflow: hidden !important;
   }
-}
-
-.mat-tab-body-content {
-  padding-top: 30px;
 }
 
 .mat-tab-label {

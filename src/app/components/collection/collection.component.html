@@ -35,7 +35,7 @@
                             </li>
                         </ul>
                         <!-- Notebooks buttons -->
-                        <div class="collection-notebooks-content-list-buttons m-2">
+                        <div class="collection-notebooks-content-list-buttons mr-2">
                             <button class="list-button" mat-mini-fab color="" (click)="renameNotebook()"
                                 matTooltip="{{ 'Tooltips.RenameNotebook' | translate }}" *ngIf="canRenameNotebook">
                                 <span class="edit-item-icon custom-font">&#xE254;</span>
@@ -59,7 +59,7 @@
                 [(notesCount)]="notesCount">
             </activenotebookandsearch-component>
             <!-- Note buttons -->
-            <div class="note-buttons m-4" [@noteButtonsVisibility]="noteButtonsVisibility">
+            <div class="note-buttons mr-4 mb-2" [@noteButtonsVisibility]="noteButtonsVisibility">
                 <button class="list-button" mat-mini-fab color="" (click)="deleteNotesAsync()"
                     matTooltip="{{ 'Tooltips.DeleteNotes' | translate }}" *ngIf=canDeleteNotes>
                     <span class="edit-item-icon custom-font">&#xE872;</span>

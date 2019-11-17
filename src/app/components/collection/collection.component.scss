@@ -18,8 +18,8 @@
 }
 
 .collection .mat-tab-body-wrapper {
-  margin: 74px 0 0 350px;
   border-width: 0 1px 1px 0 !important;
+  margin: 104px 0 0 350px;
 }
 
 .collection-notebooks {
@@ -28,10 +28,10 @@
   border-bottom: 1px solid $color-lightgrey;
   border-left: 1px solid $color-lightgrey;
   border-right: 1px solid transparent;
-  top: 0;
+  top: 30px;
   left: 0;
   margin: 48px 0 0 0;
-  height: calc(100% - 48px);
+  height: calc(100% - 78px);
   width: 351px;
   display: flex;
   flex-direction: row;
@@ -140,7 +140,7 @@
 
 .active-notebook-and-search {
   position: absolute;
-  top: 48px;
+  top: 78px;
   left: 351px;
   background-color: #fff;
   width: calc(100% - 351px);
