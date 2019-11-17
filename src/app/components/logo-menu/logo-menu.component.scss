@@ -1,11 +1,15 @@
 @import "theming";
+@import "variables";
 
 .logo-menu {
-  display: flex;
+  position: relative;
 }
 
 .logo-menu-icon {
   @extend .background-color-primary;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 80px;
   min-width: 80px;
   height: 80px;
@@ -18,4 +22,17 @@
 .logo-menu-icon-image {
   width: 40px;
   height: 40px;
+}
+
+.logo-menu-menu {
+  background-color: white;
+  position: absolute;
+  top: 60px;
+  left: 88px;
+}
+
+.logo-menu-menu-item {
+  text-transform: lowercase;
+  margin-left: 16px;
+  color: $color-grey;
 }
