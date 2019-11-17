@@ -3,13 +3,14 @@
 
 .logo-menu {
   position: relative;
+  margin-top: 8px;
 }
 
 .logo-menu-icon {
   @extend .background-color-primary;
   position: absolute;
   top: 0;
-  left: 0;
+  left: 16px;
   width: 80px;
   min-width: 80px;
   height: 80px;
@@ -17,6 +18,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;
 }
 
 .logo-menu-icon-image {
@@ -24,11 +26,20 @@
   height: 40px;
 }
 
-.logo-menu-menu {
+.logo-menu-background {
   background-color: white;
   position: absolute;
-  top: 60px;
-  left: 88px;
+  top: 40px;
+  left: 0;
+  width: 100vw;
+  height: 40px;
+  z-index: 0;
+}
+
+.logo-menu-menu {
+  position: absolute;
+  top: 10px;
+  left: 104px;
 }
 
 .logo-menu-menu-item {
@@ -38,7 +49,7 @@
   cursor: pointer;
 }
 
-.logo-menu-menu-item-selected{
+.logo-menu-menu-item-selected {
   color: black;
   font-weight: bold;
 }
