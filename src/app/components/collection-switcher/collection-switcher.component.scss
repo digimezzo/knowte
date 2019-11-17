@@ -2,7 +2,21 @@
 @import "variables";
 @import "theming";
 
-.main-menu-button {
+.collection-switcher {
+  height: $titlebar-height;
+  display: flex;
+  flex-direction: row;
+}
+
+.collection-switcher-active-collection {
+  height: $titlebar-height;
+  display: flex;
+  align-items: center;
+  color: white;
+  flex: 1;
+}
+
+.collection-swichter-button {
   font-size: 16px !important;
 }
 

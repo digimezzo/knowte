@@ -49,10 +49,12 @@
         "Components": "Composants"
     },
     "MainMenu": {
-        "Collections": "Collections",
-        "AddCollection": "Ajouter collection...",
+        "Notes": "Notes",
         "Settings": "Paramètres",
         "Information": "Information"
+    },
+    "CollectionSwitcher": {
+        "AddCollection": "Ajouter collection...",
     },
     "Tooltips": {
         "Rename": "Renommer",

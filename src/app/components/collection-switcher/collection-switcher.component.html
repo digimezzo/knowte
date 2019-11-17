@@ -1,0 +1,32 @@
+<div class="collection-switcher">
+    <div class="collection-switcher-active-collection no-select mr-2">
+        {{collection.activeCollection}}
+    </div>
+    <div class="window-button collection-swichter-button custom-font" mat-icon-button [matMenuTriggerFor]="menu">
+        &#xE700;
+    </div>
+</div>
+<mat-menu #menu="matMenu">
+    <button class="menu-button" mat-menu-item (click)="addCollectionAsync()">
+        <span class="menu-icon custom-font">&#xE145;</span>
+        {{ 'CollectionSwitcher.AddCollection' | translate }}
+    </button>
+    <mat-divider></mat-divider>
+
+    <div *ngFor="let collection of collections">
+        <button class="menu-button" mat-menu-item>
+            <span class="menu-item" (click)="activateCollection(collection)"
+                matTooltip="{{ 'Tooltips.Activate' | translate }}">
+                <span class="menu-icon custom-font"
+                    [ngClass]="{'isActive' : collection === activeCollection }">&#xE02F;</span>
+                <span>{{ collection }}</span>
+            </span>
+            <span class="menu-command-item mr-1">
+                <span class="menu-command-item-icon custom-font mr-1" matTooltip="{{ 'Tooltips.Rename' | translate }}"
+                    (click)="renameCollection(collection)">&#xE254;</span>
+                <span class="menu-command-item-icon custom-font" matTooltip="{{ 'Tooltips.Delete' | translate }}"
+                    (click)="deleteCollectionAsync(collection)">&#xE872;</span>
+            </span>
+        </button>
+    </div>
+</mat-menu>

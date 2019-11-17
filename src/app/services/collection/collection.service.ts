@@ -24,6 +24,7 @@ import { TasksCount } from '../../core/tasksCount';
 import { Settings } from '../../core/settings';
 import { Logger } from '../../core/logger';
 import { TranslatorService } from '../translator/translator.service';
+import { timingSafeEqual } from 'crypto';
 
 @Injectable({
   providedIn: 'root',
@@ -50,6 +51,7 @@ export class CollectionService {
   private setNoteTitleEventListener: any = this.setNoteTitleEventHandler.bind(this);
   private setNoteTextEventListener: any = this.setNoteTextEventHandler.bind(this);
   private deleteNoteEventListener: any = this.deleteNoteEventHandler.bind(this);
+  private _activeCollection: string;
 
   constructor(private translator: TranslatorService, private search: SearchService,
     private settings: Settings, private logger: Logger) {
@@ -63,6 +65,14 @@ export class CollectionService {
   public notesCountChanged$: Observable<NotesCountResult> = this.notesCountChanged.asObservable();
   public noteMarkChanged$: Observable<NoteMarkResult> = this.noteMarkChanged.asObservable();
   public noteNotebookChanged$: Observable<{}> = this.noteNotebookChanged.asObservable();
+
+  public get activeCollection(): string {
+    return this._activeCollection;
+  }
+  public set activeCollection(v: string) {
+    this._activeCollection = v;
+  }
+
 
   private listenToNoteEvents(): void {
     // Remove listeners
@@ -190,13 +200,14 @@ export class CollectionService {
       }
 
       activeCollectionDirectory = Utils.collectionToPath(storageDirectory, activeCollection);
-      this.settings.activeCollection = activeCollection;
-
+      
       // If the collection directory doesn't exsist, create it.
       if (!await fs.exists(activeCollectionDirectory)) {
         await fs.mkdir(activeCollectionDirectory);
       }
     }
+
+    this.setActiveCollection(activeCollection);
 
     let databaseFile: string = path.join(activeCollectionDirectory, `${activeCollection}.db`);
 
@@ -210,6 +221,11 @@ export class CollectionService {
 
     this.isInitializing = false;
     this.isInitialized = true;
+  }
+
+  private setActiveCollection(activeCollection: string): void {
+    this.activeCollection = activeCollection;
+    this.settings.activeCollection = activeCollection;
   }
 
   public async addCollectionAsync(possiblyDirtyCollection: string): Promise<Operation> {
@@ -306,7 +322,7 @@ export class CollectionService {
   }
 
   public activateCollection(collection: string): void {
-    this.settings.activeCollection = collection;
+    this.setActiveCollection(collection);
     this.isInitialized = false;
     this.collectionsChanged.next();
   }

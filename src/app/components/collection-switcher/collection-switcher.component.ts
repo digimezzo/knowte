@@ -12,15 +12,15 @@ import { Operation } from '../../core/enums';
 import { TranslatorService } from '../../services/translator/translator.service';
 
 @Component({
-  selector: 'main-menu-button',
-  templateUrl: './mainMenuButton.component.html',
-  styleUrls: ['./mainMenuButton.component.scss'],
+  selector: 'collection-switcher',
+  templateUrl: './collection-switcher.component.html',
+  styleUrls: ['./collection-switcher.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class MainMenuButtonComponent implements OnInit, OnDestroy {
+export class CollectionSwitcherComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
-  constructor(private dialog: MatDialog, private collection: CollectionService,
+  constructor(private dialog: MatDialog, public collection: CollectionService,
     private snackBar: SnackBarService, private translator: TranslatorService, public router: Router) {
   }
 
