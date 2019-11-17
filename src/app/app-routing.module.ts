@@ -18,16 +18,16 @@ const routes: Routes = [
         component: NoteComponent
     },
     {
-        path: 'collection',
-        component: CollectionComponent
-    },
-    {
         path: 'welcome',
         component: WelcomeComponent
     },
     {
         path: 'loading',
         component: LoadingComponent
+    },
+    {
+        path: 'collection',
+        component: CollectionComponent
     },
     {
         path: 'settings',

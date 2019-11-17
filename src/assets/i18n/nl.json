@@ -7,11 +7,6 @@
     "LoadingPage": {
         "Text": "Laden..."
     },
-    "Pages": {
-        "Collection": "Collectie",
-        "Settings": "Instellingen",
-        "Information": "Informatie"
-    },
     "NotesTabs": {
         "All": "Alle",
         "Today": "Vandaag",
@@ -60,7 +55,6 @@
         "Information": "Informatie"
     },
     "Tooltips": {
-        "Back": "Terug",
         "Rename": "Hernoemen",
         "Delete": "Verijderen",
         "Activate": "Activateren",

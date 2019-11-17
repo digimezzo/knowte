@@ -7,11 +7,6 @@
     "LoadingPage": {
         "Text": "Loading..."
     },
-    "Pages": {
-        "Collection": "Collection",
-        "Settings": "Settings",
-        "Information": "Information"
-    },
     "NotesTabs": {
         "All": "All",
         "Today": "Today",
@@ -60,7 +55,6 @@
         "Information": "Information"
     },
     "Tooltips": {
-        "Back": "Back",
         "Rename": "Rename",
         "Delete": "Delete",
         "Activate": "Activate",

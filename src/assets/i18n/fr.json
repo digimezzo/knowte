@@ -7,11 +7,6 @@
     "LoadingPage": {
         "Text": "Chargement..."
     },
-    "Pages": {
-        "Collection": "Collection",
-        "Settings": "Paramètres",
-        "Information": "Information"
-    },
     "NotesTabs": {
         "All": "Toutes",
         "Today": "Aujourd'hui",
@@ -60,7 +55,6 @@
         "Information": "Information"
     },
     "Tooltips": {
-        "Back": "Retour",
         "Rename": "Renommer",
         "Delete": "Supprimer",
         "Activate": "Activer",

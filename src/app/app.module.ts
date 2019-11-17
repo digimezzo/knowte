@@ -27,7 +27,6 @@ import { WebviewDirective } from './directives/webview.directive';
 // Components
 import { AppComponent } from './app.component';
 import { WindowControlsComponent } from './components/windowControls/windowControls.component';
-import { BackButtonComponent } from './components/backButton/backButton.component';
 import { MainMenuButtonComponent } from './components/mainMenuButton/mainMenuButton.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { InformationComponent } from './components/information/information.component';
@@ -70,7 +69,6 @@ export function HttpLoaderFactory(http: HttpClient) {
   declarations: [
     AppComponent,
     WindowControlsComponent,
-    BackButtonComponent,
     MainMenuButtonComponent,
     WelcomeComponent,
     LoadingComponent,
