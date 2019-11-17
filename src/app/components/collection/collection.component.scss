@@ -1,15 +1,10 @@
 @import "variables";
 @import "theming";
 
-.main-logo{
-  @extend .background-color-primary;
+.collection-logo-menu{
   position: absolute;
   top: 0;
   left: 0;
-  width: 80px;
-  height: 80px;
-  margin-top: 8px;
-  border-radius: 40px;
   z-index: 1;
 }
 

@@ -33,7 +33,7 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { InformationComponent } from './components/information/information.component';
 import { NoteComponent } from './components/note/note.component';
 import { LicenseDialogComponent } from './components/dialogs/licenseDialog/licenseDialog.component';
-import { LogoFullComponent } from './components/logoFull/logoFull.component';
+import { LogoFullComponent } from './components/logo-full/logo-full.component';
 import { InputDialogComponent } from './components/dialogs/inputDialog/inputDialog.component';
 import { ErrorDialogComponent } from './components/dialogs/errorDialog/errorDialog.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
@@ -59,6 +59,7 @@ import { FileService } from './services/file/file.service';
 import { TasksProgressComponent } from './components/tasksProgressComponent/tasksProgress.component';
 import { Settings } from './core/settings';
 import { ColorThemeSwitcherComponent } from './components/color-theme-switcher/color-theme-switcher.component';
+import { LogoMenuComponent } from './components/logo-menu/logo-menu.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -87,6 +88,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ChangeNotebookDialogComponent,
     ImportFromOldVersionDialogComponent,
     LogoFullComponent,
+    LogoMenuComponent,
     ActiveNotebookAndSearchComponent,
     TasksProgressComponent,
     ColorThemeSwitcherComponent,
