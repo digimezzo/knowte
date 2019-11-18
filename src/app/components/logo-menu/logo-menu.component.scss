@@ -30,8 +30,8 @@
   background-color: white;
   position: absolute;
   top: 40px;
-  left: 0;
-  width: 100vw;
+  left: 1px;
+  width: calc(100vw - 8px);
   height: 40px;
   z-index: 0;
 }
