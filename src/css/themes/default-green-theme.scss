@@ -1,0 +1,38 @@
+// Created with: http://mcg.mbitson.com/
+$default-green-palette: (
+    50 : #f0f6e3,
+    100 : #d9e9ba,
+    200 : #bfdb8c,
+    300 : #a5cd5d,
+    400 : #92c23b,
+    500 : #7fb718,
+    600 : #77b015,
+    700 : #6ca711,
+    800 : #629f0e,
+    900 : #4f9008,
+    A100 : #dcffbe,
+    A200 : #c2ff8b,
+    A400 : #a7ff58,
+    A700 : #99ff3e,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$default-green-theme-primary: mat-palette($default-green-palette);
+$default-green-theme-accent: mat-palette($default-green-palette);
+$default-green-theme-warn: mat-palette($default-green-palette);
+$default-green-theme: mat-light-theme($default-green-theme-primary, $default-green-theme-accent, $default-green-theme-warn);

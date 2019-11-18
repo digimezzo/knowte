@@ -1,68 +1,74 @@
 <div class="window-frame">
     <div class="window-frame-titlebar">
-        <back-button></back-button>
         <div class="window-frame-titlebar-dragarea pl-1">
-            {{ 'Pages.Information' | translate }}
         </div>
-        <main-menu-button></main-menu-button>
+        <collection-switcher></collection-switcher>
         <window-controls></window-controls>
     </div>
     <div class="window-frame-content">
-        <mat-tab-group>
-            <mat-tab label="{{ 'InformationTabs.About' | translate }}">
-                <div class="m-3">
-                    <h1>{{ 'AboutPage.About' | translate }}</h1>
-                    <logo-full class="mt-3" [textColor]="'black'"></logo-full>
-                    <div class="mt-3">
-                        {{ 'AboutPage.Version' | translate }}:
-                        <strong> {{applicationVersion}}</strong>
-                        <br />{{applicationCopyright}}
+        <logo-menu class="information-logo-menu" [selectedMenuItem]="3"></logo-menu>
+        <div class="information">
+            <mat-tab-group>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <h4>{{ 'InformationTabs.About' | translate }}</h4>
+                    </ng-template>
+                    <div class="m-3">
+                        <h1>{{ 'AboutPage.About' | translate }}</h1>
+                        <logo-full class="mt-3" [textColor]="'black'"></logo-full>
+                        <div class="mt-3">
+                            {{ 'AboutPage.Version' | translate }}:
+                            <strong> {{applicationVersion}}</strong>
+                            <br />{{applicationCopyright}}
+                        </div>
+                        <button class="mt-2" mat-raised-button color="primary" (click)="openLicenseDialog()">
+                            {{ 'Buttons.License' | translate }}
+                        </button>
                     </div>
-                    <button class="mt-2" mat-raised-button color="primary" (click)="openLicenseDialog()">
-                        {{ 'Buttons.License' | translate }}
-                    </button>
-                </div>
-                <hr>
-                <div class="m-3">
-                    <h1>{{ 'AboutPage.Donate' | translate }}</h1>
-                    <div>{{ 'AboutPage.IsKnowteUseful' | translate }}</div>
-                    <button class="mt-2" mat-raised-button color="primary" (click)="openDonateLink()">
-                        {{ 'Buttons.Donate' | translate }}
-                    </button>
-                </div>
-                <hr>
-                <div class="m-3">
-                    <h1>{{ 'AboutPage.GetInTouch' | translate }}</h1>
+                    <hr>
+                    <div class="m-3">
+                        <h1>{{ 'AboutPage.Donate' | translate }}</h1>
+                        <div>{{ 'AboutPage.IsKnowteUseful' | translate }}</div>
+                        <button class="mt-2" mat-raised-button color="primary" (click)="openDonateLink()">
+                            {{ 'Buttons.Donate' | translate }}
+                        </button>
+                    </div>
+                    <hr>
+                    <div class="m-3">
+                        <h1>{{ 'AboutPage.GetInTouch' | translate }}</h1>
 
-                    <div class="contact-item mb-1">
-                        <span class="contact-item-icon-solid custom-font mr-1">&#xF0AC;</span>
-                        <a href="{{ websiteUrl }}"
-                            matTooltip="{{ websiteUrl }}">{{ 'AboutPage.Website' | translate }}</a>
+                        <div class="contact-item mb-1">
+                            <span class="contact-item-icon-solid custom-font mr-1">&#xF0AC;</span>
+                            <a href="{{ websiteUrl }}"
+                                matTooltip="{{ websiteUrl }}">{{ 'AboutPage.Website' | translate }}</a>
+                        </div>
+                        <div class="contact-item mb-1">
+                            <span class="contact-item-icon-brands custom-font mr-1">&#xF099;</span>
+                            <a href="{{ twitterUrl }}" matTooltip="{{ twitterUrl }}">Twitter</a>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-item-icon-brands custom-font mr-1">&#xF09B;</span>
+                            <a href="{{ githubUrl }}" matTooltip="{{ githubUrl }}">GitHub</a>
+                        </div>
                     </div>
-                    <div class="contact-item mb-1">
-                        <span class="contact-item-icon-brands custom-font mr-1">&#xF099;</span>
-                        <a href="{{ twitterUrl }}" matTooltip="{{ twitterUrl }}">Twitter</a>
-                    </div>
-                    <div class="contact-item">
-                        <span class="contact-item-icon-brands custom-font mr-1">&#xF09B;</span>
-                        <a href="{{ githubUrl }}" matTooltip="{{ githubUrl }}">GitHub</a>
-                    </div>
-                </div>
-            </mat-tab>
-            <mat-tab label="{{ 'InformationTabs.Components' | translate }}">
-                <div class="m-3">
-                    <h1>{{ 'ComponentsPage.Components' | translate }}</h1>
+                </mat-tab>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <h4>{{ 'InformationTabs.Components' | translate }}</h4>
+                    </ng-template>
+                    <div class="m-3">
+                        <h1>{{ 'ComponentsPage.Components' | translate }}</h1>
 
-                    <div class="mb-2" *ngFor="let externalComponent of externalComponents">
-                        <strong>{{externalComponent.name}}</strong><br />
-                        {{externalComponent.description}}<br />
-                        <a href="{{externalComponent.url}}">{{ 'AboutPage.Website' | translate }}</a>
-                        <a class="ml-1"
-                            href="{{externalComponent.licenseUrl}}">{{ 'AboutPage.License' | translate }}</a>
+                        <div class="mb-2" *ngFor="let externalComponent of externalComponents">
+                            <strong>{{externalComponent.name}}</strong><br />
+                            {{externalComponent.description}}<br />
+                            <a href="{{externalComponent.url}}">{{ 'AboutPage.Website' | translate }}</a>
+                            <a class="ml-1"
+                                href="{{externalComponent.licenseUrl}}">{{ 'AboutPage.License' | translate }}</a>
+                        </div>
                     </div>
-
-                </div>
-            </mat-tab>
-        </mat-tab-group>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
     </div>
 </div>

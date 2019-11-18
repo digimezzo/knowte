@@ -1,0 +1,55 @@
+@import "theming";
+@import "variables";
+
+.logo-menu {
+  position: relative;
+  margin-top: 8px;
+}
+
+.logo-menu-icon {
+  @extend .background-color-primary;
+  position: absolute;
+  top: 0;
+  left: 16px;
+  width: 80px;
+  min-width: 80px;
+  height: 80px;
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.logo-menu-icon-image {
+  width: 40px;
+  height: 40px;
+}
+
+.logo-menu-background {
+  background-color: white;
+  position: absolute;
+  top: 40px;
+  left: 1px;
+  width: calc(100vw - 14px);
+  height: 40px;
+  z-index: 0;
+}
+
+.logo-menu-menu {
+  position: absolute;
+  top: 10px;
+  left: 104px;
+}
+
+.logo-menu-menu-item {
+  text-transform: lowercase;
+  margin-left: 16px;
+  color: $color-grey;
+  cursor: pointer;
+}
+
+.logo-menu-menu-item-selected {
+  color: black;
+  font-weight: bold;
+}

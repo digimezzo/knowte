@@ -1,4 +1,4 @@
-<div class="notes">
+<div class="notes mx-2 mb-2">
     <!-- Drag image -->
     <div class="drag-image no-select" id="drag-image">
         <div class="drag-image-icon">
@@ -9,11 +9,12 @@
         <div class="drag-image-text mx-1" *ngIf="draggableNoteIds.length > 1">
             {{ 'MainPage.DragNotesCount' | translate:{ noteCount: draggableNoteIds.length } }}</div>
     </div>
-    <!-- Notes list -->
+    <!-- Notes list --> 
+     
     <ul class="notes-list" *ngIf="canShowList">
         <cdk-virtual-scroll-viewport itemSize="48">
             <li [ngClass]="{'selected-item':note.isSelected}" *cdkVirtualFor="let note of notes" matRipple>
-                <div class="note-item no-select px-2" (dblclick)="openNote(note)"
+                <div class="note-item no-select" (dblclick)="openNote(note)"
                     matTooltip="{{ 'Tooltips.LastChanged' | translate }}: {{note.displayExactModificationDate}}"
                     (click)="setSelectedNotes(note, $event)" draggable="true" (dragstart)="dragStart($event, note)">
                     <div class="note-item-icon">
@@ -35,8 +36,8 @@
                     </div>
                     <div class="note-item-actions">
                         <div (click)="toggleNoteMark(note)">
-                            <span class="note-item-actions-heart-marked custom-font" *ngIf="note.isMarked">&#xE87D;</span>
-                            <span class="note-item-actions-heart-unmarked custom-font" *ngIf="!note.isMarked">&#xE87E;</span>
+                            <span class="note-item-actions-heart-marked custom-font" *ngIf="note.isMarked">&#xEB52;</span>
+                            <span class="note-item-actions-heart-unmarked custom-font" *ngIf="!note.isMarked">&#xEB51;</span>
                         </div>
                     </div>
                 </div>

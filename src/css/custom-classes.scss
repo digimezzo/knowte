@@ -1,9 +1,10 @@
-@import "variables.scss";
+@import "variables";
 
 .no-select {
   user-select: none;
 }
 
 .selected-item {
+  @extend .color-primary;
   background-color: $color-selected;
 }

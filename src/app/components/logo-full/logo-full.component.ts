@@ -3,8 +3,9 @@ import { Constants } from '../../core/constants';
 
 @Component({
   selector: 'logo-full',
-  templateUrl: './logoFull.component.html',
-  styleUrls: ['./logoFull.component.scss'],
+  host: { 'style': 'display: block' },
+  templateUrl: './logo-full.component.html',
+  styleUrls: ['./logo-full.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class LogoFullComponent implements OnInit {

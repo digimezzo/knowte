@@ -1,0 +1,38 @@
+// Created with: http://mcg.mbitson.com/
+$default-purple-palette: (
+    50 : #f5e7f6,
+    100 : #e5c2e8,
+    200 : #d49ad9,
+    300 : #c272c9,
+    400 : #b553be,
+    500 : #a835b2,
+    600 : #a030ab,
+    700 : #9728a2,
+    800 : #8d2299,
+    900 : #7d168a,
+    A100 : #f7bfff,
+    A200 : #f18cff,
+    A400 : #ea59ff,
+    A700 : #e740ff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$default-purple-theme-primary: mat-palette($default-purple-palette);
+$default-purple-theme-accent: mat-palette($default-purple-palette);
+$default-purple-theme-warn: mat-palette($default-purple-palette);
+$default-purple-theme: mat-light-theme($default-purple-theme-primary, $default-purple-theme-accent, $default-purple-theme-warn);

@@ -1,32 +1,49 @@
 mat-tab-group {
-    background-color: $color-darkgrey;
-    height: 100%;
+  background-color: #fff;
+  height: 100%;
 }
 
 .mat-tab-body-wrapper {
-    color: #000;
-    background-color: #fff !important;
-    height: 100%;
-    border-style: solid;
-    border-width: 0 1px 1px 1px;
-    border-color: $color-lightgrey;
+  color: #000;
+  background-color: #fff !important;
+  height: 100%;
+  border-style: solid;
+  border-width: 0 1px 1px 1px;
+  border-color: $color-lightgrey;
+}
+
+.mat-tab-body-content {
+  padding-top: 40px;
+  // Prevents showing of horizontal scrollbar when switching tabs (might be related to cdk virtual scroll)
+  // Found on: https://github.com/angular/components/issues/6104
+  &.ng-animating {
+    overflow: hidden !important;
+  }
 }
 
 .mat-tab-label {
-    color: #fff !important;
-    opacity: 1 !important;
-    user-select: none; // Prevents accidental selection of the header text
+  min-width: 0 !important;
+  color: #aaa !important;
+  opacity: 1 !important;
+  user-select: none; // Prevents accidental selection of the header text
+  padding: 0 12px !important;
+}
+
+.mat-tab-label.mat-tab-label-active {
+  color: #fff !important;
 }
 
 .mat-tab-group.mat-primary .mat-ink-bar,
 .mat-tab-nav-bar.mat-primary .mat-ink-bar {
-    height: 3px;
+  height: 0px;
 }
 
 .mat-tab-header {
-    border-bottom-style: none !important;
+  border-bottom-style: none !important;
+  padding-left: 110px;
+  background-color: $color-darkgrey;
 }
 
 .mat-tab-header-pagination-chevron {
-    border-color: #fff !important;
+  border-color: #fff !important;
 }

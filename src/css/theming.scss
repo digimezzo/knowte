@@ -2,6 +2,10 @@
 @include mat-core();
 
 @import 'themes/default-blue-theme.scss';
+@import 'themes/default-green-theme.scss';
+@import 'themes/default-pink-theme.scss';
+@import 'themes/default-purple-theme.scss';
+@import 'themes/default-yellow-theme.scss';
 @import 'themes/ubuntu-orange-theme.scss';
 @import 'themes/linuxmint-green-theme.scss';
 @import 'themes/manjaro-green-theme.scss';
@@ -34,8 +38,15 @@
     background-color: mat-color($primary) !important;
   }
 
-  .drop-background-color-primary {
+  .background-color-primary-0-6 {
+    background-color: mat-color($primary, 0.6) !important;
+  }
+
+  .background-color-primary-0-2 {
     background-color: mat-color($primary, 0.2) !important;
+  }
+  .box-shadow-inset-0-0-10px-10px-primary{
+    box-shadow: inset 0 0 10px 10px mat-color($primary);
   }
 }
 
@@ -44,31 +55,57 @@
 @include angular-material-theme($default-blue-theme);
 @include set-colors($default-blue-theme);
 
+// Default Knowte
 .default-blue-theme {
   @include angular-material-theme($default-blue-theme);
   @include set-colors($default-blue-theme);
 }
 
+.default-green-theme {
+  @include angular-material-theme($default-green-theme);
+  @include set-colors($default-green-theme);
+}
+
+.default-pink-theme {
+  @include angular-material-theme($default-pink-theme);
+  @include set-colors($default-pink-theme);
+}
+
+.default-purple-theme {
+  @include angular-material-theme($default-purple-theme);
+  @include set-colors($default-purple-theme);
+}
+
+.default-yellow-theme {
+  @include angular-material-theme($default-yellow-theme);
+  @include set-colors($default-yellow-theme);
+}
+
+// Ubuntu
 .ubuntu-orange-theme {
   @include angular-material-theme($ubuntu-orange-theme);
   @include set-colors($ubuntu-orange-theme);
 }
 
+// Linux Mint
 .linuxmint-green-theme {
   @include angular-material-theme($linuxmint-green-theme);
   @include set-colors($linuxmint-green-theme);
 }
 
+// Manjaro
 .manjaro-green-theme {
   @include angular-material-theme($manjaro-green-theme);
   @include set-colors($manjaro-green-theme);
 }
 
+// Windows 10
 .windows10-blue-theme {
   @include angular-material-theme($windows10-blue-theme);
   @include set-colors($windows10-blue-theme);
 }
 
+// Material
 .material-red-theme {
   @include angular-material-theme($material-red-theme);
   @include set-colors($material-red-theme);

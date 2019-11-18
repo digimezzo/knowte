@@ -1,4 +1,4 @@
-@import "css/font-faces.scss";
+@import "font-faces";
 
 .color-theme-switcher {
   display: flex;
@@ -16,8 +16,8 @@
 }
 
 .color-theme-switcher-button-selector {
-  font-family: fa-solid;
-  font-size: 18px;
+  font-family: segoe;
+  font-size: 28px;
   color: white;
   z-index: 1;
 }

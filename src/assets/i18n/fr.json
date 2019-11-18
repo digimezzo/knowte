@@ -7,11 +7,6 @@
     "LoadingPage": {
         "Text": "Chargement..."
     },
-    "Pages": {
-        "Collection": "Collection",
-        "Settings": "Paramètres",
-        "Information": "Information"
-    },
     "NotesTabs": {
         "All": "Toutes",
         "Today": "Aujourd'hui",
@@ -54,13 +49,14 @@
         "Components": "Composants"
     },
     "MainMenu": {
-        "Collections": "Collections",
-        "AddCollection": "Ajouter collection...",
+        "Notes": "Notes",
         "Settings": "Paramètres",
         "Information": "Information"
     },
+    "CollectionSwitcher": {
+        "AddCollection": "Ajouter collection..."
+    },
     "Tooltips": {
-        "Back": "Retour",
         "Rename": "Renommer",
         "Delete": "Supprimer",
         "Activate": "Activer",

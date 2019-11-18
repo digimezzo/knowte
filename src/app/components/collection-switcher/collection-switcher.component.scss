@@ -1,0 +1,58 @@
+@import "font-faces";
+@import "variables";
+@import "theming";
+
+.collection-switcher {
+  height: $titlebar-height;
+  display: flex;
+  flex-direction: row;
+}
+
+.collection-switcher-active-collection {
+  height: $titlebar-height;
+  display: flex;
+  align-items: center;
+  color: white;
+  flex: 1;
+}
+
+.collection-swichter-button {
+  font-size: 16px !important;
+}
+
+.menu-button {
+  display: flex !important;
+}
+
+.menu-item {
+  display: flex;
+  width: 100%;
+  padding-right: 80px;
+}
+
+.menu-icon {
+  font-family: segoe;
+  font-size: 18px;
+  color: $color-grey-icon;
+  margin: 0 8px 0 0;
+}
+
+.menu-icon.isActive {
+  @extend .color-primary;
+}
+
+.menu-command-item {
+  position: absolute;
+  right: 8px;
+}
+
+.menu-command-item-icon {
+  font-family: segoe;
+  font-size: 18px;
+  color: $color-grey-icon;
+  opacity: 0.3;
+}
+
+.menu-command-item-icon:hover {
+  opacity: 1;
+}

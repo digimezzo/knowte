@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1-beta1] - 2019-11-18
+### Added
+### Changed
+- Changed to a new design that more closely resembles the Knowte 1.x design.
+### Removed
+### Fixed
+
+
 ## [2.0.0] - 2019-09-28
 ### Added
 - GNU/Linux compatibility (Knowte now runs on Windows and GNU/Linux)
@@ -24,4 +32,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Linking to other note files
 - Export to RTF
 ### Fixed
-

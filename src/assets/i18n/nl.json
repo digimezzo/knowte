@@ -7,11 +7,6 @@
     "LoadingPage": {
         "Text": "Laden..."
     },
-    "Pages": {
-        "Collection": "Collectie",
-        "Settings": "Instellingen",
-        "Information": "Informatie"
-    },
     "NotesTabs": {
         "All": "Alle",
         "Today": "Vandaag",
@@ -54,13 +49,14 @@
         "Components": "Componenten"
     },
     "MainMenu": {
-        "Collections": "Collecties",
-        "AddCollection": "Collectie toevoegen...",
+        "Notes": "Notities",
         "Settings": "Instellingen",
         "Information": "Informatie"
     },
+    "CollectionSwitcher": {
+        "AddCollection": "Collectie toevoegen..."
+    },
     "Tooltips": {
-        "Back": "Terug",
         "Rename": "Hernoemen",
         "Delete": "Verijderen",
         "Activate": "Activateren",

@@ -1,4 +1,4 @@
-@import "variables.scss";
+@import "variables";
 
 * {
   margin: 0;
@@ -9,7 +9,7 @@
 }
 
 * :not(.custom-font) {
-  font-family: roboto !important;
+  font-family: opensans !important;
   font-size: $fontsize-normal;
 }
 
@@ -52,9 +52,14 @@ h2 {
 
 h3 {
   @extend .mb-1;
-  color: #748393;
   font-size: $fontsize-larger !important;
-  font-weight: normal !important;
+  font-weight: lighter !important;
+}
+
+h4 {
+  font-size: $fontsize-larger !important;
+  font-weight: lighter !important;
+  text-transform: uppercase;
 }
 
 a {

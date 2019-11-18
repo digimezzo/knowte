@@ -1,4 +1,4 @@
-@import 'css/variables.scss';
+@import 'variables';
 
 .welcome {
     width: 100%;
@@ -39,7 +39,7 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    opacity: 0.025;
+    opacity: 0.03;
 }
 
 .welcome-content-foreground-title {

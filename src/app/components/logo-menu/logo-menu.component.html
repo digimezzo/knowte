@@ -1,0 +1,14 @@
+<div class="logo-menu no-select">
+    <div class="logo-menu-icon">
+        <img class="logo-menu-icon-image" src="./assets/images/pencil_256x256.svg">
+    </div>
+    <div class="logo-menu-background">
+        <div class="logo-menu-menu">
+            <span class="logo-menu-menu-item" routerLink="/collection"
+                [ngClass]="{'logo-menu-menu-item-selected':selectedMenuItem === 1}">{{ 'MainMenu.Notes' | translate }}</span>
+            <span class="logo-menu-menu-item" routerLink="/settings"
+                [ngClass]="{'logo-menu-menu-item-selected':selectedMenuItem === 2}">{{ 'MainMenu.Settings' | translate }}</span>
+            <span class="logo-menu-menu-item" routerLink="/information"
+                [ngClass]="{'logo-menu-menu-item-selected':selectedMenuItem === 3}">{{ 'MainMenu.Information' | translate }}</span>
+        </div>
+    </div>

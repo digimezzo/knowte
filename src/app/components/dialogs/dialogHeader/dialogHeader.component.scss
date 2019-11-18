@@ -1,4 +1,4 @@
-@import 'css/variables.scss';
+@import 'variables';
 
 .dialog-header{
     background-color: $color-darkgrey;
@@ -26,7 +26,6 @@
     padding-left: 24px;
     padding-right: 24px;
     color: white;
-    font-size: 20px;
 }
 
 .dialog-header-content-background {
@@ -42,7 +41,7 @@
     position: absolute;
     bottom: 12px;
     right: 12px;
-    opacity: 0.025;
+    opacity: 0.03;
     width: 40px;
     height: 40px;
 }

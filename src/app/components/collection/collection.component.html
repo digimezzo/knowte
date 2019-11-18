@@ -1,78 +1,83 @@
 <div class="window-frame">
     <div class="window-frame-titlebar">
         <div class="window-frame-titlebar-dragarea pl-1">
-            {{ applicationName }}
+            <!-- {{ applicationName }} -->
         </div>
-        <main-menu-button></main-menu-button>
+        <collection-switcher></collection-switcher>
         <window-controls></window-controls>
     </div>
     <div class="window-frame-overlay" *ngIf="isBusy">
         <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
     </div>
     <div class="window-frame-content">
+        <logo-menu class="collection-logo-menu" [selectedMenuItem]="1"></logo-menu>
         <div class="collection">
             <!-- Notebooks -->
             <div class="collection-notebooks">
-                <!-- Notebooks title -->
-                <div class="collection-notebooks-title p-2 no-select">
-                    <h3>{{ 'MainPage.Notebooks' | translate }}</h3>
-                    <div class="count-label">{{notebooksCount}}</div>
-                </div>
-                <!-- Notebooks list container -->
-                <div class="collection-notebooks-list">
-                    <!-- Notebooks list -->
-                    <ul class="collection-notebooks-list-list">
-                        <li class="notebook" matRipple
-                            [ngClass]="{'selected-item':notebook.isSelected, 'drop-notebook':notebook === hoveredNotebook }"
-                            *ngFor="let notebook of notebooks" (drop)="notebookDrop($event, notebook)"
-                            (dragover)="notebookDragOver($event, notebook)" (dragleave)="notebookDragLeave($event)">
-                            <p class="notebook-name no-select"
-                                [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
-                                (click)="setSelectedNotebooks(notebook, $event)">
-                                {{ notebook.name }}</p>
-                        </li>
-                    </ul>
-                    <!-- Notebooks buttons -->
-                    <div class="collection-notebooks-list-buttons m-2">
-                        <button class="list-button" mat-mini-fab color="" (click)="renameNotebook()"
-                            matTooltip="{{ 'Tooltips.RenameNotebook' | translate }}" *ngIf="canRenameNotebook">
-                            <span class="edit-item-icon custom-font">&#xE254;</span>
-                        </button>
-                        <button class="list-button" mat-mini-fab color="" (click)="deleteNotebooksAsync()"
-                            matTooltip="{{ 'Tooltips.DeleteNotebooks' | translate }}" *ngIf="canDeleteNotebooks">
-                            <span class="edit-item-icon custom-font">&#xE872;</span>
-                        </button>
-                        <button class="list-button" mat-fab (click)="addNotebookAsync()"
-                            matTooltip="{{ 'Tooltips.AddNotebook' | translate }}">
-                            <span class="add-item-icon custom-font">&#xE145;</span>
-                        </button>
+                <div class="collection-notebooks-content">
+                    <!-- Notebooks title -->
+                    <div class="collection-notebooks-content-title p-2 no-select">
+                        <h3>{{ 'MainPage.Notebooks' | translate }}</h3>
+                        <div class="count-label">{{notebooksCount}}</div>
                     </div>
+                    <!-- Notebooks list container -->
+                    <div class="collection-notebooks-content-list mx-2 mb-2">
+                        <!-- Notebooks list -->
+                        <ul class="collection-notebooks-content-list-list">
+                            <li class="notebook" matRipple
+                                [ngClass]="{'selected-item':notebook.isSelected, 'drop-notebook':notebook === hoveredNotebook }"
+                                *ngFor="let notebook of notebooks" (drop)="notebookDrop($event, notebook)"
+                                (dragover)="notebookDragOver($event, notebook)" (dragleave)="notebookDragLeave($event)">
+                                <p class="notebook-name no-select mx-1"
+                                    [ngStyle]="{'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
+                                    (click)="setSelectedNotebooks(notebook, $event)">
+                                    {{ notebook.name }}</p>
+                            </li>
+                        </ul>
+                        <!-- Notebooks buttons -->
+                        <div class="collection-notebooks-content-list-buttons mr-2">
+                            <button class="list-button" mat-mini-fab color="" (click)="renameNotebook()"
+                                matTooltip="{{ 'Tooltips.RenameNotebook' | translate }}" *ngIf="canRenameNotebook">
+                                <span class="edit-item-icon custom-font">&#xE70F;</span>
+                            </button>
+                            <button class="list-button" mat-mini-fab color="" (click)="deleteNotebooksAsync()"
+                                matTooltip="{{ 'Tooltips.DeleteNotebooks' | translate }}" *ngIf="canDeleteNotebooks">
+                                <span class="edit-item-icon custom-font">&#xE74D;</span>
+                            </button>
+                            <button class="list-button" mat-fab (click)="addNotebookAsync()"
+                                matTooltip="{{ 'Tooltips.AddNotebook' | translate }}">
+                                <span class="add-item-icon custom-font">&#xE710;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="collection-notebooks-separator my-2">
                 </div>
             </div>
             <!-- Selected notebook and search -->
-            <activenotebookandsearch-component class="active-notebook-and-search"
-                [activeNotebook]="activeNotebook" [(notesCount)]="notesCount">
+            <activenotebookandsearch-component class="active-notebook-and-search" [activeNotebook]="activeNotebook"
+                [(notesCount)]="notesCount">
             </activenotebookandsearch-component>
             <!-- Note buttons -->
-            <div class="note-buttons m-2" [@noteButtonsVisibility]="noteButtonsVisibility">
+            <div class="note-buttons mr-4 mb-2" [@noteButtonsVisibility]="noteButtonsVisibility">
                 <button class="list-button" mat-mini-fab color="" (click)="deleteNotesAsync()"
                     matTooltip="{{ 'Tooltips.DeleteNotes' | translate }}" *ngIf=canDeleteNotes>
-                    <span class="edit-item-icon custom-font">&#xE872;</span>
+                    <span class="edit-item-icon custom-font">&#xE74D;</span>
                 </button>
                 <button class="list-button" mat-mini-fab color="" (click)="importNotesAsync()"
                     matTooltip="{{ 'Tooltips.ImportNotes' | translate }}">
-                    <span class="edit-item-icon-import custom-font">&#xF56F;</span>
+                    <span class="edit-item-icon custom-font">&#xE8DE;</span>
                 </button>
                 <button class="list-button" mat-fab (click)="addNoteAsync()"
                     matTooltip="{{ 'Tooltips.AddNote' | translate }}">
-                    <span class="add-item-icon custom-font">&#xE145;</span>
+                    <span class="add-item-icon custom-font">&#xE710;</span>
                 </button>
             </div>
             <!-- Tabs -->
             <mat-tab-group (selectedTabChange)="onSelectedTabChange($event)">
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        {{ 'NotesTabs.All' | translate }}
+                        <h4>{{ 'NotesTabs.All' | translate }}</h4>
                         <div class="count-label">{{allNotesCount}}</div>
                     </ng-template>
                     <notes-component [activeNotebook]="activeNotebook" [componentCategory]="allCategory"
@@ -82,7 +87,7 @@
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        {{ 'NotesTabs.Today' | translate }}
+                        <h4>{{ 'NotesTabs.Today' | translate }}</h4>
                         <div class="count-label">{{todayNotesCount}}</div>
                     </ng-template>
                     <notes-component [activeNotebook]="activeNotebook" [componentCategory]="todayCategory"
@@ -92,7 +97,7 @@
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        {{ 'NotesTabs.Yesterday' | translate }}
+                        <h4>{{ 'NotesTabs.Yesterday' | translate }}</h4>
                         <div class="count-label">{{yesterdayNotesCount}}</div>
                     </ng-template>
                     <notes-component [activeNotebook]="activeNotebook" [componentCategory]="yesterdayCategory"
@@ -102,7 +107,7 @@
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        {{ 'NotesTabs.ThisWeek' | translate }}
+                        <h4>{{ 'NotesTabs.ThisWeek' | translate }}</h4>
                         <div class="count-label">{{thisWeekNotesCount}}</div>
                     </ng-template>
                     <notes-component [activeNotebook]="activeNotebook" [componentCategory]="thisWeekCategory"
@@ -112,7 +117,7 @@
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        {{ 'NotesTabs.Marked' | translate }}
+                        <h4>{{ 'NotesTabs.Marked' | translate }}</h4>
                         <div class="count-label">{{markedNotesCount}}</div>
                     </ng-template>
                     <notes-component [activeNotebook]="activeNotebook" [componentCategory]="markedCategory"

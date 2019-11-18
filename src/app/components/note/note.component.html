@@ -3,7 +3,7 @@
         <div class="window-frame-titlebar-dragarea">
             <div class="notebook-changer no-select ml-1" (click)="changeNotebook()"
                 matTooltip="{{ 'Tooltips.ClickToChangeNotebook' | translate }}">
-                <span class="notebook-changer-icon custom-font">&#xE0E0;</span>
+                <span class="notebook-changer-icon custom-font mr-1">&#xE838;</span>
                 {{notebookName}}
             </div>
         </div>
@@ -18,33 +18,33 @@
                 <button class="note-content-floating-button" mat-fab (click)="toggleShowActions()"
                     matTooltip="{{ 'Tooltips.Actions' | translate }}">
                     <div class="note-content-floating-button-icon-container" [@actionIconRotation]="actionIconRotation">
-                        <span *ngIf="!canPerformActions" class="note-content-floating-button-icon custom-font">&#xE8B8;</span>
-                        <span *ngIf="canPerformActions" class="note-content-floating-button-icon custom-font">&#xE5CD;</span>
+                        <span *ngIf="!canPerformActions" class="note-content-floating-button-icon custom-font">&#xE9F5;</span>
+                        <span *ngIf="canPerformActions" class="note-content-floating-button-icon custom-font">&#xE711;</span>
                     </div>
                 </button>
                 <button *ngIf="canPerformActions && isMarked" class="note-content-floating-button" mat-mini-fab color=""
                     (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">
-                    <span class="note-content-floating-button-icon-action custom-font">&#xE87D;</span>
+                    <span class="note-content-floating-button-icon-action custom-font">&#xEB52;</span>
                 </button>
                 <button *ngIf="canPerformActions && !isMarked" class="note-content-floating-button" mat-mini-fab
                     color="" (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.MarkNote' | translate }}">
-                    <span class="note-content-floating-button-icon-action custom-font">&#xE87E;</span>
+                    <span class="note-content-floating-button-icon-action custom-font">&#xEB51;</span>
                 </button>
                 <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
                     (click)="exportNoteAsync()" matTooltip="{{ 'Tooltips.ExportNote' | translate }}">
-                    <span class="note-content-floating-button-icon-action-export custom-font">&#xF56E;</span>
+                    <span class="note-content-floating-button-icon-action custom-font">&#xE72D;</span>
                 </button>
                 <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
                     (click)="exportNoteToPdfAsync()" matTooltip="{{ 'Tooltips.ExportNoteToPdf' | translate }}">
-                    <span class="note-content-floating-button-icon-action-pdf custom-font">&#xF1C1;</span>
+                    <span class="note-content-floating-button-icon-action custom-font">&#xE7C3;</span>
                 </button>
                 <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
                     (click)="printNote()" matTooltip="{{ 'Tooltips.PrintNote' | translate }}">
-                    <span class="note-content-floating-button-icon-action custom-font">&#xE555;</span>
+                    <span class="note-content-floating-button-icon-action custom-font">&#xE749;</span>
                 </button>
                 <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
                     (click)="deleteNoteAsync()" matTooltip="{{ 'Tooltips.DeleteNote' | translate }}">
-                    <span class="note-content-floating-button-icon-action custom-font">&#xE872;</span>
+                    <span class="note-content-floating-button-icon-action custom-font">&#xE74D;</span>
                 </button>
             </div>
             <div class="note-content-fixed" (click)="onFixedContentClick()">

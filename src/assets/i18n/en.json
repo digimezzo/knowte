@@ -7,11 +7,6 @@
     "LoadingPage": {
         "Text": "Loading..."
     },
-    "Pages": {
-        "Collection": "Collection",
-        "Settings": "Settings",
-        "Information": "Information"
-    },
     "NotesTabs": {
         "All": "All",
         "Today": "Today",
@@ -54,13 +49,14 @@
         "Components": "Components"
     },
     "MainMenu": {
-        "Collections": "Collections",
-        "AddCollection": "Add collection...",
+        "Notes": "Notes",
         "Settings": "Settings",
         "Information": "Information"
     },
+    "CollectionSwitcher": {
+        "AddCollection": "Add collection..."
+    },
     "Tooltips": {
-        "Back": "Back",
         "Rename": "Rename",
         "Delete": "Delete",
         "Activate": "Activate",

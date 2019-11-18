@@ -29,6 +29,11 @@
               "src/styles.scss",
               "./node_modules/quill/dist/quill.snow.css"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/css"
+              ]
+            },
             "scripts": [
               "./node_modules/quill/dist/quill.js"
             ]
@@ -101,6 +106,11 @@
             "styles": [
               "src/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/css"
+              ]
+            },
             "assets": [
               "src/worker.html",
               "src/assets",
