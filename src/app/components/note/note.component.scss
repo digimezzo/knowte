@@ -32,27 +32,14 @@
 
 .note-content-floating-button-icon {
   color: white;
-  font-family: material;
-  font-size: 24px;
+  font-family: segoe;
+  font-size: 26px;
 }
 
 .note-content-floating-button-icon-action {
   color: $color-grey-icon;
-  font-family: material;
-  font-size: 20px;
-}
-
-.note-content-floating-button-icon-action-pdf {
-  color: $color-grey-icon;
-  font-family: fa-solid;
+  font-family: segoe;
   font-size: 18px;
-}
-
-.note-content-floating-button-icon-action-export {
-  color: $color-grey-icon;
-  font-family: fa-solid;
-  font-size: 16px;
-  margin-left: 4px;
 }
 
 .note-content-fixed {
@@ -116,8 +103,7 @@
 }
 
 .notebook-changer-icon {
-  margin-right: 8px;
-  font-family: Material;
+  font-family: segoe;
   font-size: 18px;
 }
 
