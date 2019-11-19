@@ -1,4 +1,4 @@
-![Knowte](Knowte.full.png)
+![Knowte](Knowte-logo.full.png)
 
 # Knowte
 
@@ -10,7 +10,7 @@ Knowte is a note taking application that allows you to quickly and easily organi
 
 ## Screenshot
 
-![Knowte2screenshot](Knowte2.png)
+![Knowte2screenshot](Knowte.showcase.png)
 
 ## Build instructions
 
