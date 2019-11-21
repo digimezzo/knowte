@@ -104,6 +104,13 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.noteTextChanged.next("");
         });
 
+        // Forces paste of unformatted text (See: https://stackoverflow.com/questions/41237486/how-to-paste-plain-text-in-a-quill-based-editor)
+        this.quill.clipboard.addMatcher (Node.ELEMENT_NODE, function (node, delta) {
+            var plaintext = node.innerText;
+            var Delta = Quill.import('delta');
+            return new Delta().insert(plaintext);
+        });
+
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
 
