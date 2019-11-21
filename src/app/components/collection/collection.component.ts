@@ -43,7 +43,6 @@ import { TranslatorService } from '../../services/translator/translator.service'
 export class CollectionComponent implements OnInit, OnDestroy {
   private globalEmitter = remote.getGlobal('globalEmitter');
   private subscription: Subscription;
-  private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
   constructor(private dialog: MatDialog, private collection: CollectionService, private file: FileService,
     private translator: TranslatorService, private snackBar: SnackBarService, private zone: NgZone, private logger: Logger) {
@@ -68,7 +67,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
   public isBusy: boolean = false;
   public canRenameNotebook: boolean = false;
   public canDeleteNotebooks: boolean = false;
-
+  public selectionWatcher: SelectionWatcher = new SelectionWatcher();
+  
   public get allCategory(): string {
     return Constants.allCategory;
   }

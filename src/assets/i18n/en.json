@@ -70,6 +70,7 @@
         "ImportNotes": "Import notes...",
         "AddNotebook": "Add notebook...",
         "RenameNotebook": "Rename notebook...",
+        "DeleteNotebook": "Delete notebook...",
         "DeleteNotebooks": "Delete notebooks...",
         "AddNote": "Add note",
         "DeleteNote": "Delete note...",

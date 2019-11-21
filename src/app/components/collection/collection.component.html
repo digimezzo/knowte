@@ -41,7 +41,7 @@
                                 <span class="edit-item-icon custom-font">&#xE70F;</span>
                             </button>
                             <button class="list-button" mat-mini-fab color="" (click)="deleteNotebooksAsync()"
-                                matTooltip="{{ 'Tooltips.DeleteNotebooks' | translate }}" *ngIf="canDeleteNotebooks">
+                                matTooltip="{{ (selectionWatcher.selectedItemsCount > 1 ? 'Tooltips.DeleteNotebooks' : 'Tooltips.DeleteNotebook') | translate }}" *ngIf="canDeleteNotebooks">
                                 <span class="edit-item-icon custom-font">&#xE74D;</span>
                             </button>
                             <button class="list-button" mat-fab (click)="addNotebookAsync()"
