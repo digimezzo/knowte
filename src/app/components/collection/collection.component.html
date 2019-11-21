@@ -61,7 +61,7 @@
             <!-- Note buttons -->
             <div class="note-buttons mr-4 mb-2" [@noteButtonsVisibility]="noteButtonsVisibility">
                 <button class="list-button" mat-mini-fab color="" (click)="deleteNotesAsync()"
-                    matTooltip="{{ 'Tooltips.DeleteNotes' | translate }}" *ngIf=canDeleteNotes>
+                    matTooltip="{{ (selectedNoteIds.length > 1 ? 'Tooltips.DeleteNotes' : 'Tooltips.DeleteNote') | translate }}" *ngIf=canDeleteNotes>
                     <span class="edit-item-icon custom-font">&#xE74D;</span>
                 </button>
                 <button class="list-button" mat-mini-fab color="" (click)="importNotesAsync()"
