@@ -7,13 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.1] - 2019-11-22
+## [2.0.1] - 2019-11-23
 ### Added
 ### Changed
-- Changed to a new design that more closely resembles the Knowte 1.x design.
+- New UI design that more closely resembles the Knowte 1.x
 ### Removed
 ### Fixed
-- Some tooltips which were incorrect
+- Tooltips don't adapt to the number of selected notes and notebooks
+- Font size not updated in open notes when font size setting is changed
+- Notebook name not updated in open notes when language setting is changed
+- Incorrect notification when removing multiple notebooks
 
 ## [2.0.0] - 2019-09-28
 ### Added
