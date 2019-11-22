@@ -21,10 +21,10 @@ import { NoteDetailsResult } from '../results/noteDetailsResult';
 import { ipcRenderer } from 'electron';
 import { NoteExport } from '../../core/noteExport';
 import { TasksCount } from '../../core/tasksCount';
-import { Settings } from '../../core/settings';
 import { Logger } from '../../core/logger';
 import { TranslatorService } from '../translator/translator.service';
 import { timingSafeEqual } from 'crypto';
+import { SettingsService } from '../settings/settings.service';
 
 @Injectable({
   providedIn: 'root',
@@ -54,7 +54,7 @@ export class CollectionService {
   private _activeCollection: string;
 
   constructor(private translator: TranslatorService, private search: SearchService,
-    private settings: Settings, private logger: Logger) {
+    private settings: SettingsService, private logger: Logger) {
   }
 
   public collectionsChanged$: Observable<{}> = this.collectionsChanged.asObservable();

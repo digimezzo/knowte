@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import * as Store from 'electron-store';
-import { Constants } from './constants';
+import { Constants } from '../../core/constants';
 
 @Injectable({
     providedIn: 'root',
 })
-export class Settings {
+export class SettingsService {
     private settings: Store<any> = new Store();
 
     constructor() {
         this.initialize();
     }
 
-    // Default language
-    public get defaultLanguage(): string {
+     // Default language
+     public get defaultLanguage(): string {
         return 'en';
     }
 

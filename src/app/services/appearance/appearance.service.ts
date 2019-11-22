@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { remote } from 'electron';
 import { Constants } from '../../core/constants';
-import { Settings } from '../../core/settings';
 import { ColorTheme } from '../../core/colorTheme';
 import { Logger } from '../../core/logger';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { SettingsService } from '../settings/settings.service';
 
 @Injectable({
     providedIn: 'root',
@@ -14,7 +14,7 @@ export class AppearanceService {
     private themeChangedListener: any = this.themeChangedHandler.bind(this);
     private _selectedColorTheme: ColorTheme;
 
-    constructor(private settings: Settings, private logger: Logger, private overlayContainer: OverlayContainer) {
+    constructor(private settings: SettingsService, private logger: Logger, private overlayContainer: OverlayContainer) {
         this.initialize();
     }
 

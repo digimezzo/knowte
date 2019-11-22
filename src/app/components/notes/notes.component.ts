@@ -12,7 +12,7 @@ import { Utils } from '../../core/utils';
 import { remote } from 'electron';
 import { FileService } from '../../services/file/file.service';
 import { SelectionWatcher } from '../../core/selectionWatcher';
-import { Settings } from '../../core/settings';
+import { SettingsService } from '../../services/settings/settings.service';
 
 @Component({
     selector: 'notes-component',
@@ -28,7 +28,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
     constructor(private collection: CollectionService, private snackBar: SnackBarService,
-        public search: SearchService, private settings: Settings,
+        public search: SearchService, private settings: SettingsService,
         private file: FileService, private zone: NgZone) {
     }
 

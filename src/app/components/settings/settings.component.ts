@@ -2,8 +2,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { ImportFromOldVersionDialogComponent } from '../dialogs/importFromOldVersionDialog/importFromOldVersionDialog.component';
 import { AppearanceService } from '../../services/appearance/appearance.service';
-import { Settings } from '../../core/settings';
 import { TranslatorService } from '../../services/translator/translator.service';
+import { SettingsService } from '../../services/settings/settings.service';
 
 @Component({
   selector: 'settings-page',
@@ -13,7 +13,7 @@ import { TranslatorService } from '../../services/translator/translator.service'
 })
 export class SettingsComponent implements OnInit {
   constructor(private dialog: MatDialog, public translator: TranslatorService, public appearance: AppearanceService,
-    private settings: Settings) {
+    private settings: SettingsService) {
   }
 
   public fontSizes: number[] = [14, 16, 18, 20, 22, 24];

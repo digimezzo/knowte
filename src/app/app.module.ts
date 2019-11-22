@@ -56,9 +56,9 @@ import { ActiveNotebookAndSearchComponent } from './components/activeNotebookAnd
 import { TruncatePipe } from './pipes/truncatePipe';
 import { FileService } from './services/file/file.service';
 import { TasksProgressComponent } from './components/tasksProgressComponent/tasksProgress.component';
-import { Settings } from './core/settings';
 import { ColorThemeSwitcherComponent } from './components/color-theme-switcher/color-theme-switcher.component';
 import { LogoMenuComponent } from './components/logo-menu/logo-menu.component';
+import { SettingsService } from './services/settings/settings.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -127,7 +127,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [
     ElectronService,
     CollectionService,
-    Settings,
+    SettingsService,
     FileService,
     DataStore,
     {

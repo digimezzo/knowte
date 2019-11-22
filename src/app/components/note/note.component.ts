@@ -20,9 +20,9 @@ import { NoteExport } from '../../core/noteExport';
 import { ipcRenderer } from 'electron';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { TasksCount } from '../../core/tasksCount';
-import { Settings } from '../../core/settings';
 import { Logger } from '../../core/logger';
 import { TranslatorService } from '../../services/translator/translator.service';
+import { SettingsService } from '../../services/settings/settings.service';
 
 @Component({
     selector: 'note-content',
@@ -53,7 +53,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private languageChangedListener: any = this.languageChangedHandler.bind(this);
 
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
-        private snackBar: SnackBarService, private translator: TranslatorService, private settings: Settings) {
+        private snackBar: SnackBarService, private translator: TranslatorService, private settings: SettingsService) {
     }
 
     public initialNoteTitle: string;
@@ -71,7 +71,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public async ngOnInit(): Promise<void> {
-        document.body.setAttribute('editor-font-size', this.settings.fontSizeInNotes.toString());
+        this.setEditorFontSize();
 
         let notePlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
 
@@ -106,7 +106,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
 
         // Forces paste of unformatted text (See: https://stackoverflow.com/questions/41237486/how-to-paste-plain-text-in-a-quill-based-editor)
-        this.quill.clipboard.addMatcher (Node.ELEMENT_NODE, function (node, delta) {
+        this.quill.clipboard.addMatcher(Node.ELEMENT_NODE, function (node, delta) {
             var plaintext = node.innerText;
             var Delta = Quill.import('delta');
             return new Delta().insert(plaintext);
@@ -418,6 +418,10 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
     }
 
+    private setEditorFontSize(): void {
+        document.body.setAttribute('editor-font-size', this.settings.fontSizeInNotes.toString());
+    }
+
     private setWindowTitle(noteTitle: string): void {
         let window: BrowserWindow = remote.getCurrentWindow();
         window.setTitle(noteTitle);
@@ -456,7 +460,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private languageChangedHandler(noteId: string) {
-       this.getNotebookName();
+        this.getNotebookName();
     }
 
     private clearSearch() {
@@ -577,7 +581,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    private getNotebookName(): void{
+    private getNotebookName(): void {
         this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNotebookNameCallback.bind(this));
     }
 
