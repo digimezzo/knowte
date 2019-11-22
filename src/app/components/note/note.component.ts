@@ -51,6 +51,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private focusNoteListener: any = this.focusNoteHandler.bind(this);
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
     private languageChangedListener: any = this.languageChangedHandler.bind(this);
+    private fontSizeChangedListener: any = this.fontSizeChangedHandler.bind(this);
 
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
         private snackBar: SnackBarService, private translator: TranslatorService, private settings: SettingsService) {
@@ -335,6 +336,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.globalEmitter.removeListener(Constants.focusNoteEvent, this.focusNoteListener);
         this.globalEmitter.removeListener(Constants.closeNoteEvent, this.closeNoteListener);
         this.globalEmitter.removeListener(Constants.languageChangedEvent, this.languageChangedListener);
+        this.globalEmitter.removeListener(Constants.fontSizeChangedEvent, this.fontSizeChangedListener);
     }
 
     private addListeners(): void {
@@ -343,6 +345,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
         this.globalEmitter.on(Constants.closeNoteEvent, this.closeNoteListener);
         this.globalEmitter.on(Constants.languageChangedEvent, this.languageChangedListener);
+        this.globalEmitter.on(Constants.fontSizeChangedEvent, this.fontSizeChangedListener);
     }
 
     private cleanup(): void {
@@ -439,7 +442,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    private focusNoteHandler(noteId: string) {
+    private focusNoteHandler(noteId: string): void {
         if (this.noteId === noteId) {
             let window: BrowserWindow = remote.getCurrentWindow();
 
@@ -452,18 +455,22 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    private closeNoteHandler(noteId: string) {
+    private closeNoteHandler(noteId: string): void {
         if (this.noteId === noteId) {
             let window: BrowserWindow = remote.getCurrentWindow();
             window.close();
         }
     }
 
-    private languageChangedHandler(noteId: string) {
+    private languageChangedHandler(noteId: string): void {
         this.getNotebookName();
     }
 
-    private clearSearch() {
+    private fontSizeChangedHandler(): void {
+        this.setEditorFontSize();
+    }
+
+    private clearSearch(): void {
         let window: BrowserWindow = remote.getCurrentWindow();
         window.webContents.stopFindInPage("keepSelection");
     }
@@ -472,7 +479,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.globalEmitter.emit(Constants.getSearchTextEvent, this.getSearchTextCallback.bind(this));
     }
 
-    private getSearchTextCallback(searchText: string) {
+    private getSearchTextCallback(searchText: string): void {
         let window: BrowserWindow = remote.getCurrentWindow();
 
         // window.webContents.stopFindInPage("keepSelection");

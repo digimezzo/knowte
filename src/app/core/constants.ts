@@ -38,6 +38,7 @@ export class Constants {
     static readonly deleteNoteEvent: string = "0896531e-ee16-4407-b4e5-120b55c6e82f";
     static readonly themeChangedEvent: string = "f132f4ce-ae3c-4e1d-958a-a9cd28517b68";
     static readonly languageChangedEvent: string = "0f8d004f-080d-4901-b813-477432809519";
+    static readonly fontSizeChangedEvent: string = "6ec3f042-27ea-49e1-a012-49693f44db02";
 
     static readonly languages: Language[] = [
         { code: "en", englishName: "English", localizedName: "English" },

@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import * as Store from 'electron-store';
 import { Constants } from '../../core/constants';
+import { remote } from 'electron';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SettingsService {
     private settings: Store<any> = new Store();
+    private globalEmitter = remote.getGlobal('globalEmitter');
 
     constructor() {
         this.initialize();
@@ -51,6 +53,7 @@ export class SettingsService {
 
     public set fontSizeInNotes(v: number) {
         this.settings.set('fontSizeInNotes', v);
+        this.globalEmitter.emit(Constants.fontSizeChangedEvent);
     }
 
     // Show exact dates in the notes list
