@@ -50,6 +50,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private notebookChangedListener: any = this.notebookChangedHandler.bind(this);
     private focusNoteListener: any = this.focusNoteHandler.bind(this);
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
+    private languageChangedListener: any = this.languageChangedHandler.bind(this);
 
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
         private snackBar: SnackBarService, private translator: TranslatorService, private settings: Settings) {
@@ -333,6 +334,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.globalEmitter.removeListener(Constants.notebookChangedEvent, this.notebookChangedListener);
         this.globalEmitter.removeListener(Constants.focusNoteEvent, this.focusNoteListener);
         this.globalEmitter.removeListener(Constants.closeNoteEvent, this.closeNoteListener);
+        this.globalEmitter.removeListener(Constants.languageChangedEvent, this.languageChangedListener);
     }
 
     private addListeners(): void {
@@ -340,6 +342,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.globalEmitter.on(Constants.notebookChangedEvent, this.notebookChangedListener);
         this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
         this.globalEmitter.on(Constants.closeNoteEvent, this.closeNoteListener);
+        this.globalEmitter.on(Constants.languageChangedEvent, this.languageChangedListener);
     }
 
     private cleanup(): void {
@@ -409,6 +412,12 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
     }
 
+    private getNotebookNameCallback(result: NoteDetailsResult) {
+        this.zone.run(() => {
+            this.notebookName = result.notebookName;
+        });
+    }
+
     private setWindowTitle(noteTitle: string): void {
         let window: BrowserWindow = remote.getCurrentWindow();
         window.setTitle(noteTitle);
@@ -444,6 +453,10 @@ export class NoteComponent implements OnInit, OnDestroy {
             let window: BrowserWindow = remote.getCurrentWindow();
             window.close();
         }
+    }
+
+    private languageChangedHandler(noteId: string) {
+       this.getNotebookName();
     }
 
     private clearSearch() {
@@ -562,6 +575,10 @@ export class NoteComponent implements OnInit, OnDestroy {
                 width: '450px', data: { errorText: errorText }
             });
         }
+    }
+
+    private getNotebookName(): void{
+        this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNotebookNameCallback.bind(this));
     }
 
     private hideActionButtons(): void {
