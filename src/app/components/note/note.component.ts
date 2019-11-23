@@ -360,29 +360,36 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.contextMenu.popup({ window: remote.getCurrentWindow() });
     }
 
-    private updateContextMenuItemsEnabledState() {
-
-        // Cut, Copy, Delete.
+    private hasSelectedRange(): boolean {
         let range: any = this.quill.getSelection();
 
         if (range && range.length > 0) {
-            this.cutContextMenuItem.enabled = true;
-            this.copyContextMenuItem.enabled = true;
-            this.deleteContextMenuItem.enabled = true;
-        } else {
-            this.cutContextMenuItem.enabled = false;
-            this.copyContextMenuItem.enabled = false;
-            this.deleteContextMenuItem.enabled = false;
+            return true;
         }
 
-        // Paste
+        return false;
+    }
+
+    private clipboardHasData(): boolean {
         let text: string = clipboard.readText();
 
-        if(text){
-            this.pasteContextMenuItem.enabled = true;
-        }else{
-            this.pasteContextMenuItem.enabled = false;
+        if (text) {
+            return true;
         }
+
+        return false;
+    }
+
+    private updateContextMenuItemsEnabledState() {
+
+        // Cut, Copy, Delete.
+        let hasSelectedText: boolean = this.hasSelectedRange();
+        this.cutContextMenuItem.enabled = hasSelectedText;
+        this.copyContextMenuItem.enabled = hasSelectedText;
+        this.deleteContextMenuItem.enabled = hasSelectedText;
+
+        // Paste
+        this.pasteContextMenuItem.enabled = this.clipboardHasData();
     }
 
     private performCut(): void {
@@ -415,10 +422,25 @@ export class NoteComponent implements OnInit, OnDestroy {
             return;
         }
 
-        let clipboardText: string = clipboard.readText();
+        let availableFormats = clipboard.availableFormats("clipboard");
 
-        if (clipboardText) {
-            this.quill.insertText(range.index, clipboardText);
+        if (availableFormats.includes("image/png") || availableFormats.includes("image/jpeg")) {
+            // Image found on clipboard. Try to paste as JPG.
+            try {
+                let clipboardImage: NativeImage = clipboard.readImage();
+                let blob: Blob = new Blob([clipboardImage.toJPEG(80)], { type: 'image/jpeg' });
+                this.insertImage(blob);
+            } catch (error) {
+                this.logger.error("Could not paste as image", "NoteComponent", "performPaste");
+            }
+        }
+        else {
+            // No image found on clipboard. Try to paste as text.
+            let clipboardText: string = clipboard.readText();
+
+            if (clipboardText) {
+                this.quill.insertText(range.index, clipboardText);
+            }
         }
     }
 
