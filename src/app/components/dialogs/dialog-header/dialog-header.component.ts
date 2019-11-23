@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 
 @Component({
-    selector: 'dialog-header',
-    templateUrl: './dialogHeader.component.html',
-    styleUrls: ['./dialogHeader.component.scss'],
+    selector: 'app-dialog-header',
+    templateUrl: './dialog-header.component.html',
+    styleUrls: ['./dialog-header.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
 export class DialogHeaderComponent implements OnInit {

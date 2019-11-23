@@ -5,9 +5,9 @@ import { remote } from 'electron';
 import { Constants } from '../../../core/constants';
 
 @Component({
-    selector: 'changenotebook-dialog',
-    templateUrl: './changeNotebookDialog.component.html',
-    styleUrls: ['./changeNotebookDialog.component.scss'],
+    selector: 'app-change-notebook-dialog',
+    templateUrl: './change-notebook-dialog.component.html',
+    styleUrls: ['./change-notebook-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
 export class ChangeNotebookDialogComponent implements OnInit, OnDestroy {

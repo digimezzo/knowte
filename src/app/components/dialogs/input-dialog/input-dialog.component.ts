@@ -2,9 +2,9 @@ import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 @Component({
-    selector: 'input-dialog',
-    templateUrl: './inputDialog.component.html',
-    styleUrls: ['./inputDialog.component.scss'],
+    selector: 'app-input-dialog',
+    templateUrl: './input-dialog.component.html',
+    styleUrls: ['./input-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
 export class InputDialogComponent implements OnInit {

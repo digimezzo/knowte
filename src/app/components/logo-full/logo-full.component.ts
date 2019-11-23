@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { Constants } from '../../core/constants';
 
 @Component({
-  selector: 'logo-full',
+  selector: 'app-logo-full',
   host: { 'style': 'display: block' },
   templateUrl: './logo-full.component.html',
   styleUrls: ['./logo-full.component.scss'],

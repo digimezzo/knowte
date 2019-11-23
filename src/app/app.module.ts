@@ -31,20 +31,20 @@ import { CollectionSwitcherComponent } from './components/collection-switcher/co
 import { SettingsComponent } from './components/settings/settings.component';
 import { InformationComponent } from './components/information/information.component';
 import { NoteComponent } from './components/note/note.component';
-import { LicenseDialogComponent } from './components/dialogs/licenseDialog/licenseDialog.component';
+import { LicenseDialogComponent } from './components/dialogs/license-dialog/license-dialog.component';
 import { LogoFullComponent } from './components/logo-full/logo-full.component';
-import { InputDialogComponent } from './components/dialogs/inputDialog/inputDialog.component';
-import { ErrorDialogComponent } from './components/dialogs/errorDialog/errorDialog.component';
+import { InputDialogComponent } from './components/dialogs/input-dialog/input-dialog.component';
+import { ErrorDialogComponent } from './components/dialogs/error-dialog/error-dialog.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { CollectionComponent } from './components/collection/collection.component';
 import { NotesComponent } from './components/notes/notes.component';
-import { RenameCollectionDialogComponent } from './components/dialogs/renameCollectionDialog/renameCollectionDialog.component';
-import { RenameNotebookDialogComponent } from './components/dialogs/renameNotebookDialog/renameNotebookDialog.component';
-import { ConfirmationDialogComponent } from './components/dialogs/confirmationDialog/confirmationDialog.component';
-import { DialogHeaderComponent } from './components/dialogs/dialogHeader/dialogHeader.component';
-import { ChangeNotebookDialogComponent } from './components/dialogs/changeNotebookDialog/changeNotebookDialog.component';
-import { ImportFromOldVersionDialogComponent } from './components/dialogs/importFromOldVersionDialog/importFromOldVersionDialog.component';
+import { RenameCollectionDialogComponent } from './components/dialogs/rename-collection-dialog/rename-collection-dialog.component';
+import { RenameNotebookDialogComponent } from './components/dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
+import { ConfirmationDialogComponent } from './components/dialogs/confirmation-dialog/confirmation-dialog.component';
+import { DialogHeaderComponent } from './components/dialogs/dialog-header/dialog-header.component';
+import { ChangeNotebookDialogComponent } from './components/dialogs/change-notebook-dialog/change-notebook-dialog.component';
+import { ImportFromOldVersionDialogComponent } from './components/dialogs/import-from-old-version-dialog/import-from-old-version-dialog.component';
 
 // Modules
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -55,7 +55,7 @@ import { GlobalErrorHandler } from './globalErrorHandler';
 import { ActiveNotebookAndSearchComponent } from './components/active-notebook-and-search/active-notebook-and-search.component';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { FileService } from './services/file/file.service';
-import { TasksProgressComponent } from './components/tasksProgressComponent/tasksProgress.component';
+import { TasksProgressComponent } from './components/tasks-progress/tasks-progress.component';
 import { ColorThemeSwitcherComponent } from './components/color-theme-switcher/color-theme-switcher.component';
 import { LogoMenuComponent } from './components/logo-menu/logo-menu.component';
 import { SettingsService } from './services/settings/settings.service';

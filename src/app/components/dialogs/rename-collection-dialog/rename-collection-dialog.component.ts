@@ -1,15 +1,15 @@
 import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 import { CollectionService } from '../../../services/collection/collection.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { ErrorDialogComponent } from '../errorDialog/errorDialog.component';
+import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
 import { Operation } from '../../../core/enums';
 import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../../services/translator/translator.service';
 
 @Component({
-    selector: 'rename-collection-dialog',
-    templateUrl: './renameCollectionDialog.component.html',
-    styleUrls: ['./renameCollectionDialog.component.scss'],
+    selector: 'app-rename-collection-dialog',
+    templateUrl: './rename-collection-dialog.component.html',
+    styleUrls: ['./rename-collection-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
 export class RenameCollectionDialogComponent implements OnInit {

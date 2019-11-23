@@ -1,15 +1,15 @@
 import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 import { CollectionService } from '../../../services/collection/collection.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { ErrorDialogComponent } from '../errorDialog/errorDialog.component';
+import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
 import { Operation } from '../../../core/enums';
 import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../../services/translator/translator.service';
 
 @Component({
-    selector: 'rename-notebook-dialog',
-    templateUrl: './renameNotebookDialog.component.html',
-    styleUrls: ['./renameNotebookDialog.component.scss'],
+    selector: 'app-rename-notebook-dialog',
+    templateUrl: './rename-notebook-dialog.component.html',
+    styleUrls: ['./rename-notebook-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
 export class RenameNotebookDialogComponent implements OnInit {

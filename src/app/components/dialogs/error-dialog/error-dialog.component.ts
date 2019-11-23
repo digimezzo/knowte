@@ -3,9 +3,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { remote } from 'electron';
 
 @Component({
-    selector: 'error-dialog',
-    templateUrl: './errorDialog.component.html',
-    styleUrls: ['./errorDialog.component.scss'],
+    selector: 'app-error-dialog',
+    templateUrl: './error-dialog.component.html',
+    styleUrls: ['./error-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
 export class ErrorDialogComponent implements OnInit {

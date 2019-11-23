@@ -1,18 +1,18 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { CollectionService } from '../../services/collection/collection.service';
-import { InputDialogComponent } from '../dialogs/inputDialog/inputDialog.component';
+import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
-import { RenameCollectionDialogComponent } from '../dialogs/renameCollectionDialog/renameCollectionDialog.component';
+import { RenameCollectionDialogComponent } from '../dialogs/rename-collection-dialog/rename-collection-dialog.component';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
-import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
-import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
+import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
+import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
 import { Router } from '@angular/router';
 import { Operation } from '../../core/enums';
 import { TranslatorService } from '../../services/translator/translator.service';
 
 @Component({
-  selector: 'collection-switcher',
+  selector: 'app-collection-switcher',
   templateUrl: './collection-switcher.component.html',
   styleUrls: ['./collection-switcher.component.scss'],
   encapsulation: ViewEncapsulation.None

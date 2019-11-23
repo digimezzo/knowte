@@ -15,7 +15,7 @@ import { SelectionWatcher } from '../../core/selection-watcher';
 import { SettingsService } from '../../services/settings/settings.service';
 
 @Component({
-    selector: 'notes-component',
+    selector: 'app-notes',
     templateUrl: './notes.component.html',
     styleUrls: ['./notes.component.scss'],
     encapsulation: ViewEncapsulation.None

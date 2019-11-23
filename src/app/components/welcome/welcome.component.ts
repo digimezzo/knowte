@@ -3,7 +3,7 @@ import { remote } from 'electron';
 import { Constants } from '../../core/constants';
 import { CollectionService } from '../../services/collection/collection.service';
 import { MatDialog } from '@angular/material';
-import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
+import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
 import { Router } from '@angular/router';
 import { Logger } from '../../core/logger';
 import { TranslatorService } from '../../services/translator/translator.service';

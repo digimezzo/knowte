@@ -2,12 +2,12 @@ import { Component, OnInit, OnDestroy, NgZone, ViewEncapsulation } from '@angula
 import { CollectionService } from '../../services/collection/collection.service';
 import { Notebook } from '../../data/entities/notebook';
 import { MatDialog, MatDialogRef, MatTabChangeEvent } from '@angular/material';
-import { InputDialogComponent } from '../dialogs/inputDialog/inputDialog.component';
-import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
+import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
+import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { Subscription, Subject } from 'rxjs';
-import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
-import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/renameNotebookDialog.component';
+import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
+import { RenameNotebookDialogComponent } from '../dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
 import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
 import { NotesCountResult } from '../../services/results/notesCountResult';
@@ -23,7 +23,7 @@ import { Logger } from '../../core/logger';
 import { TranslatorService } from '../../services/translator/translator.service';
 
 @Component({
-  selector: 'collection-page',
+  selector: 'app-collection',
   templateUrl: './collection.component.html',
   styleUrls: ['./collection.component.scss'],
   encapsulation: ViewEncapsulation.None,

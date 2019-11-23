@@ -2,11 +2,11 @@
     <div class="window-frame-titlebar">
         <div class="window-frame-titlebar-dragarea pl-1">
         </div>
-        <collection-switcher></collection-switcher>
+        <app-collection-switcher></app-collection-switcher>
         <app-window-controls></app-window-controls>
     </div>
     <div class="window-frame-content">
-        <logo-menu class="information-logo-menu" [selectedMenuItem]="3"></logo-menu>
+        <app-logo-menu class="information-logo-menu" [selectedMenuItem]="3"></app-logo-menu>
         <div class="information">
             <mat-tab-group>
                 <mat-tab>
@@ -15,7 +15,7 @@
                     </ng-template>
                     <div class="m-3">
                         <h1>{{ 'AboutPage.About' | translate }}</h1>
-                        <logo-full class="mt-3" [textColor]="'black'"></logo-full>
+                        <app-logo-full class="mt-3" [textColor]="'black'"></app-logo-full>
                         <div class="mt-3">
                             {{ 'AboutPage.Version' | translate }}:
                             <strong> {{applicationVersion}}</strong>

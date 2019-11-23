@@ -3,9 +3,9 @@ import { remote } from 'electron';
 import { CollectionService } from '../../../services/collection/collection.service';
 
 @Component({
-    selector: 'importfromoldversion-dialog',
-    templateUrl: './importFromOldVersionDialog.component.html',
-    styleUrls: ['./importFromOldVersionDialog.component.scss'],
+    selector: 'app-import-from-old-version-dialog.component',
+    templateUrl: './import-from-old-version-dialog.component.html',
+    styleUrls: ['./import-from-old-version-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
 export class ImportFromOldVersionDialogComponent implements OnInit {

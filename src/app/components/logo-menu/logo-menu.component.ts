@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 
 @Component({
-  selector: 'logo-menu',
+  selector: 'app-logo-menu',
   host: { 'style': 'display: block' },
   templateUrl: './logo-menu.component.html',
   styleUrls: ['./logo-menu.component.scss'],

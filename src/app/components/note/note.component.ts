@@ -3,19 +3,19 @@ import { remote, BrowserWindow, SaveDialogOptions, clipboard, NativeImage } from
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/noteDetailsResult';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { ChangeNotebookDialogComponent } from '../dialogs/changeNotebookDialog/changeNotebookDialog.component';
+import { ChangeNotebookDialogComponent } from '../dialogs/change-notebook-dialog/change-notebook-dialog.component';
 import { Constants } from '../../core/constants';
 import { Subject } from 'rxjs';
 import { debounceTime } from "rxjs/internal/operators";
 import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../../services/results/noteOperationResult';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
-import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
+import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
 import * as Quill from 'quill';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { Utils } from '../../core/utils';
-import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
+import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { NoteExport } from '../../core/note-export';
 import { ipcRenderer } from 'electron';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -25,7 +25,7 @@ import { TranslatorService } from '../../services/translator/translator.service'
 import { SettingsService } from '../../services/settings/settings.service';
 
 @Component({
-    selector: 'note-content',
+    selector: 'app-note',
     templateUrl: './note.component.html',
     styleUrls: ['./note.component.scss'],
     encapsulation: ViewEncapsulation.None,

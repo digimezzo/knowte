@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material';
-import { ImportFromOldVersionDialogComponent } from '../dialogs/importFromOldVersionDialog/importFromOldVersionDialog.component';
+import { ImportFromOldVersionDialogComponent } from '../dialogs/import-from-old-version-dialog/import-from-old-version-dialog.component';
 import { AppearanceService } from '../../services/appearance/appearance.service';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { SettingsService } from '../../services/settings/settings.service';
 
 @Component({
-  selector: 'settings-page',
+  selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
   encapsulation: ViewEncapsulation.None

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CollectionService } from '../../services/collection/collection.service';
 
 @Component({
-  selector: 'loading-page',
+  selector: 'app-loading',
   templateUrl: './loading.component.html',
   styleUrls: ['./loading.component.scss'],
   encapsulation: ViewEncapsulation.None

@@ -1,9 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-    selector: 'tasks-progress-component',
-    templateUrl: './tasksProgress.component.html',
-    styleUrls: ['./tasksProgress.component.scss']
+    selector: 'app-tasks-progress',
+    templateUrl: './tasks-progress.component.html',
+    styleUrls: ['./tasks-progress.component.scss']
 })
 export class TasksProgressComponent implements OnInit {
     private _closedTasksCount : number;

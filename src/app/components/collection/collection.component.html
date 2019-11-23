@@ -3,14 +3,14 @@
         <div class="window-frame-titlebar-dragarea pl-1">
             <!-- {{ applicationName }} -->
         </div>
-        <collection-switcher></collection-switcher>
+        <app-collection-switcher></app-collection-switcher>
         <app-window-controls></app-window-controls>
     </div>
     <div class="window-frame-overlay" *ngIf="isBusy">
         <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
     </div>
     <div class="window-frame-content">
-        <logo-menu class="collection-logo-menu" [selectedMenuItem]="1"></logo-menu>
+        <app-logo-menu class="collection-logo-menu" [selectedMenuItem]="1"></app-logo-menu>
         <div class="collection">
             <!-- Notebooks -->
             <div class="collection-notebooks">
@@ -80,50 +80,50 @@
                         <h4>{{ 'NotesTabs.All' | translate }}</h4>
                         <div class="count-label">{{allNotesCount}}</div>
                     </ng-template>
-                    <notes-component [activeNotebook]="activeNotebook" [componentCategory]="allCategory"
+                    <app-notes [activeNotebook]="activeNotebook" [componentCategory]="allCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
                         (selectedNoteIds)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
-                        (dragover)="notesDragOver($event)"></notes-component>
+                        (dragover)="notesDragOver($event)"></app-notes>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
                         <h4>{{ 'NotesTabs.Today' | translate }}</h4>
                         <div class="count-label">{{todayNotesCount}}</div>
                     </ng-template>
-                    <notes-component [activeNotebook]="activeNotebook" [componentCategory]="todayCategory"
+                    <app-notes [activeNotebook]="activeNotebook" [componentCategory]="todayCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
                         (selectedNoteIds)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
-                        (dragover)="notesDragOver($event)"></notes-component>
+                        (dragover)="notesDragOver($event)"></app-notes>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
                         <h4>{{ 'NotesTabs.Yesterday' | translate }}</h4>
                         <div class="count-label">{{yesterdayNotesCount}}</div>
                     </ng-template>
-                    <notes-component [activeNotebook]="activeNotebook" [componentCategory]="yesterdayCategory"
+                    <app-notes [activeNotebook]="activeNotebook" [componentCategory]="yesterdayCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
                         (selectedNoteIds)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
-                        (dragover)="notesDragOver($event)"></notes-component>
+                        (dragover)="notesDragOver($event)"></app-notes>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
                         <h4>{{ 'NotesTabs.ThisWeek' | translate }}</h4>
                         <div class="count-label">{{thisWeekNotesCount}}</div>
                     </ng-template>
-                    <notes-component [activeNotebook]="activeNotebook" [componentCategory]="thisWeekCategory"
+                    <app-notes [activeNotebook]="activeNotebook" [componentCategory]="thisWeekCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
                         (selectedNoteIds)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
-                        (dragover)="notesDragOver($event)"></notes-component>
+                        (dragover)="notesDragOver($event)"></app-notes>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
                         <h4>{{ 'NotesTabs.Marked' | translate }}</h4>
                         <div class="count-label">{{markedNotesCount}}</div>
                     </ng-template>
-                    <notes-component [activeNotebook]="activeNotebook" [componentCategory]="markedCategory"
+                    <app-notes [activeNotebook]="activeNotebook" [componentCategory]="markedCategory"
                         [categoryChangedSubject]="tabChangedSubject" (notesCount)="onNotesCountChanged($event)"
                         (selectedNoteIds)="onSelectedNotesChanged($event)" (drop)="notesDrop($event)"
-                        (dragover)="notesDragOver($event)"></notes-component>
+                        (dragover)="notesDragOver($event)"></app-notes>
                 </mat-tab>
             </mat-tab-group>
         </div>
