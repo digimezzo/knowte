@@ -355,8 +355,10 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.contextMenu.append(this.pasteContextMenuItem);
         this.contextMenu.append(this.deleteContextMenuItem);
 
-        window.removeEventListener('contextmenu', this.contextMenuListener.bind(this));
-        window.addEventListener('contextmenu', this.contextMenuListener.bind(this), false);
+        let editor: HTMLElement = document.getElementById("editor");
+
+        editor.removeEventListener('contextmenu', this.contextMenuListener.bind(this));
+        editor.addEventListener('contextmenu', this.contextMenuListener.bind(this), false);
     }
 
     private contextMenuListener(e: MouseEvent): void {
