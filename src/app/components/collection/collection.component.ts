@@ -4,7 +4,7 @@ import { Notebook } from '../../data/entities/notebook';
 import { MatDialog, MatDialogRef, MatTabChangeEvent } from '@angular/material';
 import { InputDialogComponent } from '../dialogs/inputDialog/inputDialog.component';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
-import { SnackBarService } from '../../services/snackBar/snackBar.service';
+import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { Subscription, Subject } from 'rxjs';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { RenameNotebookDialogComponent } from '../dialogs/renameNotebookDialog/renameNotebookDialog.component';
@@ -18,7 +18,7 @@ import { trigger, style, animate, state, transition } from '@angular/animations'
 import { debounceTime } from "rxjs/internal/operators";
 import { remote } from 'electron';
 import { FileService } from '../../services/file/file.service';
-import { SelectionWatcher } from '../../core/selectionWatcher';
+import { SelectionWatcher } from '../../core/selection-watcher';
 import { Logger } from '../../core/logger';
 import { TranslatorService } from '../../services/translator/translator.service';
 

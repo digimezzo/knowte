@@ -4,7 +4,7 @@ import { InputDialogComponent } from '../dialogs/inputDialog/inputDialog.compone
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
 import { RenameCollectionDialogComponent } from '../dialogs/renameCollectionDialog/renameCollectionDialog.component';
-import { SnackBarService } from '../../services/snackBar/snackBar.service';
+import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmationDialog/confirmationDialog.component';
 import { ErrorDialogComponent } from '../dialogs/errorDialog/errorDialog.component';
 import { Router } from '@angular/router';

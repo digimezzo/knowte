@@ -4,7 +4,7 @@
             <!-- {{ applicationName }} -->
         </div>
         <collection-switcher></collection-switcher>
-        <window-controls></window-controls>
+        <app-window-controls></app-window-controls>
     </div>
     <div class="window-frame-overlay" *ngIf="isBusy">
         <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
@@ -55,9 +55,9 @@
                 </div>
             </div>
             <!-- Selected notebook and search -->
-            <activenotebookandsearch-component class="active-notebook-and-search" [activeNotebook]="activeNotebook"
+            <app-active-notebook-and-search class="active-notebook-and-search" [activeNotebook]="activeNotebook"
                 [(notesCount)]="notesCount">
-            </activenotebookandsearch-component>
+            </app-active-notebook-and-search>
             <!-- Note buttons -->
             <div class="note-buttons mr-4 mb-2" [@noteButtonsVisibility]="noteButtonsVisibility">
                 <button class="list-button" mat-mini-fab color="" (click)="deleteNotesAsync()"

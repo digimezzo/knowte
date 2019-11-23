@@ -19,14 +19,14 @@ import { ElectronService } from './services/electron.service';
 import { CollectionService } from './services/collection/collection.service';
 
 // Stores
-import { DataStore } from './data/dataStore';
+import { DataStore } from './data/data-store';
 
 // Directives
 import { WebviewDirective } from './directives/webview.directive';
 
 // Components
 import { AppComponent } from './app.component';
-import { WindowControlsComponent } from './components/windowControls/windowControls.component';
+import { WindowControlsComponent } from './components/window-controls/window-controls.component';
 import { CollectionSwitcherComponent } from './components/collection-switcher/collection-switcher.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { InformationComponent } from './components/information/information.component';
@@ -52,8 +52,8 @@ import { MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDivide
   MatDialogModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatSnackBarModule,
   MatListModule, MatSelectModule, MatSlideToggleModule, MatRippleModule } from '@angular/material';
 import { GlobalErrorHandler } from './globalErrorHandler';
-import { ActiveNotebookAndSearchComponent } from './components/activeNotebookAndSearch/activeNotebookAndSearch.component';
-import { TruncatePipe } from './pipes/truncatePipe';
+import { ActiveNotebookAndSearchComponent } from './components/active-notebook-and-search/active-notebook-and-search.component';
+import { TruncatePipe } from './pipes/truncate.pipe';
 import { FileService } from './services/file/file.service';
 import { TasksProgressComponent } from './components/tasksProgressComponent/tasksProgress.component';
 import { ColorThemeSwitcherComponent } from './components/color-theme-switcher/color-theme-switcher.component';

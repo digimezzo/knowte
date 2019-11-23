@@ -15,15 +15,14 @@ import { NoteOperationResult } from '../results/noteOperationResult';
 import { NotesCountResult } from '../results/notesCountResult';
 import { SearchService } from '../search/search.service';
 import * as sanitize from 'sanitize-filename';
-import { DataStore } from '../../data/dataStore';
+import { DataStore } from '../../data/data-store';
 import { NoteMarkResult } from '../results/noteMarkResult';
 import { NoteDetailsResult } from '../results/noteDetailsResult';
 import { ipcRenderer } from 'electron';
-import { NoteExport } from '../../core/noteExport';
-import { TasksCount } from '../../core/tasksCount';
+import { NoteExport } from '../../core/note-export';
+import { TasksCount } from '../../core/tasks-count';
 import { Logger } from '../../core/logger';
 import { TranslatorService } from '../translator/translator.service';
-import { timingSafeEqual } from 'crypto';
 import { SettingsService } from '../settings/settings.service';
 
 @Injectable({

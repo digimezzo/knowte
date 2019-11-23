@@ -2,9 +2,9 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { remote, BrowserWindow } from 'electron';
 
 @Component({
-    selector: 'window-controls',
-    templateUrl: './windowControls.component.html',
-    styleUrls: ['./windowControls.component.scss'],
+    selector: 'app-window-controls',
+    templateUrl: './window-controls.component.html',
+    styleUrls: ['./window-controls.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
 export class WindowControlsComponent implements OnInit {

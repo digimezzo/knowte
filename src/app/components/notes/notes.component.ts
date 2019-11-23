@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnDestroy, NgZone, Output, EventEmitter, View
 import { CollectionService } from '../../services/collection/collection.service';
 import { Note } from '../../data/entities/note';
 import { Subscription, Subject, fromEvent } from 'rxjs';
-import { SnackBarService } from '../../services/snackBar/snackBar.service';
+import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { Notebook } from '../../data/entities/notebook';
 import { Constants } from '../../core/constants';
 import { SearchService } from '../../services/search/search.service';
@@ -11,7 +11,7 @@ import { debounceTime, takeUntil } from 'rxjs/internal/operators';
 import { Utils } from '../../core/utils';
 import { remote } from 'electron';
 import { FileService } from '../../services/file/file.service';
-import { SelectionWatcher } from '../../core/selectionWatcher';
+import { SelectionWatcher } from '../../core/selection-watcher';
 import { SettingsService } from '../../services/settings/settings.service';
 
 @Component({

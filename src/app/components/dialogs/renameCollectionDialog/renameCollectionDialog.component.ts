@@ -3,7 +3,7 @@ import { CollectionService } from '../../../services/collection/collection.servi
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { ErrorDialogComponent } from '../errorDialog/errorDialog.component';
 import { Operation } from '../../../core/enums';
-import { SnackBarService } from '../../../services/snackBar/snackBar.service';
+import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../../services/translator/translator.service';
 
 @Component({

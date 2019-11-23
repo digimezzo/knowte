@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { remote } from 'electron';
 import { Constants } from '../../core/constants';
-import { ColorTheme } from '../../core/colorTheme';
+import { ColorTheme } from '../../core/color-theme';
 import { Logger } from '../../core/logger';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { SettingsService } from '../settings/settings.service';
