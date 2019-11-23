@@ -181,5 +181,11 @@
         "WeeksAgo": "{{count}} weeks ago",
         "MonthsAgo": "{{count}} months ago",
         "LongAgo": "Long ago"
+    },
+    "ContextMenu":{
+        "Cut": "Cut",
+        "Copy": "Copy",
+        "Paste": "Paste",
+        "Delete": "Delete"
     }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, HostListener, NgZone, ViewEncapsulation } from '@angular/core';
-import { remote, BrowserWindow, Clipboard, SaveDialogOptions } from 'electron';
+import { remote, BrowserWindow, SaveDialogOptions, Remote } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/noteDetailsResult';
 import { MatDialog, MatDialogRef } from '@angular/material';
@@ -52,6 +52,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
     private languageChangedListener: any = this.languageChangedHandler.bind(this);
     private fontSizeChangedListener: any = this.fontSizeChangedHandler.bind(this);
+    private contextMenu: any;
 
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
         private snackBar: SnackBarService, private translator: TranslatorService, private settings: SettingsService) {
@@ -73,6 +74,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     public async ngOnInit(): Promise<void> {
         this.setEditorFontSize();
+        this.addContextMenuAsync();
 
         let notePlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
 
@@ -330,6 +332,38 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
+    private async addContextMenuAsync() {
+        this.contextMenu = new remote.Menu();
+        this.contextMenu.append(new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Cut'), click: () => { this.performCut(); } }));
+        this.contextMenu.append(new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Copy'), click: () => { this.performCopy(); } }));
+        this.contextMenu.append(new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Paste'), click: () => { this.performPaste(); } }));
+        this.contextMenu.append(new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Delete'), click: () => { this.performDelete(); } }));
+
+        window.removeEventListener('contextmenu', this.contextMenuListener.bind(this));
+        window.addEventListener('contextmenu', this.contextMenuListener.bind(this), false);
+    }
+
+    private contextMenuListener(e: MouseEvent): void{
+        e.preventDefault();
+        this.contextMenu.popup({ window: remote.getCurrentWindow() });
+    }
+
+    private performCut(): void {
+     
+    }
+
+    private performCopy(): void {
+
+    }
+
+    private performPaste(): void {
+
+    }
+
+    private performDelete(): void {
+
+    }
+
     private removeListeners(): void {
         this.globalEmitter.removeListener(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
         this.globalEmitter.removeListener(Constants.notebookChangedEvent, this.notebookChangedListener);
@@ -464,6 +498,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private languageChangedHandler(noteId: string): void {
         this.getNotebookName();
+        this.addContextMenuAsync();
     }
 
     private fontSizeChangedHandler(): void {
