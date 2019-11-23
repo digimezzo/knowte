@@ -147,9 +147,14 @@ export class NoteComponent implements OnInit, OnDestroy {
                 this.saveAndClose();
             });
 
-        // Image pasting based on: https://gist.github.com/dusanmarsa/2ca9f1df36e14864328a2bb0b353332e
         document.onpaste = (e: ClipboardEvent) => {
-            this.handleImagePaste(e);
+            if (this.clipboardContainsImage()) {
+                // Clipbaord contains image. Cancel default paste (it pastes the path to the image instead of the image data).
+                e.preventDefault();
+
+                // Execute our own paste, which pastes the image data.
+                this.pasteImageFromClipboard();
+            }
         }
     }
 
@@ -415,32 +420,48 @@ export class NoteComponent implements OnInit, OnDestroy {
         clipboard.writeText(text);
     }
 
-    private performPaste(): void {
+    private clipboardContainsImage(): boolean {
+        let availableFormats = clipboard.availableFormats("clipboard");
+
+        if (availableFormats.includes("image/png") || availableFormats.includes("image/jpeg")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private pasteImageFromClipboard(): void {
+        try {
+            let clipboardImage: NativeImage = clipboard.readImage();
+            let blob: Blob = new Blob([clipboardImage.toJPEG(80)], { type: 'image/jpeg' });
+            this.insertImage(blob);
+        } catch (error) {
+            this.logger.error("Could not paste as image", "NoteComponent", "performPaste");
+        }
+    }
+
+    private pastTextFromClipboard(): void {
         let range: any = this.quill.getSelection();
 
         if (!range) {
             return;
         }
 
-        let availableFormats = clipboard.availableFormats("clipboard");
+        let clipboardText: string = clipboard.readText();
 
-        if (availableFormats.includes("image/png") || availableFormats.includes("image/jpeg")) {
+        if (clipboardText) {
+            this.quill.insertText(range.index, clipboardText);
+        }
+    }
+
+    private performPaste(): void {
+        if (this.clipboardContainsImage()) {
             // Image found on clipboard. Try to paste as JPG.
-            try {
-                let clipboardImage: NativeImage = clipboard.readImage();
-                let blob: Blob = new Blob([clipboardImage.toJPEG(80)], { type: 'image/jpeg' });
-                this.insertImage(blob);
-            } catch (error) {
-                this.logger.error("Could not paste as image", "NoteComponent", "performPaste");
-            }
+            this.pasteImageFromClipboard();
         }
         else {
             // No image found on clipboard. Try to paste as text.
-            let clipboardText: string = clipboard.readText();
-
-            if (clipboardText) {
-                this.quill.insertText(range.index, clipboardText);
-            }
+            this.pastTextFromClipboard();
         }
     }
 
@@ -490,22 +511,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         };
 
         reader.readAsDataURL(file);
-    }
-
-    private handleImagePaste(e: ClipboardEvent): void {
-        let IMAGE_MIME_REGEX: RegExp = /^image\/(p?jpeg|gif|png)$/i;
-
-        let items: DataTransferItemList = e.clipboardData.items;
-
-        for (let i: number = 0; i < items.length; i++) {
-            if (IMAGE_MIME_REGEX.test(items[i].type)) {
-                // The pasted item is an image, so prevent the default paste action.
-                e.preventDefault();
-                this.insertImage(items[i].getAsFile());
-
-                return;
-            }
-        }
     }
 
     private saveAndClose(): void {
