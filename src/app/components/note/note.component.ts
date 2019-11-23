@@ -376,7 +376,13 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
 
         // Paste
-        this.pasteContextMenuItem.enabled = true;
+        let text: string = clipboard.readText();
+
+        if(text){
+            this.pasteContextMenuItem.enabled = true;
+        }else{
+            this.pasteContextMenuItem.enabled = false;
+        }
     }
 
     private performCut(): void {
