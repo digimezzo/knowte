@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, HostListener, NgZone, ViewEncapsulation } from '@angular/core';
-import { remote, BrowserWindow, SaveDialogOptions, Remote } from 'electron';
+import { remote, BrowserWindow, SaveDialogOptions, clipboard, NativeImage } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/noteDetailsResult';
 import { MatDialog, MatDialogRef } from '@angular/material';
@@ -52,7 +52,12 @@ export class NoteComponent implements OnInit, OnDestroy {
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
     private languageChangedListener: any = this.languageChangedHandler.bind(this);
     private fontSizeChangedListener: any = this.fontSizeChangedHandler.bind(this);
+
     private contextMenu: any;
+    private cutContextMenuItem: any;
+    private copyContextMenuItem: any;
+    private pasteContextMenuItem: any;
+    private deleteContextMenuItem: any;
 
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
         private snackBar: SnackBarService, private translator: TranslatorService, private settings: SettingsService) {
@@ -106,6 +111,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.isTextDirty = true;
             this.clearSearch();
             this.noteTextChanged.next("");
+
         });
 
         // Forces paste of unformatted text (See: https://stackoverflow.com/questions/41237486/how-to-paste-plain-text-in-a-quill-based-editor)
@@ -334,34 +340,90 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private async addContextMenuAsync() {
         this.contextMenu = new remote.Menu();
-        this.contextMenu.append(new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Cut'), click: () => { this.performCut(); } }));
-        this.contextMenu.append(new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Copy'), click: () => { this.performCopy(); } }));
-        this.contextMenu.append(new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Paste'), click: () => { this.performPaste(); } }));
-        this.contextMenu.append(new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Delete'), click: () => { this.performDelete(); } }));
+        this.cutContextMenuItem = new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Cut'), click: () => { this.performCut(); } });
+        this.copyContextMenuItem = new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Copy'), click: () => { this.performCopy(); } });
+        this.pasteContextMenuItem = new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Paste'), click: () => { this.performPaste(); } });
+        this.deleteContextMenuItem = new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Delete'), click: () => { this.performDelete(); } });
+
+        this.contextMenu.append(this.cutContextMenuItem);
+        this.contextMenu.append(this.copyContextMenuItem);
+        this.contextMenu.append(this.pasteContextMenuItem);
+        this.contextMenu.append(this.deleteContextMenuItem);
 
         window.removeEventListener('contextmenu', this.contextMenuListener.bind(this));
         window.addEventListener('contextmenu', this.contextMenuListener.bind(this), false);
     }
 
-    private contextMenuListener(e: MouseEvent): void{
+    private contextMenuListener(e: MouseEvent): void {
         e.preventDefault();
+        this.updateContextMenuItemsEnabledState();
         this.contextMenu.popup({ window: remote.getCurrentWindow() });
     }
 
+    private updateContextMenuItemsEnabledState() {
+
+        // Cut, Copy, Delete.
+        let range: any = this.quill.getSelection();
+
+        if (range && range.length > 0) {
+            this.cutContextMenuItem.enabled = true;
+            this.copyContextMenuItem.enabled = true;
+            this.deleteContextMenuItem.enabled = true;
+        } else {
+            this.cutContextMenuItem.enabled = false;
+            this.copyContextMenuItem.enabled = false;
+            this.deleteContextMenuItem.enabled = false;
+        }
+
+        // Paste
+        this.pasteContextMenuItem.enabled = true;
+    }
+
     private performCut(): void {
-     
+        let range: any = this.quill.getSelection();
+
+        if (!range || range.length === 0) {
+            return;
+        }
+
+        let text: string = this.quill.getText(range.index, range.length);
+        clipboard.writeText(text);
+        this.quill.deleteText(range.index, range.length);
     }
 
     private performCopy(): void {
+        let range: any = this.quill.getSelection();
 
+        if (!range || range.length === 0) {
+            return;
+        }
+
+        let text: string = this.quill.getText(range.index, range.length);
+        clipboard.writeText(text);
     }
 
     private performPaste(): void {
+        let range: any = this.quill.getSelection();
 
+        if (!range) {
+            return;
+        }
+
+        let clipboardText: string = clipboard.readText();
+
+        if (clipboardText) {
+            this.quill.insertText(range.index, clipboardText);
+        }
     }
 
     private performDelete(): void {
+        let range: any = this.quill.getSelection();
 
+        if (!range || range.length === 0) {
+            return;
+        }
+
+        this.quill.deleteText(range.index, range.length);
     }
 
     private removeListeners(): void {
