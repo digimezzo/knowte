@@ -17,13 +17,13 @@ import * as fs from 'fs-extra';
 import { Utils } from '../../core/utils';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { NoteExport } from '../../core/note-export';
-import { ipcRenderer } from 'electron';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { TasksCount } from '../../core/tasks-count';
 import { Logger } from '../../core/logger';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { SettingsService } from '../../services/settings/settings.service';
 import { ClipboardManager } from '../../core/clipboard-manager';
+import { WorkerManager } from '../../core/worker-manager';
 
 @Component({
     selector: 'app-note',
@@ -61,7 +61,8 @@ export class NoteComponent implements OnInit, OnDestroy {
     private deleteContextMenuItem: any;
 
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
-        private snackBar: SnackBarService, private translator: TranslatorService, private settings: SettingsService, private clipboard: ClipboardManager) {
+        private snackBar: SnackBarService, private translator: TranslatorService, private settings: SettingsService, private clipboard: ClipboardManager,
+        private worker: WorkerManager) {
     }
 
     public initialNoteTitle: string;
@@ -220,67 +221,14 @@ export class NoteComponent implements OnInit, OnDestroy {
         let options: SaveDialogOptions = { defaultPath: Utils.getPdfExportPath(remote.app.getPath('documents'), this.noteTitle) };
         let savePath: string = remote.dialog.showSaveDialog(null, options);
 
-        if (savePath) {
-            let content: any = {
-                savePath: savePath,
-                text: `<div>${this.createPrintCss()}<p class="page-title">${this.noteTitle}</p><p>${this.quill.root.innerHTML}</p></div>`
-            }
-
-            this.sendCommandToWorker("printPDF", content);
+        if(savePath){
+            this.worker.exportToPdf(savePath, this.noteTitle, this.quill.root.innerHTML);
         }
     }
 
     public printNote(): void {
         this.hideActionButtons();
-        this.sendCommandToWorker("print", `<div>${this.createPrintCss()}<p class="page-title">${this.noteTitle}</p><p>${this.quill.root.innerHTML}</p></div>`);
-    }
-
-    private createPrintCss(): string {
-        // Font stacks from: https://gist.github.com/001101/a8b0e5ce8fd81225bed7
-        return `<style type="text/css" scoped>
-                    * {
-                        font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans serif;
-                    }
-
-                    body {
-                        -webkit-print-color-adjust:exact;
-                    }
-
-                    h1,
-                    a {
-                        color: #1d7dd4;
-                    }
-
-                    h2{
-                        color: #748393;
-                    }
-
-                    pre {
-                        background-color: #f0f0f0;
-                        border-radius: 3px;
-                        white-space: pre-wrap;
-                        margin: 5px 0 5px 0;
-                        padding: 5px 10px;
-                    }
-
-                    pre.ql-syntax {
-                        background-color: #23241f;
-                        color: #f8f8f2;
-                        overflow: visible;
-
-                        font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
-                    }
-
-                    blockquote {
-                        border-left: 4px solid #ccc;
-                        margin: 5px 0 5px 0;
-                        padding: 0 0 0 16px;
-                    }
-
-                    .page-title{
-                        font-size: 30px;
-                    }
-                </style>`;
+        this.worker.print(this.noteTitle, this.quill.root.innerHTML);
     }
 
     public async deleteNoteAsync(): Promise<void> {
@@ -712,10 +660,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         await Utils.sleep(500);
         this.canPerformActions = false;
         this.rotateActionsButton();
-    }
-
-    private sendCommandToWorker(command: string, content: any): void {
-        ipcRenderer.send(command, content);
     }
 
     public strikeThrough(event: any) {

@@ -60,6 +60,7 @@ import { ColorThemeSwitcherComponent } from './components/color-theme-switcher/c
 import { LogoMenuComponent } from './components/logo-menu/logo-menu.component';
 import { SettingsService } from './services/settings/settings.service';
 import { ClipboardManager } from './core/clipboard-manager';
+import { WorkerManager } from './core/worker-manager';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -131,6 +132,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SettingsService,
     FileService,
     ClipboardManager,
+    WorkerManager,
     DataStore,
     {
       provide: ErrorHandler,
