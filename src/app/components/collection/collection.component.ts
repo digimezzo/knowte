@@ -102,7 +102,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     // Subscriptions
     this.subscription = this.collection.notebookEdited$.subscribe(async () => await this.getNotebooksAsync());
-    this.subscription = this.collection.notebookDeleted$.subscribe(async () => await this.getNotebooksAndResetSelectionAsync());
+    this.subscription.add(this.collection.notebookDeleted$.subscribe(async () => await this.getNotebooksAndResetSelectionAsync()));
 
     this.subscription.add(this.collection.notesCountChanged$.subscribe((result: NotesCountResult) => {
       this.allNotesCount = result.allNotesCount;
