@@ -59,6 +59,7 @@ import { TasksProgressComponent } from './components/tasks-progress/tasks-progre
 import { ColorThemeSwitcherComponent } from './components/color-theme-switcher/color-theme-switcher.component';
 import { LogoMenuComponent } from './components/logo-menu/logo-menu.component';
 import { SettingsService } from './services/settings/settings.service';
+import { ClipboardManager } from './core/clipboard-manager';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -129,6 +130,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     CollectionService,
     SettingsService,
     FileService,
+    ClipboardManager,
     DataStore,
     {
       provide: ErrorHandler,

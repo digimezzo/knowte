@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, HostListener, NgZone, ViewEncapsulation } from '@angular/core';
-import { remote, BrowserWindow, SaveDialogOptions, clipboard, NativeImage } from 'electron';
+import { remote, BrowserWindow, SaveDialogOptions, NativeImage } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/noteDetailsResult';
 import { MatDialog, MatDialogRef } from '@angular/material';
@@ -23,6 +23,7 @@ import { TasksCount } from '../../core/tasks-count';
 import { Logger } from '../../core/logger';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { SettingsService } from '../../services/settings/settings.service';
+import { ClipboardManager } from '../../core/clipboard-manager';
 
 @Component({
     selector: 'app-note',
@@ -60,7 +61,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private deleteContextMenuItem: any;
 
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
-        private snackBar: SnackBarService, private translator: TranslatorService, private settings: SettingsService) {
+        private snackBar: SnackBarService, private translator: TranslatorService, private settings: SettingsService, private clipboard: ClipboardManager) {
     }
 
     public initialNoteTitle: string;
@@ -148,7 +149,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             });
 
         document.onpaste = (e: ClipboardEvent) => {
-            if (this.clipboardContainsImage()) {
+            if (this.clipboard.containsImage()) {
                 // Clipbaord contains image. Cancel default paste (it pastes the path to the image instead of the image data).
                 e.preventDefault();
 
@@ -289,7 +290,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         let text: string = await this.translator.getAsync('DialogTexts.ConfirmDeleteNote', { noteTitle: this.noteTitle });
 
         let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
-
             width: '450px', data: { dialogTitle: title, dialogText: text }
         });
 
@@ -377,16 +377,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         return false;
     }
 
-    private clipboardHasData(): boolean {
-        let text: string = clipboard.readText();
-
-        if (text) {
-            return true;
-        }
-
-        return false;
-    }
-
     private updateContextMenuItemsEnabledState() {
 
         // Cut, Copy, Delete.
@@ -395,8 +385,8 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.copyContextMenuItem.enabled = hasSelectedText;
         this.deleteContextMenuItem.enabled = hasSelectedText;
 
-        // Paste
-        this.pasteContextMenuItem.enabled = this.clipboardHasData();
+        // Paste (checking for text on the clipboard also retruns true for images)
+        this.pasteContextMenuItem.enabled = this.clipboard.containsText();
     }
 
     private performCut(): void {
@@ -407,7 +397,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
 
         let text: string = this.quill.getText(range.index, range.length);
-        clipboard.writeText(text);
+        this.clipboard.writeText(text);
         this.quill.deleteText(range.index, range.length);
     }
 
@@ -419,24 +409,12 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
 
         let text: string = this.quill.getText(range.index, range.length);
-        clipboard.writeText(text);
-    }
-
-    private clipboardContainsImage(): boolean {
-        let availableFormats = clipboard.availableFormats("clipboard");
-
-        if (availableFormats.includes("image/png") || availableFormats.includes("image/jpeg")) {
-            return true;
-        }
-
-        return false;
+        this.clipboard.writeText(text);
     }
 
     private pasteImageFromClipboard(): void {
         try {
-            let clipboardImage: NativeImage = clipboard.readImage();
-            let blob: Blob = new Blob([clipboardImage.toJPEG(80)], { type: 'image/jpeg' });
-            this.insertImage(blob);
+            this.insertImage(this.clipboard.readImage());
         } catch (error) {
             this.logger.error("Could not paste as image", "NoteComponent", "performPaste");
         }
@@ -449,7 +427,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             return;
         }
 
-        let clipboardText: string = clipboard.readText();
+        let clipboardText: string = this.clipboard.readText();
 
         if (clipboardText) {
             this.quill.insertText(range.index, clipboardText);
@@ -457,7 +435,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private performPaste(): void {
-        if (this.clipboardContainsImage()) {
+        if (this.clipboard.containsImage()) {
             // Image found on clipboard. Try to paste as JPG.
             this.pasteImageFromClipboard();
         }
