@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy, HostListener, NgZone, ViewEncapsulation } from '@angular/core';
 import { remote, BrowserWindow, SaveDialogOptions, NativeImage } from 'electron';
 import { ActivatedRoute } from '@angular/router';
-import { NoteDetailsResult } from '../../services/results/noteDetailsResult';
+import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ChangeNotebookDialogComponent } from '../dialogs/change-notebook-dialog/change-notebook-dialog.component';
 import { Constants } from '../../core/constants';
 import { Subject } from 'rxjs';
 import { debounceTime } from "rxjs/internal/operators";
 import { Operation } from '../../core/enums';
-import { NoteOperationResult } from '../../services/results/noteOperationResult';
+import { NoteOperationResult } from '../../services/results/note-operation-result';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
 import * as Quill from 'quill';

@@ -6,7 +6,7 @@ import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { Notebook } from '../../data/entities/notebook';
 import { Constants } from '../../core/constants';
 import { SearchService } from '../../services/search/search.service';
-import { NoteMarkResult } from '../../services/results/noteMarkResult';
+import { NoteMarkResult } from '../../services/results/note-mark-result';
 import { debounceTime, takeUntil } from 'rxjs/internal/operators';
 import { Utils } from '../../core/utils';
 import { remote } from 'electron';

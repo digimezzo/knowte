@@ -10,9 +10,9 @@ import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/conf
 import { RenameNotebookDialogComponent } from '../dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
 import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
-import { NotesCountResult } from '../../services/results/notesCountResult';
-import { NoteMarkResult } from '../../services/results/noteMarkResult';
-import { NoteOperationResult } from '../../services/results/noteOperationResult';
+import { NotesCountResult } from '../../services/results/notes-count-result';
+import { NoteMarkResult } from '../../services/results/note-mark-result';
+import { NoteOperationResult } from '../../services/results/note-operation-result';
 import { Note } from '../../data/entities/note';
 import { trigger, style, animate, state, transition } from '@angular/animations';
 import { debounceTime } from "rxjs/internal/operators";
