@@ -4,8 +4,8 @@
 
 Knowte is a note taking application that allows you to quickly and easily organize and find your notes. This version is written using Electron, Angular and Typescript. The original Knowte (for Windows), which is written in WPF and C#, remains available <a href="https://github.com/digimezzo/Knowte">here</a>.
 
-[![Release](https://img.shields.io/github/release/digimezzo/Knowte-electron.svg?style=flat-square&include_prereleases)](https://github.com/digimezzo/Knowte-electron/releases/latest)
-[![Issues](https://img.shields.io/github/issues/digimezzo/Knowte-electron.svg?style=flat-square)](https://github.com/digimezzo/Knowte-electron/issues)
+[![Release](https://img.shields.io/github/release/digimezzo/Knowte.svg?style=flat-square&include_prereleases)](https://github.com/digimezzo/knowte/releases/latest)
+[![Issues](https://img.shields.io/github/issues/digimezzo/Knowte.svg?style=flat-square)](https://github.com/digimezzo/knowte/issues)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MQALEWTEZ7HX8)
 
 ## Screenshot
@@ -15,8 +15,8 @@ Knowte is a note taking application that allows you to quickly and easily organi
 ## Build instructions
 
 ```bash
-$ git clone https://github.com/digimezzo/knowte-electron.git
-$ cd knowte-electron
+$ git clone https://github.com/digimezzo/knowte.git
+$ cd knowte
 $ npm install            # Download dependencies
 $ npm start              # Start Knowte
 $ npm run electron:windows   # Build for Windows

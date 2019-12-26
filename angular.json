@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "knowte-electron": {
+    "knowte": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -78,21 +78,21 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "knowte-electron:build"
+            "browserTarget": "knowte:build"
           },
           "configurations": {
             "dev": {
-              "browserTarget": "knowte-electron:build:dev"
+              "browserTarget": "knowte:build:dev"
             },
             "production": {
-              "browserTarget": "knowte-electron:build:production"
+              "browserTarget": "knowte:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "knowte-electron:build"
+            "browserTarget": "knowte:build"
           }
         },
         "test": {
@@ -136,7 +136,7 @@
         }
       }
     },
-    "knowte-electron-e2e": {
+    "knowte-e2e": {
       "root": "e2e",
       "projectType": "application",
       "architect": {
@@ -144,7 +144,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "knowte-electron:serve"
+            "devServerTarget": "knowte:serve"
           }
         },
         "lint": {
@@ -161,7 +161,7 @@
       }
     }
   },
-  "defaultProject": "knowte-electron",
+  "defaultProject": "knowte",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

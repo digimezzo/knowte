@@ -1,7 +1,7 @@
 import { AngularElectronPage } from './app.po';
 import { browser, element, by } from 'protractor';
 
-describe('knowte-electron App', () => {
+describe('knowte App', () => {
   let page: AngularElectronPage;
 
   beforeEach(() => {
