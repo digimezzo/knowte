@@ -2,7 +2,7 @@
 
 # Knowte
 
-Knowte is a note taking application that allows you to quickly and easily organize and find your notes. This version is written using Electron, Angular and Typescript. The original Knowte (for Windows), which is written in WPF and C#, remains available <a href="https://github.com/digimezzo/Knowte">here</a>.
+Knowte is a note taking application that allows you to quickly and easily organize and find your notes. This version is written using Electron, Angular and Typescript. The original Knowte (for Windows), which is written in WPF and C#, remains available <a href="https://github.com/digimezzo/knowte-windows">here</a>.
 
 [![Release](https://img.shields.io/github/release/digimezzo/Knowte.svg?style=flat-square&include_prereleases)](https://github.com/digimezzo/knowte/releases/latest)
 [![Issues](https://img.shields.io/github/issues/digimezzo/Knowte.svg?style=flat-square)](https://github.com/digimezzo/knowte/issues)
