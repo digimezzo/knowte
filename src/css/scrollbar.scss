@@ -39,3 +39,7 @@
   border: solid 3px transparent;
   border-radius: 12px;
 }
+
+::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0);
+}
