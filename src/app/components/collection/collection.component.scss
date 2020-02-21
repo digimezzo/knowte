@@ -18,16 +18,11 @@
 }
 
 .collection .mat-tab-body-wrapper {
-  border-width: 0 1px 1px 0 !important;
-  margin: 114px 0 0 350px;
+  margin: 114px 0 0 351px;
 }
 
 .collection-notebooks {
   position: absolute;
-  background-color: white;
-  border-bottom: 1px solid $color-lightgrey;
-  border-left: 1px solid $color-lightgrey;
-  border-right: 1px solid transparent;
   top: 88px;
   left: 0;
   height: calc(100% - 88px);
@@ -135,7 +130,6 @@
   top: 88px;
   left: 351px;
   width: calc(100% - 351px);
-  border-right: 1px solid $color-lightgrey;
 }
 
 .note-buttons {
