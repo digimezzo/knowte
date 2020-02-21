@@ -18,7 +18,7 @@
 }
 
 .collection .mat-tab-body-wrapper {
-  margin: 114px 0 0 351px;
+  padding: 114px 0 0 351px;
 }
 
 .collection-notebooks {
@@ -29,6 +29,7 @@
   width: 351px;
   display: flex;
   flex-direction: row;
+  z-index: 2;
 }
 
 .collection-notebooks-content {
@@ -130,6 +131,7 @@
   top: 88px;
   left: 351px;
   width: calc(100% - 351px);
+  z-index: 2;
 }
 
 .note-buttons {
