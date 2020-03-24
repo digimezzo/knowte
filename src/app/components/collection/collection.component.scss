@@ -6,6 +6,7 @@
   top: 0;
   left: 0;
   z-index: 1;
+  width: calc(100vw - 2px) !important;
 }
 
 .collection {
@@ -24,12 +25,13 @@
 .collection-notebooks {
   position: absolute;
   top: 88px;
-  left: 0;
-  height: calc(100% - 88px);
-  width: 351px;
+  left: 1px;
+  height: calc(100% - 89px);
+  width: 350px;
   display: flex;
   flex-direction: row;
   z-index: 2;
+  background-color: white;
 }
 
 .collection-notebooks-content {
@@ -130,7 +132,7 @@
   position: absolute;
   top: 88px;
   left: 351px;
-  width: calc(100% - 351px);
+  width: calc(100% - 352px);
   z-index: 2;
 }
 
