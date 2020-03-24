@@ -1,0 +1,8 @@
+<mat-form-field>
+    <mat-label>{{ 'SettingsPage.FontSize' | translate }}</mat-label>
+    <mat-select [(ngModel)]="appearance.selectedFontSize">
+        <mat-option *ngFor="let fontSize of appearance.fontSizes" [value]="fontSize">
+            {{ fontSize.normalSize }} px
+        </mat-option>
+    </mat-select>
+</mat-form-field>

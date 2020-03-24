@@ -28,6 +28,15 @@ export class SettingsService {
         this.settings.set('language', v);
     }
 
+    // FontSize
+    public get fontSize(): number {
+        return this.settings.get('fontSize');
+    }
+
+    public set fontSize(v: number) {
+        this.settings.set('fontSize', v);
+    }
+
     // Color theme
     public get colorTheme(): string {
         return this.settings.get('colorTheme');
@@ -53,7 +62,7 @@ export class SettingsService {
 
     public set fontSizeInNotes(v: number) {
         this.settings.set('fontSizeInNotes', v);
-        this.globalEmitter.emit(Constants.fontSizeChangedEvent);
+        this.globalEmitter.emit(Constants.noteFontSizeChangedEvent);
     }
 
     // Show exact dates in the notes list
@@ -91,16 +100,21 @@ export class SettingsService {
             this.settings.set('language', 'en');
         }
 
-        if (!this.settings.has('colorTheme')) {
-            this.settings.set('colorTheme', "default-blue-theme");
-        } else {
-            let settingsColorThemeName: string = this.settings.get('colorTheme');
 
-            // Check if the color theme which is saved in the settings still exists 
+        if (!this.settings.has('fontSize')) {
+            this.settings.set('fontSize', 13);
+        }
+
+        if (!this.settings.has('colorTheme')) {
+            this.settings.set('colorTheme', 'default-blue-theme');
+        } else {
+            const settingsColorThemeName: string = this.settings.get('colorTheme');
+
+            // Check if the color theme which is saved in the settings still exists
             // in the app (The color themes might change between releases).
             // If not, reset the color theme setting to the default color theme.
             if (!Constants.colorThemes.map(x => x.name).includes(settingsColorThemeName)) {
-                this.settings.set('colorTheme', "default-blue-theme");
+                this.settings.set('colorTheme', 'default-blue-theme');
             }
         }
 

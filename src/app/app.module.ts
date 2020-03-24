@@ -48,7 +48,7 @@ import { ImportFromOldVersionDialogComponent } from './components/dialogs/import
 
 // Modules
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, MatTooltipModule, 
+import { MatTabsModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, MatTooltipModule,
   MatDialogModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatSnackBarModule,
   MatListModule, MatSelectModule, MatSlideToggleModule, MatRippleModule } from '@angular/material';
 import { GlobalErrorHandler } from './globalErrorHandler';
@@ -57,6 +57,7 @@ import { TruncatePipe } from './pipes/truncate.pipe';
 import { FileService } from './services/file/file.service';
 import { TasksProgressComponent } from './components/tasks-progress/tasks-progress.component';
 import { ColorThemeSwitcherComponent } from './components/color-theme-switcher/color-theme-switcher.component';
+import { FontSizeSwitcherComponent } from './components/font-size-switcher/font-size-switcher.component';
 import { LogoMenuComponent } from './components/logo-menu/logo-menu.component';
 import { SettingsService } from './services/settings/settings.service';
 import { ClipboardManager } from './core/clipboard-manager';
@@ -92,6 +93,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ActiveNotebookAndSearchComponent,
     TasksProgressComponent,
     ColorThemeSwitcherComponent,
+    FontSizeSwitcherComponent,
     NoteComponent,
     WebviewDirective,
     TruncatePipe
@@ -141,8 +143,8 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   bootstrap: [AppComponent],
   entryComponents: [
-    LicenseDialogComponent, InputDialogComponent, ErrorDialogComponent, RenameCollectionDialogComponent, 
-    ImportFromOldVersionDialogComponent, RenameNotebookDialogComponent, ConfirmationDialogComponent, 
+    LicenseDialogComponent, InputDialogComponent, ErrorDialogComponent, RenameCollectionDialogComponent,
+    ImportFromOldVersionDialogComponent, RenameNotebookDialogComponent, ConfirmationDialogComponent,
     ChangeNotebookDialogComponent
   ],
 })

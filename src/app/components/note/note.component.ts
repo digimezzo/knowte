@@ -6,7 +6,7 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { ChangeNotebookDialogComponent } from '../dialogs/change-notebook-dialog/change-notebook-dialog.component';
 import { Constants } from '../../core/constants';
 import { Subject } from 'rxjs';
-import { debounceTime } from "rxjs/internal/operators";
+import { debounceTime } from 'rxjs/internal/operators';
 import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
@@ -40,13 +40,13 @@ import { WorkerManager } from '../../core/worker-manager';
     ],
 })
 export class NoteComponent implements OnInit, OnDestroy {
-    private saveTimeoutMilliseconds: number = 5000;
-    private windowCloseTimeoutMilliseconds: number = 500;
+    private saveTimeoutMilliseconds = 5000;
+    private windowCloseTimeoutMilliseconds = 500;
     private quill: Quill;
     private globalEmitter = remote.getGlobal('globalEmitter');
     private noteId: string;
-    private isTitleDirty: boolean = false;
-    private isTextDirty: boolean = false;
+    private isTitleDirty = false;
+    private isTextDirty = false;
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
     private notebookChangedListener: any = this.notebookChangedHandler.bind(this);
     private focusNoteListener: any = this.focusNoteHandler.bind(this);
@@ -72,9 +72,9 @@ export class NoteComponent implements OnInit, OnDestroy {
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteTextChanged: Subject<string> = new Subject<string>();
     public saveChangesAndCloseNoteWindow: Subject<string> = new Subject<string>();
-    public canPerformActions: boolean = false;
-    public isBusy: boolean = false;
-    public actionIconRotation: string = 'default';
+    public canPerformActions = false;
+    public isBusy = false;
+    public actionIconRotation = 'default';
 
     public ngOnDestroy(): void {
     }
@@ -83,18 +83,18 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.setEditorFontSize();
         this.addContextMenuAsync();
 
-        let notePlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
+        const notePlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
 
-        let toolbarOptions: any = [
+        const toolbarOptions: any = [
             [{ 'color': [] }, { 'background': [] }],
             ['bold', 'italic', 'underline', 'strike'],
             [{ 'header': 1 }, { 'header': 2 }],
             [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
             ['link', 'blockquote', 'code-block', 'image'],
-            // [{ 'script': 'sub' }, { 'script': 'super' }], 
-            // [{ 'indent': '-1' }, { 'indent': '+1' }],   
-            // [{ 'direction': 'rtl' }],                      
-            // [{ 'size': ['small', false, 'large', 'huge'] }], 
+            // [{ 'script': 'sub' }, { 'script': 'super' }],
+            // [{ 'indent': '-1' }, { 'indent': '+1' }],
+            // [{ 'direction': 'rtl' }],
+            // [{ 'size': ['small', false, 'large', 'huge'] }],
             // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
             // [{ 'font': [] }],
             // [{ 'align': [] }],
@@ -112,14 +112,14 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.quill.on('text-change', () => {
             this.isTextDirty = true;
             this.clearSearch();
-            this.noteTextChanged.next("");
+            this.noteTextChanged.next('');
 
         });
 
         // Forces paste of unformatted text (See: https://stackoverflow.com/questions/41237486/how-to-paste-plain-text-in-a-quill-based-editor)
         this.quill.clipboard.addMatcher(Node.ELEMENT_NODE, function (node, delta) {
-            var plaintext = node.innerText;
-            var Delta = Quill.import('delta');
+            const plaintext = node.innerText;
+            const Delta = Quill.import('delta');
             return new Delta().insert(plaintext);
         });
 
@@ -157,11 +157,11 @@ export class NoteComponent implements OnInit, OnDestroy {
                 // Execute our own paste, which pastes the image data.
                 this.pasteImageFromClipboard();
             }
-        }
+        };
     }
 
     public changeNotebook(): void {
-        let dialogRef: MatDialogRef<ChangeNotebookDialogComponent> = this.dialog.open(ChangeNotebookDialogComponent, {
+        const dialogRef: MatDialogRef<ChangeNotebookDialogComponent> = this.dialog.open(ChangeNotebookDialogComponent, {
             width: '450px', data: { noteId: this.noteId }
         });
     }
@@ -174,7 +174,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
         if (this.settings.closeNotesWithEscape) {
-            let window: BrowserWindow = remote.getCurrentWindow();
+            const window: BrowserWindow = remote.getCurrentWindow();
             window.close();
         }
     }
@@ -182,26 +182,26 @@ export class NoteComponent implements OnInit, OnDestroy {
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     public beforeunloadHandler(event): void {
-        this.logger.info(`Detected closing of note with id=${this.noteId}`, "NoteComponent", "beforeunloadHandler");
+        this.logger.info(`Detected closing of note with id=${this.noteId}`, 'NoteComponent', 'beforeunloadHandler');
 
         // Prevents closing of the window
         if (this.isTitleDirty || this.isTextDirty) {
             this.isTitleDirty = false;
             this.isTextDirty = false;
 
-            this.logger.info(`Note with id=${this.noteId} is dirty. Preventing close to save changes first.`, "NoteComponent", "beforeunloadHandler");
+            this.logger.info(`Note with id=${this.noteId} is dirty. Preventing close to save changes first.`, 'NoteComponent', 'beforeunloadHandler');
             event.preventDefault();
             event.returnValue = '';
 
-            this.saveChangesAndCloseNoteWindow.next("");
+            this.saveChangesAndCloseNoteWindow.next('');
         } else {
-            this.logger.info(`Note with id=${this.noteId} is clean. Closing directly.`, "NoteComponent", "beforeunloadHandler");
+            this.logger.info(`Note with id=${this.noteId} is clean. Closing directly.`, 'NoteComponent', 'beforeunloadHandler');
             this.cleanup();
         }
     }
 
     public onTitleKeydown(event): void {
-        if (event.key === "Enter" || event.key === "Tab") {
+        if (event.key === 'Enter' || event.key === 'Tab') {
             // Make sure enter is not applied to the editor
             event.preventDefault();
 
@@ -218,10 +218,10 @@ export class NoteComponent implements OnInit, OnDestroy {
     public async exportNoteToPdfAsync(): Promise<void> {
         this.hideActionButtons();
 
-        let options: SaveDialogOptions = { defaultPath: Utils.getPdfExportPath(remote.app.getPath('documents'), this.noteTitle) };
-        let savePath: string = remote.dialog.showSaveDialog(null, options);
+        const options: SaveDialogOptions = { defaultPath: Utils.getPdfExportPath(remote.app.getPath('documents'), this.noteTitle) };
+        const savePath: string = remote.dialog.showSaveDialog(null, options);
 
-        if(savePath){
+        if (savePath) {
             this.worker.exportToPdf(savePath, this.noteTitle, this.quill.root.innerHTML);
         }
     }
@@ -234,10 +234,10 @@ export class NoteComponent implements OnInit, OnDestroy {
     public async deleteNoteAsync(): Promise<void> {
         this.hideActionButtons();
 
-        let title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteNote');
-        let text: string = await this.translator.getAsync('DialogTexts.ConfirmDeleteNote', { noteTitle: this.noteTitle });
+        const title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteNote');
+        const text: string = await this.translator.getAsync('DialogTexts.ConfirmDeleteNote', { noteTitle: this.noteTitle });
 
-        let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
+        const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px', data: { dialogTitle: title, dialogText: text }
         });
 
@@ -245,7 +245,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             if (result) {
                 this.globalEmitter.emit(Constants.deleteNoteEvent, this.noteId);
 
-                let window: BrowserWindow = remote.getCurrentWindow();
+                const window: BrowserWindow = remote.getCurrentWindow();
                 window.close();
             }
         });
@@ -268,9 +268,9 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.hideActionButtons();
         this.isBusy = true;
 
-        let options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
-        let savePath: string = remote.dialog.showSaveDialog(null, options);
-        let noteExport: NoteExport = new NoteExport(this.noteTitle, this.quill.getText(), JSON.stringify(this.quill.getContents()));
+        const options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
+        const savePath: string = remote.dialog.showSaveDialog(null, options);
+        const noteExport: NoteExport = new NoteExport(this.noteTitle, this.quill.getText(), JSON.stringify(this.quill.getContents()));
 
         try {
             if (savePath) {
@@ -281,9 +281,9 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.isBusy = false;
         } catch (error) {
             this.isBusy = false;
-            this.logger.error(`An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`, "NoteComponent", "exportNoteAsync");
+            this.logger.error(`An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`, 'NoteComponent', 'exportNoteAsync');
 
-            let errorText: string = (await this.translator.getAsync('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }));
+            const errorText: string = (await this.translator.getAsync('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }));
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: errorText }
@@ -303,7 +303,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.contextMenu.append(this.pasteContextMenuItem);
         this.contextMenu.append(this.deleteContextMenuItem);
 
-        let editor: HTMLElement = document.getElementById("editor");
+        const editor: HTMLElement = document.getElementById('editor');
 
         editor.removeEventListener('contextmenu', this.contextMenuListener.bind(this));
         editor.addEventListener('contextmenu', this.contextMenuListener.bind(this), false);
@@ -316,7 +316,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private hasSelectedRange(): boolean {
-        let range: any = this.quill.getSelection();
+        const range: any = this.quill.getSelection();
 
         if (range && range.length > 0) {
             return true;
@@ -328,7 +328,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private updateContextMenuItemsEnabledState() {
 
         // Cut, Copy, Delete.
-        let hasSelectedText: boolean = this.hasSelectedRange();
+        const hasSelectedText: boolean = this.hasSelectedRange();
         this.cutContextMenuItem.enabled = hasSelectedText;
         this.copyContextMenuItem.enabled = hasSelectedText;
         this.deleteContextMenuItem.enabled = hasSelectedText;
@@ -338,25 +338,25 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private performCut(): void {
-        let range: any = this.quill.getSelection();
+        const range: any = this.quill.getSelection();
 
         if (!range || range.length === 0) {
             return;
         }
 
-        let text: string = this.quill.getText(range.index, range.length);
+        const text: string = this.quill.getText(range.index, range.length);
         this.clipboard.writeText(text);
         this.quill.deleteText(range.index, range.length);
     }
 
     private performCopy(): void {
-        let range: any = this.quill.getSelection();
+        const range: any = this.quill.getSelection();
 
         if (!range || range.length === 0) {
             return;
         }
 
-        let text: string = this.quill.getText(range.index, range.length);
+        const text: string = this.quill.getText(range.index, range.length);
         this.clipboard.writeText(text);
     }
 
@@ -364,18 +364,18 @@ export class NoteComponent implements OnInit, OnDestroy {
         try {
             this.insertImage(this.clipboard.readImage());
         } catch (error) {
-            this.logger.error("Could not paste as image", "NoteComponent", "performPaste");
+            this.logger.error('Could not paste as image', 'NoteComponent', 'performPaste');
         }
     }
 
     private pastTextFromClipboard(): void {
-        let range: any = this.quill.getSelection();
+        const range: any = this.quill.getSelection();
 
         if (!range) {
             return;
         }
 
-        let clipboardText: string = this.clipboard.readText();
+        const clipboardText: string = this.clipboard.readText();
 
         if (clipboardText) {
             this.quill.insertText(range.index, clipboardText);
@@ -386,15 +386,14 @@ export class NoteComponent implements OnInit, OnDestroy {
         if (this.clipboard.containsImage()) {
             // Image found on clipboard. Try to paste as JPG.
             this.pasteImageFromClipboard();
-        }
-        else {
+        } else {
             // No image found on clipboard. Try to paste as text.
             this.pastTextFromClipboard();
         }
     }
 
     private performDelete(): void {
-        let range: any = this.quill.getSelection();
+        const range: any = this.quill.getSelection();
 
         if (!range || range.length === 0) {
             return;
@@ -409,7 +408,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.globalEmitter.removeListener(Constants.focusNoteEvent, this.focusNoteListener);
         this.globalEmitter.removeListener(Constants.closeNoteEvent, this.closeNoteListener);
         this.globalEmitter.removeListener(Constants.languageChangedEvent, this.languageChangedListener);
-        this.globalEmitter.removeListener(Constants.fontSizeChangedEvent, this.fontSizeChangedListener);
+        this.globalEmitter.removeListener(Constants.noteFontSizeChangedEvent, this.fontSizeChangedListener);
     }
 
     private addListeners(): void {
@@ -418,7 +417,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
         this.globalEmitter.on(Constants.closeNoteEvent, this.closeNoteListener);
         this.globalEmitter.on(Constants.languageChangedEvent, this.languageChangedListener);
-        this.globalEmitter.on(Constants.fontSizeChangedEvent, this.fontSizeChangedListener);
+        this.globalEmitter.on(Constants.noteFontSizeChangedEvent, this.fontSizeChangedListener);
     }
 
     private cleanup(): void {
@@ -427,13 +426,13 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private insertImage(file: any): void {
-        let reader: FileReader = new FileReader();
+        const reader: FileReader = new FileReader();
 
         reader.onload = (e: any) => {
-            let img: HTMLImageElement = document.createElement('img');
+            const img: HTMLImageElement = document.createElement('img');
             img.src = e.target.result;
 
-            let range: Range = window.getSelection().getRangeAt(0);
+            const range: Range = window.getSelection().getRangeAt(0);
             range.deleteContents();
             range.insertNode(img);
         };
@@ -443,18 +442,18 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private saveAndClose(): void {
         this.globalEmitter.emit(Constants.setNoteTitleEvent, this.noteId, this.initialNoteTitle, this.noteTitle, async (result: NoteOperationResult) => {
-            let setTitleOperation: Operation = result.operation;
+            const setTitleOperation: Operation = result.operation;
             await this.setNoteTitleCallbackAsync(result);
 
             this.globalEmitter.emit(Constants.setNoteTextEvent, this.noteId, this.quill.getText(), this.getTasksCount(), async (operation: Operation) => {
-                let setTextOperation: Operation = operation;
+                const setTextOperation: Operation = operation;
                 await this.setNoteTextCallbackAsync(operation);
 
                 // Close is only allowed when saving both title and text is successful
                 if (setTitleOperation === Operation.Success && setTextOperation === Operation.Success) {
-                    this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, "NoteComponent", "saveAndClose");
+                    this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, 'NoteComponent', 'saveAndClose');
                     this.cleanup();
-                    let window: BrowserWindow = remote.getCurrentWindow();
+                    const window: BrowserWindow = remote.getCurrentWindow();
                     window.close();
                 }
             });
@@ -483,7 +482,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private setWindowTitle(noteTitle: string): void {
-        let window: BrowserWindow = remote.getCurrentWindow();
+        const window: BrowserWindow = remote.getCurrentWindow();
         window.setTitle(noteTitle);
     }
 
@@ -501,7 +500,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private focusNoteHandler(noteId: string): void {
         if (this.noteId === noteId) {
-            let window: BrowserWindow = remote.getCurrentWindow();
+            const window: BrowserWindow = remote.getCurrentWindow();
 
             if (window.isMinimized()) {
                 window.minimize(); // Workaround for notes not getting restored on Linux
@@ -514,7 +513,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private closeNoteHandler(noteId: string): void {
         if (this.noteId === noteId) {
-            let window: BrowserWindow = remote.getCurrentWindow();
+            const window: BrowserWindow = remote.getCurrentWindow();
             window.close();
         }
     }
@@ -529,8 +528,8 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private clearSearch(): void {
-        let window: BrowserWindow = remote.getCurrentWindow();
-        window.webContents.stopFindInPage("keepSelection");
+        const window: BrowserWindow = remote.getCurrentWindow();
+        window.webContents.stopFindInPage('keepSelection');
     }
 
     private applySearch() {
@@ -538,12 +537,12 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private getSearchTextCallback(searchText: string): void {
-        let window: BrowserWindow = remote.getCurrentWindow();
+        const window: BrowserWindow = remote.getCurrentWindow();
 
         // window.webContents.stopFindInPage("keepSelection");
 
         if (searchText && searchText.length > 0) {
-            let searchTextPieces: string[] = searchText.trim().split(" ");
+            const searchTextPieces: string[] = searchText.trim().split(' ');
             // For now, we can only search for 1 word.
             window.webContents.findInPage(searchTextPieces[0]);
         }
@@ -559,7 +558,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.snackBar.noteTitleCannotBeEmptyAsync();
         } else if (result.operation === Operation.Error) {
             this.zone.run(() => this.noteTitle = this.initialNoteTitle);
-            let errorText: string = await this.translator.getAsync('ErrorTexts.RenameNoteError', { noteTitle: this.initialNoteTitle });
+            const errorText: string = await this.translator.getAsync('ErrorTexts.RenameNoteError', { noteTitle: this.initialNoteTitle });
 
             this.zone.run(() => {
                 this.dialog.open(ErrorDialogComponent, {
@@ -581,20 +580,20 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private writeTextToNoteFile(): void {
         // Update the note file on disk
-        let activeCollection: string = this.settings.activeCollection;
-        let storageDirectory: string = this.settings.storageDirectory;
-        let jsonContent: string = JSON.stringify(this.quill.getContents());
+        const activeCollection: string = this.settings.activeCollection;
+        const storageDirectory: string = this.settings.storageDirectory;
+        const jsonContent: string = JSON.stringify(this.quill.getContents());
         fs.writeFileSync(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${this.noteId}${Constants.noteContentExtension}`), jsonContent);
     }
 
     private async setNoteTextCallbackAsync(operation: Operation): Promise<void> {
-        let showErrorDialog: boolean = false;
+        let showErrorDialog = false;
 
         if (operation === Operation.Success) {
             try {
                 this.writeTextToNoteFile();
             } catch (error) {
-                this.logger.error(`Could not set text for the note with id='${this.noteId}' in the note file. Cause: ${error}`, "NoteComponent", "setNoteTextCallbackAsync");
+                this.logger.error(`Could not set text for the note with id='${this.noteId}' in the note file. Cause: ${error}`, 'NoteComponent', 'setNoteTextCallbackAsync');
                 showErrorDialog = true;
             }
         } else if (operation === Operation.Error) {
@@ -604,7 +603,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
 
         if (showErrorDialog) {
-            let errorText: string = await this.translator.getAsync('ErrorTexts.UpdateNoteContentError');
+            const errorText: string = await this.translator.getAsync('ErrorTexts.UpdateNoteContentError');
 
             this.zone.run(() => {
                 this.dialog.open(ErrorDialogComponent, {
@@ -627,18 +626,18 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         // Details from note file
         try {
-            let activeCollection: string = this.settings.activeCollection;
-            let storageDirectory: string = this.settings.storageDirectory;
-            let noteContent: string = fs.readFileSync(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${this.noteId}${Constants.noteContentExtension}`), 'utf8');
+            const activeCollection: string = this.settings.activeCollection;
+            const storageDirectory: string = this.settings.storageDirectory;
+            const noteContent: string = fs.readFileSync(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${this.noteId}${Constants.noteContentExtension}`), 'utf8');
 
             if (noteContent) {
                 // We can only parse to json if there is content
                 this.quill.setContents(JSON.parse(noteContent), 'silent');
             }
         } catch (error) {
-            this.logger.error(`Could not get the content for the note with id='${this.noteId}'. Cause: ${error}`, "NoteComponent", "getNoteDetailsAsync");
+            this.logger.error(`Could not get the content for the note with id='${this.noteId}'. Cause: ${error}`, 'NoteComponent', 'getNoteDetailsAsync');
 
-            let errorText: string = await this.translator.getAsync('ErrorTexts.GetNoteContentError');
+            const errorText: string = await this.translator.getAsync('ErrorTexts.GetNoteContentError');
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: errorText }
@@ -663,18 +662,18 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public strikeThrough(event: any) {
-        let range: any = this.quill.getSelection();
-        let format: any = this.quill.getFormat(range.index, range.length);
-        let formatString: string = JSON.stringify(format);
+        const range: any = this.quill.getSelection();
+        const format: any = this.quill.getFormat(range.index, range.length);
+        const formatString: string = JSON.stringify(format);
 
-        let applyStrikeThrough: boolean = !formatString.includes("strike");
+        const applyStrikeThrough: boolean = !formatString.includes('strike');
         this.quill.formatText(range.index, range.length, 'strike', applyStrikeThrough);
     }
 
     private getTasksCount(): TasksCount {
-        let noteContent: string = JSON.stringify(this.quill.getContents());
-        let openTasksCount: number = (noteContent.match(/"list":"unchecked"/g) || []).length;
-        let closedTasksCount: number = (noteContent.match(/"list":"checked"/g) || []).length;
+        const noteContent: string = JSON.stringify(this.quill.getContents());
+        const openTasksCount: number = (noteContent.match(/"list":"unchecked"/g) || []).length;
+        const closedTasksCount: number = (noteContent.match(/"list":"checked"/g) || []).length;
 
         return new TasksCount(openTasksCount, closedTasksCount);
     }
