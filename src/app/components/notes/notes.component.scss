@@ -114,7 +114,7 @@
 .note-item-info-title {
   margin-top: 4px;
   height: 20px;
-  font-size: $fontsize-normal !important;
+  font-size: var(--fontsize-normal) !important;
   display: flex;
   align-items: center;
 }
@@ -128,7 +128,7 @@
 .note-item-info-date-and-tasks {
   margin-bottom: 4px;
   height: 20px;
-  font-size: $fontsize-normal !important;
+  font-size: var(--fontsize-normal) !important;
   color: $color-grey;
   display: flex;
   align-items: center;

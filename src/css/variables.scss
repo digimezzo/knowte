@@ -1,3 +1,10 @@
+// Font sizes
+:root {
+  --fontsize-normal: 14px;
+  --fontsize-large: 20px;
+  --fontsize-larger: 24px;
+}
+
 // Our own colors
 $color-darkgrey: #212121;
 $color-grey: #aaaaaa;
@@ -6,11 +13,6 @@ $color-lightgrey: #dedede;
 $color-grey-icon: #727272;
 $color-hover: rgba(0, 0, 0, 0.05);
 $color-selected: rgba(0, 0, 0, 0.08);
-
-// Font sizes
-$fontsize-normal: 14px;
-$fontsize-large: 20px;
-$fontsize-larger: 24px;
 
 // Sizes
 $titlebar-height: 32px;

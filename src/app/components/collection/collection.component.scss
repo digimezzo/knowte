@@ -108,7 +108,7 @@
 }
 
 .notebook {
-  font-size: $fontsize-normal !important;
+  font-size: var(--fontsize-normal) !important;
   cursor: default !important;
   height: 40px;
 }
