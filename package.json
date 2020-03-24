@@ -32,7 +32,8 @@
     "electron:linux": "npm run build:prod && npx electron-builder build --linux",
     "electron:windows": "npm run build:prod && npx electron-builder build --windows",
     "electron:mac": "npm run build:prod && npx electron-builder build --mac",
-    "test": "npm run postinstall:web && ng test",
+    "ngtest": "npm run postinstall:web && ng test",
+    "test": "mocha --require ts-node/register 'src/spec/**/*.spec.ts'",
     "e2e": "npm run postinstall:web && ng e2e"
   },
   "dependencies": {
@@ -88,6 +89,7 @@
     "typescript": "3.1.6",
     "wait-on": "3.2.0",
     "webdriver-manager": "12.1.1",
-    "zone.js": "0.8.26"
+    "zone.js": "0.8.26",
+    "mocha": "6.1.2"
   }
 }
