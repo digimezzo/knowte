@@ -13,7 +13,7 @@ export class ImportFromOldVersionDialogComponent implements OnInit {
     }
 
     public isDirectoryChosen: boolean = false;
-    public selectedDirectory: string = "";
+    public selectedDirectory: string = '';
     public isBusy: boolean = false;
     public isImportFinished: boolean = false;
     public isImportSuccessful: boolean = true;
@@ -22,7 +22,7 @@ export class ImportFromOldVersionDialogComponent implements OnInit {
     }
 
     public selectDirectory(): void {
-        let selectedDirectories: string[] = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
+        const selectedDirectories: string[] = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
 
         if (selectedDirectories && selectedDirectories.length > 0) {
             this.selectedDirectory = selectedDirectories[0];
@@ -41,6 +41,6 @@ export class ImportFromOldVersionDialogComponent implements OnInit {
 
     public viewLog(): void {
         // See: https://stackoverflow.com/questions/30381450/open-external-file-with-electron
-        remote.shell.openItem(remote.app.getPath("userData"));
+        remote.shell.openItem(remote.app.getPath('userData'));
     }
 }

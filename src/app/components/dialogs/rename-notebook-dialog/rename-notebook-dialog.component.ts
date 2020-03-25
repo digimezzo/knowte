@@ -26,10 +26,10 @@ export class RenameNotebookDialogComponent implements OnInit {
     }
 
     public async renameNotebookAsync(): Promise<void> {
-        let operation: Operation = await this.collection.renameNotebookAsync(this.notebookId, this.notebookName);
+        const operation: Operation = await this.collection.renameNotebookAsync(this.notebookId, this.notebookName);
 
         if (operation === Operation.Error) {
-            let errorText: string = await this.translator.getAsync('ErrorTexts.RenameNotebookError', { notebookName: this.notebookName });
+            const errorText: string = await this.translator.getAsync('ErrorTexts.RenameNotebookError', { notebookName: this.notebookName });
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: errorText }

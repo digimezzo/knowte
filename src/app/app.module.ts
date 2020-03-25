@@ -59,7 +59,7 @@ import { TasksProgressComponent } from './components/tasks-progress/tasks-progre
 import { ColorThemeSwitcherComponent } from './components/color-theme-switcher/color-theme-switcher.component';
 import { FontSizeSwitcherComponent } from './components/font-size-switcher/font-size-switcher.component';
 import { LogoMenuComponent } from './components/logo-menu/logo-menu.component';
-import { SettingsService } from './services/settings/settings.service';
+import { Settings } from './core/settings';
 import { ClipboardManager } from './core/clipboard-manager';
 import { WorkerManager } from './core/worker-manager';
 
@@ -131,7 +131,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [
     ElectronService,
     CollectionService,
-    SettingsService,
+    Settings,
     FileService,
     ClipboardManager,
     WorkerManager,

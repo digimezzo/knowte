@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from "rxjs/internal/operators";
+import { debounceTime, distinctUntilChanged } from 'rxjs/internal/operators';
 import { remote } from 'electron';
 import { Constants } from '../../core/constants';
 
@@ -9,10 +9,10 @@ import { Constants } from '../../core/constants';
 })
 export class SearchService {
     private debouncingSearchTextChanged: Subject<string> = new Subject<string>();
-    private searchTextChanged = new Subject<string>();
+    private searchTextChanged: Subject<string> = new Subject<string>();
     private timeoutMilliseconds: number = 500;
     private _searchText: string;
-    private globalEmitter = remote.getGlobal('globalEmitter');
+    private globalEmitter: any = remote.getGlobal('globalEmitter');
     private getSearchTextListener: any = this.getSearchTextHandler.bind(this);
 
     constructor() {

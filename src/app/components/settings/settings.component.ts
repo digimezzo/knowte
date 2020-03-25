@@ -3,7 +3,7 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { ImportFromOldVersionDialogComponent } from '../dialogs/import-from-old-version-dialog/import-from-old-version-dialog.component';
 import { AppearanceService } from '../../services/appearance/appearance.service';
 import { TranslatorService } from '../../services/translator/translator.service';
-import { SettingsService } from '../../services/settings/settings.service';
+import { Settings } from '../../core/settings';
 
 @Component({
   selector: 'app-settings',
@@ -13,7 +13,7 @@ import { SettingsService } from '../../services/settings/settings.service';
 })
 export class SettingsComponent implements OnInit {
   constructor(private dialog: MatDialog, public translator: TranslatorService, public appearance: AppearanceService,
-    private settings: SettingsService) {
+    private settings: Settings) {
   }
 
   public fontSizes: number[] = [14, 16, 18, 20, 22, 24];
@@ -43,7 +43,7 @@ export class SettingsComponent implements OnInit {
   }
 
   public import(): void {
-    let dialogRef: MatDialogRef<ImportFromOldVersionDialogComponent> = this.dialog.open(ImportFromOldVersionDialogComponent, {
+    const dialogRef: MatDialogRef<ImportFromOldVersionDialogComponent> = this.dialog.open(ImportFromOldVersionDialogComponent, {
       width: '450px'
     });
   }

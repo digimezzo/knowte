@@ -1,4 +1,4 @@
-import { Operation } from "../../core/enums";
+import { Operation } from '../../core/enums';
 
 export class NoteOperationResult {
     constructor(public operation: Operation) {

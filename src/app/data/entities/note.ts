@@ -1,7 +1,7 @@
-import * as moment from 'moment'
+import * as moment from 'moment';
 import * as nanoid from 'nanoid';
 
-export class Note{
+export class Note {
     constructor(public title: string, public notebookId: string) {
     }
 
@@ -9,7 +9,7 @@ export class Note{
     public isMarked: boolean = false;
     public creationDate: number = moment().valueOf();
     public modificationDate: number = moment().valueOf();
-    public text: string = "";
+    public text: string = '';
     public displayModificationDate: string;
     public displayExactModificationDate: string;
     public isSelected: boolean;

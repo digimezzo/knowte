@@ -1,7 +1,7 @@
 import * as loki from 'lokijs';
 import { Notebook } from './entities/notebook';
 import { Note } from './entities/note';
-import * as moment from 'moment'
+import * as moment from 'moment';
 import { Utils } from '../core/utils';
 
 export class DataStore {
@@ -17,7 +17,7 @@ export class DataStore {
 
     private databaseLoaded(): void {
         let mustSaveDatabase: boolean = false;
-        
+
         this.notebooks = this.db.getCollection('notebooks');
 
         if (!this.notebooks) {
@@ -49,7 +49,7 @@ export class DataStore {
         });
     }
 
-    public async initializeAsync(databaseFile: string) {
+    public async initializeAsync(databaseFile: string): Promise<void> {
         this.loadDatabase(databaseFile);
 
         while (!this.isLoaded) {
@@ -58,7 +58,7 @@ export class DataStore {
     }
 
     public getNotebooks(): Notebook[] {
-        let notebooks: Notebook[] = this.notebooks.chain().sort(Utils.caseInsensitiveNameSort).data();
+        const notebooks: Notebook[] = this.notebooks.chain().sort(Utils.caseInsensitiveNameSort).data();
 
         return notebooks;
     }
@@ -72,49 +72,49 @@ export class DataStore {
     }
 
     public addNotebook(name: string): string {
-        let newNotebook: Notebook = new Notebook(name);
+        const newNotebook: Notebook = new Notebook(name);
         this.notebooks.insert(newNotebook);
         this.db.saveDatabase();
 
         return newNotebook.id;
     }
 
-    public deleteNotebook(id: string) {
-        let notebookToDelete: Notebook = this.getNotebookById(id);
+    public deleteNotebook(id: string): void {
+        const notebookToDelete: Notebook = this.getNotebookById(id);
         this.notebooks.remove(notebookToDelete);
         this.db.saveDatabase();
     }
 
     public getNotes(): Note[] {
-        let notes: Note[] = this.notes.chain().simplesort('modificationDate', true).data();
+        const notes: Note[] = this.notes.chain().simplesort('modificationDate', true).data();
 
         return notes;
     }
 
     public getUnfiledNotes(): Note[] {
-        let notebookIds: string[] = this.notebooks.chain().data().map(x => x.id);
+        const notebookIds: string[] = this.notebooks.chain().data().map(x => x.id);
 
-        let notes: Note[] = this.notes.chain().where(function (obj) {
-            return obj.notebookId === "" || !notebookIds.includes(obj.notebookId);
+        const notes: Note[] = this.notes.chain().where((obj) => {
+            return obj.notebookId === '' || !notebookIds.includes(obj.notebookId);
         }).simplesort('modificationDate', true).data();
 
         return notes;
     }
 
     public getMarkedNotes(): Note[] {
-        let notes: Note[] = this.notes.chain().find({ 'isMarked': true }).simplesort('modificationDate', true).data();
+        const notes: Note[] = this.notes.chain().find({ 'isMarked': true }).simplesort('modificationDate', true).data();
 
         return notes;
     }
 
     public getNotebookNotes(notebookId: string): Note[] {
-        let notes: Note[] = this.notes.chain().find({ 'notebookId': notebookId }).simplesort('modificationDate', true).data();
+        const notes: Note[] = this.notes.chain().find({ 'notebookId': notebookId }).simplesort('modificationDate', true).data();
 
         return notes;
     }
 
     public getNotesWithIdenticalBaseTitle(baseTitle: string): Note[] {
-        let notesWithIdenticalBaseTitle: Note[] = this.notes.chain().where(function (obj) {
+        const notesWithIdenticalBaseTitle: Note[] = this.notes.chain().where((obj) => {
             return obj.title.startsWith(baseTitle);
         }).data();
 
@@ -122,7 +122,7 @@ export class DataStore {
     }
 
     public addNote(title: string, notebookId: string): string {
-        let newNote: Note = new Note(title, notebookId);
+        const newNote: Note = new Note(title, notebookId);
         this.notes.insert(newNote);
         this.db.saveDatabase();
 
@@ -130,7 +130,7 @@ export class DataStore {
     }
 
     public getNoteById(id: string): Note {
-        let note: Note = this.notes.findOne({ 'id': id });
+        const note: Note = this.notes.findOne({ 'id': id });
 
         return note;
     }
@@ -139,8 +139,8 @@ export class DataStore {
         return this.notes.findOne({ 'title': noteTitle });
     }
 
-    public deleteNote(id: string) {
-        let noteToDelete: Note = this.getNoteById(id);
+    public deleteNote(id: string): void {
+        const noteToDelete: Note = this.getNoteById(id);
         this.notes.remove(noteToDelete);
         this.db.saveDatabase();
     }

@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    let showWelcome: boolean = !this.collection.hasStorageDirectory;
+    const showWelcome: boolean = !this.collection.hasStorageDirectory;
 
     if (showWelcome) {
       this.router.navigate(['/welcome']);

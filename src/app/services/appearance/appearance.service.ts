@@ -4,20 +4,20 @@ import { Constants } from '../../core/constants';
 import { ColorTheme } from '../../core/color-theme';
 import { Logger } from '../../core/logger';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { SettingsService } from '../settings/settings.service';
 import { FontSize } from '../../core/font-size';
+import { Settings } from '../../core/settings';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AppearanceService {
-    private globalEmitter = remote.getGlobal('globalEmitter');
+    private globalEmitter: any = remote.getGlobal('globalEmitter');
     private themeChangedListener: any = this.themeChangedHandler.bind(this);
     private fontSizeChangedListener: any = this.fontSizeChangedHandler.bind(this);
     private _selectedColorTheme: ColorTheme;
     private _selectedFontSize: FontSize;
 
-    constructor(private settings: SettingsService, private logger: Logger, private overlayContainer: OverlayContainer) {
+    constructor(private settings: Settings, private logger: Logger, private overlayContainer: OverlayContainer) {
         this.initialize();
     }
 

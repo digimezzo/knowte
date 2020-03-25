@@ -24,7 +24,7 @@ export class InformationComponent implements OnInit {
   }
 
   public openLicenseDialog(): void {
-    let dialogRef: MatDialogRef<LicenseDialogComponent> = this.dialog.open(LicenseDialogComponent, {
+    const dialogRef: MatDialogRef<LicenseDialogComponent> = this.dialog.open(LicenseDialogComponent, {
       width: '450px'
     });
   }

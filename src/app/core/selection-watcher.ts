@@ -20,7 +20,7 @@ export class SelectionWatcher {
         if (!this.hasItems) {
             return [];
         }
-        
+
         return this.items.filter(x => x.isSelected);
     }
 
@@ -41,7 +41,7 @@ export class SelectionWatcher {
             return;
         }
 
-        let currentItemIndex: number = this.items.indexOf(item);
+        const currentItemIndex: number = this.items.indexOf(item);
         let lastSelectedItemIndex: number = this.items.indexOf(item);
 
         if (this.lastSelectedItem) {
@@ -56,7 +56,7 @@ export class SelectionWatcher {
             highIndex = currentItemIndex;
         }
 
-        for (var i = 0; i < this.items.length; i++) {
+        for (let i = 0; i < this.items.length; i++) {
             if (lowIndex <= i && i <= highIndex) {
                 this.items[i].isSelected = true;
                 this.lastSelectedItem = item;
@@ -69,9 +69,9 @@ export class SelectionWatcher {
             return;
         }
 
-        let currentItemIndex: number = this.items.indexOf(item);
+        const currentItemIndex: number = this.items.indexOf(item);
 
-        for (var i = 0; i < this.items.length; i++) {
+        for (let i = 0; i < this.items.length; i++) {
             this.items[i].isSelected = false;
 
             if (i === currentItemIndex) {

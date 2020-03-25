@@ -14,14 +14,14 @@ export class FileService {
     }
 
     public getDroppedFilesPaths(dropEvent: any): string[] {
-        let droppedFilesPaths: string[] = [];
+        const droppedFilesPaths: string[] = [];
 
         if (dropEvent.dataTransfer.items) {
             // Use DataTransferItemList interface to access the file(s)
             for (let i: number = 0; i < dropEvent.dataTransfer.items.length; i++) {
                 // If dropped items aren't files, reject them.
                 if (dropEvent.dataTransfer.items[i].kind === 'file') {
-                    let file: any = dropEvent.dataTransfer.items[i].getAsFile();
+                    const file: any = dropEvent.dataTransfer.items[i].getAsFile();
                     droppedFilesPaths.push(file.path);
                 }
             }
@@ -36,7 +36,7 @@ export class FileService {
     }
 
     public getNoteFilePaths(filePaths: string[]): string[] {
-        let noteFilePaths: string[] = filePaths.filter(x =>  path.extname(x) === Constants.noteExportExtension);
+        const noteFilePaths: string[] = filePaths.filter(x =>  path.extname(x) === Constants.noteExportExtension);
 
         return noteFilePaths;
     }

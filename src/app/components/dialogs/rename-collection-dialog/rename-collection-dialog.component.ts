@@ -26,10 +26,13 @@ export class RenameCollectionDialogComponent implements OnInit {
     }
 
     public async renameCollectionAsync(): Promise<void> {
-        let operation: Operation = await this.collection.renameCollectionAsync(this.oldCollection, this.newCollection);
+        const operation: Operation = await this.collection.renameCollectionAsync(this.oldCollection, this.newCollection);
 
         if (operation === Operation.Error) {
-            let errorText: string = (await this.translator.getAsync('ErrorTexts.RenameCollectionError', { collection: this.newCollection }));
+            const errorText: string = (
+                await this.translator.getAsync('ErrorTexts.RenameCollectionError',
+                { collection: this.newCollection }
+                ));
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px', data: { errorText: errorText }

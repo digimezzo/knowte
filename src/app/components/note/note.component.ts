@@ -21,9 +21,9 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { TasksCount } from '../../core/tasks-count';
 import { Logger } from '../../core/logger';
 import { TranslatorService } from '../../services/translator/translator.service';
-import { SettingsService } from '../../services/settings/settings.service';
 import { ClipboardManager } from '../../core/clipboard-manager';
 import { WorkerManager } from '../../core/worker-manager';
+import { Settings } from '../../core/settings';
 
 @Component({
     selector: 'app-note',
@@ -40,13 +40,13 @@ import { WorkerManager } from '../../core/worker-manager';
     ],
 })
 export class NoteComponent implements OnInit, OnDestroy {
-    private saveTimeoutMilliseconds = 5000;
-    private windowCloseTimeoutMilliseconds = 500;
+    private saveTimeoutMilliseconds: number = 5000;
+    private windowCloseTimeoutMilliseconds: number = 500;
     private quill: Quill;
-    private globalEmitter = remote.getGlobal('globalEmitter');
+    private globalEmitter: any = remote.getGlobal('globalEmitter');
     private noteId: string;
-    private isTitleDirty = false;
-    private isTextDirty = false;
+    private isTitleDirty: boolean = false;
+    private isTextDirty: boolean = false;
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
     private notebookChangedListener: any = this.notebookChangedHandler.bind(this);
     private focusNoteListener: any = this.focusNoteHandler.bind(this);
@@ -61,8 +61,8 @@ export class NoteComponent implements OnInit, OnDestroy {
     private deleteContextMenuItem: any;
 
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
-        private snackBar: SnackBarService, private translator: TranslatorService, private settings: SettingsService, private clipboard: ClipboardManager,
-        private worker: WorkerManager) {
+        private snackBar: SnackBarService, private translator: TranslatorService, private settings: Settings,
+        private clipboard: ClipboardManager, private worker: WorkerManager) {
     }
 
     public initialNoteTitle: string;
@@ -72,9 +72,9 @@ export class NoteComponent implements OnInit, OnDestroy {
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteTextChanged: Subject<string> = new Subject<string>();
     public saveChangesAndCloseNoteWindow: Subject<string> = new Subject<string>();
-    public canPerformActions = false;
-    public isBusy = false;
-    public actionIconRotation = 'default';
+    public canPerformActions: boolean = false;
+    public isBusy: boolean = false;
+    public actionIconRotation: string = 'default';
 
     public ngOnDestroy(): void {
     }
@@ -116,8 +116,9 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         });
 
-        // Forces paste of unformatted text (See: https://stackoverflow.com/questions/41237486/how-to-paste-plain-text-in-a-quill-based-editor)
-        this.quill.clipboard.addMatcher(Node.ELEMENT_NODE, function (node, delta) {
+        // Forces paste of unformatted text
+        // (See: https://stackoverflow.com/questions/41237486/how-to-paste-plain-text-in-a-quill-based-editor)
+        this.quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
             const plaintext = node.innerText;
             const Delta = Quill.import('delta');
             return new Delta().insert(plaintext);
@@ -134,13 +135,23 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.noteTitleChanged
             .pipe(debounceTime(this.saveTimeoutMilliseconds))
             .subscribe((finalNoteTitle) => {
-                this.globalEmitter.emit(Constants.setNoteTitleEvent, this.noteId, this.initialNoteTitle, finalNoteTitle, this.setNoteTitleCallbackAsync.bind(this));
+                this.globalEmitter.emit(
+                    Constants.setNoteTitleEvent,
+                    this.noteId,
+                    this.initialNoteTitle,
+                    finalNoteTitle,
+                    this.setNoteTitleCallbackAsync.bind(this));
             });
 
         this.noteTextChanged
             .pipe(debounceTime(this.saveTimeoutMilliseconds))
             .subscribe(async (_) => {
-                this.globalEmitter.emit(Constants.setNoteTextEvent, this.noteId, this.quill.getText(), this.getTasksCount(), this.setNoteTextCallbackAsync.bind(this));
+                this.globalEmitter.emit(
+                    Constants.setNoteTextEvent,
+                    this.noteId,
+                    this.quill.getText(),
+                    this.getTasksCount(),
+                    this.setNoteTextCallbackAsync.bind(this));
             });
 
         this.saveChangesAndCloseNoteWindow
@@ -166,13 +177,13 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
     }
 
-    public onNotetitleChange(newNoteTitle: string) {
+    public onNotetitleChange(newNoteTitle: string): void {
         this.isTitleDirty = true;
         this.clearSearch();
         this.noteTitleChanged.next(newNoteTitle);
     }
 
-    @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+    @HostListener('document:keydown.escape', ['$event']) public onKeydownHandler(event: KeyboardEvent): void {
         if (this.settings.closeNotesWithEscape) {
             const window: BrowserWindow = remote.getCurrentWindow();
             window.close();
@@ -181,7 +192,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
-    public beforeunloadHandler(event): void {
+    public beforeunloadHandler(event: any): void {
         this.logger.info(`Detected closing of note with id=${this.noteId}`, 'NoteComponent', 'beforeunloadHandler');
 
         // Prevents closing of the window
@@ -189,7 +200,10 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.isTitleDirty = false;
             this.isTextDirty = false;
 
-            this.logger.info(`Note with id=${this.noteId} is dirty. Preventing close to save changes first.`, 'NoteComponent', 'beforeunloadHandler');
+            this.logger.info(
+                `Note with id=${this.noteId} is dirty. Preventing close to save changes first.`,
+                'NoteComponent',
+                'beforeunloadHandler');
             event.preventDefault();
             event.returnValue = '';
 
@@ -200,7 +214,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    public onTitleKeydown(event): void {
+    public onTitleKeydown(event: any): void {
         if (event.key === 'Enter' || event.key === 'Tab') {
             // Make sure enter is not applied to the editor
             event.preventDefault();
@@ -281,7 +295,10 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.isBusy = false;
         } catch (error) {
             this.isBusy = false;
-            this.logger.error(`An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`, 'NoteComponent', 'exportNoteAsync');
+            this.logger.error(
+                `An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`,
+                'NoteComponent',
+                'exportNoteAsync');
 
             const errorText: string = (await this.translator.getAsync('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }));
 
@@ -291,12 +308,36 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    private async addContextMenuAsync() {
+    private async addContextMenuAsync(): Promise<void> {
         this.contextMenu = new remote.Menu();
-        this.cutContextMenuItem = new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Cut'), click: () => { this.performCut(); } });
-        this.copyContextMenuItem = new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Copy'), click: () => { this.performCopy(); } });
-        this.pasteContextMenuItem = new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Paste'), click: () => { this.performPaste(); } });
-        this.deleteContextMenuItem = new remote.MenuItem({ label: await this.translator.getAsync('ContextMenu.Delete'), click: () => { this.performDelete(); } });
+
+        this.cutContextMenuItem = new remote.MenuItem({
+                label: await this.translator.getAsync('ContextMenu.Cut'),
+                click: () => {
+                    this.performCut();
+                }
+            });
+
+        this.copyContextMenuItem = new remote.MenuItem({
+            label: await this.translator.getAsync('ContextMenu.Copy'),
+            click: () => {
+                this.performCopy();
+            }
+        });
+
+        this.pasteContextMenuItem = new remote.MenuItem({
+            label: await this.translator.getAsync('ContextMenu.Paste'),
+            click: () => {
+                this.performPaste();
+            }
+        });
+
+        this.deleteContextMenuItem = new remote.MenuItem({
+            label: await this.translator.getAsync('ContextMenu.Delete'),
+            click: () => {
+                this.performDelete();
+            }
+        });
 
         this.contextMenu.append(this.cutContextMenuItem);
         this.contextMenu.append(this.copyContextMenuItem);
@@ -325,7 +366,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         return false;
     }
 
-    private updateContextMenuItemsEnabledState() {
+    private updateContextMenuItemsEnabledState(): void {
 
         // Cut, Copy, Delete.
         const hasSelectedText: boolean = this.hasSelectedRange();
@@ -441,26 +482,36 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private saveAndClose(): void {
-        this.globalEmitter.emit(Constants.setNoteTitleEvent, this.noteId, this.initialNoteTitle, this.noteTitle, async (result: NoteOperationResult) => {
+        this.globalEmitter.emit(
+            Constants.setNoteTitleEvent,
+            this.noteId,
+            this.initialNoteTitle,
+            this.noteTitle,
+            async (result: NoteOperationResult) => {
             const setTitleOperation: Operation = result.operation;
             await this.setNoteTitleCallbackAsync(result);
 
-            this.globalEmitter.emit(Constants.setNoteTextEvent, this.noteId, this.quill.getText(), this.getTasksCount(), async (operation: Operation) => {
-                const setTextOperation: Operation = operation;
-                await this.setNoteTextCallbackAsync(operation);
+            this.globalEmitter.emit(
+                Constants.setNoteTextEvent,
+                this.noteId,
+                this.quill.getText(),
+                this.getTasksCount(),
+                async (operation: Operation) => {
+                    const setTextOperation: Operation = operation;
+                    await this.setNoteTextCallbackAsync(operation);
 
-                // Close is only allowed when saving both title and text is successful
-                if (setTitleOperation === Operation.Success && setTextOperation === Operation.Success) {
-                    this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, 'NoteComponent', 'saveAndClose');
-                    this.cleanup();
-                    const window: BrowserWindow = remote.getCurrentWindow();
-                    window.close();
+                    // Close is only allowed when saving both title and text is successful
+                    if (setTitleOperation === Operation.Success && setTextOperation === Operation.Success) {
+                        this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, 'NoteComponent', 'saveAndClose');
+                        this.cleanup();
+                        const window: BrowserWindow = remote.getCurrentWindow();
+                        window.close();
                 }
             });
         });
     }
 
-    private getNoteDetailsCallback(result: NoteDetailsResult) {
+    private getNoteDetailsCallback(result: NoteDetailsResult): void {
         this.zone.run(() => {
             this.initialNoteTitle = result.noteTitle;
             this.noteTitle = result.noteTitle;
@@ -471,7 +522,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
     }
 
-    private getNotebookNameCallback(result: NoteDetailsResult) {
+    private getNotebookNameCallback(result: NoteDetailsResult): void {
         this.zone.run(() => {
             this.notebookName = result.notebookName;
         });
@@ -486,13 +537,13 @@ export class NoteComponent implements OnInit, OnDestroy {
         window.setTitle(noteTitle);
     }
 
-    private noteMarkChangedHandler(noteId: string, isMarked: boolean) {
+    private noteMarkChangedHandler(noteId: string, isMarked: boolean): void {
         if (this.noteId === noteId) {
             this.zone.run(() => this.isMarked = isMarked);
         }
     }
 
-    private notebookChangedHandler(noteId: string, notebookName: string) {
+    private notebookChangedHandler(noteId: string, notebookName: string): void {
         if (this.noteId === noteId) {
             this.zone.run(() => this.notebookName = notebookName);
         }
@@ -532,7 +583,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         window.webContents.stopFindInPage('keepSelection');
     }
 
-    private applySearch() {
+    private applySearch(): void {
         this.globalEmitter.emit(Constants.getSearchTextEvent, this.getSearchTextCallback.bind(this));
     }
 
@@ -548,7 +599,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    private handleNoteMarkToggled(isNoteMarked: boolean) {
+    private handleNoteMarkToggled(isNoteMarked: boolean): void {
         this.zone.run(() => this.isMarked = isNoteMarked);
     }
 
@@ -583,7 +634,9 @@ export class NoteComponent implements OnInit, OnDestroy {
         const activeCollection: string = this.settings.activeCollection;
         const storageDirectory: string = this.settings.storageDirectory;
         const jsonContent: string = JSON.stringify(this.quill.getContents());
-        fs.writeFileSync(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${this.noteId}${Constants.noteContentExtension}`), jsonContent);
+        fs.writeFileSync(
+            path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${this.noteId}${Constants.noteContentExtension}`),
+            jsonContent);
     }
 
     private async setNoteTextCallbackAsync(operation: Operation): Promise<void> {
@@ -593,7 +646,10 @@ export class NoteComponent implements OnInit, OnDestroy {
             try {
                 this.writeTextToNoteFile();
             } catch (error) {
-                this.logger.error(`Could not set text for the note with id='${this.noteId}' in the note file. Cause: ${error}`, 'NoteComponent', 'setNoteTextCallbackAsync');
+                this.logger.error(
+                    `Could not set text for the note with id='${this.noteId}' in the note file. Cause: ${error}`,
+                    'NoteComponent',
+                    'setNoteTextCallbackAsync');
                 showErrorDialog = true;
             }
         } else if (operation === Operation.Error) {
@@ -628,14 +684,19 @@ export class NoteComponent implements OnInit, OnDestroy {
         try {
             const activeCollection: string = this.settings.activeCollection;
             const storageDirectory: string = this.settings.storageDirectory;
-            const noteContent: string = fs.readFileSync(path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${this.noteId}${Constants.noteContentExtension}`), 'utf8');
+            const noteContent: string = fs.readFileSync(
+                path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${this.noteId}${Constants.noteContentExtension}`),
+                'utf8');
 
             if (noteContent) {
                 // We can only parse to json if there is content
                 this.quill.setContents(JSON.parse(noteContent), 'silent');
             }
         } catch (error) {
-            this.logger.error(`Could not get the content for the note with id='${this.noteId}'. Cause: ${error}`, 'NoteComponent', 'getNoteDetailsAsync');
+            this.logger.error(
+                `Could not get the content for the note with id='${this.noteId}'. Cause: ${error}`,
+                'NoteComponent',
+                'getNoteDetailsAsync');
 
             const errorText: string = await this.translator.getAsync('ErrorTexts.GetNoteContentError');
 
@@ -661,7 +722,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.rotateActionsButton();
     }
 
-    public strikeThrough(event: any) {
+    public strikeThrough(event: any): void {
         const range: any = this.quill.getSelection();
         const format: any = this.quill.getFormat(range.index, range.length);
         const formatString: string = JSON.stringify(format);

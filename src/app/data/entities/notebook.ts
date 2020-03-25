@@ -1,6 +1,6 @@
 import * as nanoid from 'nanoid';
 
-export class Notebook{
+export class Notebook {
     constructor(public name: string) {
     }
 

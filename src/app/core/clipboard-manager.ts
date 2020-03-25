@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { clipboard, NativeImage } from 'electron';
 
 @Injectable({
@@ -6,9 +6,9 @@ import { clipboard, NativeImage } from 'electron';
 })
 export class ClipboardManager {
     public containsImage(): boolean {
-        let availableFormats = clipboard.availableFormats("clipboard");
+        const availableFormats = clipboard.availableFormats('clipboard');
 
-        if (availableFormats.includes("image/png") || availableFormats.includes("image/jpeg")) {
+        if (availableFormats.includes('image/png') || availableFormats.includes('image/jpeg')) {
             return true;
         }
 
@@ -16,7 +16,7 @@ export class ClipboardManager {
     }
 
     public containsText(): boolean {
-        let text: string = clipboard.readText();
+        const text: string = clipboard.readText();
 
         if (text) {
             return true;
@@ -34,8 +34,8 @@ export class ClipboardManager {
     }
 
     public readImage(): Blob {
-        let clipboardImage: NativeImage = clipboard.readImage();
-        let blob: Blob = new Blob([clipboardImage.toJPEG(80)], { type: 'image/jpeg' });
+        const clipboardImage: NativeImage = clipboard.readImage();
+        const blob: Blob = new Blob([clipboardImage.toJPEG(80)], { type: 'image/jpeg' });
         return blob;
     }
 }

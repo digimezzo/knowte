@@ -1,26 +1,26 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { ipcRenderer } from 'electron';
-import { Logger } from "./logger";
+import { Logger } from './logger';
 
 @Injectable({
     providedIn: 'root'
 })
 export class WorkerManager {
     constructor(private logger: Logger) {
-       
+
     }
     public print(pageTitle: string, pageContent: string): void {
-        this.sendCommandToWorker("print", `<div>${this.createPrintCss()}<p class="page-title">${pageTitle}</p><p>${pageContent}</p></div>`);
+        this.sendCommandToWorker('print', `<div>${this.createPrintCss()}<p class="page-title">${pageTitle}</p><p>${pageContent}</p></div>`);
     }
 
     public exportToPdf(pdfFileName: string, pdfTitle: string, pdfContent: string): void {
-        let content: any = {
+        const content: any = {
             savePath: pdfFileName,
             text: `<div>${this.createPrintCss()}<p class="page-title">${pdfTitle}</p><p>${pdfContent}</p></div>`
-        }
+        };
 
-        this.sendCommandToWorker("printPDF", content);
-        this.logger.info("EXPOTR PDF:" + pdfFileName ,"","");
+        this.sendCommandToWorker('printPDF', content);
+        this.logger.info('EXPOTR PDF:' + pdfFileName , '', '');
     }
 
     private sendCommandToWorker(command: string, content: any): void {

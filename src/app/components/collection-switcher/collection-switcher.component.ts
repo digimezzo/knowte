@@ -25,7 +25,7 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
   }
 
   public collections: string[];
-  public activeCollection: string = "";
+  public activeCollection: string = '';
 
   public ngOnDestroy(): void {
     this.subscription.unsubscribe();
@@ -45,18 +45,18 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let titleText: string = await this.translator.getAsync('DialogTitles.AddCollection');
-    let placeholderText: string = await this.translator.getAsync('Input.Collection');
+    const titleText: string = await this.translator.getAsync('DialogTitles.AddCollection');
+    const placeholderText: string = await this.translator.getAsync('Input.Collection');
 
-    let dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
+    const dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
       width: '450px', data: { titleText: titleText, placeholderText: placeholderText }
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        let collection: string = dialogRef.componentInstance.inputText;
+        const collection: string = dialogRef.componentInstance.inputText;
 
-        let operation: Operation = await this.collection.addCollectionAsync(collection);
+        const operation: Operation = await this.collection.addCollectionAsync(collection);
 
         switch (operation) {
           case Operation.Duplicate: {
@@ -64,7 +64,7 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
             break;
           }
           case Operation.Error: {
-            let errorText: string = await this.translator.getAsync('ErrorTexts.AddCollectionError', { collection: collection });
+            const errorText: string = await this.translator.getAsync('ErrorTexts.AddCollectionError', { collection: collection });
             this.dialog.open(ErrorDialogComponent, {
               width: '450px', data: { errorText: errorText }
             });
@@ -79,7 +79,7 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
     });
   }
 
-  public async activateCollection(collection: string) {
+  public async activateCollection(collection: string): Promise<void> {
     if (collection === this.activeCollection) {
       return;
     }
@@ -92,13 +92,13 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
     this.collection.activateCollection(collection);
   }
 
-  public renameCollection(collection: string) {
+  public renameCollection(collection: string): void {
     if (this.collection.hasOpenNotes()) {
       this.snackBar.closeNoteBeforeChangingCollectionsAsync();
       return;
     }
 
-    let dialogRef: MatDialogRef<RenameCollectionDialogComponent> = this.dialog.open(RenameCollectionDialogComponent, {
+    const dialogRef: MatDialogRef<RenameCollectionDialogComponent> = this.dialog.open(RenameCollectionDialogComponent, {
       width: '450px', data: { oldCollection: collection }
     });
   }
@@ -109,20 +109,20 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteCollection');
-    let text: string = await this.translator.getAsync('DialogTexts.ConfirmDeleteCollection', { collection: collection });
+    const title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteCollection');
+    const text: string = await this.translator.getAsync('DialogTexts.ConfirmDeleteCollection', { collection: collection });
 
-    let dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
+    const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
 
       width: '450px', data: { dialogTitle: title, dialogText: text }
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        let operation: Operation = await this.collection.deleteCollectionAsync(collection);
+        const operation: Operation = await this.collection.deleteCollectionAsync(collection);
 
         if (operation === Operation.Error) {
-          let errorText: string = await this.translator.getAsync('ErrorTexts.DeleteCollectionError', { collection: collection });
+          const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteCollectionError', { collection: collection });
           this.dialog.open(ErrorDialogComponent, {
             width: '450px', data: { errorText: errorText }
           });

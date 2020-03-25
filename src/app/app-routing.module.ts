@@ -8,10 +8,10 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { NoteComponent } from './components/note/note.component';
 
 const routes: Routes = [
-    { 
-        path: '', 
-        redirectTo: '/loading', 
-        pathMatch: 'full' 
+    {
+        path: '',
+        redirectTo: '/loading',
+        pathMatch: 'full'
     },
     {
         path: 'note',

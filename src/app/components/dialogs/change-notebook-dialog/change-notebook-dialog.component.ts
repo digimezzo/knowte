@@ -11,7 +11,7 @@ import { Constants } from '../../../core/constants';
     encapsulation: ViewEncapsulation.None
 })
 export class ChangeNotebookDialogComponent implements OnInit, OnDestroy {
-    private globalEmitter = remote.getGlobal('globalEmitter');
+    private globalEmitter: any = remote.getGlobal('globalEmitter');
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<ChangeNotebookDialogComponent>) {
     }
@@ -25,7 +25,7 @@ export class ChangeNotebookDialogComponent implements OnInit, OnDestroy {
         this.globalEmitter.emit(Constants.getNotebooksEvent, this.getNotebooksCallback.bind(this));
     }
 
-    public changeNotebook(notebook: Notebook) {
+    public changeNotebook(notebook: Notebook): void {
         this.globalEmitter.emit(Constants.setNotebookEvent, notebook.id, [this.data.noteId]);
         this.dialogRef.close(true); // Force return "true"
     }

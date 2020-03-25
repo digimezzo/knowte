@@ -11,7 +11,7 @@ export class LogoMenuComponent implements OnInit {
   constructor() {
   }
 
-  @Input() selectedMenuItem: number;
+  @Input() public selectedMenuItem: number;
 
   public ngOnInit(): void {
   }

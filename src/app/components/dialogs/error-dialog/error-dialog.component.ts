@@ -18,6 +18,6 @@ export class ErrorDialogComponent implements OnInit {
 
     public viewLog(): void {
         // See: https://stackoverflow.com/questions/30381450/open-external-file-with-electron
-        remote.shell.openItem(remote.app.getPath("userData"));
+        remote.shell.openItem(remote.app.getPath('userData'));
     }
 }

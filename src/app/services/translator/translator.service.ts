@@ -3,17 +3,17 @@ import { TranslateService } from '@ngx-translate/core';
 import { Language } from '../../core/language';
 import { Constants } from '../../core/constants';
 import { remote } from 'electron';
-import { SettingsService } from '../settings/settings.service';
+import { Settings } from '../../core/settings';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TranslatorService {
-  private globalEmitter = remote.getGlobal('globalEmitter');
+  private globalEmitter: any = remote.getGlobal('globalEmitter');
   private languageChangedListener: any = this.languageChangedHandler.bind(this);
   private _selectedLanguage: Language;
 
-  constructor(private translate: TranslateService, private settings: SettingsService) {
+  constructor(private translate: TranslateService, private settings: Settings) {
     this.initialize();
   }
 
@@ -26,7 +26,7 @@ export class TranslatorService {
   public set selectedLanguage(v: Language) {
     this._selectedLanguage = v;
     this.settings.language = v.code;
-    
+
      // Global event because all windows need to be notified
      this.globalEmitter.emit(Constants.languageChangedEvent, v);
   }

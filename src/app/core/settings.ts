@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import * as Store from 'electron-store';
-import { Constants } from '../../core/constants';
+import { Constants } from '../core/constants';
 import { remote } from 'electron';
 
 @Injectable({
     providedIn: 'root',
 })
-export class SettingsService {
+export class Settings {
     private settings: Store<any> = new Store();
-    private globalEmitter = remote.getGlobal('globalEmitter');
+    private globalEmitter: any = remote.getGlobal('globalEmitter');
 
     constructor() {
         this.initialize();

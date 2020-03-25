@@ -12,7 +12,7 @@ import { Utils } from '../../core/utils';
 import { remote } from 'electron';
 import { FileService } from '../../services/file/file.service';
 import { SelectionWatcher } from '../../core/selection-watcher';
-import { SettingsService } from '../../services/settings/settings.service';
+import { Settings } from '../../core/settings';
 
 @Component({
     selector: 'app-notes',
@@ -21,14 +21,14 @@ import { SettingsService } from '../../services/settings/settings.service';
     encapsulation: ViewEncapsulation.None
 })
 export class NotesComponent implements OnInit, OnDestroy {
-    private globalEmitter = remote.getGlobal('globalEmitter');
+    private globalEmitter: any = remote.getGlobal('globalEmitter');
     private subscription: Subscription;
-    private readonly destroy$ = new Subject();
+    private readonly destroy$:  Subject<void> = new Subject();
     private _activeNotebook: Notebook;
     private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
     constructor(private collection: CollectionService, private snackBar: SnackBarService,
-        public search: SearchService, private settings: SettingsService,
+        public search: SearchService, private settings: Settings,
         private file: FileService, private zone: NgZone) {
     }
 
@@ -98,10 +98,10 @@ export class NotesComponent implements OnInit, OnDestroy {
             .subscribe(() => this.zone.run(async () => {
                 await this.refreshVirtuallScrollerAsync();
             }));
-        ;
+
     }
 
-    public setSelectedNotes(note: Note, event: MouseEvent = null) {
+    public setSelectedNotes(note: Note, event: MouseEvent = null): void {
         if (event && event.ctrlKey) {
             // CTRL is pressed: add item to, or remove item from selection
             this.selectionWatcher.toggleItemSelection(note);
@@ -138,7 +138,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     private markNote(result: NoteMarkResult): void {
         if (this.notes.length > 0) {
-            let noteToMark: Note = this.notes.find(x => x.id === result.noteId);
+            const noteToMark: Note = this.notes.find(x => x.id === result.noteId);
 
             if (noteToMark) {
                 noteToMark.isMarked = result.isMarked;
@@ -154,7 +154,10 @@ export class NotesComponent implements OnInit, OnDestroy {
 
         if (this.activeNotebook) {
             this.zone.run(async () => {
-                this.notes = await this.collection.getNotesAsync(this.activeNotebook.id, this.componentCategory, this.settings.showExactDatesInTheNotesList);
+                this.notes = await this.collection.getNotesAsync(
+                    this.activeNotebook.id,
+                     this.componentCategory,
+                     this.settings.showExactDatesInTheNotesList);
                 this.selectionWatcher.reset(this.notes);
                 this.notesCount.emit(this.notes.length);
 
@@ -163,7 +166,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         }
     }
 
-    public getSelectedNoteIds() {
+    public getSelectedNoteIds(): string[] {
         return this.notes.filter(x => x.isSelected).map(x => x.id);
     }
 

@@ -4,12 +4,11 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'truncate'
 })
 export class TruncatePipe implements PipeTransform {
-  transform(value: string, limit: number, completeWords: boolean, ellipsis = '...') {
-
+  public transform(value: string, limit: number, completeWords: boolean, ellipsis: string = '...'): string {
     if (!value) {
       return;
     }
-    
+
     if (value.length < limit) {
       return `${value.substr(0, limit)}`;
     }
