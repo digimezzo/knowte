@@ -75,7 +75,22 @@
         "AddNote": "Add note",
         "DeleteNote": "Delete note...",
         "DeleteNotes": "Delete notes...",
-        "LastChanged": "Last changed"
+        "LastChanged": "Last changed",
+        "Highlight": "Highlight",
+        "Bold": "Bold (Ctrl+B)",
+        "Italic": "Italic (Ctrl+I)",
+        "Underline": "Underline (Ctrl+U)",
+        "Strikethrough": "Strikethrough (Ctrl+S)",
+        "Heading1": "Heading 1",
+        "Heading2": "Heading 2",
+        "NumberedList": "Numbered list",
+        "BulletedList": "Bulleted list",
+        "TaskList": "Task list",
+        "Link": "Link",
+        "Quote": "Quote",
+        "Code": "Code",
+        "Image": "Image",
+        "ClearFormatting": "Clear formatting"
     },
     "LicenseDialog": {
         "License": "License"

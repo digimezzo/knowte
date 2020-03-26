@@ -75,7 +75,22 @@
         "AddNote": "Ajouter note",
         "DeleteNote": "Supprimer note...",
         "DeleteNotes": "Supprimer notes...",
-        "LastChanged": "Dernière modification"
+        "LastChanged": "Dernière modification",
+        "Highlight": "Surligner",
+        "Bold": "Gras (Ctrl+B)",
+        "Italic": "Italique (Ctrl+I)",
+        "Underline": "Souligner (Ctrl+U)",
+        "Strikethrough": "Barrer (Ctrl+S)",
+        "Heading1": "Titre 1",
+        "Heading2": "Titre 2",
+        "NumberedList": "Liste numérotée",
+        "BulletedList": "Liste à puces",
+        "TaskList": "Liste de tâches",
+        "Link": "Lien",
+        "Quote": "Citation",
+        "Code": "Code",
+        "Image": "Image",
+        "ClearFormatting": "Supprimer le formattage"
     },
     "LicenseDialog": {
         "License": "Licence"

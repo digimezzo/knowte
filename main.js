@@ -37,7 +37,6 @@ var GlobalEventEmitter = /** @class */ (function (_super) {
     }
     return GlobalEventEmitter;
 }(EventEmitter));
-;
 globalAny.globalEmitter = new GlobalEventEmitter();
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 electron_log_1.default.transports.file.level = 'info';
@@ -95,7 +94,7 @@ function createWindow() {
             protocol: 'file:',
             slashes: true
         }));
-        workerWindow.on("closed", function () {
+        workerWindow.on('closed', function () {
             workerWindow = undefined;
         });
         // mainWindow.webContents.openDevTools();
@@ -108,7 +107,7 @@ function createWindow() {
             // When the main window is closed, quit the app (This also closes all other windows)
             electron_1.app.quit();
         });
-        // 'ready-to-show' doesn't fire on Windows in dev mode. In prod it seems to work. 
+        // 'ready-to-show' doesn't fire on Windows in dev mode. In prod it seems to work.
         // See: https://github.com/electron/electron/issues/7779
         mainWindow.on('ready-to-show', function () {
             mainWindow.show();
@@ -177,7 +176,7 @@ function createNoteWindow(notePath, noteId) {
     noteWindow.webContents.on('new-window', handleRedirect);
 }
 try {
-    electron_log_1.default.info("[App] [main] +++ Starting +++");
+    electron_log_1.default.info('[App] [main] +++ Starting +++');
     // Open note windows
     electron_1.ipcMain.on('open-note-window', function (event, arg) {
         createNoteWindow(arg.notePath, arg.noteId);
@@ -212,7 +211,7 @@ try {
     electron_1.app.on('ready', createWindow);
     // Quit when all windows are closed.
     electron_1.app.on('window-all-closed', function () {
-        electron_log_1.default.info("[App] [window-all-closed] +++ Stopping +++");
+        electron_log_1.default.info('[App] [window-all-closed] +++ Stopping +++');
         // On OS X it is common for applications and their menu bar
         // to stay active until the user quits explicitly with Cmd + Q
         // if (process.platform !== 'darwin') {

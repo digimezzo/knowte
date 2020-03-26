@@ -19,14 +19,14 @@ const globalAny: any = global;
 
 // Workaround to send messages between Electron windows
 const EventEmitter = require('events');
-class GlobalEventEmitter extends EventEmitter { };
+class GlobalEventEmitter extends EventEmitter { }
 globalAny.globalEmitter = new GlobalEventEmitter();
 
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 log.transports.file.level = 'info';
 
 function createWindow() {
-  let gotTheLock: boolean = app.requestSingleInstanceLock();
+  const gotTheLock: boolean = app.requestSingleInstanceLock();
 
   if (!gotTheLock) {
     app.quit();
@@ -43,7 +43,7 @@ function createWindow() {
     });
 
     // Load the previous state with fallback to defaults
-    let mainWindowState = windowStateKeeper({
+    const mainWindowState = windowStateKeeper({
       defaultWidth: 850,
       defaultHeight: 600
     });
@@ -85,7 +85,7 @@ function createWindow() {
       slashes: true
     }));
 
-    workerWindow.on("closed", () => {
+    workerWindow.on('closed', () => {
       workerWindow = undefined;
     });
 
@@ -102,7 +102,7 @@ function createWindow() {
       app.quit();
     });
 
-    // 'ready-to-show' doesn't fire on Windows in dev mode. In prod it seems to work. 
+    // 'ready-to-show' doesn't fire on Windows in dev mode. In prod it seems to work.
     // See: https://github.com/electron/electron/issues/7779
     mainWindow.on('ready-to-show', function () {
       mainWindow.show();
@@ -110,22 +110,22 @@ function createWindow() {
     });
 
     // Makes links open in external browser
-    var handleRedirect = (e, url) => {
+    let handleRedirect = (e, url) => {
       // Check that the requested url is not the current page
       if (url != mainWindow.webContents.getURL()) {
-        e.preventDefault()
-        require('electron').shell.openExternal(url)
+        e.preventDefault();
+        require('electron').shell.openExternal(url);
       }
-    }
+    };
 
-    mainWindow.webContents.on('will-navigate', handleRedirect)
-    mainWindow.webContents.on('new-window', handleRedirect)
+    mainWindow.webContents.on('will-navigate', handleRedirect);
+    mainWindow.webContents.on('new-window', handleRedirect);
   }
 }
 
 function createNoteWindow(notePath: string, noteId: string) {
   // Load the previous state with fallback to defaults
-  let noteWindowState = windowStateKeeper({
+  const noteWindowState = windowStateKeeper({
     defaultWidth: 620,
     defaultHeight: 400,
     path: notePath,
@@ -133,7 +133,7 @@ function createNoteWindow(notePath: string, noteId: string) {
   });
 
   // Create the window using the state information
-  let noteWindow: BrowserWindow = new BrowserWindow({
+  const noteWindow: BrowserWindow = new BrowserWindow({
     'x': noteWindowState.x,
     'y': noteWindowState.y,
     'width': noteWindowState.width,
@@ -168,20 +168,20 @@ function createNoteWindow(notePath: string, noteId: string) {
   });
 
   // Makes links open in external browser
-  var handleRedirect = (e, url) => {
+  let handleRedirect = (e, url) => {
     // Check that the requested url is not the current page
     if (url != noteWindow.webContents.getURL()) {
-      e.preventDefault()
-      require('electron').shell.openExternal(url)
+      e.preventDefault();
+      require('electron').shell.openExternal(url);
     }
-  }
+  };
 
   noteWindow.webContents.on('will-navigate', handleRedirect);
   noteWindow.webContents.on('new-window', handleRedirect);
 }
 
 try {
-  log.info("[App] [main] +++ Starting +++");
+  log.info('[App] [main] +++ Starting +++');
 
   // Open note windows
   ipcMain.on('open-note-window', (event: any, arg: any) => {
@@ -214,8 +214,8 @@ try {
         }
 
         shell.openItem(safePath);
-      })
-    })
+      });
+    });
   });
 
   // This method will be called when Electron has finished
@@ -225,7 +225,7 @@ try {
 
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
-    log.info("[App] [window-all-closed] +++ Stopping +++");
+    log.info('[App] [window-all-closed] +++ Stopping +++');
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     // if (process.platform !== 'darwin') {

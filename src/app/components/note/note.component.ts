@@ -86,7 +86,8 @@ export class NoteComponent implements OnInit, OnDestroy {
         const notePlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
 
         const toolbarOptions: any = [
-            [{ 'color': [] }, { 'background': [] }],
+            // [{ 'color': [] }, { 'background': [] }],
+            [{ 'background': [] }],
             ['bold', 'italic', 'underline', 'strike'],
             [{ 'header': 1 }, { 'header': 2 }],
             [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
@@ -101,6 +102,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             ['clean']
         ];
 
+
         this.quill = new Quill('#editor', {
             modules: {
                 toolbar: toolbarOptions
@@ -108,6 +110,8 @@ export class NoteComponent implements OnInit, OnDestroy {
             placeholder: notePlaceHolder,
             theme: 'snow',
         });
+
+        await this.setToolbarTooltipsAsync();
 
         this.quill.on('text-change', () => {
             this.isTextDirty = true;
@@ -169,6 +173,35 @@ export class NoteComponent implements OnInit, OnDestroy {
                 this.pasteImageFromClipboard();
             }
         };
+    }
+
+    private async setToolbarTooltipsAsync(): Promise<void> {
+        // See: https://github.com/quilljs/quill/issues/650
+        const toolbarElement: Element = document.querySelector('.ql-toolbar');
+        toolbarElement.querySelector('span.ql-background').setAttribute('title', await this.translator.getAsync('Tooltips.Highlight'));
+        toolbarElement.querySelector('button.ql-bold').setAttribute('title', await this.translator.getAsync('Tooltips.Bold'));
+        toolbarElement.querySelector('button.ql-italic').setAttribute('title', await this.translator.getAsync('Tooltips.Italic'));
+        toolbarElement.querySelector('button.ql-underline').setAttribute('title', await this.translator.getAsync('Tooltips.Underline'));
+        toolbarElement.querySelector('button.ql-strike').setAttribute('title', await this.translator.getAsync('Tooltips.Strikethrough'));
+
+        toolbarElement.querySelector('[class="ql-header"][value="1"]')
+            .setAttribute('title', await this.translator.getAsync('Tooltips.Heading1'));
+        toolbarElement.querySelector('[class="ql-header"][value="2"]')
+            .setAttribute('title', await this.translator.getAsync('Tooltips.Heading2'));
+
+        toolbarElement.querySelector('[class="ql-list"][value="ordered"]')
+            .setAttribute('title', await this.translator.getAsync('Tooltips.NumberedList'));
+        toolbarElement.querySelector('[class="ql-list"][value="bullet"]')
+            .setAttribute('title', await this.translator.getAsync('Tooltips.BulletedList'));
+        toolbarElement.querySelector('[class="ql-list"][value="check"]')
+            .setAttribute('title', await this.translator.getAsync('Tooltips.TaskList'));
+
+        toolbarElement.querySelector('button.ql-link').setAttribute('title', await this.translator.getAsync('Tooltips.Link'));
+        toolbarElement.querySelector('button.ql-blockquote').setAttribute('title', await this.translator.getAsync('Tooltips.Quote'));
+        toolbarElement.querySelector('button.ql-code-block').setAttribute('title', await this.translator.getAsync('Tooltips.Code'));
+        toolbarElement.querySelector('button.ql-image').setAttribute('title', await this.translator.getAsync('Tooltips.Image'));
+
+        toolbarElement.querySelector('button.ql-clean').setAttribute('title', await this.translator.getAsync('Tooltips.ClearFormatting'));
     }
 
     public changeNotebook(): void {
@@ -312,11 +345,11 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.contextMenu = new remote.Menu();
 
         this.cutContextMenuItem = new remote.MenuItem({
-                label: await this.translator.getAsync('ContextMenu.Cut'),
-                click: () => {
-                    this.performCut();
-                }
-            });
+            label: await this.translator.getAsync('ContextMenu.Cut'),
+            click: () => {
+                this.performCut();
+            }
+        });
 
         this.copyContextMenuItem = new remote.MenuItem({
             label: await this.translator.getAsync('ContextMenu.Copy'),
@@ -488,27 +521,27 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.initialNoteTitle,
             this.noteTitle,
             async (result: NoteOperationResult) => {
-            const setTitleOperation: Operation = result.operation;
-            await this.setNoteTitleCallbackAsync(result);
+                const setTitleOperation: Operation = result.operation;
+                await this.setNoteTitleCallbackAsync(result);
 
-            this.globalEmitter.emit(
-                Constants.setNoteTextEvent,
-                this.noteId,
-                this.quill.getText(),
-                this.getTasksCount(),
-                async (operation: Operation) => {
-                    const setTextOperation: Operation = operation;
-                    await this.setNoteTextCallbackAsync(operation);
+                this.globalEmitter.emit(
+                    Constants.setNoteTextEvent,
+                    this.noteId,
+                    this.quill.getText(),
+                    this.getTasksCount(),
+                    async (operation: Operation) => {
+                        const setTextOperation: Operation = operation;
+                        await this.setNoteTextCallbackAsync(operation);
 
-                    // Close is only allowed when saving both title and text is successful
-                    if (setTitleOperation === Operation.Success && setTextOperation === Operation.Success) {
-                        this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, 'NoteComponent', 'saveAndClose');
-                        this.cleanup();
-                        const window: BrowserWindow = remote.getCurrentWindow();
-                        window.close();
-                }
+                        // Close is only allowed when saving both title and text is successful
+                        if (setTitleOperation === Operation.Success && setTextOperation === Operation.Success) {
+                            this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, 'NoteComponent', 'saveAndClose');
+                            this.cleanup();
+                            const window: BrowserWindow = remote.getCurrentWindow();
+                            window.close();
+                        }
+                    });
             });
-        });
     }
 
     private getNoteDetailsCallback(result: NoteDetailsResult): void {

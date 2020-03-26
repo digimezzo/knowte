@@ -75,7 +75,22 @@
         "AddNote": "Notitie toevoegen",
         "DeleteNote": "Notitie verwijderen...",
         "DeleteNotes": "Notities verwijderen...",
-        "LastChanged": "Laatst gewijzigd"
+        "LastChanged": "Laatst gewijzigd",
+        "Highlight": "Markeren",
+        "Bold": "Vet (Ctrl+B)",
+        "Italic": "Cursief (Ctrl+I)",
+        "Underline": "Onderstrepen (Ctrl+U)",
+        "Strikethrough": "Doorhalen (Ctrl+S)",
+        "Heading1": "Koptekst 1",
+        "Heading2": "Koptekst 2",
+        "NumberedList": "Genummerde lijst",
+        "BulletedList": "Lijst met opsommingstekens",
+        "TaskList": "Takenlijst",
+        "Link": "Link",
+        "Quote": "Citaat",
+        "Code": "Code",
+        "Image": "Afbeelding",
+        "ClearFormatting": "Opmaak verwijderen"
     },
     "LicenseDialog": {
         "License": "Licentie"
