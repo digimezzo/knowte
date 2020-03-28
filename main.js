@@ -143,6 +143,7 @@ function createNoteWindow(notePath, noteId) {
         frame: false,
         show: true
     });
+    noteWindow.webContents.openDevTools();
     // Let us register listeners on the window, so we can update the state
     // automatically (the listeners will be removed when the window is closed)
     // and restore the maximized or full screen state

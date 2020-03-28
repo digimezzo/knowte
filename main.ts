@@ -110,7 +110,7 @@ function createWindow() {
     });
 
     // Makes links open in external browser
-    let handleRedirect = (e, url) => {
+    const handleRedirect = (e, url) => {
       // Check that the requested url is not the current page
       if (url != mainWindow.webContents.getURL()) {
         e.preventDefault();
@@ -143,6 +143,8 @@ function createNoteWindow(notePath: string, noteId: string) {
     show: true
   });
 
+  // noteWindow.webContents.openDevTools();
+
   // Let us register listeners on the window, so we can update the state
   // automatically (the listeners will be removed when the window is closed)
   // and restore the maximized or full screen state
@@ -157,7 +159,7 @@ function createNoteWindow(notePath: string, noteId: string) {
     noteWindow.loadURL(`file://${__dirname}/dist/index.html#/note?id=${noteId}`);
   }
 
-  noteWindow.on('page-title-updated', function(e) {
+  noteWindow.on('page-title-updated', function (e) {
     // Prevents overwriting the window title by the title which is set in index.html
     e.preventDefault();
   });
@@ -168,7 +170,7 @@ function createNoteWindow(notePath: string, noteId: string) {
   });
 
   // Makes links open in external browser
-  let handleRedirect = (e, url) => {
+  const handleRedirect = (e, url) => {
     // Check that the requested url is not the current page
     if (url != noteWindow.webContents.getURL()) {
       e.preventDefault();

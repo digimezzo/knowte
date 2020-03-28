@@ -34,6 +34,14 @@
     color: mat-color($primary) !important;
   }
 
+  .stroke-primary {
+    stroke: mat-color($primary) !important;
+  }
+
+  .fill-primary {
+    fill: mat-color($primary) !important;
+  }
+
   .background-color-primary {
     background-color: mat-color($primary) !important;
   }

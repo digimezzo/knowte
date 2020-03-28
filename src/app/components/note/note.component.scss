@@ -1,6 +1,18 @@
 @import "variables";
 @import "theming";
 
+.ql-snow.ql-toolbar button:hover .ql-stroke,
+.ql-snow.ql-toolbar .ql-color-picker span:hover .ql-stroke,
+.ql-snow.ql-toolbar .ql-active .ql-stroke {
+  @extend .stroke-primary;
+}
+
+.ql-snow.ql-toolbar button:hover .ql-fill,
+.ql-snow.ql-toolbar .ql-color-picker span:hover .ql-fill,
+.ql-snow.ql-toolbar .ql-active .ql-fill {
+  @extend .fill-primary;
+}
+
 .note-content {
   width: 100%;
   height: 100%;
