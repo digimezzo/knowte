@@ -6,10 +6,11 @@
     </div>
     <!-- Search -->
     <mat-form-field class="notes-content-search">
-        <input matInput type="text" placeholder="{{ 'MainPage.Search' | translate }}"
-            [(ngModel)]="search.searchText">
-        <span class="notes-content-search-clearbutton custom-font" *ngIf="search.searchText" matSuffix
-            (click)="search.searchText=''"
-            matTooltip="{{ 'MainPage.ClearSearch' | translate }}">&#xE5C9;</span>
+        <mat-label>{{ 'MainPage.Search' | translate }}</mat-label>
+        <input matInput type="text" [(ngModel)]="search.searchText">
+        <button mat-button *ngIf="search.searchText" matSuffix mat-icon-button
+            matTooltip="{{ 'MainPage.ClearSearch' | translate }}" (click)="search.searchText=''">
+            <span class="custom-font notes-content-search-clearbutton">&#xE5CD;</span>
+        </button>
     </mat-form-field>
 </div>
