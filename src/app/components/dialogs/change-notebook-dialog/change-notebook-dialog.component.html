@@ -2,7 +2,8 @@
 <mat-dialog-content class="dialog-content">
     <ul class="notebooks-list">
         <li *ngFor="let notebook of notebooks" class="notebook" matRipple>
-            <div class="no-select px-2" (click)="changeNotebook(notebook)">
+            <div class="no-select px-2" [ngStyle]="{'font-weight':notebook.id === '1' ? 'bold' : 'normal' }"
+                (click)="changeNotebook(notebook)">
                 {{ notebook.name }}
             </div>
         </li>
