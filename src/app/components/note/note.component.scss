@@ -1,6 +1,10 @@
 @import "variables";
 @import "theming";
 
+.ql-snow.ql-toolbar {
+  border: 0px !important
+}
+
 .ql-snow.ql-toolbar button:hover .ql-stroke,
 .ql-snow.ql-toolbar .ql-color-picker span:hover .ql-stroke,
 .ql-snow.ql-toolbar .ql-active .ql-stroke {

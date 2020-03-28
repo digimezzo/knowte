@@ -16,7 +16,7 @@ export class SettingsComponent implements OnInit {
     private settings: Settings) {
   }
 
-  public fontSizes: number[] = [14, 16, 18, 20, 22, 24];
+  public fontSizes: number[] = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
 
   public get closeNotesWithEscapeChecked(): boolean {
     return this.settings.closeNotesWithEscape;

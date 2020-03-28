@@ -198,9 +198,9 @@ try {
             if (error) {
                 throw error;
             }
-            fs.writeFile(safePath, data, function (error) {
-                if (error) {
-                    throw error;
+            fs.writeFile(safePath, data, function (localError) {
+                if (localError) {
+                    throw localError;
                 }
                 electron_1.shell.openItem(safePath);
             });

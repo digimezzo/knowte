@@ -123,7 +123,7 @@ export class Settings {
         }
 
         if (!this.settings.has('fontSizeInNotes')) {
-            this.settings.set('fontSizeInNotes', 14);
+            this.settings.set('fontSizeInNotes', 13);
         }
 
         if (!this.settings.has('showExactDatesInTheNotesList')) {

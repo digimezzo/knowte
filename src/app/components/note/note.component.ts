@@ -86,22 +86,15 @@ export class NoteComponent implements OnInit, OnDestroy {
         const notePlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
 
         const toolbarOptions: any = [
-            // [{ 'color': [] }, { 'background': [] }],
-            [{ 'background': [] }],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ 'header': 1 }, { 'header': 2 }],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
-            ['link', 'blockquote', 'code-block', 'image'],
-            // [{ 'script': 'sub' }, { 'script': 'super' }],
-            // [{ 'indent': '-1' }, { 'indent': '+1' }],
-            // [{ 'direction': 'rtl' }],
-            // [{ 'size': ['small', false, 'large', 'huge'] }],
-            // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            // [{ 'font': [] }],
-            // [{ 'align': [] }],
-            ['clean']
+            [
+                'bold', 'italic', 'underline', 'strike',
+                { 'background': [] },
+                { 'header': 1 }, { 'header': 2 },
+                { 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' },
+                'link', 'blockquote', 'code-block', 'image',
+                'clean'
+            ]
         ];
-
 
         this.quill = new Quill('#editor', {
             modules: {
