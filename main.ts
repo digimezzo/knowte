@@ -25,7 +25,7 @@ globalAny.globalEmitter = new GlobalEventEmitter();
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 log.transports.file.level = 'info';
 
-function createWindow() {
+function createWindow(): void {
   const gotTheLock: boolean = app.requestSingleInstanceLock();
 
   if (!gotTheLock) {
@@ -104,17 +104,17 @@ function createWindow() {
 
     // 'ready-to-show' doesn't fire on Windows in dev mode. In prod it seems to work.
     // See: https://github.com/electron/electron/issues/7779
-    mainWindow.on('ready-to-show', function () {
+    mainWindow.on('ready-to-show', () => {
       mainWindow.show();
       mainWindow.focus();
     });
 
     // Makes links open in external browser
-    const handleRedirect = (e, url) => {
+    const handleRedirect = (e: any, localUrl: string) => {
       // Check that the requested url is not the current page
-      if (url != mainWindow.webContents.getURL()) {
+      if (localUrl !== mainWindow.webContents.getURL()) {
         e.preventDefault();
-        require('electron').shell.openExternal(url);
+        require('electron').shell.openExternal(localUrl);
       }
     };
 
@@ -123,7 +123,7 @@ function createWindow() {
   }
 }
 
-function createNoteWindow(notePath: string, noteId: string) {
+function createNoteWindow(notePath: string, noteId: string): void {
   // Load the previous state with fallback to defaults
   const noteWindowState = windowStateKeeper({
     defaultWidth: 620,
@@ -159,22 +159,22 @@ function createNoteWindow(notePath: string, noteId: string) {
     noteWindow.loadURL(`file://${__dirname}/dist/index.html#/note?id=${noteId}`);
   }
 
-  noteWindow.on('page-title-updated', function (e) {
+  noteWindow.on('page-title-updated', (e) => {
     // Prevents overwriting the window title by the title which is set in index.html
     e.preventDefault();
   });
 
-  noteWindow.on('ready-to-show', function () {
+  noteWindow.on('ready-to-show', () => {
     noteWindow.show();
     noteWindow.focus();
   });
 
   // Makes links open in external browser
-  const handleRedirect = (e, url) => {
+  const handleRedirect = (e: any, localUrl: string) => {
     // Check that the requested url is not the current page
-    if (url != noteWindow.webContents.getURL()) {
+    if (localUrl !== noteWindow.webContents.getURL()) {
       e.preventDefault();
-      require('electron').shell.openExternal(url);
+      require('electron').shell.openExternal(localUrl);
     }
   };
 
@@ -205,14 +205,14 @@ try {
   });
 
   ipcMain.on('readyToPrintPDF', (event: any, safePath: string) => {
-    workerWindow.webContents.printToPDF({}, function (error: any, data: any) {
+    workerWindow.webContents.printToPDF({}, (error: any, data: any) => {
       if (error) {
         throw error;
       }
 
-      fs.writeFile(safePath, data, function (error: any) {
-        if (error) {
-          throw error;
+      fs.writeFile(safePath, data, (localError: any) => {
+        if (localError) {
+          throw localError;
         }
 
         shell.openItem(safePath);

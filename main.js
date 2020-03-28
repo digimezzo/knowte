@@ -114,11 +114,11 @@ function createWindow() {
             mainWindow.focus();
         });
         // Makes links open in external browser
-        var handleRedirect = function (e, url) {
+        var handleRedirect = function (e, localUrl) {
             // Check that the requested url is not the current page
-            if (url != mainWindow.webContents.getURL()) {
+            if (localUrl !== mainWindow.webContents.getURL()) {
                 e.preventDefault();
-                require('electron').shell.openExternal(url);
+                require('electron').shell.openExternal(localUrl);
             }
         };
         mainWindow.webContents.on('will-navigate', handleRedirect);
@@ -143,7 +143,7 @@ function createNoteWindow(notePath, noteId) {
         frame: false,
         show: true
     });
-    noteWindow.webContents.openDevTools();
+    // noteWindow.webContents.openDevTools();
     // Let us register listeners on the window, so we can update the state
     // automatically (the listeners will be removed when the window is closed)
     // and restore the maximized or full screen state
@@ -166,11 +166,11 @@ function createNoteWindow(notePath, noteId) {
         noteWindow.focus();
     });
     // Makes links open in external browser
-    var handleRedirect = function (e, url) {
+    var handleRedirect = function (e, localUrl) {
         // Check that the requested url is not the current page
-        if (url != noteWindow.webContents.getURL()) {
+        if (localUrl !== noteWindow.webContents.getURL()) {
             e.preventDefault();
-            require('electron').shell.openExternal(url);
+            require('electron').shell.openExternal(localUrl);
         }
     };
     noteWindow.webContents.on('will-navigate', handleRedirect);
