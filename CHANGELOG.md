@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - It is now possible to change the UI font size
 - Added tooltips to the note editor buttons
 - Added a search field to the note windows. It can be displayed by pressing CTRL+F.
+- Added keyboard shortcuts CTRL+1 and CTRL+2 for headers 1 and 2 in notes
 ### Changed
 - UI has been refined
 ### Removed
