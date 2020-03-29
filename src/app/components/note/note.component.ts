@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener, NgZone, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, NgZone, ViewEncapsulation, ElementRef, ViewChild } from '@angular/core';
 import { remote, BrowserWindow, SaveDialogOptions, NativeImage } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
@@ -24,6 +24,7 @@ import { TranslatorService } from '../../services/translator/translator.service'
 import { ClipboardManager } from '../../core/clipboard-manager';
 import { WorkerManager } from '../../core/worker-manager';
 import { Settings } from '../../core/settings';
+import { SearchService } from '../../services/search/search.service';
 
 @Component({
     selector: 'app-note',
@@ -40,6 +41,8 @@ import { Settings } from '../../core/settings';
     ],
 })
 export class NoteComponent implements OnInit, OnDestroy {
+    @ViewChild('searchInput') public searchInputElement: ElementRef;
+
     private saveTimeoutMilliseconds: number = 5000;
     private windowCloseTimeoutMilliseconds: number = 500;
     private quill: Quill;
@@ -60,6 +63,8 @@ export class NoteComponent implements OnInit, OnDestroy {
     private pasteContextMenuItem: any;
     private deleteContextMenuItem: any;
 
+    private _searchText: string;
+
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
         private snackBar: SnackBarService, private translator: TranslatorService, private settings: Settings,
         private clipboard: ClipboardManager, private worker: WorkerManager) {
@@ -75,6 +80,15 @@ export class NoteComponent implements OnInit, OnDestroy {
     public canPerformActions: boolean = false;
     public isBusy: boolean = false;
     public actionIconRotation: string = 'default';
+    public canSearch: boolean = false;
+
+    public get searchText(): string {
+        return this._searchText;
+    }
+    public set searchText(v: string) {
+        this._searchText = v;
+        this.highlightSearch(v);
+    }
 
     public ngOnDestroy(): void {
     }
@@ -209,11 +223,18 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.noteTitleChanged.next(newNoteTitle);
     }
 
-    @HostListener('document:keydown.escape', ['$event']) public onKeydownHandler(event: KeyboardEvent): void {
-        if (this.settings.closeNotesWithEscape) {
+    @HostListener('document:keydown.escape', ['$event']) public onEscapeKeydownHandler(event: KeyboardEvent): void {
+        if (this.canSearch) {
+            this.closeSearch();
+        } else if (this.settings.closeNotesWithEscape) {
             const window: BrowserWindow = remote.getCurrentWindow();
             window.close();
         }
+    }
+
+    @HostListener('document:keydown.control.f', ['$event']) public onControlFKeydownHandler(event: KeyboardEvent): void {
+        this.canSearch = true;
+        setTimeout(() => this.searchInputElement.nativeElement.focus(), 10);
     }
 
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
@@ -604,9 +625,15 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.setEditorFontSize();
     }
 
-    private clearSearch(): void {
+    public closeSearch(): void {
+        this.canSearch = false;
+        this.clearSearch();
+    }
+
+    public clearSearch(): void {
         const window: BrowserWindow = remote.getCurrentWindow();
         window.webContents.stopFindInPage('keepSelection');
+        this.searchText = '';
     }
 
     private applySearch(): void {
@@ -614,14 +641,24 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private getSearchTextCallback(searchText: string): void {
-        const window: BrowserWindow = remote.getCurrentWindow();
-
-        // window.webContents.stopFindInPage("keepSelection");
-
         if (searchText && searchText.length > 0) {
             const searchTextPieces: string[] = searchText.trim().split(' ');
+
             // For now, we can only search for 1 word.
-            window.webContents.findInPage(searchTextPieces[0]);
+            this.searchText = searchTextPieces[0];
+            this.canSearch = true;
+        }
+    }
+
+    private highlightSearch(searchText: string): void {
+        const window: BrowserWindow = remote.getCurrentWindow();
+
+        if (this.searchText) {
+            window.webContents.unselect();
+            window.webContents.findInPage(this.searchText);
+            setTimeout(() => this.searchInputElement.nativeElement.focus(), 10);
+        } else {
+            window.webContents.stopFindInPage('keepSelection');
         }
     }
 

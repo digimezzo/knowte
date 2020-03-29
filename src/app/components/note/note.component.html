@@ -18,8 +18,10 @@
                 <button class="note-content-floating-button" mat-fab (click)="toggleShowActions()"
                     matTooltip="{{ 'Tooltips.Actions' | translate }}">
                     <div class="note-content-floating-button-icon-container" [@actionIconRotation]="actionIconRotation">
-                        <span *ngIf="!canPerformActions" class="note-content-floating-button-icon custom-font">&#xE9F5;</span>
-                        <span *ngIf="canPerformActions" class="note-content-floating-button-icon custom-font">&#xE711;</span>
+                        <span *ngIf="!canPerformActions"
+                            class="note-content-floating-button-icon custom-font">&#xE9F5;</span>
+                        <span *ngIf="canPerformActions"
+                            class="note-content-floating-button-icon custom-font">&#xE711;</span>
                     </div>
                 </button>
                 <button *ngIf="canPerformActions && isMarked" class="note-content-floating-button" mat-mini-fab color=""
@@ -54,6 +56,17 @@
                 </div>
                 <div class="note-editor" id="editor" (keydown.control.s)=strikeThrough($event)>
                 </div>
+            </div>
+            <div class="note-content-search pt-1 px-2" *ngIf="canSearch">
+                <mat-form-field class="note-content-search-field">
+                    <mat-label>{{ 'MainPage.Search' | translate }}</mat-label>
+                    <input matInput type="text" #searchInput [(ngModel)]="searchText">
+                    <button mat-button *ngIf="searchText" matSuffix mat-icon-button
+                        matTooltip="{{ 'MainPage.ClearSearch' | translate }}" (click)="clearSearch()">
+                        <span class="custom-font notes-search-clearbutton">&#xE5CD;</span>
+                    </button>
+                </mat-form-field>
+                <button mat-button (click)="closeSearch()">{{ 'Buttons.Close' | translate }}</button>
             </div>
         </div>
     </div>

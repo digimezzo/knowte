@@ -2,8 +2,13 @@
 @import "theming";
 
 .ql-snow.ql-toolbar {
-  border: 0px !important
+  border-top: 0px !important;
+  border-bottom: 0px !important;
 }
+
+// .ql-container.ql-snow {
+//   border: 0px !important
+// }
 
 .ql-snow.ql-toolbar button:hover .ql-stroke,
 .ql-snow.ql-toolbar .ql-color-picker span:hover .ql-stroke,
@@ -84,6 +89,27 @@
   font-weight: lighter;
   padding: 0 8px 0 8px;
   color: white;
+}
+
+.note-content-search{
+  background: white;
+  box-shadow: 0px 0px 14px 2px rgba(0,0,0,0.2);
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 99;
+  border-radius: 6px;
+}
+
+.note-content-search-field{
+  width: 200px;
+  margin-right: 20px;
+}
+
+.notes-search-clearbutton {
+  font-family: material;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .note-editor {
