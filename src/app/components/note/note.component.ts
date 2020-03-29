@@ -785,6 +785,28 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.rotateActionsButton();
     }
 
+    public heading1(event: any): void {
+        this.applyHeading(1);
+    }
+
+    public heading2(event: any): void {
+        this.applyHeading(2);
+    }
+
+    private applyHeading(headingSize: number): void {
+        const range: any = this.quill.getSelection();
+        const format: any = this.quill.getFormat(range.index, range.length);
+        const formatString: string = JSON.stringify(format);
+
+        const selectionContainsHeader: boolean = !formatString.includes(`"header":${headingSize}`);
+
+        if (selectionContainsHeader) {
+            this.quill.format('header', headingSize);
+        } else {
+            this.quill.removeFormat(range.index, range.length);
+        }
+    }
+
     public strikeThrough(event: any): void {
         const range: any = this.quill.getSelection();
         const format: any = this.quill.getFormat(range.index, range.length);

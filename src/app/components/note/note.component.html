@@ -54,7 +54,8 @@
                     <input class="note-content-fixed-title-text" type="text" [(ngModel)]="noteTitle"
                         (ngModelChange)="onNotetitleChange($event)" (keydown)="onTitleKeydown($event)" />
                 </div>
-                <div class="note-editor" id="editor" (keydown.control.s)=strikeThrough($event)>
+                <div class="note-editor" id="editor" (keydown.control.s)=strikeThrough($event)
+                (keydown.control.1)=heading1($event) (keydown.control.2)=heading2($event)>
                 </div>
             </div>
             <div class="note-content-search pt-1 px-2" *ngIf="canSearch">
