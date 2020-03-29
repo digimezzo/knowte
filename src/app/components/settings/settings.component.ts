@@ -4,6 +4,7 @@ import { ImportFromOldVersionDialogComponent } from '../dialogs/import-from-old-
 import { AppearanceService } from '../../services/appearance/appearance.service';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { Settings } from '../../core/settings';
+import { Constants } from '../../core/constants';
 
 @Component({
   selector: 'app-settings',
@@ -16,7 +17,7 @@ export class SettingsComponent implements OnInit {
     private settings: Settings) {
   }
 
-  public fontSizes: number[] = [14, 16, 18, 20, 22, 24];
+  public fontSizes: number[] = Constants.noteFontSizes;
 
   public get closeNotesWithEscapeChecked(): boolean {
     return this.settings.closeNotesWithEscape;

@@ -136,16 +136,41 @@
   font-size: var(--editor-h2-font-size) !important;
 }
 
+[editor-font-size="12"] {
+  --editor-p-font-size: 12px;
+  --editor-h1-font-size: 21px;
+  --editor-h2-font-size: 17px;
+}
+
+[editor-font-size="13"] {
+  --editor-p-font-size: 13px;
+  --editor-h1-font-size: 22px;
+  --editor-h2-font-size: 19px;
+}
+
 [editor-font-size="14"] {
   --editor-p-font-size: 14px;
   --editor-h1-font-size: 24px;
   --editor-h2-font-size: 20px;
 }
 
+[editor-font-size="15"] {
+  --editor-p-font-size: 15px;
+  --editor-h1-font-size: 26px;
+  --editor-h2-font-size: 21px;
+}
+
+
 [editor-font-size="16"] {
   --editor-p-font-size: 16px;
   --editor-h1-font-size: 27px;
   --editor-h2-font-size: 23px;
+}
+
+[editor-font-size="17"] {
+  --editor-p-font-size: 16px;
+  --editor-h1-font-size: 29px;
+  --editor-h2-font-size: 24px;
 }
 
 [editor-font-size="18"] {
@@ -154,16 +179,34 @@
   --editor-h2-font-size: 26px;
 }
 
+[editor-font-size="19"] {
+  --editor-p-font-size: 19px;
+  --editor-h1-font-size: 33px;
+  --editor-h2-font-size: 27px;
+}
+
 [editor-font-size="20"] {
   --editor-p-font-size: 20px;
   --editor-h1-font-size: 34px;
   --editor-h2-font-size: 29px;
 }
 
+[editor-font-size="21"] {
+  --editor-p-font-size: 20px;
+  --editor-h1-font-size: 36px;
+  --editor-h2-font-size: 30px;
+}
+
 [editor-font-size="22"] {
   --editor-p-font-size: 22px;
   --editor-h1-font-size: 38px;
   --editor-h2-font-size: 31px;
+}
+
+[editor-font-size="23"] {
+  --editor-p-font-size: 23px;
+  --editor-h1-font-size: 39px;
+  --editor-h2-font-size: 33px;
 }
 
 [editor-font-size="24"] {

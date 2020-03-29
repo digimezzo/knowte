@@ -22,7 +22,7 @@ export class AppearanceService {
     }
 
     public colorThemes: ColorTheme[] = Constants.colorThemes;
-    public fontSizes: FontSize[] = Constants.fontSizes;
+    public fontSizes: FontSize[] = Constants.uiFontSizes;
 
     public get selectedColorTheme(): ColorTheme {
         return this._selectedColorTheme;
@@ -45,7 +45,7 @@ export class AppearanceService {
         this.settings.fontSize = v.normalSize;
 
         // Global event because all windows need to be notified
-        this.globalEmitter.emit(Constants.fontSizeChangedEvent, v);
+        this.globalEmitter.emit(Constants.uiFontSizeChangedEvent, v);
     }
 
     public themeChangedHandler(colorTheme: ColorTheme): void {
@@ -89,6 +89,6 @@ export class AppearanceService {
 
         this._selectedFontSize = this.fontSizes.find(x => x.normalSize === this.settings.fontSize);
         this.fontSizeChangedHandler(this._selectedFontSize);
-        this.globalEmitter.on(Constants.fontSizeChangedEvent, this.fontSizeChangedListener);
+        this.globalEmitter.on(Constants.uiFontSizeChangedEvent, this.fontSizeChangedListener);
     }
 }
