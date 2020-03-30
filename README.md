@@ -8,6 +8,8 @@ Knowte is a note taking application that allows you to quickly and easily organi
 [![Issues](https://img.shields.io/github/issues/digimezzo/Knowte.svg?style=flat-square)](https://github.com/digimezzo/knowte/issues)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MQALEWTEZ7HX8)
 
+<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Buy me a coffee', '#29abe0', 'S6S11K63U');kofiwidget2.draw();</script>
+
 ## Screenshot
 
 ![Knowte2screenshot](Knowte.showcase.png)
