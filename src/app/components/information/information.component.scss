@@ -4,16 +4,17 @@
 .contact-item {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .contact-item-icon-solid {
-  font-family: fa-solid;
-  font-size: 24px;
+  font-family: la-solid;
+  font-size: 28px;
 }
 
 .contact-item-icon-brands {
-  font-family: fa-brands;
-  font-size: 24px;
+  font-family: la-brands;
+  font-size: 28px;
 }
 
 .information {

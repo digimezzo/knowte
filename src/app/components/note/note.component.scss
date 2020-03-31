@@ -128,13 +128,21 @@
 }
 
 .ql-editor ul[data-checked="false"] > li::before {
-  font-family: fa-regular;
+  font-family: la-regular;
   content: "\f0c8";
+  font-size: 1.3em;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .ql-editor ul[data-checked="true"] li::before {
-  font-family: fa-regular;
+  font-family: la-regular;
   content: "\f14a";
+  font-size: 1.3em;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .notebook-changer {
