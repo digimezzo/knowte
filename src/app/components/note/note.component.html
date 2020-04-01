@@ -3,7 +3,7 @@
         <div class="window-frame-titlebar-dragarea">
             <div class="notebook-changer no-select ml-1" (click)="changeNotebook()"
                 matTooltip="{{ 'Tooltips.ClickToChangeNotebook' | translate }}">
-                <span class="notebook-changer-icon custom-font mr-1">&#xE838;</span>
+                <span class="notebook-changer-icon custom-font mr-1">&#xF07C;</span>
                 {{notebookName}}
             </div>
         </div>
@@ -19,34 +19,34 @@
                     matTooltip="{{ 'Tooltips.Actions' | translate }}">
                     <div class="note-content-floating-button-icon-container" [@actionIconRotation]="actionIconRotation">
                         <span *ngIf="!canPerformActions"
-                            class="note-content-floating-button-icon custom-font">&#xE9F5;</span>
+                            class="note-content-floating-button-icon-visually-centered custom-font">&#xF044;</span>
                         <span *ngIf="canPerformActions"
-                            class="note-content-floating-button-icon custom-font">&#xE711;</span>
+                            class="note-content-floating-button-icon custom-font">&#xF00D;</span>
                     </div>
                 </button>
                 <button *ngIf="canPerformActions && isMarked" class="note-content-floating-button" mat-mini-fab color=""
                     (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">
-                    <span class="note-content-floating-button-icon-action custom-font">&#xEB52;</span>
+                    <span class="note-content-floating-button-icon-action custom-font">&#xF004;</span>
                 </button>
                 <button *ngIf="canPerformActions && !isMarked" class="note-content-floating-button" mat-mini-fab
                     color="" (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.MarkNote' | translate }}">
-                    <span class="note-content-floating-button-icon-action custom-font">&#xEB51;</span>
+                    <span class="note-content-floating-button-icon-action-regular custom-font">&#xF004;</span>
                 </button>
                 <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
                     (click)="exportNoteAsync()" matTooltip="{{ 'Tooltips.ExportNote' | translate }}">
-                    <span class="note-content-floating-button-icon-action custom-font">&#xE72D;</span>
+                    <span class="note-content-floating-button-icon-action custom-font">&#xF56E;</span>
                 </button>
                 <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
                     (click)="exportNoteToPdfAsync()" matTooltip="{{ 'Tooltips.ExportNoteToPdf' | translate }}">
-                    <span class="note-content-floating-button-icon-action custom-font">&#xE7C3;</span>
+                    <span class="note-content-floating-button-icon-action custom-font">&#xF1C1;</span>
                 </button>
                 <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
                     (click)="printNote()" matTooltip="{{ 'Tooltips.PrintNote' | translate }}">
-                    <span class="note-content-floating-button-icon-action custom-font">&#xE749;</span>
+                    <span class="note-content-floating-button-icon-action custom-font">&#xF02F;</span>
                 </button>
                 <button *ngIf="canPerformActions" class="note-content-floating-button" mat-mini-fab color=""
                     (click)="deleteNoteAsync()" matTooltip="{{ 'Tooltips.DeleteNote' | translate }}">
-                    <span class="note-content-floating-button-icon-action custom-font">&#xE74D;</span>
+                    <span class="note-content-floating-button-icon-action custom-font">&#xF2ED;</span>
                 </button>
             </div>
             <div class="note-content-fixed" (click)="onFixedContentClick()">

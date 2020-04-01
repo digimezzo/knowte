@@ -98,14 +98,16 @@
 }
 
 .add-item-icon {
-  font-family: segoe;
-  font-size: 26px;
+  display: block;
+  font-family: la-solid;
+  font-size: 34px;
   color: #fff;
 }
 
 .edit-item-icon {
-  font-family: segoe;
-  font-size: 18px;
+  display: block;
+  font-family: la-solid;
+  font-size: 22px;
   color: $color-grey-icon;
 }
 

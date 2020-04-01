@@ -52,15 +52,29 @@
 }
 
 .note-content-floating-button-icon {
+  display: block;
   color: white;
-  font-family: segoe;
-  font-size: 26px;
+  font-family: la-solid;
+  font-size: 30px;
+}
+
+.note-content-floating-button-icon-visually-centered {
+  @extend .note-content-floating-button-icon;
+  margin: -2px -2px 0 0;
 }
 
 .note-content-floating-button-icon-action {
+  display: block;
   color: $color-grey-icon;
-  font-family: segoe;
-  font-size: 18px;
+  font-family: la-solid;
+  font-size: 22px;
+}
+
+.note-content-floating-button-icon-action-regular {
+  display: block;
+  color: $color-grey-icon;
+  font-family: la-regular;
+  font-size: 22px;
 }
 
 .note-content-fixed {
@@ -91,9 +105,9 @@
   color: white;
 }
 
-.note-content-search{
+.note-content-search {
   background: white;
-  box-shadow: 0px 0px 14px 2px rgba(0,0,0,0.2);
+  box-shadow: 0px 0px 14px 2px rgba(0, 0, 0, 0.2);
   position: absolute;
   bottom: 20px;
   right: 20px;
@@ -101,7 +115,7 @@
   border-radius: 6px;
 }
 
-.note-content-search-field{
+.note-content-search-field {
   width: 200px;
   margin-right: 20px;
 }
@@ -154,8 +168,8 @@
 }
 
 .notebook-changer-icon {
-  font-family: segoe;
-  font-size: 18px;
+  font-family: la-solid;
+  font-size: 20px;
 }
 
 #editor * {
@@ -193,7 +207,6 @@
   --editor-h1-font-size: 26px;
   --editor-h2-font-size: 21px;
 }
-
 
 [editor-font-size="16"] {
   --editor-p-font-size: 16px;
