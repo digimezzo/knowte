@@ -112,18 +112,28 @@
   bottom: 20px;
   right: 20px;
   z-index: 99;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 .note-content-search-field {
   width: 200px;
-  margin-right: 20px;
+  margin-top: 2px;
+  margin-right: 8px;
+  margin-bottom: -4px;
 }
 
 .notes-search-clearbutton {
-  font-family: material;
+  display: block;
+  font-family: la-solid;
   font-size: 16px;
   cursor: pointer;
+}
+
+.notes-search-closebutton {
+  display: block;
+  font-family: la-solid;
+  font-size: 22px;
+  color: white;
 }
 
 .note-editor {

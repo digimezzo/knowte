@@ -143,7 +143,7 @@ function createNoteWindow(notePath: string, noteId: string): void {
     show: true
   });
 
-  // noteWindow.webContents.openDevTools();
+  noteWindow.webContents.openDevTools();
 
   // Let us register listeners on the window, so we can update the state
   // automatically (the listeners will be removed when the window is closed)

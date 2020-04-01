@@ -90,7 +90,8 @@
         "Quote": "Quote",
         "Code": "Code",
         "Image": "Image",
-        "ClearFormatting": "Clear formatting"
+        "ClearFormatting": "Clear formatting",
+        "Close": "Close"
     },
     "LicenseDialog": {
         "License": "License"
@@ -186,7 +187,8 @@
     "Notes": {
         "NewNote": "New note",
         "NotePlaceholder": "Write your note here...",
-        "Imported": "Imported"
+        "Imported": "Imported",
+        "Search": "Search"
     },
     "NoteDates": {
         "Today": "Today",

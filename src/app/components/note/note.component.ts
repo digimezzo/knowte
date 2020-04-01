@@ -65,6 +65,8 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private _searchText: string;
 
+    public searchPlaceHolder: string = '';
+
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
         private snackBar: SnackBarService, private translator: TranslatorService, private settings: Settings,
         private clipboard: ClipboardManager, private worker: WorkerManager) {
@@ -96,6 +98,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     public async ngOnInit(): Promise<void> {
         this.setEditorFontSize();
         this.addContextMenuAsync();
+        await this.checkSearchPlaceHolderAsync();
 
         const notePlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
 
@@ -822,5 +825,17 @@ export class NoteComponent implements OnInit, OnDestroy {
         const closedTasksCount: number = (noteContent.match(/"list":"checked"/g) || []).length;
 
         return new TasksCount(openTasksCount, closedTasksCount);
+    }
+
+    public async checkSearchPlaceHolderAsync(): Promise<void> {
+        if (this.searchPlaceHolder) {
+            this.searchPlaceHolder = null;
+
+            return;
+        } else {
+            this.searchPlaceHolder = await this.translator.getAsync('Notes.Search');
+
+            return;
+        }
     }
 }

@@ -90,7 +90,8 @@
         "Quote": "Citaat",
         "Code": "Code",
         "Image": "Afbeelding",
-        "ClearFormatting": "Opmaak verwijderen"
+        "ClearFormatting": "Opmaak verwijderen",
+        "Close": "Sluiten"
     },
     "LicenseDialog": {
         "License": "Licentie"
@@ -186,7 +187,8 @@
     "Notes": {
         "NewNote": "Nieuwe notitie",
         "NotePlaceholder": "Schrijf je notitie hier...",
-        "Imported": "Geïmporteerd"
+        "Imported": "Geïmporteerd",
+        "Search": "Zoeken"
     },
     "NoteDates": {
         "Today": "Vandaag",
