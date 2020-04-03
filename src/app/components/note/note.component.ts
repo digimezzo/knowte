@@ -25,6 +25,7 @@ import { ClipboardManager } from '../../core/clipboard-manager';
 import { WorkerManager } from '../../core/worker-manager';
 import { Settings } from '../../core/settings';
 import { SearchService } from '../../services/search/search.service';
+import { AppearanceService } from '../../services/appearance/appearance.service';
 
 @Component({
     selector: 'app-note',
@@ -69,7 +70,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
         private snackBar: SnackBarService, private translator: TranslatorService, private settings: Settings,
-        private clipboard: ClipboardManager, private worker: WorkerManager) {
+        public appearance: AppearanceService, private clipboard: ClipboardManager, private worker: WorkerManager) {
     }
 
     public initialNoteTitle: string;
@@ -659,7 +660,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         if (this.searchText) {
             window.webContents.unselect();
             window.webContents.findInPage(this.searchText);
-            setTimeout(() => this.searchInputElement.nativeElement.focus(), 10);
+            setTimeout(() => this.searchInputElement.nativeElement.focus(), 100);
         } else {
             window.webContents.stopFindInPage('keepSelection');
         }

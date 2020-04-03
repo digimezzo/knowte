@@ -40,6 +40,13 @@ export class SettingsComponent implements OnInit {
     this.settings.showExactDatesInTheNotesList = v;
   }
 
+  public get useNativeTitleBarChecked(): boolean {
+    return this.settings.useNativeTitleBar;
+  }
+  public set useNativeTitleBarChecked(v: boolean) {
+    this.settings.useNativeTitleBar = v;
+  }
+
   public ngOnInit(): void {
   }
 

@@ -2,6 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Constants } from '../../core/constants';
 import { LicenseDialogComponent } from '../dialogs/license-dialog/license-dialog.component';
+import { AppearanceService } from '../../services/appearance/appearance.service';
 
 @Component({
   selector: 'app-information',
@@ -10,7 +11,7 @@ import { LicenseDialogComponent } from '../dialogs/license-dialog/license-dialog
   encapsulation: ViewEncapsulation.None
 })
 export class InformationComponent implements OnInit {
-  constructor(private dialog: MatDialog) {
+  constructor(private dialog: MatDialog, public appearance: AppearanceService) {
   }
 
   public applicationVersion: string = Constants.applicationVersion;

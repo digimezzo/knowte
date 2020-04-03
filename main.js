@@ -18,6 +18,7 @@ var path = require("path");
 var url = require("url");
 var windowStateKeeper = require("electron-window-state");
 var fs = require("fs-extra");
+var Store = require("electron-store");
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
@@ -40,7 +41,7 @@ var GlobalEventEmitter = /** @class */ (function (_super) {
 globalAny.globalEmitter = new GlobalEventEmitter();
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 electron_log_1.default.transports.file.level = 'info';
-function createWindow() {
+function createMainWindow() {
     var gotTheLock = electron_1.app.requestSingleInstanceLock();
     if (!gotTheLock) {
         electron_1.app.quit();
@@ -55,6 +56,7 @@ function createWindow() {
                 mainWindow.focus();
             }
         });
+        electron_1.Menu.setApplicationMenu(null);
         // Load the previous state with fallback to defaults
         var mainWindowState = windowStateKeeper({
             defaultWidth: 850,
@@ -67,10 +69,12 @@ function createWindow() {
             'width': mainWindowState.width,
             'height': mainWindowState.height,
             backgroundColor: '#fff',
-            frame: false,
+            frame: getUseNativeTitleBar(),
             icon: path.join(__dirname, 'build/icon/icon.png'),
             show: false
         });
+        // HACK
+        mainWindow.hasFrame = getUseNativeTitleBar();
         // Let us register listeners on the window, so we can update the state
         // automatically (the listeners will be removed when the window is closed)
         // and restore the maximized or full screen state
@@ -125,6 +129,13 @@ function createWindow() {
         mainWindow.webContents.on('new-window', handleRedirect);
     }
 }
+function getUseNativeTitleBar() {
+    var settings = new Store();
+    if (!settings.has('useNativeTitleBar')) {
+        settings.set('useNativeTitleBar', false);
+    }
+    return settings.get('useNativeTitleBar');
+}
 function createNoteWindow(notePath, noteId) {
     // Load the previous state with fallback to defaults
     var noteWindowState = windowStateKeeper({
@@ -140,10 +151,12 @@ function createNoteWindow(notePath, noteId) {
         'width': noteWindowState.width,
         'height': noteWindowState.height,
         backgroundColor: '#fff',
-        frame: false,
-        show: true
+        frame: getUseNativeTitleBar(),
+        show: true,
     });
-    noteWindow.webContents.openDevTools();
+    // HACK
+    noteWindow.hasFrame = getUseNativeTitleBar();
+    // noteWindow.webContents.openDevTools();
     // Let us register listeners on the window, so we can update the state
     // automatically (the listeners will be removed when the window is closed)
     // and restore the maximized or full screen state
@@ -209,7 +222,7 @@ try {
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
-    electron_1.app.on('ready', createWindow);
+    electron_1.app.on('ready', createMainWindow);
     // Quit when all windows are closed.
     electron_1.app.on('window-all-closed', function () {
         electron_log_1.default.info('[App] [window-all-closed] +++ Stopping +++');
@@ -224,7 +237,7 @@ try {
         // On OS X it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
         if (mainWindow === null) {
-            createWindow();
+            createMainWindow();
         }
     });
 }

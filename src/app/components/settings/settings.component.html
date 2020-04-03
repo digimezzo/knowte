@@ -3,7 +3,7 @@
         <div class="window-frame-titlebar-dragarea pl-1">
         </div>
         <app-collection-switcher></app-collection-switcher>
-        <app-window-controls></app-window-controls>
+        <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
     </div>
     <div class="window-frame-content">
         <app-logo-menu class="settings-logo-menu" [selectedMenuItem]="2"></app-logo-menu>
@@ -34,6 +34,12 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
+                    </div>
+                    <!-- Title bar -->
+                    <div class="m-3">
+                        <h1 class="mt-2">{{ 'SettingsPage.TitleBar' | translate }}</h1>
+                        <mat-slide-toggle class="mt-2" [(ngModel)]="useNativeTitleBarChecked">
+                            {{ 'SettingsPage.UseNativeTitleBar' | translate }}</mat-slide-toggle>
                     </div>
                 </mat-tab>
                 <mat-tab>

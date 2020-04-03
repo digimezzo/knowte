@@ -28,6 +28,15 @@ export class Settings {
         this.settings.set('language', v);
     }
 
+    // Native title bar
+    public get useNativeTitleBar(): boolean {
+        return this.settings.get('useNativeTitleBar');
+    }
+
+    public set useNativeTitleBar(v: boolean) {
+        this.settings.set('useNativeTitleBar', v);
+    }
+
     // FontSize
     public get fontSize(): number {
         return this.settings.get('fontSize');
@@ -100,6 +109,9 @@ export class Settings {
             this.settings.set('language', 'en');
         }
 
+        if (!this.settings.has('useNativeTitleBar')) {
+            this.settings.set('useNativeTitleBar', false);
+        }
 
         if (!this.settings.has('fontSize')) {
             this.settings.set('fontSize', 13);

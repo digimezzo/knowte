@@ -43,7 +43,9 @@
         "Dates": "Dates",
         "ShowExactDatesInTheNotesList": "Afficher les dates exactes dans la liste des notest",
         "Language": "Langue",
-        "Color": "Couleur"
+        "Color": "Couleur",
+        "TitleBar": "Barre de titre",
+        "UseNativeTitleBar": "Utiliser la barre de titre native (Nécessite un redémarrage)"
     },
     "ComponentsPage": {
         "Components": "Composants"
@@ -60,7 +62,8 @@
         "Rename": "Renommer",
         "Delete": "Supprimer",
         "Activate": "Activer",
-        "ClickToChangeNotebook": "Cliquez ici pour changer de bloc-note",
+        "ChangeNotebook": "Changer le bloc-note",
+        "ChangeCollection": "Changer la collection",
         "Actions": "Actions",
         "MarkNote": "Marquer note",
         "UnmarkNote": "Enlever la marque",

@@ -21,6 +21,7 @@ import { FileService } from '../../services/file/file.service';
 import { SelectionWatcher } from '../../core/selection-watcher';
 import { Logger } from '../../core/logger';
 import { TranslatorService } from '../../services/translator/translator.service';
+import { AppearanceService } from '../../services/appearance/appearance.service';
 
 @Component({
   selector: 'app-collection',
@@ -45,7 +46,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   constructor(private dialog: MatDialog, private collection: CollectionService, private file: FileService,
-    private translator: TranslatorService, private snackBar: SnackBarService, private zone: NgZone, private logger: Logger) {
+    private translator: TranslatorService, private snackBar: SnackBarService, public appearance: AppearanceService,
+    private zone: NgZone, private logger: Logger) {
   }
 
   public applicationName: string = Constants.applicationName;

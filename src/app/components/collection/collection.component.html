@@ -4,7 +4,7 @@
             <!-- {{ applicationName }} -->
         </div>
         <app-collection-switcher></app-collection-switcher>
-        <app-window-controls></app-window-controls>
+        <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
     </div>
     <div class="window-frame-overlay" *ngIf="isBusy">
         <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>

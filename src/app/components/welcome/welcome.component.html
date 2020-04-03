@@ -2,7 +2,7 @@
     <div class="window-frame-titlebar">
         <div class="window-frame-titlebar-dragarea">
         </div>
-        <app-window-controls></app-window-controls>
+        <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
     </div>
     <div class="window-frame-content">
         <div class="welcome">

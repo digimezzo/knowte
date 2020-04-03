@@ -2,12 +2,12 @@
     <div class="window-frame-titlebar">
         <div class="window-frame-titlebar-dragarea">
             <div class="notebook-changer no-select ml-1" (click)="changeNotebook()"
-                matTooltip="{{ 'Tooltips.ClickToChangeNotebook' | translate }}">
+                matTooltip="{{ 'Tooltips.ChangeNotebook' | translate }}">
                 <span class="notebook-changer-icon custom-font mr-1">&#xF07C;</span>
                 {{notebookName}}
             </div>
         </div>
-        <app-window-controls></app-window-controls>
+        <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
     </div>
     <div class="window-frame-overlay" *ngIf="isBusy">
         <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>

@@ -43,7 +43,9 @@
         "Dates": "Data",
         "ShowExactDatesInTheNotesList": "Geef exacte data weer in de lijst met notities",
         "Language": "Taal",
-        "Color": "Kleur"
+        "Color": "Kleur",
+        "TitleBar": "Titelbalk",
+        "UseNativeTitleBar": "Gebruik native titelbalk (Vereist een herstart)"
     },
     "ComponentsPage": {
         "Components": "Componenten"
@@ -60,7 +62,8 @@
         "Rename": "Hernoemen",
         "Delete": "Verijderen",
         "Activate": "Activateren",
-        "ClickToChangeNotebook": "Klik hier om het notitieboek te wijzigen",
+        "ChangeNotebook": "Wijzig het notitieboek",
+        "ChangeCollection": "Wijzig de collectie",
         "Actions": "Acties",
         "MarkNote": "Notitie markeren",
         "UnmarkNote": "Markering verwijderen",

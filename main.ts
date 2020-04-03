@@ -1,8 +1,9 @@
-import { app, BrowserWindow, screen, ipcMain, shell, SaveDialogOptions } from 'electron';
+import { app, BrowserWindow, screen, ipcMain, shell, SaveDialogOptions, Menu } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as windowStateKeeper from 'electron-window-state';
 import * as fs from 'fs-extra';
+import * as Store from 'electron-store';
 
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
@@ -25,7 +26,7 @@ globalAny.globalEmitter = new GlobalEventEmitter();
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 log.transports.file.level = 'info';
 
-function createWindow(): void {
+function createMainWindow(): void {
   const gotTheLock: boolean = app.requestSingleInstanceLock();
 
   if (!gotTheLock) {
@@ -42,6 +43,8 @@ function createWindow(): void {
       }
     });
 
+    Menu.setApplicationMenu(null);
+
     // Load the previous state with fallback to defaults
     const mainWindowState = windowStateKeeper({
       defaultWidth: 850,
@@ -55,10 +58,13 @@ function createWindow(): void {
       'width': mainWindowState.width,
       'height': mainWindowState.height,
       backgroundColor: '#fff',
-      frame: false,
+      frame: getUseNativeTitleBar(),
       icon: path.join(__dirname, 'build/icon/icon.png'),
       show: false
     });
+
+    // HACK
+    (mainWindow as any).hasFrame = getUseNativeTitleBar();
 
     // Let us register listeners on the window, so we can update the state
     // automatically (the listeners will be removed when the window is closed)
@@ -123,6 +129,16 @@ function createWindow(): void {
   }
 }
 
+function getUseNativeTitleBar(): boolean {
+  const settings: Store<any> = new Store();
+
+  if (!settings.has('useNativeTitleBar')) {
+    settings.set('useNativeTitleBar', false);
+  }
+
+  return settings.get('useNativeTitleBar');
+}
+
 function createNoteWindow(notePath: string, noteId: string): void {
   // Load the previous state with fallback to defaults
   const noteWindowState = windowStateKeeper({
@@ -139,11 +155,14 @@ function createNoteWindow(notePath: string, noteId: string): void {
     'width': noteWindowState.width,
     'height': noteWindowState.height,
     backgroundColor: '#fff',
-    frame: false,
-    show: true
+    frame: getUseNativeTitleBar(),
+    show: true,
   });
 
-  noteWindow.webContents.openDevTools();
+  // HACK
+  (noteWindow as any).hasFrame = getUseNativeTitleBar();
+
+  // noteWindow.webContents.openDevTools();
 
   // Let us register listeners on the window, so we can update the state
   // automatically (the listeners will be removed when the window is closed)
@@ -223,7 +242,7 @@ try {
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
-  app.on('ready', createWindow);
+  app.on('ready', createMainWindow);
 
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
@@ -240,7 +259,7 @@ try {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
-      createWindow();
+      createMainWindow();
     }
   });
 

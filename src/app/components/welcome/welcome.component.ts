@@ -7,6 +7,7 @@ import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.compo
 import { Router } from '@angular/router';
 import { Logger } from '../../core/logger';
 import { TranslatorService } from '../../services/translator/translator.service';
+import { AppearanceService } from '../../services/appearance/appearance.service';
 
 @Component({
     selector: 'app-welcome-page',
@@ -18,6 +19,7 @@ export class WelcomeComponent implements OnInit {
     constructor(
         private translator: TranslatorService,
         private collection: CollectionService,
+        public appearance: AppearanceService,
         private dialog: MatDialog,
         private zone: NgZone,
         public router: Router,

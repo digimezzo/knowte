@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { remote } from 'electron';
+import { remote, BrowserWindow } from 'electron';
 import { Constants } from '../../core/constants';
 import { ColorTheme } from '../../core/color-theme';
 import { Logger } from '../../core/logger';
@@ -19,6 +19,19 @@ export class AppearanceService {
 
     constructor(private settings: Settings, private logger: Logger, private overlayContainer: OverlayContainer) {
         this.initialize();
+    }
+
+    public get windowHasNativeTitleBar(): boolean {
+        const window: BrowserWindow = remote.getCurrentWindow();
+        let hasFrame: boolean = false;
+
+        try {
+            hasFrame = (window as any).hasFrame;
+        } catch (error) {
+
+        }
+
+        return hasFrame;
     }
 
     public colorThemes: ColorTheme[] = Constants.colorThemes;
