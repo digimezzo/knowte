@@ -57,6 +57,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
     private languageChangedListener: any = this.languageChangedHandler.bind(this);
     private fontSizeChangedListener: any = this.fontSizeChangedHandler.bind(this);
+    private searchInputFocusOutListener: any = this.searchInputFocusOutHandler.bind(this);
 
     private contextMenu: any;
     private cutContextMenuItem: any;
@@ -65,6 +66,8 @@ export class NoteComponent implements OnInit, OnDestroy {
     private deleteContextMenuItem: any;
 
     private _searchText: string;
+
+    private isSearchInputFocusOutHandlerSet: boolean = false;
 
     public searchPlaceHolder: string = '';
 
@@ -94,6 +97,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy(): void {
+        this.removeSearchInputFocusOutHandler();
     }
 
     public async ngOnInit(): Promise<void> {
@@ -237,8 +241,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     @HostListener('document:keydown.control.f', ['$event']) public onControlFKeydownHandler(event: KeyboardEvent): void {
-        this.canSearch = true;
-        setTimeout(() => this.searchInputElement.nativeElement.focus(), 10);
+        this.showSearch();
     }
 
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
@@ -629,9 +632,25 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.setEditorFontSize();
     }
 
+    private searchInputFocusOutHandler(): void {
+        if (this.searchInputElement) {
+            this.searchInputElement.nativeElement.focus();
+        }
+    }
+
+    private showSearch(): void {
+        this.canSearch = true;
+
+        setTimeout(() => {
+            this.searchInputElement.nativeElement.focus();
+            this.addSearchInputFocusOutHandler();
+        }, 100);
+    }
+
     public closeSearch(): void {
-        this.canSearch = false;
+        this.removeSearchInputFocusOutHandler();
         this.clearSearch();
+        this.canSearch = false;
     }
 
     public clearSearch(): void {
@@ -646,11 +665,27 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private getSearchTextCallback(searchText: string): void {
         if (searchText && searchText.length > 0) {
+            this.showSearch();
+
             const searchTextPieces: string[] = searchText.trim().split(' ');
 
             // For now, we can only search for 1 word.
             this.searchText = searchTextPieces[0];
-            this.canSearch = true;
+        }
+    }
+    private removeSearchInputFocusOutHandler(): void {
+        if (this.searchInputElement) {
+            this.searchInputElement.nativeElement.removeEventListener('focusout', this.searchInputFocusOutListener.bind(this));
+            this.isSearchInputFocusOutHandlerSet = false;
+        }
+    }
+
+    private addSearchInputFocusOutHandler(): void {
+        if (!this.isSearchInputFocusOutHandlerSet) {
+            if (this.searchInputElement) {
+                this.searchInputElement.nativeElement.addEventListener('focusout', this.searchInputFocusOutListener.bind(this));
+                this.isSearchInputFocusOutHandlerSet = true;
+            }
         }
     }
 
@@ -658,9 +693,8 @@ export class NoteComponent implements OnInit, OnDestroy {
         const window: BrowserWindow = remote.getCurrentWindow();
 
         if (this.searchText) {
-            window.webContents.unselect();
+            // window.webContents.unselect();
             window.webContents.findInPage(this.searchText);
-            setTimeout(() => this.searchInputElement.nativeElement.focus(), 100);
         } else {
             window.webContents.stopFindInPage('keepSelection');
         }
