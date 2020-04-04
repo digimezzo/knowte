@@ -1,6 +1,8 @@
-import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, ElementRef, ViewChild } from '@angular/core';
 import { SearchService } from '../../services/search/search.service';
 import { Notebook } from '../../data/entities/notebook';
+import * as electronLocalshortcut from 'electron-localshortcut';
+import { BrowserWindow, remote } from 'electron';
 
 @Component({
     selector: 'app-active-notebook-and-search',
@@ -9,6 +11,8 @@ import { Notebook } from '../../data/entities/notebook';
     encapsulation: ViewEncapsulation.None
 })
 export class ActiveNotebookAndSearchComponent implements OnInit {
+    @ViewChild('searchInput') public searchInputElement: ElementRef;
+
     constructor(public search: SearchService) {
     }
 
@@ -19,5 +23,14 @@ export class ActiveNotebookAndSearchComponent implements OnInit {
     public notesCount: number;
 
     public ngOnInit(): void {
+        const window: BrowserWindow = remote.getCurrentWindow();
+
+        electronLocalshortcut.register(window, 'Ctrl+F', () => {
+            this.focusSearch();
+        });
+    }
+
+    private focusSearch(): void {
+        this.searchInputElement.nativeElement.focus();
     }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, HostListener, NgZone, ViewEncapsulation, ElementRef, ViewChild } from '@angular/core';
-import { remote, BrowserWindow, SaveDialogOptions, NativeImage } from 'electron';
+import { remote, BrowserWindow, SaveDialogOptions } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { MatDialog, MatDialogRef } from '@angular/material';
@@ -24,8 +24,8 @@ import { TranslatorService } from '../../services/translator/translator.service'
 import { ClipboardManager } from '../../core/clipboard-manager';
 import { WorkerManager } from '../../core/worker-manager';
 import { Settings } from '../../core/settings';
-import { SearchService } from '../../services/search/search.service';
 import { AppearanceService } from '../../services/appearance/appearance.service';
+import * as electronLocalshortcut from 'electron-localshortcut';
 
 @Component({
     selector: 'app-note',
@@ -188,6 +188,20 @@ export class NoteComponent implements OnInit, OnDestroy {
                 this.pasteImageFromClipboard();
             }
         };
+
+        const window: BrowserWindow = remote.getCurrentWindow();
+
+        electronLocalshortcut.register(window, 'Ctrl+F', () => {
+            this.showSearch();
+        });
+
+        electronLocalshortcut.register(window, 'ESC', () => {
+            if (this.canSearch) {
+                this.closeSearch();
+            } else if (this.settings.closeNotesWithEscape) {
+                window.close();
+            }
+        });
     }
 
     private async setToolbarTooltipsAsync(): Promise<void> {
@@ -229,19 +243,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.isTitleDirty = true;
         this.clearSearch();
         this.noteTitleChanged.next(newNoteTitle);
-    }
-
-    @HostListener('document:keydown.escape', ['$event']) public onEscapeKeydownHandler(event: KeyboardEvent): void {
-        if (this.canSearch) {
-            this.closeSearch();
-        } else if (this.settings.closeNotesWithEscape) {
-            const window: BrowserWindow = remote.getCurrentWindow();
-            window.close();
-        }
-    }
-
-    @HostListener('document:keydown.control.f', ['$event']) public onControlFKeydownHandler(event: KeyboardEvent): void {
-        this.showSearch();
     }
 
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.

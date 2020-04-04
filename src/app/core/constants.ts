@@ -6,10 +6,10 @@ export class Constants {
     public static readonly applicationName: string = require('../../../package.json').name;
     public static readonly applicationVersion: string = require('../../../package.json').version;
     public static readonly applicationCopyright: string = 'Copyright Digimezzo Ⓒ 2013 - 2019';
-    static readonly donateUrl = 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MQALEWTEZ7HX8';
-    static readonly websiteUrl = 'https://www.digimezzo.com';
-    static readonly twitterUrl = 'https://twitter.com/digimezzo';
-    static readonly githubUrl = 'https://github.com/digimezzo';
+    public static readonly donateUrl: string = 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MQALEWTEZ7HX8';
+    public static readonly websiteUrl: string = 'https://www.digimezzo.com';
+    public static readonly twitterUrl: string = 'https://twitter.com/digimezzo';
+    public static readonly githubUrl: string = 'https://github.com/digimezzo';
     public static readonly collectionsDirectory: string = `${Constants.applicationName} collections`;
     public static readonly noteContentExtension: string = '.content';
     public static readonly noteStateExtension: string = '.state';
@@ -104,6 +104,12 @@ export class Constants {
             description: 'The Electron framework lets you write cross-platform desktop applications using JavaScript, HTML and CSS. It is based on Node.js and Chromium.',
             url: 'https://electronjs.org/',
             licenseUrl: 'https://github.com/electron/electron/blob/master/LICENSE'
+        },
+        {
+            name: 'electron-localshortcut',
+            description: 'A module to register/unregister a keyboard shortcut locally to a BrowserWindow instance, without using a Menu.',
+            url: 'https://github.com/parro-it/electron-localshortcut',
+            licenseUrl: 'https://github.com/parro-it/electron-localshortcut/blob/master/license'
         },
         {
             name: 'electron-log',

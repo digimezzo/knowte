@@ -7,7 +7,7 @@
     <!-- Search -->
     <mat-form-field class="notes-content-search">
         <mat-label>{{ 'MainPage.Search' | translate }}</mat-label>
-        <input matInput type="text" [(ngModel)]="search.searchText">
+        <input matInput type="text" #searchInput [(ngModel)]="search.searchText">
         <button mat-button *ngIf="search.searchText" matSuffix mat-icon-button
             matTooltip="{{ 'MainPage.ClearSearch' | translate }}" (click)="search.searchText=''">
             <span class="custom-font notes-content-search-clearbutton">&#xF12D;</span>
