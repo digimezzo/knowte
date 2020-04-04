@@ -2,13 +2,12 @@
 @import "theming";
 
 .ql-snow.ql-toolbar {
-  border-top: 0px !important;
-  border-bottom: 0px !important;
+  border: 0px !important;
 }
 
-// .ql-container.ql-snow {
-//   border: 0px !important
-// }
+.ql-container.ql-snow {
+  border: 0px !important
+}
 
 .ql-snow.ql-toolbar button:hover .ql-stroke,
 .ql-snow.ql-toolbar .ql-color-picker span:hover .ql-stroke,
