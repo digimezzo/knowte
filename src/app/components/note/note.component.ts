@@ -589,7 +589,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private setWindowTitle(noteTitle: string): void {
         const window: BrowserWindow = remote.getCurrentWindow();
-        window.setTitle(noteTitle);
+        window.setTitle(`${Constants.applicationName} - ${noteTitle}`);
     }
 
     private noteMarkChangedHandler(noteId: string, isMarked: boolean): void {
