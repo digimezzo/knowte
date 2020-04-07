@@ -168,19 +168,6 @@
   vertical-align: middle;
 }
 
-.notebook-changer {
-  display: flex;
-  -webkit-app-region: no-drag;
-  color: white;
-  cursor: pointer;
-  float: left;
-}
-
-.notebook-changer-icon {
-  font-family: la-solid;
-  font-size: 20px;
-}
-
 #editor * {
   font-size: var(--editor-p-font-size);
 }

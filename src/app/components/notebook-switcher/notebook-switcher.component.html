@@ -1,0 +1,21 @@
+<div class="notebook-switcher">
+    <div class="window-button notebook-swichter-button custom-font" mat-icon-button [matMenuTriggerFor]="menu"
+    matTooltip="{{ 'Tooltips.ChangeNotebook' | translate }}" (click)="getNotebooks()">
+        &#xF0C9;
+    </div>
+    <div class="notebook-switcher-selected-notebook no-select ml-2">
+        {{ selectedNotebookName }}
+    </div>
+</div>
+<mat-menu #menu="matMenu">
+    <div *ngFor="let notebook of notebooks">
+        <button class="menu-button" mat-menu-item>
+            <span class="menu-item" (click)="changeNotebook(notebook)"
+                [ngStyle]="{'font-weight':notebook.id === '1' ? 'bold' : 'normal' }">
+                <span class="menu-icon custom-font"
+                    [ngClass]="{'isActive' : notebook.name === selectedNotebookName }">&#xF07C;</span>
+                <span>{{ notebook.name }}</span>
+            </span>
+        </button>
+    </div>
+</mat-menu>

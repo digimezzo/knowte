@@ -61,9 +61,8 @@
     "Tooltips": {
         "Rename": "Rename",
         "Delete": "Delete",
-        "Activate": "Activate",
-        "ChangeNotebook": "Change the notebook",
-        "ChangeCollection": "Change the collection",
+        "ChangeCollection": "Change collection",
+        "ChangeNotebook": "Change notebook",
         "Actions": "Actions",
         "MarkNote": "Mark note",
         "UnmarkNote": "Remove mark",

@@ -61,9 +61,8 @@
     "Tooltips": {
         "Rename": "Hernoemen",
         "Delete": "Verijderen",
-        "Activate": "Activateren",
-        "ChangeNotebook": "Wijzig het notitieboek",
-        "ChangeCollection": "Wijzig de collectie",
+        "ChangeCollection": "Wijzig collectie",
+        "ChangeNotebook": "Wijzig notitieboek",
         "Actions": "Acties",
         "MarkNote": "Notitie markeren",
         "UnmarkNote": "Markering verwijderen",

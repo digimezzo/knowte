@@ -1,11 +1,7 @@
 <div class="window-frame">
     <div class="window-frame-titlebar">
         <div class="window-frame-titlebar-dragarea">
-            <div class="notebook-changer no-select ml-1" (click)="changeNotebook()"
-                matTooltip="{{ 'Tooltips.ChangeNotebook' | translate }}">
-                <span class="notebook-changer-icon custom-font mr-1">&#xF0C9;</span>
-                {{notebookName}}
-            </div>
+            <app-notebook-switcher [noteId]="noteId"></app-notebook-switcher>
         </div>
         <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
     </div>

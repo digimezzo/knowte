@@ -3,7 +3,6 @@ import { remote, BrowserWindow, SaveDialogOptions } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { ChangeNotebookDialogComponent } from '../dialogs/change-notebook-dialog/change-notebook-dialog.component';
 import { Constants } from '../../core/constants';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
@@ -52,7 +51,6 @@ export class NoteComponent implements OnInit, OnDestroy {
     private isTitleDirty: boolean = false;
     private isTextDirty: boolean = false;
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
-    private notebookChangedListener: any = this.notebookChangedHandler.bind(this);
     private focusNoteListener: any = this.focusNoteHandler.bind(this);
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
     private languageChangedListener: any = this.languageChangedHandler.bind(this);
@@ -78,7 +76,6 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     public initialNoteTitle: string;
     public noteTitle: string;
-    public notebookName: string;
     public isMarked: boolean;
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteTextChanged: Subject<string> = new Subject<string>();
@@ -231,12 +228,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         toolbarElement.querySelector('button.ql-image').setAttribute('title', await this.translator.getAsync('Tooltips.Image'));
 
         toolbarElement.querySelector('button.ql-clean').setAttribute('title', await this.translator.getAsync('Tooltips.ClearFormatting'));
-    }
-
-    public changeNotebook(): void {
-        const dialogRef: MatDialogRef<ChangeNotebookDialogComponent> = this.dialog.open(ChangeNotebookDialogComponent, {
-            width: '450px', data: { noteId: this.noteId }
-        });
     }
 
     public onNotetitleChange(newNoteTitle: string): void {
@@ -500,7 +491,6 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private removeListeners(): void {
         this.globalEmitter.removeListener(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
-        this.globalEmitter.removeListener(Constants.notebookChangedEvent, this.notebookChangedListener);
         this.globalEmitter.removeListener(Constants.focusNoteEvent, this.focusNoteListener);
         this.globalEmitter.removeListener(Constants.closeNoteEvent, this.closeNoteListener);
         this.globalEmitter.removeListener(Constants.languageChangedEvent, this.languageChangedListener);
@@ -509,7 +499,6 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private addListeners(): void {
         this.globalEmitter.on(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
-        this.globalEmitter.on(Constants.notebookChangedEvent, this.notebookChangedListener);
         this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
         this.globalEmitter.on(Constants.closeNoteEvent, this.closeNoteListener);
         this.globalEmitter.on(Constants.languageChangedEvent, this.languageChangedListener);
@@ -570,16 +559,9 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.zone.run(() => {
             this.initialNoteTitle = result.noteTitle;
             this.noteTitle = result.noteTitle;
-            this.notebookName = result.notebookName;
             this.isMarked = result.isMarked;
 
             this.setWindowTitle(result.noteTitle);
-        });
-    }
-
-    private getNotebookNameCallback(result: NoteDetailsResult): void {
-        this.zone.run(() => {
-            this.notebookName = result.notebookName;
         });
     }
 
@@ -595,12 +577,6 @@ export class NoteComponent implements OnInit, OnDestroy {
     private noteMarkChangedHandler(noteId: string, isMarked: boolean): void {
         if (this.noteId === noteId) {
             this.zone.run(() => this.isMarked = isMarked);
-        }
-    }
-
-    private notebookChangedHandler(noteId: string, notebookName: string): void {
-        if (this.noteId === noteId) {
-            this.zone.run(() => this.notebookName = notebookName);
         }
     }
 
@@ -625,7 +601,6 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private languageChangedHandler(noteId: string): void {
-        this.getNotebookName();
         this.addContextMenuAsync();
     }
 
@@ -806,10 +781,6 @@ export class NoteComponent implements OnInit, OnDestroy {
                 width: '450px', data: { errorText: errorText }
             });
         }
-    }
-
-    private getNotebookName(): void {
-        this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNotebookNameCallback.bind(this));
     }
 
     private hideActionButtons(): void {

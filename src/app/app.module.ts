@@ -28,6 +28,7 @@ import { WebviewDirective } from './directives/webview.directive';
 import { AppComponent } from './app.component';
 import { WindowControlsComponent } from './components/window-controls/window-controls.component';
 import { CollectionSwitcherComponent } from './components/collection-switcher/collection-switcher.component';
+import { NotebookSwitcherComponent } from './components/notebook-switcher/notebook-switcher.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { InformationComponent } from './components/information/information.component';
 import { NoteComponent } from './components/note/note.component';
@@ -43,7 +44,6 @@ import { RenameCollectionDialogComponent } from './components/dialogs/rename-col
 import { RenameNotebookDialogComponent } from './components/dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmation-dialog/confirmation-dialog.component';
 import { DialogHeaderComponent } from './components/dialogs/dialog-header/dialog-header.component';
-import { ChangeNotebookDialogComponent } from './components/dialogs/change-notebook-dialog/change-notebook-dialog.component';
 import { ImportFromOldVersionDialogComponent } from './components/dialogs/import-from-old-version-dialog/import-from-old-version-dialog.component';
 
 // Modules
@@ -73,6 +73,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppComponent,
     WindowControlsComponent,
     CollectionSwitcherComponent,
+    NotebookSwitcherComponent,
     WelcomeComponent,
     LoadingComponent,
     CollectionComponent,
@@ -86,7 +87,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     InputDialogComponent,
     ConfirmationDialogComponent,
     DialogHeaderComponent,
-    ChangeNotebookDialogComponent,
     ImportFromOldVersionDialogComponent,
     LogoFullComponent,
     LogoMenuComponent,
@@ -144,8 +144,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   bootstrap: [AppComponent],
   entryComponents: [
     LicenseDialogComponent, InputDialogComponent, ErrorDialogComponent, RenameCollectionDialogComponent,
-    ImportFromOldVersionDialogComponent, RenameNotebookDialogComponent, ConfirmationDialogComponent,
-    ChangeNotebookDialogComponent
+    ImportFromOldVersionDialogComponent, RenameNotebookDialogComponent, ConfirmationDialogComponent
   ],
 })
 export class AppModule { }

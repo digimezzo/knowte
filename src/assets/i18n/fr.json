@@ -61,9 +61,8 @@
     "Tooltips": {
         "Rename": "Renommer",
         "Delete": "Supprimer",
-        "Activate": "Activer",
-        "ChangeNotebook": "Changer le bloc-note",
-        "ChangeCollection": "Changer la collection",
+        "ChangeCollection": "Changer collection",
+        "ChangeNotebook": "Changer bloc-note",
         "Actions": "Actions",
         "MarkNote": "Marquer note",
         "UnmarkNote": "Enlever la marque",

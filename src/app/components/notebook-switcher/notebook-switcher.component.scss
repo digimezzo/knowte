@@ -1,0 +1,40 @@
+@import "font-faces";
+@import "variables";
+@import "theming";
+
+.notebook-switcher {
+    height: $titlebar-height;
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .notebook-switcher-selected-notebook {
+    height: $titlebar-height;
+    display: flex;
+    align-items: center;
+    color: white;
+    flex: 1;
+  }
+  
+  .notebook-swichter-button {
+    font-size: 20px !important;
+    font-family: la-solid;
+  }
+
+  .menu-item {
+    display: flex;
+    width: 100%;
+    padding-right: 80px;
+  }
+  
+  .menu-icon {
+    font-family: la-solid;
+    font-size: 22px;
+    color: $color-grey-icon;
+    margin: 0 8px 0 0;
+    font-weight: normal;
+  }
+  
+  .menu-icon.isActive {
+    @extend .color-primary;
+  }
