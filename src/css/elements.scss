@@ -71,3 +71,8 @@ a {
 hr {
   border-bottom: 1px solid #dedede;
 }
+
+::selection {
+  @extend .background-color-primary;
+  color: #fff;
+}
