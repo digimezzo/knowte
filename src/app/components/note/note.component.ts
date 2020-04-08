@@ -47,7 +47,6 @@ export class NoteComponent implements OnInit, OnDestroy {
     private windowCloseTimeoutMilliseconds: number = 500;
     private quill: Quill;
     private globalEmitter: any = remote.getGlobal('globalEmitter');
-    private noteId: string;
     private isTitleDirty: boolean = false;
     private isTextDirty: boolean = false;
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
@@ -74,6 +73,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         public appearance: AppearanceService, private clipboard: ClipboardManager, private worker: WorkerManager) {
     }
 
+    public noteId: string;
     public initialNoteTitle: string;
     public noteTitle: string;
     public isMarked: boolean;
