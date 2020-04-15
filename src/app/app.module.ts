@@ -62,9 +62,10 @@ import { LogoMenuComponent } from './components/logo-menu/logo-menu.component';
 import { Settings } from './core/settings';
 import { ClipboardManager } from './core/clipboard-manager';
 import { WorkerManager } from './core/worker-manager';
+import { ModificationDateComponent } from './components/modification-date/modification-date.component';
 
 // AoT requires an exported function for factories
-export function HttpLoaderFactory(http: HttpClient) {
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
@@ -92,6 +93,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     LogoMenuComponent,
     ActiveNotebookAndSearchComponent,
     TasksProgressComponent,
+    ModificationDateComponent,
     ColorThemeSwitcherComponent,
     FontSizeSwitcherComponent,
     NoteComponent,
