@@ -18,8 +18,8 @@
 }
 
 .tasks-progress-bar{
-    height: 6px;
-    width: 100px;
+    height: 4px;
+    width: 75px;
     position: relative;
 }
 
@@ -27,7 +27,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    height: 6px;
+    height: 4px;
     background-color: $color-grey;
     z-index: 1;
 }
@@ -36,8 +36,8 @@
     position: absolute;
     top: 0;
     left: 0;
-    height: 6px;
-    width: 100px;
+    height: 4px;
+    width: 75px;
     background-color: $color-lightgrey;
     z-index: 0;
 }
