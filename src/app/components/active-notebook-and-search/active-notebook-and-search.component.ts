@@ -11,7 +11,7 @@ import { BrowserWindow, remote } from 'electron';
     encapsulation: ViewEncapsulation.None
 })
 export class ActiveNotebookAndSearchComponent implements OnInit {
-    @ViewChild('searchInput') public searchInputElement: ElementRef;
+    @ViewChild('searchInput', { static: true }) public searchInputElement: ElementRef;
 
     constructor(public search: SearchService) {
     }

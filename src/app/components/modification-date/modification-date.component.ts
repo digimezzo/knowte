@@ -9,6 +9,8 @@ export class ModificationDateComponent implements OnInit {
     constructor() {
     }
 
+    public modificationDate: string = 'Today';
+
     public ngOnInit(): void {
     }
 }

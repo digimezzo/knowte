@@ -14,7 +14,7 @@ import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../results/note-operation-result';
 import { NotesCountResult } from '../results/notes-count-result';
 import { SearchService } from '../search/search.service';
-import * as sanitize from 'sanitize-filename';
+import sanitize from 'sanitize-filename';
 import { DataStore } from '../../data/data-store';
 import { NoteMarkResult } from '../results/note-mark-result';
 import { NoteDetailsResult } from '../results/note-details-result';

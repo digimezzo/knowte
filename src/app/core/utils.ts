@@ -1,5 +1,5 @@
 import * as path from 'path';
-import * as sanitize from 'sanitize-filename';
+import sanitize from 'sanitize-filename';
 import { Constants } from './constants';
 
 export class Utils {

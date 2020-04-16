@@ -7,7 +7,7 @@ import { remote } from 'electron';
     providedIn: 'root',
 })
 export class Settings {
-    private settings: Store<any> = new Store();
+    private settings: Store = new Store();
     private globalEmitter: any = remote.getGlobal('globalEmitter');
 
     constructor() {

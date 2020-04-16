@@ -41,7 +41,7 @@ import * as electronLocalshortcut from 'electron-localshortcut';
     ],
 })
 export class NoteComponent implements OnInit, OnDestroy {
-    @ViewChild('searchInput') public searchInputElement: ElementRef;
+    @ViewChild('searchInput', { static: true }) public searchInputElement: ElementRef;
 
     private saveTimeoutMilliseconds: number = 5000;
     private windowCloseTimeoutMilliseconds: number = 500;
