@@ -48,8 +48,7 @@ export class Constants {
         new FontSize(12),
         new FontSize(13),
         new FontSize(14),
-        new FontSize(15),
-        new FontSize(16),
+        new FontSize(15)
     ];
 
     public static readonly languages: Language[] = [

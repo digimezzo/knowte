@@ -14,12 +14,10 @@
     <ul class="notes-list" *ngIf="canShowList">
         <cdk-virtual-scroll-viewport itemSize="48">
             <li [ngClass]="{'selected-item':note.isSelected}" *cdkVirtualFor="let note of notes" matRipple>
-                <div class="note-item no-select" (dblclick)="openNote(note)"
+                <div class="note-item no-select" (dblclick)="openNote(note)" [matTooltipShowDelay]="500"
                     matTooltip="{{ 'Tooltips.LastChanged' | translate }}: {{note.displayExactModificationDate}}"
                     (click)="setSelectedNotes(note, $event)" draggable="true" (dragstart)="dragStart($event, note)">
-                    <div class="note-item-icon">
-                        <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg">
-                    </div>
+                    <span class="note-item-icon custom-font ml-1" [ngClass]="{'selected-icon':note.isSelected}">&#xF304;</span>
                     <div class="note-item-info px-1">
                         <div class="note-item-info-title">
                             <span>{{ note.title }}</span>

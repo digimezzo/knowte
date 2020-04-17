@@ -8,3 +8,7 @@
   @extend .color-primary;
   background-color: $color-selected;
 }
+
+.selected-icon {
+  @extend .color-primary;
+}

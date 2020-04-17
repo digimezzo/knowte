@@ -9,11 +9,12 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: var(--fontsize-small) !important;
 }
 
 .tasks-progress-icon {
   color: $color-grey;
-  font-size: 20px;
+  font-size: 18px;
   font-family: la-solid;
 }
 

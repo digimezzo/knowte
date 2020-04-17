@@ -40,7 +40,7 @@
   height: 14px;
 }
 
-.drag-image-text{
+.drag-image-text {
   flex: 1;
 }
 
@@ -54,32 +54,25 @@
 }
 
 .note-item {
-  height: 48px;
+  height: 40px;
   display: flex;
   flex-direction: row;
+  align-items: center;
   width: calc(100vw - 382px); // HACK: cdk-virtual-scroll-viewport doesn't enforce a width to its components
   cursor: default !important;
 }
 
-.note-item:hover{
+.note-item:hover {
   background: $color-hover;
 }
 
 .note-item-icon {
-  @extend .background-color-primary;
-  margin: 4px;
-  width: 40px;
-  min-width: 40px;
-  height: 40px;
-  border-radius: 20px;
+  color: $color-grey-icon;
+  font-family: la-solid;
+  font-size: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.note-item-icon-pen {
-  width: 20px;
-  height: 20px;
 }
 
 .note-item-actions {
@@ -126,9 +119,8 @@
 }
 
 .note-item-info-date-and-tasks {
-  margin-bottom: 4px;
+  margin-top: -3px;
   height: 20px;
-  font-size: var(--fontsize-normal) !important;
   color: $color-grey;
   display: flex;
   align-items: center;
@@ -138,6 +130,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: var(--fontsize-small) !important;
 }
 
 cdk-virtual-scroll-viewport {
