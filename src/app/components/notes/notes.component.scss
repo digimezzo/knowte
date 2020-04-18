@@ -67,12 +67,19 @@
 }
 
 .note-item-icon {
-  color: $color-grey-icon;
-  font-family: la-solid;
-  font-size: 22px;
+  @extend .background-color-primary;
+  margin-left: 4px;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.note-item-icon-pen {
+  width: 15px;
+  height: 15px;
 }
 
 .note-item-actions {
