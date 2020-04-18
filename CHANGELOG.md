@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.3] - 2020-03-29
+## [2.0.3] - 2020-04-18
 ### Added
 - It is now possible to change the UI font size
 - Added tooltips to the note editor buttons
