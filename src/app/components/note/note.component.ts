@@ -41,7 +41,7 @@ import * as electronLocalshortcut from 'electron-localshortcut';
     ],
 })
 export class NoteComponent implements OnInit, OnDestroy {
-    @ViewChild('searchInput', { static: true }) public searchInputElement: ElementRef;
+    @ViewChild('searchInput', { static: false }) public searchInputElement: ElementRef;
 
     private saveTimeoutMilliseconds: number = 5000;
     private windowCloseTimeoutMilliseconds: number = 500;
@@ -178,7 +178,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         document.onpaste = (e: ClipboardEvent) => {
             if (this.clipboard.containsImage()) {
-                // Clipbaord contains image. Cancel default paste (it pastes the path to the image instead of the image data).
+                // Clipboard contains image. Cancel default paste (it pastes the path to the image instead of the image data).
                 e.preventDefault();
 
                 // Execute our own paste, which pastes the image data.
@@ -413,7 +413,6 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private updateContextMenuItemsEnabledState(): void {
-
         // Cut, Copy, Delete.
         const hasSelectedText: boolean = this.hasSelectedRange();
         this.cutContextMenuItem.enabled = hasSelectedText;
@@ -669,7 +668,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         const window: BrowserWindow = remote.getCurrentWindow();
 
         if (this.searchText) {
-            // window.webContents.unselect();
             window.webContents.findInPage(this.searchText);
         } else {
             window.webContents.stopFindInPage('keepSelection');
