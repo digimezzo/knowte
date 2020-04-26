@@ -14,7 +14,7 @@
    height="256"
    id="svg4398"
    version="1.1"
-   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
    sodipodi:docname="logo-overlay-256x256.svg"
    inkscape:export-filename="/home/raphael/1024x1024.png"
    inkscape:export-xdpi="96"
@@ -37,7 +37,7 @@
        inkscape:collect="always"
        id="linearGradient1439">
       <stop
-         style="stop-color:#ffffff;stop-opacity:0.25490198"
+         style="stop-color:#ffffff;stop-opacity:0.11764706"
          offset="0"
          id="stop1435" />
       <stop
@@ -201,9 +201,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.2954417"
-     inkscape:cx="-269.92748"
-     inkscape:cy="12.979159"
+     inkscape:zoom="0.64772085"
+     inkscape:cx="545.81971"
+     inkscape:cy="-351.5484"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
