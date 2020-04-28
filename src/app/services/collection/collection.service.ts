@@ -140,7 +140,7 @@ export class CollectionService {
       const storageDirectory: string = path.join(parentDirectory, Constants.collectionsDirectory);
 
       // Create storage directory if it doesn't exist
-      if (!await fs.exists(storageDirectory)) {
+      if (!await fs.pathExists(storageDirectory)) {
         await fs.mkdir(storageDirectory);
         this.logger.info(`Created storageDirectory '${storageDirectory}' on disk`, 'CollectionService', 'setStorageDirectoryAsync');
       } else {
@@ -186,7 +186,7 @@ export class CollectionService {
 
     if (activeCollection && Utils.collectionToPath(storageDirectory, activeCollection).includes(storageDirectory) &&
       Utils.collectionToPath(storageDirectory, activeCollection) !== storageDirectory &&
-      await fs.exists(Utils.collectionToPath(storageDirectory, activeCollection))) {
+      await fs.pathExists(Utils.collectionToPath(storageDirectory, activeCollection))) {
       // There is an active collection and the collection directory exists
       activeCollectionDirectory = Utils.collectionToPath(storageDirectory, activeCollection);
     } else {
@@ -205,7 +205,7 @@ export class CollectionService {
       activeCollectionDirectory = Utils.collectionToPath(storageDirectory, activeCollection);
 
       // If the collection directory doesn't exsist, create it.
-      if (!await fs.exists(activeCollectionDirectory)) {
+      if (!await fs.pathExists(activeCollectionDirectory)) {
         await fs.mkdir(activeCollectionDirectory);
       }
     }
@@ -489,11 +489,11 @@ export class CollectionService {
         const noteStateFilePath: string = path.join(notePath, `${noteId}${Constants.noteStateExtension}`);
 
         // Note file
-        fs.unlinkSync(noteFilePath, '');
+        fs.unlinkSync(noteFilePath);
 
         // Note state file
         if (fs.existsSync(noteStateFilePath)) {
-          fs.unlinkSync(noteStateFilePath, '');
+          fs.unlinkSync(noteStateFilePath);
         }
       } catch (error) {
         this.logger.error(`Could not delete the note with id='${noteId}'. Cause: ${error}`, 'CollectionService', 'deleteNotesAsync');
@@ -768,8 +768,8 @@ export class CollectionService {
     try {
       // Notebooks
       try {
-        if (await fs.exists(notebooksExportFile)) {
-          const notebooksJson: string = await fs.readFile(notebooksExportFile);
+        if (await fs.pathExists(notebooksExportFile)) {
+          const notebooksJson: string = await fs.readJson(notebooksExportFile);
           const jsonNotebooks = JSON.parse(notebooksJson);
 
           this.logger.info(`${notebooksExportFile} was found. Importing notebooks.`, 'CollectionService', 'importFromOldVersionAsync');
@@ -804,8 +804,8 @@ export class CollectionService {
 
       // Notes
       try {
-        if (await fs.exists(notesExportFile)) {
-          const notesJson: string = await fs.readFile(notesExportFile);
+        if (await fs.pathExists(notesExportFile)) {
+          const notesJson: string = await fs.readJson(notesExportFile);
           const jsonNotes = JSON.parse(notesJson);
 
           this.logger.info(`${notesExportFile} was found. Importing notes.`, 'CollectionService', 'importFromOldVersionAsync');
@@ -898,7 +898,7 @@ export class CollectionService {
 
     for (const noteFilePath of noteFilePaths) {
       try {
-        const noteFileContent: string = await fs.readFile(noteFilePath);
+        const noteFileContent: string = await fs.readJson(noteFilePath);
         const noteExport: NoteExport = JSON.parse(noteFileContent);
         const proposedNoteTitle: string = `${noteExport.title} (${await this.translator.getAsync('Notes.Imported')})`;
         const uniqueNoteTitle: string = this.getUniqueNoteNoteTitle(proposedNoteTitle);
