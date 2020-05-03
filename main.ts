@@ -4,6 +4,7 @@ import * as url from 'url';
 import * as windowStateKeeper from 'electron-window-state';
 import * as fs from 'fs-extra';
 import * as Store from 'electron-store';
+import * as os from 'os';
 
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
@@ -17,6 +18,11 @@ serve = args.some(val => val === '--serve');
 // Workaround: Global does not allow setting custom properties.
 // We need to cast it to "any" first.
 const globalAny: any = global;
+
+// Static folder is not detected correctly in production
+if (process.env.NODE_ENV !== 'development') {
+  globalAny.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\');
+}
 
 // Workaround to send messages between Electron windows
 const EventEmitter = require('events');
@@ -59,7 +65,7 @@ function createMainWindow(): void {
       'height': mainWindowState.height,
       backgroundColor: '#fff',
       frame: getUseNativeTitleBar(),
-      icon: path.join(__dirname, 'build/icon/icon.png'),
+      icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
       show: false
     });
 
@@ -156,6 +162,7 @@ function createNoteWindow(notePath: string, noteId: string): void {
     'height': noteWindowState.height,
     backgroundColor: '#fff',
     frame: getUseNativeTitleBar(),
+    icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
     show: true,
   });
 
