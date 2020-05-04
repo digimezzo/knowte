@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - UI has been refined
 ### Removed
 ### Fixed
+- No icon in Linux docks when using AppImage install
 
 ## [2.0.2] - 2019-11-23
 ### Added
