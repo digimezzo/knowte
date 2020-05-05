@@ -24,7 +24,8 @@
     "target": [
       "AppImage",
       "deb",
-      "rpm"
+      "rpm",
+      "pacman"
     ]
   }
 }
