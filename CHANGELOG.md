@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added tooltips to the note editor buttons
 - Added a search field to the note windows. It can be displayed by pressing CTRL+F.
 - Added keyboard shortcuts CTRL+1 and CTRL+2 for headings 1 and 2 in notes
+- Added pacman and snap packages
 ### Changed
 - UI has been refined
 ### Removed

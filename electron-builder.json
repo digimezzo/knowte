@@ -25,7 +25,8 @@
       "AppImage",
       "deb",
       "rpm",
-      "pacman"
+      "pacman",
+      "snap"
     ]
   }
 }

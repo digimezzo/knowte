@@ -38,6 +38,13 @@ $ npm run electron:mac       # Build for Mac
 
 ## Installation notes
 
+**pacman**
 The pacman package contains a dependency to package libappindicator-sharp, which is no longer distributed with Arch Linux. I cannot remove this dependency for now, because it is an issue in electron-builder (the packaging tool which is used in this project). It is, however, possible to install Knowte on Arch Linux or Manjaro using this command (replace x.y.z with the correct version number): 
 
-$ sudo pacman -U Knowte-x.y.z.pacman --assume-installed libappindicator-sharp
+`$ sudo pacman -U Knowte-x.y.z.pacman --assume-installed libappindicator-sharp`
+
+**snap**
+
+A snap package that is installed manually (not via the snap store) doesn't have a signature. To install the snap package, it is necessary to provide the "--dangerous" parameter, to ignore the signature check (replace x.y.z with the correct version number):
+
+`$ snap install --dangerous Knowte_x.y.z_amd64.snap`
