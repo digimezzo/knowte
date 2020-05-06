@@ -64,13 +64,13 @@ function createMainWindow(): void {
       'width': mainWindowState.width,
       'height': mainWindowState.height,
       backgroundColor: '#fff',
-      frame: getUseNativeTitleBar(),
+      frame: windowNeedsFrame(),
       icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
       show: false
     });
 
     // HACK
-    (mainWindow as any).hasFrame = getUseNativeTitleBar();
+    (mainWindow as any).hasFrame = windowNeedsFrame();
 
     // Let us register listeners on the window, so we can update the state
     // automatically (the listeners will be removed when the window is closed)
@@ -135,14 +135,18 @@ function createMainWindow(): void {
   }
 }
 
-function getUseNativeTitleBar(): boolean {
+function windowNeedsFrame(): boolean {
   const settings: Store<any> = new Store();
 
-  if (!settings.has('useNativeTitleBar')) {
-    settings.set('useNativeTitleBar', false);
+  if (!settings.has('useCustomTitleBar')) {
+    if (os.platform() === 'win32') {
+      settings.set('useCustomTitleBar', true);
+    } else {
+      settings.set('useCustomTitleBar', false);
+    }
   }
 
-  return settings.get('useNativeTitleBar');
+  return !settings.get('useCustomTitleBar');
 }
 
 function createNoteWindow(notePath: string, noteId: string): void {
@@ -161,13 +165,13 @@ function createNoteWindow(notePath: string, noteId: string): void {
     'width': noteWindowState.width,
     'height': noteWindowState.height,
     backgroundColor: '#fff',
-    frame: getUseNativeTitleBar(),
+    frame: windowNeedsFrame(),
     icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
     show: true,
   });
 
   // HACK
-  (noteWindow as any).hasFrame = getUseNativeTitleBar();
+  (noteWindow as any).hasFrame = windowNeedsFrame();
 
   // noteWindow.webContents.openDevTools();
 

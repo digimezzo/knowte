@@ -74,12 +74,12 @@ function createMainWindow() {
             'width': mainWindowState.width,
             'height': mainWindowState.height,
             backgroundColor: '#fff',
-            frame: getUseNativeTitleBar(),
+            frame: windowNeedsFrame(),
             icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
             show: false
         });
         // HACK
-        mainWindow.hasFrame = getUseNativeTitleBar();
+        mainWindow.hasFrame = windowNeedsFrame();
         // Let us register listeners on the window, so we can update the state
         // automatically (the listeners will be removed when the window is closed)
         // and restore the maximized or full screen state
@@ -134,12 +134,17 @@ function createMainWindow() {
         mainWindow.webContents.on('new-window', handleRedirect);
     }
 }
-function getUseNativeTitleBar() {
+function windowNeedsFrame() {
     var settings = new Store();
-    if (!settings.has('useNativeTitleBar')) {
-        settings.set('useNativeTitleBar', false);
+    if (!settings.has('useCustomTitleBar')) {
+        if (os.platform() === 'win32') {
+            settings.set('useCustomTitleBar', true);
+        }
+        else {
+            settings.set('useCustomTitleBar', false);
+        }
     }
-    return settings.get('useNativeTitleBar');
+    return !settings.get('useCustomTitleBar');
 }
 function createNoteWindow(notePath, noteId) {
     // Load the previous state with fallback to defaults
@@ -156,12 +161,12 @@ function createNoteWindow(notePath, noteId) {
         'width': noteWindowState.width,
         'height': noteWindowState.height,
         backgroundColor: '#fff',
-        frame: getUseNativeTitleBar(),
+        frame: windowNeedsFrame(),
         icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
         show: true,
     });
     // HACK
-    noteWindow.hasFrame = getUseNativeTitleBar();
+    noteWindow.hasFrame = windowNeedsFrame();
     // noteWindow.webContents.openDevTools();
     // Let us register listeners on the window, so we can update the state
     // automatically (the listeners will be removed when the window is closed)

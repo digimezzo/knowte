@@ -45,7 +45,7 @@
         "Language": "Language",
         "Color": "Color",
         "TitleBar": "Title bar",
-        "UseNativeTitleBar": "Use native title bar (Requires a restart)"
+        "UseCustomTitleBar": "Use custom title bar (Requires a restart)"
     },
     "ComponentsPage": {
         "Components": "Components"

@@ -45,7 +45,7 @@
         "Language": "Taal",
         "Color": "Kleur",
         "TitleBar": "Titelbalk",
-        "UseNativeTitleBar": "Gebruik native titelbalk (Vereist een herstart)"
+        "UseCustomTitleBar": "Gebruik aangepaste titelbalk (Vereist een herstart)"
     },
     "ComponentsPage": {
         "Components": "Componenten"

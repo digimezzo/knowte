@@ -45,7 +45,7 @@
         "Language": "Langue",
         "Color": "Couleur",
         "TitleBar": "Barre de titre",
-        "UseNativeTitleBar": "Utiliser la barre de titre native (Nécessite un redémarrage)"
+        "UseCustomTitleBar": "Utiliser barre de titre personnalisée (Nécessite un redémarrage)"
     },
     "ComponentsPage": {
         "Components": "Composants"

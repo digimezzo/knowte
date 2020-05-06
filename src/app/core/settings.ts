@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as Store from 'electron-store';
 import { Constants } from '../core/constants';
 import { remote } from 'electron';
+import * as os from 'os';
 
 @Injectable({
     providedIn: 'root',
@@ -14,8 +15,8 @@ export class Settings {
         this.initialize();
     }
 
-     // Default language
-     public get defaultLanguage(): string {
+    // Default language
+    public get defaultLanguage(): string {
         return 'en';
     }
 
@@ -28,13 +29,13 @@ export class Settings {
         this.settings.set('language', v);
     }
 
-    // Native title bar
-    public get useNativeTitleBar(): boolean {
-        return this.settings.get('useNativeTitleBar');
+    // Native custom bar
+    public get useCustomTitleBar(): boolean {
+        return this.settings.get('useCustomTitleBar');
     }
 
-    public set useNativeTitleBar(v: boolean) {
-        this.settings.set('useNativeTitleBar', v);
+    public set useCustomTitleBar(v: boolean) {
+        this.settings.set('useCustomTitleBar', v);
     }
 
     // FontSize
@@ -109,8 +110,12 @@ export class Settings {
             this.settings.set('language', 'en');
         }
 
-        if (!this.settings.has('useNativeTitleBar')) {
-            this.settings.set('useNativeTitleBar', false);
+        if (!this.settings.has('useCustomTitleBar')) {
+            if (os.platform() === 'win32') {
+                this.settings.set('useCustomTitleBar', true);
+            } else {
+                this.settings.set('useCustomTitleBar', false);
+            }
         }
 
         if (!this.settings.has('fontSize')) {
