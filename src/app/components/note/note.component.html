@@ -8,7 +8,7 @@
     <div class="window-frame-overlay" *ngIf="isBusy">
         <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
     </div>
-    <div class="window-frame-content">
+    <div class="window-frame-content" [ngStyle]="{'top': appearance.windowHasNativeTitleBar ? '0' : '32px' }">
         <div class="note-content">
             <div class="note-content-floating">
                 <button class="note-content-floating-button" mat-fab (click)="toggleShowActions()"

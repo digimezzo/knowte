@@ -9,9 +9,9 @@
     <div class="window-frame-overlay" *ngIf="isBusy">
         <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
     </div>
-    <div class="window-frame-content">
+    <div class="window-frame-content" [ngStyle]="{'top': appearance.windowHasNativeTitleBar ? '10px' : '32px' }">
         <app-logo-menu class="collection-logo-menu" [selectedMenuItem]="1"></app-logo-menu>
-        <app-collection-switcher class="collection-collection-switcher"></app-collection-switcher>
+        <app-collection-switcher class="collection-collection-switcher" *ngIf="appearance.windowHasNativeTitleBar"></app-collection-switcher>
         <div class="collection">
             <!-- Notebooks -->
             <div class="collection-notebooks">

@@ -5,7 +5,7 @@
         <app-collection-switcher></app-collection-switcher>
         <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
     </div>
-    <div class="window-frame-content">
+    <div class="window-frame-content" [ngStyle]="{'top': appearance.windowHasNativeTitleBar ? '10px' : '32px' }">
         <app-logo-menu class="information-logo-menu" [selectedMenuItem]="3"></app-logo-menu>
         <div class="information">
             <mat-tab-group>
