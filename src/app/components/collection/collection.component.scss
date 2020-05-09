@@ -9,6 +9,14 @@
   width: 100vw !important;
 }
 
+.collection-collection-switcher{
+  position: absolute;
+  top: 48px;
+  right: 0;
+  z-index: 1;
+  color: black;
+}
+
 .collection {
   position: absolute;
   top: 0;

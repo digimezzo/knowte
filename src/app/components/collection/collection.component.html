@@ -3,7 +3,7 @@
         <div class="window-frame-titlebar-dragarea pl-1">
             <!-- {{ applicationName }} -->
         </div>
-        <app-collection-switcher></app-collection-switcher>
+        <app-collection-switcher class="titlebar-collection-switcher"></app-collection-switcher>
         <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
     </div>
     <div class="window-frame-overlay" *ngIf="isBusy">
@@ -11,6 +11,7 @@
     </div>
     <div class="window-frame-content">
         <app-logo-menu class="collection-logo-menu" [selectedMenuItem]="1"></app-logo-menu>
+        <app-collection-switcher class="collection-collection-switcher"></app-collection-switcher>
         <div class="collection">
             <!-- Notebooks -->
             <div class="collection-notebooks">

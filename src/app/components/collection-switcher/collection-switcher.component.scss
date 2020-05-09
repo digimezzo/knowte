@@ -8,11 +8,28 @@
   flex-direction: row;
 }
 
+.collection-switcher-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 46px;
+  height: 100%;
+  user-select: none;
+  cursor: default;
+  opacity: 0.8;
+  font-size: 10px;
+  -webkit-app-region: no-drag;
+}
+
+.collection-switcher-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+
 .collection-switcher-active-collection {
   height: $titlebar-height;
   display: flex;
   align-items: center;
-  color: white;
   flex: 1;
 }
 
