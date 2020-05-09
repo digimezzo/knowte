@@ -1,7 +1,7 @@
 @import "variables";
 @import "theming";
 
-.collection-logo-menu{
+.collection-logo-menu {
   position: absolute;
   top: 0;
   left: 0;
@@ -9,12 +9,20 @@
   width: 100vw !important;
 }
 
-.collection-collection-switcher{
+.collection-collection-switcher {
   position: absolute;
   top: 48px;
   right: 0;
   z-index: 1;
-  color: black;
+}
+
+.collection-collection-switcher .collection-switcher {
+  color: black !important;
+}
+
+.collection-collection-switcher .collection-switcher-button:hover {
+  cursor: pointer;
+  background: none !important;
 }
 
 .collection {
@@ -48,7 +56,7 @@
   flex-direction: column;
 }
 
-.collection-notebooks-separator{
+.collection-notebooks-separator {
   display: flex;
   width: 1px;
   height: calc(100% - 32px);
@@ -125,7 +133,7 @@
   height: 40px;
 }
 
-.notebook:hover{
+.notebook:hover {
   background: $color-hover;
 }
 
