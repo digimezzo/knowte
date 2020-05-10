@@ -54,7 +54,7 @@
 }
 
 .note-item {
-  height: 40px;
+  height: 48px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -69,17 +69,17 @@
 .note-item-icon {
   @extend .background-color-primary;
   margin-left: 4px;
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .note-item-icon-pen {
-  width: 15px;
-  height: 15px;
+  width: 20px;
+  height: 20px;
 }
 
 .note-item-actions {
@@ -126,8 +126,9 @@
 }
 
 .note-item-info-date-and-tasks {
-  margin-top: -3px;
+  margin-bottom: 4px;
   height: 20px;
+  font-size: var(--fontsize-normal) !important;
   color: $color-grey;
   display: flex;
   align-items: center;
@@ -137,7 +138,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: var(--fontsize-small) !important;
 }
 
 cdk-virtual-scroll-viewport {

@@ -39,7 +39,7 @@ export class TasksProgressComponent implements OnInit {
     }
 
     private calculateWidth(): void {
-        const maxWidth: number = 75;
+        const maxWidth: number = 100;
         this.width = (this.closedTasksCount / this.totalTasksCount) * maxWidth;
     }
 }

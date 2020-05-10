@@ -90,7 +90,6 @@ export class AppearanceService {
 
     public fontSizeChangedHandler(fontSize: FontSize): void {
         const element = document.documentElement;
-        element.style.setProperty('--fontsize-small', fontSize.smallSize + 'px');
         element.style.setProperty('--fontsize-normal', fontSize.normalSize + 'px');
         element.style.setProperty('--fontsize-large', this._selectedFontSize.largeSize + 'px');
         element.style.setProperty('--fontsize-larger', this._selectedFontSize.largerSize + 'px');

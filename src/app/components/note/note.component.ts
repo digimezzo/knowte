@@ -24,6 +24,7 @@ import { ClipboardManager } from '../../core/clipboard-manager';
 import { WorkerManager } from '../../core/worker-manager';
 import { Settings } from '../../core/settings';
 import { AppearanceService } from '../../services/appearance/appearance.service';
+import * as electronLocalshortcut from 'electron-localshortcut';
 
 @Component({
     selector: 'app-note',
@@ -165,6 +166,14 @@ export class NoteComponent implements OnInit, OnDestroy {
                 this.pasteImageFromClipboard();
             }
         };
+
+        const window: BrowserWindow = remote.getCurrentWindow();
+
+        electronLocalshortcut.register(window, 'ESC', () => {
+            if (this.settings.closeNotesWithEscape) {
+                window.close();
+            }
+        });
     }
 
     private async setToolbarTooltipsAsync(): Promise<void> {
@@ -200,13 +209,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.isTitleDirty = true;
         this.clearSearch();
         this.noteTitleChanged.next(newNoteTitle);
-    }
-
-    @HostListener('document:keydown.escape', ['$event']) public onKeydownHandler(event: KeyboardEvent): void {
-        if (this.settings.closeNotesWithEscape) {
-            const window: BrowserWindow = remote.getCurrentWindow();
-            window.close();
-        }
     }
 
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.

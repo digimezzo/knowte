@@ -9,18 +9,18 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: var(--fontsize-small) !important;
+  font-size: var(--fontsize-normal) !important;
 }
 
 .tasks-progress-icon {
   color: $color-grey;
-  font-size: 18px;
+  font-size: 20px;
   font-family: la-solid;
 }
 
 .tasks-progress-bar{
-    height: 4px;
-    width: 75px;
+    height: 6px;
+    width: 100px;
     position: relative;
 }
 
@@ -28,7 +28,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    height: 4px;
+    height: 6px;
     background-color: $color-grey;
     z-index: 1;
 }
@@ -37,8 +37,8 @@
     position: absolute;
     top: 0;
     left: 0;
-    height: 4px;
-    width: 75px;
+    height: 6px;
+    width: 100px;
     background-color: $color-lightgrey;
     z-index: 0;
 }
