@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener, NgZone, ViewEncapsulation, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, NgZone, ViewEncapsulation } from '@angular/core';
 import { remote, BrowserWindow, SaveDialogOptions } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
@@ -24,7 +24,6 @@ import { ClipboardManager } from '../../core/clipboard-manager';
 import { WorkerManager } from '../../core/worker-manager';
 import { Settings } from '../../core/settings';
 import { AppearanceService } from '../../services/appearance/appearance.service';
-import * as electronLocalshortcut from 'electron-localshortcut';
 
 @Component({
     selector: 'app-note',
@@ -41,8 +40,6 @@ import * as electronLocalshortcut from 'electron-localshortcut';
     ],
 })
 export class NoteComponent implements OnInit, OnDestroy {
-    @ViewChild('searchInput', { static: false }) public searchInputElement: ElementRef;
-
     private saveTimeoutMilliseconds: number = 5000;
     private windowCloseTimeoutMilliseconds: number = 500;
     private quill: Quill;
@@ -54,19 +51,12 @@ export class NoteComponent implements OnInit, OnDestroy {
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
     private languageChangedListener: any = this.languageChangedHandler.bind(this);
     private fontSizeChangedListener: any = this.fontSizeChangedHandler.bind(this);
-    private searchInputFocusOutListener: any = this.searchInputFocusOutHandler.bind(this);
 
     private contextMenu: any;
     private cutContextMenuItem: any;
     private copyContextMenuItem: any;
     private pasteContextMenuItem: any;
     private deleteContextMenuItem: any;
-
-    private _searchText: string;
-
-    private isSearchInputFocusOutHandlerSet: boolean = false;
-
-    public searchPlaceHolder: string = '';
 
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
         private snackBar: SnackBarService, private translator: TranslatorService, private settings: Settings,
@@ -85,22 +75,12 @@ export class NoteComponent implements OnInit, OnDestroy {
     public actionIconRotation: string = 'default';
     public canSearch: boolean = false;
 
-    public get searchText(): string {
-        return this._searchText;
-    }
-    public set searchText(v: string) {
-        this._searchText = v;
-        this.highlightSearch(v);
-    }
-
     public ngOnDestroy(): void {
-        this.removeSearchInputFocusOutHandler();
     }
 
     public async ngOnInit(): Promise<void> {
         this.setEditorFontSize();
         this.addContextMenuAsync();
-        await this.checkSearchPlaceHolderAsync();
 
         const notePlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
 
@@ -185,20 +165,6 @@ export class NoteComponent implements OnInit, OnDestroy {
                 this.pasteImageFromClipboard();
             }
         };
-
-        const window: BrowserWindow = remote.getCurrentWindow();
-
-        electronLocalshortcut.register(window, 'Ctrl+F', () => {
-            this.showSearch();
-        });
-
-        electronLocalshortcut.register(window, 'ESC', () => {
-            if (this.canSearch) {
-                this.closeSearch();
-            } else if (this.settings.closeNotesWithEscape) {
-                window.close();
-            }
-        });
     }
 
     private async setToolbarTooltipsAsync(): Promise<void> {
@@ -234,6 +200,13 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.isTitleDirty = true;
         this.clearSearch();
         this.noteTitleChanged.next(newNoteTitle);
+    }
+
+    @HostListener('document:keydown.escape', ['$event']) public onKeydownHandler(event: KeyboardEvent): void {
+        if (this.settings.closeNotesWithEscape) {
+            const window: BrowserWindow = remote.getCurrentWindow();
+            window.close();
+        }
     }
 
     // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
@@ -607,31 +580,9 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.setEditorFontSize();
     }
 
-    private searchInputFocusOutHandler(): void {
-        if (this.searchInputElement) {
-            this.searchInputElement.nativeElement.focus();
-        }
-    }
-
-    private showSearch(): void {
-        this.canSearch = true;
-
-        setTimeout(() => {
-            this.searchInputElement.nativeElement.focus();
-            this.addSearchInputFocusOutHandler();
-        }, 100);
-    }
-
-    public closeSearch(): void {
-        this.removeSearchInputFocusOutHandler();
-        this.clearSearch();
-        this.canSearch = false;
-    }
-
     public clearSearch(): void {
         const window: BrowserWindow = remote.getCurrentWindow();
         window.webContents.stopFindInPage('keepSelection');
-        this.searchText = '';
     }
 
     private applySearch(): void {
@@ -639,38 +590,13 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private getSearchTextCallback(searchText: string): void {
-        if (searchText && searchText.length > 0) {
-            this.showSearch();
+        const window: BrowserWindow = remote.getCurrentWindow();
 
+        if (searchText && searchText.length > 0) {
             const searchTextPieces: string[] = searchText.trim().split(' ');
 
             // For now, we can only search for 1 word.
-            this.searchText = searchTextPieces[0];
-        }
-    }
-    private removeSearchInputFocusOutHandler(): void {
-        if (this.searchInputElement) {
-            this.searchInputElement.nativeElement.removeEventListener('focusout', this.searchInputFocusOutListener.bind(this));
-            this.isSearchInputFocusOutHandlerSet = false;
-        }
-    }
-
-    private addSearchInputFocusOutHandler(): void {
-        if (!this.isSearchInputFocusOutHandlerSet) {
-            if (this.searchInputElement) {
-                this.searchInputElement.nativeElement.addEventListener('focusout', this.searchInputFocusOutListener.bind(this));
-                this.isSearchInputFocusOutHandlerSet = true;
-            }
-        }
-    }
-
-    private highlightSearch(searchText: string): void {
-        const window: BrowserWindow = remote.getCurrentWindow();
-
-        if (this.searchText) {
-            window.webContents.findInPage(this.searchText);
-        } else {
-            window.webContents.stopFindInPage('keepSelection');
+            window.webContents.findInPage(searchTextPieces[0]);
         }
     }
 
@@ -830,17 +756,5 @@ export class NoteComponent implements OnInit, OnDestroy {
         const closedTasksCount: number = (noteContent.match(/"list":"checked"/g) || []).length;
 
         return new TasksCount(openTasksCount, closedTasksCount);
-    }
-
-    public async checkSearchPlaceHolderAsync(): Promise<void> {
-        if (this.searchPlaceHolder) {
-            this.searchPlaceHolder = null;
-
-            return;
-        } else {
-            this.searchPlaceHolder = await this.translator.getAsync('Notes.Search');
-
-            return;
-        }
     }
 }

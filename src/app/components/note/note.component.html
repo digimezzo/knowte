@@ -54,21 +54,6 @@
                     (keydown.control.1)=heading1($event) (keydown.control.2)=heading2($event)>
                 </div>
             </div>
-            <div class="note-content-search px-1" *ngIf="canSearch">
-                <mat-form-field class="note-content-search-field mr-1" floatLabel=never>
-                    <mat-label>{{ searchPlaceHolder }}</mat-label>
-                    <input matInput type="text" #searchInput [(ngModel)]="searchText"
-                        (focus)="checkSearchPlaceHolderAsync()" (blur)="checkSearchPlaceHolderAsync()">
-                    <button mat-button *ngIf="searchText" matSuffix mat-icon-button
-                        matTooltip="{{ 'MainPage.ClearSearch' | translate }}" (click)="clearSearch()">
-                        <span class="custom-font notes-search-clearbutton">&#xF12D;</span>
-                    </button>
-                </mat-form-field>
-                <button class="custom-font notes-search-closebutton" mat-mini-fab (click)="closeSearch()"
-                    matTooltip="{{ 'Tooltips.Close' | translate }}">
-                    <span class="custom-font notes-search-clearbutton">&#xF00D;</span>
-                </button>
-            </div>
         </div>
     </div>
 </div>

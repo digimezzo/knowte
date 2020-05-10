@@ -104,37 +104,6 @@
   color: white;
 }
 
-.note-content-search {
-  background: white;
-  box-shadow: 0px 0px 14px 2px rgba(0, 0, 0, 0.2);
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  z-index: 99;
-  border-radius: 4px;
-}
-
-.note-content-search-field {
-  width: 200px;
-  margin-top: 2px;
-  margin-right: 8px;
-  margin-bottom: -4px;
-}
-
-.notes-search-clearbutton {
-  display: block;
-  font-family: la-solid;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.notes-search-closebutton {
-  display: block;
-  font-family: la-solid;
-  font-size: 22px;
-  color: white;
-}
-
 .note-editor {
   flex: 1;
   display: flex;
