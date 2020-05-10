@@ -74,12 +74,12 @@ function createMainWindow() {
             'width': mainWindowState.width,
             'height': mainWindowState.height,
             backgroundColor: '#fff',
-            frame: windowNeedsFrame(),
+            frame: windowhasFrame(),
             icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
             show: false
         });
         // HACK
-        mainWindow.hasFrame = windowNeedsFrame();
+        mainWindow.hasFrame = windowhasFrame();
         // Let us register listeners on the window, so we can update the state
         // automatically (the listeners will be removed when the window is closed)
         // and restore the maximized or full screen state
@@ -134,7 +134,7 @@ function createMainWindow() {
         mainWindow.webContents.on('new-window', handleRedirect);
     }
 }
-function windowNeedsFrame() {
+function windowhasFrame() {
     var settings = new Store();
     if (!settings.has('useCustomTitleBar')) {
         if (os.platform() === 'win32') {
@@ -146,7 +146,7 @@ function windowNeedsFrame() {
     }
     return !settings.get('useCustomTitleBar');
 }
-function createNoteWindow(notePath, noteId) {
+function createNoteWindow(notePath, noteId, windowHasFrame) {
     // Load the previous state with fallback to defaults
     var noteWindowState = windowStateKeeper({
         defaultWidth: 620,
@@ -161,12 +161,12 @@ function createNoteWindow(notePath, noteId) {
         'width': noteWindowState.width,
         'height': noteWindowState.height,
         backgroundColor: '#fff',
-        frame: windowNeedsFrame(),
+        frame: windowHasFrame,
         icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
         show: true,
     });
     // HACK
-    noteWindow.hasFrame = windowNeedsFrame();
+    noteWindow.hasFrame = windowHasFrame;
     // noteWindow.webContents.openDevTools();
     // Let us register listeners on the window, so we can update the state
     // automatically (the listeners will be removed when the window is closed)
@@ -204,7 +204,7 @@ try {
     electron_log_1.default.info('[App] [main] +++ Starting +++');
     // Open note windows
     electron_1.ipcMain.on('open-note-window', function (event, arg) {
-        createNoteWindow(arg.notePath, arg.noteId);
+        createNoteWindow(arg.notePath, arg.noteId, arg.windowHasFrame);
     });
     // Print
     electron_1.ipcMain.on('print', function (event, content) {

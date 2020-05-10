@@ -64,13 +64,13 @@ function createMainWindow(): void {
       'width': mainWindowState.width,
       'height': mainWindowState.height,
       backgroundColor: '#fff',
-      frame: windowNeedsFrame(),
+      frame: windowhasFrame(),
       icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
       show: false
     });
 
     // HACK
-    (mainWindow as any).hasFrame = windowNeedsFrame();
+    (mainWindow as any).hasFrame = windowhasFrame();
 
     // Let us register listeners on the window, so we can update the state
     // automatically (the listeners will be removed when the window is closed)
@@ -135,7 +135,7 @@ function createMainWindow(): void {
   }
 }
 
-function windowNeedsFrame(): boolean {
+function windowhasFrame(): boolean {
   const settings: Store<any> = new Store();
 
   if (!settings.has('useCustomTitleBar')) {
@@ -149,7 +149,7 @@ function windowNeedsFrame(): boolean {
   return !settings.get('useCustomTitleBar');
 }
 
-function createNoteWindow(notePath: string, noteId: string): void {
+function createNoteWindow(notePath: string, noteId: string, windowHasFrame: boolean): void {
   // Load the previous state with fallback to defaults
   const noteWindowState = windowStateKeeper({
     defaultWidth: 620,
@@ -165,13 +165,13 @@ function createNoteWindow(notePath: string, noteId: string): void {
     'width': noteWindowState.width,
     'height': noteWindowState.height,
     backgroundColor: '#fff',
-    frame: windowNeedsFrame(),
+    frame: windowHasFrame,
     icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
     show: true,
   });
 
   // HACK
-  (noteWindow as any).hasFrame = windowNeedsFrame();
+  (noteWindow as any).hasFrame = windowHasFrame;
 
   // noteWindow.webContents.openDevTools();
 
@@ -217,7 +217,7 @@ try {
 
   // Open note windows
   ipcMain.on('open-note-window', (event: any, arg: any) => {
-    createNoteWindow(arg.notePath, arg.noteId);
+    createNoteWindow(arg.notePath, arg.noteId, arg.windowHasFrame);
   });
 
   // Print

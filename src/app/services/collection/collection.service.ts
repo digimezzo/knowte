@@ -5,7 +5,7 @@ import * as fs from 'fs-extra';
 import { Subject, Observable } from 'rxjs';
 import { Utils } from '../../core/utils';
 import { Notebook } from '../../data/entities/notebook';
-import { remote } from 'electron';
+import { remote, BrowserWindow } from 'electron';
 import { Note } from '../../data/entities/note';
 import * as moment from 'moment';
 import { Moment, Duration } from 'moment';
@@ -992,7 +992,8 @@ export class CollectionService {
 
         const notePath: string = this.getNotePath(noteId);
         this.logger.info(`note directory=${notePath}`, 'CollectionService', 'importNoteFilesAsync');
-        const arg: any = { notePath: notePath, noteId: noteId };
+        const window: BrowserWindow = remote.getCurrentWindow();
+        const arg: any = { notePath: notePath, noteId: noteId, windowHasFrame:  (window as any).hasFrame };
         ipcRenderer.send('open-note-window', arg);
       }
     } else {
