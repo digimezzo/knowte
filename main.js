@@ -78,8 +78,7 @@ function createMainWindow() {
             icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
             show: false
         });
-        // HACK
-        mainWindow.hasFrame = windowhasFrame();
+        globalAny.windowHasFrame = windowhasFrame();
         // Let us register listeners on the window, so we can update the state
         // automatically (the listeners will be removed when the window is closed)
         // and restore the maximized or full screen state
@@ -165,8 +164,7 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
         icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
         show: true,
     });
-    // HACK
-    noteWindow.hasFrame = windowHasFrame;
+    globalAny.windowHasFrame = windowHasFrame;
     // noteWindow.webContents.openDevTools();
     // Let us register listeners on the window, so we can update the state
     // automatically (the listeners will be removed when the window is closed)

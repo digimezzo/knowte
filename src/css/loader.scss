@@ -11,17 +11,17 @@
   top: 0;
   left: 0;
   right: 0;
-  height: $titlebar-height;
+  height: var(--loader-titlebar-height);
   background: $color-darkgrey;
   -webkit-app-region: drag;
 }
 
 .loader-header {
   position: absolute;
-  top: $titlebar-height;
+  top: var(--loader-titlebar-height);
   left: 0;
   right: 0;
-  height: calc(82px - #{$titlebar-height});
+  height: 50px;
   background: $color-darkgrey;
 }
 

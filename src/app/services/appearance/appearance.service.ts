@@ -12,6 +12,7 @@ import { Settings } from '../../core/settings';
 })
 export class AppearanceService {
     private globalEmitter: any = remote.getGlobal('globalEmitter');
+    private windowHasFrame: boolean = remote.getGlobal('windowHasFrame');
     private themeChangedListener: any = this.themeChangedHandler.bind(this);
     private fontSizeChangedListener: any = this.fontSizeChangedHandler.bind(this);
     private _selectedColorTheme: ColorTheme;
@@ -22,16 +23,7 @@ export class AppearanceService {
     }
 
     public get windowHasNativeTitleBar(): boolean {
-        const window: BrowserWindow = remote.getCurrentWindow();
-        let hasFrame: boolean = false;
-
-        try {
-            hasFrame = (window as any).hasFrame;
-        } catch (error) {
-
-        }
-
-        return hasFrame;
+        return this.windowHasFrame;
     }
 
     public colorThemes: ColorTheme[] = Constants.colorThemes;

@@ -24,6 +24,7 @@ import { TasksCount } from '../../core/tasks-count';
 import { Logger } from '../../core/logger';
 import { TranslatorService } from '../translator/translator.service';
 import { Settings } from '../../core/settings';
+import { AppearanceService } from '../appearance/appearance.service';
 
 @Injectable({
   providedIn: 'root',
@@ -33,6 +34,7 @@ export class CollectionService {
   private isInitializing: boolean = false;
   private isInitialized: boolean = false;
   private globalEmitter: any = remote.getGlobal('globalEmitter');
+  private windowHasFrame: boolean = remote.getGlobal('windowHasFrame');
   private openNoteIds: string[] = [];
   private collectionsChanged: Subject<void> = new Subject();
   private notebookEdited: Subject<void> = new Subject();
@@ -52,7 +54,7 @@ export class CollectionService {
   private deleteNoteEventListener: any = this.deleteNoteEventHandler.bind(this);
   private _activeCollection: string;
 
-  constructor(private translator: TranslatorService, private search: SearchService,
+  constructor(private translator: TranslatorService, private search: SearchService, private appearance: AppearanceService,
     private settings: Settings, private logger: Logger) {
   }
 
@@ -993,7 +995,7 @@ export class CollectionService {
         const notePath: string = this.getNotePath(noteId);
         this.logger.info(`note directory=${notePath}`, 'CollectionService', 'importNoteFilesAsync');
         const window: BrowserWindow = remote.getCurrentWindow();
-        const arg: any = { notePath: notePath, noteId: noteId, windowHasFrame:  (window as any).hasFrame };
+        const arg: any = { notePath: notePath, noteId: noteId, windowHasFrame:  this.appearance.windowHasNativeTitleBar };
         ipcRenderer.send('open-note-window', arg);
       }
     } else {

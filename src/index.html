@@ -10,6 +10,17 @@
 </head>
 
 <body>
+  <script>
+    const remote = require('electron').remote;
+    const windowHasFrame = remote.getGlobal('windowHasFrame');
+    const element = document.documentElement;
+
+    if (windowHasFrame === true) {
+      element.style.setProperty('--loader-titlebar-height', '0px')
+    } else {
+      element.style.setProperty('--loader-titlebar-height', '32px');
+    }
+  </script>
   <app-root>
     <div class="loader">
       <div class="loader-titlebar">
