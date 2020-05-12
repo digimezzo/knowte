@@ -66,7 +66,10 @@ function createMainWindow(): void {
       backgroundColor: '#fff',
       frame: windowhasFrame(),
       icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
-      show: false
+      show: false,
+      webPreferences: {
+        nodeIntegration: true
+      }
     });
 
     globalAny.windowHasFrame = windowhasFrame();
@@ -89,7 +92,13 @@ function createMainWindow(): void {
       }));
     }
 
-    workerWindow = new BrowserWindow({ show: false });
+    workerWindow = new BrowserWindow({
+      show: false,
+      webPreferences: {
+        nodeIntegration: true
+      }
+    });
+
     workerWindow.loadURL(url.format({
       pathname: path.join(__dirname, 'dist/worker.html'),
       protocol: 'file:',
@@ -167,6 +176,9 @@ function createNoteWindow(notePath: string, noteId: string, windowHasFrame: bool
     frame: windowHasFrame,
     icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
     show: true,
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
 
   globalAny.windowHasFrame = windowHasFrame;

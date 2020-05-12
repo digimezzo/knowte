@@ -105,9 +105,10 @@
 }
 
 .note-editor {
+  height: 100%;
+  width: 100%;
   flex: 1;
-  display: flex;
-  flex-flow: column nowrap;
+  overflow-y: auto;
 }
 
 .ql-toolbar.ql-snow {

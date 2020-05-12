@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, HostListener, NgZone, ViewEncapsulation } from '@angular/core';
-import { remote, BrowserWindow, SaveDialogOptions } from 'electron';
+import { remote, BrowserWindow, SaveDialogOptions, SaveDialogReturnValue } from 'electron';
 import { ActivatedRoute } from '@angular/router';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { MatDialog, MatDialogRef } from '@angular/material';
@@ -254,10 +254,10 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.hideActionButtons();
 
         const options: SaveDialogOptions = { defaultPath: Utils.getPdfExportPath(remote.app.getPath('documents'), this.noteTitle) };
-        const savePath: string = remote.dialog.showSaveDialog(null, options);
+        const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(null, options);
 
-        if (savePath) {
-            this.worker.exportToPdf(savePath, this.noteTitle, this.quill.root.innerHTML);
+        if (saveDialogReturnValue.filePath) {
+            this.worker.exportToPdf(saveDialogReturnValue.filePath, this.noteTitle, this.quill.root.innerHTML);
         }
     }
 
@@ -304,12 +304,12 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.isBusy = true;
 
         const options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
-        const savePath: string = remote.dialog.showSaveDialog(null, options);
+        const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(null, options);
         const noteExport: NoteExport = new NoteExport(this.noteTitle, this.quill.getText(), JSON.stringify(this.quill.getContents()));
 
         try {
-            if (savePath) {
-                await fs.writeFile(savePath, JSON.stringify(noteExport));
+            if (saveDialogReturnValue.filePath) {
+                await fs.writeFile(saveDialogReturnValue.filePath, JSON.stringify(noteExport));
                 this.snackBar.noteExportedAsync(this.noteTitle);
             }
 

@@ -76,7 +76,10 @@ function createMainWindow() {
             backgroundColor: '#fff',
             frame: windowhasFrame(),
             icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
-            show: false
+            show: false,
+            webPreferences: {
+                nodeIntegration: true
+            }
         });
         globalAny.windowHasFrame = windowhasFrame();
         // Let us register listeners on the window, so we can update the state
@@ -96,7 +99,12 @@ function createMainWindow() {
                 slashes: true
             }));
         }
-        workerWindow = new electron_1.BrowserWindow({ show: false });
+        workerWindow = new electron_1.BrowserWindow({
+            show: false,
+            webPreferences: {
+                nodeIntegration: true
+            }
+        });
         workerWindow.loadURL(url.format({
             pathname: path.join(__dirname, 'dist/worker.html'),
             protocol: 'file:',
@@ -163,6 +171,9 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
         frame: windowHasFrame,
         icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
         show: true,
+        webPreferences: {
+            nodeIntegration: true
+        }
     });
     globalAny.windowHasFrame = windowHasFrame;
     // noteWindow.webContents.openDevTools();

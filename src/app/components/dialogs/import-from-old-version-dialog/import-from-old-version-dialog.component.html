@@ -25,9 +25,9 @@
 <mat-dialog-actions>
     <button mat-raised-button color="primary" (click)=startImport()
         *ngIf="isDirectoryChosen && !isBusy && !isImportFinished">{{ 'Buttons.StartImport' | translate }}</button>
-    <button mat-raised-button color="primary" (click)=selectDirectory()
+    <button mat-raised-button color="primary" (click)=selectDirectoryAsync()
         *ngIf="!isDirectoryChosen && !isBusy && !isImportFinished">{{ 'Buttons.Select' | translate }}</button>
-    <button mat-raised-button (click)=selectDirectory()
+    <button mat-raised-button (click)=selectDirectoryAsync()
         *ngIf="isDirectoryChosen && !isBusy && !isImportFinished">{{ 'Buttons.SelectAgain' | translate }}</button>
     <button *ngIf="!isImportFinished" mat-raised-button [mat-dialog-close]>{{ 'Buttons.Cancel' | translate }}</button>
     <button *ngIf="isImportFinished" color="primary" mat-raised-button
