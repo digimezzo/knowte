@@ -1,8 +1,8 @@
 <div class="window-frame">
     <div class="window-frame-titlebar">
         <div class="window-frame-titlebar-dragarea">
-            <app-notebook-switcher [noteId]="noteId"></app-notebook-switcher>
         </div>
+        <app-notebook-switcher [noteId]="noteId" *ngIf="!appearance.windowHasNativeTitleBar"></app-notebook-switcher>
         <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
     </div>
     <div class="window-frame-overlay" *ngIf="isBusy">
