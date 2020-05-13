@@ -129,16 +129,16 @@ export class Constants {
             licenseUrl: 'https://github.com/mawie81/electron-window-state/blob/master/license'
         },
         {
-            name: 'Font Awesome Free',
-            description: 'The iconic SVG, font, and CSS toolkit.',
-            url: 'https://github.com/FortAwesome/Font-Awesome',
-            licenseUrl: 'https://github.com/FortAwesome/Font-Awesome/blob/master/LICENSE.txt'
-        },
-        {
             name: 'fs-extra',
             description: 'Adds file system methods that aren\'t included in the native fs module and adds promise support to the fs methods.',
             url: 'https://github.com/jprichardson/node-fs-extra',
             licenseUrl: 'https://github.com/jprichardson/node-fs-extra/blob/master/LICENSE'
+        },
+        {
+            name: 'Line Awesome',
+            description: 'Line Awesome is a free alternative for Font Awesome 5.11.2. It consists of ~1380 flat icons that offer complete coverage of the main Font Awesome icon set.',
+            url: 'https://github.com/icons8/line-awesome',
+            licenseUrl: 'https://github.com/icons8/line-awesome/blob/master/LICENSE.md'
         },
         {
             name: 'LokiJS',
