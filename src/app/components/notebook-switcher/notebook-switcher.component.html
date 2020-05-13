@@ -12,8 +12,9 @@
         <button class="menu-button" mat-menu-item>
             <span class="menu-item" (click)="changeNotebook(notebook)"
                 [ngStyle]="{'font-weight':notebook.id === '1' ? 'bold' : 'normal' }">
-                <span class="menu-icon custom-font"
-                    [ngClass]="{'isActive' : notebook.name === selectedNotebookName }">&#xF07C;</span>
+                <span class="menu-icon" [ngClass]="{'isActive' : notebook.name === selectedNotebookName }">
+                    <i class="custom-font las la-folder"></i>
+                </span>
                 <span>{{ notebook.name }}</span>
             </span>
         </button>

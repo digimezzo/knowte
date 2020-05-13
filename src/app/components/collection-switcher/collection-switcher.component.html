@@ -9,7 +9,9 @@
 </div>
 <mat-menu #menu="matMenu">
     <button class="menu-button" mat-menu-item (click)="addCollectionAsync()">
-        <span class="menu-icon custom-font">&#xF067;</span>
+        <span class="menu-icon">
+            <i class="custom-font las la-plus"></i>
+        </span>
         {{ 'CollectionSwitcher.AddCollection' | translate }}
     </button>
     <mat-divider></mat-divider>
@@ -17,15 +19,21 @@
     <div *ngFor="let collection of collections">
         <button class="menu-button" mat-menu-item>
             <span class="menu-item" (click)="activateCollection(collection)">
-                <span class="menu-icon custom-font"
-                    [ngClass]="{'isActive' : collection === activeCollection }">&#xF187;</span>
+                <span class="menu-icon"
+                    [ngClass]="{'isActive' : collection === activeCollection }">
+                    <i class="custom-font las la-box"></i>
+                </span>
                 <span>{{ collection }}</span>
             </span>
             <span class="menu-command-item mr-1">
-                <span class="menu-command-item-icon custom-font mr-2" matTooltip="{{ 'Tooltips.Rename' | translate }}"
-                    (click)="renameCollection(collection)">&#xF304;</span>
-                <span class="menu-command-item-icon custom-font" matTooltip="{{ 'Tooltips.Delete' | translate }}"
-                    (click)="deleteCollectionAsync(collection)">&#xF2ED;</span>
+                <span class="menu-command-item-icon mr-2" matTooltip="{{ 'Tooltips.Rename' | translate }}"
+                    (click)="renameCollection(collection)">
+                    <i class="custom-font lar la-edit"></i>
+                </span>
+                <span class="menu-command-item-icon" matTooltip="{{ 'Tooltips.Delete' | translate }}"
+                    (click)="deleteCollectionAsync(collection)">
+                    <i class="custom-font lar la-trash-alt"></i>
+                </span>
             </span>
         </button>
     </div>
