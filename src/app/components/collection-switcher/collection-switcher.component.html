@@ -2,9 +2,9 @@
     <div class="collection-switcher-active-collection no-select mr-1">
         {{collection.activeCollection}}
     </div>
-    <div class="collection-switcher-button collection-swichter-button custom-font" mat-icon-button [matMenuTriggerFor]="menu"
-    matTooltip="{{ 'Tooltips.ChangeCollection' | translate }}">
-        &#xF142;
+    <div class="collection-switcher-button collection-swichter-button" mat-icon-button
+        [matMenuTriggerFor]="menu" matTooltip="{{ 'Tooltips.ChangeCollection' | translate }}">
+        <i class="custom-font las la-ellipsis-v"></i>
     </div>
 </div>
 <mat-menu #menu="matMenu">

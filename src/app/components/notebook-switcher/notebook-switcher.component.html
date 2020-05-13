@@ -2,9 +2,9 @@
     <div class="notebook-switcher-selected-notebook no-select mr-1">
         {{ selectedNotebookName }}
     </div>
-    <div class="window-button notebook-swichter-button custom-font" mat-icon-button [matMenuTriggerFor]="menu"
+    <div class="window-button notebook-swichter-button" mat-icon-button [matMenuTriggerFor]="menu"
         matTooltip="{{ 'Tooltips.ChangeNotebook' | translate }}" (click)="getNotebooks()">
-        &#xF142;
+        <i class="custom-font las la-ellipsis-v"></i>
     </div>
 </div>
 <mat-menu #menu="matMenu">
