@@ -33,10 +33,12 @@
                     </div>
                     <div class="note-item-actions">
                         <div (click)="toggleNoteMark(note)">
-                            <span class="note-item-actions-heart-marked custom-font"
-                                *ngIf="note.isMarked">&#xF004;</span>
-                            <span class="note-item-actions-heart-unmarked custom-font"
-                                *ngIf="!note.isMarked">&#xF004;</span>
+                            <span class="note-item-actions-heart-marked" *ngIf="note.isMarked">
+                                <i class="custom-font las la-heart"></i>
+                            </span>
+                            <span class="note-item-actions-heart-unmarked" *ngIf="!note.isMarked">
+                                <i class="custom-font lar la-heart"></i>
+                            </span>
                         </div>
                     </div>
                 </div>

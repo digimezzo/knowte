@@ -39,15 +39,21 @@
                         <div class="collection-notebooks-content-list-buttons mr-2">
                             <button class="list-button" mat-mini-fab color="" (click)="renameNotebook()"
                                 matTooltip="{{ 'Tooltips.RenameNotebook' | translate }}" *ngIf="canRenameNotebook">
-                                <span class="edit-item-icon custom-font">&#xF304;</span>
+                                <span class="edit-item-icon">
+                                    <i class="custom-font lar la-edit"></i>
+                                </span>
                             </button>
                             <button class="list-button" mat-mini-fab color="" (click)="deleteNotebooksAsync()"
                                 matTooltip="{{ (selectionWatcher.selectedItemsCount > 1 ? 'Tooltips.DeleteNotebooks' : 'Tooltips.DeleteNotebook') | translate }}" *ngIf="canDeleteNotebooks">
-                                <span class="edit-item-icon custom-font">&#xF2ED;</span>
+                                <span class="edit-item-icon">
+                                    <i class="custom-font lar la-trash-alt"></i>
+                                </span>
                             </button>
                             <button class="list-button" mat-fab (click)="addNotebookAsync()"
                                 matTooltip="{{ 'Tooltips.AddNotebook' | translate }}">
-                                <span class="add-item-icon custom-font">&#xF067;</span>
+                                <span class="add-item-icon">
+                                    <i class="custom-font las la-plus"></i>
+                                </span>
                             </button>
                         </div>
                     </div>
