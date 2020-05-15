@@ -113,7 +113,7 @@ function createMainWindow() {
         workerWindow.on('closed', function () {
             workerWindow = undefined;
         });
-        // mainWindow.webContents.openDevTools();
+        mainWindow.webContents.openDevTools();
         // Emitted when the window is closed.
         mainWindow.on('closed', function () {
             // Dereference the window object, usually you would store window

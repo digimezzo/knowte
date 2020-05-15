@@ -11,7 +11,8 @@
     </div>
     <div class="window-frame-content" [ngStyle]="{'top': appearance.windowHasNativeTitleBar ? '10px' : '32px' }">
         <app-logo-menu class="collection-logo-menu" [selectedMenuItem]="1"></app-logo-menu>
-        <app-collection-switcher class="collection-collection-switcher" *ngIf="appearance.windowHasNativeTitleBar"></app-collection-switcher>
+        <app-collection-switcher class="collection-collection-switcher" *ngIf="appearance.windowHasNativeTitleBar">
+        </app-collection-switcher>
         <div class="collection">
             <!-- Notebooks -->
             <div class="collection-notebooks">
@@ -39,21 +40,16 @@
                         <div class="collection-notebooks-content-list-buttons mr-2">
                             <button class="list-button" mat-mini-fab color="" (click)="renameNotebook()"
                                 matTooltip="{{ 'Tooltips.RenameNotebook' | translate }}" *ngIf="canRenameNotebook">
-                                <span class="edit-item-icon">
-                                    <i class="custom-font lar la-edit"></i>
-                                </span>
+                                <i class="edit-item-icon custom-font lar la-edit"></i>
                             </button>
                             <button class="list-button" mat-mini-fab color="" (click)="deleteNotebooksAsync()"
-                                matTooltip="{{ (selectionWatcher.selectedItemsCount > 1 ? 'Tooltips.DeleteNotebooks' : 'Tooltips.DeleteNotebook') | translate }}" *ngIf="canDeleteNotebooks">
-                                <span class="edit-item-icon">
-                                    <i class="custom-font lar la-trash-alt"></i>
-                                </span>
+                                matTooltip="{{ (selectionWatcher.selectedItemsCount > 1 ? 'Tooltips.DeleteNotebooks' : 'Tooltips.DeleteNotebook') | translate }}"
+                                *ngIf="canDeleteNotebooks">
+                                <i class="edit-item-icon custom-font lar la-trash-alt"></i>
                             </button>
                             <button class="list-button" mat-fab (click)="addNotebookAsync()"
                                 matTooltip="{{ 'Tooltips.AddNotebook' | translate }}">
-                                <span class="add-item-icon">
-                                    <i class="custom-font las la-plus"></i>
-                                </span>
+                                <i class="add-item-icon custom-font las la-plus"></i>
                             </button>
                         </div>
                     </div>
@@ -68,16 +64,17 @@
             <!-- Note buttons -->
             <div class="note-buttons mr-4 mb-2" [@noteButtonsVisibility]="noteButtonsVisibility">
                 <button class="list-button" mat-mini-fab color="" (click)="deleteNotesAsync()"
-                    matTooltip="{{ (selectedNoteIds.length > 1 ? 'Tooltips.DeleteNotes' : 'Tooltips.DeleteNote') | translate }}" *ngIf=canDeleteNotes>
-                    <span class="edit-item-icon custom-font">&#xF2ED;</span>
+                    matTooltip="{{ (selectedNoteIds.length > 1 ? 'Tooltips.DeleteNotes' : 'Tooltips.DeleteNote') | translate }}"
+                    *ngIf=canDeleteNotes>
+                    <i class="edit-item-icon custom-font lar la-trash-alt"></i>
                 </button>
                 <button class="list-button" mat-mini-fab color="" (click)="importNotesAsync()"
                     matTooltip="{{ 'Tooltips.ImportNotes' | translate }}">
-                    <span class="edit-item-icon custom-font">&#xF56F;</span>
+                    <i class="edit-item-icon custom-font las la-file-import"></i>
                 </button>
                 <button class="list-button" mat-fab (click)="addNoteAsync()"
                     matTooltip="{{ 'Tooltips.AddNote' | translate }}">
-                    <span class="add-item-icon custom-font">&#xF067;</span>
+                    <i class="custom-font add-item-icon las la-plus"></i>
                 </button>
             </div>
             <!-- Tabs -->

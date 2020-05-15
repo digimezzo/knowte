@@ -2,16 +2,14 @@
     <div class="collection-switcher-active-collection no-select mr-1">
         {{collection.activeCollection}}
     </div>
-    <div class="collection-switcher-button collection-swichter-button" mat-icon-button
-        [matMenuTriggerFor]="menu" matTooltip="{{ 'Tooltips.ChangeCollection' | translate }}">
+    <div class="collection-switcher-button collection-swichter-button" mat-icon-button [matMenuTriggerFor]="menu"
+        matTooltip="{{ 'Tooltips.ChangeCollection' | translate }}">
         <i class="custom-font las la-ellipsis-v"></i>
     </div>
 </div>
 <mat-menu #menu="matMenu">
     <button class="menu-button" mat-menu-item (click)="addCollectionAsync()">
-        <span class="menu-icon">
-            <i class="custom-font las la-plus"></i>
-        </span>
+        <i class="menu-icon custom-font las la-plus"></i>
         {{ 'CollectionSwitcher.AddCollection' | translate }}
     </button>
     <mat-divider></mat-divider>
@@ -19,8 +17,7 @@
     <div *ngFor="let collection of collections">
         <button class="menu-button" mat-menu-item>
             <span class="menu-item" (click)="activateCollection(collection)">
-                <span class="menu-icon"
-                    [ngClass]="{'isActive' : collection === activeCollection }">
+                <span class="menu-icon" [ngClass]="{'isActive' : collection === activeCollection }">
                     <i class="custom-font las la-box"></i>
                 </span>
                 <span>{{ collection }}</span>
