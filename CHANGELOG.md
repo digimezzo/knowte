@@ -7,11 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.3] - 2020-04-18
+## [2.0.3] - 2020-05-16
 ### Added
 - It is now possible to change the UI font size
 - Added tooltips to the note editor buttons
-- Added a search field to the note windows. It can be displayed by pressing CTRL+F.
 - Added keyboard shortcuts CTRL+1 and CTRL+2 for headings 1 and 2 in notes
 - Added pacman and snap packages
 ### Changed
