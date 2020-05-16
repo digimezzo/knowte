@@ -109,7 +109,7 @@ function createMainWindow(): void {
       workerWindow = undefined;
     });
 
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 
     // Emitted when the window is closed.
     mainWindow.on('closed', () => {
@@ -183,7 +183,7 @@ function createNoteWindow(notePath: string, noteId: string, windowHasFrame: bool
 
   globalAny.windowHasFrame = windowHasFrame;
 
-  noteWindow.webContents.openDevTools();
+  // noteWindow.webContents.openDevTools();
 
   // Let us register listeners on the window, so we can update the state
   // automatically (the listeners will be removed when the window is closed)
