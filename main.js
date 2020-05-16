@@ -113,7 +113,7 @@ function createMainWindow() {
         workerWindow.on('closed', function () {
             workerWindow = undefined;
         });
-        mainWindow.webContents.openDevTools();
+        // mainWindow.webContents.openDevTools();
         // Emitted when the window is closed.
         mainWindow.on('closed', function () {
             // Dereference the window object, usually you would store window
@@ -176,7 +176,7 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
         }
     });
     globalAny.windowHasFrame = windowHasFrame;
-    noteWindow.webContents.openDevTools();
+    // noteWindow.webContents.openDevTools();
     // Let us register listeners on the window, so we can update the state
     // automatically (the listeners will be removed when the window is closed)
     // and restore the maximized or full screen state
