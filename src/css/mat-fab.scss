@@ -1,3 +1,15 @@
 .mat-fab .mat-button-wrapper {
     padding: 0 !important;
+    line-height: unset !important;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.mat-mini-fab .mat-button-wrapper {
+    padding: 0 !important;
+    line-height: unset !important;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
 }

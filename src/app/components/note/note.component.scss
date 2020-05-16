@@ -6,7 +6,7 @@
 }
 
 .ql-container.ql-snow {
-  border: 0px !important
+  border: 0px !important;
 }
 
 .ql-snow.ql-toolbar button:hover .ql-stroke,
@@ -44,35 +44,16 @@
   margin-right: auto !important;
 }
 
-.note-content-floating-button-icon-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .note-content-floating-button-icon {
-  display: block;
   color: white;
-  font-family: la-solid;
-  font-size: 30px;
-}
-
-.note-content-floating-button-icon-visually-centered {
-  @extend .note-content-floating-button-icon;
-  margin: -2px -2px 0 0;
+  font-size: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .note-content-floating-button-icon-action {
-  display: block;
   color: $color-grey-icon;
-  font-family: la-solid;
-  font-size: 22px;
-}
-
-.note-content-floating-button-icon-action-regular {
-  display: block;
-  color: $color-grey-icon;
-  font-family: la-regular;
   font-size: 22px;
 }
 

@@ -93,13 +93,11 @@
 
 .note-item-actions-heart-marked {
   @extend .color-primary;
-  font-family: la-solid !important;
   font-size: 22px;
 }
 
 .note-item-actions-heart-unmarked {
   color: $color-grey;
-  font-family: la-regular !important;
   font-size: 22px;
 }
 
