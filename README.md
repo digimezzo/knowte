@@ -45,6 +45,6 @@ The pacman package contains a dependency to package libappindicator-sharp, which
 
 **snap**
 
-A snap package that is installed manually (not via the snap store) doesn't have a signature. To install the snap package, it is necessary to provide the "--dangerous" parameter, to ignore the signature check (replace x.y.z with the correct version number):
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/knowte)
 
 `$ snap install --dangerous Knowte_x.y.z_amd64.snap`
