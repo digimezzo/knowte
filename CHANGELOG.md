@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.4] - 2020-05-17
+### Added
+### Changed
+### Removed
+### Fixed
+- Small UI glitch in upper right corner of Settings and Information screens when using native titlebar
+
 ## [2.0.3] - 2020-05-16
 ### Added
 - It is now possible to change the UI font size
