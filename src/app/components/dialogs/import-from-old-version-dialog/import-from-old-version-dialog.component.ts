@@ -22,10 +22,10 @@ export class ImportFromOldVersionDialogComponent implements OnInit {
     }
 
     public async selectDirectoryAsync(): Promise<void> {
-        const openDialogReturnValue: OpenDialogReturnValue = await remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
+        const openDialoReturnValue: OpenDialogReturnValue = await remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
 
-        if (openDialogReturnValue.filePaths && openDialogReturnValue.filePaths.length > 0) {
-            this.selectedDirectory = openDialogReturnValue.filePaths[0];
+        if (openDialoReturnValue.filePaths && openDialoReturnValue.filePaths.length > 0) {
+            this.selectedDirectory = openDialoReturnValue.filePaths[0];
             this.isDirectoryChosen = true;
         }
     }

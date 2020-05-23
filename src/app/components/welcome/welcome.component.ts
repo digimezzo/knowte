@@ -40,7 +40,7 @@ export class WelcomeComponent implements OnInit {
         const openDialogReturnValue: OpenDialogReturnValue =
             await remote.dialog.showOpenDialog({ title: selectFolderText, properties: ['openDirectory'] });
 
-        if (!openDialogReturnValue.filePaths || openDialogReturnValue.filePaths.length === 0) {
+        if (openDialogReturnValue.filePaths === undefined) {
             this.logger.warn('No folder was selected', 'WelcomeComponent', 'openDirectoryChooserAsync');
             return;
         }
