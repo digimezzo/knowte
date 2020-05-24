@@ -10,7 +10,7 @@ import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
-import * as Quill from 'quill';
+import Quill from 'quill';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { Utils } from '../../core/utils';
@@ -25,6 +25,7 @@ import { WorkerManager } from '../../core/worker-manager';
 import { Settings } from '../../core/settings';
 import { AppearanceService } from '../../services/appearance/appearance.service';
 import * as electronLocalshortcut from 'electron-localshortcut';
+import ImageResize from 'quill-image-resize';
 
 @Component({
     selector: 'app-note',
@@ -96,9 +97,12 @@ export class NoteComponent implements OnInit, OnDestroy {
             ]
         ];
 
+        Quill.register('modules/imageResize', ImageResize);
+
         this.quill = new Quill('#editor', {
             modules: {
-                toolbar: toolbarOptions
+                toolbar: toolbarOptions,
+                imageResize: {}
             },
             placeholder: notePlaceHolder,
             theme: 'snow',
@@ -394,8 +398,8 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.copyContextMenuItem.enabled = hasSelectedText;
         this.deleteContextMenuItem.enabled = hasSelectedText;
 
-        // Paste (checking for text on the clipboard also retruns true for images)
-        this.pasteContextMenuItem.enabled = this.clipboard.containsText();
+        // Paste
+        this.pasteContextMenuItem.enabled = this.clipboard.containsText() || this.clipboard.containsImage();
     }
 
     private performCut(): void {

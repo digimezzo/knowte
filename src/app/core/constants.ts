@@ -171,6 +171,12 @@ export class Constants {
             licenseUrl: 'https://github.com/quilljs/quill/blob/develop/LICENSE'
         },
         {
+            name: 'Quill ImageResize Module',
+            description: 'A module for Quill rich text editor to allow images to be resized.',
+            url: 'https://github.com/Etoile984816138/quill-image-resize-module',
+            licenseUrl: 'https://github.com/Etoile984816138/quill-image-resize-module/blob/master/LICENSE'
+        },
+        {
             name: 'sanitize-filename',
             description: 'Sanitize a string to be safe for use as a filename by removing directory paths and invalid characters.',
             url: 'https://github.com/parshap/node-sanitize-filename',
