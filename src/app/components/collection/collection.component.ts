@@ -22,8 +22,6 @@ import { SelectionWatcher } from '../../core/selection-watcher';
 import { Logger } from '../../core/logger';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { AppearanceService } from '../../services/appearance/appearance.service';
-import { UpdateService } from '../../services/update/update.service';
-import { ProductDetails } from '../../core/product-details';
 
 @Component({
   selector: 'app-collection',
@@ -49,10 +47,10 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
   constructor(private dialog: MatDialog, private collection: CollectionService, private file: FileService,
     private translator: TranslatorService, private snackBar: SnackBarService, public appearance: AppearanceService,
-    private update: UpdateService, private zone: NgZone, private logger: Logger, private productDetails: ProductDetails) {
+    private zone: NgZone, private logger: Logger) {
   }
 
-  public applicationName: string = this.productDetails.name;
+  public applicationName: string = Constants.applicationName;
   public notebooksCount: number = 0;
   public allNotesCount: number = 0;
   public todayNotesCount: number = 0;
@@ -104,9 +102,6 @@ export class CollectionComponent implements OnInit, OnDestroy {
     // Get notebooks
     await this.getNotebooksAsync();
 
-    // Check for updates (don't await)
-    this.update.checkForUpdatesAsync();
-
     // Subscriptions
     this.subscription = this.collection.notebookEdited$.subscribe(async () => await this.getNotebooksAsync());
     this.subscription.add(this.collection.notebookDeleted$.subscribe(async () => await this.getNotebooksAndResetSelectionAsync()));
@@ -152,8 +147,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.zone.run(() => {
       this.canRenameNotebook = this.selectionWatcher.selectedItemsCount === 1 && !this.selectionWatcher.selectedItems[0].isDefault;
       this.canDeleteNotebooks = this.selectionWatcher.selectedItemsCount > 1 ||
-        (this.selectionWatcher.selectedItemsCount === 1 &&
-          !this.selectionWatcher.selectedItems[0].isDefault);
+      (this.selectionWatcher.selectedItemsCount === 1 &&
+        !this.selectionWatcher.selectedItems[0].isDefault);
     });
   }
 
@@ -296,7 +291,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   public async importNotesAsync(): Promise<void> {
     const openDialoReturnValue: OpenDialogReturnValue = await remote.dialog.showOpenDialog({
       filters: [
-        { name: this.productDetails.name, extensions: [Constants.noteExportExtension.replace('.', '')] },
+        { name: Constants.applicationName, extensions: [Constants.noteExportExtension.replace('.', '')] },
         { name: await this.translator.getAsync('DialogTexts.AllFiles'), extensions: ['*'] }
       ],
       properties: ['openFile', 'multiSelections']

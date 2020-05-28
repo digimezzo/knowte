@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { Logger } from '../../core/logger';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { AppearanceService } from '../../services/appearance/appearance.service';
-import { ProductDetails } from '../../core/product-details';
 
 @Component({
     selector: 'app-welcome-page',
@@ -24,11 +23,10 @@ export class WelcomeComponent implements OnInit {
         private dialog: MatDialog,
         private zone: NgZone,
         public router: Router,
-        private logger: Logger,
-        private productDetails: ProductDetails) {
+        private logger: Logger) {
     }
 
-    public applicationName: string = this.productDetails.name.toUpperCase();
+    public applicationName: string = Constants.applicationName.toUpperCase();
     public isBusy: boolean = false;
 
     public ngOnInit(): void {

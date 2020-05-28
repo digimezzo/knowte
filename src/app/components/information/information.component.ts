@@ -3,7 +3,6 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { Constants } from '../../core/constants';
 import { LicenseDialogComponent } from '../dialogs/license-dialog/license-dialog.component';
 import { AppearanceService } from '../../services/appearance/appearance.service';
-import { ProductDetails } from '../../core/product-details';
 
 @Component({
   selector: 'app-information',
@@ -12,11 +11,11 @@ import { ProductDetails } from '../../core/product-details';
   encapsulation: ViewEncapsulation.None
 })
 export class InformationComponent implements OnInit {
-  constructor(private dialog: MatDialog, public appearance: AppearanceService, private productDetails: ProductDetails) {
+  constructor(private dialog: MatDialog, public appearance: AppearanceService) {
   }
 
-  public applicationVersion: string = this.productDetails.version;
-  public applicationCopyright: string = this.productDetails.copyright;
+  public applicationVersion: string = Constants.applicationVersion;
+  public applicationCopyright: string = Constants.applicationCopyright;
   public websiteUrl: string = Constants.websiteUrl;
   public twitterUrl: string = Constants.twitterUrl;
   public githubUrl: string = Constants.githubUrl;
