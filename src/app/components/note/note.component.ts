@@ -26,6 +26,7 @@ import { Settings } from '../../core/settings';
 import { AppearanceService } from '../../services/appearance/appearance.service';
 import * as electronLocalshortcut from 'electron-localshortcut';
 import ImageResize from 'quill-image-resize';
+import { ProductDetails } from '../../core/product-details';
 
 @Component({
     selector: 'app-note',
@@ -62,7 +63,8 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
         private snackBar: SnackBarService, private translator: TranslatorService, private settings: Settings,
-        public appearance: AppearanceService, private clipboard: ClipboardManager, private worker: WorkerManager) {
+        public appearance: AppearanceService, private clipboard: ClipboardManager, private worker: WorkerManager,
+        private productDetails: ProductDetails) {
     }
 
     public noteId: string;
@@ -549,7 +551,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private setWindowTitle(noteTitle: string): void {
         const window: BrowserWindow = remote.getCurrentWindow();
-        window.setTitle(`${Constants.applicationName} - ${noteTitle}`);
+        window.setTitle(`${this.productDetails.name} - ${noteTitle}`);
     }
 
     private noteMarkChangedHandler(noteId: string, isMarked: boolean): void {

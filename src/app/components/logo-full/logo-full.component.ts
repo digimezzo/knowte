@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { Constants } from '../../core/constants';
+import { ProductDetails } from '../../core/product-details';
 
 @Component({
   selector: 'app-logo-full',
@@ -9,11 +10,11 @@ import { Constants } from '../../core/constants';
   encapsulation: ViewEncapsulation.None
 })
 export class LogoFullComponent implements OnInit {
-  constructor() {
+  constructor(private productDetails: ProductDetails) {
   }
 
   @Input() public textColor: string;
-  public applicationName: string = Constants.applicationName.toUpperCase();
+  public applicationName: string = this.productDetails.name.toUpperCase();
 
   public ngOnInit(): void {
   }

@@ -45,7 +45,9 @@
         "Language": "Language",
         "Color": "Color",
         "TitleBar": "Title bar",
-        "UseCustomTitleBar": "Use custom title bar (Requires a restart)"
+        "UseCustomTitleBar": "Use custom title bar (Requires a restart)",
+        "Updates": "Updates",
+        "CheckForUpdates": "Check for updates"
     },
     "ComponentsPage": {
         "Components": "Components"
@@ -172,7 +174,8 @@
         "NotesMovedToNotebook": "The notes were moved to '{{notebookName}}'",
         "NotesImportedIntoNotebook": "Notes were imported into notebook '{{notebookName}}'",
         "NotesImported": "Notes were imported",
-        "NoNoteFilesToImport": "There were no note files to import"
+        "NoNoteFilesToImport": "There were no note files to import",
+        "NewVersionAvailable": "A new version is available: {{version}}"
     },
     "SnackBarActions": {
         "Ok": "OK"

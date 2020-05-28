@@ -12,43 +12,43 @@ export class SnackBarService {
     public async duplicateCollectionAsync(collection: string): Promise<void> {
         const message: string = await this.translator.getAsync('SnackBarMessages.DuplicateCollection', { collection: collection });
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');
-        this.showActionSnackBar(message, action);
+        this.showActionSnackBar(message, action, false);
     }
 
     public async duplicateNotebookAsync(notebookName: string): Promise<void> {
         const message: string = await this.translator.getAsync('SnackBarMessages.DuplicateNotebook', { notebookName: notebookName });
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');
-        this.showActionSnackBar(message, action);
+        this.showActionSnackBar(message, action, false);
     }
 
     public async noteTitleCannotBeEmptyAsync(): Promise<void> {
         const message: string = await this.translator.getAsync('SnackBarMessages.NoteTitleCannotBeEmpty');
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');
-        this.showActionSnackBar(message, action);
+        this.showActionSnackBar(message, action, false);
     }
 
     public async closeNoteBeforeChangingCollectionsAsync(): Promise<void> {
         const message: string = await this.translator.getAsync('SnackBarMessages.CloseNoteBeforeChangingCollections');
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');
-        this.showActionSnackBar(message, action);
+        this.showActionSnackBar(message, action, false);
     }
 
     public async noteExportedAsync(noteTitle: string): Promise<void> {
         const message: string = await this.translator.getAsync('SnackBarMessages.NoteExported', { noteTitle: noteTitle });
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');
-        this.showActionSnackBar(message, action);
+        this.showActionSnackBar(message, action, false);
     }
 
     public async noteMovedToNotebookAsync(notebookName: string): Promise<void> {
         const message: string = await this.translator.getAsync('SnackBarMessages.NoteMovedToNotebook', { notebookName: notebookName });
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');
-        this.showActionSnackBar(message, action);
+        this.showActionSnackBar(message, action, false);
     }
 
     public async notesMovedToNotebookAsync(notebookName: string): Promise<void> {
         const message: string = await this.translator.getAsync('SnackBarMessages.NotesMovedToNotebook', { notebookName: notebookName });
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');
-        this.showActionSnackBar(message, action);
+        this.showActionSnackBar(message, action, false);
     }
 
     public async notesImportedIntoNotebookAsync(notebookName: string): Promise<void> {
@@ -56,19 +56,25 @@ export class SnackBarService {
             'SnackBarMessages.NotesImportedIntoNotebook',
             { notebookName: notebookName });
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');
-        this.showActionSnackBar(message, action);
+        this.showActionSnackBar(message, action, false);
     }
 
     public async notesImportedAsync(): Promise<void> {
         const message: string = await this.translator.getAsync('SnackBarMessages.NotesImported');
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');
-        this.showActionSnackBar(message, action);
+        this.showActionSnackBar(message, action, false);
     }
 
     public async noNoteFilesToImportAsync(): Promise<void> {
         const message: string = await this.translator.getAsync('SnackBarMessages.NoNoteFilesToImport');
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');
-        this.showActionSnackBar(message, action);
+        this.showActionSnackBar(message, action, false);
+    }
+
+    public async notifyOfNewVersionAsync(version: string): Promise<void> {
+        const message: string = await this.translator.getAsync('SnackBarMessages.NewVersionAvailable', { version: version });
+        const action: string = await this.translator.getAsync('SnackBarActions.Ok');
+        this.showActionSnackBar(message, action, true);
     }
 
     private showActionLessSnackBar(message: string): void {
@@ -77,9 +83,15 @@ export class SnackBarService {
         });
     }
 
-    private showActionSnackBar(message: string, action: string): void {
+    private showActionSnackBar(message: string, action: string, keepOpen: boolean): void {
         this.zone.run(() => {
-            this.matSnackBar.open(message, action, { duration: this.calculateDuration(message) });
+            let config: any = { duration: this.calculateDuration(message) };
+
+            if (keepOpen) {
+                config = {};
+            }
+
+            this.matSnackBar.open(message, action, config);
         });
     }
 

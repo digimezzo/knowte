@@ -45,7 +45,9 @@
         "Language": "Taal",
         "Color": "Kleur",
         "TitleBar": "Titelbalk",
-        "UseCustomTitleBar": "Gebruik aangepaste titelbalk (Vereist een herstart)"
+        "UseCustomTitleBar": "Gebruik aangepaste titelbalk (Vereist een herstart)",
+        "Updates": "Updates",
+        "CheckForUpdates": "Controleer op updates"
     },
     "ComponentsPage": {
         "Components": "Componenten"
@@ -172,7 +174,8 @@
         "NotesMovedToNotebook": "De notities werden verplaatst naar '{{notebookName}}'",
         "NotesImportedIntoNotebook": "Notities zijn geïmporteerd in notitieboek '{{notebookName}}'",
         "NotesImported": "Notities zijn geïmporteerd",
-        "NoNoteFilesToImport": "Er waren geen notitiebestanden om te importeren"
+        "NoNoteFilesToImport": "Er waren geen notitiebestanden om te importeren",
+        "NewVersionAvailable": "Er is een nieuwe versie beschikbaar: {{version}}"
     },
     "SnackBarActions": {
         "Ok": "OK"
