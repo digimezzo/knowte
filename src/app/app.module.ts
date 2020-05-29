@@ -64,7 +64,6 @@ import { ClipboardManager } from './core/clipboard-manager';
 import { WorkerManager } from './core/worker-manager';
 import { UpdateService } from './services/update/update.service';
 import { GitHubApi } from './core/github-api';
-import { ProductDetails } from './core/product-details';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -140,7 +139,6 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     ClipboardManager,
     WorkerManager,
     GitHubApi,
-    ProductDetails,
     DataStore,
     {
       provide: ErrorHandler,
