@@ -7,12 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.4] - 2020-05-17
+## [2.0.4] - 2020-05-29
 ### Added
 ### Changed
 ### Removed
 ### Fixed
-- Small UI glitch in upper right corner of Settings and Information screens when using native titlebar
+- Fixed a small UI glitch in upper right corner of Settings and Information screens when using native titlebar
+- Fixed a crash that happens when pressing Cancel on the folder selection dialog on the Welcome screen
 
 ## [2.0.3] - 2020-05-16
 ### Added
