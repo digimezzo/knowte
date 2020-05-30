@@ -401,8 +401,8 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.copyContextMenuItem.enabled = hasSelectedText;
         this.deleteContextMenuItem.enabled = hasSelectedText;
 
-        // Paste (checking for text on the clipboard also retruns true for images)
-        this.pasteContextMenuItem.enabled = this.clipboard.containsText();
+        // Paste
+        this.pasteContextMenuItem.enabled = this.clipboard.containsText() || this.clipboard.containsImage();
     }
 
     private performCut(): void {
