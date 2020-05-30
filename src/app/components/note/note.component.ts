@@ -10,7 +10,6 @@ import { Operation } from '../../core/enums';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
-import * as Quill from 'quill';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { Utils } from '../../core/utils';
@@ -25,6 +24,9 @@ import { WorkerManager } from '../../core/worker-manager';
 import { Settings } from '../../core/settings';
 import { AppearanceService } from '../../services/appearance/appearance.service';
 import * as electronLocalshortcut from 'electron-localshortcut';
+import Quill from 'quill';
+import BlotFormatter from 'quill-blot-formatter';
+import { CustomImageSpec } from './custom-image-spec';
 
 @Component({
     selector: 'app-note',
@@ -96,9 +98,14 @@ export class NoteComponent implements OnInit, OnDestroy {
             ]
         ];
 
+        Quill.register('modules/blotFormatter', BlotFormatter);
+
         this.quill = new Quill('#editor', {
             modules: {
-                toolbar: toolbarOptions
+                toolbar: toolbarOptions,
+                blotFormatter: {
+                    specs: [CustomImageSpec]
+                }
             },
             placeholder: notePlaceHolder,
             theme: 'snow',

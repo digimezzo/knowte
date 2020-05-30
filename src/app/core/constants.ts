@@ -171,6 +171,12 @@ export class Constants {
             licenseUrl: 'https://github.com/quilljs/quill/blob/develop/LICENSE'
         },
         {
+            name: 'Quill Blot Formatter',
+            description: 'A quill module to format document blots.',
+            url: 'https://github.com/Fandom-OSS/quill-blot-formatter',
+            licenseUrl: 'https://github.com/Fandom-OSS/quill-blot-formatter/blob/master/LICENSE'
+        },
+        {
             name: 'sanitize-filename',
             description: 'Sanitize a string to be safe for use as a filename by removing directory paths and invalid characters.',
             url: 'https://github.com/parshap/node-sanitize-filename',

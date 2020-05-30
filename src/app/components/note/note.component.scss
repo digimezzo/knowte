@@ -89,7 +89,7 @@
   height: 100%;
   width: 100%;
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .ql-toolbar.ql-snow {
@@ -207,4 +207,23 @@
   --editor-p-font-size: 24px;
   --editor-h1-font-size: 41px;
   --editor-h2-font-size: 34px;
+}
+
+// Disables image align in Quill Blot Formatter. It causes formatting Quill issues.
+.blot-formatter__toolbar-button { 
+  display: none !important; 
+}
+
+// Disables dragging of the Quill Blot Formatter overlay container and, in turn, 
+// avoids this issue: github.com/Fandom-OSS/quill-blot-formatter/issues/17
+.blot-formatter__overlay { 
+  user-select: none !important; 
+}
+
+// Fixes cursor being "text" instead of "default" when interacting with the Quill scroll bar
+.ql-editor { 
+  cursor:default; 
+}
+.ql-editor * { 
+  cursor:text; 
 }
