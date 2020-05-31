@@ -20,7 +20,6 @@ var windowStateKeeper = require("electron-window-state");
 var fs = require("fs-extra");
 var Store = require("electron-store");
 var os = require("os");
-electron_1.app.commandLine.appendSwitch('disable-color-correct-rendering');
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
