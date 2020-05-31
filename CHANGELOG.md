@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.4] - 2020-05-30
 ### Added
 - Added image resizing in the notes
+- Added an update checker
 ### Changed
 ### Removed
 ### Fixed

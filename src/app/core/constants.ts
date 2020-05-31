@@ -10,7 +10,7 @@ export class Constants {
     public static readonly websiteUrl: string = 'https://www.digimezzo.com';
     public static readonly twitterUrl: string = 'https://twitter.com/digimezzo';
     public static readonly githubUrl: string = 'https://github.com/digimezzo';
-    public static readonly collectionsDirectory: string = `${Constants.applicationName} collections`;
+    public static readonly collectionsDirectory: string = 'Knowte collections';
     public static readonly noteContentExtension: string = '.content';
     public static readonly noteStateExtension: string = '.state';
     public static readonly noteExportExtension: string = '.knowte';

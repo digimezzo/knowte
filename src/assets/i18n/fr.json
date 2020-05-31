@@ -45,7 +45,9 @@
         "Language": "Langue",
         "Color": "Couleur",
         "TitleBar": "Barre de titre",
-        "UseCustomTitleBar": "Utiliser barre de titre personnalisée (Nécessite un redémarrage)"
+        "UseCustomTitleBar": "Utiliser barre de titre personnalisée (Nécessite un redémarrage)",
+        "Updates": "Mises à jour",
+        "CheckForUpdates": "Vérifier les mises à jour"
     },
     "ComponentsPage": {
         "Components": "Composants"
@@ -172,7 +174,8 @@
         "NotesMovedToNotebook": "Les notes ont été déplacées vers '{{notebookName}}'",
         "NotesImportedIntoNotebook": "Les notes ont été importées dans le bloc-notes '{{notebookName}}'",
         "NotesImported": "Les notes ont été importées",
-        "NoNoteFilesToImport": "Il n'y avait aucun fichier de note à importer"
+        "NoNoteFilesToImport": "Il n'y avait aucun fichier de note à importer",
+        "NewVersionAvailable": "Une nouvelle version est disponible: {{version}}"
     },
     "SnackBarActions": {
         "Ok": "OK"

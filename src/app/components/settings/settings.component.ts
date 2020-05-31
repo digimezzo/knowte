@@ -47,6 +47,13 @@ export class SettingsComponent implements OnInit {
     this.settings.useCustomTitleBar = v;
   }
 
+  public get checkForUpdatesChecked(): boolean {
+    return this.settings.checkForUpdates;
+  }
+  public set checkForUpdatesChecked(v: boolean) {
+    this.settings.checkForUpdates = v;
+  }
+
   public ngOnInit(): void {
   }
 
