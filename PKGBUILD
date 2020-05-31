@@ -1,7 +1,7 @@
 # Maintainer: Digimezzo <raphael@digimezzo.com>
 _pkgname=Knowte
 pkgname=knowte
-pkgver=2.0.3
+pkgver=2.0.4
 pkgrel=1
 pkgdesc="Knowte is a note taking application that allows you to quickly and easily organize and find your notes."
 arch=('x86_64')
