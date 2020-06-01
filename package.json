@@ -72,7 +72,7 @@
     "@types/node": "10.12.18",
     "codelyzer": "4.5.0",
     "core-js": "2.6.1",
-    "electron": "8.2.5",
+    "electron": "8.3.0",
     "electron-builder": "22.5.1",
     "electron-reload": "1.4.0",
     "jasmine-core": "3.4.0",
