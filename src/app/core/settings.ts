@@ -38,7 +38,7 @@ export class Settings {
         this.settings.set('checkForUpdates', v);
     }
 
-    // Native custom bar
+    // Use custom title bar
     public get useCustomTitleBar(): boolean {
         return this.settings.get('useCustomTitleBar');
     }
