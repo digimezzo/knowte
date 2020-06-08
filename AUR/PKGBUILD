@@ -16,7 +16,7 @@ backup=()
 options=(!strip)
 source=("${_pkgname}-${pkgver}.AppImage::https://github.com/digimezzo/${pkgname}/releases/download/v${pkgver//_/-}/${_pkgname}-${pkgver}.AppImage"
 	"${pkgname}.desktop")
-sha256sums=('TODO'
+sha256sums=('defe6c3e998a609b422fd22242d80061d79ee64c87fd53930be6b220b7b7205b'
 		'4ff45197aaeed0b6c6bbc7362e6031a54ccf523a06ccd4ffabd0f334777d5321')
 
 prepare() {

@@ -16,7 +16,7 @@ import { NoteOperationResult } from '../../services/results/note-operation-resul
 import { Note } from '../../data/entities/note';
 import { trigger, style, animate, state, transition } from '@angular/animations';
 import { debounceTime } from 'rxjs/internal/operators';
-import { remote, OpenDialogReturnValue } from 'electron';
+import { remote } from 'electron';
 import { FileService } from '../../services/file/file.service';
 import { SelectionWatcher } from '../../core/selection-watcher';
 import { Logger } from '../../core/logger';
@@ -294,7 +294,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   }
 
   public async importNotesAsync(): Promise<void> {
-    const openDialoReturnValue: OpenDialogReturnValue = await remote.dialog.showOpenDialog({
+    const filePaths: string[] = remote.dialog.showOpenDialog({
       filters: [
         { name: this.productDetails.name, extensions: [Constants.noteExportExtension.replace('.', '')] },
         { name: await this.translator.getAsync('DialogTexts.AllFiles'), extensions: ['*'] }
@@ -302,8 +302,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
       properties: ['openFile', 'multiSelections']
     });
 
-    if (openDialoReturnValue.filePaths) {
-      await this.importNoteFilesAsync(openDialoReturnValue.filePaths, this.activeNotebook);
+    if (filePaths) {
+      await this.importNoteFilesAsync(filePaths, this.activeNotebook);
     }
   }
 

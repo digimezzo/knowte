@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.4] - 2020-05-30
+## [2.0.4] - 2020-06-08
 ### Added
 - Added image resizing in the notes
 - Added an update checker
@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed a small UI glitch in upper right corner of Settings and Information screens when using native titlebar
 - Fixed a crash that happens when pressing Cancel on the folder selection dialog on the Welcome screen
+- Fixed colors not being rendered correctly in Linux
 
 ## [2.0.3] - 2020-05-16
 ### Added

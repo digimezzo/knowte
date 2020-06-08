@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { remote, OpenDialogReturnValue } from 'electron';
+import { remote } from 'electron';
 import { CollectionService } from '../../../services/collection/collection.service';
 
 @Component({
@@ -21,11 +21,11 @@ export class ImportFromOldVersionDialogComponent implements OnInit {
     public ngOnInit(): void {
     }
 
-    public async selectDirectoryAsync(): Promise<void> {
-        const openDialogReturnValue: OpenDialogReturnValue = await remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
+    public selectDirectory(): void {
+        const filepaths: string[] = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
 
-        if (openDialogReturnValue.filePaths && openDialogReturnValue.filePaths.length > 0) {
-            this.selectedDirectory = openDialogReturnValue.filePaths[0];
+        if (filepaths && filepaths.length > 0) {
+            this.selectedDirectory = filepaths[0];
             this.isDirectoryChosen = true;
         }
     }
