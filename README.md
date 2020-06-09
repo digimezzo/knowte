@@ -1,4 +1,4 @@
-![Knowte](Knowte-logo.full.png)
+![Knowte](Knowte.logo.full.png)
 
 # Knowte
 
