@@ -20,7 +20,7 @@ export class WorkerManager {
         };
 
         this.sendCommandToWorker('printPDF', content);
-        this.logger.info('EXPOTR PDF:' + pdfFileName , '', '');
+        this.logger.info('EXPORT PDF:' + pdfFileName , '', '');
     }
 
     private sendCommandToWorker(command: string, content: any): void {
