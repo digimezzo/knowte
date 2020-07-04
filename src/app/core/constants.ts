@@ -54,6 +54,7 @@ export class Constants {
     public static readonly languages: Language[] = [
         { code: 'en', englishName: 'English', localizedName: 'English' },
         { code: 'fr', englishName: 'French', localizedName: 'Français' },
+        { code: 'jp', englishName: 'Japanese', localizedName: '日本語' },
         { code: 'nl', englishName: 'Dutch', localizedName: 'Nederlands' }
     ];
 
