@@ -148,7 +148,7 @@
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "ディレクトリ '{{storageDirectory}}' にメモを保存することができません。項目を作成するための権限がない可能性があります。詳細はログを確認してください。",
-        "GlobalError": "アプリケーションが終了する原因となるエラーが発生しました。詳細はログを確認してください。",
+        "GlobalError": "エラーが発生したため、アプリケーションを終了します。詳細はログを確認してください。",
         "AddCollectionError": "コレクション '{{collection}}' の追加中にエラーが発生しました。詳細はログを確認してください。",
         "AddNotebookError": "メモ帳 '{{notebookName}}' の追加中にエラーが発生しました。詳細はログを確認してください。",
         "RenameNoteError": "メモ '{{noteTitle}} の名前の変更中にエラーが発生しました。詳細はログを確認してください。",
