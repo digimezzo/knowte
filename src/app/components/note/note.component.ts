@@ -1,33 +1,33 @@
-import { Component, OnInit, OnDestroy, HostListener, NgZone, ViewEncapsulation } from '@angular/core';
-import { remote, BrowserWindow, SaveDialogOptions } from 'electron';
-import { ActivatedRoute } from '@angular/router';
-import { NoteDetailsResult } from '../../services/results/note-details-result';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Component, HostListener, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { Constants } from '../../core/constants';
-import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/internal/operators';
-import { Operation } from '../../core/enums';
-import { NoteOperationResult } from '../../services/results/note-operation-result';
-import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
-import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
-import * as path from 'path';
-import * as fs from 'fs-extra';
-import { Utils } from '../../core/utils';
-import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
-import { NoteExport } from '../../core/note-export';
-import { trigger, state, style, transition, animate } from '@angular/animations';
-import { TasksCount } from '../../core/tasks-count';
-import { Logger } from '../../core/logger';
-import { TranslatorService } from '../../services/translator/translator.service';
-import { ClipboardManager } from '../../core/clipboard-manager';
-import { WorkerManager } from '../../core/worker-manager';
-import { Settings } from '../../core/settings';
-import { AppearanceService } from '../../services/appearance/appearance.service';
+import { ActivatedRoute } from '@angular/router';
+import { BrowserWindow, remote, SaveDialogOptions } from 'electron';
 import * as electronLocalshortcut from 'electron-localshortcut';
+import * as fs from 'fs-extra';
+import * as path from 'path';
 import Quill from 'quill';
 import BlotFormatter from 'quill-blot-formatter';
-import { CustomImageSpec } from './custom-image-spec';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/internal/operators';
+import { ClipboardManager } from '../../core/clipboard-manager';
+import { Constants } from '../../core/constants';
+import { Operation } from '../../core/enums';
+import { Logger } from '../../core/logger';
+import { NoteExport } from '../../core/note-export';
 import { ProductDetails } from '../../core/product-details';
+import { Settings } from '../../core/settings';
+import { TasksCount } from '../../core/tasks-count';
+import { Utils } from '../../core/utils';
+import { WorkerManager } from '../../core/worker-manager';
+import { AppearanceService } from '../../services/appearance/appearance.service';
+import { NoteDetailsResult } from '../../services/results/note-details-result';
+import { NoteOperationResult } from '../../services/results/note-operation-result';
+import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
+import { TranslatorService } from '../../services/translator/translator.service';
+import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
+import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
+import { CustomImageSpec } from './custom-image-spec';
 
 @Component({
     selector: 'app-note',
@@ -313,7 +313,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.isBusy = true;
 
         const options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
-        const filename: string  = remote.dialog.showSaveDialog(null, options);
+        const filename: string = remote.dialog.showSaveDialog(null, options);
         const noteExport: NoteExport = new NoteExport(this.noteTitle, this.quill.getText(), JSON.stringify(this.quill.getContents()));
 
         try {
@@ -696,13 +696,21 @@ export class NoteComponent implements OnInit, OnDestroy {
         try {
             const activeCollection: string = this.settings.activeCollection;
             const storageDirectory: string = this.settings.storageDirectory;
-            const noteContent: string = fs.readFileSync(
-                path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${this.noteId}${Constants.noteContentExtension}`),
-                'utf8');
+            const activeCollectionDirectory: string = Utils.collectionToPath(storageDirectory, activeCollection);
+            const noteContentFileName: string = `${this.noteId}${Constants.noteContentExtension}`;
+            const noteContentFileFullPath: string = path.join(activeCollectionDirectory, noteContentFileName);
+
+            const noteContent: string = await fs.readFile(noteContentFileFullPath, 'utf8');
 
             if (noteContent) {
                 // We can only parse to json if there is content
+                this.logger.info(`Setting the content for the note with id='${this.noteId}'`, 'NoteComponent', 'getNoteDetailsAsync');
                 this.quill.setContents(JSON.parse(noteContent), 'silent');
+            } else {
+                this.logger.error(
+                    `Could not get the content for the note with id='${this.noteId}'`,
+                    'NoteComponent',
+                    'getNoteDetailsAsync');
             }
         } catch (error) {
             this.logger.error(

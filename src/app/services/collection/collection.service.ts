@@ -1,30 +1,29 @@
 import { Injectable } from '@angular/core';
-import { Constants } from '../../core/constants';
-import * as path from 'path';
+import { BrowserWindow, ipcRenderer, remote } from 'electron';
 import * as fs from 'fs-extra';
-import { Subject, Observable } from 'rxjs';
-import { Utils } from '../../core/utils';
-import { Notebook } from '../../data/entities/notebook';
-import { remote, BrowserWindow } from 'electron';
-import { Note } from '../../data/entities/note';
 import * as moment from 'moment';
-import { Moment, Duration } from 'moment';
-import { NoteDateFormatResult } from '../results/note-date-format-result';
+import { Duration, Moment } from 'moment';
+import * as path from 'path';
+import { Observable, Subject } from 'rxjs';
+import sanitize from 'sanitize-filename';
+import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
+import { Logger } from '../../core/logger';
+import { NoteExport } from '../../core/note-export';
+import { Settings } from '../../core/settings';
+import { TasksCount } from '../../core/tasks-count';
+import { Utils } from '../../core/utils';
+import { DataStore } from '../../data/data-store';
+import { Note } from '../../data/entities/note';
+import { Notebook } from '../../data/entities/notebook';
+import { AppearanceService } from '../appearance/appearance.service';
+import { NoteDateFormatResult } from '../results/note-date-format-result';
+import { NoteDetailsResult } from '../results/note-details-result';
+import { NoteMarkResult } from '../results/note-mark-result';
 import { NoteOperationResult } from '../results/note-operation-result';
 import { NotesCountResult } from '../results/notes-count-result';
 import { SearchService } from '../search/search.service';
-import sanitize from 'sanitize-filename';
-import { DataStore } from '../../data/data-store';
-import { NoteMarkResult } from '../results/note-mark-result';
-import { NoteDetailsResult } from '../results/note-details-result';
-import { ipcRenderer } from 'electron';
-import { NoteExport } from '../../core/note-export';
-import { TasksCount } from '../../core/tasks-count';
-import { Logger } from '../../core/logger';
 import { TranslatorService } from '../translator/translator.service';
-import { Settings } from '../../core/settings';
-import { AppearanceService } from '../appearance/appearance.service';
 
 @Injectable({
   providedIn: 'root',
@@ -771,7 +770,7 @@ export class CollectionService {
       // Notebooks
       try {
         if (await fs.pathExists(notebooksExportFile)) {
-          const notebooksJson: string = await fs.readJson(notebooksExportFile);
+          const notebooksJson: string = await fs.readFile(notebooksExportFile, 'utf8');
           const jsonNotebooks = JSON.parse(notebooksJson);
 
           this.logger.info(`${notebooksExportFile} was found. Importing notebooks.`, 'CollectionService', 'importFromOldVersionAsync');
@@ -807,7 +806,7 @@ export class CollectionService {
       // Notes
       try {
         if (await fs.pathExists(notesExportFile)) {
-          const notesJson: string = await fs.readJson(notesExportFile);
+          const notesJson: string = await fs.readFile(notesExportFile, 'utf8');
           const jsonNotes = JSON.parse(notesJson);
 
           this.logger.info(`${notesExportFile} was found. Importing notes.`, 'CollectionService', 'importFromOldVersionAsync');
@@ -900,7 +899,7 @@ export class CollectionService {
 
     for (const noteFilePath of noteFilePaths) {
       try {
-        const noteFileContent: string = await fs.readJson(noteFilePath);
+        const noteFileContent: string = await fs.readFile(noteFilePath, 'utf8');
         const noteExport: NoteExport = JSON.parse(noteFileContent);
         const proposedNoteTitle: string = `${noteExport.title} (${await this.translator.getAsync('Notes.Imported')})`;
         const uniqueNoteTitle: string = this.getUniqueNoteNoteTitle(proposedNoteTitle);
