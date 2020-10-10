@@ -1,0 +1,213 @@
+{
+    "WelcomePage": {
+        "Title": "Knowte へようこそ！",
+        "Text": "Knowte を使いはじめるには、メモを保存するディレクトリを選択してください。すでに所持しているメモをインポートしたい場合は、そのメモが保存されているディレクトリを選択するだけで、Knowte がインポートしてくれます。",
+        "SelectButton": "選択..."
+    },
+    "LoadingPage": {
+        "Text": "読み込んでいます..."
+    },
+    "NotesTabs": {
+        "All": "すべて",
+        "Today": "今日",
+        "Yesterday": "昨日",
+        "ThisWeek": "今週",
+        "Marked": "マーク済み"
+    },
+    "SettingsTabs": {
+        "Appearance": "外観",
+        "Notes": "メモ",
+        "Advanced": "高度な設定"
+    },
+    "InformationTabs": {
+        "About": "Knowte について",
+        "Components": "コンポーネント"
+    },
+    "AboutPage": {
+        "About": "Knowte について",
+        "Donate": "寄付",
+        "GetInTouch": "連絡する",
+        "Version": "バージョン",
+        "License": "ライセンス",
+        "IsKnowteUseful": "Knowte はあなたの役に立てているでしょうか？ よければ寄付をしてみてください。ありがとう！",
+        "Website": "ウェブサイト"
+    },
+    "SettingsPage": {
+        "Import": "インポート",
+        "ImportFromOldVersion": "Knowte 1.x からインポート",
+        "FontSize": "フォント サイズ",
+        "FontSizeInNotes": "メモのフォント サイズ",
+        "PixelsShort": "px",
+        "Closing": "閉じる",
+        "CloseNotesWithEscape": "[Esc] でメモを閉じる",
+        "Dates": "日付",
+        "ShowExactDatesInTheNotesList": "メモの一覧に正確な日付を表示",
+        "Language": "言語",
+        "Color": "色",
+        "TitleBar": "タイトル バー",
+        "UseCustomTitleBar": "カスタム タイトル バーの使用 (再起動が必要)",
+        "Updates": "更新",
+        "CheckForUpdates": "更新の確認"
+    },
+    "ComponentsPage": {
+        "Components": "コンポーネント"
+    },
+    "MainMenu": {
+        "Notes": "メモ",
+        "Settings": "設定",
+        "Information": "情報"
+    },
+    "CollectionSwitcher": {
+        "AddCollection": "コレクションの追加..."
+    },
+    "Tooltips": {
+        "Rename": "名前の変更",
+        "Delete": "削除",
+        "ChangeCollection": "コレクションの変更",
+        "ChangeNotebook": "メモ帳の変更",
+        "Actions": "操作",
+        "MarkNote": "メモをマーク",
+        "UnmarkNote": "マークの削除",
+        "PrintNote": "メモの印刷...",
+        "ExportNote": "メモのエクスポート...",
+        "ExportNoteToPdf": "メモを PDF にエクスポート...",
+        "ImportNotes": "メモのインポート...",
+        "AddNotebook": "メモ帳の追加...",
+        "RenameNotebook": "メモ帳の名前を変更...",
+        "DeleteNotebook": "メモ帳の削除...",
+        "DeleteNotebooks": "メモ帳の削除...",
+        "AddNote": "メモの追加",
+        "DeleteNote": "メモの削除...",
+        "DeleteNotes": "メモの削除...",
+        "LastChanged": "最終更新",
+        "Highlight": "ハイライト",
+        "Bold": "太字 (Ctrl+B)",
+        "Italic": "斜体 (Ctrl+I)",
+        "Underline": "下線 (Ctrl+U)",
+        "Strikethrough": "取り消し線 (Ctrl+S)",
+        "Heading1": "見出し 1 (Ctrl+1)",
+        "Heading2": "見出し 2 (Ctrl+2)",
+        "NumberedList": "番号つきリスト",
+        "BulletedList": "リスト",
+        "TaskList": "チェック リスト",
+        "Link": "リンク",
+        "Quote": "引用",
+        "Code": "コード",
+        "Image": "画像",
+        "ClearFormatting": "書式の消去",
+        "Close": "閉じる"
+    },
+    "LicenseDialog": {
+        "License": "ライセンス"
+    },
+    "Buttons": {
+        "Ok": "OK",
+        "Cancel": "キャンセル",
+        "License": "ライセンス",
+        "Donate": "寄付",
+        "ViewLog": "ログを見る",
+        "Yes": "はい",
+        "No": "いいえ",
+        "Import": "インポート",
+        "StartImport": "インポートの開始",
+        "Select": "選択",
+        "SelectAgain": "再選択",
+        "Close": "閉じる"
+    },
+    "DialogTitles": {
+        "AddCollection": "コレクションの追加",
+        "RenameCollection": "コレクションの名前を変更",
+        "SelectFolder": "フォルダーの選択",
+        "Error": "エラー",
+        "ConfirmDeleteCollection": "コレクションを削除しますか？",
+        "AddNotebook": "メモ帳の追加",
+        "RenameNotebook": "メモ帳の名前を変更",
+        "ConfirmDeleteNotebook": "メモ帳を削除しますか？",
+        "ConfirmDeleteNotebooks": "メモ帳を削除しますか？",
+        "ConfirmDeleteNote": "メモを削除しますか？",
+        "ConfirmDeleteNotes": "メモを削除しますか？",
+        "Import": "インポート"
+    },
+    "DialogTexts": {
+        "ConfirmDeleteCollection": "コレクション '{{collection}}' を削除しますか？ コレクションを削除すると、メモ帳とメモも削除されます。",
+        "ConfirmDeleteNote": "メモ '{{noteTitle}}' を削除しますか？",
+        "ConfirmDeleteNotes": "これらのメモを削除しますか？",
+        "ConfirmDeleteNotebook": "メモ帳 '{{notebookName}}' を削除しますか？ メモは削除されませんが、分類されていない状態になります。",
+        "ConfirmDeleteNotebooks": "これらのメモ帳を削除しますか？ これらのメモは削除されませんが、分類されていない状態になります。",
+        "SelectDirectoryContainingOldVersionExports": "Knowte 1.x でエクスポートしたファイルがあるディレクトリを選択してください。",
+        "YouHaveSelectedDirectory": "このディレクトリが選択されています:",
+        "Importing": "インポートしています",
+        "ImportSuccessful": "インポートが完了しました！",
+        "ImportFailed": "インポートに失敗しました！",
+        "AllFiles": "すべてのファイル",
+        "ChooseNotebook": "メモ帳の選択"
+    },
+    "Input": {
+        "Collection": "コレクション",
+        "NotebookName": "メモ帳の名前"
+    },
+    "ErrorTexts": {
+        "StorageDirectoryCreationError": "ディレクトリ '{{storageDirectory}}' にメモを保存することができません。項目を作成するための権限がない可能性があります。詳細はログを確認してください。",
+        "GlobalError": "エラーが発生したため、アプリケーションを終了します。詳細はログを確認してください。",
+        "AddCollectionError": "コレクション '{{collection}}' の追加中にエラーが発生しました。詳細はログを確認してください。",
+        "AddNotebookError": "メモ帳 '{{notebookName}}' の追加中にエラーが発生しました。詳細はログを確認してください。",
+        "RenameNoteError": "メモ '{{noteTitle}} の名前の変更中にエラーが発生しました。詳細はログを確認してください。",
+        "RenameNotebookError": "メモ帳 '{{notebookName}}' の名前の変更中にエラーが発生しました。詳細はログを確認してください。",
+        "RenameCollectionError": "コレクション '{{collection}}' の名前の変更中にエラーが発生しました。詳細はログを確認してください。",
+        "DeleteCollectionError": "コレクション '{{collection}}' の削除中にエラーが発生しました。詳細はログを確認してください。",
+        "DeleteNotebooksError": "メモ帳の削除中にエラーが発生しました。詳細はログを確認してください。",
+        "DeleteNotesError": "メモの削除中にエラーが発生しました。詳細はログを確認してください。",
+        "SaveNoteError": "メモ '{{noteTitle}}' の保存中にエラーが発生しました。詳細はログを確認してください。",
+        "UpdateNoteContentError": "メモの内容の保存中にエラーが発生しました。詳細はログを確認してください。",
+        "GetNoteContentError": "メモの内容の取得中にエラーが発生しました。詳細はログを確認してください。",
+        "ExportNoteError": "メモ '{{noteTitle}}' のエクスポート中にエラーが発生しました。詳細はログを確認してください。",
+        "ImportNotesError": "メモのインポート中にエラーが発生しました。詳細はログを確認してください。",
+        "ChangeNotebookError": "メモ帳の変更中にエラーが発生しました。詳細はログを確認してください。"
+    },
+    "SnackBarMessages": {
+        "DuplicateCollection": "コレクション名 '{{collection}}' はすでに存在しています",
+        "DuplicateNotebook": "メモ帳 '{{notebookName}}' はすでに存在しています",
+        "NoteTitleCannotBeEmpty": "メモのタイトルを空にすることはできません",
+        "CloseNoteBeforeChangingCollections": "コレクションを変更する前にすべてのメモを閉じてください",
+        "NoteExported": "メモ '{{noteTitle}}' をエクスポートしました",
+        "NoteMovedToNotebook": "メモを '{{notebookName}}' へ移動しました",
+        "NotesMovedToNotebook": "メモを '{{notebookName}}' へ移動しました",
+        "NotesImportedIntoNotebook": "メモをメモ帳 '{{notebookName}}' へインポートしました",
+        "NotesImported": "メモをインポートしました",
+        "NoNoteFilesToImport": "インポートするメモ ファイルはありませんでした",
+        "NewVersionAvailable": "新しいバージョンが利用可能です: {{version}}"
+    },
+    "SnackBarActions": {
+        "Ok": "OK"
+    },
+    "MainPage": {
+        "Notebooks": "メモ帳",
+        "AllNotes": "すべてのメモ",
+        "UnfiledNotes": "未分類のメモ",
+        "Search": "検索",
+        "ClearSearch": "検索の消去",
+        "DragNotesCount": "{{noteCount}} メモ",
+        "TasksCount": "{{closedTasksCount}} / {{totalTasksCount}}"
+    },
+    "Notes": {
+        "NewNote": "新規メモ",
+        "NotePlaceholder": "ここへメモを記入...",
+        "Imported": "インポート済み",
+        "Search": "検索"
+    },
+    "NoteDates": {
+        "Today": "今日",
+        "Yesterday": "昨日",
+        "DaysAgo": "{{count}} 日前",
+        "LastWeek": "先週",
+        "WeeksAgo": "{{count}} 週間前",
+        "MonthsAgo": "{{count}} ヶ月前",
+        "LongAgo": "もっと前"
+    },
+    "ContextMenu":{
+        "Cut": "切り取り",
+        "Copy": "コピー",
+        "Paste": "貼り付け",
+        "Delete": "削除"
+    }
+}
