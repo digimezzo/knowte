@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.5] - 2020-10-10
+### Added
+- Added a Japanese translation
+### Changed
+### Removed
+### Fixed
+- Fixed a note import issue
+
 ## [2.0.4] - 2020-06-08
 ### Added
 - Added image resizing in the notes
