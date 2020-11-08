@@ -1,0 +1,213 @@
+{
+    "WelcomePage": {
+        "Title": "Dobro došli u Knowte!",
+        "Text": "Da biste počeli koristiti Knowte, odaberite mapu u koju želite spremati svoje bilješke. Ako želite uvesti bilješke koje već imate, jednostavno odaberite mapu u kojoj se one već nalaze i Knowte će ih uvesti za Vas.",
+        "SelectButton": "ODABERI..."
+    },
+    "LoadingPage": {
+        "Text": "Učitavanje..."
+    },
+    "NotesTabs": {
+        "All": "Sve",
+        "Today": "Danas",
+        "Yesterday": "Jučer",
+        "ThisWeek": "Ovaj tjedan",
+        "Marked": "Označeno"
+    },
+    "SettingsTabs": {
+        "Appearance": "Izgled",
+        "Notes": "Bilješke",
+        "Advanced": "Napredno"
+    },
+    "InformationTabs": {
+        "About": "O programu",
+        "Components": "Komponente"
+    },
+    "AboutPage": {
+        "About": "O programu",
+        "Donate": "Doniraj",
+        "GetInTouch": "Kontaktirajte nas",
+        "Version": "Verzija",
+        "License": "Licencija",
+        "IsKnowteUseful": "Je li Knowte koristan? Razmislite o donaciji. Hvala Vam!",
+        "Website": "Web-stranica"
+    },
+    "SettingsPage": {
+        "Import": "Uvoz",
+        "ImportFromOldVersion": "Uvoz iz Knowtea 1.x",
+        "FontSize": "Veličina fonta",
+        "FontSizeInNotes": "Veličina fonta u bilješkama",
+        "PixelsShort": "px",
+        "Closing": "Zatvaranje",
+        "CloseNotesWithEscape": "Zatvori bilješke pritiskom na [Esc]",
+        "Dates": "Datumi",
+        "ShowExactDatesInTheNotesList": "Prikaži točan datum u popisu bilješki",
+        "Language": "Jezik",
+        "Color": "Boja",
+        "TitleBar": "Naslovna traka",
+        "UseCustomTitleBar": "Koristi prilagođenu alatnu traku (zahtijeva ponovno pokretanje)",
+        "Updates": "Ažuriranja",
+        "CheckForUpdates": "Provjeri ima li nova ažuriranja"
+    },
+    "ComponentsPage": {
+        "Components": "Komponente"
+    },
+    "MainMenu": {
+        "Notes": "Bilješke",
+        "Settings": "Postavke",
+        "Information": "Informacije"
+    },
+    "CollectionSwitcher": {
+        "AddCollection": "Dodaj kolekciju..."
+    },
+    "Tooltips": {
+        "Rename": "Preimenuj",
+        "Delete": "Izbriši",
+        "ChangeCollection": "Promijeni kolekciju",
+        "ChangeNotebook": "Promijeni bilježnicu",
+        "Actions": "Radnje",
+        "MarkNote": "Označi bilješku",
+        "UnmarkNote": "Ukloni oznaku",
+        "PrintNote": "Ispiši bilješku...",
+        "ExportNote": "Izvezi bilješku...",
+        "ExportNoteToPdf": "Izvezi bilješku u PDF...",
+        "ImportNotes": "Uvezi bilješke...",
+        "AddNotebook": "Dodaj bilježnicu...",
+        "RenameNotebook": "Preimenuj bilježnicu...",
+        "DeleteNotebook": "Izbriši bilježnicu...",
+        "DeleteNotebooks": "Izbriši bilježnice...",
+        "AddNote": "Dodaj bilješku",
+        "DeleteNote": "Izbriši bilješku...",
+        "DeleteNotes": "Izbriši bilješke...",
+        "LastChanged": "Zadnja izmjena",
+        "Highlight": "Istakni",
+        "Bold": "Podebljaj (Ctrl+B)",
+        "Italic": "Ukosi (Ctrl+I)",
+        "Underline": "Podcrtaj (Ctrl+U)",
+        "Strikethrough": "Prekriži (Ctrl+S)",
+        "Heading1": "Naslov 1 (Ctrl+1)",
+        "Heading2": "Naslov 2 (Ctrl+2)",
+        "NumberedList": "Numerirani popis",
+        "BulletedList": "Grafički popis",
+        "TaskList": "Popis zadataka",
+        "Link": "Poveznica",
+        "Quote": "Citat",
+        "Code": "Kôd",
+        "Image": "Slika",
+        "ClearFormatting": "Očisti formatiranje",
+        "Close": "Zatvori"
+    },
+    "LicenseDialog": {
+        "License": "Licencija"
+    },
+    "Buttons": {
+        "Ok": "U REDU",
+        "Cancel": "ODUSTANI",
+        "License": "LICENCIJA",
+        "Donate": "DONIRAJ",
+        "ViewLog": "PRIKAŽI ZAPISNIK",
+        "Yes": "DA",
+        "No": "NE",
+        "Import": "UVEZI",
+        "StartImport": "POKRENI UVOZ",
+        "Select": "ODABERI",
+        "SelectAgain": "ODABERI PONOVNO",
+        "Close": "ZATVORI"
+    },
+    "DialogTitles": {
+        "AddCollection": "Dodavanje kolekcije",
+        "RenameCollection": "Preimenovanje kolekcije",
+        "SelectFolder": "Odabir mape",
+        "Error": "Greška",
+        "ConfirmDeleteCollection": "Izbrisati kolekciju?",
+        "AddNotebook": "Dodavanje bilježnice",
+        "RenameNotebook": "Preimenovanje bilježnice",
+        "ConfirmDeleteNotebook": "Izbrisati bilježnicu?",
+        "ConfirmDeleteNotebooks": "Izbrisati bilježnice?",
+        "ConfirmDeleteNote": "Izbrisati bilješku?",
+        "ConfirmDeleteNotes": "Izbrisati bilješke?",
+        "Import": "Uvoz"
+    },
+    "DialogTexts": {
+        "ConfirmDeleteCollection": "Jeste li sigurni da želite izbrisati kolekciju '{{collection}}'? Ako nastavite, njene bilježnice i bilješke bit će izgubljene.",
+        "ConfirmDeleteNote": "Jeste li sigurni da želite izbrisati bilješku '{{noteTitle}}'?",
+        "ConfirmDeleteNotes": "Jeste li sigurni da želite izbrisati ove bilješke?",
+        "ConfirmDeleteNotebook": "Jeste li sigurni da želite izbrisati bilježnicu '{{notebookName}}'? Njene bilješke neće biti izbrisane. Samo će biti neraspoređene.",
+        "ConfirmDeleteNotebooks": "Jeste li sigurni da želite izbrisati ove bilježnice? Njihove bilješke neće biti izbrisane. Samo će biti neraspoređene.",
+        "SelectDirectoryContainingOldVersionExports": "Pdaberite mapu koja sadrži datoteke koje su izvezene iz Knowtea 1.x.",
+        "YouHaveSelectedDirectory": "Odabrali ste mapu:",
+        "Importing": "Uvoz",
+        "ImportSuccessful": "Uspješno uvezeno!",
+        "ImportFailed": "Uvoz nije bio uspješan!",
+        "AllFiles": "Sve datoteke",
+        "ChooseNotebook": "Odaberite bilježnicu"
+    },
+    "Input": {
+        "Collection": "Kolekcija",
+        "NotebookName": "Naziv bilježnice"
+    },
+    "ErrorTexts": {
+        "StorageDirectoryCreationError": "Mapu '{{storageDirectory}}' nije moguće koristiti za spremanje Vaših bilješki. Možda nemate dozvolu za stvaranje stavki u njoj. Provjerite zapisnik, ako trebate više informacija.",
+        "GlobalError": "Dogodila se greška zbog koje će se aplikacija zatvoriti. Provjerite zapisnik, ako trebate više informacija.",
+        "AddCollectionError": "Dogodila se greška tijekom dodavanja kolekcije '{{collection}}'. Provjerite zapisnik, ako trebate više informacija.",
+        "AddNotebookError": "Dogodila se greška tijekom dodavanja bilježnice '{{notebookName}}'. Provjerite zapisnik, ako trebate više informacija.",
+        "RenameNoteError": "Dogodila se greška tijekom preimenovanja bilješke '{{noteTitle}}'. Provjerite zapisnik, ako trebate više informacija.",
+        "RenameNotebookError": "Dogodila se greška tijekom preimenovanja bilježnice '{{notebookName}}'. Provjerite zapisnik, ako trebate više informacija.",
+        "RenameCollectionError": "Dogodila se greška tijekom preimenovanja kolekcije '{{collection}}'. Provjerite zapisnik, ako trebate više informacija.",
+        "DeleteCollectionError": "Dogodila se greška tijekom brisanja kolekcije '{{collection}}'. Provjerite zapisnik, ako trebate više informacija.",
+        "DeleteNotebooksError": "Dogodila se greška tijekom brisanja bilježnica. Provjerite zapisnik, ako trebate više informacija.",
+        "DeleteNotesError": "Dogodila se greška tijekom brisanja bilješki. Provjerite zapisnik, ako trebate više informacija.",
+        "SaveNoteError": "Dogodila se greška tijekom spremanja bilješke '{{noteTitle}}'. Provjerite zapisnik, ako trebate više informacija.",
+        "UpdateNoteContentError": "Dogodila se greška tijekom spremanja sadržaja bilješke. Provjerite zapisnik, ako trebate više informacija.",
+        "GetNoteContentError": "Dogodila se greška tijekom dohvaćanja sadržaja bilješke. Provjerite zapisnik, ako trebate više informacija.",
+        "ExportNoteError": "Dogodila se greška tijekom izvoza bilješke '{{noteTitle}}'. Provjerite zapisnik, ako trebate više informacija.",
+        "ImportNotesError": "Dogodila se greška tijekom uvoza bilješki. Provjerite zapisnik, ako trebate više informacija.",
+        "ChangeNotebookError": "Dogodila se greška tijekom izmjene bilježnice. Provjerite zapisnik, ako trebate više informacija."
+    },
+    "SnackBarMessages": {
+        "DuplicateCollection": "Već postoji kolekcija s nazivom '{{collection}}'",
+        "DuplicateNotebook": "Već postoji bilježnica s nazivom '{{notebookName}}'",
+        "NoteTitleCannotBeEmpty": "Naslov bilješke ne može biti prazan",
+        "CloseNoteBeforeChangingCollections": "Zatvorite sve bilješke prije promjene kolekcije",
+        "NoteExported": "Bilješka '{{noteTitle}}' je izvezena",
+        "NoteMovedToNotebook": "Bilješka je premještena u '{{notebookName}}'",
+        "NotesMovedToNotebook": "Bilješke su premještene u '{{notebookName}}'",
+        "NotesImportedIntoNotebook": "Bilješke su uvezene u bilježnicu '{{notebookName}}'",
+        "NotesImported": "Bilješke su uvezene",
+        "NoNoteFilesToImport": "Nije bilo datoteka bilješki za uvoz",
+        "NewVersionAvailable": "Dostupna je nova verzija: {{version}}"
+    },
+    "SnackBarActions": {
+        "Ok": "U redu"
+    },
+    "MainPage": {
+        "Notebooks": "Bilježnice",
+        "AllNotes": "Sve bilješke",
+        "UnfiledNotes": "Neraspoređene bilješke",
+        "Search": "Pretraživanje",
+        "ClearSearch": "Očisti pretragu",
+        "DragNotesCount": "Bilješke: {{noteCount}}",
+        "TasksCount": "{{closedTasksCount}} od {{totalTasksCount}}"
+    },
+    "Notes": {
+        "NewNote": "Nova bilješka",
+        "NotePlaceholder": "Ovdje upišite bilješku...",
+        "Imported": "Uvezeno",
+        "Search": "Pretraživanje"
+    },
+    "NoteDates": {
+        "Today": "Danas",
+        "Yesterday": "Jučer",
+        "DaysAgo": "Prije {{count}} dana",
+        "LastWeek": "Prošli tjedan",
+        "WeeksAgo": "Prije {{count}} tjedna",
+        "MonthsAgo": "Prije {{count}} mjeseca",
+        "LongAgo": "Davno"
+    },
+    "ContextMenu":{
+        "Cut": "Izreži",
+        "Copy": "Kopiraj",
+        "Paste": "Zalijepi",
+        "Delete": "Izbriši"
+    }
+}
