@@ -1,6 +1,6 @@
-import { Language } from './language';
 import { ColorTheme } from './color-theme';
 import { FontSize } from './font-size';
+import { Language } from './language';
 
 export class Constants {
     public static readonly applicationName: string = require('../../../package.json').name;
@@ -52,6 +52,7 @@ export class Constants {
     ];
 
     public static readonly languages: Language[] = [
+        { code: 'de', englishName: 'German', localizedName: 'Deutch' },
         { code: 'en', englishName: 'English', localizedName: 'English' },
         { code: 'fr', englishName: 'French', localizedName: 'Français' },
         { code: 'jp', englishName: 'Japanese', localizedName: '日本語' },
