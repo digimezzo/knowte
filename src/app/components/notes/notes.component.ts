@@ -1,36 +1,38 @@
-import { Component, OnInit, Input, OnDestroy, NgZone, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { CollectionService } from '../../services/collection/collection.service';
-import { Note } from '../../data/entities/note';
-import { Subscription, Subject, fromEvent } from 'rxjs';
-import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
-import { Notebook } from '../../data/entities/notebook';
-import { Constants } from '../../core/constants';
-import { SearchService } from '../../services/search/search.service';
-import { NoteMarkResult } from '../../services/results/note-mark-result';
-import { debounceTime, takeUntil } from 'rxjs/internal/operators';
-import { Utils } from '../../core/utils';
+import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { remote } from 'electron';
-import { FileService } from '../../services/file/file.service';
+import { Subject, Subscription } from 'rxjs';
+import { Constants } from '../../core/constants';
 import { SelectionWatcher } from '../../core/selection-watcher';
 import { Settings } from '../../core/settings';
+import { Note } from '../../data/entities/note';
+import { Notebook } from '../../data/entities/notebook';
+import { CollectionService } from '../../services/collection/collection.service';
+import { FileService } from '../../services/file/file.service';
+import { NoteMarkResult } from '../../services/results/note-mark-result';
+import { SearchService } from '../../services/search/search.service';
+import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 
 @Component({
     selector: 'app-notes',
     templateUrl: './notes.component.html',
     styleUrls: ['./notes.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class NotesComponent implements OnInit, OnDestroy {
     private globalEmitter: any = remote.getGlobal('globalEmitter');
     private subscription: Subscription;
-    private readonly destroy$:  Subject<void> = new Subject();
+    private readonly destroy$: Subject<void> = new Subject();
     private _activeNotebook: Notebook;
     private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
-    constructor(private collection: CollectionService, private snackBar: SnackBarService,
-        public search: SearchService, private settings: Settings,
-        private file: FileService, private zone: NgZone) {
-    }
+    constructor(
+        private collection: CollectionService,
+        private snackBar: SnackBarService,
+        public search: SearchService,
+        private settings: Settings,
+        private file: FileService,
+        private zone: NgZone
+    ) {}
 
     @Input()
     public categoryChangedSubject: Subject<string>;
@@ -59,7 +61,6 @@ export class NotesComponent implements OnInit, OnDestroy {
     public notes: Note[] = [];
     public draggableNoteIds: string[] = [];
     public draggedNote: Note;
-    public canShowList: boolean = true;
 
     public ngOnDestroy(): void {
         this.subscription.unsubscribe();
@@ -76,29 +77,22 @@ export class NotesComponent implements OnInit, OnDestroy {
         this.subscription.add(this.collection.noteNotebookChanged$.subscribe(() => this.getNotes()));
         this.subscription.add(this.search.searchTextChanged$.subscribe((_) => this.getNotes()));
 
-        this.subscription.add(this.collection.noteMarkChanged$.subscribe((result: NoteMarkResult) => {
-            if (this.componentCategory === Constants.markedCategory) {
+        this.subscription.add(
+            this.collection.noteMarkChanged$.subscribe((result: NoteMarkResult) => {
+                if (this.componentCategory === Constants.markedCategory) {
+                    this.getNotes();
+                } else {
+                    this.markNote(result);
+                }
+            })
+        );
+
+        this.subscription.add(
+            this.categoryChangedSubject.subscribe(async (selectedCategory: string) => {
+                this.selectedCategory = selectedCategory;
                 this.getNotes();
-            } else {
-                this.markNote(result);
-            }
-        }));
-
-        this.subscription.add(this.categoryChangedSubject.subscribe(async (selectedCategory: string) => {
-            this.selectedCategory = selectedCategory;
-            await this.refreshVirtuallScrollerAsync();
-            this.getNotes();
-        }));
-
-        fromEvent(window, 'resize')
-            .pipe(
-                debounceTime(10),
-                takeUntil(this.destroy$),
-            )
-            .subscribe(() => this.zone.run(async () => {
-                await this.refreshVirtuallScrollerAsync();
-            }));
-
+            })
+        );
     }
 
     public setSelectedNotes(note: Note, event: MouseEvent = null): void {
@@ -128,17 +122,9 @@ export class NotesComponent implements OnInit, OnDestroy {
         this.collection.setNoteMark(note.id, !note.isMarked);
     }
 
-    private async refreshVirtuallScrollerAsync(): Promise<void> {
-        // cdk-virtual-scroll-viewport doesn't resize its viewport automatically,
-        // so we need to use a retarded workaround.
-        this.canShowList = false;
-        await Utils.sleep(50);
-        this.canShowList = true;
-    }
-
     private markNote(result: NoteMarkResult): void {
         if (this.notes.length > 0) {
-            const noteToMark: Note = this.notes.find(x => x.id === result.noteId);
+            const noteToMark: Note = this.notes.find((x) => x.id === result.noteId);
 
             if (noteToMark) {
                 noteToMark.isMarked = result.isMarked;
@@ -156,8 +142,9 @@ export class NotesComponent implements OnInit, OnDestroy {
             this.zone.run(async () => {
                 this.notes = await this.collection.getNotesAsync(
                     this.activeNotebook.id,
-                     this.componentCategory,
-                     this.settings.showExactDatesInTheNotesList);
+                    this.componentCategory,
+                    this.settings.showExactDatesInTheNotesList
+                );
                 this.selectionWatcher.reset(this.notes);
                 this.notesCount.emit(this.notes.length);
 
@@ -167,7 +154,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     public getSelectedNoteIds(): string[] {
-        return this.notes.filter(x => x.isSelected).map(x => x.id);
+        return this.notes.filter((x) => x.isSelected).map((x) => x.id);
     }
 
     public dragStart(event: any, draggedNote: Note): void {

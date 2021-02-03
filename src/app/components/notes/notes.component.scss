@@ -1,145 +1,144 @@
-@import "variables";
-@import "theming";
+@import 'variables';
+@import 'theming';
 
 .notes {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: calc(100% - 16px);
-  width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: calc(100% - 16px);
+    width: 100%;
 }
 
 .drag-image {
-  position: absolute;
-  top: -500px;
-  left: 0;
-  z-index: 0; // z-index is required. Otherwise the image isn't displayed while dragging. The value of z-index doesn't seem to matter.
-  border: 1px solid $color-lightgrey;
-  height: 38px;
-  display: flex;
-  flex-direction: row;
-  background: white;
-  align-items: center;
-  justify-content: center;
+    position: absolute;
+    top: -500px;
+    left: 0;
+    z-index: 0; // z-index is required. Otherwise the image isn't displayed while dragging. The value of z-index doesn't seem to matter.
+    border: 1px solid $color-lightgrey;
+    height: 38px;
+    display: flex;
+    flex-direction: row;
+    background: white;
+    align-items: center;
+    justify-content: center;
 }
 
 .drag-image-icon {
-  @extend .background-color-primary;
-  margin: 4px;
-  width: 28px;
-  min-width: 28px;
-  height: 28px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    @extend .background-color-primary;
+    margin: 4px;
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .drag-image-icon-pen {
-  width: 14px;
-  height: 14px;
+    width: 14px;
+    height: 14px;
 }
 
 .drag-image-text {
-  flex: 1;
+    flex: 1;
 }
 
 .notes-list {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
 }
 
 .note-item {
-  height: 48px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: calc(100vw - 382px); // HACK: cdk-virtual-scroll-viewport doesn't enforce a width to its components
-  cursor: default !important;
+    height: 48px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: default !important;
 }
 
 .note-item:hover {
-  background: $color-hover;
+    background: $color-hover;
 }
 
 .note-item-icon {
-  @extend .background-color-primary;
-  margin-left: 4px;
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    @extend .background-color-primary;
+    margin-left: 4px;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .note-item-icon-pen {
-  width: 20px;
-  height: 20px;
+    width: 20px;
+    height: 20px;
 }
 
 .note-item-actions {
-  margin: 0 100px 0 0;
-  width: 20px;
-  min-width: 20px;
-  height: 48px;
-  line-height: 48px;
-  cursor: pointer;
+    margin: 0 100px 0 0;
+    width: 20px;
+    min-width: 20px;
+    height: 48px;
+    line-height: 48px;
+    cursor: pointer;
 }
 
 .note-item-actions-heart-marked {
-  @extend .color-primary;
-  font-size: 22px;
+    @extend .color-primary;
+    font-size: 22px;
 }
 
 .note-item-actions-heart-unmarked {
-  color: $color-grey;
-  font-size: 22px;
+    color: $color-grey;
+    font-size: 22px;
 }
 
 .note-item-info {
-  height: 48px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
+    height: 48px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
 }
 
 .note-item-info-title {
-  margin-top: 4px;
-  height: 20px;
-  font-size: var(--fontsize-normal) !important;
-  display: flex;
-  align-items: center;
+    margin-top: 4px;
+    height: 20px;
+    font-size: var(--fontsize-normal) !important;
+    display: flex;
+    align-items: center;
 }
 
 .note-item-info-title > span {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .note-item-info-date-and-tasks {
-  margin-bottom: 4px;
-  height: 20px;
-  font-size: var(--fontsize-normal) !important;
-  color: $color-grey;
-  display: flex;
-  align-items: center;
+    margin-bottom: 4px;
+    height: 20px;
+    font-size: var(--fontsize-normal) !important;
+    color: $color-grey;
+    display: flex;
+    align-items: center;
 }
 
 .note-item-info-date-and-tasks > span {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 cdk-virtual-scroll-viewport {
-  height: 100%;
-  width: calc(100% - 32px);
-  overflow-x: hidden !important;
+    height: 100%;
+    width: calc(100% - 32px);
+    overflow-x: hidden !important;
 }

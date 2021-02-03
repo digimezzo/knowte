@@ -2,23 +2,31 @@
     <!-- Drag image -->
     <div class="drag-image no-select" id="drag-image">
         <div class="drag-image-icon">
-            <img class="drag-image-icon-pen" src="./assets/images/pencil_256x256.svg">
+            <img class="drag-image-icon-pen" src="./assets/images/pencil_256x256.svg" />
         </div>
         <div class="drag-image-text mx-1" *ngIf="draggableNoteIds.length === 1">
-            {{ draggedNote.title | truncate: 30 : true }}</div>
+            {{ draggedNote.title | truncate: 30:true }}
+        </div>
         <div class="drag-image-text mx-1" *ngIf="draggableNoteIds.length > 1">
-            {{ 'MainPage.DragNotesCount' | translate:{ noteCount: draggableNoteIds.length } }}</div>
+            {{ 'MainPage.DragNotesCount' | translate: { noteCount: draggableNoteIds.length } }}
+        </div>
     </div>
     <!-- Notes list -->
 
-    <ul class="notes-list" *ngIf="canShowList">
+    <ul class="notes-list">
         <cdk-virtual-scroll-viewport itemSize="48">
-            <li [ngClass]="{'selected-item':note.isSelected}" *cdkVirtualFor="let note of notes" matRipple>
-                <div class="note-item no-select" (dblclick)="openNote(note)" [matTooltipShowDelay]="500"
-                    matTooltip="{{ 'Tooltips.LastChanged' | translate }}: {{note.displayExactModificationDate}}"
-                    (click)="setSelectedNotes(note, $event)" draggable="true" (dragstart)="dragStart($event, note)">
+            <li [ngClass]="{ 'selected-item': note.isSelected }" *cdkVirtualFor="let note of notes" matRipple>
+                <div
+                    class="note-item no-select"
+                    (dblclick)="openNote(note)"
+                    [matTooltipShowDelay]="500"
+                    matTooltip="{{ 'Tooltips.LastChanged' | translate }}: {{ note.displayExactModificationDate }}"
+                    (click)="setSelectedNotes(note, $event)"
+                    draggable="true"
+                    (dragstart)="dragStart($event, note)"
+                >
                     <div class="note-item-icon">
-                        <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg">
+                        <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg" />
                     </div>
                     <div class="note-item-info px-1">
                         <div class="note-item-info-title">
@@ -26,8 +34,12 @@
                         </div>
                         <div class="note-item-info-date-and-tasks">
                             <span>{{ note.displayModificationDate }}</span>
-                            <app-tasks-progress class="ml-2" *ngIf="note.totalTasksCount > 0"
-                                [closedTasksCount]="note.closedTasksCount" [totalTasksCount]="note.totalTasksCount">
+                            <app-tasks-progress
+                                class="ml-2"
+                                *ngIf="note.totalTasksCount > 0"
+                                [closedTasksCount]="note.closedTasksCount"
+                                [totalTasksCount]="note.totalTasksCount"
+                            >
                             </app-tasks-progress>
                         </div>
                     </div>
