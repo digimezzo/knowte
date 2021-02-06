@@ -3,7 +3,9 @@ import { Notebook } from './entities/notebook';
 import { Note } from './entities/note';
 import * as moment from 'moment';
 import { Utils } from '../core/utils';
+import { Injectable } from "@angular/core";
 
+@Injectable()
 export class DataStore {
     constructor() {
     }
