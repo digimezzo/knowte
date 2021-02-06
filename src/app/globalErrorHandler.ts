@@ -1,5 +1,5 @@
 import { ErrorHandler, Injectable, Injector, NgZone } from '@angular/core';
-import { MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { ErrorDialogComponent } from './components/dialogs/error-dialog/error-dialog.component';
 import { remote, BrowserWindow } from 'electron';
 import { Logger } from './core/logger';

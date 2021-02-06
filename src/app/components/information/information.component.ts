@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Constants } from '../../core/constants';
 import { ProductDetails } from '../../core/product-details';
 import { AppearanceService } from '../../services/appearance/appearance.service';

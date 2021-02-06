@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { CollectionService } from '../../services/collection/collection.service';
 import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { RenameCollectionDialogComponent } from '../dialogs/rename-collection-dialog/rename-collection-dialog.component';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';

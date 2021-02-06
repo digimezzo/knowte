@@ -1,6 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { MatDialog, MatDialogRef, MatTabChangeEvent } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 // import { SplitAreaDirective, SplitComponent } from 'angular-split';
 import { remote } from 'electron';
 import { Subject, Subscription } from 'rxjs';
