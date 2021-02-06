@@ -66,7 +66,6 @@ import { DataStore } from './data/data-store';
 import { WebviewDirective } from './directives/webview.directive';
 import { GlobalErrorHandler } from './globalErrorHandler';
 import { TruncatePipe } from './pipes/truncate.pipe';
-import { AppService } from './services/app/app.service';
 import { CollectionService } from './services/collection/collection.service';
 // Services
 import { ElectronService } from './services/electron.service';
@@ -148,7 +147,6 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         ClipboardManager,
         WorkerManager,
         UpdateService,
-        AppService,
         GitHubApi,
         ProductDetails,
         DataStore,

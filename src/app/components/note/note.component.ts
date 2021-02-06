@@ -20,7 +20,6 @@ import { Settings } from '../../core/settings';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { WorkerManager } from '../../core/worker-manager';
-import { AppService } from '../../services/app/app.service';
 import { AppearanceService } from '../../services/appearance/appearance.service';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
@@ -70,7 +69,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         private logger: Logger,
         private snackBar: SnackBarService,
         private translator: TranslatorService,
-        private app: AppService,
         private settings: Settings,
         public appearance: AppearanceService,
         private clipboard: ClipboardManager,
@@ -86,6 +84,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     public noteTextChanged: Subject<string> = new Subject<string>();
     public saveChangesAndCloseNoteWindow: Subject<string> = new Subject<string>();
     public canPerformActions: boolean = false;
+    public isBusy: boolean = false;
     public actionIconRotation: string = 'default';
     public canSearch: boolean = false;
 
@@ -329,7 +328,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     public async exportNoteAsync(): Promise<void> {
         this.hideActionButtons();
-        this.app.setBusy();
+        this.isBusy = true;
 
         const options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
         const filename: string = remote.dialog.showSaveDialog(null, options);
@@ -341,9 +340,9 @@ export class NoteComponent implements OnInit, OnDestroy {
                 this.snackBar.noteExportedAsync(this.noteTitle);
             }
 
-            this.app.cancelBusy();
+            this.isBusy = false;
         } catch (error) {
-            this.app.cancelBusy();
+            this.isBusy = false;
             this.logger.error(
                 `An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`,
                 'NoteComponent',

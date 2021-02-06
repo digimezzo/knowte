@@ -20,6 +20,7 @@ export class SettingsComponent implements OnInit {
         private settings: Settings
     ) {}
 
+    public isBusy: boolean = false;
     public selectedIndex: number;
     public fontSizes: number[] = Constants.noteFontSizes;
 

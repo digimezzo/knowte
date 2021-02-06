@@ -1,93 +1,105 @@
-<div class="note-content">
-    <div class="note-content-floating">
-        <button
-            class="note-content-floating-button"
-            mat-fab
-            (click)="toggleShowActions()"
-            matTooltip="{{ 'Tooltips.Actions' | translate }}"
-        >
-            <div [@actionIconRotation]="actionIconRotation">
-                <i class="note-content-floating-button-icon custom-font las la-edit" *ngIf="!canPerformActions"></i>
-                <i class="note-content-floating-button-icon custom-font las la-times" *ngIf="canPerformActions"></i>
-            </div>
-        </button>
-        <button
-            *ngIf="canPerformActions && isMarked"
-            class="note-content-floating-button"
-            mat-mini-fab
-            color=""
-            (click)="toggleNoteMark()"
-            matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}"
-        >
-            <i class="note-content-floating-button-icon-action custom-font las la-heart"></i>
-        </button>
-        <button
-            *ngIf="canPerformActions && !isMarked"
-            class="note-content-floating-button"
-            mat-mini-fab
-            color=""
-            (click)="toggleNoteMark()"
-            matTooltip="{{ 'Tooltips.MarkNote' | translate }}"
-        >
-            <i class="note-content-floating-button-icon-action custom-font lar la-heart"></i>
-        </button>
-        <button
-            *ngIf="canPerformActions"
-            class="note-content-floating-button"
-            mat-mini-fab
-            color=""
-            (click)="exportNoteAsync()"
-            matTooltip="{{ 'Tooltips.ExportNote' | translate }}"
-        >
-            <i class="note-content-floating-button-icon-action custom-font las la-file-export"></i>
-        </button>
-        <button
-            *ngIf="canPerformActions"
-            class="note-content-floating-button"
-            mat-mini-fab
-            color=""
-            (click)="exportNoteToPdf()"
-            matTooltip="{{ 'Tooltips.ExportNoteToPdf' | translate }}"
-        >
-            <i class="note-content-floating-button-icon-action custom-font lar la-file-pdf"></i>
-        </button>
-        <button
-            *ngIf="canPerformActions"
-            class="note-content-floating-button"
-            mat-mini-fab
-            color=""
-            (click)="printNote()"
-            matTooltip="{{ 'Tooltips.PrintNote' | translate }}"
-        >
-            <i class="note-content-floating-button-icon-action custom-font las la-print"></i>
-        </button>
-        <button
-            *ngIf="canPerformActions"
-            class="note-content-floating-button"
-            mat-mini-fab
-            color=""
-            (click)="deleteNoteAsync()"
-            matTooltip="{{ 'Tooltips.DeleteNote' | translate }}"
-        >
-            <i class="note-content-floating-button-icon-action custom-font las la-trash-alt"></i>
-        </button>
+<div class="window-frame">
+    <div class="window-frame-titlebar">
+        <div class="window-frame-titlebar-dragarea"></div>
+        <app-notebook-switcher [noteId]="noteId" *ngIf="!appearance.windowHasNativeTitleBar"></app-notebook-switcher>
+        <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
     </div>
-    <div class="note-content-fixed" (click)="onFixedContentClick()">
-        <div class="note-content-fixed-title">
-            <input
-                class="note-content-fixed-title-text"
-                type="text"
-                [(ngModel)]="noteTitle"
-                (ngModelChange)="onNotetitleChange($event)"
-                (keydown)="onTitleKeydown($event)"
-            />
+    <div class="window-frame-overlay" *ngIf="isBusy">
+        <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
+    </div>
+    <div class="window-frame-content" [ngStyle]="{ top: appearance.windowHasNativeTitleBar ? '0' : '32px' }">
+        <div class="note-content">
+            <div class="note-content-floating">
+                <button
+                    class="note-content-floating-button"
+                    mat-fab
+                    (click)="toggleShowActions()"
+                    matTooltip="{{ 'Tooltips.Actions' | translate }}"
+                >
+                    <div [@actionIconRotation]="actionIconRotation">
+                        <i class="note-content-floating-button-icon custom-font las la-edit" *ngIf="!canPerformActions"></i>
+                        <i class="note-content-floating-button-icon custom-font las la-times" *ngIf="canPerformActions"></i>
+                    </div>
+                </button>
+                <button
+                    *ngIf="canPerformActions && isMarked"
+                    class="note-content-floating-button"
+                    mat-mini-fab
+                    color=""
+                    (click)="toggleNoteMark()"
+                    matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}"
+                >
+                    <i class="note-content-floating-button-icon-action custom-font las la-heart"></i>
+                </button>
+                <button
+                    *ngIf="canPerformActions && !isMarked"
+                    class="note-content-floating-button"
+                    mat-mini-fab
+                    color=""
+                    (click)="toggleNoteMark()"
+                    matTooltip="{{ 'Tooltips.MarkNote' | translate }}"
+                >
+                    <i class="note-content-floating-button-icon-action custom-font lar la-heart"></i>
+                </button>
+                <button
+                    *ngIf="canPerformActions"
+                    class="note-content-floating-button"
+                    mat-mini-fab
+                    color=""
+                    (click)="exportNoteAsync()"
+                    matTooltip="{{ 'Tooltips.ExportNote' | translate }}"
+                >
+                    <i class="note-content-floating-button-icon-action custom-font las la-file-export"></i>
+                </button>
+                <button
+                    *ngIf="canPerformActions"
+                    class="note-content-floating-button"
+                    mat-mini-fab
+                    color=""
+                    (click)="exportNoteToPdf()"
+                    matTooltip="{{ 'Tooltips.ExportNoteToPdf' | translate }}"
+                >
+                    <i class="note-content-floating-button-icon-action custom-font lar la-file-pdf"></i>
+                </button>
+                <button
+                    *ngIf="canPerformActions"
+                    class="note-content-floating-button"
+                    mat-mini-fab
+                    color=""
+                    (click)="printNote()"
+                    matTooltip="{{ 'Tooltips.PrintNote' | translate }}"
+                >
+                    <i class="note-content-floating-button-icon-action custom-font las la-print"></i>
+                </button>
+                <button
+                    *ngIf="canPerformActions"
+                    class="note-content-floating-button"
+                    mat-mini-fab
+                    color=""
+                    (click)="deleteNoteAsync()"
+                    matTooltip="{{ 'Tooltips.DeleteNote' | translate }}"
+                >
+                    <i class="note-content-floating-button-icon-action custom-font las la-trash-alt"></i>
+                </button>
+            </div>
+            <div class="note-content-fixed" (click)="onFixedContentClick()">
+                <div class="note-content-fixed-title">
+                    <input
+                        class="note-content-fixed-title-text"
+                        type="text"
+                        [(ngModel)]="noteTitle"
+                        (ngModelChange)="onNotetitleChange($event)"
+                        (keydown)="onTitleKeydown($event)"
+                    />
+                </div>
+                <div
+                    class="note-editor"
+                    id="editor"
+                    (keydown.control.s)="strikeThrough($event)"
+                    (keydown.control.1)="heading1($event)"
+                    (keydown.control.2)="heading2($event)"
+                ></div>
+            </div>
         </div>
-        <div
-            class="note-editor"
-            id="editor"
-            (keydown.control.s)="strikeThrough($event)"
-            (keydown.control.1)="heading1($event)"
-            (keydown.control.2)="heading2($event)"
-        ></div>
     </div>
 </div>

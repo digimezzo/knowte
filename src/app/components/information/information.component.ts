@@ -22,6 +22,7 @@ export class InformationComponent implements OnInit {
     public twitterUrl: string = Constants.twitterUrl;
     public githubUrl: string = Constants.githubUrl;
     public externalComponents: any[] = Constants.externalComponents;
+    public isBusy: boolean = false;
 
     public ngOnInit(): void {}
 

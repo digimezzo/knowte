@@ -91,6 +91,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     public canDeleteNotes: boolean = false;
     public tabChangedSubject: Subject<any> = new Subject();
     public showNoteButtonSubject: Subject<any> = new Subject();
+    public isBusy: boolean = false;
     public canRenameNotebook: boolean = false;
     public canDeleteNotebooks: boolean = false;
     public selectionWatcher: SelectionWatcher = new SelectionWatcher();
