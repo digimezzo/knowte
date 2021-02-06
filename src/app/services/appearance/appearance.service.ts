@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { remote, BrowserWindow } from 'electron';
-import { Constants } from '../../core/constants';
-import { ColorTheme } from '../../core/color-theme';
-import { Logger } from '../../core/logger';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { Injectable } from '@angular/core';
+import { remote } from 'electron';
+import { ColorTheme } from '../../core/color-theme';
+import { Constants } from '../../core/constants';
 import { FontSize } from '../../core/font-size';
+import { Logger } from '../../core/logger';
 import { Settings } from '../../core/settings';
 
 @Injectable({
@@ -58,8 +58,9 @@ export class AppearanceService {
 
         // Apply theme to components in the overlay container: https://gist.github.com/tomastrajan/ee29cd8e180b14ce9bc120e2f7435db7
         const overlayContainerClasses: DOMTokenList = this.overlayContainer.getContainerElement().classList;
-        const overlayContainerClassesToRemove: string[] = Array.from(overlayContainerClasses)
-        .filter((item: string) => item.includes('-theme'));
+        const overlayContainerClassesToRemove: string[] = Array.from(overlayContainerClasses).filter((item: string) =>
+            item.includes('-theme')
+        );
 
         if (overlayContainerClassesToRemove.length) {
             overlayContainerClasses.remove(...overlayContainerClassesToRemove);
@@ -88,12 +89,20 @@ export class AppearanceService {
     }
 
     private initialize(): void {
-        this._selectedColorTheme = this.colorThemes.find(x => x.name === this.settings.colorTheme);
+        this._selectedColorTheme = this.colorThemes.find((x) => x.name === this.settings.colorTheme);
         this.themeChangedHandler(this._selectedColorTheme);
         this.globalEmitter.on(Constants.themeChangedEvent, this.themeChangedListener);
 
-        this._selectedFontSize = this.fontSizes.find(x => x.normalSize === this.settings.fontSize);
+        this._selectedFontSize = this.fontSizes.find((x) => x.normalSize === this.settings.fontSize);
         this.fontSizeChangedHandler(this._selectedFontSize);
         this.globalEmitter.on(Constants.uiFontSizeChangedEvent, this.fontSizeChangedListener);
+
+        const element = document.documentElement;
+
+        if (this.windowHasFrame) {
+            element.style.setProperty('--height-correction', '90px');
+        } else {
+            element.style.setProperty('--height-correction', '122px');
+        }
     }
 }

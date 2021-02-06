@@ -1,26 +1,25 @@
 .notes-content-title-and-search {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  background-color: white;
-  height: 74px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 74px;
 }
 
 .notes-content-title {
-  display: flex;
+    display: flex;
 }
 
 .notes-content-title-text {
-  white-space: nowrap;
-  overflow: hidden;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .notes-content-search {
-  width: 200px;
+    width: 200px;
 }
 
 .notes-content-search-clearbutton {
-  font-size: 16px;
-  cursor: pointer;
-  display: block;
+    font-size: 16px;
+    cursor: pointer;
+    display: block;
 }

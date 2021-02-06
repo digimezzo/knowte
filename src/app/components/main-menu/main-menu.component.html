@@ -1,0 +1,11 @@
+<div class="app-main-menu no-select">
+    <span class="app-main-menu__item" routerLink="/collection" [ngClass]="{ 'app-main-menu__selected': selectedMenuItem === 1 }">{{
+        'MainMenu.Notes' | translate
+    }}</span>
+    <span class="app-main-menu__item" routerLink="/settings" [ngClass]="{ 'app-main-menu__selected': selectedMenuItem === 2 }">{{
+        'MainMenu.Settings' | translate
+    }}</span>
+    <span class="app-main-menu__item" routerLink="/information" [ngClass]="{ 'app-main-menu__selected': selectedMenuItem === 3 }">{{
+        'MainMenu.Information' | translate
+    }}</span>
+</div>

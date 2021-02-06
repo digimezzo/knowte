@@ -1,0 +1,17 @@
+@import 'theming';
+
+.app-logo-main {
+    @extend .background-color-primary;
+    width: 80px;
+    min-width: 80px;
+    height: 80px;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app-logo-main__icon {
+    width: 80px;
+    height: 80px;
+}
