@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef, MatTabChangeEvent } from '@angular/material';
-import { SplitAreaDirective, SplitComponent } from 'angular-split';
+// import { SplitAreaDirective, SplitComponent } from 'angular-split';
 import { remote } from 'electron';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
@@ -69,8 +69,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
         private settings: Settings
     ) {}
 
-    @ViewChild('split', { static: false }) public split: SplitComponent;
-    @ViewChild('area1', { static: false }) public area1: SplitAreaDirective;
+    // @ViewChild('split', { static: false }) public split: SplitComponent;
+    // @ViewChild('area1', { static: false }) public area1: SplitAreaDirective;
 
     public area1Size: number = this.settings.notebooksPaneWidth;
 

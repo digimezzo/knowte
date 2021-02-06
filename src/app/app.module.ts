@@ -25,7 +25,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // NG Translate
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { AngularSplitModule } from 'angular-split';
+// import { AngularSplitModule } from 'angular-split';
 import 'reflect-metadata';
 import 'zone.js/dist/zone-mix';
 import '../polyfills';
@@ -133,7 +133,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         FormsModule,
         HttpClientModule,
         AppRoutingModule,
-        AngularSplitModule,
+        // AngularSplitModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

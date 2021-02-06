@@ -40,7 +40,6 @@
     "@angular/animations": "^8.2.14",
     "@angular/cdk": "^8.1.2",
     "@angular/material": "^8.1.2",
-    "angular-split": "^5.0.0",
     "electron-localshortcut": "^3.2.1",
     "electron-log": "^2.2.17",
     "electron-store": "^2.0.0",
