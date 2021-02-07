@@ -1,3 +1,4 @@
+@import 'variables';
 @import 'theming';
 
 .app-collection {
@@ -13,6 +14,9 @@
 
 .app-collection__headers {
     height: 48px;
+}
+
+.app-collection__content {
 }
 
 .app-collection__content .mat-tab-header {
@@ -33,4 +37,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.notebooks-pane {
+    height: 100%;
+    border-right: 1px solid $color-lightgrey;
 }

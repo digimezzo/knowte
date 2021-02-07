@@ -1,8 +1,8 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-// import { SplitAreaDirective, SplitComponent } from 'angular-split';
+import { SplitAreaDirective, SplitComponent } from 'angular-split';
 import { remote } from 'electron';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
@@ -53,9 +53,6 @@ import { RenameNotebookDialogComponent } from '../dialogs/rename-notebook-dialog
     ],
 })
 export class CollectionComponent implements OnInit, OnDestroy {
-    private globalEmitter: any = remote.getGlobal('globalEmitter');
-    private subscription: Subscription;
-
     constructor(
         private dialog: MatDialog,
         private collection: CollectionService,
@@ -70,8 +67,30 @@ export class CollectionComponent implements OnInit, OnDestroy {
         private settings: Settings
     ) {}
 
-    // @ViewChild('split', { static: false }) public split: SplitComponent;
-    // @ViewChild('area1', { static: false }) public area1: SplitAreaDirective;
+    public get allCategory(): string {
+        return Constants.allCategory;
+    }
+
+    public get todayCategory(): string {
+        return Constants.todayCategory;
+    }
+
+    public get yesterdayCategory(): string {
+        return Constants.yesterdayCategory;
+    }
+
+    public get thisWeekCategory(): string {
+        return Constants.thisWeekCategory;
+    }
+
+    public get markedCategory(): string {
+        return Constants.markedCategory;
+    }
+    private globalEmitter: any = remote.getGlobal('globalEmitter');
+    private subscription: Subscription;
+
+    @ViewChild('split', { static: false }) public split: SplitComponent;
+    @ViewChild('area1', { static: false }) public area1: SplitAreaDirective;
 
     public area1Size: number = this.settings.notebooksPaneWidth;
 
@@ -95,26 +114,6 @@ export class CollectionComponent implements OnInit, OnDestroy {
     public canRenameNotebook: boolean = false;
     public canDeleteNotebooks: boolean = false;
     public selectionWatcher: SelectionWatcher = new SelectionWatcher();
-
-    public get allCategory(): string {
-        return Constants.allCategory;
-    }
-
-    public get todayCategory(): string {
-        return Constants.todayCategory;
-    }
-
-    public get yesterdayCategory(): string {
-        return Constants.yesterdayCategory;
-    }
-
-    public get thisWeekCategory(): string {
-        return Constants.thisWeekCategory;
-    }
-
-    public get markedCategory(): string {
-        return Constants.markedCategory;
-    }
 
     public ngOnDestroy(): void {
         this.subscription.unsubscribe();
@@ -464,6 +463,6 @@ export class CollectionComponent implements OnInit, OnDestroy {
     }
 
     public dragEnd(event: any): void {
-        // this.settings.notebooksPaneWidth = event.sizes[0];
+        this.settings.notebooksPaneWidth = event.sizes[0];
     }
 }
