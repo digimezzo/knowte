@@ -45,10 +45,12 @@
             <app-main-menu class="app-collection__menu" [selectedMenuItem]="1"></app-main-menu>
             <div class="app-collection__content viewport-height">
                 <as-split gutterSize="4" unit="pixel" direction="horizontal" (dragEnd)="dragEnd($event)" #split="asSplit">
-                    <as-split-area class="pt-3 pb-3" [size]="area1Size" minSize="10" #area1="asSplitArea">
-                        <div class="notebooks-pane">yoyo</div>
+                    <as-split-area class="pt-2 pb-2" [size]="area1Size" minSize="10" #area1="asSplitArea">
+                        <div class="notebooks-pane"><app-collection-notebooks></app-collection-notebooks></div>
                     </as-split-area>
-                    <as-split-area class="pt-3 pb-3" size="*" #area2="asSplitArea"> yo</as-split-area>
+                    <as-split-area class="pt-2 pb-2" size="*" #area2="asSplitArea">
+                        <div class="notes-pane"><app-collection-notes></app-collection-notes></div>
+                    </as-split-area>
                 </as-split>
             </div>
             <!-- <mat-tab-group >
