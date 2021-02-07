@@ -14,17 +14,17 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var electron_1 = require("electron");
-var path = require("path");
-var url = require("url");
-var windowStateKeeper = require("electron-window-state");
-var fs = require("fs-extra");
-var Store = require("electron-store");
-var os = require("os");
-electron_1.app.commandLine.appendSwitch('disable-color-correct-rendering');
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
 var electron_log_1 = require("electron-log");
+var Store = require("electron-store");
+var windowStateKeeper = require("electron-window-state");
+var fs = require("fs-extra");
+var os = require("os");
+var path = require("path");
+var url = require("url");
+electron_1.app.commandLine.appendSwitch('disable-color-correct-rendering');
 var mainWindow, workerWindow, serve;
 var args = process.argv.slice(1);
 serve = args.some(function (val) { return val === '--serve'; });
@@ -66,18 +66,18 @@ function createMainWindow() {
         // Load the previous state with fallback to defaults
         var mainWindowState = windowStateKeeper({
             defaultWidth: 850,
-            defaultHeight: 600
+            defaultHeight: 600,
         });
         // Create the window using the state information
         mainWindow = new electron_1.BrowserWindow({
-            'x': mainWindowState.x,
-            'y': mainWindowState.y,
-            'width': mainWindowState.width,
-            'height': mainWindowState.height,
+            x: mainWindowState.x,
+            y: mainWindowState.y,
+            width: mainWindowState.width,
+            height: mainWindowState.height,
             backgroundColor: '#fff',
             frame: windowhasFrame(),
             icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
-            show: false
+            show: false,
         });
         globalAny.windowHasFrame = windowhasFrame();
         // Let us register listeners on the window, so we can update the state
@@ -86,7 +86,7 @@ function createMainWindow() {
         mainWindowState.manage(mainWindow);
         if (serve) {
             require('electron-reload')(__dirname, {
-                electron: require(__dirname + "/node_modules/electron")
+                electron: require(__dirname + "/node_modules/electron"),
             });
             mainWindow.loadURL('http://localhost:4200');
         }
@@ -94,19 +94,19 @@ function createMainWindow() {
             mainWindow.loadURL(url.format({
                 pathname: path.join(__dirname, 'dist/index.html'),
                 protocol: 'file:',
-                slashes: true
+                slashes: true,
             }));
         }
         workerWindow = new electron_1.BrowserWindow({
             show: false,
             webPreferences: {
-                nodeIntegration: true
-            }
+                nodeIntegration: true,
+            },
         });
         workerWindow.loadURL(url.format({
             pathname: path.join(__dirname, 'dist/worker.html'),
             protocol: 'file:',
-            slashes: true
+            slashes: true,
         }));
         workerWindow.on('closed', function () {
             workerWindow = undefined;
@@ -137,6 +137,14 @@ function createMainWindow() {
         };
         mainWindow.webContents.on('will-navigate', handleRedirect);
         mainWindow.webContents.on('new-window', handleRedirect);
+        mainWindow.webContents.on('before-input-event', function (event, input) {
+            if (input.key.toLowerCase() === 'f12') {
+                if (serve) {
+                    mainWindow.webContents.toggleDevTools();
+                }
+                event.preventDefault();
+            }
+        });
     }
 }
 function windowhasFrame() {
@@ -157,18 +165,18 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
         defaultWidth: 620,
         defaultHeight: 400,
         path: notePath,
-        file: noteId + ".state"
+        file: noteId + ".state",
     });
     // Create the window using the state information
     var noteWindow = new electron_1.BrowserWindow({
-        'x': noteWindowState.x,
-        'y': noteWindowState.y,
-        'width': noteWindowState.width,
-        'height': noteWindowState.height,
+        x: noteWindowState.x,
+        y: noteWindowState.y,
+        width: noteWindowState.width,
+        height: noteWindowState.height,
         backgroundColor: '#fff',
         frame: windowHasFrame,
         icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
-        show: true
+        show: true,
     });
     globalAny.windowHasFrame = windowHasFrame;
     // noteWindow.webContents.openDevTools();
@@ -178,7 +186,7 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
     noteWindowState.manage(noteWindow);
     if (serve) {
         require('electron-reload')(__dirname, {
-            electron: require(__dirname + "/node_modules/electron")
+            electron: require(__dirname + "/node_modules/electron"),
         });
         noteWindow.loadURL("http://localhost:4200#/note?id=" + noteId);
     }

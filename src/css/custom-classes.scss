@@ -1,14 +1,25 @@
-@import "variables";
+@import 'variables';
 
 .no-select {
-  user-select: none;
+    user-select: none;
 }
 
 .selected-item {
-  @extend .color-primary;
-  background-color: $color-selected;
+    @extend .color-primary;
+    background-color: $color-selected;
 }
 
 .selected-icon {
-  @extend .color-primary;
+    @extend .color-primary;
+}
+
+.viewport-height {
+    height: calc(100vh - var(--height-correction));
+}
+
+.main-logo {
+    position: absolute;
+    top: 40px;
+    left: 16px;
+    z-index: 2;
 }

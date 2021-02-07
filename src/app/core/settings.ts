@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import * as Store from 'electron-store';
-import { Constants } from '../core/constants';
 import { remote } from 'electron';
+import * as Store from 'electron-store';
 import * as os from 'os';
+import { Constants } from '../core/constants';
 
 @Injectable({
     providedIn: 'root',
@@ -29,8 +29,8 @@ export class Settings {
         this.settings.set('language', v);
     }
 
-     // Check for updates
-     public get checkForUpdates(): boolean {
+    // Check for updates
+    public get checkForUpdates(): boolean {
         return this.settings.get('checkForUpdates');
     }
 
@@ -111,6 +111,15 @@ export class Settings {
         this.settings.set('activeCollection', v);
     }
 
+    // Active collection
+    public get notebooksPaneWidth(): number {
+        return this.settings.get('notebooksPaneWidth');
+    }
+
+    public set notebooksPaneWidth(v: number) {
+        this.settings.set('notebooksPaneWidth', v);
+    }
+
     private initialize(): void {
         // storageDirectory and activeCollection cannot be initialized here.
         // Their value is set later, depending on user action.
@@ -143,7 +152,7 @@ export class Settings {
             // Check if the color theme which is saved in the settings still exists
             // in the app (The color themes might change between releases).
             // If not, reset the color theme setting to the default color theme.
-            if (!Constants.colorThemes.map(x => x.name).includes(settingsColorThemeName)) {
+            if (!Constants.colorThemes.map((x) => x.name).includes(settingsColorThemeName)) {
                 this.settings.set('colorTheme', 'default-blue-theme');
             }
         }
@@ -158,6 +167,10 @@ export class Settings {
 
         if (!this.settings.has('showExactDatesInTheNotesList')) {
             this.settings.set('showExactDatesInTheNotesList', false);
+        }
+
+        if (!this.settings.has('notebooksPaneWidth')) {
+            this.settings.set('notebooksPaneWidth', 300);
         }
     }
 }

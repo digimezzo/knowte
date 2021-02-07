@@ -2,10 +2,7 @@
 @import 'theming';
 
 .notes {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: calc(100% - 16px);
+    height: 100%;
     width: 100%;
 }
 
@@ -135,10 +132,4 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-cdk-virtual-scroll-viewport {
-    height: 100%;
-    width: calc(100% - 32px);
-    overflow-x: hidden !important;
 }

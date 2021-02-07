@@ -1,4 +1,4 @@
-<div class="notes mx-2 mb-2">
+<div class="notes">
     <!-- Drag image -->
     <div class="drag-image no-select" id="drag-image">
         <div class="drag-image-icon">
@@ -12,49 +12,46 @@
         </div>
     </div>
     <!-- Notes list -->
-
-    <ul class="notes-list">
-        <cdk-virtual-scroll-viewport itemSize="48">
-            <li [ngClass]="{ 'selected-item': note.isSelected }" *cdkVirtualFor="let note of notes" matRipple>
-                <div
-                    class="note-item no-select"
-                    (dblclick)="openNote(note)"
-                    [matTooltipShowDelay]="500"
-                    matTooltip="{{ 'Tooltips.LastChanged' | translate }}: {{ note.displayExactModificationDate }}"
-                    (click)="setSelectedNotes(note, $event)"
-                    draggable="true"
-                    (dragstart)="dragStart($event, note)"
-                >
-                    <div class="note-item-icon">
-                        <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg" />
+    <cdk-virtual-scroll-viewport class="notes-list" itemSize="48">
+        <div [ngClass]="{ 'selected-item': note.isSelected }" *cdkVirtualFor="let note of notes" matRipple>
+            <div
+                class="note-item no-select"
+                (dblclick)="openNote(note)"
+                [matTooltipShowDelay]="500"
+                matTooltip="{{ 'Tooltips.LastChanged' | translate }}: {{ note.displayExactModificationDate }}"
+                (click)="setSelectedNotes(note, $event)"
+                draggable="true"
+                (dragstart)="dragStart($event, note)"
+            >
+                <div class="note-item-icon">
+                    <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg" />
+                </div>
+                <div class="note-item-info px-1">
+                    <div class="note-item-info-title">
+                        <span>{{ note.title }}</span>
                     </div>
-                    <div class="note-item-info px-1">
-                        <div class="note-item-info-title">
-                            <span>{{ note.title }}</span>
-                        </div>
-                        <div class="note-item-info-date-and-tasks">
-                            <span>{{ note.displayModificationDate }}</span>
-                            <app-tasks-progress
-                                class="ml-2"
-                                *ngIf="note.totalTasksCount > 0"
-                                [closedTasksCount]="note.closedTasksCount"
-                                [totalTasksCount]="note.totalTasksCount"
-                            >
-                            </app-tasks-progress>
-                        </div>
-                    </div>
-                    <div class="note-item-actions">
-                        <div (click)="toggleNoteMark(note)">
-                            <span class="note-item-actions-heart-marked" *ngIf="note.isMarked">
-                                <i class="custom-font las la-heart"></i>
-                            </span>
-                            <span class="note-item-actions-heart-unmarked" *ngIf="!note.isMarked">
-                                <i class="custom-font lar la-heart"></i>
-                            </span>
-                        </div>
+                    <div class="note-item-info-date-and-tasks">
+                        <span>{{ note.displayModificationDate }}</span>
+                        <app-tasks-progress
+                            class="ml-2"
+                            *ngIf="note.totalTasksCount > 0"
+                            [closedTasksCount]="note.closedTasksCount"
+                            [totalTasksCount]="note.totalTasksCount"
+                        >
+                        </app-tasks-progress>
                     </div>
                 </div>
-            </li>
-        </cdk-virtual-scroll-viewport>
-    </ul>
+                <div class="note-item-actions">
+                    <div (click)="toggleNoteMark(note)">
+                        <span class="note-item-actions-heart-marked" *ngIf="note.isMarked">
+                            <i class="custom-font las la-heart"></i>
+                        </span>
+                        <span class="note-item-actions-heart-unmarked" *ngIf="!note.isMarked">
+                            <i class="custom-font lar la-heart"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </cdk-virtual-scroll-viewport>
 </div>

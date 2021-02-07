@@ -1,30 +1,45 @@
+<app-logo-main class="main-logo"></app-logo-main>
 <div class="window-frame">
     <div class="window-frame-titlebar">
-        <div class="window-frame-titlebar-dragarea pl-1">
-        </div>
+        <div class="window-frame-titlebar-dragarea pl-1"></div>
         <app-collection-switcher *ngIf="!appearance.windowHasNativeTitleBar"></app-collection-switcher>
         <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
     </div>
-    <div class="window-frame-content" [ngStyle]="{'top': appearance.windowHasNativeTitleBar ? '10px' : '32px' }">
-        <app-logo-menu class="settings-logo-menu" [selectedMenuItem]="2"></app-logo-menu>
-        <div class="settings">
-            <mat-tab-group>
+    <div class="window-frame-overlay" *ngIf="isBusy">
+        <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
+    </div>
+    <div class="window-frame-content" [ngStyle]="{ top: appearance.windowHasNativeTitleBar ? '10px' : '32px' }">
+        <div class="app-settings">
+            <mat-tab-group class="app-settings__headers" [(selectedIndex)]="selectedIndex">
                 <mat-tab>
                     <ng-template mat-tab-label>
                         <h4>{{ 'SettingsTabs.Appearance' | translate }}</h4>
                     </ng-template>
-                    <!-- Theme -->
+                </mat-tab>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <h4>{{ 'SettingsTabs.Notes' | translate }}</h4>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <h4>{{ 'SettingsTabs.Advanced' | translate }}</h4>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+            <app-main-menu class="app-settings__menu" [selectedMenuItem]="2"></app-main-menu>
+            <mat-tab-group class="app-settings__content viewport-height" [(selectedIndex)]="selectedIndex">
+                <mat-tab>
                     <div class="m-3">
                         <h1>{{ 'SettingsPage.Color' | translate }}</h1>
                         <app-color-theme-switcher class="mt-2"></app-color-theme-switcher>
                     </div>
-                    <hr>
+                    <hr />
                     <div class="m-3">
                         <h1>{{ 'SettingsPage.FontSize' | translate }}</h1>
                         <app-font-size-switcher class="mt-2"></app-font-size-switcher>
                     </div>
-                    <hr>
-                    <!-- Language -->
+                    <hr />
                     <div class="m-3">
                         <h1 class="mt-2">{{ 'SettingsPage.Language' | translate }}</h1>
                         <mat-form-field>
@@ -35,21 +50,18 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <!-- Title bar -->
                     <div class="m-3">
                         <h1 class="mt-2">{{ 'SettingsPage.TitleBar' | translate }}</h1>
                         <mat-slide-toggle class="mt-2" [(ngModel)]="useCustomTitleBarChecked">
-                            {{ 'SettingsPage.UseCustomTitleBar' | translate }}</mat-slide-toggle>
+                            {{ 'SettingsPage.UseCustomTitleBar' | translate }}</mat-slide-toggle
+                        >
                     </div>
                 </mat-tab>
                 <mat-tab>
-                    <ng-template mat-tab-label>
-                        <h4>{{ 'SettingsTabs.Notes' | translate }}</h4>
-                    </ng-template>
-                    <!--Font size in notes -->
                     <div class="m-3">
                         <h1>{{ 'SettingsPage.FontSize' | translate }}</h1>
-                        <div>{{ 'SettingsPage.FontSizeInNotes' | translate }}:
+                        <div>
+                            {{ 'SettingsPage.FontSizeInNotes' | translate }}:
                             <mat-form-field class="font-size-selector mx-1">
                                 <mat-select [(ngModel)]="selectedFontSize">
                                     <mat-option *ngFor="let fontSize of fontSizes" [value]="fontSize">
@@ -60,33 +72,29 @@
                             {{ 'SettingsPage.PixelsShort' | translate }}
                         </div>
                     </div>
-                    <hr>
-                    <!-- Closing -->
+                    <hr />
                     <div class="m-3">
                         <h1 class="mt-2">{{ 'SettingsPage.Closing' | translate }}</h1>
                         <mat-slide-toggle class="mt-2" [(ngModel)]="closeNotesWithEscapeChecked">
-                            {{ 'SettingsPage.CloseNotesWithEscape' | translate }}</mat-slide-toggle>
+                            {{ 'SettingsPage.CloseNotesWithEscape' | translate }}</mat-slide-toggle
+                        >
                     </div>
-                    <hr>
-                    <!-- Dates -->
+                    <hr />
                     <div class="m-3">
                         <h1 class="mt-2">{{ 'SettingsPage.Dates' | translate }}</h1>
                         <mat-slide-toggle class="mt-2" [(ngModel)]="showExactDatesInTheNotesListChecked">
-                            {{ 'SettingsPage.ShowExactDatesInTheNotesList' | translate }}</mat-slide-toggle>
+                            {{ 'SettingsPage.ShowExactDatesInTheNotesList' | translate }}</mat-slide-toggle
+                        >
                     </div>
                 </mat-tab>
                 <mat-tab>
-                    <ng-template mat-tab-label>
-                        <h4>{{ 'SettingsTabs.Advanced' | translate }}</h4>
-                    </ng-template>
-                    <!-- Updates -->
                     <div class="m-3">
                         <h1 class="mt-2">{{ 'SettingsPage.Updates' | translate }}</h1>
                         <mat-slide-toggle class="mt-2" [(ngModel)]="checkForUpdatesChecked">
-                            {{ 'SettingsPage.CheckForUpdates' | translate }}</mat-slide-toggle>
+                            {{ 'SettingsPage.CheckForUpdates' | translate }}</mat-slide-toggle
+                        >
                     </div>
-                    <hr>
-                    <!-- Import -->
+                    <hr />
                     <div class="m-3">
                         <h1>{{ 'SettingsPage.Import' | translate }}</h1>
                         <p>{{ 'SettingsPage.ImportFromOldVersion' | translate }}</p>

@@ -1,12 +1,12 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, HostListener, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BrowserWindow, remote, SaveDialogOptions } from 'electron';
 import * as electronLocalshortcut from 'electron-localshortcut';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import Quill from 'quill';
+import * as Quill from 'quill';
 import BlotFormatter from 'quill-blot-formatter';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
@@ -39,8 +39,8 @@ import { CustomImageSpec } from './custom-image-spec';
             state('default', style({ transform: 'rotate(0)' })),
             state('rotated', style({ transform: 'rotate(90deg)' })),
             transition('rotated => default', animate('250ms ease-out')),
-            transition('default => rotated', animate('250ms ease-in'))
-        ])
+            transition('default => rotated', animate('250ms ease-in')),
+        ]),
     ],
 })
 export class NoteComponent implements OnInit, OnDestroy {
@@ -62,11 +62,19 @@ export class NoteComponent implements OnInit, OnDestroy {
     private pasteContextMenuItem: any;
     private deleteContextMenuItem: any;
 
-    constructor(private activatedRoute: ActivatedRoute, private zone: NgZone, private dialog: MatDialog, private logger: Logger,
-        private snackBar: SnackBarService, private translator: TranslatorService, private settings: Settings,
-        public appearance: AppearanceService, private clipboard: ClipboardManager, private worker: WorkerManager,
-        private productDetails: ProductDetails) {
-    }
+    constructor(
+        private activatedRoute: ActivatedRoute,
+        private zone: NgZone,
+        private dialog: MatDialog,
+        private logger: Logger,
+        private snackBar: SnackBarService,
+        private translator: TranslatorService,
+        private settings: Settings,
+        public appearance: AppearanceService,
+        private clipboard: ClipboardManager,
+        private worker: WorkerManager,
+        private productDetails: ProductDetails
+    ) {}
 
     public noteId: string;
     public initialNoteTitle: string;
@@ -80,8 +88,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     public actionIconRotation: string = 'default';
     public canSearch: boolean = false;
 
-    public ngOnDestroy(): void {
-    }
+    public ngOnDestroy(): void {}
 
     public async ngOnInit(): Promise<void> {
         this.setEditorFontSize();
@@ -91,13 +98,22 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         const toolbarOptions: any = [
             [
-                'bold', 'italic', 'underline', 'strike',
-                { 'background': [] },
-                { 'header': 1 }, { 'header': 2 },
-                { 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' },
-                'link', 'blockquote', 'code-block', 'image',
-                'clean'
-            ]
+                'bold',
+                'italic',
+                'underline',
+                'strike',
+                { background: [] },
+                { header: 1 },
+                { header: 2 },
+                { list: 'ordered' },
+                { list: 'bullet' },
+                { list: 'check' },
+                'link',
+                'blockquote',
+                'code-block',
+                'image',
+                'clean',
+            ],
         ];
 
         Quill.register('modules/blotFormatter', BlotFormatter);
@@ -106,8 +122,8 @@ export class NoteComponent implements OnInit, OnDestroy {
             modules: {
                 toolbar: toolbarOptions,
                 blotFormatter: {
-                    specs: [CustomImageSpec]
-                }
+                    specs: [CustomImageSpec],
+                },
             },
             placeholder: notePlaceHolder,
             theme: 'snow',
@@ -119,7 +135,6 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.isTextDirty = true;
             this.clearSearch();
             this.noteTextChanged.next('');
-
         });
 
         // Forces paste of unformatted text
@@ -138,33 +153,29 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.applySearch();
         });
 
-        this.noteTitleChanged
-            .pipe(debounceTime(this.saveTimeoutMilliseconds))
-            .subscribe((finalNoteTitle) => {
-                this.globalEmitter.emit(
-                    Constants.setNoteTitleEvent,
-                    this.noteId,
-                    this.initialNoteTitle,
-                    finalNoteTitle,
-                    this.setNoteTitleCallbackAsync.bind(this));
-            });
+        this.noteTitleChanged.pipe(debounceTime(this.saveTimeoutMilliseconds)).subscribe((finalNoteTitle) => {
+            this.globalEmitter.emit(
+                Constants.setNoteTitleEvent,
+                this.noteId,
+                this.initialNoteTitle,
+                finalNoteTitle,
+                this.setNoteTitleCallbackAsync.bind(this)
+            );
+        });
 
-        this.noteTextChanged
-            .pipe(debounceTime(this.saveTimeoutMilliseconds))
-            .subscribe(async (_) => {
-                this.globalEmitter.emit(
-                    Constants.setNoteTextEvent,
-                    this.noteId,
-                    this.quill.getText(),
-                    this.getTasksCount(),
-                    this.setNoteTextCallbackAsync.bind(this));
-            });
+        this.noteTextChanged.pipe(debounceTime(this.saveTimeoutMilliseconds)).subscribe(async (_) => {
+            this.globalEmitter.emit(
+                Constants.setNoteTextEvent,
+                this.noteId,
+                this.quill.getText(),
+                this.getTasksCount(),
+                this.setNoteTextCallbackAsync.bind(this)
+            );
+        });
 
-        this.saveChangesAndCloseNoteWindow
-            .pipe(debounceTime(this.windowCloseTimeoutMilliseconds))
-            .subscribe((_) => {
-                this.saveAndClose();
-            });
+        this.saveChangesAndCloseNoteWindow.pipe(debounceTime(this.windowCloseTimeoutMilliseconds)).subscribe((_) => {
+            this.saveAndClose();
+        });
 
         document.onpaste = (e: ClipboardEvent) => {
             if (this.clipboard.containsImage()) {
@@ -194,16 +205,21 @@ export class NoteComponent implements OnInit, OnDestroy {
         toolbarElement.querySelector('button.ql-underline').setAttribute('title', await this.translator.getAsync('Tooltips.Underline'));
         toolbarElement.querySelector('button.ql-strike').setAttribute('title', await this.translator.getAsync('Tooltips.Strikethrough'));
 
-        toolbarElement.querySelector('[class="ql-header"][value="1"]')
+        toolbarElement
+            .querySelector('[class="ql-header"][value="1"]')
             .setAttribute('title', await this.translator.getAsync('Tooltips.Heading1'));
-        toolbarElement.querySelector('[class="ql-header"][value="2"]')
+        toolbarElement
+            .querySelector('[class="ql-header"][value="2"]')
             .setAttribute('title', await this.translator.getAsync('Tooltips.Heading2'));
 
-        toolbarElement.querySelector('[class="ql-list"][value="ordered"]')
+        toolbarElement
+            .querySelector('[class="ql-list"][value="ordered"]')
             .setAttribute('title', await this.translator.getAsync('Tooltips.NumberedList'));
-        toolbarElement.querySelector('[class="ql-list"][value="bullet"]')
+        toolbarElement
+            .querySelector('[class="ql-list"][value="bullet"]')
             .setAttribute('title', await this.translator.getAsync('Tooltips.BulletedList'));
-        toolbarElement.querySelector('[class="ql-list"][value="check"]')
+        toolbarElement
+            .querySelector('[class="ql-list"][value="check"]')
             .setAttribute('title', await this.translator.getAsync('Tooltips.TaskList'));
 
         toolbarElement.querySelector('button.ql-link').setAttribute('title', await this.translator.getAsync('Tooltips.Link'));
@@ -233,7 +249,8 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.logger.info(
                 `Note with id=${this.noteId} is dirty. Preventing close to save changes first.`,
                 'NoteComponent',
-                'beforeunloadHandler');
+                'beforeunloadHandler'
+            );
             event.preventDefault();
             event.returnValue = '';
 
@@ -282,7 +299,8 @@ export class NoteComponent implements OnInit, OnDestroy {
         const text: string = await this.translator.getAsync('DialogTexts.ConfirmDeleteNote', { noteTitle: this.noteTitle });
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
-            width: '450px', data: { dialogTitle: title, dialogText: text }
+            width: '450px',
+            data: { dialogTitle: title, dialogText: text },
         });
 
         dialogRef.afterClosed().subscribe(async (result) => {
@@ -328,12 +346,14 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.logger.error(
                 `An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`,
                 'NoteComponent',
-                'exportNoteAsync');
+                'exportNoteAsync'
+            );
 
-            const errorText: string = (await this.translator.getAsync('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle }));
+            const errorText: string = await this.translator.getAsync('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle });
 
             this.dialog.open(ErrorDialogComponent, {
-                width: '450px', data: { errorText: errorText }
+                width: '450px',
+                data: { errorText: errorText },
             });
         }
     }
@@ -345,28 +365,28 @@ export class NoteComponent implements OnInit, OnDestroy {
             label: await this.translator.getAsync('ContextMenu.Cut'),
             click: () => {
                 this.performCut();
-            }
+            },
         });
 
         this.copyContextMenuItem = new remote.MenuItem({
             label: await this.translator.getAsync('ContextMenu.Copy'),
             click: () => {
                 this.performCopy();
-            }
+            },
         });
 
         this.pasteContextMenuItem = new remote.MenuItem({
             label: await this.translator.getAsync('ContextMenu.Paste'),
             click: () => {
                 this.performPaste();
-            }
+            },
         });
 
         this.deleteContextMenuItem = new remote.MenuItem({
             label: await this.translator.getAsync('ContextMenu.Delete'),
             click: () => {
                 this.performDelete();
-            }
+            },
         });
 
         this.contextMenu.append(this.cutContextMenuItem);
@@ -534,8 +554,10 @@ export class NoteComponent implements OnInit, OnDestroy {
                             const window: BrowserWindow = remote.getCurrentWindow();
                             window.close();
                         }
-                    });
-            });
+                    }
+                );
+            }
+        );
     }
 
     private getNoteDetailsCallback(result: NoteDetailsResult): void {
@@ -559,7 +581,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private noteMarkChangedHandler(noteId: string, isMarked: boolean): void {
         if (this.noteId === noteId) {
-            this.zone.run(() => this.isMarked = isMarked);
+            this.zone.run(() => (this.isMarked = isMarked));
         }
     }
 
@@ -612,20 +634,21 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     private handleNoteMarkToggled(isNoteMarked: boolean): void {
-        this.zone.run(() => this.isMarked = isNoteMarked);
+        this.zone.run(() => (this.isMarked = isNoteMarked));
     }
 
     private async setNoteTitleCallbackAsync(result: NoteOperationResult): Promise<void> {
         if (result.operation === Operation.Blank) {
-            this.zone.run(() => this.noteTitle = this.initialNoteTitle);
+            this.zone.run(() => (this.noteTitle = this.initialNoteTitle));
             this.snackBar.noteTitleCannotBeEmptyAsync();
         } else if (result.operation === Operation.Error) {
-            this.zone.run(() => this.noteTitle = this.initialNoteTitle);
+            this.zone.run(() => (this.noteTitle = this.initialNoteTitle));
             const errorText: string = await this.translator.getAsync('ErrorTexts.RenameNoteError', { noteTitle: this.initialNoteTitle });
 
             this.zone.run(() => {
                 this.dialog.open(ErrorDialogComponent, {
-                    width: '450px', data: { errorText: errorText }
+                    width: '450px',
+                    data: { errorText: errorText },
                 });
             });
         } else if (result.operation === Operation.Success) {
@@ -648,7 +671,8 @@ export class NoteComponent implements OnInit, OnDestroy {
         const jsonContent: string = JSON.stringify(this.quill.getContents());
         fs.writeFileSync(
             path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${this.noteId}${Constants.noteContentExtension}`),
-            jsonContent);
+            jsonContent
+        );
     }
 
     private async setNoteTextCallbackAsync(operation: Operation): Promise<void> {
@@ -661,7 +685,8 @@ export class NoteComponent implements OnInit, OnDestroy {
                 this.logger.error(
                     `Could not set text for the note with id='${this.noteId}' in the note file. Cause: ${error}`,
                     'NoteComponent',
-                    'setNoteTextCallbackAsync');
+                    'setNoteTextCallbackAsync'
+                );
                 showErrorDialog = true;
             }
         } else if (operation === Operation.Error) {
@@ -675,7 +700,8 @@ export class NoteComponent implements OnInit, OnDestroy {
 
             this.zone.run(() => {
                 this.dialog.open(ErrorDialogComponent, {
-                    width: '450px', data: { errorText: errorText }
+                    width: '450px',
+                    data: { errorText: errorText },
                 });
             });
         }
@@ -710,18 +736,21 @@ export class NoteComponent implements OnInit, OnDestroy {
                 this.logger.error(
                     `Could not get the content for the note with id='${this.noteId}'`,
                     'NoteComponent',
-                    'getNoteDetailsAsync');
+                    'getNoteDetailsAsync'
+                );
             }
         } catch (error) {
             this.logger.error(
                 `Could not get the content for the note with id='${this.noteId}'. Cause: ${error}`,
                 'NoteComponent',
-                'getNoteDetailsAsync');
+                'getNoteDetailsAsync'
+            );
 
             const errorText: string = await this.translator.getAsync('ErrorTexts.GetNoteContentError');
 
             this.dialog.open(ErrorDialogComponent, {
-                width: '450px', data: { errorText: errorText }
+                width: '450px',
+                data: { errorText: errorText },
             });
         }
     }
@@ -729,7 +758,6 @@ export class NoteComponent implements OnInit, OnDestroy {
     private hideActionButtons(): void {
         this.canPerformActions = false;
         this.rotateActionsButton();
-
     }
 
     private async hideActionButtonsDelayedAsync(): Promise<void> {

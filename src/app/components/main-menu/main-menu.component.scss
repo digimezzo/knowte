@@ -1,0 +1,18 @@
+@import 'variables';
+
+.app-main-menu {
+    display: flex;
+    flex-direction: row;
+}
+
+.app-main-menu__item {
+    text-transform: lowercase;
+    margin-left: 16px;
+    color: $color-grey;
+    cursor: pointer;
+}
+
+.app-main-menu__selected {
+    color: black;
+    font-weight: bold;
+}

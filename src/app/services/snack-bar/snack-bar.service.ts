@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslatorService } from '../translator/translator.service';
 
 @Injectable({
