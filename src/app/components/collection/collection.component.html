@@ -62,11 +62,11 @@
                                         (drop)="notebookDrop($event, notebook)"
                                         (dragover)="notebookDragOver($event, notebook)"
                                         (dragleave)="notebookDragLeave($event)"
+                                        (click)="setSelectedNotebooks(notebook, $event)"
                                     >
                                         <p
                                             class="notebook__name no-select mx-1"
                                             [ngStyle]="{ 'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
-                                            (click)="setSelectedNotebooks(notebook, $event)"
                                         >
                                             {{ notebook.name }}
                                         </p>
