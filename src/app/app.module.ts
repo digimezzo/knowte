@@ -32,8 +32,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ActiveNotebookAndSearchComponent } from './components/active-notebook-and-search/active-notebook-and-search.component';
 import { CollectionSwitcherComponent } from './components/collection-switcher/collection-switcher.component';
-import { CollectionNotebooksComponent } from './components/collection/collection-notebooks/collection-notebooks.component';
-import { CollectionNotesComponent } from './components/collection/collection-notes/collection-notes.component';
 import { CollectionComponent } from './components/collection/collection.component';
 import { ColorThemeSwitcherComponent } from './components/color-theme-switcher/color-theme-switcher.component';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmation-dialog/confirmation-dialog.component';
@@ -107,8 +105,6 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         ColorThemeSwitcherComponent,
         FontSizeSwitcherComponent,
         NoteComponent,
-        CollectionNotebooksComponent,
-        CollectionNotesComponent,
         WebviewDirective,
         TruncatePipe,
     ],

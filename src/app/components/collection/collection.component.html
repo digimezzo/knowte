@@ -46,10 +46,35 @@
             <div class="app-collection__content viewport-height">
                 <as-split gutterSize="4" unit="pixel" direction="horizontal" (dragEnd)="dragEnd($event)" #split="asSplit">
                     <as-split-area class="pt-2 pb-2" [size]="area1Size" minSize="10" #area1="asSplitArea">
-                        <div class="notebooks-pane"><app-collection-notebooks></app-collection-notebooks></div>
+                        <div class="notebooks-pane pl-2 pr-2">
+                            <!-- Notebooks -->
+                            <div class="notebooks-pane__title no-select">
+                                <h3>{{ 'MainPage.Notebooks' | translate }}</h3>
+                                <div class="count-label">{{ notebooksCount }}</div>
+                            </div>
+                            <ul class="notebooks-pane__list">
+                                <li
+                                    class="notebook"
+                                    matRipple
+                                    [ngClass]="{ 'selected-item': notebook.isSelected, 'drop-notebook': notebook === hoveredNotebook }"
+                                    *ngFor="let notebook of notebooks"
+                                    (drop)="notebookDrop($event, notebook)"
+                                    (dragover)="notebookDragOver($event, notebook)"
+                                    (dragleave)="notebookDragLeave($event)"
+                                >
+                                    <p
+                                        class="notebook__name no-select mx-1"
+                                        [ngStyle]="{ 'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
+                                        (click)="setSelectedNotebooks(notebook, $event)"
+                                    >
+                                        {{ notebook.name }}
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
                     </as-split-area>
                     <as-split-area class="pt-2 pb-2" size="*" #area2="asSplitArea">
-                        <div class="notes-pane"><app-collection-notes></app-collection-notes></div>
+                        <div class="notes-pane"><!-- Notes --></div>
                     </as-split-area>
                 </as-split>
             </div>

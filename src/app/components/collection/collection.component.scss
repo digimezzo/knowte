@@ -42,6 +42,35 @@
 .notebooks-pane {
     height: 100%;
     border-right: 1px solid $color-lightgrey;
+    display: flex;
+    flex-direction: column;
+}
+
+.notebooks-pane__title {
+    display: flex;
+    flex-direction: row;
+}
+
+.notebooks-pane__list {
+    flex: 1;
+    overflow: auto;
+}
+
+.notebook {
+    display: flex;
+    align-items: center;
+    font-size: var(--fontsize-normal) !important;
+    cursor: default !important;
+    height: 40px;
+}
+
+.notebook:hover {
+    background: $color-hover;
+}
+
+.notebook-name {
+    height: 40px;
+    line-height: 40px;
 }
 
 .notes-pane {
