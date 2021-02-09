@@ -1,41 +1,37 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Knowte</title>
+        <base href="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    </head>
 
-<head>
-  <meta charset="utf-8">
-  <title>Knowte</title>
-  <base href="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-</head>
+    <body class="mat-app-background mat-typography">
+        <script>
+            const remote = require('electron').remote;
+            const windowHasFrame = remote.getGlobal('windowHasFrame');
+            const element = document.documentElement;
 
-<body>
-  <script>
-    const remote = require('electron').remote;
-    const windowHasFrame = remote.getGlobal('windowHasFrame');
-    const element = document.documentElement;
-
-    if (windowHasFrame === true) {
-      element.style.setProperty('--loader-titlebar-height', '0px')
-    } else {
-      element.style.setProperty('--loader-titlebar-height', '32px');
-    }
-  </script>
-  <app-root>
-    <div class="loader">
-      <div class="loader-titlebar">
-      </div>
-      <div class="loader-header">
-      </div>
-      <div class="loader-body">
-        <div class="spinner">
-          <div class="bounce1"></div>
-          <div class="bounce2"></div>
-          <div class="bounce3"></div>
-        </div>
-      </div>
-    </div>
-  </app-root>
-</body>
-
+            if (windowHasFrame === true) {
+                element.style.setProperty('--loader-titlebar-height', '0px');
+            } else {
+                element.style.setProperty('--loader-titlebar-height', '32px');
+            }
+        </script>
+        <app-root>
+            <div class="loader">
+                <div class="loader-titlebar"></div>
+                <div class="loader-header"></div>
+                <div class="loader-body">
+                    <div class="spinner">
+                        <div class="bounce1"></div>
+                        <div class="bounce2"></div>
+                        <div class="bounce3"></div>
+                    </div>
+                </div>
+            </div>
+        </app-root>
+    </body>
 </html>

@@ -17,8 +17,8 @@
                     matTooltip="{{ 'Tooltips.Actions' | translate }}"
                 >
                     <div [@actionIconRotation]="actionIconRotation">
-                        <i class="note-content-floating-button-icon custom-font las la-edit" *ngIf="!canPerformActions"></i>
-                        <i class="note-content-floating-button-icon custom-font las la-times" *ngIf="canPerformActions"></i>
+                        <i class="note-content-floating-button-icon las la-edit" *ngIf="!canPerformActions"></i>
+                        <i class="note-content-floating-button-icon las la-times" *ngIf="canPerformActions"></i>
                     </div>
                 </button>
                 <button
@@ -29,7 +29,7 @@
                     (click)="toggleNoteMark()"
                     matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}"
                 >
-                    <i class="note-content-floating-button-icon-action custom-font las la-heart"></i>
+                    <i class="note-content-floating-button-icon-action las la-heart"></i>
                 </button>
                 <button
                     *ngIf="canPerformActions && !isMarked"
@@ -39,7 +39,7 @@
                     (click)="toggleNoteMark()"
                     matTooltip="{{ 'Tooltips.MarkNote' | translate }}"
                 >
-                    <i class="note-content-floating-button-icon-action custom-font lar la-heart"></i>
+                    <i class="note-content-floating-button-icon-action lar la-heart"></i>
                 </button>
                 <button
                     *ngIf="canPerformActions"
@@ -49,7 +49,7 @@
                     (click)="exportNoteAsync()"
                     matTooltip="{{ 'Tooltips.ExportNote' | translate }}"
                 >
-                    <i class="note-content-floating-button-icon-action custom-font las la-file-export"></i>
+                    <i class="note-content-floating-button-icon-action las la-file-export"></i>
                 </button>
                 <button
                     *ngIf="canPerformActions"
@@ -59,7 +59,7 @@
                     (click)="exportNoteToPdf()"
                     matTooltip="{{ 'Tooltips.ExportNoteToPdf' | translate }}"
                 >
-                    <i class="note-content-floating-button-icon-action custom-font lar la-file-pdf"></i>
+                    <i class="note-content-floating-button-icon-action lar la-file-pdf"></i>
                 </button>
                 <button
                     *ngIf="canPerformActions"
@@ -69,7 +69,7 @@
                     (click)="printNote()"
                     matTooltip="{{ 'Tooltips.PrintNote' | translate }}"
                 >
-                    <i class="note-content-floating-button-icon-action custom-font las la-print"></i>
+                    <i class="note-content-floating-button-icon-action las la-print"></i>
                 </button>
                 <button
                     *ngIf="canPerformActions"
@@ -79,7 +79,7 @@
                     (click)="deleteNoteAsync()"
                     matTooltip="{{ 'Tooltips.DeleteNote' | translate }}"
                 >
-                    <i class="note-content-floating-button-icon-action custom-font las la-trash-alt"></i>
+                    <i class="note-content-floating-button-icon-action las la-trash-alt"></i>
                 </button>
             </div>
             <div class="note-content-fixed" (click)="onFixedContentClick()">

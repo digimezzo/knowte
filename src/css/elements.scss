@@ -7,10 +7,6 @@
     vertical-align: baseline;
     outline: none; // Removes yellow outline on elements
     -webkit-font-smoothing: subpixel-antialiased;
-}
-
-* :not(.custom-font) {
-    font-family: opensans !important;
     font-size: var(--fontsize-normal);
 }
 
@@ -41,7 +37,7 @@ h1 {
     @extend .mb-1;
     font-size: var(--fontsize-larger) !important;
     font-weight: normal !important;
-    margin-bottom: 8px !important;
+    margin: 0px 0px 8px 0px !important;
 }
 
 h2 {
@@ -49,18 +45,21 @@ h2 {
     color: #748393;
     font-size: var(--fontsize-large) !important;
     font-weight: normal !important;
+    margin: 0px !important;
 }
 
 h3 {
     @extend .mb-1;
     font-size: var(--fontsize-larger) !important;
     font-weight: lighter !important;
+    margin: 0px !important;
 }
 
 h4 {
     font-size: var(--fontsize-larger) !important;
     font-weight: lighter !important;
     text-transform: uppercase;
+    margin: 0px !important;
 }
 
 a {
@@ -70,6 +69,10 @@ a {
 
 hr {
     border-bottom: 1px solid #dedede;
+}
+
+p {
+    margin: 0px !important;
 }
 
 ::selection {

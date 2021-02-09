@@ -1,8 +1,8 @@
 @import 'variables';
 
-.dialog-header{
+.dialog-header {
     background-color: $color-darkgrey;
-    margin: -24px -24px 24px -24px ! important;
+    margin: -24px -24px 24px -24px !important;
     height: 64px;
     line-height: 64px;
 }
@@ -20,9 +20,11 @@
     width: 100%;
     height: 100%;
     z-index: 1;
+    display: flex;
+    align-items: center;
 }
 
-.dialog-header-content-foreground-title{
+.dialog-header-content-foreground-title {
     padding-left: 24px;
     padding-right: 24px;
     color: white;

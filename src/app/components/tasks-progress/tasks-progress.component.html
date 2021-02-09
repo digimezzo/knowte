@@ -1,11 +1,10 @@
 <div class="tasks-progress">
-    <i class="tasks-progress-icon custom-font las la-tasks"></i>
-    <span
-        class="tasks-progress-count ml-1">{{ 'MainPage.TasksCount' | translate:{ closedTasksCount: closedTasksCount, totalTasksCount: totalTasksCount } }}</span>
+    <i class="tasks-progress-icon las la-tasks"></i>
+    <span class="tasks-progress-count ml-1">{{
+        'MainPage.TasksCount' | translate: { closedTasksCount: closedTasksCount, totalTasksCount: totalTasksCount }
+    }}</span>
     <div class="tasks-progress-bar ml-1">
-        <div class="tasks-progress-bar-handle" [style.width.px]="width">
-        </div>
-        <div class="tasks-progress-bar-track">
-        </div>
+        <div class="tasks-progress-bar-handle" [style.width.px]="width"></div>
+        <div class="tasks-progress-bar-track"></div>
     </div>
 </div>

@@ -41,15 +41,9 @@
                         </app-tasks-progress>
                     </div>
                 </div>
-                <div class="note-item-actions">
-                    <div (click)="toggleNoteMark(note)">
-                        <span class="note-item-actions-heart-marked" *ngIf="note.isMarked">
-                            <i class="custom-font las la-heart"></i>
-                        </span>
-                        <span class="note-item-actions-heart-unmarked" *ngIf="!note.isMarked">
-                            <i class="custom-font lar la-heart"></i>
-                        </span>
-                    </div>
+                <div class="note-item-actions" (click)="toggleNoteMark(note)">
+                    <i class="note-item-actions-heart-marked las la-heart" *ngIf="note.isMarked"></i>
+                    <i class="note-item-actions-heart-unmarked lar la-heart" *ngIf="!note.isMarked"></i>
                 </div>
             </div>
         </div>

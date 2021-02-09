@@ -2,18 +2,25 @@
     <div class="notebook-switcher-selected-notebook no-select mr-1">
         {{ selectedNotebookName }}
     </div>
-    <div class="window-button notebook-swichter-button" mat-icon-button [matMenuTriggerFor]="menu"
-        matTooltip="{{ 'Tooltips.ChangeNotebook' | translate }}" (click)="getNotebooks()">
-        <i class="custom-font las la-ellipsis-v"></i>
+    <div
+        class="window-button"
+        mat-icon-button
+        [matMenuTriggerFor]="menu"
+        matTooltip="{{ 'Tooltips.ChangeNotebook' | translate }}"
+        (click)="getNotebooks()"
+    >
+        <i class="notebook-switcher-button las la-ellipsis-v"></i>
     </div>
 </div>
 <mat-menu #menu="matMenu">
     <div *ngFor="let notebook of notebooks">
         <button class="menu-button" mat-menu-item>
-            <span class="menu-item" (click)="changeNotebook(notebook)"
-                [ngStyle]="{'font-weight':notebook.id === '1' ? 'bold' : 'normal' }">
-                <i class="menu-icon custom-font las la-folder"
-                    [ngClass]="{'isActive' : notebook.name === selectedNotebookName }"></i>
+            <span
+                class="menu-item"
+                (click)="changeNotebook(notebook)"
+                [ngStyle]="{ 'font-weight': notebook.id === '1' ? 'bold' : 'normal' }"
+            >
+                <i class="menu-icon las la-folder" [ngClass]="{ isActive: notebook.name === selectedNotebookName }"></i>
                 <span>{{ notebook.name }}</span>
             </span>
         </button>

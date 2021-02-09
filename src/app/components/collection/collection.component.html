@@ -86,7 +86,7 @@
                                     matTooltip="{{ 'Tooltips.RenameNotebook' | translate }}"
                                     *ngIf="canRenameNotebook"
                                 >
-                                    <i class="edit-item-icon custom-font lar la-edit"></i>
+                                    <i class="edit-item-icon lar la-edit"></i>
                                 </button>
                                 <button
                                     class="list-button"
@@ -99,7 +99,7 @@
                                     }}"
                                     *ngIf="canDeleteNotebooks"
                                 >
-                                    <i class="edit-item-icon custom-font lar la-trash-alt"></i>
+                                    <i class="edit-item-icon lar la-trash-alt"></i>
                                 </button>
                                 <button
                                     class="list-button"
@@ -107,7 +107,7 @@
                                     (click)="addNotebookAsync()"
                                     matTooltip="{{ 'Tooltips.AddNotebook' | translate }}"
                                 >
-                                    <i class="add-item-icon custom-font las la-plus"></i>
+                                    <i class="add-item-icon las la-plus"></i>
                                 </button>
                             </div>
                         </div>
@@ -193,7 +193,7 @@
                                         }}"
                                         *ngIf="canDeleteNotes"
                                     >
-                                        <i class="edit-item-icon custom-font lar la-trash-alt"></i>
+                                        <i class="edit-item-icon lar la-trash-alt"></i>
                                     </button>
                                     <button
                                         class="list-button"
@@ -202,7 +202,7 @@
                                         (click)="importNotesAsync()"
                                         matTooltip="{{ 'Tooltips.ImportNotes' | translate }}"
                                     >
-                                        <i class="edit-item-icon custom-font las la-file-import"></i>
+                                        <i class="edit-item-icon las la-file-import"></i>
                                     </button>
                                     <button
                                         class="list-button"
@@ -210,7 +210,7 @@
                                         (click)="addNoteAsync()"
                                         matTooltip="{{ 'Tooltips.AddNote' | translate }}"
                                     >
-                                        <i class="custom-font add-item-icon las la-plus"></i>
+                                        <i class="add-item-icon las la-plus"></i>
                                     </button>
                                 </div>
                             </div>
