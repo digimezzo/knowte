@@ -35,5 +35,5 @@
 }
 
 .menu-icon.isActive {
-    @extend .color-primary;
+    color: var(--theme-accent-color);
 }

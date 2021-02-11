@@ -1,32 +1,32 @@
-@import "variables";
-@import "theming";
-@import "font-faces";
+@import 'variables';
+@import 'theming';
+@import 'font-faces';
 
 .logo-full {
-  display: flex;
-  user-select: none;
+    display: flex;
+    user-select: none;
 }
 
 .logo-full-text {
-  flex-grow: 1;
-  margin: auto 0px auto 20px;
-  font-family: roboto !important;
-  font-weight: lighter !important;
-  font-size: 48px;
+    flex-grow: 1;
+    margin: auto 0px auto 20px;
+    font-family: roboto !important;
+    font-weight: lighter !important;
+    font-size: 48px;
 }
 
 .logo-full-icon {
-  @extend .background-color-primary;
-  width: 64px;
-  min-width: 64px;
-  height: 64px;
-  border-radius: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    background-color: var(--theme-accent-color);
+    width: 64px;
+    min-width: 64px;
+    height: 64px;
+    border-radius: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .logo-full-icon-image {
-  width: 64px;
-  height: 64px;
+    width: 64px;
+    height: 64px;
 }

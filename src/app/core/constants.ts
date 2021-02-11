@@ -1,4 +1,4 @@
-import { ColorTheme } from './color-theme';
+import { ColorScheme as ColorScheme } from './color-scheme';
 import { FontSize } from './font-size';
 import { Language } from './language';
 
@@ -54,32 +54,30 @@ export class Constants {
         { code: 'nl', englishName: 'Dutch', localizedName: 'Nederlands' },
     ];
 
-    public static readonly colorThemes: ColorTheme[] = [
-        { name: 'default-blue-theme', displayName: 'Knowte blue', color: '#1D7DD4' },
-        { name: 'default-green-theme', displayName: 'Knowte green', color: '#7FB718' },
-        { name: 'default-yellow-theme', displayName: 'Knowte yellow', color: '#F09609' },
-        { name: 'default-purple-theme', displayName: 'Knowte purple', color: '#A835B2' },
-        { name: 'default-pink-theme', displayName: 'Knowte pink', color: '#CE0058' },
-        { name: 'ubuntu-orange-theme', displayName: 'Ubuntu orange', color: '#E95420' },
-        { name: 'linuxmint-green-theme', displayName: 'Linux Mint green', color: '#8bb158' },
-        { name: 'manjaro-green-theme', displayName: 'Manjaro green', color: '#16a085' },
-        { name: 'windows10-blue-theme', displayName: 'Windows 10 blue', color: '#0078d7' },
-        { name: 'material-red-theme', displayName: 'Material red', color: '#F44336' },
-        { name: 'material-pink-theme', displayName: 'Material pink', color: '#E91E63' },
-        { name: 'material-purple-theme', displayName: 'Material purple', color: '#9C27B0' },
-        { name: 'material-deep-purple-theme', displayName: 'Material deep purple', color: '#673AB7' },
-        { name: 'material-indigo-theme', displayName: 'Material indigo', color: '#3F51B5' },
-        { name: 'material-blue-theme', displayName: 'Material blue', color: '#2196F3' },
-        { name: 'material-light-blue-theme', displayName: 'Material light blue', color: '#03A9F4' },
-        { name: 'material-cyan-theme', displayName: 'Material cyan', color: '#00BCD4' },
-        { name: 'material-teal-theme', displayName: 'Material teal', color: '#009688' },
-        { name: 'material-green-theme', displayName: 'Material green', color: '#4CAF50' },
-        { name: 'material-light-green-theme', displayName: 'Material light green', color: '#8BC34A' },
-        // { name: "material-lime-theme", displayName: "Material lime", color: "#CDDC39" },
-        // { name: "material-yellow-theme", displayName: "Material yellow", color: "#FFEB3B" },
-        { name: 'material-amber-theme', displayName: 'Material amber', color: '#FFC107' },
-        { name: 'material-orange-theme', displayName: 'Material orange', color: '#FF9800' },
-        { name: 'material-deep-orange-theme', displayName: 'Material deep orange', color: '#FF5722' },
+    public static readonly colorSchemes: ColorScheme[] = [
+        { name: 'Knowte blue', accentColor: '#1D7DD4' },
+        { name: 'Knowte green', accentColor: '#7FB718' },
+        { name: 'Knowte yellow', accentColor: '#F09609' },
+        { name: 'Knowte purple', accentColor: '#A835B2' },
+        { name: 'Knowte pink', accentColor: '#CE0058' },
+        { name: 'Ubuntu orange', accentColor: '#E95420' },
+        { name: 'Linux Mint green', accentColor: '#8bb158' },
+        { name: 'Manjaro green', accentColor: '#16a085' },
+        { name: 'Windows 10 blue', accentColor: '#0078d7' },
+        { name: 'Material red', accentColor: '#F44336' },
+        { name: 'Material pink', accentColor: '#E91E63' },
+        { name: 'Material purple', accentColor: '#9C27B0' },
+        { name: 'Material deep purple', accentColor: '#673AB7' },
+        { name: 'Material indigo', accentColor: '#3F51B5' },
+        { name: 'Material blue', accentColor: '#2196F3' },
+        { name: 'Material light blue', accentColor: '#03A9F4' },
+        { name: 'Material cyan', accentColor: '#00BCD4' },
+        { name: 'Material teal', accentColor: '#009688' },
+        { name: 'Material green', accentColor: '#4CAF50' },
+        { name: 'Material light green', accentColor: '#8BC34A' },
+        { name: 'Material amber', accentColor: '#FFC107' },
+        { name: 'Material orange', accentColor: '#FF9800' },
+        { name: 'Material deep orange', accentColor: '#FF5722' },
     ];
 
     public static readonly externalComponents: any[] = [

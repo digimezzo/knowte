@@ -1,229 +1,229 @@
-@import "variables";
-@import "theming";
+@import 'variables';
+@import 'theming';
 
 .ql-snow.ql-toolbar {
-  border: 0px !important;
+    border: 0px !important;
 }
 
 .ql-container.ql-snow {
-  border: 0px !important;
+    border: 0px !important;
 }
 
 .ql-snow.ql-toolbar button:hover .ql-stroke,
 .ql-snow.ql-toolbar .ql-color-picker span:hover .ql-stroke,
 .ql-snow.ql-toolbar .ql-active .ql-stroke {
-  @extend .stroke-primary;
+    stroke: var(--theme-accent-color);
 }
 
 .ql-snow.ql-toolbar button:hover .ql-fill,
 .ql-snow.ql-toolbar .ql-color-picker span:hover .ql-fill,
 .ql-snow.ql-toolbar .ql-active .ql-fill {
-  @extend .fill-primary;
+    fill: var(--theme-accent-color);
 }
 
 .note-content {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
 .note-content-floating {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 56px;
-  height: 56px;
-  z-index: 1;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 56px;
+    height: 56px;
+    z-index: 1;
 }
 
 .note-content-floating-button {
-  margin-bottom: 8px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
+    margin-bottom: 8px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
 
 .note-content-floating-button-icon {
-  color: white;
-  font-size: 28px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    color: white;
+    font-size: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .note-content-floating-button-icon-action {
-  color: $color-grey-icon;
-  font-size: 22px;
+    color: $color-grey-icon;
+    font-size: 22px;
 }
 
 .note-content-fixed {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  z-index: 0;
-  display: flex;
-  flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .note-content-fixed-title {
-  background-color: $color-darkgrey;
-  width: 100%;
-  height: 50px;
+    background-color: $color-darkgrey;
+    width: 100%;
+    height: 50px;
 }
 
 .note-content-fixed-title-text {
-  background-color: transparent;
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  font-size: 24px;
-  font-weight: lighter;
-  padding: 0 16px 0 16px;
-  color: white;
+    background-color: transparent;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 24px;
+    font-weight: lighter;
+    padding: 0 16px 0 16px;
+    color: white;
 }
 
 .note-editor {
-  height: 100%;
-  width: 100%;
-  flex: 1;
-  overflow: hidden;
+    height: 100%;
+    width: 100%;
+    flex: 1;
+    overflow: hidden;
 }
 
 .ql-toolbar.ql-snow {
-  padding-right: 50px !important;
+    padding-right: 50px !important;
 }
 
-.ql-editor ul[data-checked="true"] li {
-  text-decoration: line-through;
-  opacity: 0.5;
+.ql-editor ul[data-checked='true'] li {
+    text-decoration: line-through;
+    opacity: 0.5;
 }
 
-.ql-editor ul[data-checked="false"] > li::before {
-  font-family: la-regular;
-  content: "\f0c8";
-  font-size: 1.3em;
-  line-height: 1;
-  display: inline-block;
-  vertical-align: middle;
+.ql-editor ul[data-checked='false'] > li::before {
+    font-family: la-regular;
+    content: '\f0c8';
+    font-size: 1.3em;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
 }
 
-.ql-editor ul[data-checked="true"] li::before {
-  font-family: la-regular;
-  content: "\f14a";
-  font-size: 1.3em;
-  line-height: 1;
-  display: inline-block;
-  vertical-align: middle;
+.ql-editor ul[data-checked='true'] li::before {
+    font-family: la-regular;
+    content: '\f14a';
+    font-size: 1.3em;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 #editor * {
-  font-size: var(--editor-p-font-size);
+    font-size: var(--editor-p-font-size);
 }
 
 #editor h1 {
-  font-size: var(--editor-h1-font-size) !important;
+    font-size: var(--editor-h1-font-size) !important;
 }
 
 #editor h2 {
-  font-size: var(--editor-h2-font-size) !important;
+    font-size: var(--editor-h2-font-size) !important;
 }
 
-[editor-font-size="12"] {
-  --editor-p-font-size: 12px;
-  --editor-h1-font-size: 21px;
-  --editor-h2-font-size: 17px;
+[editor-font-size='12'] {
+    --editor-p-font-size: 12px;
+    --editor-h1-font-size: 21px;
+    --editor-h2-font-size: 17px;
 }
 
-[editor-font-size="13"] {
-  --editor-p-font-size: 13px;
-  --editor-h1-font-size: 22px;
-  --editor-h2-font-size: 19px;
+[editor-font-size='13'] {
+    --editor-p-font-size: 13px;
+    --editor-h1-font-size: 22px;
+    --editor-h2-font-size: 19px;
 }
 
-[editor-font-size="14"] {
-  --editor-p-font-size: 14px;
-  --editor-h1-font-size: 24px;
-  --editor-h2-font-size: 20px;
+[editor-font-size='14'] {
+    --editor-p-font-size: 14px;
+    --editor-h1-font-size: 24px;
+    --editor-h2-font-size: 20px;
 }
 
-[editor-font-size="15"] {
-  --editor-p-font-size: 15px;
-  --editor-h1-font-size: 26px;
-  --editor-h2-font-size: 21px;
+[editor-font-size='15'] {
+    --editor-p-font-size: 15px;
+    --editor-h1-font-size: 26px;
+    --editor-h2-font-size: 21px;
 }
 
-[editor-font-size="16"] {
-  --editor-p-font-size: 16px;
-  --editor-h1-font-size: 27px;
-  --editor-h2-font-size: 23px;
+[editor-font-size='16'] {
+    --editor-p-font-size: 16px;
+    --editor-h1-font-size: 27px;
+    --editor-h2-font-size: 23px;
 }
 
-[editor-font-size="17"] {
-  --editor-p-font-size: 16px;
-  --editor-h1-font-size: 29px;
-  --editor-h2-font-size: 24px;
+[editor-font-size='17'] {
+    --editor-p-font-size: 16px;
+    --editor-h1-font-size: 29px;
+    --editor-h2-font-size: 24px;
 }
 
-[editor-font-size="18"] {
-  --editor-p-font-size: 18px;
-  --editor-h1-font-size: 31px;
-  --editor-h2-font-size: 26px;
+[editor-font-size='18'] {
+    --editor-p-font-size: 18px;
+    --editor-h1-font-size: 31px;
+    --editor-h2-font-size: 26px;
 }
 
-[editor-font-size="19"] {
-  --editor-p-font-size: 19px;
-  --editor-h1-font-size: 33px;
-  --editor-h2-font-size: 27px;
+[editor-font-size='19'] {
+    --editor-p-font-size: 19px;
+    --editor-h1-font-size: 33px;
+    --editor-h2-font-size: 27px;
 }
 
-[editor-font-size="20"] {
-  --editor-p-font-size: 20px;
-  --editor-h1-font-size: 34px;
-  --editor-h2-font-size: 29px;
+[editor-font-size='20'] {
+    --editor-p-font-size: 20px;
+    --editor-h1-font-size: 34px;
+    --editor-h2-font-size: 29px;
 }
 
-[editor-font-size="21"] {
-  --editor-p-font-size: 20px;
-  --editor-h1-font-size: 36px;
-  --editor-h2-font-size: 30px;
+[editor-font-size='21'] {
+    --editor-p-font-size: 20px;
+    --editor-h1-font-size: 36px;
+    --editor-h2-font-size: 30px;
 }
 
-[editor-font-size="22"] {
-  --editor-p-font-size: 22px;
-  --editor-h1-font-size: 38px;
-  --editor-h2-font-size: 31px;
+[editor-font-size='22'] {
+    --editor-p-font-size: 22px;
+    --editor-h1-font-size: 38px;
+    --editor-h2-font-size: 31px;
 }
 
-[editor-font-size="23"] {
-  --editor-p-font-size: 23px;
-  --editor-h1-font-size: 39px;
-  --editor-h2-font-size: 33px;
+[editor-font-size='23'] {
+    --editor-p-font-size: 23px;
+    --editor-h1-font-size: 39px;
+    --editor-h2-font-size: 33px;
 }
 
-[editor-font-size="24"] {
-  --editor-p-font-size: 24px;
-  --editor-h1-font-size: 41px;
-  --editor-h2-font-size: 34px;
+[editor-font-size='24'] {
+    --editor-p-font-size: 24px;
+    --editor-h1-font-size: 41px;
+    --editor-h2-font-size: 34px;
 }
 
 // Disables image align in Quill Blot Formatter. It causes formatting Quill issues.
-.blot-formatter__toolbar-button { 
-  display: none !important; 
+.blot-formatter__toolbar-button {
+    display: none !important;
 }
 
-// Disables dragging of the Quill Blot Formatter overlay container and, in turn, 
+// Disables dragging of the Quill Blot Formatter overlay container and, in turn,
 // avoids this issue: github.com/Fandom-OSS/quill-blot-formatter/issues/17
-.blot-formatter__overlay { 
-  user-select: none !important; 
+.blot-formatter__overlay {
+    user-select: none !important;
 }
 
 // Fixes cursor being "text" instead of "default" when interacting with the Quill scroll bar
-.ql-editor { 
-  cursor:default; 
+.ql-editor {
+    cursor: default;
 }
-.ql-editor * { 
-  cursor:text; 
+.ql-editor * {
+    cursor: text;
 }

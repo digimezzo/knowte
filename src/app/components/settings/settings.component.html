@@ -32,7 +32,7 @@
                 <mat-tab>
                     <div class="m-3">
                         <h1>{{ 'SettingsPage.Color' | translate }}</h1>
-                        <app-color-theme-switcher class="mt-2"></app-color-theme-switcher>
+                        <app-color-scheme-switcher class="mt-2"></app-color-scheme-switcher>
                     </div>
                     <hr />
                     <div class="m-3">
@@ -50,6 +50,7 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
+                    <hr />
                     <div class="m-3">
                         <h1 class="mt-2">{{ 'SettingsPage.TitleBar' | translate }}</h1>
                         <mat-slide-toggle class="mt-2" [(ngModel)]="useCustomTitleBarChecked">
