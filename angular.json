@@ -1,188 +1,128 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1,
-  "newProjectRoot": "projects",
-  "projects": {
-    "knowte": {
-      "root": "",
-      "sourceRoot": "src",
-      "projectType": "application",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "aot": true,
-            "outputPath": "dist",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "tsConfig": "src/tsconfig.app.json",
-            "polyfills": "src/polyfills.ts",
-            "assets": [
-              "src/worker.html",
-              "src/assets",
-              "src/favicon.ico",
-              "src/favicon.png",
-              "src/favicon.icns",
-              "src/favicon.256x256.png",
-              "src/favicon.512x512.png"
-            ],
-            "styles": [
-              "src/styles.scss",
-              "./node_modules/quill/dist/quill.snow.css",
-              "./node_modules/line-awesome/dist/line-awesome/css/line-awesome.css"
-            ],
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "src/css"
-              ]
-            },
-            "scripts": [
-              "./node_modules/quill/dist/quill.js"
-            ]
-          },
-          "configurations": {
-            "dev": {
-              "budgets": [
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+        "knowte": {
+            "root": "",
+            "sourceRoot": "src",
+            "projectType": "application",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "aot": true,
+                        "outputPath": "dist",
+                        "index": "src/index.html",
+                        "main": "src/main.ts",
+                        "tsConfig": "src/tsconfig.app.json",
+                        "polyfills": "src/polyfills.ts",
+                        "assets": [
+                            "src/worker.html",
+                            "src/assets",
+                            "src/favicon.ico",
+                            "src/favicon.png",
+                            "src/favicon.icns",
+                            "src/favicon.256x256.png",
+                            "src/favicon.512x512.png"
+                        ],
+                        "styles": [
+                            "src/styles.scss",
+                            "./node_modules/quill/dist/quill.snow.css",
+                            "./node_modules/line-awesome/dist/line-awesome/css/line-awesome.css"
+                        ],
+                        "stylePreprocessorOptions": {
+                            "includePaths": ["src/css"]
+                        },
+                        "scripts": ["./node_modules/quill/dist/quill.js"]
+                    },
+                    "configurations": {
+                        "dev": {
+                            "budgets": [
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "6kb"
+                                }
+                            ],
+                            "optimization": false,
+                            "outputHashing": "all",
+                            "sourceMap": true,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "aot": false,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": false,
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.dev.ts"
+                                }
+                            ]
+                        },
+                        "production": {
+                            "budgets": [
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "6kb"
+                                }
+                            ],
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod.ts"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "knowte:build"
+                    },
+                    "configurations": {
+                        "dev": {
+                            "browserTarget": "knowte:build:dev"
+                        },
+                        "production": {
+                            "browserTarget": "knowte:build:production"
+                        }
+                    }
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "knowte:build"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
+                        "exclude": ["**/node_modules/**"]
+                    }
                 }
-              ],
-              "optimization": false,
-              "outputHashing": "all",
-              "sourceMap": true,
-              "extractCss": true,
-              "namedChunks": false,
-              "aot": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": false,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.dev.ts"
-                }
-              ]
-            },
-            "production": {
-              "budgets": [
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ]
             }
-          }
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "knowte:build"
-          },
-          "configurations": {
-            "dev": {
-              "browserTarget": "knowte:build:dev"
-            },
-            "production": {
-              "browserTarget": "knowte:build:production"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "knowte:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills-test.ts",
-            "tsConfig": "src/tsconfig.spec.json",
-            "karmaConfig": "src/karma.conf.js",
-            "scripts": [],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "src/css"
-              ]
-            },
-            "assets": [
-              "src/worker.html",
-              "src/assets",
-              "src/favicon.ico",
-              "src/favicon.png",
-              "src/favicon.icns",
-              "src/favicon.256x256.png",
-              "src/favicon.512x512.png"
-            ]
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
         }
-      }
     },
-    "knowte-e2e": {
-      "root": "e2e",
-      "projectType": "application",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "knowte:serve"
-          }
+    "defaultProject": "knowte",
+    "schematics": {
+        "@schematics/angular:component": {
+            "prefix": "app",
+            "style": "scss"
         },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "e2e/tsconfig.e2e.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
+        "@schematics/angular:directive": {
+            "prefix": "app"
         }
-      }
     }
-  },
-  "defaultProject": "knowte",
-  "schematics": {
-    "@schematics/angular:component": {
-      "prefix": "app",
-      "style": "scss"
-    },
-    "@schematics/angular:directive": {
-      "prefix": "app"
-    }
-  }
 }
