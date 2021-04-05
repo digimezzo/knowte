@@ -6,6 +6,7 @@ import { Constants } from '../../core/constants';
 import { FontSize } from '../../core/font-size';
 import { Logger } from '../../core/logger';
 import { Settings } from '../../core/settings';
+import { Palette } from './palette';
 
 @Injectable({
     providedIn: 'root',
@@ -53,9 +54,28 @@ export class AppearanceService {
         this.globalEmitter.emit(Constants.uiFontSizeChangedEvent, v);
     }
 
-    private applyTheme(colorScheme: ColorScheme): void {
+    private applyTheme(): void {
         const element = document.documentElement;
-        element.style.setProperty('--theme-accent-color', this.selectedColorScheme.accentColor);
+        const accentColorToApply: string = this.selectedColorScheme.accentColor;
+
+        const palette: Palette = new Palette(accentColorToApply);
+
+        element.style.setProperty('--theme-accent-color', accentColorToApply);
+
+        element.style.setProperty('--theme-accent-color-50', palette.color50);
+        element.style.setProperty('--theme-accent-color-100', palette.color100);
+        element.style.setProperty('--theme-accent-color-200', palette.color200);
+        element.style.setProperty('--theme-accent-color-300', palette.color300);
+        element.style.setProperty('--theme-accent-color-400', palette.color400);
+        element.style.setProperty('--theme-accent-color-500', palette.color500);
+        element.style.setProperty('--theme-accent-color-600', palette.color600);
+        element.style.setProperty('--theme-accent-color-700', palette.color700);
+        element.style.setProperty('--theme-accent-color-800', palette.color800);
+        element.style.setProperty('--theme-accent-color-900', palette.color900);
+        element.style.setProperty('--theme-accent-color-A100', palette.colorA100);
+        element.style.setProperty('--theme-accent-color-A200', palette.colorA200);
+        element.style.setProperty('--theme-accent-color-A400', palette.colorA400);
+        element.style.setProperty('--theme-accent-color-A700', palette.colorA700);
 
         this.logger.info(`Applied color scheme '${this.selectedColorScheme.name}'`, 'AppearanceService', 'applyTheme');
     }
@@ -69,7 +89,7 @@ export class AppearanceService {
 
     private initialize(): void {
         this._selectedColorScheme = this.colorSchemes.find((x) => x.name === this.settings.colorScheme);
-        this.applyTheme(this._selectedColorScheme);
+        this.applyTheme();
         this.globalEmitter.on(Constants.themeChangedEvent, this.themeChangedListener);
 
         this._selectedFontSize = this.fontSizes.find((x) => x.normalSize === this.settings.fontSize);
