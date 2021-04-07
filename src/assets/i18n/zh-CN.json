@@ -1,0 +1,213 @@
+{
+    "WelcomePage": {
+        "Title": "欢迎使用Knowte!",
+        "Text": "要开始使用Knowte，请选择要在其中保存笔记的文件夹。 如果要导入已有的笔记，只需选择包含笔记的文件夹，Knowte便会为您导入笔记。",
+        "SelectButton": "选择..."
+    },
+    "LoadingPage": {
+        "Text": "加载中..."
+    },
+    "NotesTabs": {
+        "All": "全部",
+        "Today": "今日",
+        "Yesterday": "昨日",
+        "ThisWeek": "本周",
+        "Marked": "标记"
+    },
+    "SettingsTabs": {
+        "Appearance": "外观",
+        "Notes": "笔记",
+        "Advanced": "进阶"
+    },
+    "InformationTabs": {
+        "About": "关于",
+        "Components": "组成"
+    },
+    "AboutPage": {
+        "About": "关于",
+        "Donate": "捐赠",
+        "GetInTouch": "保持联系",
+        "Version": "版本",
+        "License": "许可",
+        "IsKnowteUseful": "Knowte有用吗？ 请考虑捐赠。 谢谢！",
+        "Website": "网站"
+    },
+    "SettingsPage": {
+        "Import": "导入",
+        "ImportFromOldVersion": "从Knowte 1.x导入",
+        "FontSize": "字体大小",
+        "FontSizeInNotes": "笔记中的字体大小",
+        "PixelsShort": "px",
+        "Closing": "关闭",
+        "CloseNotesWithEscape": "使用[Esc]关闭笔记",
+        "Dates": "日期",
+        "ShowExactDatesInTheNotesList": "在注释列表中显示确切的日期",
+        "Language": "语言",
+        "Color": "颜色",
+        "TitleBar": "标题栏",
+        "UseCustomTitleBar": "使用自定义标题栏（需要重新启动）",
+        "Updates": "更新",
+        "CheckForUpdates": "检查更新"
+    },
+    "ComponentsPage": {
+        "Components": "组成"
+    },
+    "MainMenu": {
+        "Notes": "笔记",
+        "Settings": "设置",
+        "Information": "信息"
+    },
+    "CollectionSwitcher": {
+        "AddCollection": "添加收藏..."
+    },
+    "Tooltips": {
+        "Rename": "重命名",
+        "Delete": "删除",
+        "ChangeCollection": "变更收藏",
+        "ChangeNotebook": "变更笔记本",
+        "Actions": "动作",
+        "MarkNote": "标记笔记",
+        "UnmarkNote": "移除标记",
+        "PrintNote": "打印笔记...",
+        "ExportNote": "导出笔记...",
+        "ExportNoteToPdf": "导出PDF...",
+        "ImportNotes": "导入笔记...",
+        "AddNotebook": "添加笔记本...",
+        "RenameNotebook": "重命名笔记本...",
+        "DeleteNotebook": "删除笔记本...",
+        "DeleteNotebooks": "删除多个笔记本...",
+        "AddNote": "添加笔记",
+        "DeleteNote": "删除笔记...",
+        "DeleteNotes": "删除多个笔记...",
+        "LastChanged": "上次变更",
+        "Highlight": "高亮",
+        "Bold": "加粗(Ctrl+B)",
+        "Italic": "倾斜(Ctrl+I)",
+        "Underline": "下划线(Ctrl+U)",
+        "Strikethrough": "删除线(Ctrl+S)",
+        "Heading1": "标题 1 (Ctrl+1)",
+        "Heading2": "标题 2 (Ctrl+2)",
+        "NumberedList": "有序列表",
+        "BulletedList": "无序列表",
+        "TaskList": "待办列表",
+        "Link": "链接",
+        "Quote": "引用",
+        "Code": "代码",
+        "Image": "图像",
+        "ClearFormatting": "清除格式",
+        "Close": "关闭"
+    },
+    "LicenseDialog": {
+        "License": "许可"
+    },
+    "Buttons": {
+        "Ok": "确定",
+        "Cancel": "取消",
+        "License": "确定",
+        "Donate": "捐赠",
+        "ViewLog": "查看日志",
+        "Yes": "好",
+        "No": "不",
+        "Import": "导入",
+        "StartImport": "开始导入",
+        "Select": "选择",
+        "SelectAgain": "重新选择",
+        "Close": "关闭"
+    },
+    "DialogTitles": {
+        "AddCollection": "添加收藏",
+        "RenameCollection": "重命名收藏",
+        "SelectFolder": "选择一个文件夹",
+        "Error": "错误",
+        "ConfirmDeleteCollection": "删除收藏？",
+        "AddNotebook": "添加笔记本",
+        "RenameNotebook": "重命名笔记本",
+        "ConfirmDeleteNotebook": "删除笔记本？",
+        "ConfirmDeleteNotebooks": "删除多个笔记本？",
+        "ConfirmDeleteNote": "删除笔记？",
+        "ConfirmDeleteNotes": "删除多个笔记？",
+        "Import": "导入"
+    },
+    "DialogTexts": {
+        "ConfirmDeleteCollection": "您确定要删除收藏'{{collection}}'吗？ 如果继续，其笔记本和笔记将丢失。",
+        "ConfirmDeleteNote": "您确定要删除笔记吗'{{noteTitle}}'？",
+        "ConfirmDeleteNotes": "您确定要删除这些笔记吗？",
+        "ConfirmDeleteNotebook": "您确定要删除笔记本'{{notebookName}}吗'？ 笔记本中包含的笔记不会被删除，它们会变成未归档的。",
+        "ConfirmDeleteNotebooks": "您确定要删除这些笔记本吗？ 笔记本中包含的笔记不会被删除，它们会变成未归档的。",
+        "SelectDirectoryContainingOldVersionExports": "请选择包含从Knowte 1.x导出的文件的文件夹。",
+        "YouHaveSelectedDirectory": "您已选择目录：",
+        "Importing": "正在导入",
+        "ImportSuccessful": "导入成功！",
+        "ImportFailed": "导入失败！",
+        "AllFiles": "所有文件",
+        "ChooseNotebook": "选择笔记本"
+    },
+    "Input": {
+        "Collection": "Collection",
+        "NotebookName": "Notebook name"
+    },
+    "ErrorTexts": {
+        "StorageDirectoryCreationError": "文件夹'{{storageDirectory}}'不能用来保存你的笔记。您可能没有足够的权限在其中创建项目。如果您需要更多信息，请验证日志。",
+        "GlobalError": "发生错误，将导致应用程序关闭。如果您需要更多信息，请验证日志。",
+        "AddCollectionError": "添加收藏'{{collection}}'时发生错误。如果您需要更多信息，请验证日志。",
+        "AddNotebookError": "添加笔记本'{{notebookName}}'时发生错误。如果您需要更多信息，请验证日志。",
+        "RenameNoteError": "重命名笔记'{{noteTitle}}'时发生错误。如果您需要更多信息，请验证日志。",
+        "RenameNotebookError": "重命名笔记本'{{notebookName}}'时发生错误。如果您需要更多信息，请验证日志。",
+        "RenameCollectionError": "重命名收藏'{{collection}}'时发生错误。如果您需要更多信息，请验证日志。",
+        "DeleteCollectionError": "删除收藏'{{collection}}'时发生错误。如果您需要更多信息，请验证日志。",
+        "DeleteNotebooksError": "删除笔记本时发生错误。如果您需要更多信息，请验证日志。",
+        "DeleteNotesError": "删除笔记时发生错误。如果您需要更多信息，请验证日志。",
+        "SaveNoteError": "保存笔记'{{noteTitle}}'时发生错误。如果您需要更多信息，请验证日志。",
+        "UpdateNoteContentError": "保存笔记内容时发生错误。如果您需要更多信息，请验证日志。",
+        "GetNoteContentError": "获取日记内容时发生错误。如果您需要更多信息，请验证日志。",
+        "ExportNoteError": "导出笔记'{{noteTitle}}'时发生错误 .如果您需要更多信息，请验证日志。",
+        "ImportNotesError": "导入笔记时发生错误。如果您需要更多信息，请验证日志。",
+        "ChangeNotebookError": "更换笔记本时发生错误。如果您需要更多信息，请验证日志。"
+    },
+    "SnackBarMessages": {
+        "DuplicateCollection": "已经有一个名称为 '{{collection}}'",
+        "DuplicateNotebook": "已经有一个笔记本，名字叫 '{{notebookName}}'",
+        "NoteTitleCannotBeEmpty": "笔记标题不能为空",
+        "CloseNoteBeforeChangingCollections": "请在更改收藏之前关闭所有笔记",
+        "NoteExported": "笔记'{{noteTitle}}'已经导出",
+        "NoteMovedToNotebook": "笔记已经移动到'{{notebookName}}'",
+        "NotesMovedToNotebook": "笔记已经移动到'{{notebookName}}'",
+        "NotesImportedIntoNotebook": "笔记已经导入到'{{notebookName}}'",
+        "NotesImported": "笔记已经导入",
+        "NoNoteFilesToImport": "没有要导入的笔记文件",
+        "NewVersionAvailable": "新的版本已发行: {{version}}"
+    },
+    "SnackBarActions": {
+        "Ok": "好"
+    },
+    "MainPage": {
+        "Notebooks": "笔记本",
+        "AllNotes": "所有笔记",
+        "UnfiledNotes": "未归档笔记",
+        "Search": "搜索",
+        "ClearSearch": "清除搜索",
+        "DragNotesCount": "{{noteCount}} 笔记",
+        "TasksCount": "{{closedTasksCount}} / {{totalTasksCount}}"
+    },
+    "Notes": {
+        "NewNote": "新笔记",
+        "NotePlaceholder": "在这里写笔记...",
+        "Imported": "已导入",
+        "Search": "搜索"
+    },
+    "NoteDates": {
+        "Today": "今日",
+        "Yesterday": "昨日",
+        "DaysAgo": "{{count}} 日之前",
+        "LastWeek": "上个星期",
+        "WeeksAgo": "{{count}} 星期之前",
+        "MonthsAgo": "{{count}} 月之前",
+        "LongAgo": "Long ago"
+    },
+    "ContextMenu":{
+        "Cut": "剪切",
+        "Copy": "复制",
+        "Paste": "粘贴",
+        "Delete": "删除"
+    }
+}
