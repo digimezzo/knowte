@@ -48,8 +48,8 @@
         "UseCustomTitleBar": "Utiliser barre de titre personnalisée (Nécessite un redémarrage)",
         "Updates": "Mises à jour",
         "CheckForUpdates": "Vérifier les mises à jour",
-        "Trash": "Poubelle",
-        "MoveDeletedNotesToTrash": "Déplacez les notes supprimées dans la poubelle au lieu de les supprimer définitivement."
+        "Trash": "Corbeille",
+        "MoveDeletedNotesToTrash": "Déplacez les notes supprimées dans la corbeille au lieu de les supprimer définitivement."
     },
     "ComponentsPage": {
         "Components": "Composants"
@@ -61,7 +61,7 @@
     },
     "CollectionSwitcher": {
         "AddCollection": "Ajouter collection...",
-        "OpenTrash": "Ouvrir la poubelle..."
+        "OpenTrash": "Ouvrir la corbeille..."
     },
     "Tooltips": {
         "Rename": "Renommer",
@@ -130,7 +130,7 @@
         "ConfirmDeleteNote": "Supprimer note?",
         "ConfirmDeleteNotes": "Supprimer notes?",
         "Import": "Importer",
-        "Trash": "Poubelle"
+        "Trash": "Corbeille"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Êtes-vous sûr de vouloir supprimer la collection '{{collection}}'? Si vous continuez, ses bloc-notes et ses notes seront perdues.",
@@ -145,8 +145,9 @@
         "ImportFailed": "Import échoué!",
         "AllFiles": "Tous les fichiers",
         "ChooseNotebook": "Choisissez un bloc-notes",
-        "TrashForCollection": "Ceci est la poubelle de la collection '{{collectionName}}'. Vous pouvez restaurer les notes à partir d'ici ou les supprimer définitivement.",
-        "NoNotesInTrash": "Il n'y a pas de notes dans la poubelle"
+        "TrashForCollection": "Ceci est la corbeille de la collection '{{collectionName}}'. Vous pouvez restaurer les notes à partir d'ici ou les supprimer définitivement.",
+        "NoNotesInTrash": "Il n'y a pas de notes dans la corbeille",
+        "MovedToTrash": "Déplacé vers la corbeille"
     },
     "Input": {
         "Collection": "Collection",

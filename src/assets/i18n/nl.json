@@ -146,7 +146,8 @@
         "AllFiles": "Alle bestanden",
         "ChooseNotebook": "Kies een notitieboek",
         "TrashForCollection": "Dit is de prullenbak voor verzameling '{{collectionName}}'. U kunt hier notities herstellen of ze permanent verwijderen.",
-        "NoNotesInTrash": "Er zijn geen notities in de prullenbak"
+        "NoNotesInTrash": "Er zijn geen notities in de prullenbak",
+        "MovedToTrash": "Verplaatst naar prullenbak"
     },
     "Input": {
         "Collection": "Collectie",

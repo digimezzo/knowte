@@ -146,7 +146,8 @@
         "AllFiles": "Alle Dateien",
         "ChooseNotebook": "Wähle ein Notizbuch",
         "TrashForCollection": "This is the trash for collection '{{collectionName}}'. You can restore notes from here, or deleted them permanently.",
-        "NoNotesInTrash": "There are no notes in the trash"
+        "NoNotesInTrash": "There are no notes in the trash",
+        "MovedToTrash": "Moved to trash"
     },
     "Input": {
         "Collection": "Kollektion",

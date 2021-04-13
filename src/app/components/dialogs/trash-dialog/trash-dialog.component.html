@@ -8,7 +8,7 @@
             <div class="trashed-note no-select" *ngFor="let trashedNote of trashedNotes">
                 <div class="trashed-note__info">
                     <div class="trashed-note__title">{{ trashedNote.title }}</div>
-                    <div class="trashed-note__trasheddate">{{ trashedNote.displayTrashedDate }}</div>
+                    <div class="trashed-note__trasheddate">{{ 'DialogTexts.MovedToTrash' | translate }}: {{ trashedNote.displayTrashedDate }}</div>
                 </div>
                 <div class="trashed-note__actions"></div>
             </div>
