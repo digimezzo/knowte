@@ -59,6 +59,13 @@ export class SettingsComponent implements OnInit {
         this.settings.checkForUpdates = v;
     }
 
+    public get moveDeletedNotesToTrashChecked(): boolean {
+        return this.settings.moveDeletedNotesToTrash;
+    }
+    public set moveDeletedNotesToTrashChecked(v: boolean) {
+        this.settings.moveDeletedNotesToTrash = v;
+    }
+
     public ngOnInit(): void {}
 
     public import(): void {

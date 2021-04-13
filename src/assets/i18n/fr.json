@@ -47,7 +47,9 @@
         "TitleBar": "Barre de titre",
         "UseCustomTitleBar": "Utiliser barre de titre personnalisée (Nécessite un redémarrage)",
         "Updates": "Mises à jour",
-        "CheckForUpdates": "Vérifier les mises à jour"
+        "CheckForUpdates": "Vérifier les mises à jour",
+        "Trash": "Poubelle",
+        "MoveDeletedNotesToTrash": "Déplacez les notes supprimées dans la poubelle au lieu de les supprimer définitivement."
     },
     "ComponentsPage": {
         "Components": "Composants"
@@ -58,7 +60,8 @@
         "Information": "Information"
     },
     "CollectionSwitcher": {
-        "AddCollection": "Ajouter collection..."
+        "AddCollection": "Ajouter collection...",
+        "OpenTrash": "Ouvrir la poubelle..."
     },
     "Tooltips": {
         "Rename": "Renommer",
@@ -126,7 +129,8 @@
         "ConfirmDeleteNotebooks": "Supprimer blocs-notes?",
         "ConfirmDeleteNote": "Supprimer note?",
         "ConfirmDeleteNotes": "Supprimer notes?",
-        "Import": "Importer"
+        "Import": "Importer",
+        "Trash": "Poubelle"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Êtes-vous sûr de vouloir supprimer la collection '{{collection}}'? Si vous continuez, ses bloc-notes et ses notes seront perdues.",
@@ -140,7 +144,9 @@
         "ImportSuccessful": "Import réussi!",
         "ImportFailed": "Import échoué!",
         "AllFiles": "Tous les fichiers",
-        "ChooseNotebook": "Choisissez un bloc-notes"
+        "ChooseNotebook": "Choisissez un bloc-notes",
+        "TrashForCollection": "Ceci est la poubelle de la collection '{{collectionName}}'. Vous pouvez restaurer les notes à partir d'ici ou les supprimer définitivement.",
+        "NoNotesInTrash": "Il n'y a pas de notes dans la poubelle"
     },
     "Input": {
         "Collection": "Collection",
@@ -204,7 +210,7 @@
         "MonthsAgo": "Il y à {{count}} mois",
         "LongAgo": "Il y a longtemps"
     },
-    "ContextMenu":{
+    "ContextMenu": {
         "Cut": "Couper",
         "Copy": "Copier",
         "Paste": "Coller",

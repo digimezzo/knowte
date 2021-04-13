@@ -18,31 +18,41 @@
                 <mat-tab>
                     <ng-template mat-tab-label>
                         <h4>{{ 'NotesTabs.All' | translate }}</h4>
-                        <div class="count-label">{{ allNotesCount }}</div>
+                        <div class="count-label">
+                            <div>{{ allNotesCount }}</div>
+                        </div>
                     </ng-template>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
                         <h4>{{ 'NotesTabs.Today' | translate }}</h4>
-                        <div class="count-label">{{ todayNotesCount }}</div>
+                        <div class="count-label">
+                            <div>{{ todayNotesCount }}</div>
+                        </div>
                     </ng-template>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
                         <h4>{{ 'NotesTabs.Yesterday' | translate }}</h4>
-                        <div class="count-label">{{ yesterdayNotesCount }}</div>
+                        <div class="count-label">
+                            <div>{{ yesterdayNotesCount }}</div>
+                        </div>
                     </ng-template>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
                         <h4>{{ 'NotesTabs.ThisWeek' | translate }}</h4>
-                        <div class="count-label">{{ thisWeekNotesCount }}</div>
+                        <div class="count-label">
+                            <div>{{ thisWeekNotesCount }}</div>
+                        </div>
                     </ng-template>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
                         <h4>{{ 'NotesTabs.Marked' | translate }}</h4>
-                        <div class="count-label">{{ markedNotesCount }}</div>
+                        <div class="count-label">
+                            <div>{{ markedNotesCount }}</div>
+                        </div>
                     </ng-template>
                 </mat-tab>
             </mat-tab-group>
@@ -55,7 +65,9 @@
                             <div class="notebooks-pane-content pl-2 pr-2">
                                 <div class="notebooks-pane-content__title no-select">
                                     <h3>{{ 'MainPage.Notebooks' | translate }}</h3>
-                                    <div class="count-label">{{ notebooksCount }}</div>
+                                    <div class="count-label">
+                                        <div>{{ notebooksCount }}</div>
+                                    </div>
                                 </div>
                                 <ul class="notebooks-pane-content__list">
                                     <li

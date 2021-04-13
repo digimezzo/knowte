@@ -1,0 +1,20 @@
+<app-dialog-header titleText="{{ 'DialogTitles.Trash' | translate }}"></app-dialog-header>
+<mat-dialog-content class="no-scroll">
+    <div class="trash-content">
+        <div class="trash-content__header no-select mb-2">
+            {{ 'DialogTexts.TrashForCollection' | translate: { collectionName: this.activeCollection } }}
+        </div>
+        <div class="trash-content__body">
+            <div class="trashed-note no-select" *ngFor="let trashedNote of trashedNotes">
+                <div class="trashed-note__info">
+                    <div class="trashed-note__title">{{ trashedNote.title }}</div>
+                    <div class="trashed-note__trasheddate">{{ trashedNote.displayTrashedDate }}</div>
+                </div>
+                <div class="trashed-note__actions"></div>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-raised-button color="primary" [mat-dialog-close]>{{ 'Buttons.Close' | translate }}</button>
+</mat-dialog-actions>

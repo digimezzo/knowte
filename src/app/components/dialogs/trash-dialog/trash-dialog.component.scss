@@ -1,0 +1,47 @@
+@import 'variables';
+
+.no-scroll {
+    overflow: hidden;
+}
+
+.trash-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: calc(100vh - 260px);
+    background: red;
+}
+
+.trash-content__header {
+}
+
+.trash-content__body {
+}
+
+.trashed-note {
+    height: 48px;
+    display: flex;
+    flex-direction: row;
+}
+
+.trashed-note__info {
+    height: 48px;
+    display: flex;
+    flex-direction: column;
+}
+
+.trashed-note__actions {
+    display: flex;
+    flex-direction: row;
+}
+
+.trashed-note__title {
+    margin-top: 4px;
+    height: 24px;
+}
+
+.trashed-note__trasheddate {
+    margin-bottom: 4px;
+    height: 24px;
+    color: $color-grey;
+}

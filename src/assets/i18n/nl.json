@@ -47,7 +47,9 @@
         "TitleBar": "Titelbalk",
         "UseCustomTitleBar": "Gebruik aangepaste titelbalk (Vereist een herstart)",
         "Updates": "Updates",
-        "CheckForUpdates": "Controleer op updates"
+        "CheckForUpdates": "Controleer op updates",
+        "Trash": "Prullenbak",
+        "MoveDeletedNotesToTrash": "Verplaats verwijderde notities naar de prullenbak in plaats van ze permanent te verwijderen."
     },
     "ComponentsPage": {
         "Components": "Componenten"
@@ -58,7 +60,8 @@
         "Information": "Informatie"
     },
     "CollectionSwitcher": {
-        "AddCollection": "Collectie toevoegen..."
+        "AddCollection": "Collectie toevoegen...",
+        "OpenTrash": "Open prullenbak..."
     },
     "Tooltips": {
         "Rename": "Hernoemen",
@@ -126,7 +129,8 @@
         "ConfirmDeleteNotebooks": "Notitieboeken verwijderen?",
         "ConfirmDeleteNote": "Notitie verwijderen?",
         "ConfirmDeleteNotes": "Notities verwijderen?",
-        "Import": "Importeren"
+        "Import": "Importeren",
+        "Trash": "Prullenbak"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Weet u zeker dat u de collectie '{{collection}}' wilt verwijderen? Als u doorgaat, gaan de notitieboeken en notities verloren.",
@@ -140,7 +144,9 @@
         "ImportSuccessful": "Import succesvol!",
         "ImportFailed": "Importeren mislukt!",
         "AllFiles": "Alle bestanden",
-        "ChooseNotebook": "Kies een notitieboek"
+        "ChooseNotebook": "Kies een notitieboek",
+        "TrashForCollection": "Dit is de prullenbak voor verzameling '{{collectionName}}'. U kunt hier notities herstellen of ze permanent verwijderen.",
+        "NoNotesInTrash": "Er zijn geen notities in de prullenbak"
     },
     "Input": {
         "Collection": "Collectie",
@@ -204,7 +210,7 @@
         "MonthsAgo": "{{count}} maanden geleden",
         "LongAgo": "Lang geleden"
     },
-    "ContextMenu":{
+    "ContextMenu": {
         "Cut": "Knippen",
         "Copy": "Kopiëren",
         "Paste": "Plakken",

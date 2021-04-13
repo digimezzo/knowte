@@ -16,7 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTooltipDefaultOptions, MatTooltipModule, MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 // Modules
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -42,6 +42,7 @@ import { InputDialogComponent } from './components/dialogs/input-dialog/input-di
 import { LicenseDialogComponent } from './components/dialogs/license-dialog/license-dialog.component';
 import { RenameCollectionDialogComponent } from './components/dialogs/rename-collection-dialog/rename-collection-dialog.component';
 import { RenameNotebookDialogComponent } from './components/dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
+import { TrashDialogComponent } from './components/dialogs/trash-dialog/trash-dialog.component';
 import { FontSizeSwitcherComponent } from './components/font-size-switcher/font-size-switcher.component';
 import { InformationComponent } from './components/information/information.component';
 import { LoadingComponent } from './components/loading/loading.component';
@@ -56,6 +57,7 @@ import { TasksProgressComponent } from './components/tasks-progress/tasks-progre
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { WindowControlsComponent } from './components/window-controls/window-controls.component';
 import { ClipboardManager } from './core/clipboard-manager';
+import { DateFormatter } from './core/date-formatter';
 import { GitHubApi } from './core/github-api';
 import { ProductDetails } from './core/product-details';
 import { Settings } from './core/settings';
@@ -78,6 +80,13 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
+/** Custom options the configure the tooltip's default show/hide delays. */
+export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
+    showDelay: 500,
+    hideDelay: 0,
+    touchendHideDelay: 0,
+};
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -96,6 +105,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         ErrorDialogComponent,
         InputDialogComponent,
         ConfirmationDialogComponent,
+        TrashDialogComponent,
         DialogHeaderComponent,
         ImportFromOldVersionDialogComponent,
         LogoFullComponent,
@@ -151,6 +161,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         UpdateService,
         GitHubApi,
         ProductDetails,
+        DateFormatter,
+        { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
         DataStore,
         {
             provide: ErrorHandler,
@@ -166,6 +178,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         ImportFromOldVersionDialogComponent,
         RenameNotebookDialogComponent,
         ConfirmationDialogComponent,
+        TrashDialogComponent,
     ],
 })
 export class AppModule {}

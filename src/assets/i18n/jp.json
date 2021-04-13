@@ -47,7 +47,9 @@
         "TitleBar": "タイトル バー",
         "UseCustomTitleBar": "カスタム タイトル バーの使用 (再起動が必要)",
         "Updates": "更新",
-        "CheckForUpdates": "更新の確認"
+        "CheckForUpdates": "更新の確認",
+        "Trash": "Trash",
+        "MoveDeletedNotesToTrash": "Move deleted notes to the trash instead of deleting them permanently."
     },
     "ComponentsPage": {
         "Components": "コンポーネント"
@@ -58,7 +60,8 @@
         "Information": "情報"
     },
     "CollectionSwitcher": {
-        "AddCollection": "コレクションの追加..."
+        "AddCollection": "コレクションの追加...",
+        "OpenTrash": "Open trash..."
     },
     "Tooltips": {
         "Rename": "名前の変更",
@@ -126,7 +129,8 @@
         "ConfirmDeleteNotebooks": "メモ帳を削除しますか？",
         "ConfirmDeleteNote": "メモを削除しますか？",
         "ConfirmDeleteNotes": "メモを削除しますか？",
-        "Import": "インポート"
+        "Import": "インポート",
+        "Trash": "Trash"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "コレクション '{{collection}}' を削除しますか？ コレクションを削除すると、メモ帳とメモも削除されます。",
@@ -140,7 +144,9 @@
         "ImportSuccessful": "インポートが完了しました！",
         "ImportFailed": "インポートに失敗しました！",
         "AllFiles": "すべてのファイル",
-        "ChooseNotebook": "メモ帳の選択"
+        "ChooseNotebook": "メモ帳の選択",
+        "TrashForCollection": "This is the trash for collection '{{collectionName}}'. You can restore notes from here, or deleted them permanently.",
+        "NoNotesInTrash": "There are no notes in the trash"
     },
     "Input": {
         "Collection": "コレクション",
@@ -204,7 +210,7 @@
         "MonthsAgo": "{{count}} ヶ月前",
         "LongAgo": "もっと前"
     },
-    "ContextMenu":{
+    "ContextMenu": {
         "Cut": "切り取り",
         "Copy": "コピー",
         "Paste": "貼り付け",

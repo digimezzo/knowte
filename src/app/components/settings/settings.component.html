@@ -97,6 +97,13 @@
                     </div>
                     <hr />
                     <div class="m-3">
+                        <h1 class="mt-2">{{ 'SettingsPage.Trash' | translate }}</h1>
+                        <mat-slide-toggle class="mt-2" [(ngModel)]="moveDeletedNotesToTrashChecked">
+                            {{ 'SettingsPage.MoveDeletedNotesToTrash' | translate }}</mat-slide-toggle
+                        >
+                    </div>
+                    <hr />
+                    <div class="m-3">
                         <h1>{{ 'SettingsPage.Import' | translate }}</h1>
                         <p>{{ 'SettingsPage.ImportFromOldVersion' | translate }}</p>
                         <button class="mt-2" mat-raised-button color="primary" (click)="import()">

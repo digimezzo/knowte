@@ -1,14 +1,13 @@
+import { Injectable } from '@angular/core';
 import * as loki from 'lokijs';
-import { Notebook } from './entities/notebook';
-import { Note } from './entities/note';
 import * as moment from 'moment';
 import { Utils } from '../core/utils';
-import { Injectable } from "@angular/core";
+import { Note } from './entities/note';
+import { Notebook } from './entities/notebook';
 
 @Injectable()
 export class DataStore {
-    constructor() {
-    }
+    constructor() {}
 
     private db: loki;
     private notebooks: any;
@@ -47,7 +46,7 @@ export class DataStore {
 
         this.db = new loki(databaseFile, {
             autoload: true,
-            autoloadCallback: this.databaseLoaded.bind(this)
+            autoloadCallback: this.databaseLoaded.bind(this),
         });
     }
 
@@ -66,11 +65,11 @@ export class DataStore {
     }
 
     public getNotebookById(id: string): Notebook {
-        return this.notebooks.findOne({ 'id': id });
+        return this.notebooks.findOne({ id: id });
     }
 
     public getNotebookByName(name: string): Notebook {
-        return this.notebooks.findOne({ 'name': name });
+        return this.notebooks.findOne({ name: name });
     }
 
     public addNotebook(name: string): string {
@@ -88,37 +87,79 @@ export class DataStore {
     }
 
     public getNotes(): Note[] {
-        const notes: Note[] = this.notes.chain().simplesort('modificationDate', true).data();
+        const notes: Note[] = this.notes
+            .chain()
+            .where((obj) => {
+                return !obj.isTrashed;
+            })
+            .simplesort('modificationDate', true)
+            .data();
+
+        return notes;
+    }
+
+    public getTrashedNotes(): Note[] {
+        const notes: Note[] = this.notes
+            .chain()
+            .where((obj) => {
+                return obj.isTrashed;
+            })
+            .simplesort('trashedDate', true)
+            .data();
 
         return notes;
     }
 
     public getUnfiledNotes(): Note[] {
-        const notebookIds: string[] = this.notebooks.chain().data().map(x => x.id);
+        const notebookIds: string[] = this.notebooks
+            .chain()
+            .data()
+            .map((x) => x.id);
 
-        const notes: Note[] = this.notes.chain().where((obj) => {
-            return obj.notebookId === '' || !notebookIds.includes(obj.notebookId);
-        }).simplesort('modificationDate', true).data();
+        const notes: Note[] = this.notes
+            .chain()
+            .where((obj) => {
+                return !obj.isTrashed && (obj.notebookId === '' || !notebookIds.includes(obj.notebookId));
+            })
+            .simplesort('modificationDate', true)
+            .data();
 
         return notes;
     }
 
     public getMarkedNotes(): Note[] {
-        const notes: Note[] = this.notes.chain().find({ 'isMarked': true }).simplesort('modificationDate', true).data();
+        const notes: Note[] = this.notes
+            .chain()
+            .find({ isMarked: true })
+            .where((obj) => {
+                return !obj.isTrashed;
+            })
+            .simplesort('modificationDate', true)
+            .data();
 
         return notes;
     }
 
     public getNotebookNotes(notebookId: string): Note[] {
-        const notes: Note[] = this.notes.chain().find({ 'notebookId': notebookId }).simplesort('modificationDate', true).data();
+        const notes: Note[] = this.notes
+            .chain()
+            .find({ notebookId: notebookId })
+            .where((obj) => {
+                return !obj.isTrashed;
+            })
+            .simplesort('modificationDate', true)
+            .data();
 
         return notes;
     }
 
     public getNotesWithIdenticalBaseTitle(baseTitle: string): Note[] {
-        const notesWithIdenticalBaseTitle: Note[] = this.notes.chain().where((obj) => {
-            return obj.title.startsWith(baseTitle);
-        }).data();
+        const notesWithIdenticalBaseTitle: Note[] = this.notes
+            .chain()
+            .where((obj) => {
+                return obj.title.startsWith(baseTitle);
+            })
+            .data();
 
         return notesWithIdenticalBaseTitle;
     }
@@ -132,18 +173,25 @@ export class DataStore {
     }
 
     public getNoteById(id: string): Note {
-        const note: Note = this.notes.findOne({ 'id': id });
+        const note: Note = this.notes.findOne({ id: id });
 
         return note;
     }
 
     public getNoteByTitle(noteTitle: string): Note {
-        return this.notes.findOne({ 'title': noteTitle });
+        return this.notes.findOne({ title: noteTitle });
     }
 
     public deleteNote(id: string): void {
         const noteToDelete: Note = this.getNoteById(id);
         this.notes.remove(noteToDelete);
+        this.db.saveDatabase();
+    }
+
+    public trashNote(id: string): void {
+        const noteToTrash: Note = this.getNoteById(id);
+        noteToTrash.isTrashed = true;
+        noteToTrash.trashedDate = moment().valueOf();
         this.db.saveDatabase();
     }
 

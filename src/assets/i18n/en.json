@@ -47,7 +47,9 @@
         "TitleBar": "Title bar",
         "UseCustomTitleBar": "Use custom title bar (Requires a restart)",
         "Updates": "Updates",
-        "CheckForUpdates": "Check for updates"
+        "CheckForUpdates": "Check for updates",
+        "Trash": "Trash",
+        "MoveDeletedNotesToTrash": "Move deleted notes to the trash instead of deleting them permanently."
     },
     "ComponentsPage": {
         "Components": "Components"
@@ -58,7 +60,8 @@
         "Information": "Information"
     },
     "CollectionSwitcher": {
-        "AddCollection": "Add collection..."
+        "AddCollection": "Add collection...",
+        "OpenTrash": "Open trash..."
     },
     "Tooltips": {
         "Rename": "Rename",
@@ -126,7 +129,8 @@
         "ConfirmDeleteNotebooks": "Delete notebooks?",
         "ConfirmDeleteNote": "Delete note?",
         "ConfirmDeleteNotes": "Delete notes?",
-        "Import": "Import"
+        "Import": "Import",
+        "Trash": "Trash"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Are you sure you want to delete the collection '{{collection}}'? If you continue, its notebooks and notes will be lost.",
@@ -140,7 +144,9 @@
         "ImportSuccessful": "Import successful!",
         "ImportFailed": "Import failed!",
         "AllFiles": "All files",
-        "ChooseNotebook": "Choose a notebook"
+        "ChooseNotebook": "Choose a notebook",
+        "TrashForCollection": "This is the trash for collection '{{collectionName}}'. You can restore notes from here, or deleted them permanently.",
+        "NoNotesInTrash": "There are no notes in the trash"
     },
     "Input": {
         "Collection": "Collection",
@@ -204,7 +210,7 @@
         "MonthsAgo": "{{count}} months ago",
         "LongAgo": "Long ago"
     },
-    "ContextMenu":{
+    "ContextMenu": {
         "Cut": "Cut",
         "Copy": "Copy",
         "Paste": "Paste",

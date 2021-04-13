@@ -2,8 +2,7 @@ import * as moment from 'moment';
 import * as nanoid from 'nanoid';
 
 export class Note {
-    constructor(public title: string, public notebookId: string) {
-    }
+    constructor(public title: string, public notebookId: string) {}
 
     public id: string = nanoid();
     public isMarked: boolean = false;
@@ -15,4 +14,7 @@ export class Note {
     public isSelected: boolean;
     public closedTasksCount: number = 0;
     public totalTasksCount: number = 0;
+    public isTrashed: boolean = false;
+    public trashedDate: number = 0;
+    public displayTrashedDate: string;
 }
