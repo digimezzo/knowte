@@ -216,7 +216,9 @@
     "Trash": {
         "Trash": "Corbeille",
         "TrashForCollection": "Ceci est la corbeille de la collection",
-        "YouCanRestoreNotesFromHere": "Vous pouvez restaurer les notes à partir d'ici ou les supprimer définitivement.",
-        "NoNotesInTrash": "Er zijn geen notities in de prullenbak"
+        "NumberOfNotesInTheTrash": "Nombre de notes dans la corbeille",
+        "MovedToTrash": "Déplacé vers la corbeille",
+        "NoNotesInTrash": "Il n'y a pas de notes dans la corbeille",
+        "SelectAllNotes": "Sélectionnez toutes les notes"
     }
 }

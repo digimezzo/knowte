@@ -216,7 +216,9 @@
     "Trash": {
         "Trash": "Trash",
         "TrashForCollection": "This is the trash for collection",
-        "YouCanRestoreNotesFromHere": "You can restore notes from here, or delete them permanently.",
-        "NoNotesInTrash": "There are no notes in the trash"
+        "NumberOfNotesInTheTrash": "Number of notes in the trash",
+        "MovedToTrash": "Moved to trash",
+        "NoNotesInTrash": "There are no notes in the trash",
+        "SelectAllNotes": "Select all notes"
     }
 }

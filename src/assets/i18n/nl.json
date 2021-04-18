@@ -216,7 +216,9 @@
     "Trash": {
         "Trash": "Prullenbak",
         "TrashForCollection": "Dit is de prullenbak voor collectie",
-        "YouCanRestoreNotesFromHere": "U kunt hier notities herstellen of ze permanent verwijderen.",
-        "NoNotesInTrash": "Er zijn geen notities in de prullenbak"
+        "NumberOfNotesInTheTrash": "Aantal notities in de prullenbak",
+        "MovedToTrash": "Verplaatst naar prullenbak",
+        "NoNotesInTrash": "Er zijn geen notities in de prullenbak",
+        "SelectAllNotes": "Selecteer alle notities"
     }
 }

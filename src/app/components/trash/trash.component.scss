@@ -14,21 +14,28 @@
     overflow-y: auto;
 }
 
+.app-trash-select-all-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
 .trashed-note {
     height: 48px;
     display: flex;
     flex-direction: row;
 }
 
+.trashed-note__checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .trashed-note__info {
     height: 48px;
     display: flex;
     flex-direction: column;
-}
-
-.trashed-note__actions {
-    display: flex;
-    flex-direction: row;
 }
 
 .trashed-note__title {

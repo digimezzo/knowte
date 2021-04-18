@@ -1011,6 +1011,10 @@ export class CollectionService {
     public getTrashedNotes(): Note[] {
         const trashedNotes: Note[] = this.dataStore.getTrashedNotes();
 
+        if (trashedNotes == undefined) {
+            return [];
+        }
+
         for (const trashedNote of trashedNotes) {
             trashedNote.displayTrashedDate = this.dateFormatter.getFormattedDate(trashedNote.trashedDate);
         }
@@ -1117,13 +1121,13 @@ export class CollectionService {
     private notebookExists(notebookName: string): boolean {
         const notebook: Notebook = this.dataStore.getNotebookByName(notebookName);
 
-        return notebook != null;
+        return notebook != undefined;
     }
 
     private noteExists(noteTitle: string): boolean {
         const note: Note = this.dataStore.getNoteByTitle(noteTitle);
 
-        return note != null;
+        return note != undefined;
     }
 
     private async getNoteDateFormatAsync(millisecondsSinceEpoch: number, useExactDates: boolean): Promise<NoteDateFormatResult> {
