@@ -13,6 +13,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -42,7 +43,6 @@ import { InputDialogComponent } from './components/dialogs/input-dialog/input-di
 import { LicenseDialogComponent } from './components/dialogs/license-dialog/license-dialog.component';
 import { RenameCollectionDialogComponent } from './components/dialogs/rename-collection-dialog/rename-collection-dialog.component';
 import { RenameNotebookDialogComponent } from './components/dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
-import { TrashDialogComponent } from './components/dialogs/trash-dialog/trash-dialog.component';
 import { FontSizeSwitcherComponent } from './components/font-size-switcher/font-size-switcher.component';
 import { InformationComponent } from './components/information/information.component';
 import { LoadingComponent } from './components/loading/loading.component';
@@ -54,12 +54,14 @@ import { NotebookSwitcherComponent } from './components/notebook-switcher/notebo
 import { NotesComponent } from './components/notes/notes.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { TasksProgressComponent } from './components/tasks-progress/tasks-progress.component';
+import { TrashComponent } from './components/trash/trash.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { WindowControlsComponent } from './components/window-controls/window-controls.component';
 import { ClipboardManager } from './core/clipboard-manager';
 import { DateFormatter } from './core/date-formatter';
 import { GitHubApi } from './core/github-api';
 import { ProductDetails } from './core/product-details';
+import { Scheduler } from './core/scheduler';
 import { Settings } from './core/settings';
 import { WorkerManager } from './core/worker-manager';
 // Stores
@@ -73,6 +75,7 @@ import { CollectionService } from './services/collection/collection.service';
 // Services
 import { ElectronService } from './services/electron.service';
 import { FileService } from './services/file/file.service';
+import { TrashService } from './services/trash/trash.service';
 import { UpdateService } from './services/update/update.service';
 
 // AoT requires an exported function for factories
@@ -105,7 +108,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         ErrorDialogComponent,
         InputDialogComponent,
         ConfirmationDialogComponent,
-        TrashDialogComponent,
+        TrashComponent,
         DialogHeaderComponent,
         ImportFromOldVersionDialogComponent,
         LogoFullComponent,
@@ -136,6 +139,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         MatSelectModule,
         MatSlideToggleModule,
         MatRippleModule,
+        MatSidenavModule,
         BrowserAnimationsModule,
         BrowserModule,
         ScrollingModule,
@@ -159,9 +163,11 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         ClipboardManager,
         WorkerManager,
         UpdateService,
+        TrashService,
         GitHubApi,
         ProductDetails,
         DateFormatter,
+        Scheduler,
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
         DataStore,
         {
@@ -178,7 +184,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         ImportFromOldVersionDialogComponent,
         RenameNotebookDialogComponent,
         ConfirmationDialogComponent,
-        TrashDialogComponent,
+        TrashComponent,
     ],
 })
 export class AppModule {}

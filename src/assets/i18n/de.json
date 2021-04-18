@@ -129,8 +129,7 @@
         "ConfirmDeleteNotebooks": "Notizbücher löschen?",
         "ConfirmDeleteNote": "Notiz löschen?",
         "ConfirmDeleteNotes": "Notizen löschen?",
-        "Import": "Importieren",
-        "Trash": "Trash"
+        "Import": "Importieren"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Sicher das Du die Kollektion '{{collection}}' löschen möchtest? Wenn Du fortfährst, werden dessen Notizbücher und Notizen verloren gehen.",
@@ -144,9 +143,7 @@
         "ImportSuccessful": "Import erfolgreich!",
         "ImportFailed": "Import fehlgeschlagen!",
         "AllFiles": "Alle Dateien",
-        "ChooseNotebook": "Wähle ein Notizbuch",
-        "TrashForCollection": "This is the trash for collection '{{collectionName}}'. You can restore notes from here, or deleted them permanently.",
-        "NoNotesInTrash": "There are no notes in the trash"
+        "ChooseNotebook": "Wähle ein Notizbuch"
     },
     "Input": {
         "Collection": "Kollektion",
@@ -215,5 +212,11 @@
         "Copy": "Kopieren",
         "Paste": "Einfügen",
         "Delete": "Löschen"
+    },
+    "Trash": {
+        "Trash": "Trash",
+        "TrashForCollection": "This is the trash for collection",
+        "YouCanRestoreNotesFromHere": "You can restore notes from here, or delete them permanently.",
+        "NoNotesInTrash": "There are no notes in the trash"
     }
 }

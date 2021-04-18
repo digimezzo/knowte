@@ -6,11 +6,11 @@ import { Operation } from '../../core/enums';
 import { CollectionService } from '../../services/collection/collection.service';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../services/translator/translator.service';
+import { TrashService } from '../../services/trash/trash.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
 import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
 import { RenameCollectionDialogComponent } from '../dialogs/rename-collection-dialog/rename-collection-dialog.component';
-import { TrashDialogComponent } from '../dialogs/trash-dialog/trash-dialog.component';
 
 @Component({
     selector: 'app-collection-switcher',
@@ -26,6 +26,7 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
         public collection: CollectionService,
         private snackBar: SnackBarService,
         private translator: TranslatorService,
+        private trash: TrashService,
         public router: Router
     ) {}
 
@@ -150,11 +151,6 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
     }
 
     public openTrash(): void {
-        this.dialog.open(TrashDialogComponent, {
-            minWidth: 'calc(100vw - 100px)',
-            width: 'auto',
-            minHeight: 'calc(100vh - 100px)',
-            height: 'auto',
-        });
+        this.trash.openTrash();
     }
 }

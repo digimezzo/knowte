@@ -1,0 +1,18 @@
+<div class="app-trash p-2">
+    <div class="app-trash__header no-select mb-2">
+        <h1>{{ 'Trash.Trash' | translate }}</h1>
+        <div>
+            {{ 'Trash.TrashForCollection' | translate }}: <b>{{ this.activeCollection }}</b>
+        </div>
+        <div>{{ 'Trash.YouCanRestoreNotesFromHere' | translate }}</div>
+    </div>
+    <div class="app-trash__body">
+        <div class="trashed-note no-select" *ngFor="let trashedNote of trashedNotes">
+            <div class="trashed-note__info">
+                <div class="trashed-note__title">{{ trashedNote.title }}</div>
+                <div class="trashed-note__trasheddate">{{ trashedNote.displayTrashedDate }}</div>
+            </div>
+            <div class="trashed-note__actions"></div>
+        </div>
+    </div>
+</div>

@@ -1,21 +1,17 @@
 @import 'variables';
 
-.no-scroll {
-    overflow: hidden;
-}
-
-.trash-content {
+.app-trash {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: calc(100vh - 260px);
-    background: red;
+    height: 100%;
 }
 
-.trash-content__header {
+.app-trash__header {
 }
 
-.trash-content__body {
+.app-trash__body {
+    overflow-y: auto;
 }
 
 .trashed-note {

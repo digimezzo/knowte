@@ -129,8 +129,7 @@
         "ConfirmDeleteNotebooks": "メモ帳を削除しますか？",
         "ConfirmDeleteNote": "メモを削除しますか？",
         "ConfirmDeleteNotes": "メモを削除しますか？",
-        "Import": "インポート",
-        "Trash": "Trash"
+        "Import": "インポート"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "コレクション '{{collection}}' を削除しますか？ コレクションを削除すると、メモ帳とメモも削除されます。",
@@ -144,9 +143,7 @@
         "ImportSuccessful": "インポートが完了しました！",
         "ImportFailed": "インポートに失敗しました！",
         "AllFiles": "すべてのファイル",
-        "ChooseNotebook": "メモ帳の選択",
-        "TrashForCollection": "This is the trash for collection '{{collectionName}}'. You can restore notes from here, or deleted them permanently.",
-        "NoNotesInTrash": "There are no notes in the trash"
+        "ChooseNotebook": "メモ帳の選択"
     },
     "Input": {
         "Collection": "コレクション",
@@ -215,5 +212,11 @@
         "Copy": "コピー",
         "Paste": "貼り付け",
         "Delete": "削除"
+    },
+    "Trash": {
+        "Trash": "Trash",
+        "TrashForCollection": "This is the trash for collection",
+        "YouCanRestoreNotesFromHere": "You can restore notes from here, or delete them permanently.",
+        "NoNotesInTrash": "There are no notes in the trash"
     }
 }

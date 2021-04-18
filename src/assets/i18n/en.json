@@ -129,8 +129,7 @@
         "ConfirmDeleteNotebooks": "Delete notebooks?",
         "ConfirmDeleteNote": "Delete note?",
         "ConfirmDeleteNotes": "Delete notes?",
-        "Import": "Import",
-        "Trash": "Trash"
+        "Import": "Import"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Are you sure you want to delete the collection '{{collection}}'? If you continue, its notebooks and notes will be lost.",
@@ -144,9 +143,7 @@
         "ImportSuccessful": "Import successful!",
         "ImportFailed": "Import failed!",
         "AllFiles": "All files",
-        "ChooseNotebook": "Choose a notebook",
-        "TrashForCollection": "This is the trash for collection '{{collectionName}}'. You can restore notes from here, or deleted them permanently.",
-        "NoNotesInTrash": "There are no notes in the trash"
+        "ChooseNotebook": "Choose a notebook"
     },
     "Input": {
         "Collection": "Collection",
@@ -215,5 +212,11 @@
         "Copy": "Copy",
         "Paste": "Paste",
         "Delete": "Delete"
+    },
+    "Trash": {
+        "Trash": "Trash",
+        "TrashForCollection": "This is the trash for collection",
+        "YouCanRestoreNotesFromHere": "You can restore notes from here, or delete them permanently.",
+        "NoNotesInTrash": "There are no notes in the trash"
     }
 }

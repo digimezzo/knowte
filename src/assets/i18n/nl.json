@@ -129,8 +129,7 @@
         "ConfirmDeleteNotebooks": "Notitieboeken verwijderen?",
         "ConfirmDeleteNote": "Notitie verwijderen?",
         "ConfirmDeleteNotes": "Notities verwijderen?",
-        "Import": "Importeren",
-        "Trash": "Prullenbak"
+        "Import": "Importeren"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Weet u zeker dat u de collectie '{{collection}}' wilt verwijderen? Als u doorgaat, gaan de notitieboeken en notities verloren.",
@@ -144,9 +143,7 @@
         "ImportSuccessful": "Import succesvol!",
         "ImportFailed": "Importeren mislukt!",
         "AllFiles": "Alle bestanden",
-        "ChooseNotebook": "Kies een notitieboek",
-        "TrashForCollection": "Dit is de prullenbak voor verzameling '{{collectionName}}'. U kunt hier notities herstellen of ze permanent verwijderen.",
-        "NoNotesInTrash": "Er zijn geen notities in de prullenbak"
+        "ChooseNotebook": "Kies een notitieboek"
     },
     "Input": {
         "Collection": "Collectie",
@@ -215,5 +212,11 @@
         "Copy": "Kopiëren",
         "Paste": "Plakken",
         "Delete": "Verwijderen"
+    },
+    "Trash": {
+        "Trash": "Prullenbak",
+        "TrashForCollection": "Dit is de prullenbak voor collectie",
+        "YouCanRestoreNotesFromHere": "U kunt hier notities herstellen of ze permanent verwijderen.",
+        "NoNotesInTrash": "Er zijn geen notities in de prullenbak"
     }
 }
