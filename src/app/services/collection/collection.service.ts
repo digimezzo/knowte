@@ -34,13 +34,12 @@ export class CollectionService {
     private isInitializing: boolean = false;
     private isInitialized: boolean = false;
     private globalEmitter: any = remote.getGlobal('globalEmitter');
-    private windowHasFrame: boolean = remote.getGlobal('windowHasFrame');
     private openNoteIds: string[] = [];
     private collectionsChanged: Subject<void> = new Subject();
     private notebookEdited: Subject<void> = new Subject();
     private notebookDeleted: Subject<void> = new Subject();
     private noteEdited: Subject<void> = new Subject();
-    private noteDeleted: Subject<void> = new Subject();
+    private notesChanged: Subject<void> = new Subject();
     private notesCountChanged: Subject<NotesCountResult> = new Subject<NotesCountResult>();
     private noteMarkChanged: Subject<NoteMarkResult> = new Subject<NoteMarkResult>();
     private noteNotebookChanged: Subject<void> = new Subject();
@@ -67,7 +66,7 @@ export class CollectionService {
     public notebookEdited$: Observable<void> = this.notebookEdited.asObservable();
     public notebookDeleted$: Observable<void> = this.notebookDeleted.asObservable();
     public noteEdited$: Observable<void> = this.noteEdited.asObservable();
-    public noteDeleted$: Observable<void> = this.noteDeleted.asObservable();
+    public notesChanged$: Observable<void> = this.notesChanged.asObservable();
     public notesCountChanged$: Observable<NotesCountResult> = this.notesCountChanged.asObservable();
     public noteMarkChanged$: Observable<NoteMarkResult> = this.noteMarkChanged.asObservable();
     public noteNotebookChanged$: Observable<void> = this.noteNotebookChanged.asObservable();
@@ -511,41 +510,96 @@ export class CollectionService {
         return operation;
     }
 
-    public async deleteNotesAsync(noteIds: string[]): Promise<Operation> {
+    private deleteNotePermanently(noteId: string): void {
+        // 1. Delete note from data store
+        this.dataStore.deleteNote(noteId);
+
+        // 2. Delete all files from disk, which are related to the note.
+        const notePath: string = this.getNotePath(noteId);
+        const noteFilePath: string = path.join(notePath, `${noteId}${Constants.noteContentExtension}`);
+        const noteStateFilePath: string = path.join(notePath, `${noteId}${Constants.noteStateExtension}`);
+
+        // Note file
+        fs.unlinkSync(noteFilePath);
+
+        // Note state file
+        if (fs.existsSync(noteStateFilePath)) {
+            fs.unlinkSync(noteStateFilePath);
+        }
+    }
+
+    public deleteNotesPermanently(noteIds: string[]): Operation {
         let operation: Operation = Operation.Success;
 
         for (const noteId of noteIds) {
             try {
-                if (this.settings.moveDeletedNotesToTrash) {
-                    this.dataStore.trashNote(noteId);
-                } else {
-                    // 1. Delete note from data store
-                    this.dataStore.deleteNote(noteId);
-
-                    // 2. Delete all files from disk, which are related to the note.
-                    const notePath: string = this.getNotePath(noteId);
-                    const noteFilePath: string = path.join(notePath, `${noteId}${Constants.noteContentExtension}`);
-                    const noteStateFilePath: string = path.join(notePath, `${noteId}${Constants.noteStateExtension}`);
-
-                    // Note file
-                    fs.unlinkSync(noteFilePath);
-
-                    // Note state file
-                    if (fs.existsSync(noteStateFilePath)) {
-                        fs.unlinkSync(noteStateFilePath);
-                    }
-                }
+                this.deleteNotePermanently(noteId);
             } catch (error) {
                 this.logger.error(
-                    `Could not delete the note with id='${noteId}'. Cause: ${error}`,
+                    `Could not permanently delete the note with id='${noteId}'. Cause: ${error}`,
                     'CollectionService',
-                    'deleteNotesAsync'
+                    'deleteNotesPermanentlyAsync'
                 );
+
                 operation = Operation.Error;
             }
         }
 
-        this.noteDeleted.next();
+        this.notesChanged.next();
+
+        return operation;
+    }
+
+    public deleteNotes(noteIds: string[]): Operation {
+        let operation: Operation = Operation.Success;
+
+        for (const noteId of noteIds) {
+            if (this.settings.moveDeletedNotesToTrash) {
+                try {
+                    this.dataStore.trashNote(noteId);
+                } catch (error) {
+                    this.logger.error(
+                        `Could not move the the note with id='${noteId}' to the trash. Cause: ${error}`,
+                        'CollectionService',
+                        'deleteNotes'
+                    );
+
+                    operation = Operation.Error;
+                }
+            } else {
+                try {
+                    this.deleteNotePermanently(noteId);
+                } catch (error) {
+                    this.logger.error(
+                        `Could not delete the note with id='${noteId}'. Cause: ${error}`,
+                        'CollectionService',
+                        'deleteNotesAsync'
+                    );
+
+                    operation = Operation.Error;
+                }
+            }
+        }
+
+        this.notesChanged.next();
+
+        return operation;
+    }
+
+    public restoreNotes(noteIds: string[]): Operation {
+        let operation: Operation = Operation.Success;
+
+        for (const noteId of noteIds) {
+            try {
+                this.dataStore.restoreNote(noteId);
+            } catch (error) {
+                this.logger.error(`Could not restore the note with id='${noteId}'. Cause: ${error}`, 'CollectionService', 'restoreNotes');
+
+                operation = Operation.Error;
+            }
+        }
+
+        this.notesChanged.next();
 
         return operation;
     }
@@ -809,7 +863,7 @@ export class CollectionService {
     }
 
     public deleteNoteEventHandler(noteId: string): void {
-        this.deleteNotesAsync([noteId]);
+        this.deleteNotes([noteId]);
     }
 
     public async importFromOldVersionAsync(directoryContainingExportFiles: string): Promise<boolean> {
@@ -1016,6 +1070,7 @@ export class CollectionService {
         }
 
         for (const trashedNote of trashedNotes) {
+            trashedNote.isSelected = false;
             trashedNote.displayTrashedDate = this.dateFormatter.getFormattedDate(trashedNote.trashedDate);
         }
 

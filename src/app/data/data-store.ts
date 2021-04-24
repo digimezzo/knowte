@@ -191,7 +191,16 @@ export class DataStore {
     public trashNote(id: string): void {
         const noteToTrash: Note = this.getNoteById(id);
         noteToTrash.isTrashed = true;
+        noteToTrash.isSelected = false;
         noteToTrash.trashedDate = moment().valueOf();
+        this.db.saveDatabase();
+    }
+
+    public restoreNote(id: string): void {
+        const noteToRestore: Note = this.getNoteById(id);
+        noteToRestore.isTrashed = false;
+        noteToRestore.isSelected = false;
+        noteToRestore.trashedDate = 0;
         this.db.saveDatabase();
     }
 

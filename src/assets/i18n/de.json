@@ -135,6 +135,8 @@
         "ConfirmDeleteCollection": "Sicher das Du die Kollektion '{{collection}}' löschen möchtest? Wenn Du fortfährst, werden dessen Notizbücher und Notizen verloren gehen.",
         "ConfirmDeleteNote": "Bist Du sicher Du möchtest die Notiz '{{noteTitle}}' löschen?",
         "ConfirmDeleteNotes": "Bist Du sicher Du möchtest diese Notizen löschen?",
+        "ConfirmPermanentlyDeleteNote": "Are you sure you want to permanently delete the note '{{noteTitle}}'? It will be lost forever.",
+        "ConfirmPermanentlyDeleteNotes": "Are you sure you want to permanently delete these notes? They will be lost forever.",
         "ConfirmDeleteNotebook": "Bist Du sicher Du möchtest das Notizbuch '{{notebookName}}' löschen? Dessen Notizen werden nicht gelöscht. Diese werden nur zu losen Notizen.",
         "ConfirmDeleteNotebooks": "Bist Du sicher Du möchtest diese Notizbuch löschen? Deren Notizen werden nicht gelöscht. Diese werden nur zu losen Notizen.",
         "SelectDirectoryContainingOldVersionExports": "Bitte wähle das Verzeichnis mit den aus Knowte 1.x exportierten Dateien aus.",
@@ -160,6 +162,7 @@
         "DeleteCollectionError": "Ein Fehler ist während dem löschen der Kollektion '{{collection}}' aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
         "DeleteNotebooksError": "Ein Fehler ist während dem löschen der Notizbücher aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
         "DeleteNotesError": "Ein Fehler ist während dem löschen der Notizen aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
+        "RestoreNotesError": "An error occurred while restoring the notes. Please verify the log if you need more information.",
         "SaveNoteError": "Ein Fehler ist während dem speichern der Notiz '{{noteTitle}}' aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
         "UpdateNoteContentError": "Ein Fehler ist während dem speichern des Notiz Inhalts aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
         "GetNoteContentError": "Ein Fehler ist während dem lesen des Inhalts der Noitz aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
@@ -215,10 +218,10 @@
     },
     "Trash": {
         "Trash": "Trash",
-        "TrashForCollection": "This is the trash for collection",
-        "NumberOfNotesInTheTrash": "Number of notes in the trash",
         "MovedToTrash": "Moved to trash",
         "NoNotesInTrash": "There are no notes in the trash",
-        "SelectAllNotes": "Select all notes"
+        "SelectAllNotes": "Select all notes",
+        "Restore": "Restore",
+        "DeletePermanently": "Delete permanently"
     }
 }

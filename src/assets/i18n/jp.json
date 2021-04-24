@@ -135,6 +135,8 @@
         "ConfirmDeleteCollection": "コレクション '{{collection}}' を削除しますか？ コレクションを削除すると、メモ帳とメモも削除されます。",
         "ConfirmDeleteNote": "メモ '{{noteTitle}}' を削除しますか？",
         "ConfirmDeleteNotes": "これらのメモを削除しますか？",
+        "ConfirmPermanentlyDeleteNote": "Are you sure you want to permanently delete the note '{{noteTitle}}'? It will be lost forever.",
+        "ConfirmPermanentlyDeleteNotes": "Are you sure you want to permanently delete these notes? They will be lost forever.",
         "ConfirmDeleteNotebook": "メモ帳 '{{notebookName}}' を削除しますか？ メモは削除されませんが、分類されていない状態になります。",
         "ConfirmDeleteNotebooks": "これらのメモ帳を削除しますか？ これらのメモは削除されませんが、分類されていない状態になります。",
         "SelectDirectoryContainingOldVersionExports": "Knowte 1.x でエクスポートしたファイルがあるディレクトリを選択してください。",
@@ -160,6 +162,7 @@
         "DeleteCollectionError": "コレクション '{{collection}}' の削除中にエラーが発生しました。詳細はログを確認してください。",
         "DeleteNotebooksError": "メモ帳の削除中にエラーが発生しました。詳細はログを確認してください。",
         "DeleteNotesError": "メモの削除中にエラーが発生しました。詳細はログを確認してください。",
+        "RestoreNotesError": "An error occurred while restoring the notes. Please verify the log if you need more information.",
         "SaveNoteError": "メモ '{{noteTitle}}' の保存中にエラーが発生しました。詳細はログを確認してください。",
         "UpdateNoteContentError": "メモの内容の保存中にエラーが発生しました。詳細はログを確認してください。",
         "GetNoteContentError": "メモの内容の取得中にエラーが発生しました。詳細はログを確認してください。",
@@ -215,10 +218,10 @@
     },
     "Trash": {
         "Trash": "Trash",
-        "TrashForCollection": "This is the trash for collection",
-        "NumberOfNotesInTheTrash": "Number of notes in the trash",
         "MovedToTrash": "Moved to trash",
         "NoNotesInTrash": "There are no notes in the trash",
-        "SelectAllNotes": "Select all notes"
+        "SelectAllNotes": "Select all notes",
+        "Restore": "Restore",
+        "DeletePermanently": "Delete permanently"
     }
 }

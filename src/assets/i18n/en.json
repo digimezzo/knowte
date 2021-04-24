@@ -135,6 +135,8 @@
         "ConfirmDeleteCollection": "Are you sure you want to delete the collection '{{collection}}'? If you continue, its notebooks and notes will be lost.",
         "ConfirmDeleteNote": "Are you sure you want to delete the note '{{noteTitle}}'?",
         "ConfirmDeleteNotes": "Are you sure you want to delete these notes?",
+        "ConfirmPermanentlyDeleteNote": "Are you sure you want to permanently delete the note '{{noteTitle}}'? It will be lost forever.",
+        "ConfirmPermanentlyDeleteNotes": "Are you sure you want to permanently delete these notes? They will be lost forever.",
         "ConfirmDeleteNotebook": "Are you sure you want to delete the notebook '{{notebookName}}'? Its notes will not be deleted. They will just become unfiled.",
         "ConfirmDeleteNotebooks": "Are you sure you want to delete these notebooks? Their notes will not be deleted. They will just become unfiled.",
         "SelectDirectoryContainingOldVersionExports": "Please select the directory containing the files which were exported from Knowte 1.x.",
@@ -160,6 +162,7 @@
         "DeleteCollectionError": "An error occurred while deleting the collection '{{collection}}'. Please verify the log if you need more information.",
         "DeleteNotebooksError": "An error occurred while deleting the notebooks. Please verify the log if you need more information.",
         "DeleteNotesError": "An error occurred while deleting the notes. Please verify the log if you need more information.",
+        "RestoreNotesError": "An error occurred while restoring the notes. Please verify the log if you need more information.",
         "SaveNoteError": "An error occurred while saving the note '{{noteTitle}}'. Please verify the log if you need more information.",
         "UpdateNoteContentError": "An error occurred while saving the note content. Please verify the log if you need more information.",
         "GetNoteContentError": "An error occurred while getting the note content. Please verify the log if you need more information.",
@@ -215,10 +218,10 @@
     },
     "Trash": {
         "Trash": "Trash",
-        "TrashForCollection": "This is the trash for collection",
-        "NumberOfNotesInTheTrash": "Number of notes in the trash",
         "MovedToTrash": "Moved to trash",
         "NoNotesInTrash": "There are no notes in the trash",
-        "SelectAllNotes": "Select all notes"
+        "SelectAllNotes": "Select all notes",
+        "Restore": "Restore",
+        "DeletePermanently": "Delete permanently"
     }
 }

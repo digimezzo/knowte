@@ -283,6 +283,10 @@ export class CollectionComponent implements OnInit, OnDestroy {
         let title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteNotes');
         let text: string = await this.translator.getAsync('DialogTexts.ConfirmDeleteNotes');
 
+        if (!this.settings.moveDeletedNotesToTrash) {
+            text = await this.translator.getAsync('DialogTexts.ConfirmPermanentlyDeleteNotes');
+        }
+
         if (!this.selectedNoteIds || this.selectedNoteIds.length === 0) {
             // This situation should not happen
             this.logger.warn(
@@ -297,6 +301,10 @@ export class CollectionComponent implements OnInit, OnDestroy {
             const note: Note = await this.collection.getNote(this.selectedNoteIds[0]);
             title = await this.translator.getAsync('DialogTitles.ConfirmDeleteNote');
             text = await this.translator.getAsync('DialogTexts.ConfirmDeleteNote', { noteTitle: note.title });
+
+            if (!this.settings.moveDeletedNotesToTrash) {
+                text = await this.translator.getAsync('DialogTexts.ConfirmPermanentlyDeleteNote', { noteTitle: note.title });
+            }
         }
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
@@ -314,7 +322,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
                 }
 
                 // Delete the notes
-                const operation: Operation = await this.collection.deleteNotesAsync(this.selectedNoteIds);
+                const operation: Operation = this.collection.deleteNotes(this.selectedNoteIds);
 
                 if (operation === Operation.Error) {
                     const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteNotesError');
@@ -329,7 +337,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     public onSelectedNotesChanged(selectedNoteIds: string[]): void {
         this.selectedNoteIds = selectedNoteIds;
-        this.canDeleteNotes = this.selectedNoteIds != null && this.selectedNoteIds.length > 0;
+        this.canDeleteNotes = this.selectedNoteIds != undefined && this.selectedNoteIds.length > 0;
     }
 
     public async importNotesAsync(): Promise<void> {

@@ -11,7 +11,7 @@ export class Note {
     public text: string = '';
     public displayModificationDate: string;
     public displayExactModificationDate: string;
-    public isSelected: boolean;
+    public isSelected: boolean = false;
     public closedTasksCount: number = 0;
     public totalTasksCount: number = 0;
     public isTrashed: boolean = false;

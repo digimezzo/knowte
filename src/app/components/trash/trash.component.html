@@ -1,24 +1,43 @@
 <div class="app-trash p-2">
     <div class="app-trash__header no-select">
-        <h1>{{ 'Trash.Trash' | translate }}</h1>
-        <div>
-            {{ 'Trash.TrashForCollection' | translate }}: <b>{{ this.activeCollection }}</b>
-        </div>
-        <div>
-            {{ 'Trash.NumberOfNotesInTheTrash' | translate }}: <b>{{ this.trashedNotes.length }}</b>
+        <div class="app-trash__title">
+            <h4>{{ 'Trash.Trash' | translate }}</h4>
+            <div class="count-label">
+                <div>{{ this.trashedNotes.length }}</div>
+            </div>
         </div>
         <div class="app-trash-select-all-checkbox" *ngIf="this.trashedNotes.length > 0">
-            <mat-checkbox class="m-2"></mat-checkbox>
+            <mat-checkbox class="m-2" (change)="selectAllNotes($event)"></mat-checkbox>
             <div>{{ 'Trash.SelectAllNotes' | translate }}</div>
         </div>
     </div>
     <div class="app-trash__body" *ngIf="this.trashedNotes.length > 0">
-        <div class="trashed-note no-select" *ngFor="let trashedNote of trashedNotes">
-            <div class="trashed-note__checkbox mx-2"><mat-checkbox></mat-checkbox></div>
-            <div class="trashed-note__info">
-                <div class="trashed-note__title">{{ trashedNote.title }}</div>
-                <div class="trashed-note__trasheddate">{{ 'Trash.MovedToTrash' | translate }}: {{ trashedNote.displayTrashedDate }}</div>
+        <div class="app-trash__notes">
+            <div class="trashed-note no-select" *ngFor="let trashedNote of trashedNotes">
+                <div class="trashed-note__checkbox mx-2">
+                    <mat-checkbox (change)="changeNoteSelection(trashedNote, $event)" [(ngModel)]="trashedNote.isSelected"></mat-checkbox>
+                </div>
+                <div class="trashed-note__info">
+                    <div class="trashed-note__title">{{ trashedNote.title }}</div>
+                    <div class="trashed-note__trasheddate">
+                        {{ 'Trash.MovedToTrash' | translate }}: {{ trashedNote.displayTrashedDate }}
+                    </div>
+                </div>
             </div>
+        </div>
+        <div class="app-trash__buttons mr-3" *ngIf="hasSelectedTrashedNotes">
+            <button
+                class="list-button"
+                mat-mini-fab
+                color=""
+                (click)="deleteSelectedNotesAsync()"
+                matTooltip="{{ 'Trash.DeletePermanently' | translate }}"
+            >
+                <i class="delete-item-icon lar la-trash-alt"></i>
+            </button>
+            <button class="list-button" mat-fab (click)="restoreSelectedNotesAsync()" matTooltip="{{ 'Trash.Restore' | translate }}">
+                <i class="restore-item-icon las la-undo"></i>
+            </button>
         </div>
     </div>
 </div>

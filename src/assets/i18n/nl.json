@@ -135,6 +135,8 @@
         "ConfirmDeleteCollection": "Weet u zeker dat u de collectie '{{collection}}' wilt verwijderen? Als u doorgaat, gaan de notitieboeken en notities verloren.",
         "ConfirmDeleteNote": "Weet u zeker dat u de notitie '{{noteTitle}}' wilt verwijderen?",
         "ConfirmDeleteNotes": "Weet u zeker dat u deze notities wilt verwijderen?",
+        "ConfirmPermanentlyDeleteNote": "Weet u zeker dat u de notitie '{{noteTitle}}' permanent wilt verwijderen? Het zal voor altijd verloren zijn.",
+        "ConfirmPermanentlyDeleteNotes": "Weet u zeker dat u deze notities definitief wilt verwijderen? Ze zullen voor altijd verloren zijn.",
         "ConfirmDeleteNotebook": "Weet u zeker dat u het notitieboek '{{notebookName}}' wilt verwijderen? De notities worden niet verwijderd. Ze worden gewoon losse notities.",
         "ConfirmDeleteNotebooks": "Weet u zeker dat u deze notitieboeken wilt verwijderen? Hun aantekeningen worden niet verwijderd. Ze worden gewoon losse notities.",
         "SelectDirectoryContainingOldVersionExports": "Selecteer de map met de bestanden die zijn geëxporteerd vanuit Knowte 1.x.",
@@ -160,6 +162,7 @@
         "DeleteCollectionError": "Er is een fout opgetreden bij het verwijderen van de collectie '{{collection}}'. Controleer het log bestand als u meer informatie nodig hebt.",
         "DeleteNotebooksError": "Er is een fout opgetreden bij het verwijderen van de notitieboeken. Controleer het log bestand als u meer informatie nodig hebt.",
         "DeleteNotesError": "Er is een fout opgetreden bij het verwijderen van de notities. Controleer het log bestand als u meer informatie nodig hebt.",
+        "RestoreNotesError": "Er is een fout opgetreden bij het herstellen van de notities. Controleer het log bestand als u meer informatie nodig hebt.",
         "SaveNoteError": "Er is een fout opgetreden bij het opslaan van de notitie '{{noteTitle}}'. Controleer het log bestand als u meer informatie nodig hebt.",
         "UpdateNoteContentError": "Er is een fout opgetreden bij het opslaan van de notitie-inhoud. Controleer het log bestand als u meer informatie nodig hebt.",
         "GetNoteContentError": "Er is een fout opgetreden bij het ophalen van de notitie-inhoud. Controleer het log bestand als u meer informatie nodig hebt.",
@@ -215,10 +218,10 @@
     },
     "Trash": {
         "Trash": "Prullenbak",
-        "TrashForCollection": "Dit is de prullenbak voor collectie",
-        "NumberOfNotesInTheTrash": "Aantal notities in de prullenbak",
         "MovedToTrash": "Verplaatst naar prullenbak",
         "NoNotesInTrash": "Er zijn geen notities in de prullenbak",
-        "SelectAllNotes": "Selecteer alle notities"
+        "SelectAllNotes": "Selecteer alle notities",
+        "Restore": "Herstellen",
+        "DeletePermanently": "Permanent verwijderen"
     }
 }
