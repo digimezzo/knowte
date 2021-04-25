@@ -219,7 +219,6 @@
     "Trash": {
         "Trash": "Corbeille",
         "MovedToTrash": "Déplacé vers la corbeille",
-        "NoNotesInTrash": "Il n'y a pas de notes dans la corbeille",
         "SelectAllNotes": "Sélectionnez toutes les notes",
         "Restore": "Restaurer",
         "DeletePermanently": "Supprimer définitivement"

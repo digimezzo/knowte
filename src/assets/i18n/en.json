@@ -219,7 +219,6 @@
     "Trash": {
         "Trash": "Trash",
         "MovedToTrash": "Moved to trash",
-        "NoNotesInTrash": "There are no notes in the trash",
         "SelectAllNotes": "Select all notes",
         "Restore": "Restore",
         "DeletePermanently": "Delete permanently"

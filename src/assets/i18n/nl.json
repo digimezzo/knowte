@@ -219,7 +219,6 @@
     "Trash": {
         "Trash": "Prullenbak",
         "MovedToTrash": "Verplaatst naar prullenbak",
-        "NoNotesInTrash": "Er zijn geen notities in de prullenbak",
         "SelectAllNotes": "Selecteer alle notities",
         "Restore": "Herstellen",
         "DeletePermanently": "Permanent verwijderen"
