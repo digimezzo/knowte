@@ -1,0 +1,86 @@
+@import 'variables';
+
+.app-trash {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.app-trash__header {
+}
+
+.app-trash__title {
+    display: flex;
+    flex-direction: row;
+}
+
+.app-trash__body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.app-trash__notes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow-y: auto;
+    z-index: 0;
+}
+
+.app-trash__buttons {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+}
+
+.app-trash-select-all-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.trashed-note {
+    height: 48px;
+    display: flex;
+    flex-direction: row;
+}
+
+.trashed-note__checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trashed-note__info {
+    height: 48px;
+    display: flex;
+    flex-direction: column;
+}
+
+.trashed-note__title {
+    margin-top: 4px;
+    height: 24px;
+}
+
+.trashed-note__trasheddate {
+    margin-bottom: 4px;
+    height: 24px;
+    color: $color-grey;
+}
+
+.restore-item-icon {
+    font-size: 28px;
+    color: #fff;
+}
+
+.delete-item-icon {
+    font-size: 22px;
+    color: $color-grey-icon;
+}

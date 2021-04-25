@@ -3,6 +3,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
@@ -13,10 +14,11 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTooltipDefaultOptions, MatTooltipModule, MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 // Modules
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -53,11 +55,14 @@ import { NotebookSwitcherComponent } from './components/notebook-switcher/notebo
 import { NotesComponent } from './components/notes/notes.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { TasksProgressComponent } from './components/tasks-progress/tasks-progress.component';
+import { TrashComponent } from './components/trash/trash.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { WindowControlsComponent } from './components/window-controls/window-controls.component';
 import { ClipboardManager } from './core/clipboard-manager';
+import { DateFormatter } from './core/date-formatter';
 import { GitHubApi } from './core/github-api';
 import { ProductDetails } from './core/product-details';
+import { Scheduler } from './core/scheduler';
 import { Settings } from './core/settings';
 import { WorkerManager } from './core/worker-manager';
 // Stores
@@ -71,12 +76,20 @@ import { CollectionService } from './services/collection/collection.service';
 // Services
 import { ElectronService } from './services/electron.service';
 import { FileService } from './services/file/file.service';
+import { TrashService } from './services/trash/trash.service';
 import { UpdateService } from './services/update/update.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
+
+/** Custom options the configure the tooltip's default show/hide delays. */
+export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
+    showDelay: 500,
+    hideDelay: 0,
+    touchendHideDelay: 0,
+};
 
 @NgModule({
     declarations: [
@@ -96,6 +109,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         ErrorDialogComponent,
         InputDialogComponent,
         ConfirmationDialogComponent,
+        TrashComponent,
         DialogHeaderComponent,
         ImportFromOldVersionDialogComponent,
         LogoFullComponent,
@@ -126,6 +140,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         MatSelectModule,
         MatSlideToggleModule,
         MatRippleModule,
+        MatSidenavModule,
+        MatCheckboxModule,
         BrowserAnimationsModule,
         BrowserModule,
         ScrollingModule,
@@ -149,8 +165,12 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         ClipboardManager,
         WorkerManager,
         UpdateService,
+        TrashService,
         GitHubApi,
         ProductDetails,
+        DateFormatter,
+        Scheduler,
+        { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
         DataStore,
         {
             provide: ErrorHandler,
@@ -166,6 +186,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         ImportFromOldVersionDialogComponent,
         RenameNotebookDialogComponent,
         ConfirmationDialogComponent,
+        TrashComponent,
     ],
 })
 export class AppModule {}

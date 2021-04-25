@@ -12,7 +12,6 @@
         {{ 'CollectionSwitcher.AddCollection' | translate }}
     </button>
     <mat-divider></mat-divider>
-
     <div *ngFor="let collection of collections">
         <button class="menu-button" mat-menu-item>
             <span class="menu-item" (click)="activateCollection(collection)">
@@ -35,4 +34,9 @@
             </span>
         </button>
     </div>
+    <mat-divider></mat-divider>
+    <button class="menu-button" mat-menu-item (click)="openTrash()">
+        <i class="menu-icon las la-trash-alt"></i>
+        {{ 'CollectionSwitcher.OpenTrash' | translate }}
+    </button>
 </mat-menu>

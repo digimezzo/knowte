@@ -120,6 +120,15 @@ export class Settings {
         this.settings.set('notebooksPaneWidth', v);
     }
 
+    // Move deleted notes to trash
+    public get moveDeletedNotesToTrash(): boolean {
+        return this.settings.get('moveDeletedNotesToTrash');
+    }
+
+    public set moveDeletedNotesToTrash(v: boolean) {
+        this.settings.set('moveDeletedNotesToTrash', v);
+    }
+
     private initialize(): void {
         // storageDirectory and activeCollection cannot be initialized here.
         // Their value is set later, depending on user action.
@@ -171,6 +180,10 @@ export class Settings {
 
         if (!this.settings.has('notebooksPaneWidth')) {
             this.settings.set('notebooksPaneWidth', 300);
+        }
+
+        if (!this.settings.has('moveDeletedNotesToTrash')) {
+            this.settings.set('moveDeletedNotesToTrash', true);
         }
     }
 }

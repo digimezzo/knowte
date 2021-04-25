@@ -47,7 +47,9 @@
         "TitleBar": "Barre de titre",
         "UseCustomTitleBar": "Utiliser barre de titre personnalisée (Nécessite un redémarrage)",
         "Updates": "Mises à jour",
-        "CheckForUpdates": "Vérifier les mises à jour"
+        "CheckForUpdates": "Vérifier les mises à jour",
+        "Trash": "Corbeille",
+        "MoveDeletedNotesToTrash": "Déplacez les notes supprimées dans la corbeille au lieu de les supprimer définitivement."
     },
     "ComponentsPage": {
         "Components": "Composants"
@@ -58,7 +60,8 @@
         "Information": "Information"
     },
     "CollectionSwitcher": {
-        "AddCollection": "Ajouter collection..."
+        "AddCollection": "Ajouter collection...",
+        "OpenTrash": "Ouvrir la corbeille..."
     },
     "Tooltips": {
         "Rename": "Renommer",
@@ -132,6 +135,8 @@
         "ConfirmDeleteCollection": "Êtes-vous sûr de vouloir supprimer la collection '{{collection}}'? Si vous continuez, ses bloc-notes et ses notes seront perdues.",
         "ConfirmDeleteNote": "Êtes-vous sûr de vouloir supprimer la note '{{noteTitle}}'?",
         "ConfirmDeleteNotes": "Êtes-vous sûr de vouloir supprimer ces notes?",
+        "ConfirmPermanentlyDeleteNote": "Voulez-vous vraiment supprimer définitivement la note '{{noteTitle}}'? Elle sera perdue à jamais.",
+        "ConfirmPermanentlyDeleteNotes": "Voulez-vous vraiment supprimer définitivement ces notes? Elles seront perdues à jamais.",
         "ConfirmDeleteNotebook": "Êtes-vous sûr de vouloir supprimer le bloc-notes '{{notebookName}}'? Ses notes ne seront pas supprimées. Elles seront juste non classées.",
         "ConfirmDeleteNotebooks": "Êtes-vous sûr de vouloir supprimer ces blocs-notes? Leurs notes ne seront pas supprimées. Elles seront juste non classées.",
         "SelectDirectoryContainingOldVersionExports": "Veuillez sélectionner le répertoire contenant les fichiers exportés à partir de Knowte 1.x.",
@@ -157,6 +162,7 @@
         "DeleteCollectionError": "Une erreur s'est produite lors de la suppression de la collection '{{collection}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "DeleteNotebookError": "Une erreur s'est produite lors de la suppression du blocs-notes. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "DeleteNotesError": "Une erreur s'est produite lors de la suppression des notes. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "RestoreNotesError": "Une erreur s'est produite lors de la restauration des notes. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "SaveNoteError": "Une erreur s'est produite lors de l'enregistrement de la note '{{noteTitle}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "UpdateNoteContentError": "Une erreur s'est produite lors de l'enregistrement du contenu de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "GetNoteContentError": "Une erreur s'est produite lors de l'obtention du contenu de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
@@ -204,10 +210,17 @@
         "MonthsAgo": "Il y à {{count}} mois",
         "LongAgo": "Il y a longtemps"
     },
-    "ContextMenu":{
+    "ContextMenu": {
         "Cut": "Couper",
         "Copy": "Copier",
         "Paste": "Coller",
         "Delete": "Supprimer"
+    },
+    "Trash": {
+        "Trash": "Corbeille",
+        "MovedToTrash": "Déplacé vers la corbeille",
+        "SelectAllNotes": "Sélectionnez toutes les notes",
+        "Restore": "Restaurer",
+        "DeletePermanently": "Supprimer définitivement"
     }
 }

@@ -47,7 +47,9 @@
         "TitleBar": "タイトル バー",
         "UseCustomTitleBar": "カスタム タイトル バーの使用 (再起動が必要)",
         "Updates": "更新",
-        "CheckForUpdates": "更新の確認"
+        "CheckForUpdates": "更新の確認",
+        "Trash": "Trash",
+        "MoveDeletedNotesToTrash": "Move deleted notes to the trash instead of deleting them permanently."
     },
     "ComponentsPage": {
         "Components": "コンポーネント"
@@ -58,7 +60,8 @@
         "Information": "情報"
     },
     "CollectionSwitcher": {
-        "AddCollection": "コレクションの追加..."
+        "AddCollection": "コレクションの追加...",
+        "OpenTrash": "Open trash..."
     },
     "Tooltips": {
         "Rename": "名前の変更",
@@ -132,6 +135,8 @@
         "ConfirmDeleteCollection": "コレクション '{{collection}}' を削除しますか？ コレクションを削除すると、メモ帳とメモも削除されます。",
         "ConfirmDeleteNote": "メモ '{{noteTitle}}' を削除しますか？",
         "ConfirmDeleteNotes": "これらのメモを削除しますか？",
+        "ConfirmPermanentlyDeleteNote": "Are you sure you want to permanently delete the note '{{noteTitle}}'? It will be lost forever.",
+        "ConfirmPermanentlyDeleteNotes": "Are you sure you want to permanently delete these notes? They will be lost forever.",
         "ConfirmDeleteNotebook": "メモ帳 '{{notebookName}}' を削除しますか？ メモは削除されませんが、分類されていない状態になります。",
         "ConfirmDeleteNotebooks": "これらのメモ帳を削除しますか？ これらのメモは削除されませんが、分類されていない状態になります。",
         "SelectDirectoryContainingOldVersionExports": "Knowte 1.x でエクスポートしたファイルがあるディレクトリを選択してください。",
@@ -157,6 +162,7 @@
         "DeleteCollectionError": "コレクション '{{collection}}' の削除中にエラーが発生しました。詳細はログを確認してください。",
         "DeleteNotebooksError": "メモ帳の削除中にエラーが発生しました。詳細はログを確認してください。",
         "DeleteNotesError": "メモの削除中にエラーが発生しました。詳細はログを確認してください。",
+        "RestoreNotesError": "An error occurred while restoring the notes. Please verify the log if you need more information.",
         "SaveNoteError": "メモ '{{noteTitle}}' の保存中にエラーが発生しました。詳細はログを確認してください。",
         "UpdateNoteContentError": "メモの内容の保存中にエラーが発生しました。詳細はログを確認してください。",
         "GetNoteContentError": "メモの内容の取得中にエラーが発生しました。詳細はログを確認してください。",
@@ -204,10 +210,17 @@
         "MonthsAgo": "{{count}} ヶ月前",
         "LongAgo": "もっと前"
     },
-    "ContextMenu":{
+    "ContextMenu": {
         "Cut": "切り取り",
         "Copy": "コピー",
         "Paste": "貼り付け",
         "Delete": "削除"
+    },
+    "Trash": {
+        "Trash": "Trash",
+        "MovedToTrash": "Moved to trash",
+        "SelectAllNotes": "Select all notes",
+        "Restore": "Restore",
+        "DeletePermanently": "Delete permanently"
     }
 }
