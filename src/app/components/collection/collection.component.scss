@@ -78,9 +78,12 @@
     background: $color-hover;
 }
 
-.notebook-name {
+.notebook__name {
     height: 40px;
     line-height: 40px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .notebooks-pane-buttons {
