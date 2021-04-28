@@ -32,7 +32,7 @@
         "electron:linux": "npm run build:prod && npx electron-builder build --linux",
         "electron:windows": "npm run build:prod && npx electron-builder build --windows",
         "electron:mac": "npm run build:prod && npx electron-builder build --mac",
-        "test": "npx jest"
+        "test": "npx jest --verbose"
     },
     "dependencies": {
         "@angular/animations": "^9.1.13",
