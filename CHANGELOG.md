@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.7] - 2021-04-30
+
+### Added
+
+### Changed
+
+-   The note title is now thinner
+
+### Removed
+
+### Fixed
+
 ## [2.0.6] - 2021-04-25
 
 ### Added

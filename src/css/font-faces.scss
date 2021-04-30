@@ -24,3 +24,9 @@
     font-weight: 100;
     src: url(assets/fonts/OpenSans-Light.ttf) format('truetype');
 }
+
+/* Because it is not possible to set font-weight in <input> elements, use this font-family instead. */
+@font-face {
+    font-family: opensans-light;
+    src: url(assets/fonts/OpenSans-Light.ttf) format('truetype');
+}

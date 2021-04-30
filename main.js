@@ -211,6 +211,14 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
     };
     noteWindow.webContents.on('will-navigate', handleRedirect);
     noteWindow.webContents.on('new-window', handleRedirect);
+    noteWindow.webContents.on('before-input-event', function (event, input) {
+        if (input.key.toLowerCase() === 'f12') {
+            if (serve) {
+                noteWindow.webContents.toggleDevTools();
+            }
+            event.preventDefault();
+        }
+    });
 }
 try {
     electron_log_1.default.info('[App] [main] +++ Starting +++');

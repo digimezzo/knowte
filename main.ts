@@ -229,6 +229,16 @@ function createNoteWindow(notePath: string, noteId: string, windowHasFrame: bool
 
     noteWindow.webContents.on('will-navigate', handleRedirect);
     noteWindow.webContents.on('new-window', handleRedirect);
+
+    noteWindow.webContents.on('before-input-event', (event, input) => {
+        if (input.key.toLowerCase() === 'f12') {
+            if (serve) {
+                noteWindow.webContents.toggleDevTools();
+            }
+
+            event.preventDefault();
+        }
+    });
 }
 
 try {
