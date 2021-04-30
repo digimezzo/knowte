@@ -84,6 +84,8 @@
         "DeleteNotes": "Notities verwijderen...",
         "LastChanged": "Laatst gewijzigd",
         "Highlight": "Markeren",
+        "Undo": "Ongedaan maken (Ctrl+Z)",
+        "Redo": "Opnieuw doen (Ctrl+Y)",
         "Bold": "Vet (Ctrl+B)",
         "Italic": "Cursief (Ctrl+I)",
         "Underline": "Onderstrepen (Ctrl+U)",

@@ -84,6 +84,8 @@
         "DeleteNotes": "メモの削除...",
         "LastChanged": "最終更新",
         "Highlight": "ハイライト",
+        "Undo": "Undo (Ctrl+Z)",
+        "Redo": "Redo (Ctrl+Y)",
         "Bold": "太字 (Ctrl+B)",
         "Italic": "斜体 (Ctrl+I)",
         "Underline": "下線 (Ctrl+U)",

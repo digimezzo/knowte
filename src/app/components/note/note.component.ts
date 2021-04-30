@@ -96,31 +96,43 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         const notePlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
 
-        const toolbarOptions: any = [
-            [
-                'bold',
-                'italic',
-                'underline',
-                'strike',
-                { background: [] },
-                { header: 1 },
-                { header: 2 },
-                { list: 'ordered' },
-                { list: 'bullet' },
-                { list: 'check' },
-                'link',
-                'blockquote',
-                'code-block',
-                'image',
-                'clean',
-            ],
-        ];
+        const icons: any = Quill.import('ui/icons');
+        icons['undo'] = `<svg class="custom-undo" viewbox="0 0 18 18">
+    <polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10"></polygon>
+    <path class="ql-stroke" d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9"></path>
+  </svg>`;
+        icons['redo'] = `<svg class="custom-redo" viewbox="0 0 18 18">
+    <polygon class="ql-fill ql-stroke" points="12 10 14 12 16 10 12 10"></polygon>
+    <path class="ql-stroke" d="M9.91,13.91A4.6,4.6,0,0,1,9,14a5,5,0,1,1,5-5"></path>
+  </svg>`;
 
         Quill.register('modules/blotFormatter', BlotFormatter);
 
         this.quill = new Quill('#editor', {
             modules: {
-                toolbar: toolbarOptions,
+                toolbar: {
+                    container: [
+                        ['bold', 'italic', 'underline', 'strike'],
+                        ['undo', 'redo'],
+                        [
+                            { background: [] },
+                            { header: 1 },
+                            { header: 2 },
+                            { list: 'ordered' },
+                            { list: 'bullet' },
+                            { list: 'check' },
+                            'link',
+                            'blockquote',
+                            'code-block',
+                            'image',
+                            'clean',
+                        ],
+                    ],
+                    handlers: {
+                        undo: this.performUndo,
+                        redo: this.performRedo,
+                    },
+                },
                 blotFormatter: {
                     specs: [CustomImageSpec],
                 },
@@ -143,6 +155,14 @@ export class NoteComponent implements OnInit, OnDestroy {
             const plaintext = node.innerText;
             const Delta = Quill.import('delta');
             return new Delta().insert(plaintext);
+        });
+
+        this.quill.keyboard.addBinding({
+            key: 'Y',
+            ctrlKey: true,
+            handler: () => {
+                this.performRedo();
+            },
         });
 
         this.activatedRoute.queryParams.subscribe(async (params) => {
@@ -196,10 +216,32 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
     }
 
+    private performUndo(): void {
+        if (this.quill != undefined && this.quill.history != undefined) {
+            try {
+                this.quill.history.undo();
+            } catch (error) {
+                this.logger.error(`Could not perform undo. Cause: ${error}`, 'NoteComponent', 'performUndo');
+            }
+        }
+    }
+
+    private performRedo(): void {
+        if (this.quill != undefined && this.quill.history != undefined) {
+            try {
+                this.quill.history.redo();
+            } catch (error) {
+                this.logger.error(`Could not perform redo. Cause: ${error}`, 'NoteComponent', 'performRedo');
+            }
+        }
+    }
+
     private async setToolbarTooltipsAsync(): Promise<void> {
         // See: https://github.com/quilljs/quill/issues/650
         const toolbarElement: Element = document.querySelector('.ql-toolbar');
         toolbarElement.querySelector('span.ql-background').setAttribute('title', await this.translator.getAsync('Tooltips.Highlight'));
+        toolbarElement.querySelector('button.ql-undo').setAttribute('title', await this.translator.getAsync('Tooltips.Undo'));
+        toolbarElement.querySelector('button.ql-redo').setAttribute('title', await this.translator.getAsync('Tooltips.Redo'));
         toolbarElement.querySelector('button.ql-bold').setAttribute('title', await this.translator.getAsync('Tooltips.Bold'));
         toolbarElement.querySelector('button.ql-italic').setAttribute('title', await this.translator.getAsync('Tooltips.Italic'));
         toolbarElement.querySelector('button.ql-underline').setAttribute('title', await this.translator.getAsync('Tooltips.Underline'));

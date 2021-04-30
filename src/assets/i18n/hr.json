@@ -84,6 +84,8 @@
         "DeleteNotes": "Izbriši bilješke...",
         "LastChanged": "Zadnja izmjena",
         "Highlight": "Istakni",
+        "Undo": "Undo (Ctrl+Z)",
+        "Redo": "Redo (Ctrl+Y)",
         "Bold": "Podebljaj (Ctrl+B)",
         "Italic": "Ukosi (Ctrl+I)",
         "Underline": "Podcrtaj (Ctrl+U)",

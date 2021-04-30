@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+-   Added Undo and Redo button to notes.
+-   Added Ctrl+Y as keyboard shortcut for Redo, in addition to the existing shortcut Shift+Ctrl+Z.
+
 ### Changed
 
 ### Removed

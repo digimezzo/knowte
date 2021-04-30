@@ -84,6 +84,8 @@
         "DeleteNotes": "Supprimer notes...",
         "LastChanged": "Dernière modification",
         "Highlight": "Surligner",
+        "Undo": "Annuler (Ctrl+Z)",
+        "Redo": "Refaire (Ctrl+Y)",
         "Bold": "Gras (Ctrl+B)",
         "Italic": "Italique (Ctrl+I)",
         "Underline": "Souligner (Ctrl+U)",

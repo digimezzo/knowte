@@ -84,6 +84,8 @@
         "DeleteNotes": "删除多个笔记...",
         "LastChanged": "上次变更",
         "Highlight": "高亮",
+        "Undo": "Undo (Ctrl+Z)",
+        "Redo": "Redo (Ctrl+Y)",
         "Bold": "加粗(Ctrl+B)",
         "Italic": "倾斜(Ctrl+I)",
         "Underline": "下划线(Ctrl+U)",

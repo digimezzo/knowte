@@ -84,6 +84,8 @@
         "DeleteNotes": "Delete notes...",
         "LastChanged": "Last changed",
         "Highlight": "Highlight",
+        "Undo": "Undo (Ctrl+Z)",
+        "Redo": "Redo (Ctrl+Y)",
         "Bold": "Bold (Ctrl+B)",
         "Italic": "Italic (Ctrl+I)",
         "Underline": "Underline (Ctrl+U)",
