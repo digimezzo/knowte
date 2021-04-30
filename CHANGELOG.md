@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.8] - 2021-05-01
+
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+-   Fixed UI bugs when using a native title bar
+
 ## [2.0.7] - 2021-04-30
 
 ### Added

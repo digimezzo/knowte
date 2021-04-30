@@ -99,9 +99,11 @@ export class AppearanceService {
         const element = document.documentElement;
 
         if (this.windowHasFrame) {
-            element.style.setProperty('--height-correction', '90px');
+            element.style.setProperty('--viewport-height-correction', '100px');
+            element.style.setProperty('--main-logo-top', '18px');
         } else {
-            element.style.setProperty('--height-correction', '122px');
+            element.style.setProperty('--viewport-height-correction', '122px');
+            element.style.setProperty('--main-logo-top', '40px');
         }
     }
 }

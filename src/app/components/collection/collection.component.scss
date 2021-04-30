@@ -1,6 +1,21 @@
 @import 'variables';
 @import 'theming';
 
+.collection-collection-switcher {
+    position: absolute;
+    right: 0;
+    top: 58px;
+    z-index: 2;
+}
+
+.collection-collection-switcher .collection-switcher {
+    color: black !important;
+}
+
+.collection-collection-switcher .collection-switcher-button {
+    color: black !important;
+}
+
 .app-collection {
     display: flex;
     flex-direction: column;

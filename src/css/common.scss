@@ -14,12 +14,12 @@
 }
 
 .viewport-height {
-    height: calc(100vh - var(--height-correction));
+    height: calc(100vh - var(--viewport-height-correction));
 }
 
 .main-logo {
     position: absolute;
-    top: 40px;
+    top: var(--main-logo-top);
     left: 16px;
     z-index: 2;
 }
