@@ -18,13 +18,17 @@ Knowte is a note taking application that allows you to quickly and easily organi
 
 ## Build prerequisites
 
-- wine: required to build Windows package
-- rpm: required to build rpm package
-- libarchive-tools: contains bsdtar, which is required to build pacman package.
+-   wine: required to build Windows package
+-   rpm: required to build rpm package
+-   libarchive-tools: contains bsdtar, which is required to build pacman package.
 
 **To install the prerequisites on Ubuntu:**
 
 sudo apt install wine rpm libarchive-tools
+
+**To install the prerequisites on Manjaro:**
+
+sudo pacman -S wine rpm-tools
 
 ## Build instructions
 
@@ -40,6 +44,6 @@ $ npm run electron:mac       # Build for Mac
 
 ## Pacman installation notes
 
-The pacman package contains a dependency to package libappindicator-sharp, which is no longer distributed with Arch Linux. I cannot remove this dependency for now, because it is an issue in electron-builder (the packaging tool which is used in this project). It is, however, possible to install Knowte on Arch Linux or Manjaro using this command (replace x.y.z with the correct version number): 
+The pacman package contains a dependency to package libappindicator-sharp, which is no longer distributed with Arch Linux. I cannot remove this dependency for now, because it is an issue in electron-builder (the packaging tool which is used in this project). It is, however, possible to install Knowte on Arch Linux or Manjaro using this command (replace x.y.z with the correct version number):
 
 `$ sudo pacman -U Knowte-x.y.z.pacman --assume-installed libappindicator-sharp`
