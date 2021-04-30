@@ -47,7 +47,9 @@
         "TitleBar": "标题栏",
         "UseCustomTitleBar": "使用自定义标题栏（需要重新启动）",
         "Updates": "更新",
-        "CheckForUpdates": "检查更新"
+        "CheckForUpdates": "检查更新",
+        "Trash": "Trash",
+        "MoveDeletedNotesToTrash": "Move deleted notes to the trash instead of deleting them permanently."
     },
     "ComponentsPage": {
         "Components": "组成"
@@ -58,7 +60,8 @@
         "Information": "信息"
     },
     "CollectionSwitcher": {
-        "AddCollection": "添加收藏..."
+        "AddCollection": "添加收藏...",
+        "OpenTrash": "Open trash..."
     },
     "Tooltips": {
         "Rename": "重命名",
@@ -132,6 +135,8 @@
         "ConfirmDeleteCollection": "您确定要删除收藏'{{collection}}'吗？ 如果继续，其笔记本和笔记将丢失。",
         "ConfirmDeleteNote": "您确定要删除笔记吗'{{noteTitle}}'？",
         "ConfirmDeleteNotes": "您确定要删除这些笔记吗？",
+        "ConfirmPermanentlyDeleteNote": "Are you sure you want to permanently delete the note '{{noteTitle}}'? It will be lost forever.",
+        "ConfirmPermanentlyDeleteNotes": "Are you sure you want to permanently delete these notes? They will be lost forever.",
         "ConfirmDeleteNotebook": "您确定要删除笔记本'{{notebookName}}吗'？ 笔记本中包含的笔记不会被删除，它们会变成未归档的。",
         "ConfirmDeleteNotebooks": "您确定要删除这些笔记本吗？ 笔记本中包含的笔记不会被删除，它们会变成未归档的。",
         "SelectDirectoryContainingOldVersionExports": "请选择包含从Knowte 1.x导出的文件的文件夹。",
@@ -157,6 +162,7 @@
         "DeleteCollectionError": "删除收藏'{{collection}}'时发生错误。如果您需要更多信息，请验证日志。",
         "DeleteNotebooksError": "删除笔记本时发生错误。如果您需要更多信息，请验证日志。",
         "DeleteNotesError": "删除笔记时发生错误。如果您需要更多信息，请验证日志。",
+        "RestoreNotesError": "An error occurred while restoring the notes. Please verify the log if you need more information.",
         "SaveNoteError": "保存笔记'{{noteTitle}}'时发生错误。如果您需要更多信息，请验证日志。",
         "UpdateNoteContentError": "保存笔记内容时发生错误。如果您需要更多信息，请验证日志。",
         "GetNoteContentError": "获取日记内容时发生错误。如果您需要更多信息，请验证日志。",
@@ -204,10 +210,17 @@
         "MonthsAgo": "{{count}} 月之前",
         "LongAgo": "Long ago"
     },
-    "ContextMenu":{
+    "ContextMenu": {
         "Cut": "剪切",
         "Copy": "复制",
         "Paste": "粘贴",
         "Delete": "删除"
+    },
+    "Trash": {
+        "Trash": "Trash",
+        "MovedToTrash": "Moved to trash",
+        "SelectAllNotes": "Select all notes",
+        "Restore": "Restore",
+        "DeletePermanently": "Delete permanently"
     }
 }

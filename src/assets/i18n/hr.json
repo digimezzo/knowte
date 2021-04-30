@@ -47,7 +47,9 @@
         "TitleBar": "Naslovna traka",
         "UseCustomTitleBar": "Koristi prilagođenu alatnu traku (zahtijeva ponovno pokretanje)",
         "Updates": "Ažuriranja",
-        "CheckForUpdates": "Provjeri ima li nova ažuriranja"
+        "CheckForUpdates": "Provjeri ima li nova ažuriranja",
+        "Trash": "Trash",
+        "MoveDeletedNotesToTrash": "Move deleted notes to the trash instead of deleting them permanently."
     },
     "ComponentsPage": {
         "Components": "Komponente"
@@ -58,7 +60,8 @@
         "Information": "Informacije"
     },
     "CollectionSwitcher": {
-        "AddCollection": "Dodaj kolekciju..."
+        "AddCollection": "Dodaj kolekciju...",
+        "OpenTrash": "Open trash..."
     },
     "Tooltips": {
         "Rename": "Preimenuj",
@@ -132,6 +135,8 @@
         "ConfirmDeleteCollection": "Jeste li sigurni da želite izbrisati kolekciju '{{collection}}'? Ako nastavite, njene bilježnice i bilješke bit će izgubljene.",
         "ConfirmDeleteNote": "Jeste li sigurni da želite izbrisati bilješku '{{noteTitle}}'?",
         "ConfirmDeleteNotes": "Jeste li sigurni da želite izbrisati ove bilješke?",
+        "ConfirmPermanentlyDeleteNote": "Are you sure you want to permanently delete the note '{{noteTitle}}'? It will be lost forever.",
+        "ConfirmPermanentlyDeleteNotes": "Are you sure you want to permanently delete these notes? They will be lost forever.",
         "ConfirmDeleteNotebook": "Jeste li sigurni da želite izbrisati bilježnicu '{{notebookName}}'? Njene bilješke neće biti izbrisane. Samo će biti neraspoređene.",
         "ConfirmDeleteNotebooks": "Jeste li sigurni da želite izbrisati ove bilježnice? Njihove bilješke neće biti izbrisane. Samo će biti neraspoređene.",
         "SelectDirectoryContainingOldVersionExports": "Pdaberite mapu koja sadrži datoteke koje su izvezene iz Knowtea 1.x.",
@@ -157,6 +162,7 @@
         "DeleteCollectionError": "Dogodila se greška tijekom brisanja kolekcije '{{collection}}'. Provjerite zapisnik, ako trebate više informacija.",
         "DeleteNotebooksError": "Dogodila se greška tijekom brisanja bilježnica. Provjerite zapisnik, ako trebate više informacija.",
         "DeleteNotesError": "Dogodila se greška tijekom brisanja bilješki. Provjerite zapisnik, ako trebate više informacija.",
+        "RestoreNotesError": "An error occurred while restoring the notes. Please verify the log if you need more information.",
         "SaveNoteError": "Dogodila se greška tijekom spremanja bilješke '{{noteTitle}}'. Provjerite zapisnik, ako trebate više informacija.",
         "UpdateNoteContentError": "Dogodila se greška tijekom spremanja sadržaja bilješke. Provjerite zapisnik, ako trebate više informacija.",
         "GetNoteContentError": "Dogodila se greška tijekom dohvaćanja sadržaja bilješke. Provjerite zapisnik, ako trebate više informacija.",
@@ -204,10 +210,17 @@
         "MonthsAgo": "Prije {{count}} mjeseca",
         "LongAgo": "Davno"
     },
-    "ContextMenu":{
+    "ContextMenu": {
         "Cut": "Izreži",
         "Copy": "Kopiraj",
         "Paste": "Zalijepi",
         "Delete": "Izbriši"
+    },
+    "Trash": {
+        "Trash": "Trash",
+        "MovedToTrash": "Moved to trash",
+        "SelectAllNotes": "Select all notes",
+        "Restore": "Restore",
+        "DeletePermanently": "Delete permanently"
     }
 }
