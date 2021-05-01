@@ -675,10 +675,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    private handleNoteMarkToggled(isNoteMarked: boolean): void {
-        this.zone.run(() => (this.isMarked = isNoteMarked));
-    }
-
     private async setNoteTitleCallbackAsync(result: NoteOperationResult): Promise<void> {
         if (result.operation === Operation.Blank) {
             this.zone.run(() => (this.noteTitle = this.initialNoteTitle));
@@ -774,6 +770,7 @@ export class NoteComponent implements OnInit, OnDestroy {
                 // We can only parse to json if there is content
                 this.logger.info(`Setting the content for the note with id='${this.noteId}'`, 'NoteComponent', 'getNoteDetailsAsync');
                 this.quill.setContents(JSON.parse(noteContent), 'silent');
+                this.quill.history.clear();
             } else {
                 this.logger.error(
                     `Could not get the content for the note with id='${this.noteId}'`,
