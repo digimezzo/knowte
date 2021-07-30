@@ -42,6 +42,9 @@ export class Constants {
     public static readonly languageChangedEvent: string = '0f8d004f-080d-4901-b813-477432809519';
     public static readonly noteFontSizeChangedEvent: string = '6ec3f042-27ea-49e1-a012-49693f44db02';
 
+    public static readonly previewApplicationTag: string = 'preview';
+    public static readonly releaseCandidateApplicationTag: string = 'rc';
+
     public static noteFontSizes: number[] = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
 
     public static readonly uiFontSizes: FontSize[] = [new FontSize(12), new FontSize(13), new FontSize(14), new FontSize(15)];

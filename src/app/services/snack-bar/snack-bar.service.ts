@@ -6,8 +6,7 @@ import { TranslatorService } from '../translator/translator.service';
     providedIn: 'root',
 })
 export class SnackBarService {
-    constructor(private zone: NgZone, private translator: TranslatorService, private matSnackBar: MatSnackBar) {
-    }
+    constructor(private zone: NgZone, private translator: TranslatorService, private matSnackBar: MatSnackBar) {}
 
     public async duplicateCollectionAsync(collection: string): Promise<void> {
         const message: string = await this.translator.getAsync('SnackBarMessages.DuplicateCollection', { collection: collection });
@@ -52,9 +51,9 @@ export class SnackBarService {
     }
 
     public async notesImportedIntoNotebookAsync(notebookName: string): Promise<void> {
-        const message: string = await this.translator.getAsync(
-            'SnackBarMessages.NotesImportedIntoNotebook',
-            { notebookName: notebookName });
+        const message: string = await this.translator.getAsync('SnackBarMessages.NotesImportedIntoNotebook', {
+            notebookName: notebookName,
+        });
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');
         this.showActionSnackBar(message, action, false);
     }
@@ -69,12 +68,6 @@ export class SnackBarService {
         const message: string = await this.translator.getAsync('SnackBarMessages.NoNoteFilesToImport');
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');
         this.showActionSnackBar(message, action, false);
-    }
-
-    public async notifyOfNewVersionAsync(version: string): Promise<void> {
-        const message: string = await this.translator.getAsync('SnackBarMessages.NewVersionAvailable', { version: version });
-        const action: string = await this.translator.getAsync('SnackBarActions.Ok');
-        this.showActionSnackBar(message, action, true);
     }
 
     private showActionLessSnackBar(message: string): void {

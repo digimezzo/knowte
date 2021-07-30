@@ -9,7 +9,7 @@ import { debounceTime } from 'rxjs/internal/operators';
 import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
 import { Logger } from '../../core/logger';
-import { ProductDetails } from '../../core/product-details';
+import { ProductInformation } from '../../core/product-information';
 import { SelectionWatcher } from '../../core/selection-watcher';
 import { Settings } from '../../core/settings';
 import { Note } from '../../data/entities/note';
@@ -63,7 +63,6 @@ export class CollectionComponent implements OnInit, OnDestroy {
         private update: UpdateService,
         private zone: NgZone,
         private logger: Logger,
-        private productDetails: ProductDetails,
         private settings: Settings
     ) {}
 
@@ -343,7 +342,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     public async importNotesAsync(): Promise<void> {
         const filePaths: string[] = remote.dialog.showOpenDialog({
             filters: [
-                { name: this.productDetails.name, extensions: [Constants.noteExportExtension.replace('.', '')] },
+                { name: ProductInformation.applicationName, extensions: [Constants.noteExportExtension.replace('.', '')] },
                 { name: await this.translator.getAsync('DialogTexts.AllFiles'), extensions: ['*'] },
             ],
             properties: ['openFile', 'multiSelections'],

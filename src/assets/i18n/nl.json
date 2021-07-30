@@ -63,7 +63,8 @@
     },
     "CollectionSwitcher": {
         "AddCollection": "Collectie toevoegen...",
-        "OpenTrash": "Open prullenbak..."
+        "OpenTrash": "Open prullenbak...",
+        "Download": "Download"
     },
     "Tooltips": {
         "Rename": "Hernoemen",

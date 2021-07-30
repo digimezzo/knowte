@@ -60,8 +60,8 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
 import { WindowControlsComponent } from './components/window-controls/window-controls.component';
 import { ClipboardManager } from './core/clipboard-manager';
 import { DateFormatter } from './core/date-formatter';
+import { Desktop } from './core/desktop';
 import { GitHubApi } from './core/github-api';
-import { ProductDetails } from './core/product-details';
 import { Scheduler } from './core/scheduler';
 import { Settings } from './core/settings';
 import { WorkerManager } from './core/worker-manager';
@@ -167,9 +167,9 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         UpdateService,
         TrashService,
         GitHubApi,
-        ProductDetails,
         DateFormatter,
         Scheduler,
+        Desktop,
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
         DataStore,
         {

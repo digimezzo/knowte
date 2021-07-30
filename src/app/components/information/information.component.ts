@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Constants } from '../../core/constants';
-import { ProductDetails } from '../../core/product-details';
+import { ProductInformation } from '../../core/product-information';
 import { AppearanceService } from '../../services/appearance/appearance.service';
 import { LicenseDialogComponent } from '../dialogs/license-dialog/license-dialog.component';
 
@@ -13,17 +13,12 @@ import { LicenseDialogComponent } from '../dialogs/license-dialog/license-dialog
     encapsulation: ViewEncapsulation.None,
 })
 export class InformationComponent implements OnInit {
-    constructor(
-        private dialog: MatDialog,
-        public appearance: AppearanceService,
-        private productDetails: ProductDetails,
-        private router: Router
-    ) {}
+    constructor(private dialog: MatDialog, public appearance: AppearanceService, private router: Router) {}
 
     public selectedIndex: number;
 
-    public applicationVersion: string = this.productDetails.version;
-    public applicationCopyright: string = this.productDetails.copyright;
+    public applicationVersion: string = ProductInformation.applicationVersion;
+    public applicationCopyright: string = ProductInformation.applicationCopyright;
     public websiteUrl: string = Constants.websiteUrl;
     public twitterUrl: string = Constants.twitterUrl;
     public githubUrl: string = Constants.githubUrl;

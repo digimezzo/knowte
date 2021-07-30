@@ -1,17 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Settings } from '../../core/settings';
-import { SnackBarService } from '../snack-bar/snack-bar.service';
-import { Logger } from '../../core/logger';
+import { Desktop } from '../../core/desktop';
 import { GitHubApi } from '../../core/github-api';
-import { ProductDetails } from '../../core/product-details';
-import { VersionComparer } from '../../core/version-comparer';
-
-@Injectable({
-    providedIn: 'root'
-})
+import { Logger } from '../../core/logger';
+import { ProductInformation } from '../../core/product-information';
+import { Settings } from '../../core/settings';
+import { VersionComparer } from './version-comparer';
+@Injectable()
 export class UpdateService {
-    constructor(private snackBar: SnackBarService, private settings: Settings, private logger: Logger,
-        private gitHub: GitHubApi, private productDetails: ProductDetails) {
+    public _isUpdateAvailable: boolean = false;
+    private _latestRelease: string = '';
+
+    constructor(private settings: Settings, private logger: Logger, private gitHub: GitHubApi, private desktop: Desktop) {}
+
+    public get isUpdateAvailable(): boolean {
+        return this._isUpdateAvailable;
+    }
+
+    public get latestRelease(): string {
+        return this._latestRelease;
     }
 
     public async checkForUpdatesAsync(): Promise<void> {
@@ -19,31 +25,42 @@ export class UpdateService {
             this.logger.info('Checking for updates', 'UpdateService', 'checkForUpdatesAsync');
 
             try {
-                const currentRelease: string = this.productDetails.version;
-                const latestRelease: string = await this.gitHub.getLastestReleaseAsync('digimezzo', 'knowte');
+                const currentRelease: string = ProductInformation.applicationVersion;
+                const latestRelease: string = await this.gitHub.getLatestReleaseAsync(
+                    'digimezzo',
+                    ProductInformation.applicationName.toLowerCase(),
+                    false
+                );
 
-                this.logger.info(
-                    `Current=${currentRelease}, Latest=${latestRelease}`,
-                    'UpdateService',
-                    'checkForUpdatesAsync');
+                this.logger.info(`Current=${currentRelease}, Latest=${latestRelease}`, 'UpdateService', 'checkForUpdatesAsync');
 
                 if (VersionComparer.isNewerVersion(currentRelease, latestRelease)) {
                     this.logger.info(
                         `Latest (${latestRelease}) > Current (${currentRelease}). Notifying user.`,
                         'UpdateService',
-                        'checkForUpdatesAsync');
-                        await this.snackBar.notifyOfNewVersionAsync(latestRelease);
+                        'checkForUpdatesAsync'
+                    );
+
+                    this._isUpdateAvailable = true;
+                    this._latestRelease = latestRelease;
                 } else {
                     this.logger.info(
                         `Latest (${latestRelease}) <= Current (${currentRelease}). Nothing to do.`,
                         'UpdateService',
-                        'checkForUpdatesAsync');
+                        'checkForUpdatesAsync'
+                    );
                 }
-            } catch (error) {
-                this.logger.error(`Could not check for updates. Cause: ${error}`, 'UpdateService', 'checkForUpdatesAsync');
+            } catch (e) {
+                this.logger.error(`Could not check for updates. Error: ${e.message}`, 'UpdateService', 'checkForUpdatesAsync');
             }
         } else {
             this.logger.info('Not checking for updates', 'UpdateService', 'checkForUpdatesAsync');
         }
+    }
+
+    public downloadLatestRelease(): void {
+        this.desktop.openLink(
+            `https://github.com/digimezzo/${ProductInformation.applicationName.toLowerCase()}/releases/tag/v${this.latestRelease}`
+        );
     }
 }

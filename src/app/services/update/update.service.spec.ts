@@ -1,142 +1,137 @@
-import { It, Mock, Times } from 'typemoq';
+import { IMock, It, Mock, Times } from 'typemoq';
+import { Desktop } from '../../core/desktop';
 import { GitHubApi } from '../../core/github-api';
 import { Logger } from '../../core/logger';
-import { ProductDetails } from '../../core/product-details';
+import { ProductInformation } from '../../core/product-information';
 import { Settings } from '../../core/settings';
-import { SnackBarService } from '../snack-bar/snack-bar.service';
 import { UpdateService } from './update.service';
 
 describe('UpdateService', () => {
+    let settingsMock: IMock<Settings>;
+    let loggerMock: IMock<Logger>;
+    let gitHubMock: IMock<GitHubApi>;
+    let desktopMock: IMock<Desktop>;
+
+    let service: UpdateService;
+
+    beforeEach(() => {
+        settingsMock = Mock.ofType<Settings>();
+        loggerMock = Mock.ofType<Logger>();
+        gitHubMock = Mock.ofType<GitHubApi>();
+        desktopMock = Mock.ofType<Desktop>();
+
+        service = new UpdateService(settingsMock.object, loggerMock.object, gitHubMock.object, desktopMock.object);
+    });
+
+    describe('constructor', () => {
+        it('should create', () => {
+            // Arrange
+
+            // Act
+
+            // Assert
+            expect(service).toBeDefined();
+        });
+
+        it('should define isUpdateAvailable as false', () => {
+            // Arrange
+
+            // Act
+
+            // Assert
+            expect(service.isUpdateAvailable).toBeFalsy();
+        });
+
+        it('should define latestRelease as empty', () => {
+            // Arrange
+
+            // Act
+
+            // Assert
+            expect(service.latestRelease).toEqual('');
+        });
+    });
+
     describe('checkForUpdatesAsync', () => {
-        it('should not check for updates when the update check is disabled', async () => {
+        it('should not check for updates if not requested', async () => {
             // Arrange
-            const snackBarMock = Mock.ofType<SnackBarService>();
-            const settingsMock = Mock.ofType<Settings>();
-            const loggerMock = Mock.ofType<Logger>();
-            const gitHubMock = Mock.ofType<GitHubApi>();
-            const productDetailsMock = Mock.ofType<ProductDetails>();
-
             settingsMock.setup((x) => x.checkForUpdates).returns(() => false);
-
-            const update: UpdateService = new UpdateService(
-                snackBarMock.object,
-                settingsMock.object,
-                loggerMock.object,
-                gitHubMock.object,
-                productDetailsMock.object
-            );
+            service = new UpdateService(settingsMock.object, loggerMock.object, gitHubMock.object, desktopMock.object);
 
             // Act
-            await update.checkForUpdatesAsync();
+            await service.checkForUpdatesAsync();
 
             // Assert
-            gitHubMock.verify((x) => x.getLastestReleaseAsync(It.isAnyString(), It.isAnyString()), Times.never());
+            gitHubMock.verify((x) => x.getLatestReleaseAsync('digimezzo', 'knowte', It.isAny()), Times.never());
         });
 
-        it('should check for updates when the update check is enabled', async () => {
+        it('should check for updates excluding pre-releases if requested', async () => {
             // Arrange
-            const snackBarMock = Mock.ofType<SnackBarService>();
-            const settingsMock = Mock.ofType<Settings>();
-            const loggerMock = Mock.ofType<Logger>();
-            const gitHubMock = Mock.ofType<GitHubApi>();
-            const productDetailsMock = Mock.ofType<ProductDetails>();
-
             settingsMock.setup((x) => x.checkForUpdates).returns(() => true);
 
-            const update: UpdateService = new UpdateService(
-                snackBarMock.object,
-                settingsMock.object,
-                loggerMock.object,
-                gitHubMock.object,
-                productDetailsMock.object
-            );
+            service = new UpdateService(settingsMock.object, loggerMock.object, gitHubMock.object, desktopMock.object);
 
             // Act
-            await update.checkForUpdatesAsync();
+            await service.checkForUpdatesAsync();
 
             // Assert
-            gitHubMock.verify((x) => x.getLastestReleaseAsync('digimezzo', 'knowte'), Times.exactly(1));
+            gitHubMock.verify((x) => x.getLatestReleaseAsync('digimezzo', 'knowte', false), Times.exactly(1));
         });
 
-        it('should notify the user when the latest release is newer than the current version', async () => {
+        it('should indicate that an update is available if the latest release is newer than the current release', async () => {
             // Arrange
-            const snackBarMock = Mock.ofType<SnackBarService>();
-            const settingsMock = Mock.ofType<Settings>();
-            const loggerMock = Mock.ofType<Logger>();
-            const gitHubMock = Mock.ofType<GitHubApi>();
-            const productDetailsMock = Mock.ofType<ProductDetails>();
+            gitHubMock.setup((x) => x.getLatestReleaseAsync('digimezzo', 'knowte', false)).returns(async () => '1000.0.0.0');
 
-            settingsMock.setup((x) => x.checkForUpdates).returns(() => true);
-            gitHubMock.setup((x) => x.getLastestReleaseAsync('digimezzo', 'knowte')).returns(async () => '2.0.3');
-            productDetailsMock.setup((x) => x.version).returns(() => '2.0.2');
-
-            const update: UpdateService = new UpdateService(
-                snackBarMock.object,
-                settingsMock.object,
-                loggerMock.object,
-                gitHubMock.object,
-                productDetailsMock.object
-            );
+            service = new UpdateService(settingsMock.object, loggerMock.object, gitHubMock.object, desktopMock.object);
 
             // Act
-            await update.checkForUpdatesAsync();
+            await service.checkForUpdatesAsync();
 
             // Assert
-            snackBarMock.verify((x) => x.notifyOfNewVersionAsync('2.0.3'), Times.exactly(1));
+            expect(service.isUpdateAvailable).toBeTruthy();
+            expect(service.latestRelease).toEqual('1000.0.0.0');
         });
 
-        it('should not notify the user when the latest release is the same as the current version', async () => {
+        it('should not indicate that an update is available if the latest release is equal to the current release', async () => {
             // Arrange
-            const snackBarMock = Mock.ofType<SnackBarService>();
-            const settingsMock = Mock.ofType<Settings>();
-            const loggerMock = Mock.ofType<Logger>();
-            const gitHubMock = Mock.ofType<GitHubApi>();
-            const productDetailsMock = Mock.ofType<ProductDetails>();
+            gitHubMock
+                .setup((x) => x.getLatestReleaseAsync('digimezzo', 'knowte', false))
+                .returns(async () => ProductInformation.applicationVersion);
 
-            settingsMock.setup((x) => x.checkForUpdates).returns(() => true);
-            gitHubMock.setup((x) => x.getLastestReleaseAsync('digimezzo', 'knowte')).returns(async () => '2.0.2');
-            productDetailsMock.setup((x) => x.version).returns(() => '2.0.2');
-
-            const update: UpdateService = new UpdateService(
-                snackBarMock.object,
-                settingsMock.object,
-                loggerMock.object,
-                gitHubMock.object,
-                productDetailsMock.object
-            );
+            service = new UpdateService(settingsMock.object, loggerMock.object, gitHubMock.object, desktopMock.object);
 
             // Act
-            await update.checkForUpdatesAsync();
+            await service.checkForUpdatesAsync();
 
             // Assert
-            snackBarMock.verify((x) => x.notifyOfNewVersionAsync(It.isAnyString()), Times.never());
+            expect(service.isUpdateAvailable).toBeFalsy();
+            expect(service.latestRelease).toEqual('');
         });
 
-        it('should not notify the user when the latest release is older than the current version', async () => {
+        it('should not indicate that an update is available if the latest release is older than the current release', async () => {
             // Arrange
-            const snackBarMock = Mock.ofType<SnackBarService>();
-            const settingsMock = Mock.ofType<Settings>();
-            const loggerMock = Mock.ofType<Logger>();
-            const gitHubMock = Mock.ofType<GitHubApi>();
-            const productDetailsMock = Mock.ofType<ProductDetails>();
+            gitHubMock.setup((x) => x.getLatestReleaseAsync('digimezzo', 'knowte', false)).returns(async () => '1.0.0');
 
-            settingsMock.setup((x) => x.checkForUpdates).returns(() => true);
-            gitHubMock.setup((x) => x.getLastestReleaseAsync('digimezzo', 'knowte')).returns(async () => '2.0.1');
-            productDetailsMock.setup((x) => x.version).returns(() => '2.0.2');
-
-            const update: UpdateService = new UpdateService(
-                snackBarMock.object,
-                settingsMock.object,
-                loggerMock.object,
-                gitHubMock.object,
-                productDetailsMock.object
-            );
+            service = new UpdateService(settingsMock.object, loggerMock.object, gitHubMock.object, desktopMock.object);
 
             // Act
-            await update.checkForUpdatesAsync();
+            await service.checkForUpdatesAsync();
 
             // Assert
-            snackBarMock.verify((x) => x.notifyOfNewVersionAsync(It.isAnyString()), Times.never());
+            expect(service.isUpdateAvailable).toBeFalsy();
+            expect(service.latestRelease).toEqual('');
+        });
+    });
+
+    describe('downloadLatestRelease', () => {
+        it('should download the latest release', () => {
+            // Arrange
+
+            // Act
+            service.downloadLatestRelease();
+
+            // Assert
+            desktopMock.verify((x) => x.openLink(It.isAny()), Times.exactly(1));
         });
     });
 });

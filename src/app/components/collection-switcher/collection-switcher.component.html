@@ -3,7 +3,10 @@
         {{ collection.activeCollection }}
     </div>
     <div class="window-button" mat-icon-button [matMenuTriggerFor]="menu" matTooltip="{{ 'Tooltips.ChangeCollection' | translate }}">
-        <i class="collection-switcher-button las la-ellipsis-v"></i>
+        <div class="collection-switcher-button">
+            <i class="collection-switcher-button__icon las la-bars"></i>
+            <div class="collection-switcher-button__updateindicator" *ngIf="this.update.isUpdateAvailable"></div>
+        </div>
     </div>
 </div>
 <mat-menu #menu="matMenu">
@@ -39,4 +42,12 @@
         <i class="menu-icon las la-trash-alt"></i>
         {{ 'CollectionSwitcher.OpenTrash' | translate }}
     </button>
+    <div *ngIf="this.update.isUpdateAvailable">
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="downloadLatestRelease()">
+            <div class="accent">
+                {{ 'CollectionSwitcher.Download' | translate }} {{ this.applicationName }} {{ this.update.latestRelease }}
+            </div>
+        </button>
+    </div>
 </mat-menu>

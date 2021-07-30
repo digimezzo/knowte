@@ -63,7 +63,8 @@
     },
     "CollectionSwitcher": {
         "AddCollection": "Ajouter collection...",
-        "OpenTrash": "Ouvrir la corbeille..."
+        "OpenTrash": "Ouvrir la corbeille...",
+        "Download": "Télécharger"
     },
     "Tooltips": {
         "Rename": "Renommer",

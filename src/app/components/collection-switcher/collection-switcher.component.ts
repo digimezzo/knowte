@@ -3,10 +3,12 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Operation } from '../../core/enums';
+import { ProductInformation } from '../../core/product-information';
 import { CollectionService } from '../../services/collection/collection.service';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { TrashService } from '../../services/trash/trash.service';
+import { UpdateService } from '../../services/update/update.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
 import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
@@ -27,9 +29,12 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
         private snackBar: SnackBarService,
         private translator: TranslatorService,
         private trash: TrashService,
+        public update: UpdateService,
         public router: Router
     ) {}
 
+    public applicationName: string = ProductInformation.applicationName;
+    
     public collections: string[];
     public activeCollection: string = '';
 
@@ -152,5 +157,9 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
 
     public openTrash(): void {
         this.trash.openTrash();
+    }
+
+    public downloadLatestRelease(): void {
+        this.update.downloadLatestRelease();
     }
 }

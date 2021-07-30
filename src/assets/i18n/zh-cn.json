@@ -63,7 +63,8 @@
     },
     "CollectionSwitcher": {
         "AddCollection": "添加收藏...",
-        "OpenTrash": "Open trash..."
+        "OpenTrash": "Open trash...",
+        "Download": "Download"
     },
     "Tooltips": {
         "Rename": "重命名",

@@ -15,7 +15,7 @@ import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
 import { Logger } from '../../core/logger';
 import { NoteExport } from '../../core/note-export';
-import { ProductDetails } from '../../core/product-details';
+import { ProductInformation } from '../../core/product-information';
 import { Settings } from '../../core/settings';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
@@ -72,8 +72,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         private settings: Settings,
         public appearance: AppearanceService,
         private clipboard: ClipboardManager,
-        private worker: WorkerManager,
-        private productDetails: ProductDetails
+        private worker: WorkerManager
     ) {}
 
     public noteId: string;
@@ -618,7 +617,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private setWindowTitle(noteTitle: string): void {
         const window: BrowserWindow = remote.getCurrentWindow();
-        window.setTitle(`${this.productDetails.name} - ${noteTitle}`);
+        window.setTitle(`${ProductInformation.applicationName} - ${noteTitle}`);
     }
 
     private noteMarkChangedHandler(noteId: string, isMarked: boolean): void {

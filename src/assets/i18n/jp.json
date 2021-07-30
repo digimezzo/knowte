@@ -63,7 +63,8 @@
     },
     "CollectionSwitcher": {
         "AddCollection": "コレクションの追加...",
-        "OpenTrash": "Open trash..."
+        "OpenTrash": "Open trash...",
+        "Download": "Download"
     },
     "Tooltips": {
         "Rename": "名前の変更",

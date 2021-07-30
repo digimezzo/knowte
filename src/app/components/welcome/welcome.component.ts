@@ -1,20 +1,18 @@
-import { Component, OnInit, NgZone, ViewEncapsulation } from '@angular/core';
-import { remote } from 'electron';
-import { Constants } from '../../core/constants';
-import { CollectionService } from '../../services/collection/collection.service';
+import { Component, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
 import { Router } from '@angular/router';
+import { remote } from 'electron';
 import { Logger } from '../../core/logger';
-import { TranslatorService } from '../../services/translator/translator.service';
+import { ProductInformation } from '../../core/product-information';
 import { AppearanceService } from '../../services/appearance/appearance.service';
-import { ProductDetails } from '../../core/product-details';
-
+import { CollectionService } from '../../services/collection/collection.service';
+import { TranslatorService } from '../../services/translator/translator.service';
+import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
 @Component({
     selector: 'app-welcome-page',
     templateUrl: './welcome.component.html',
     styleUrls: ['./welcome.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class WelcomeComponent implements OnInit {
     constructor(
@@ -24,15 +22,13 @@ export class WelcomeComponent implements OnInit {
         private dialog: MatDialog,
         private zone: NgZone,
         public router: Router,
-        private logger: Logger,
-        private productDetails: ProductDetails) {
-    }
+        private logger: Logger
+    ) {}
 
-    public applicationName: string = this.productDetails.name.toUpperCase();
+    public applicationName: string = ProductInformation.applicationName.toUpperCase();
     public isBusy: boolean = false;
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
     public async openDirectoryChooserAsync(): Promise<void> {
         this.logger.info('Opening directory chooser', 'WelcomeComponent', 'openDirectoryChooserAsync');
@@ -41,7 +37,7 @@ export class WelcomeComponent implements OnInit {
 
         const filePaths: string[] = remote.dialog.showOpenDialog({ title: selectFolderText, properties: ['openDirectory'] });
 
-            if (!filePaths || filePaths.length === 0) {
+        if (!filePaths || filePaths.length === 0) {
             this.logger.warn('No folder was selected', 'WelcomeComponent', 'openDirectoryChooserAsync');
             return;
         }
@@ -52,12 +48,13 @@ export class WelcomeComponent implements OnInit {
         this.zone.run(async () => {
             this.isBusy = true;
 
-            if (!await this.collection.setStorageDirectoryAsync(selectedParentDirectory)) {
-                const errorText: string = await this.translator.getAsync(
-                    'ErrorTexts.StorageDirectoryCreationError',
-                    { storageDirectory: selectedParentDirectory });
+            if (!(await this.collection.setStorageDirectoryAsync(selectedParentDirectory))) {
+                const errorText: string = await this.translator.getAsync('ErrorTexts.StorageDirectoryCreationError', {
+                    storageDirectory: selectedParentDirectory,
+                });
                 this.dialog.open(ErrorDialogComponent, {
-                    width: '450px', data: { errorText: errorText }
+                    width: '450px',
+                    data: { errorText: errorText },
                 });
             }
 

@@ -1,21 +1,18 @@
-import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
-import { Constants } from '../../core/constants';
-import { ProductDetails } from '../../core/product-details';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { ProductInformation } from '../../core/product-information';
 
 @Component({
-  selector: 'app-logo-full',
-  host: { 'style': 'display: block' },
-  templateUrl: './logo-full.component.html',
-  styleUrls: ['./logo-full.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-logo-full',
+    host: { style: 'display: block' },
+    templateUrl: './logo-full.component.html',
+    styleUrls: ['./logo-full.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class LogoFullComponent implements OnInit {
-  constructor(private productDetails: ProductDetails) {
-  }
+    constructor() {}
 
-  @Input() public textColor: string;
-  public applicationName: string = this.productDetails.name.toUpperCase();
+    @Input() public textColor: string;
+    public applicationName: string = ProductInformation.applicationName.toUpperCase();
 
-  public ngOnInit(): void {
-  }
+    public ngOnInit(): void {}
 }
