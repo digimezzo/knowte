@@ -5,21 +5,14 @@
     </div>
     <div class="window-frame-content">
         <div class="welcome">
-            <div class="welcome-content">
-                <div class="welcome-content-foreground">
-                    <app-logo-full [textColor]="'var(--theme-header-text-color)'"></app-logo-full>
-                    <div class="welcome-content-foreground-title mt-4">{{ 'WelcomePage.Title' | translate }}</div>
-                    <div class="welcome-content-foreground-text mt-4">{{ 'WelcomePage.Text' | translate }}</div>
-                    <div class="mt-4">
-                        <button mat-raised-button color="primary" (click)="openDirectoryChooserAsync()" *ngIf="!isBusy">
-                            {{ 'WelcomePage.SelectButton' | translate }}
-                        </button>
-                        <mat-spinner *ngIf="isBusy" [diameter]="40"></mat-spinner>
-                    </div>
-                </div>
-                <div class="welcome-content-background">
-                    <img class="welcome-content-background-pen" src="./assets/images/pencil_256x256.svg" />
-                </div>
+            <app-logo-full [textColor]="'var(--theme-header-text-color)'"></app-logo-full>
+            <div class="welcome-title mt-4">{{ 'WelcomePage.Title' | translate }}</div>
+            <div class="welcome-text mt-4">{{ 'WelcomePage.Text' | translate }}</div>
+            <div class="mt-4">
+                <button mat-raised-button color="primary" (click)="openDirectoryChooserAsync()" *ngIf="!isBusy">
+                    {{ 'WelcomePage.SelectButton' | translate }}
+                </button>
+                <mat-spinner *ngIf="isBusy" [diameter]="40"></mat-spinner>
             </div>
         </div>
     </div>

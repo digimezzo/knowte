@@ -2,48 +2,13 @@
 
 .dialog-header {
     background-color: var(--theme-header-background-color);
+    border-bottom: 1px solid var(--theme-header-border-color);
     margin: -24px -24px 24px -24px !important;
     height: 64px;
-    line-height: 64px;
-}
-
-.dialog-header-content {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.dialog-header-content-foreground {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
     display: flex;
     align-items: center;
 }
 
-.dialog-header-content-foreground-title {
-    padding-left: 24px;
-    padding-right: 24px;
+.dialog-header-title {
     color: var(--theme-header-text-color) !important;
-}
-
-.dialog-header-content-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-}
-
-.dialog-header-content-background-pen {
-    position: absolute;
-    bottom: 12px;
-    right: 12px;
-    opacity: 0.03;
-    width: 40px;
-    height: 40px;
 }
