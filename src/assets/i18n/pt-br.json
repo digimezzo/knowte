@@ -1,0 +1,228 @@
+{
+    "WelcomePage": {
+        "Title": "Bem-vindo ao Knowte!",
+        "Text": "Para começar a usar o Knowte, por favor selecione a pasta na qual você quer que suas notas sejam salvas. Caso queira importar notas que você ja tenha, apenas selecione a pasta que as possui e o Knowte irá importa-lás para você.",
+        "SelectButton": "SELECIONAR..."
+    },
+    "LoadingPage": {
+        "Text": "Carregando..."
+    },
+    "NotesTabs": {
+        "All": "Tudo",
+        "Today": "Hoje",
+        "Yesterday": "Ontem",
+        "ThisWeek": "Essa semana",
+        "Marked": "Marcado"
+    },
+    "SettingsTabs": {
+        "Appearance": "Aparência",
+        "Notes": "Notas",
+        "Advanced": "Avançado"
+    },
+    "InformationTabs": {
+        "About": "Sobre",
+        "Components": "Componentes"
+    },
+    "AboutPage": {
+        "About": "Sobre",
+        "Donate": "Doar",
+        "GetInTouch": "Entre em contato",
+        "Version": "Versão",
+        "License": "Licensa",
+        "IsKnowteUseful": "Knowte é útil? Por favor, considere doar. Obrigado!",
+        "Website": "Website"
+    },
+    "SettingsPage": {
+        "Import": "Importar",
+        "ImportFromOldVersion": "Importar do Knowte 1.x",
+        "FontSize": "Tamanho da fonte",
+        "FontSizeInNotes": "Tamanho da fonte nas notas",
+        "PixelsShort": "px",
+        "Closing": "Fechando",
+        "CloseNotesWithEscape": "Feche notas apertando [Esc]",
+        "Dates": "Datas",
+        "ShowExactDatesInTheNotesList": "Mostre as datas exatas na lista de notas",
+        "Language": "Idioma",
+        "Color": "Cor",
+        "TitleBar": "Barra de título",
+        "UseCustomTitleBar": "Usar barra de título customizada (Requer reiniciamento)",
+        "Updates": "Updates",
+        "CheckForUpdates": "Checar updates",
+        "Trash": "Lixeira",
+        "MoveDeletedNotesToTrash": "Mova notas deletadas para a lixeira ao invés de deleta-lás permanentemente."
+    },
+    "ComponentsPage": {
+        "Components": "Componentes"
+    },
+    "MainMenu": {
+        "Notes": "Notas",
+        "Settings": "Opções",
+        "Information": "Informação"
+    },
+    "CollectionSwitcher": {
+        "AddCollection": "Adicionar coleção...",
+        "OpenTrash": "Abrir lixeira..."
+    },
+    "Tooltips": {
+        "Rename": "Renomear",
+        "Delete": "Deletar",
+        "ChangeCollection": "Trocar coleção",
+        "ChangeNotebook": "Trocar caderneta",
+        "Actions": "Acões",
+        "MarkNote": "Marcar nota",
+        "UnmarkNote": "Remover marca",
+        "PrintNote": "Imprimir nota...",
+        "ExportNote": "Exportar nota...",
+        "ExportNoteToPdf": "Exportar nota para PDF...",
+        "ImportNotes": "Importar notas...",
+        "AddNotebook": "Adicionar caderneta...",
+        "RenameNotebook": "Renomear caderneta...",
+        "DeleteNotebook": "Deletar caderneta...",
+        "DeleteNotebooks": "Deletar cadernetas...",
+        "AddNote": "Adicionar nota",
+        "DeleteNote": "Deletar nota...",
+        "DeleteNotes": "Deletar notas...",
+        "LastChanged": "Última mudança",
+        "Highlight": "Destacar",
+        "Undo": "Desfazer (Ctrl+Z)",
+        "Redo": "Refazer (Ctrl+Y)",
+        "Bold": "Negrito (Ctrl+B)",
+        "Italic": "Itálico (Ctrl+I)",
+        "Underline": "Sublinhar (Ctrl+U)",
+        "Strikethrough": "Tachar (Ctrl+S)",
+        "Heading1": "Cabeçalho 1 (Ctrl+1)",
+        "Heading2": "Cabeçalho 2 (Ctrl+2)",
+        "NumberedList": "Lista numerada",
+        "BulletedList": "Lista pontuada",
+        "TaskList": "Lista de afazeres",
+        "Link": "Link",
+        "Quote": "Citação",
+        "Code": "Código",
+        "Image": "Imagem",
+        "ClearFormatting": "Limpar formatação",
+        "Close": "Fechar"
+    },
+    "LicenseDialog": {
+        "License": "Licensa"
+    },
+    "Buttons": {
+        "Ok": "OK",
+        "Cancel": "CANCELAR",
+        "License": "LICENSA",
+        "Donate": "DOAR",
+        "ViewLog": "VER MUDANÇAS",
+        "Yes": "SIM",
+        "No": "NÃO",
+        "Import": "IMPORTAR",
+        "StartImport": "COMEÇAR A IMPORTAR",
+        "Select": "SELECIONAR",
+        "SelectAgain": "SELECIONAR NOVAMENTE",
+        "Close": "FECHAR"
+    },
+    "DialogTitles": {
+        "AddCollection": "Adicionar coleção",
+        "RenameCollection": "Renomear coleção",
+        "SelectFolder": "Selecionar uma pasta",
+        "Error": "Erro",
+        "ConfirmDeleteCollection": "Deletar coleção?",
+        "AddNotebook": "Adicionar caderneta",
+        "RenameNotebook": "Renomear caderneta",
+        "ConfirmDeleteNotebook": "Deletar caderneta?",
+        "ConfirmDeleteNotebooks": "Deletar cadernetas?",
+        "ConfirmDeleteNote": "Deletar note?",
+        "ConfirmDeleteNotes": "Deletar notes?",
+        "Import": "Importar"
+    },
+    "DialogTexts": {
+        "ConfirmDeleteCollection": "Você tem certeza que quer deletar a coleção '{{collection}}'? Caso continue, suas cadernetas e notas serão apagadas.",
+        "ConfirmDeleteNote": "Você tem certeza que quer deletar a nota '{{noteTitle}}'?",
+        "ConfirmDeleteNotes": "Você tem certeza que quer deletar estas notas?",
+        "ConfirmPermanentlyDeleteNote": "Você tem certeza que quer deletar esta nota permanentemente '{{noteTitle}}'? Ela será perdida para sempre.",
+        "ConfirmPermanentlyDeleteNotes": "Você tem certeza que quer deletar estas notas permanentemente? Elas serão perdidas para sempre.",
+        "ConfirmDeleteNotebook": "Você tem certeza que quer deletar a caderneta '{{notebookName}}'? Suas notas não serão deletadas. Elas apenas ficarão desarquivadas.",
+        "ConfirmDeleteNotebooks": "Você tem certeza que quer deletar estas cadernetas? As notas não serão deletadas. Elas apenas ficarão desarquivadas.",
+        "SelectDirectoryContainingOldVersionExports": "Por favor selecione a pasta que contém os arquivos que foram exportados do Knowte 1.x",
+        "YouHaveSelectedDirectory": "Você escolheu a pasta:",
+        "Importing": "Importando",
+        "ImportSuccessful": "Importado com sucesso!",
+        "ImportFailed": "Importação falhou!",
+        "AllFiles": "Todos os arquivos",
+        "ChooseNotebook": "Escolha uma caderneta"
+    },
+    "Input": {
+        "Collection": "Coleção",
+        "NotebookName": "Nome da caderneta"
+    },
+    "ErrorTexts": {
+        "StorageDirectoryCreationError": "A pasta '{{storageDirectory}}' não pode ser usado para salvar suas notas. Você talvez não tenha permissões o suficiente para criar arquivos nela. Por favor verique o log se precisar de mais informações.",
+        "GlobalError": "Um erro ocorreu que fará a aplicação ser fechada. Por favor verique o log se precisar de mais informações.",
+        "AddCollectionError": "Um erro ocorreu enquanto a coleção '{{collection}}' estava sendo adicionada. Por favor verique o log se precisar de mais informações.",
+        "AddNotebookError": "Um erro ocorreu enquanto a caderneta '{{notebookName}}' estava sendo adiconada. Por favor verique o log se precisar de mais informações.",
+        "RenameNoteError": "Um erro ocorreu enquanto a nota '{{noteTitle}}' estava sendo adicionada. Por favor verique o log se precisar de mais informações.",
+        "RenameNotebookError": "Um erro ocorreu ao renomear a caderneta '{{notebookName}}'. Por favor verique o log se precisar de mais informações.",
+        "RenameCollectionError": "Um erro ocorreu ao renomear a coleção '{{collection}}'. Por favor verique o log se precisar de mais informações.",
+        "DeleteCollectionError": "Um erro ocorreu ao deletar a coleção '{{collection}}'. Por favor verique o log se precisar de mais informações.",
+        "DeleteNotebooksError": "Um erro ocorreu ao deletar as cadernetas. Por favor verique o log se precisar de mais informações.",
+        "DeleteNotesError": "Um erro ocorreu ao deletar as notas. Por favor verique o log se precisar de mais informações.",
+        "RestoreNotesError": "Um erro ocorreu ao restaurar as notas. Por favor verique o log se precisar de mais informações.",
+        "SaveNoteError": "Um erro ocorreu enquanto a nota '{{noteTitle}}' estava sendo salva. Por favor verique o log se precisar de mais informações.",
+        "UpdateNoteContentError": "Um erro ocorreu ao salvar o conteúdo da nota. Por favor verique o log se precisar de mais informações.",
+        "GetNoteContentError": "Um erro ocorreu ao pegar as informações da nota. Por favor verique o log se precisar de mais informações.",
+        "ExportNoteError": "Um erro ocorreu enquanto a nota '{{noteTitle}}' estava sendo exportada. Por favor verique o log se precisar de mais informações.",
+        "ImportNotesError": "Um err ocorreu ao importar as notas. Por favor verique o log se precisar de mais informações.",
+        "ChangeNotebookError": "Um erro ocorreu na troca de cadernetas. Por favor verique o log se precisar de mais informações"
+    },
+    "SnackBarMessages": {
+        "DuplicateCollection": "Uma coleção já usa o nome '{{collection}}'",
+        "DuplicateNotebook": "Uma cadernete já usa o nome '{{notebookName}}'",
+        "NoteTitleCannotBeEmpty": "O título da nota não pode estar vazio",
+        "CloseNoteBeforeChangingCollections": "Por favor feche todas as notas antes de trocar de coleções",
+        "NoteExported": "A Nota '{{noteTitle}}' foi exportada",
+        "NoteMovedToNotebook": "A nota foi movida para '{{notebookName}}'",
+        "NotesMovedToNotebook": "As notas foram movidas para '{{notebookName}}'",
+        "NotesImportedIntoNotebook": "Notas foram importadas para a caderneta '{{notebookName}}'",
+        "NotesImported": "Notas foram importadas",
+        "NoNoteFilesToImport": "Não havia arquivos de notas para importar",
+        "NewVersionAvailable": "Uma nova versão está disponível: {{version}}"
+    },
+    "SnackBarActions": {
+        "Ok": "OK"
+    },
+    "MainPage": {
+        "Notebooks": "Cadernetas",
+        "AllNotes": "Todas as notas",
+        "UnfiledNotes": "Notas não preenchidas",
+        "Search": "Pesquisar",
+        "ClearSearch": "Limpar pesquisa",
+        "DragNotesCount": "{{noteCount}} notas",
+        "TasksCount": "{{closedTasksCount}} de {{totalTasksCount}}"
+    },
+    "Notes": {
+        "NewNote": "Nova nota",
+        "NotePlaceholder": "Escreva sua nota aqui...",
+        "Imported": "Importado",
+        "Search": "Procurar"
+    },
+    "NoteDates": {
+        "Today": "Hoje",
+        "Yesterday": "Ontem",
+        "DaysAgo": "{{count}} dias atrás",
+        "LastWeek": "Semana passada",
+        "WeeksAgo": "{{count}} semanas atrás",
+        "MonthsAgo": "{{count}} meses atrás",
+        "LongAgo": "A muito tempo"
+    },
+    "ContextMenu": {
+        "Cut": "Cortar",
+        "Copy": "Copiar",
+        "Paste": "Colar",
+        "Delete": "Deletar"
+    },
+    "Trash": {
+        "Trash": "Lixeira",
+        "MovedToTrash": "Movido à lixeira",
+        "SelectAllNotes": "Selecionar todas as notas",
+        "Restore": "Restaurar",
+        "DeletePermanently": "Deletar permanentemente"
+    }
+}
