@@ -49,7 +49,9 @@
         "Updates": "Updates",
         "CheckForUpdates": "Controleer op updates",
         "Trash": "Prullenbak",
-        "MoveDeletedNotesToTrash": "Verplaats verwijderde notities naar de prullenbak in plaats van ze permanent te verwijderen."
+        "MoveDeletedNotesToTrash": "Verplaats verwijderde notities naar de prullenbak in plaats van ze permanent te verwijderen.",
+        "HeaderBar": "Kopbalk",
+        "UseLightHeaderBar": "Gebruik lichte kopbalk"
     },
     "ComponentsPage": {
         "Components": "Componenten"

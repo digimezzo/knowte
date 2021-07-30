@@ -54,6 +54,7 @@ export class Constants {
         { code: 'jp', englishName: 'Japanese', localizedName: '日本語' },
         { code: 'nl', englishName: 'Dutch', localizedName: 'Nederlands' },
         { code: 'zh-cn', englishName: 'Chinese', localizedName: '中國人' },
+        { code: 'pt-br', englishName: 'Brazilian Portuguese', localizedName: 'Português brasileiro' },
     ];
 
     public static readonly colorSchemes: ColorScheme[] = [

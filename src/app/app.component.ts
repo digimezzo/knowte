@@ -29,6 +29,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
+        this.appearance.initialize();
+
         this.subscription.add(
             this.trash.openTrashRequested$.subscribe(() => {
                 if (this.drawer != undefined) {

@@ -7,13 +7,13 @@
     user-select: none;
     cursor: default;
     opacity: 0.8;
-    color: white;
-    fill: white;
+    color: var(--theme-header-text-color);
+    fill: var(--theme-header-text-color);
     font-size: 10px;
     -webkit-app-region: no-drag;
 }
 
 .window-button:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-window-button-hover-background);
     opacity: 1;
 }

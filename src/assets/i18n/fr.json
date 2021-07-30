@@ -49,7 +49,9 @@
         "Updates": "Mises à jour",
         "CheckForUpdates": "Vérifier les mises à jour",
         "Trash": "Corbeille",
-        "MoveDeletedNotesToTrash": "Déplacez les notes supprimées dans la corbeille au lieu de les supprimer définitivement."
+        "MoveDeletedNotesToTrash": "Déplacez les notes supprimées dans la corbeille au lieu de les supprimer définitivement.",
+        "HeaderBar": "Barre d'en-tête",
+        "UseLightHeaderBar": "Utiliser barre d'en-tête claire"
     },
     "ComponentsPage": {
         "Components": "Composants"

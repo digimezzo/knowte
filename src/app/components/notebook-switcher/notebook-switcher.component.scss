@@ -12,7 +12,7 @@
     height: $titlebar-height;
     display: flex;
     align-items: center;
-    color: white;
+    color: var(--theme-header-text-color);
     flex: 1;
 }
 

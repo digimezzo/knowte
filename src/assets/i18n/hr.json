@@ -49,7 +49,9 @@
         "Updates": "Ažuriranja",
         "CheckForUpdates": "Provjeri ima li nova ažuriranja",
         "Trash": "Trash",
-        "MoveDeletedNotesToTrash": "Move deleted notes to the trash instead of deleting them permanently."
+        "MoveDeletedNotesToTrash": "Move deleted notes to the trash instead of deleting them permanently.",
+        "HeaderBar": "Header bar",
+        "UseLightHeaderBar": "Use light header bar"
     },
     "ComponentsPage": {
         "Components": "Komponente"

@@ -12,7 +12,7 @@
     left: 0;
     right: 0;
     height: var(--loader-titlebar-height);
-    background: $color-darkgrey;
+    background: var(--theme-header-background-color);
     -webkit-app-region: drag;
 }
 
@@ -22,7 +22,7 @@
     left: 0;
     right: 0;
     height: 48px;
-    background: $color-darkgrey;
+    background: var(--theme-header-background-color);
 }
 
 .loader-body {

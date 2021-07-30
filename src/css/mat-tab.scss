@@ -23,7 +23,7 @@ mat-tab-group {
 }
 
 .mat-tab-label.mat-tab-label-active {
-    color: #fff !important;
+    color: var(--theme-header-text-color) !important;
 }
 
 .mat-tab-group.mat-primary .mat-ink-bar,
@@ -32,10 +32,10 @@ mat-tab-group {
 }
 
 .mat-tab-header {
-    border-bottom-style: none !important;
+    border-bottom: 1px solid var(--theme-header-border-color) !important;
     padding-left: 110px;
-    background-color: $color-darkgrey;
+    background-color: var(--theme-header-background-color);
 }
 .mat-tab-header-pagination-chevron {
-    border-color: #fff !important;
+    border-color: var(--theme-header-text-color) !important;
 }

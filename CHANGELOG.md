@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.10] - 2021-07-30
+
+### Added
+
+-   Added setting to use light header bar
+-   Added Brazilian Portuguese translation
+
+### Changed
+
+### Removed
+
+### Fixed
+
+-   Fixed a bug where a color change was not applied to all opened windows.
+
 ## [2.0.9] - 2021-05-01
 
 ### Added

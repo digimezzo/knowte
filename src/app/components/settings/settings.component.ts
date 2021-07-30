@@ -52,6 +52,14 @@ export class SettingsComponent implements OnInit {
         this.settings.useCustomTitleBar = v;
     }
 
+    public get useLightHeaderBarChecked(): boolean {
+        return this.settings.useLightHeaderBar;
+    }
+    public set useLightHeaderBarChecked(v: boolean) {
+        this.settings.useLightHeaderBar = v;
+        this.appearance.onThemeChanged();
+    }
+
     public get checkForUpdatesChecked(): boolean {
         return this.settings.checkForUpdates;
     }

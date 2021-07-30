@@ -69,7 +69,8 @@
 }
 
 .note-content-fixed-title {
-    background-color: $color-darkgrey;
+    background-color: var(--theme-header-background-color);
+    border-bottom: 1px solid var(--theme-header-border-color);
     width: 100%;
     height: 50px;
 }
@@ -83,7 +84,7 @@
     font-size: 24px;
     font-weight: lighter;
     padding: 0 16px 0 16px;
-    color: white;
+    color: var(--theme-header-text-color);
 }
 
 .note-editor {

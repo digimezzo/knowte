@@ -49,7 +49,9 @@
         "Updates": "Updates",
         "CheckForUpdates": "Checar updates",
         "Trash": "Lixeira",
-        "MoveDeletedNotesToTrash": "Mova notas deletadas para a lixeira ao invés de deleta-lás permanentemente."
+        "MoveDeletedNotesToTrash": "Mova notas deletadas para a lixeira ao invés de deleta-lás permanentemente.",
+        "HeaderBar": "Header bar",
+        "UseLightHeaderBar": "Use light header bar"
     },
     "ComponentsPage": {
         "Components": "Componentes"

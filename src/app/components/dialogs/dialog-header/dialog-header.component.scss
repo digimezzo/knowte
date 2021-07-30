@@ -1,7 +1,7 @@
 @import 'variables';
 
 .dialog-header {
-    background-color: $color-darkgrey;
+    background-color: var(--theme-header-background-color);
     margin: -24px -24px 24px -24px !important;
     height: 64px;
     line-height: 64px;
@@ -27,7 +27,7 @@
 .dialog-header-content-foreground-title {
     padding-left: 24px;
     padding-right: 24px;
-    color: white;
+    color: var(--theme-header-text-color) !important;
 }
 
 .dialog-header-content-background {

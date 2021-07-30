@@ -1,14 +1,13 @@
 <div class="window-frame">
     <div class="window-frame-titlebar">
-        <div class="window-frame-titlebar-dragarea">
-        </div>
+        <div class="window-frame-titlebar-dragarea"></div>
         <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
     </div>
     <div class="window-frame-content">
         <div class="welcome">
             <div class="welcome-content">
                 <div class="welcome-content-foreground">
-                    <app-logo-full [textColor]="'white'"></app-logo-full>
+                    <app-logo-full [textColor]="'var(--theme-header-text-color)'"></app-logo-full>
                     <div class="welcome-content-foreground-title mt-4">{{ 'WelcomePage.Title' | translate }}</div>
                     <div class="welcome-content-foreground-text mt-4">{{ 'WelcomePage.Text' | translate }}</div>
                     <div class="mt-4">
@@ -19,7 +18,7 @@
                     </div>
                 </div>
                 <div class="welcome-content-background">
-                    <img class="welcome-content-background-pen" src="./assets/images/pencil_256x256.svg">
+                    <img class="welcome-content-background-pen" src="./assets/images/pencil_256x256.svg" />
                 </div>
             </div>
         </div>

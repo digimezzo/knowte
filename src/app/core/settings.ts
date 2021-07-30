@@ -129,6 +129,15 @@ export class Settings {
         this.settings.set('moveDeletedNotesToTrash', v);
     }
 
+    // Use light header bar
+    public get useLightHeaderBar(): boolean {
+        return this.settings.get('useLightHeaderBar');
+    }
+
+    public set useLightHeaderBar(v: boolean) {
+        this.settings.set('useLightHeaderBar', v);
+    }
+
     private initialize(): void {
         // storageDirectory and activeCollection cannot be initialized here.
         // Their value is set later, depending on user action.
@@ -184,6 +193,10 @@ export class Settings {
 
         if (!this.settings.has('moveDeletedNotesToTrash')) {
             this.settings.set('moveDeletedNotesToTrash', true);
+        }
+
+        if (!this.settings.has('useLightHeaderBar')) {
+            this.settings.set('useLightHeaderBar', false);
         }
     }
 }

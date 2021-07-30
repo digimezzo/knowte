@@ -57,6 +57,13 @@
                             {{ 'SettingsPage.UseCustomTitleBar' | translate }}</mat-slide-toggle
                         >
                     </div>
+                    <hr />
+                    <div class="m-3">
+                        <h1 class="mt-2">{{ 'SettingsPage.HeaderBar' | translate }}</h1>
+                        <mat-slide-toggle class="mt-2" [(ngModel)]="useLightHeaderBarChecked">
+                            {{ 'SettingsPage.UseLightHeaderBar' | translate }}</mat-slide-toggle
+                        >
+                    </div>
                 </mat-tab>
                 <mat-tab>
                     <div class="m-3">

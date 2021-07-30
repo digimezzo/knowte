@@ -19,9 +19,7 @@ export class AppearanceService {
     private _selectedColorScheme: ColorScheme;
     private _selectedFontSize: FontSize;
 
-    constructor(private settings: Settings, private logger: Logger, private overlayContainer: OverlayContainer) {
-        this.initialize();
-    }
+    constructor(private settings: Settings, private logger: Logger, private overlayContainer: OverlayContainer) {}
 
     public get windowHasNativeTitleBar(): boolean {
         return this.windowHasFrame;
@@ -38,8 +36,7 @@ export class AppearanceService {
         this._selectedColorScheme = v;
         this.settings.colorScheme = v.name;
 
-        // Global event because all windows need to be notified
-        this.globalEmitter.emit(Constants.themeChangedEvent, v);
+        this.onThemeChanged();
     }
 
     public get selectedFontSize(): FontSize {
@@ -54,9 +51,18 @@ export class AppearanceService {
         this.globalEmitter.emit(Constants.uiFontSizeChangedEvent, v);
     }
 
+    public onThemeChanged(): void {
+        // Global event because all windows need to be notified
+        this.globalEmitter.emit(
+            Constants.themeChangedEvent,
+            this.colorSchemes.find((x) => x.name === this.settings.colorScheme)
+        );
+    }
+
     private applyTheme(): void {
         const element = document.documentElement;
-        const accentColorToApply: string = this.selectedColorScheme.accentColor;
+        const colorSchemeToApply: ColorScheme = this.colorSchemes.find((x) => x.name === this.settings.colorScheme);
+        const accentColorToApply: string = colorSchemeToApply.accentColor;
 
         const palette: Palette = new Palette(accentColorToApply);
 
@@ -77,6 +83,20 @@ export class AppearanceService {
         element.style.setProperty('--theme-accent-color-A400', palette.colorA400);
         element.style.setProperty('--theme-accent-color-A700', palette.colorA700);
 
+        if (this.settings.useLightHeaderBar) {
+            element.style.setProperty('--theme-header-background-color', '#ffffff');
+            element.style.setProperty('--theme-header-text-color', '#000000');
+            element.style.setProperty('--theme-header-border-color', '#dedede');
+            element.style.setProperty('--theme-window-button-hover-background', 'rgba(0, 0, 0, 0.1)');
+            element.style.setProperty('--theme-soft-text-color', '#666666');
+        } else {
+            element.style.setProperty('--theme-header-background-color', '#212121');
+            element.style.setProperty('--theme-header-text-color', '#ffffff');
+            element.style.setProperty('--theme-header-border-color', 'transparent');
+            element.style.setProperty('--theme-window-button-hover-background', 'rgba(255, 255, 255, 0.1)');
+            element.style.setProperty('--theme-soft-text-color', '#999999');
+        }
+
         this.logger.info(`Applied color scheme '${this.selectedColorScheme.name}'`, 'AppearanceService', 'applyTheme');
     }
 
@@ -87,7 +107,7 @@ export class AppearanceService {
         element.style.setProperty('--fontsize-larger', this._selectedFontSize.largerSize + 'px');
     }
 
-    private initialize(): void {
+    public initialize(): void {
         this._selectedColorScheme = this.colorSchemes.find((x) => x.name === this.settings.colorScheme);
         this.applyTheme();
         this.globalEmitter.on(Constants.themeChangedEvent, this.themeChangedListener);

@@ -12,7 +12,7 @@
 .window-frame-titlebar {
     width: 100%;
     height: $titlebar-height;
-    background-color: $color-darkgrey;
+    background-color: var(--theme-header-background-color);
     display: flex;
     flex-direction: row;
 }
@@ -23,7 +23,7 @@
     line-height: $titlebar-height;
     flex: 1;
     -webkit-app-region: drag;
-    color: white;
+    color: var(--theme-header-text-color);
 }
 
 .window-frame-overlay {

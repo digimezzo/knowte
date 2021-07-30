@@ -6,7 +6,7 @@
     height: $titlebar-height;
     display: flex;
     flex-direction: row;
-    color: white;
+    color: var(--theme-header-text-color);
 }
 
 .collection-switcher-button {
@@ -20,12 +20,7 @@
     opacity: 0.8;
     font-size: 20px;
     -webkit-app-region: no-drag;
-    color: white;
-}
-
-.collection-switcher-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    opacity: 1;
+    color: var(--theme-header-text-color);
 }
 
 .collection-switcher-active-collection {

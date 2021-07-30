@@ -1,19 +1,18 @@
 <div class="window-frame">
     <div class="window-frame-titlebar">
-        <div class="window-frame-titlebar-dragarea">
-        </div>
+        <div class="window-frame-titlebar-dragarea"></div>
         <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
     </div>
     <div class="window-frame-content">
         <div class="loading">
             <div class="loading-content">
                 <div class="loading-content-foreground">
-                    <app-logo-full [textColor]="'white'"></app-logo-full>
+                    <app-logo-full [textColor]="'var(--theme-header-text-color)'"></app-logo-full>
                     <div class="loading-content-foreground-text mt-4">{{ 'LoadingPage.Text' | translate }}</div>
                     <mat-spinner class="mt-4" [diameter]="40"></mat-spinner>
                 </div>
                 <div class="loading-content-background">
-                    <img class="loading-content-background-pen" src="./assets/images/pencil_256x256.svg">
+                    <img class="loading-content-background-pen" src="./assets/images/pencil_256x256.svg" />
                 </div>
             </div>
         </div>
