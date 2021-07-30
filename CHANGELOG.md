@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Added setting to use light header bar
 -   Added Brazilian Portuguese translation
+-   When browsing the settings or information pages, the logo changes to a back arrow.
 
 ### Changed
 

@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { Constants } from '../../core/constants';
 import { ProductDetails } from '../../core/product-details';
 import { AppearanceService } from '../../services/appearance/appearance.service';
@@ -12,7 +13,12 @@ import { LicenseDialogComponent } from '../dialogs/license-dialog/license-dialog
     encapsulation: ViewEncapsulation.None,
 })
 export class InformationComponent implements OnInit {
-    constructor(private dialog: MatDialog, public appearance: AppearanceService, private productDetails: ProductDetails) {}
+    constructor(
+        private dialog: MatDialog,
+        public appearance: AppearanceService,
+        private productDetails: ProductDetails,
+        private router: Router
+    ) {}
 
     public selectedIndex: number;
 
@@ -34,5 +40,9 @@ export class InformationComponent implements OnInit {
 
     public openDonateLink(): void {
         require('electron').shell.openExternal(Constants.donateUrl);
+    }
+
+    public goBackToCollection(): void {
+        this.router.navigate(['/collection']);
     }
 }

@@ -1,4 +1,9 @@
-<app-logo-main class="main-logo"></app-logo-main>
+<app-logo-main
+    class="main-logo pointer"
+    (click)="goBackToCollection()"
+    matTooltip="{{ 'Tooltips.BackToNotes' | translate }}"
+    [showBackArrow]="true"
+></app-logo-main>
 <div class="window-frame">
     <div class="window-frame-titlebar">
         <div class="window-frame-titlebar-dragarea pl-1"></div>

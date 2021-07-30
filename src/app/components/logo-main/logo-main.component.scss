@@ -15,3 +15,16 @@
     width: 80px;
     height: 80px;
 }
+
+.app-logo-main__backarrow {
+    font-size: 40px;
+    color: white;
+    text-shadow: 2px 2px 4px #00000066;
+    -webkit-transition: font-size 0.15s;
+}
+
+.app-logo-main__backarrow:hover {
+    font-size: 40px;
+    color: white;
+    font-size: 48px !important;
+}

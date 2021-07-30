@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { Constants } from '../../core/constants';
 import { Settings } from '../../core/settings';
 import { AppearanceService } from '../../services/appearance/appearance.service';
@@ -17,7 +18,8 @@ export class SettingsComponent implements OnInit {
         private dialog: MatDialog,
         public translator: TranslatorService,
         public appearance: AppearanceService,
-        private settings: Settings
+        private settings: Settings,
+        private router: Router
     ) {}
 
     public isBusy: boolean = false;
@@ -80,5 +82,9 @@ export class SettingsComponent implements OnInit {
         const dialogRef: MatDialogRef<ImportFromOldVersionDialogComponent> = this.dialog.open(ImportFromOldVersionDialogComponent, {
             width: '450px',
         });
+    }
+
+    public goBackToCollection(): void {
+        this.router.navigate(['/collection']);
     }
 }
