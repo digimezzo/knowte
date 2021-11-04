@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.11] - 2021-11-04
+
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+-   Fixed a bug where the collection switcher icon is invisible when using a dark header bar.
+
 ## [2.0.10] - 2021-07-30
 
 ### Added
