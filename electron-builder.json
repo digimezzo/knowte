@@ -1,32 +1,21 @@
 {
-  "appId": "com.digimezzo.knowte",
-  "productName": "Knowte",
-  "directories": {
-    "output": "release"
-  },
-  "files": [
-    "**/*"
-  ],
-  "extraResources": [
-    "LICENSE"
-  ],
-  "win": {
-    "target": [
-      "nsis"
-    ]
-  },
-  "mac": {
-    "target": [
-      "dmg"
-    ]
-  },
-  "linux": {
-    "target": [
-      "AppImage",
-      "deb",
-      "rpm",
-      "pacman",
-      "snap"
-    ]
-  }
+    "appId": "com.digimezzo.knowte",
+    "productName": "Knowte",
+    "directories": {
+        "output": "release"
+    },
+    "files": ["**/*"],
+    "extraResources": ["LICENSE"],
+    "win": {
+        "target": ["nsis"],
+        "artifactName": "${productName}-${version}.${ext}"
+    },
+    "mac": {
+        "target": ["dmg"],
+        "artifactName": "${productName}-${version}.${ext}"
+    },
+    "linux": {
+        "target": ["AppImage", "deb", "rpm", "pacman", "snap"],
+        "artifactName": "${productName}-${version}.${ext}"
+    }
 }
