@@ -77,6 +77,12 @@ function createMainWindow() {
             backgroundColor: '#fff',
             frame: windowhasFrame(),
             icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
+            webPreferences: {
+                webSecurity: false,
+                nodeIntegration: true,
+                enableRemoteModule: true,
+                contextIsolation: false,
+            },
             show: false,
         });
         globalAny.windowHasFrame = windowhasFrame();
@@ -176,6 +182,12 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
         backgroundColor: '#fff',
         frame: windowHasFrame,
         icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
+        webPreferences: {
+            webSecurity: false,
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            contextIsolation: false,
+        },
         show: true,
     });
     globalAny.windowHasFrame = windowHasFrame;
