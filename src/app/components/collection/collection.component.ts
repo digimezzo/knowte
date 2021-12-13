@@ -3,7 +3,7 @@ import { Component, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation } fr
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SplitAreaDirective, SplitComponent } from 'angular-split';
-import { remote } from 'electron';
+import { OpenDialogReturnValue, remote } from 'electron';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
 import { Constants } from '../../core/constants';
@@ -340,7 +340,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     }
 
     public async importNotesAsync(): Promise<void> {
-        const filePaths: string[] = remote.dialog.showOpenDialog({
+        const openDialogReturnValue: OpenDialogReturnValue = await remote.dialog.showOpenDialog({
             filters: [
                 { name: ProductInformation.applicationName, extensions: [Constants.noteExportExtension.replace('.', '')] },
                 { name: await this.translator.getAsync('DialogTexts.AllFiles'), extensions: ['*'] },
@@ -348,8 +348,12 @@ export class CollectionComponent implements OnInit, OnDestroy {
             properties: ['openFile', 'multiSelections'],
         });
 
-        if (filePaths) {
-            await this.importNoteFilesAsync(filePaths, this.activeNotebook);
+        if (
+            openDialogReturnValue != undefined &&
+            openDialogReturnValue.filePaths != undefined &&
+            openDialogReturnValue.filePaths.length > 0
+        ) {
+            await this.importNoteFilesAsync(openDialogReturnValue.filePaths, this.activeNotebook);
         }
     }
 

@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { remote } from 'electron';
+import { OpenDialogReturnValue, remote } from 'electron';
 import { Logger } from '../../core/logger';
 import { ProductInformation } from '../../core/product-information';
 import { AppearanceService } from '../../services/appearance/appearance.service';
@@ -35,14 +35,21 @@ export class WelcomeComponent implements OnInit {
 
         const selectFolderText: string = await this.translator.getAsync('DialogTitles.SelectFolder');
 
-        const filePaths: string[] = remote.dialog.showOpenDialog({ title: selectFolderText, properties: ['openDirectory'] });
+        const openDialogReturnValue: OpenDialogReturnValue = await remote.dialog.showOpenDialog({
+            title: selectFolderText,
+            properties: ['openDirectory'],
+        });
 
-        if (!filePaths || filePaths.length === 0) {
+        if (
+            openDialogReturnValue == undefined ||
+            openDialogReturnValue.filePaths == undefined ||
+            openDialogReturnValue.filePaths.length === 0
+        ) {
             this.logger.warn('No folder was selected', 'WelcomeComponent', 'openDirectoryChooserAsync');
             return;
         }
 
-        const selectedParentDirectory: string = filePaths[0];
+        const selectedParentDirectory: string = openDialogReturnValue.filePaths[0];
         this.logger.info(`Selected directory: '${selectedParentDirectory}'`, 'WelcomeComponent', 'openDirectoryChooserAsync');
 
         this.zone.run(async () => {

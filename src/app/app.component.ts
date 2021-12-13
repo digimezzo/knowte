@@ -1,5 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { remote } from 'electron';
+import log from 'electron-log';
+import * as path from 'path';
 import { Subscription } from 'rxjs';
 import { AppearanceService } from './services/appearance/appearance.service';
 import { CollectionService } from './services/collection/collection.service';
@@ -20,7 +23,10 @@ export class AppComponent implements OnInit, OnDestroy {
         public appearance: AppearanceService,
         private collection: CollectionService,
         private trash: TrashService
-    ) {}
+    ) {
+        log.create('renderer');
+        log.transports.file.resolvePath = () => path.join(remote.app.getPath('userData'), 'logs', 'Knowte.log');
+    }
 
     @ViewChild('drawer') public drawer: any;
 

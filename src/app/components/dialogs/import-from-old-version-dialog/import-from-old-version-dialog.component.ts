@@ -1,16 +1,18 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { remote } from 'electron';
+import { OpenDialogReturnValue, remote } from 'electron';
+import { Constants } from '../../../core/constants';
+import { Desktop } from '../../../core/desktop';
+import { FileSystem } from '../../../core/file-system';
 import { CollectionService } from '../../../services/collection/collection.service';
 
 @Component({
     selector: 'app-import-from-old-version-dialog.component',
     templateUrl: './import-from-old-version-dialog.component.html',
     styleUrls: ['./import-from-old-version-dialog.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class ImportFromOldVersionDialogComponent implements OnInit {
-    constructor(private collection: CollectionService) {
-    }
+    constructor(private collection: CollectionService, private desktop: Desktop, private fileSystem: FileSystem) {}
 
     public isDirectoryChosen: boolean = false;
     public selectedDirectory: string = '';
@@ -18,14 +20,17 @@ export class ImportFromOldVersionDialogComponent implements OnInit {
     public isImportFinished: boolean = false;
     public isImportSuccessful: boolean = true;
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
-    public selectDirectory(): void {
-        const filepaths: string[] = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
+    public async selectDirectoryAsync(): Promise<void> {
+        const openDialogReturnValue: OpenDialogReturnValue = await remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
 
-        if (filepaths && filepaths.length > 0) {
-            this.selectedDirectory = filepaths[0];
+        if (
+            openDialogReturnValue != undefined &&
+            openDialogReturnValue.filePaths != undefined &&
+            openDialogReturnValue.filePaths.length > 0
+        ) {
+            this.selectedDirectory = openDialogReturnValue.filePaths[0];
             this.isDirectoryChosen = true;
         }
     }
@@ -41,6 +46,6 @@ export class ImportFromOldVersionDialogComponent implements OnInit {
 
     public viewLog(): void {
         // See: https://stackoverflow.com/questions/30381450/open-external-file-with-electron
-        remote.shell.openItem(remote.app.getPath('userData'));
+        this.desktop.showInFolder(this.fileSystem.combinePath([this.fileSystem.applicationDataDirectory(), 'logs', Constants.logFileName]));
     }
 }

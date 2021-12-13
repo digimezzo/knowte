@@ -12,6 +12,9 @@ import * as url from 'url';
 
 app.commandLine.appendSwitch('disable-color-correct-rendering');
 
+log.create('main');
+log.transports.file.resolvePath = () => path.join(app.getPath('userData'), 'logs', 'Knowte.log');
+
 let mainWindow, workerWindow, serve;
 const args = process.argv.slice(1);
 serve = args.some((val) => val === '--serve');
@@ -286,7 +289,7 @@ try {
                     throw localError;
                 }
 
-                shell.openItem(safePath);
+                shell.showItemInFolder(safePath);
             });
         });
     });

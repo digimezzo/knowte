@@ -2,7 +2,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Component, HostListener, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { BrowserWindow, remote, SaveDialogOptions } from 'electron';
+import { BrowserWindow, remote, SaveDialogOptions, SaveDialogReturnValue } from 'electron';
 import * as electronLocalshortcut from 'electron-localshortcut';
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -317,14 +317,14 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.globalEmitter.emit(Constants.setNoteMarkEvent, this.noteId, !this.isMarked);
     }
 
-    public exportNoteToPdf(): void {
+    public async exportNoteToPdfAsync(): Promise<void> {
         this.hideActionButtons();
 
         const options: SaveDialogOptions = { defaultPath: Utils.getPdfExportPath(remote.app.getPath('documents'), this.noteTitle) };
-        const filename: string = remote.dialog.showSaveDialog(null, options);
+        const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(null, options);
 
-        if (filename) {
-            this.worker.exportToPdf(filename, this.noteTitle, this.quill.root.innerHTML);
+        if (saveDialogReturnValue.filePath != undefined) {
+            this.worker.exportToPdf(saveDialogReturnValue.filePath, this.noteTitle, this.quill.root.innerHTML);
         }
     }
 
@@ -372,12 +372,12 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.isBusy = true;
 
         const options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
-        const filename: string = remote.dialog.showSaveDialog(null, options);
+        const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(null, options);
         const noteExport: NoteExport = new NoteExport(this.noteTitle, this.quill.getText(), JSON.stringify(this.quill.getContents()));
 
         try {
-            if (filename) {
-                await fs.writeFile(filename, JSON.stringify(noteExport));
+            if (saveDialogReturnValue.filePath != undefined) {
+                await fs.writeFile(saveDialogReturnValue.filePath, JSON.stringify(noteExport));
                 this.snackBar.noteExportedAsync(this.noteTitle);
             }
 

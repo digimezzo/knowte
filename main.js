@@ -25,6 +25,8 @@ var os = require("os");
 var path = require("path");
 var url = require("url");
 electron_1.app.commandLine.appendSwitch('disable-color-correct-rendering');
+electron_log_1.default.create('main');
+electron_log_1.default.transports.file.resolvePath = function () { return path.join(electron_1.app.getPath('userData'), 'logs', 'Knowte.log'); };
 var mainWindow, workerWindow, serve;
 var args = process.argv.slice(1);
 serve = args.some(function (val) { return val === '--serve'; });
@@ -258,7 +260,7 @@ try {
                 if (localError) {
                     throw localError;
                 }
-                electron_1.shell.openItem(safePath);
+                electron_1.shell.showItemInFolder(safePath);
             });
         });
     });

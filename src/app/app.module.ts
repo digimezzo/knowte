@@ -61,6 +61,7 @@ import { WindowControlsComponent } from './components/window-controls/window-con
 import { ClipboardManager } from './core/clipboard-manager';
 import { DateFormatter } from './core/date-formatter';
 import { Desktop } from './core/desktop';
+import { FileSystem } from './core/file-system';
 import { GitHubApi } from './core/github-api';
 import { Scheduler } from './core/scheduler';
 import { Settings } from './core/settings';
@@ -170,6 +171,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         DateFormatter,
         Scheduler,
         Desktop,
+        FileSystem,
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
         DataStore,
         {
