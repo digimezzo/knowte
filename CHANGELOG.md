@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.11] - 2021-11-04
+## [2.0.10] - 2022-11-15
 
 ### Added
 
@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Fixed a bug where the collection switcher icon is invisible when using a dark header bar.
 
-## [2.0.10] - 2021-07-30
+## [2.0.9] - 2021-07-30
 
 ### Added
 
@@ -37,19 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
--   Fixed a bug where a color change was not applied to all opened windows.
-
-## [2.0.9] - 2021-05-01
-
-### Added
-
-### Changed
-
-### Removed
-
-### Fixed
-
 -   Fixed a bug where performing an undo after opening a note, clears the note.
+-   Fixed a bug where a color change was not applied to all opened windows.
 
 ## [2.0.8] - 2021-05-01
 
