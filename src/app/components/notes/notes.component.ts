@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 import { Subject, Subscription } from 'rxjs';
 import { Constants } from '../../core/constants';
 import { SelectionWatcher } from '../../core/selection-watcher';

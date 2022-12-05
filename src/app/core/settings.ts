@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 import * as Store from 'electron-store';
 import * as os from 'os';
 import { Constants } from '../core/constants';
@@ -8,7 +8,7 @@ import { Constants } from '../core/constants';
     providedIn: 'root',
 })
 export class Settings {
-    private settings: Store = new Store();
+    private settings: Store<any> = new Store();
     private globalEmitter: any = remote.getGlobal('globalEmitter');
 
     constructor() {

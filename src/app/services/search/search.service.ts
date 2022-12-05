@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import * as remote from '@electron/remote';
+import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/internal/operators';
-import { remote } from 'electron';
 import { Constants } from '../../core/constants';
 
 @Injectable({
@@ -18,11 +18,9 @@ export class SearchService {
     constructor() {
         this.globalEmitter.on(Constants.getSearchTextEvent, this.getSearchTextListener);
 
-        this.debouncingSearchTextChanged
-            .pipe(debounceTime(this.timeoutMilliseconds), distinctUntilChanged())
-            .subscribe((searchText) => {
-                this.searchTextChanged.next(searchText);
-            });
+        this.debouncingSearchTextChanged.pipe(debounceTime(this.timeoutMilliseconds), distinctUntilChanged()).subscribe((searchText) => {
+            this.searchTextChanged.next(searchText);
+        });
     }
 
     public searchTextChanged$: Observable<string> = this.searchTextChanged.asObservable();
@@ -38,5 +36,5 @@ export class SearchService {
 
     private async getSearchTextHandler(callback: any): Promise<void> {
         callback(this.searchText);
-      }
+    }
 }

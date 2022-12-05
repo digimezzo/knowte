@@ -1,32 +1,32 @@
 @font-face {
     font-family: roboto;
-    src: url(assets/fonts/Roboto-Regular.ttf) format('truetype');
+    src: url(../assets/fonts/Roboto-Regular.ttf) format('truetype');
 }
 
 @font-face {
     font-family: roboto;
     font-weight: 100;
-    src: url(assets/fonts/Roboto-Thin.ttf) format('truetype');
+    src: url(../assets/fonts/Roboto-Thin.ttf) format('truetype');
 }
 
 @font-face {
     font-family: la-regular;
-    src: url(assets/fonts/la-regular-400.ttf) format('truetype');
+    src: url(../assets/fonts/la-regular-400.ttf) format('truetype');
 }
 
 @font-face {
     font-family: opensans;
-    src: url(assets/fonts/OpenSans-Regular.ttf) format('truetype');
+    src: url(../assets/fonts/OpenSans-Regular.ttf) format('truetype');
 }
 
 @font-face {
     font-family: opensans;
     font-weight: 100;
-    src: url(assets/fonts/OpenSans-Light.ttf) format('truetype');
+    src: url(../assets/fonts/OpenSans-Light.ttf) format('truetype');
 }
 
 /* Because it is not possible to set font-weight in <input> elements, use this font-family instead. */
 @font-face {
     font-family: opensans-light;
-    src: url(assets/fonts/OpenSans-Light.ttf) format('truetype');
+    src: url(../assets/fonts/OpenSans-Light.ttf) format('truetype');
 }

@@ -2,7 +2,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Component, HostListener, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { BrowserWindow, remote, SaveDialogOptions, SaveDialogReturnValue } from 'electron';
+import * as remote from '@electron/remote';
+import { BrowserWindow, SaveDialogOptions, SaveDialogReturnValue } from 'electron';
 import * as electronLocalshortcut from 'electron-localshortcut';
 import * as fs from 'fs-extra';
 import * as path from 'path';

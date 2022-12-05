@@ -2,10 +2,9 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         "outDir": "../out-tsc/app",
-        "module": "es2020",
+        "module": "esnext",
         "baseUrl": "",
         "types": []
     },
-    "files": ["main.ts", "polyfills.ts"],
-    "include": ["src/**/*.d.ts"]
+    "exclude": ["**/*.spec.ts"]
 }

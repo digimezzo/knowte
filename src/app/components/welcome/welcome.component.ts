@@ -1,7 +1,8 @@
 import { Component, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { OpenDialogReturnValue, remote } from 'electron';
+import * as remote from '@electron/remote';
+import { OpenDialogReturnValue } from 'electron';
 import { Logger } from '../../core/logger';
 import { ProductInformation } from '../../core/product-information';
 import { AppearanceService } from '../../services/appearance/appearance.service';

@@ -53,13 +53,16 @@ function createMainWindow(): void {
             }
         });
 
-        Menu.setApplicationMenu(null);
+        Menu.setApplicationMenu(undefined);
 
         // Load the previous state with fallback to defaults
         const mainWindowState = windowStateKeeper({
             defaultWidth: 850,
             defaultHeight: 600,
         });
+
+        const remoteMain = require('@electron/remote/main');
+        remoteMain.initialize();
 
         // Create the window using the state information
         mainWindow = new BrowserWindow({
@@ -73,11 +76,12 @@ function createMainWindow(): void {
             webPreferences: {
                 webSecurity: false,
                 nodeIntegration: true,
-                enableRemoteModule: true,
                 contextIsolation: false,
             },
             show: false,
         });
+
+        remoteMain.enable(mainWindow.webContents);
 
         globalAny.windowHasFrame = windowhasFrame();
 
@@ -127,7 +131,7 @@ function createMainWindow(): void {
             // Dereference the window object, usually you would store window
             // in an array if your app supports multi windows, this is the time
             // when you should delete the corresponding element.
-            mainWindow = null;
+            mainWindow = undefined;
 
             // When the main window is closed, quit the app (This also closes all other windows)
             app.quit();
@@ -199,7 +203,6 @@ function createNoteWindow(notePath: string, noteId: string, windowHasFrame: bool
         webPreferences: {
             webSecurity: false,
             nodeIntegration: true,
-            enableRemoteModule: true,
             contextIsolation: false,
         },
         show: true,

@@ -2,8 +2,9 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Component, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import * as remote from '@electron/remote';
 import { SplitAreaDirective, SplitComponent } from 'angular-split';
-import { OpenDialogReturnValue, remote } from 'electron';
+import { OpenDialogReturnValue } from 'electron';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
 import { Constants } from '../../core/constants';

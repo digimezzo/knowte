@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 
 @Injectable()
 export class Desktop {

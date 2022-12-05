@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BrowserWindow, ipcRenderer, remote } from 'electron';
+import * as remote from '@electron/remote';
+import { BrowserWindow, ipcRenderer } from 'electron';
 import * as fs from 'fs-extra';
 import * as moment from 'moment';
 import { Duration, Moment } from 'moment';

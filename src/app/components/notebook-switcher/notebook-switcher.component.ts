@@ -1,23 +1,22 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation, Input, NgZone } from '@angular/core';
-import { Notebook } from '../../data/entities/notebook';
-import { remote } from 'electron';
+import { Component, Input, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import * as remote from '@electron/remote';
 import { Constants } from '../../core/constants';
-import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { Utils } from '../../core/utils';
+import { Notebook } from '../../data/entities/notebook';
+import { NoteDetailsResult } from '../../services/results/note-details-result';
 
 @Component({
     selector: 'app-notebook-switcher',
     templateUrl: './notebook-switcher.component.html',
     styleUrls: ['./notebook-switcher.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class NotebookSwitcherComponent implements OnInit, OnDestroy {
     private globalEmitter: any = remote.getGlobal('globalEmitter');
     private languageChangedListener: any = this.languageChangedHandler.bind(this);
     private notebookChangedListener: any = this.notebookChangedHandler.bind(this);
 
-    constructor(private zone: NgZone) {
-    }
+    constructor(private zone: NgZone) {}
 
     public selectedNotebookName: string;
 
@@ -74,7 +73,7 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
 
     private notebookChangedHandler(noteId: string, notebookName: string): void {
         if (this.noteId === noteId) {
-            this.zone.run(() => this.selectedNotebookName = notebookName);
+            this.zone.run(() => (this.selectedNotebookName = notebookName));
         }
     }
 

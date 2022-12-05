@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 import log from 'electron-log';
 import * as path from 'path';
 import { Subscription } from 'rxjs';

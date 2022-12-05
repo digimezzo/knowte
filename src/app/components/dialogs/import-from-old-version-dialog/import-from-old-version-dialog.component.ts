@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { OpenDialogReturnValue, remote } from 'electron';
+import * as remote from '@electron/remote';
+import { OpenDialogReturnValue } from 'electron';
 import { Constants } from '../../../core/constants';
 import { Desktop } from '../../../core/desktop';
 import { FileSystem } from '../../../core/file-system';

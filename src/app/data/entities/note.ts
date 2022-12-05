@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import * as nanoid from 'nanoid';
+import { nanoid } from 'nanoid';
 
 export class Note {
     constructor(public title: string, public notebookId: string) {}

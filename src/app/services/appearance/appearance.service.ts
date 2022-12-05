@@ -1,6 +1,6 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { Injectable } from '@angular/core';
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 import { ColorScheme } from '../../core/color-scheme';
 import { Constants } from '../../core/constants';
 import { FontSize } from '../../core/font-size';
