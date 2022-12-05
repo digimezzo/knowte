@@ -6,8 +6,7 @@
             "jest", // 1
             "node"
         ],
-        "esModuleInterop": true, // 2
-        "emitDecoratorMetadata": true // 3
+        "esModuleInterop": true // 3
     },
     "files": ["test.ts", "polyfills.ts"],
     "include": ["src/**/*.spec.ts", "src/**/*.d.ts"]

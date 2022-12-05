@@ -27,7 +27,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AngularSplitModule } from 'angular-split';
 import 'reflect-metadata';
-import 'zone.js/dist/zone-mix';
+import 'zone.js/mix';
 import '../polyfills';
 import { AppRoutingModule } from './app-routing.module';
 // Components

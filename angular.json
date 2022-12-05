@@ -11,7 +11,6 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
-                        "aot": true,
                         "outputPath": "dist",
                         "index": "src/index.html",
                         "main": "src/main.ts",
@@ -34,7 +33,13 @@
                         "stylePreprocessorOptions": {
                             "includePaths": ["src/css"]
                         },
-                        "scripts": ["./node_modules/quill/dist/quill.js"]
+                        "scripts": ["./node_modules/quill/dist/quill.js"],
+                        "vendorChunk": true,
+                        "extractLicenses": false,
+                        "buildOptimizer": false,
+                        "sourceMap": true,
+                        "optimization": false,
+                        "namedChunks": true
                     },
                     "configurations": {
                         "dev": {
@@ -44,14 +49,11 @@
                                     "maximumWarning": "6kb"
                                 }
                             ],
-                            "optimization": false,
                             "outputHashing": "all",
-                            "sourceMap": true,
                             "namedChunks": false,
                             "aot": false,
                             "extractLicenses": true,
                             "vendorChunk": false,
-                            "buildOptimizer": false,
                             "fileReplacements": [
                                 {
                                     "replace": "src/environments/environment.ts",
@@ -70,7 +72,6 @@
                             "outputHashing": "all",
                             "sourceMap": false,
                             "namedChunks": false,
-                            "aot": true,
                             "extractLicenses": true,
                             "vendorChunk": false,
                             "buildOptimizer": true,
@@ -81,7 +82,8 @@
                                 }
                             ]
                         }
-                    }
+                    },
+                    "defaultConfiguration": ""
                 },
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",

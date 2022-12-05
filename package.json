@@ -35,7 +35,7 @@
     "test": "npx jest --verbose"
   },
   "dependencies": {
-    "@angular/animations": "^11.2.14",
+    "@angular/animations": "^12.2.17",
     "@angular/cdk": "^9.2.4",
     "@angular/material": "^9.2.4",
     "angular-split": "^5.0.0",
@@ -55,17 +55,17 @@
     "tslib": "^2.0.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.1102.19",
-    "@angular/cli": "11.2.19",
-    "@angular/common": "11.2.14",
-    "@angular/compiler": "11.2.14",
-    "@angular/compiler-cli": "11.2.14",
-    "@angular/core": "11.2.14",
-    "@angular/forms": "11.2.14",
-    "@angular/language-service": "11.2.14",
-    "@angular/platform-browser": "11.2.14",
-    "@angular/platform-browser-dynamic": "11.2.14",
-    "@angular/router": "11.2.14",
+    "@angular-devkit/build-angular": "~12.2.18",
+    "@angular/cli": "12.2.18",
+    "@angular/common": "12.2.17",
+    "@angular/compiler": "12.2.17",
+    "@angular/compiler-cli": "12.2.17",
+    "@angular/core": "12.2.17",
+    "@angular/forms": "12.2.17",
+    "@angular/language-service": "12.2.17",
+    "@angular/platform-browser": "12.2.17",
+    "@angular/platform-browser-dynamic": "12.2.17",
+    "@angular/router": "12.2.17",
     "@ngx-translate/core": "11.0.1",
     "@ngx-translate/http-loader": "4.0.0",
     "@types/jest": "^26.0.22",
@@ -83,9 +83,9 @@
     "ts-node": "7.0.1",
     "tslint": "~6.1.0",
     "typemoq": "^2.1.0",
-    "typescript": "4.0.8",
+    "typescript": "4.3.5",
     "wait-on": "3.2.0",
     "webdriver-manager": "12.1.1",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.11.4"
   }
 }
