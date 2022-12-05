@@ -36,6 +36,9 @@ globalAny.globalEmitter = new GlobalEventEmitter();
 // By default, electron-log logs only to file starting from level 'warn'. We also want 'info'.
 log.transports.file.level = 'info';
 
+const remoteMain = require('@electron/remote/main');
+remoteMain.initialize();
+
 function createMainWindow(): void {
     const gotTheLock: boolean = app.requestSingleInstanceLock();
 
@@ -60,9 +63,6 @@ function createMainWindow(): void {
             defaultWidth: 850,
             defaultHeight: 600,
         });
-
-        const remoteMain = require('@electron/remote/main');
-        remoteMain.initialize();
 
         // Create the window using the state information
         mainWindow = new BrowserWindow({
@@ -207,6 +207,8 @@ function createNoteWindow(notePath: string, noteId: string, windowHasFrame: bool
         },
         show: true,
     });
+
+    remoteMain.enable(noteWindow.webContents);
 
     globalAny.windowHasFrame = windowHasFrame;
 
