@@ -112,6 +112,8 @@ function createMainWindow(): void {
             },
         });
 
+        remoteMain.enable(workerWindow.webContents);
+
         workerWindow.loadURL(
             url.format({
                 pathname: path.join(__dirname, 'dist/worker.html'),
@@ -270,11 +272,11 @@ try {
     });
 
     // Print
-    ipcMain.on('print', (event: any, content: any) => {
-        workerWindow.webContents.send('print', content);
+    ipcMain.on('printToPrinter', (event: any, content: any) => {
+        workerWindow.webContents.send('printToPrinter', content);
     });
 
-    ipcMain.on('readyToPrint', (event: any) => {
+    ipcMain.on('readyToPrintToPrinter', (event: any) => {
         workerWindow.webContents.print({ silent: false, printBackground: true });
     });
 

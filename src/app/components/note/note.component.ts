@@ -322,7 +322,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.hideActionButtons();
 
         const options: SaveDialogOptions = { defaultPath: Utils.getPdfExportPath(remote.app.getPath('documents'), this.noteTitle) };
-        const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(null, options);
+        const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
 
         if (saveDialogReturnValue.filePath != undefined) {
             this.worker.exportToPdf(saveDialogReturnValue.filePath, this.noteTitle, this.quill.root.innerHTML);
@@ -373,11 +373,11 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.isBusy = true;
 
         const options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
-        const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(null, options);
+        const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
         const noteExport: NoteExport = new NoteExport(this.noteTitle, this.quill.getText(), JSON.stringify(this.quill.getContents()));
 
         try {
-            if (saveDialogReturnValue.filePath != undefined) {
+            if (saveDialogReturnValue.filePath != undefined && saveDialogReturnValue.filePath.length > 0) {
                 await fs.writeFile(saveDialogReturnValue.filePath, JSON.stringify(noteExport));
                 this.snackBar.noteExportedAsync(this.noteTitle);
             }

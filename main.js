@@ -95,6 +95,7 @@ function createMainWindow() {
                 nodeIntegration: true,
             },
         });
+        remoteMain.enable(workerWindow.webContents);
         workerWindow.loadURL(url.format({
             pathname: path.join(__dirname, 'dist/worker.html'),
             protocol: 'file:',
@@ -225,10 +226,10 @@ try {
         createNoteWindow(arg.notePath, arg.noteId, arg.windowHasFrame);
     });
     // Print
-    electron_1.ipcMain.on('print', (event, content) => {
-        workerWindow.webContents.send('print', content);
+    electron_1.ipcMain.on('printToPrinter', (event, content) => {
+        workerWindow.webContents.send('printToPrinter', content);
     });
-    electron_1.ipcMain.on('readyToPrint', (event) => {
+    electron_1.ipcMain.on('readyToPrintToPrinter', (event) => {
         workerWindow.webContents.print({ silent: false, printBackground: true });
     });
     // PrintPDF
