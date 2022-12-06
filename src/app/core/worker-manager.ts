@@ -3,25 +3,23 @@ import { ipcRenderer } from 'electron';
 import { Logger } from './logger';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class WorkerManager {
-    constructor(private logger: Logger) {
-
-    }
+    constructor(private logger: Logger) {}
     public print(pageTitle: string, pageContent: string): void {
         this.sendCommandToWorker('print', `<div>${this.createPrintCss()}<p class="page-title">${pageTitle}</p><p>${pageContent}</p></div>`);
-        this.logger.info('PRINT' , '', '');
+        this.logger.info('Sending "print" command to worker.', 'WorkerManager', 'print');
     }
 
     public exportToPdf(pdfFileName: string, pdfTitle: string, pdfContent: string): void {
         const content: any = {
             savePath: pdfFileName,
-            text: `<div>${this.createPrintCss()}<p class="page-title">${pdfTitle}</p><p>${pdfContent}</p></div>`
+            text: `<div>${this.createPrintCss()}<p class="page-title">${pdfTitle}</p><p>${pdfContent}</p></div>`,
         };
 
         this.sendCommandToWorker('printPDF', content);
-        this.logger.info('EXPORT PDF:' + pdfFileName , '', '');
+        this.logger.info(`Sending "printPDF" command to worker with pdfFileName=${pdfFileName}.`, 'WorkerManager', 'exportToPdf');
     }
 
     private sendCommandToWorker(command: string, content: any): void {
