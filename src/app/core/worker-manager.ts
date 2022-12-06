@@ -11,6 +11,7 @@ export class WorkerManager {
     }
     public print(pageTitle: string, pageContent: string): void {
         this.sendCommandToWorker('print', `<div>${this.createPrintCss()}<p class="page-title">${pageTitle}</p><p>${pageContent}</p></div>`);
+        this.logger.info('PRINT' , '', '');
     }
 
     public exportToPdf(pdfFileName: string, pdfTitle: string, pdfContent: string): void {

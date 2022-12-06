@@ -272,11 +272,11 @@ try {
     });
 
     // Print
-    ipcMain.on('printToPrinter', (event: any, content: any) => {
-        workerWindow.webContents.send('printToPrinter', content);
+    ipcMain.on('print', (event: any, content: any) => {
+        workerWindow.webContents.send('print', content);
     });
 
-    ipcMain.on('readyToPrintToPrinter', (event: any) => {
+    ipcMain.on('readyToPrint', (event: any) => {
         workerWindow.webContents.print({ silent: false, printBackground: true });
     });
 
