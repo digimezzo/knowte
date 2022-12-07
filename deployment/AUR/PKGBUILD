@@ -1,11 +1,11 @@
-# Maintainer: Digimezzo <raphael@digimezzo.com>
+# Maintainer: Digimezzo <digimezzo@outlook.com>
 _pkgname=Knowte
 pkgname=knowte
 pkgver=2.0.9
 pkgrel=1
 pkgdesc="A note taking application that allows you to quickly and easily organize and find your notes"
 arch=('x86_64')
-url="https://www.digimezzo.com"
+url="https://digimezzo.github.io/site/"
 license=('GPL3')
 provides=(${pkgname})
 conflicts=(${pkgname})
