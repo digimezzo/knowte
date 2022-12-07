@@ -20,8 +20,8 @@ import { ProductInformation } from '../../core/product-information';
 import { Settings } from '../../core/settings';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
-import { WorkerManager } from '../../core/worker-manager';
 import { AppearanceService } from '../../services/appearance/appearance.service';
+import { PrintService } from '../../services/print/print.service';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
@@ -64,6 +64,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private deleteContextMenuItem: any;
 
     constructor(
+        private print: PrintService,
         private activatedRoute: ActivatedRoute,
         private zone: NgZone,
         private dialog: MatDialog,
@@ -72,8 +73,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         private translator: TranslatorService,
         private settings: Settings,
         public appearance: AppearanceService,
-        private clipboard: ClipboardManager,
-        private worker: WorkerManager
+        private clipboard: ClipboardManager
     ) {}
 
     public noteId: string;
@@ -325,13 +325,13 @@ export class NoteComponent implements OnInit, OnDestroy {
         const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
 
         if (saveDialogReturnValue.filePath != undefined) {
-            this.worker.exportToPdf(saveDialogReturnValue.filePath, this.noteTitle, this.quill.root.innerHTML);
+            this.print.exportToPdfAsync(saveDialogReturnValue.filePath, this.noteTitle, this.quill.root.innerHTML);
         }
     }
 
-    public printNote(): void {
+    public async printNoteAsync(): Promise<void> {
         this.hideActionButtons();
-        this.worker.print(this.noteTitle, this.quill.root.innerHTML);
+        this.print.printAsync(this.noteTitle, this.quill.root.innerHTML);
     }
 
     public async deleteNoteAsync(): Promise<void> {

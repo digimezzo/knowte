@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
@@ -14,7 +23,7 @@ const url = require("url");
 electron_1.app.commandLine.appendSwitch('disable-color-correct-rendering');
 electron_log_1.default.create('main');
 electron_log_1.default.transports.file.resolvePath = () => path.join(electron_1.app.getPath('userData'), 'logs', 'Knowte.log');
-let mainWindow, workerWindow, serve;
+let mainWindow, serve;
 const args = process.argv.slice(1);
 serve = args.some((val) => val === '--serve');
 // Workaround: Global does not allow setting custom properties.
@@ -89,21 +98,6 @@ function createMainWindow() {
                 slashes: true,
             }));
         }
-        workerWindow = new electron_1.BrowserWindow({
-            show: false,
-            webPreferences: {
-                nodeIntegration: true,
-            },
-        });
-        remoteMain.enable(workerWindow.webContents);
-        workerWindow.loadURL(url.format({
-            pathname: path.join(__dirname, 'dist/worker.html'),
-            protocol: 'file:',
-            slashes: true,
-        }));
-        workerWindow.on('closed', () => {
-            workerWindow = undefined;
-        });
         // mainWindow.webContents.openDevTools();
         // Emitted when the window is closed.
         mainWindow.on('closed', () => {
@@ -226,28 +220,39 @@ try {
         createNoteWindow(arg.notePath, arg.noteId, arg.windowHasFrame);
     });
     // Print
-    electron_1.ipcMain.on('print', (event, content) => {
-        workerWindow.webContents.send('print', content);
-    });
-    electron_1.ipcMain.on('readyToPrint', (event) => {
-        workerWindow.webContents.print({ silent: false, printBackground: true });
+    electron_1.ipcMain.on('print', (event, data) => {
+        // fs.writeFileSync('/home/raphael/.config/Knowte/print.html', content);
+        const win = new electron_1.BrowserWindow({
+            show: false,
+            webPreferences: {
+                nodeIntegration: true,
+            },
+        });
+        win.loadURL(`file://${data.printHtmlFilePath}`);
+        win.webContents.on('did-finish-load', () => {
+            win.webContents.print({ silent: false, printBackground: true });
+        });
     });
     // PrintPDF
-    electron_1.ipcMain.on('printPDF', (event, content) => {
-        workerWindow.webContents.send('printPDF', content);
-    });
-    electron_1.ipcMain.on('readyToPrintPDF', (event, safePath) => {
-        workerWindow.webContents.printToPDF({}, (error, data) => {
-            if (error) {
-                throw error;
-            }
-            fs.writeFile(safePath, data, (localError) => {
-                if (localError) {
-                    throw localError;
-                }
-                electron_1.shell.showItemInFolder(safePath);
-            });
+    electron_1.ipcMain.on('printToPDF', (event, data) => {
+        const win = new electron_1.BrowserWindow({
+            show: false,
+            webPreferences: {
+                nodeIntegration: true,
+            },
         });
+        win.loadURL(`file://${data.printHtmlFilePath}`);
+        win.webContents.on('did-finish-load', () => __awaiter(void 0, void 0, void 0, function* () {
+            const pdfData = yield win.webContents.printToPDF({});
+            try {
+                yield fs.writeFile(data.pdfFilePath, pdfData);
+                console.log('PDF generated successfully.');
+                electron_1.shell.showItemInFolder(data.pdfFilePath);
+            }
+            catch (e) {
+                console.log(`PDF generation failed. Error: ${e.message}`);
+            }
+        }));
     });
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.

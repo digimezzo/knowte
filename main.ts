@@ -15,7 +15,7 @@ app.commandLine.appendSwitch('disable-color-correct-rendering');
 log.create('main');
 log.transports.file.resolvePath = () => path.join(app.getPath('userData'), 'logs', 'Knowte.log');
 
-let mainWindow, workerWindow, serve;
+let mainWindow, serve;
 const args = process.argv.slice(1);
 serve = args.some((val) => val === '--serve');
 
@@ -104,27 +104,6 @@ function createMainWindow(): void {
                 })
             );
         }
-
-        workerWindow = new BrowserWindow({
-            show: false,
-            webPreferences: {
-                nodeIntegration: true,
-            },
-        });
-
-        remoteMain.enable(workerWindow.webContents);
-
-        workerWindow.loadURL(
-            url.format({
-                pathname: path.join(__dirname, 'dist/worker.html'),
-                protocol: 'file:',
-                slashes: true,
-            })
-        );
-
-        workerWindow.on('closed', () => {
-            workerWindow = undefined;
-        });
 
         // mainWindow.webContents.openDevTools();
 
@@ -272,32 +251,45 @@ try {
     });
 
     // Print
-    ipcMain.on('print', (event: any, content: any) => {
-        workerWindow.webContents.send('print', content);
-    });
+    ipcMain.on('print', (event: any, data: any) => {
+        // fs.writeFileSync('/home/raphael/.config/Knowte/print.html', content);
 
-    ipcMain.on('readyToPrint', (event: any) => {
-        workerWindow.webContents.print({ silent: false, printBackground: true });
+        const win = new BrowserWindow({
+            show: false,
+            webPreferences: {
+                nodeIntegration: true,
+            },
+        });
+
+        win.loadURL(`file://${data.printHtmlFilePath}`);
+
+        win.webContents.on('did-finish-load', () => {
+            win.webContents.print({ silent: false, printBackground: true });
+        });
     });
 
     // PrintPDF
-    ipcMain.on('printPDF', (event: any, content: any) => {
-        workerWindow.webContents.send('printPDF', content);
-    });
+    ipcMain.on('printToPDF', (event: any, data: any) => {
+        const win = new BrowserWindow({
+            show: false,
+            webPreferences: {
+                nodeIntegration: true,
+            },
+        });
 
-    ipcMain.on('readyToPrintPDF', (event: any, safePath: string) => {
-        workerWindow.webContents.printToPDF({}, (error: any, data: any) => {
-            if (error) {
-                throw error;
+        win.loadURL(`file://${data.printHtmlFilePath}`);
+
+        win.webContents.on('did-finish-load', async () => {
+            const pdfData: Buffer = await win.webContents.printToPDF({});
+
+            try {
+                await fs.writeFile(data.pdfFilePath, pdfData);
+
+                console.log('PDF generated successfully.');
+                shell.showItemInFolder(data.pdfFilePath);
+            } catch (e) {
+                console.log(`PDF generation failed. Error: ${e.message}`);
             }
-
-            fs.writeFile(safePath, data, (localError: any) => {
-                if (localError) {
-                    throw localError;
-                }
-
-                shell.showItemInFolder(safePath);
-            });
         });
     });
 

@@ -20,9 +20,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipDefaultOptions, MatTooltipModule, MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
-// Modules
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// NG Translate
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AngularSplitModule } from 'angular-split';
@@ -30,7 +28,6 @@ import 'reflect-metadata';
 import 'zone.js/mix';
 import '../polyfills';
 import { AppRoutingModule } from './app-routing.module';
-// Components
 import { AppComponent } from './app.component';
 import { ActiveNotebookAndSearchComponent } from './components/active-notebook-and-search/active-notebook-and-search.component';
 import { CollectionSwitcherComponent } from './components/collection-switcher/collection-switcher.component';
@@ -65,18 +62,15 @@ import { FileSystem } from './core/file-system';
 import { GitHubApi } from './core/github-api';
 import { Scheduler } from './core/scheduler';
 import { Settings } from './core/settings';
-import { WorkerManager } from './core/worker-manager';
-// Stores
 import { DataStore } from './data/data-store';
 import { CdkVirtualScrollViewportPatchDirective } from './directives/cdk-virtual-scroll-viewport-patch-directive';
-// Directives
 import { WebviewDirective } from './directives/webview.directive';
 import { GlobalErrorHandler } from './globalErrorHandler';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { CollectionService } from './services/collection/collection.service';
-// Services
 import { ElectronService } from './services/electron.service';
 import { FileService } from './services/file/file.service';
+import { PrintService } from './services/print/print.service';
 import { TrashService } from './services/trash/trash.service';
 import { UpdateService } from './services/update/update.service';
 
@@ -164,9 +158,9 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         Settings,
         FileService,
         ClipboardManager,
-        WorkerManager,
         UpdateService,
         TrashService,
+        PrintService,
         GitHubApi,
         DateFormatter,
         Scheduler,
