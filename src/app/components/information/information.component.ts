@@ -21,6 +21,7 @@ export class InformationComponent implements OnInit {
     public applicationCopyright: string = ProductInformation.applicationCopyright;
     public websiteUrl: string = Constants.websiteUrl;
     public twitterUrl: string = Constants.twitterUrl;
+    public mastodonUrl: string = Constants.mastodonUrl;
     public githubUrl: string = Constants.githubUrl;
     public externalComponents: any[] = Constants.externalComponents;
     public isBusy: boolean = false;
