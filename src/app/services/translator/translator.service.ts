@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
 import { TranslateService } from '@ngx-translate/core';
+import { BaseSettings } from '../../core/base-settings';
 import { Constants } from '../../core/constants';
 import { Language } from '../../core/language';
-import { Settings } from '../../core/settings';
 
 @Injectable({
     providedIn: 'root',
@@ -13,7 +13,7 @@ export class TranslatorService {
     private languageChangedListener: any = this.languageChangedHandler.bind(this);
     private _selectedLanguage: Language;
 
-    constructor(private translate: TranslateService, private settings: Settings) {
+    constructor(private translate: TranslateService, private settings: BaseSettings) {
         this.initialize();
     }
 

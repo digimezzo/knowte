@@ -55,6 +55,7 @@ import { TasksProgressComponent } from './components/tasks-progress/tasks-progre
 import { TrashComponent } from './components/trash/trash.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { WindowControlsComponent } from './components/window-controls/window-controls.component';
+import { BaseSettings } from './core/base-settings';
 import { ClipboardManager } from './core/clipboard-manager';
 import { DateFormatter } from './core/date-formatter';
 import { Desktop } from './core/desktop';
@@ -172,6 +173,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
             provide: ErrorHandler,
             useClass: GlobalErrorHandler,
         },
+        { provide: BaseSettings, useClass: Settings },
     ],
     bootstrap: [AppComponent],
     entryComponents: [

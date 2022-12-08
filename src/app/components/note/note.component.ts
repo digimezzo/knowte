@@ -11,13 +11,13 @@ import * as Quill from 'quill';
 import BlotFormatter from 'quill-blot-formatter';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
+import { BaseSettings } from '../../core/base-settings';
 import { ClipboardManager } from '../../core/clipboard-manager';
 import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
 import { Logger } from '../../core/logger';
 import { NoteExport } from '../../core/note-export';
 import { ProductInformation } from '../../core/product-information';
-import { Settings } from '../../core/settings';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { AppearanceService } from '../../services/appearance/appearance.service';
@@ -71,7 +71,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         private logger: Logger,
         private snackBar: SnackBarService,
         private translator: TranslatorService,
-        private settings: Settings,
+        private settings: BaseSettings,
         public appearance: AppearanceService,
         private clipboard: ClipboardManager
     ) {}

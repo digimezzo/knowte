@@ -7,12 +7,12 @@ import { Duration, Moment } from 'moment';
 import * as path from 'path';
 import { Observable, Subject } from 'rxjs';
 import sanitize from 'sanitize-filename';
+import { BaseSettings } from '../../core/base-settings';
 import { Constants } from '../../core/constants';
 import { DateFormatter } from '../../core/date-formatter';
 import { Operation } from '../../core/enums';
 import { Logger } from '../../core/logger';
 import { NoteExport } from '../../core/note-export';
-import { Settings } from '../../core/settings';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { DataStore } from '../../data/data-store';
@@ -59,7 +59,7 @@ export class CollectionService {
         private search: SearchService,
         private appearance: AppearanceService,
         private dateFormatter: DateFormatter,
-        private settings: Settings,
+        private settings: BaseSettings,
         private logger: Logger
     ) {}
 

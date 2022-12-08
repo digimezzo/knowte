@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import * as remote from '@electron/remote';
 import { Subject, Subscription } from 'rxjs';
+import { BaseSettings } from '../../core/base-settings';
 import { Constants } from '../../core/constants';
 import { SelectionWatcher } from '../../core/selection-watcher';
-import { Settings } from '../../core/settings';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
 import { CollectionService } from '../../services/collection/collection.service';
@@ -29,7 +29,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         private collection: CollectionService,
         private snackBar: SnackBarService,
         public search: SearchService,
-        private settings: Settings,
+        private settings: BaseSettings,
         private file: FileService,
         private zone: NgZone
     ) {}

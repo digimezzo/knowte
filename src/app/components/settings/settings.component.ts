@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { BaseSettings } from '../../core/base-settings';
 import { Constants } from '../../core/constants';
-import { Settings } from '../../core/settings';
 import { AppearanceService } from '../../services/appearance/appearance.service';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { ImportFromOldVersionDialogComponent } from '../dialogs/import-from-old-version-dialog/import-from-old-version-dialog.component';
@@ -18,7 +18,7 @@ export class SettingsComponent implements OnInit {
         private dialog: MatDialog,
         public translator: TranslatorService,
         public appearance: AppearanceService,
-        private settings: Settings,
+        private settings: BaseSettings,
         private router: Router
     ) {}
 

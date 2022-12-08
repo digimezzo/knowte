@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
+import { BaseSettings } from '../../core/base-settings';
 import { Desktop } from '../../core/desktop';
 import { GitHubApi } from '../../core/github-api';
 import { Logger } from '../../core/logger';
 import { ProductInformation } from '../../core/product-information';
-import { Settings } from '../../core/settings';
 import { VersionComparer } from './version-comparer';
 @Injectable()
 export class UpdateService {
     public _isUpdateAvailable: boolean = false;
     private _latestRelease: string = '';
 
-    constructor(private settings: Settings, private logger: Logger, private gitHub: GitHubApi, private desktop: Desktop) {}
+    constructor(private settings: BaseSettings, private logger: Logger, private gitHub: GitHubApi, private desktop: Desktop) {}
 
     public get isUpdateAvailable(): boolean {
         return this._isUpdateAvailable;

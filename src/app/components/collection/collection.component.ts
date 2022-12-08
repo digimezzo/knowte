@@ -7,12 +7,12 @@ import { SplitAreaDirective, SplitComponent } from 'angular-split';
 import { OpenDialogReturnValue } from 'electron';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
+import { BaseSettings } from '../../core/base-settings';
 import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
 import { Logger } from '../../core/logger';
 import { ProductInformation } from '../../core/product-information';
 import { SelectionWatcher } from '../../core/selection-watcher';
-import { Settings } from '../../core/settings';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
 import { AppearanceService } from '../../services/appearance/appearance.service';
@@ -64,7 +64,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
         private update: UpdateService,
         private zone: NgZone,
         private logger: Logger,
-        private settings: Settings
+        private settings: BaseSettings
     ) {}
 
     public get allCategory(): string {

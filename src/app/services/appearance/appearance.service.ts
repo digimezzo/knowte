@@ -1,11 +1,11 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
+import { BaseSettings } from '../../core/base-settings';
 import { ColorScheme } from '../../core/color-scheme';
 import { Constants } from '../../core/constants';
 import { FontSize } from '../../core/font-size';
 import { Logger } from '../../core/logger';
-import { Settings } from '../../core/settings';
 import { Palette } from './palette';
 
 @Injectable({
@@ -19,7 +19,7 @@ export class AppearanceService {
     private _selectedColorScheme: ColorScheme;
     private _selectedFontSize: FontSize;
 
-    constructor(private settings: Settings, private logger: Logger, private overlayContainer: OverlayContainer) {}
+    constructor(private settings: BaseSettings, private logger: Logger, private overlayContainer: OverlayContainer) {}
 
     public get windowHasNativeTitleBar(): boolean {
         return this.windowHasFrame;

@@ -1,13 +1,15 @@
 import { IMock, It, Mock, Times } from 'typemoq';
+import { BaseSettings } from '../../core/base-settings';
 import { Desktop } from '../../core/desktop';
 import { GitHubApi } from '../../core/github-api';
 import { Logger } from '../../core/logger';
 import { ProductInformation } from '../../core/product-information';
-import { Settings } from '../../core/settings';
 import { UpdateService } from './update.service';
 
+jest.mock('@electron/remote', () => ({ exec: jest.fn() }));
+
 describe('UpdateService', () => {
-    let settingsMock: IMock<Settings>;
+    let settingsMock: IMock<BaseSettings>;
     let loggerMock: IMock<Logger>;
     let gitHubMock: IMock<GitHubApi>;
     let desktopMock: IMock<Desktop>;
@@ -15,7 +17,7 @@ describe('UpdateService', () => {
     let service: UpdateService;
 
     beforeEach(() => {
-        settingsMock = Mock.ofType<Settings>();
+        settingsMock = Mock.ofType<BaseSettings>();
         loggerMock = Mock.ofType<Logger>();
         gitHubMock = Mock.ofType<GitHubApi>();
         desktopMock = Mock.ofType<Desktop>();
