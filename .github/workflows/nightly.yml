@@ -31,28 +31,28 @@ jobs:
             - name: uploading rpm artifact
               uses: actions/upload-artifact@v2
               with:
-                  name: vitomu-nightly-rpm
-                  path: release/Vitomu-${{ steps.ver_name.outputs.prop }}.rpm
+                  name: knowte-nightly-rpm
+                  path: release/Knowte-${{ steps.ver_name.outputs.prop }}.rpm
             - name: upload deb artifact
               uses: actions/upload-artifact@v2
               with:
-                  name: vitomu-nightly-deb
-                  path: release/Vitomu-${{ steps.ver_name.outputs.prop }}.deb
+                  name: knowte-nightly-deb
+                  path: release/Knowte-${{ steps.ver_name.outputs.prop }}.deb
             - name: upload appimage artifact
               uses: actions/upload-artifact@v2
               with:
-                  name: vitomu-nightly-appimage
-                  path: release/Vitomu-${{ steps.ver_name.outputs.prop }}.AppImage
+                  name: knowte-nightly-appimage
+                  path: release/Knowte-${{ steps.ver_name.outputs.prop }}.AppImage
             - name: upload snap artifact
               uses: actions/upload-artifact@v2
               with:
-                  name: vitomu-nightly-snap
-                  path: release/Vitomu-${{ steps.ver_name.outputs.prop }}.snap
+                  name: knowte-nightly-snap
+                  path: release/Knowte-${{ steps.ver_name.outputs.prop }}.snap
             - name: upload pacman artifact
               uses: actions/upload-artifact@v2
               with:
-                  name: vitomu-nightly-pacman
-                  path: release/Vitomu-${{ steps.ver_name.outputs.prop }}.pacman
+                  name: knowte-nightly-pacman
+                  path: release/Knowte-${{ steps.ver_name.outputs.prop }}.pacman
 
     nightly_build_on_mac:
         runs-on: macos-latest
@@ -76,8 +76,8 @@ jobs:
             - name: upload build artifacts
               uses: actions/upload-artifact@v2
               with:
-                  name: vitomu-nightly-macos
-                  path: release/Vitomu-${{ steps.ver_name.outputs.prop }}.dmg
+                  name: knowte-nightly-macos
+                  path: release/Knowte-${{ steps.ver_name.outputs.prop }}.dmg
 
     nightly_build_on_win:
         runs-on: windows-latest
@@ -101,5 +101,5 @@ jobs:
             - name: upload build artifacts
               uses: actions/upload-artifact@v2
               with:
-                  name: vitomu-nightly-win
-                  path: release\Vitomu-${{ steps.ver_name.outputs.prop }}.exe
+                  name: knowte-nightly-win
+                  path: release\Knowte-${{ steps.ver_name.outputs.prop }}.exe
