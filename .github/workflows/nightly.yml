@@ -32,27 +32,27 @@ jobs:
               uses: actions/upload-artifact@v2
               with:
                   name: knowte-nightly-rpm
-                  path: release/Knowte-${{ steps.ver_name.outputs.prop }}.rpm
+                  path: release/Knowte-*.rpm
             - name: upload deb artifact
               uses: actions/upload-artifact@v2
               with:
                   name: knowte-nightly-deb
-                  path: release/Knowte-${{ steps.ver_name.outputs.prop }}.deb
+                  path: release/Knowte-*.deb
             - name: upload appimage artifact
               uses: actions/upload-artifact@v2
               with:
                   name: knowte-nightly-appimage
-                  path: release/Knowte-${{ steps.ver_name.outputs.prop }}.AppImage
+                  path: release/Knowte-*.AppImage
             - name: upload snap artifact
               uses: actions/upload-artifact@v2
               with:
                   name: knowte-nightly-snap
-                  path: release/Knowte-${{ steps.ver_name.outputs.prop }}.snap
+                  path: release/Knowte-*.snap
             - name: upload pacman artifact
               uses: actions/upload-artifact@v2
               with:
                   name: knowte-nightly-pacman
-                  path: release/Knowte-${{ steps.ver_name.outputs.prop }}.pacman
+                  path: release/Knowte-*.pacman
 
     nightly_build_on_mac:
         runs-on: macos-latest
@@ -77,7 +77,7 @@ jobs:
               uses: actions/upload-artifact@v2
               with:
                   name: knowte-nightly-macos
-                  path: release/Knowte-${{ steps.ver_name.outputs.prop }}.dmg
+                  path: release/Knowte-*.dmg
 
     nightly_build_on_win:
         runs-on: windows-latest
@@ -102,4 +102,4 @@ jobs:
               uses: actions/upload-artifact@v2
               with:
                   name: knowte-nightly-win
-                  path: release\Knowte-${{ steps.ver_name.outputs.prop }}.exe
+                  path: release\Knowte-*.exe
