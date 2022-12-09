@@ -1,6 +1,8 @@
 {
     "name": "Knowte",
     "version": "2.0.10",
+    "versionSuffix": "",
+    "copyright": "Copyright Digimezzo Ⓒ 2013 - 2022",
     "description": "A note taking application that allows you to quickly and easily organize and find your notes",
     "homepage": "https://github.com/digimezzo/knowte",
     "author": {

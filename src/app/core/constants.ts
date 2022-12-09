@@ -4,9 +4,6 @@ import { Language } from './language';
 
 export class Constants {
     public static readonly logFileName: string = 'Knowte.log';
-    public static readonly applicationName: string = require('../../../package.json').name;
-    public static readonly applicationVersion: string = require('../../../package.json').version;
-    public static readonly applicationCopyright: string = 'Copyright Digimezzo Ⓒ 2013 - 2020';
     public static readonly donateUrl: string = 'https://digimezzo.github.io/site/donate';
     public static readonly websiteUrl: string = 'https://digimezzo.github.io/site/';
     public static readonly twitterUrl: string = 'https://twitter.com/digimezzo';

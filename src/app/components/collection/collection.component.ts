@@ -96,7 +96,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     public selectedIndex: number;
 
-    public applicationName: string = Constants.applicationName;
+    public applicationName: string = ProductInformation.applicationName;
     public notebooksCount: number = 0;
     public allNotesCount: number = 0;
     public todayNotesCount: number = 0;
