@@ -21,8 +21,7 @@ const config = {
         artifactName: `\${productName}-${getFullVersion()}.\${ext}`,
     },
     linux: {
-        target: ['pacman'],
-        category: 'Audio',
+        target: ['AppImage', 'deb', 'rpm', 'pacman', 'snap'],
         artifactName: `\${productName}-${getFullVersion()}.\${ext}`,
         desktop: {
             Name: 'Knowte',
