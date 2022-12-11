@@ -4,40 +4,11 @@
     bottom: 0;
     left: 0;
     right: 0;
-}
-
-.loader-titlebar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--loader-titlebar-height);
-    background: var(--theme-header-background-color);
-    -webkit-app-region: drag;
-}
-
-.loader-header {
-    position: absolute;
-    top: var(--loader-titlebar-height);
-    left: 0;
-    right: 0;
-    height: 48px;
-    background: var(--theme-header-background-color);
-}
-
-.loader-body {
-    position: absolute;
-    top: 80px;
-    bottom: 0;
-    left: 0;
-    right: 0;
     background: white;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-left: 1px solid $color-lightgrey;
-    border-bottom: 1px solid $color-lightgrey;
-    border-right: 1px solid $color-lightgrey;
+    border: 1px solid $color-lightgrey;
 }
 
 .spinner {
