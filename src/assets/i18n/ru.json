@@ -51,7 +51,9 @@
         "Trash": "Корзина",
         "MoveDeletedNotesToTrash": "Перемещать удалённые заметки в корзину вместо полного удаления.",
         "HeaderBar": "Панель меню",
-        "UseLightHeaderBar": "Использовать светлую панель меню"
+        "UseLightHeaderBar": "Использовать светлую панель меню",
+        "SpellChecker": "Spell checker",
+        "EnableSpellChecker": "Enable spell checker"
     },
     "ComponentsPage": {
         "Components": "Компоненты"
