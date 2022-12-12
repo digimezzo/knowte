@@ -51,7 +51,9 @@
         "Trash": "Lixeira",
         "MoveDeletedNotesToTrash": "Mova notas deletadas para a lixeira ao invés de deleta-lás permanentemente.",
         "HeaderBar": "Header bar",
-        "UseLightHeaderBar": "Use light header bar"
+        "UseLightHeaderBar": "Use light header bar",
+        "SpellChecker": "Spell checker",
+        "EnableSpellChecker": "Enable spell checker"
     },
     "ComponentsPage": {
         "Components": "Componentes"

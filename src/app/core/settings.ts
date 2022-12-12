@@ -3,11 +3,12 @@ import * as remote from '@electron/remote';
 import * as Store from 'electron-store';
 import * as os from 'os';
 import { Constants } from '../core/constants';
+import { BaseSettings } from './base-settings';
 
 @Injectable({
     providedIn: 'root',
 })
-export class Settings {
+export class Settings implements BaseSettings {
     private settings: Store<any> = new Store();
     private globalEmitter: any = remote.getGlobal('globalEmitter');
 
@@ -136,6 +137,15 @@ export class Settings {
 
     public set useLightHeaderBar(v: boolean) {
         this.settings.set('useLightHeaderBar', v);
+    }
+
+    // Enable spell checker
+    public get enableSpellChecker(): boolean {
+        return this.settings.get('enableSpellChecker');
+    }
+
+    public set enableSpellChecker(v: boolean) {
+        this.settings.set('enableSpellChecker', v);
     }
 
     private initialize(): void {

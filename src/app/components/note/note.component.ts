@@ -628,14 +628,14 @@ export class NoteComponent implements OnInit, OnDestroy {
         const minimumFontize: number = Math.min(...availableFontSizes);
         const maximumFontize: number = Math.max(...availableFontSizes);
 
-        if(mouseWheelDeltaY < 0){
+        if (mouseWheelDeltaY < 0) {
             // scrolling up
-            if(currentFontSize < maximumFontize){
+            if (currentFontSize < maximumFontize) {
                 this.settings.fontSizeInNotes++;
             }
-        }else{
+        } else {
             // scrolling down
-            if(currentFontSize > minimumFontize){
+            if (currentFontSize > minimumFontize) {
                 this.settings.fontSizeInNotes--;
             }
         }

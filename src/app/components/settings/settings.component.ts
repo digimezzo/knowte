@@ -76,6 +76,13 @@ export class SettingsComponent implements OnInit {
         this.settings.moveDeletedNotesToTrash = v;
     }
 
+    public get enableSpellCheckerChecked(): boolean {
+        return this.settings.enableSpellChecker;
+    }
+    public set enableSpellCheckerChecked(v: boolean) {
+        this.settings.enableSpellChecker = v;
+    }
+
     public ngOnInit(): void {}
 
     public import(): void {

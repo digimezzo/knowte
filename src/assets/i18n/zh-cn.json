@@ -51,7 +51,9 @@
         "Trash": "Trash",
         "MoveDeletedNotesToTrash": "Move deleted notes to the trash instead of deleting them permanently.",
         "HeaderBar": "Header bar",
-        "UseLightHeaderBar": "Use light header bar"
+        "UseLightHeaderBar": "Use light header bar",
+        "SpellChecker": "Spell checker",
+        "EnableSpellChecker": "Enable spell checker"
     },
     "ComponentsPage": {
         "Components": "组成"
