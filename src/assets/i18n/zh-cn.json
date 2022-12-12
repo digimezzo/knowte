@@ -1,7 +1,7 @@
 {
     "WelcomePage": {
-        "Title": "欢迎使用Knowte!",
-        "Text": "要开始使用Knowte，请选择要在其中保存笔记的文件夹。 如果要导入已有的笔记，只需选择包含笔记的文件夹，Knowte便会为您导入笔记。",
+        "Title": "欢迎使用 Knowte!",
+        "Text": "要开始使用 Knowte，请选择要在其中保存笔记的文件夹。 如果要导入已有的笔记，只需选择包含笔记的文件夹，Knowte 便会为您导入笔记。",
         "SelectButton": "选择..."
     },
     "LoadingPage": {
@@ -17,29 +17,29 @@
     "SettingsTabs": {
         "Appearance": "外观",
         "Notes": "笔记",
-        "Advanced": "进阶"
+        "Advanced": "高级"
     },
     "InformationTabs": {
         "About": "关于",
-        "Components": "组成"
+        "Components": "组件"
     },
     "AboutPage": {
         "About": "关于",
         "Donate": "捐赠",
-        "GetInTouch": "保持联系",
+        "GetInTouch": "联系我们",
         "Version": "版本",
-        "License": "许可",
-        "IsKnowteUseful": "Knowte有用吗？ 请考虑捐赠。 谢谢！",
+        "License": "许可证",
+        "IsKnowteUseful": "Knowte 有用吗？ 请考虑捐赠。 谢谢！",
         "Website": "网站"
     },
     "SettingsPage": {
         "Import": "导入",
-        "ImportFromOldVersion": "从Knowte 1.x导入",
+        "ImportFromOldVersion": "从 Knowte 1.x 导入",
         "FontSize": "字体大小",
         "FontSizeInNotes": "笔记中的字体大小",
         "PixelsShort": "px",
         "Closing": "关闭",
-        "CloseNotesWithEscape": "使用[Esc]关闭笔记",
+        "CloseNotesWithEscape": "使用 [Esc] 关闭笔记",
         "Dates": "日期",
         "ShowExactDatesInTheNotesList": "在注释列表中显示确切的日期",
         "Language": "语言",
@@ -48,15 +48,15 @@
         "UseCustomTitleBar": "使用自定义标题栏（需要重新启动）",
         "Updates": "更新",
         "CheckForUpdates": "检查更新",
-        "Trash": "Trash",
-        "MoveDeletedNotesToTrash": "Move deleted notes to the trash instead of deleting them permanently.",
-        "HeaderBar": "Header bar",
-        "UseLightHeaderBar": "Use light header bar",
+        "Trash": "垃圾箱",
+        "MoveDeletedNotesToTrash": "将已删除的笔记移动到垃圾箱，而不是永久删除它们。",
+        "HeaderBar": "标题栏",
+        "UseLightHeaderBar": "使用浅色标题栏",
         "SpellChecker": "Spell checker",
         "EnableSpellChecker": "Enable spell checker"
     },
     "ComponentsPage": {
-        "Components": "组成"
+        "Components": "组件"
     },
     "MainMenu": {
         "Notes": "笔记",
@@ -65,20 +65,20 @@
     },
     "CollectionSwitcher": {
         "AddCollection": "添加收藏...",
-        "OpenTrash": "Open trash...",
-        "Download": "Download"
+        "OpenTrash": "打开垃圾箱...",
+        "Download": "下载"
     },
     "Tooltips": {
         "Rename": "重命名",
         "Delete": "删除",
-        "ChangeCollection": "变更收藏",
-        "ChangeNotebook": "变更笔记本",
-        "Actions": "动作",
+        "ChangeCollection": "更改收藏",
+        "ChangeNotebook": "更改笔记本",
+        "Actions": "操作",
         "MarkNote": "标记笔记",
         "UnmarkNote": "移除标记",
         "PrintNote": "打印笔记...",
         "ExportNote": "导出笔记...",
-        "ExportNoteToPdf": "导出PDF...",
+        "ExportNoteToPdf": "导出 PDF...",
         "ImportNotes": "导入笔记...",
         "AddNotebook": "添加笔记本...",
         "RenameNotebook": "重命名笔记本...",
@@ -87,14 +87,14 @@
         "AddNote": "添加笔记",
         "DeleteNote": "删除笔记...",
         "DeleteNotes": "删除多个笔记...",
-        "LastChanged": "上次变更",
+        "LastChanged": "上次更改",
         "Highlight": "高亮",
-        "Undo": "Undo (Ctrl+Z)",
-        "Redo": "Redo (Ctrl+Y)",
-        "Bold": "加粗(Ctrl+B)",
-        "Italic": "倾斜(Ctrl+I)",
-        "Underline": "下划线(Ctrl+U)",
-        "Strikethrough": "删除线(Ctrl+S)",
+        "Undo": "撤消 (Ctrl+Z)",
+        "Redo": "重做 (Ctrl+Y)",
+        "Bold": "加粗 (Ctrl+B)",
+        "Italic": "倾斜 (Ctrl+I)",
+        "Underline": "下划线 (Ctrl+U)",
+        "Strikethrough": "删除线 (Ctrl+S)",
         "Heading1": "标题 1 (Ctrl+1)",
         "Heading2": "标题 2 (Ctrl+2)",
         "NumberedList": "有序列表",
@@ -106,19 +106,19 @@
         "Image": "图像",
         "ClearFormatting": "清除格式",
         "Close": "关闭",
-        "BackToNotes": "Back to notes"
+        "BackToNotes": "返回到笔记"
     },
     "LicenseDialog": {
-        "License": "许可"
+        "License": "许可证"
     },
     "Buttons": {
         "Ok": "确定",
         "Cancel": "取消",
-        "License": "确定",
+        "License": "许可证",
         "Donate": "捐赠",
         "ViewLog": "查看日志",
-        "Yes": "好",
-        "No": "不",
+        "Yes": "是",
+        "No": "否",
         "Import": "导入",
         "StartImport": "开始导入",
         "Select": "选择",
@@ -143,11 +143,11 @@
         "ConfirmDeleteCollection": "您确定要删除收藏'{{collection}}'吗？ 如果继续，其笔记本和笔记将丢失。",
         "ConfirmDeleteNote": "您确定要删除笔记吗'{{noteTitle}}'？",
         "ConfirmDeleteNotes": "您确定要删除这些笔记吗？",
-        "ConfirmPermanentlyDeleteNote": "Are you sure you want to permanently delete the note '{{noteTitle}}'? It will be lost forever.",
-        "ConfirmPermanentlyDeleteNotes": "Are you sure you want to permanently delete these notes? They will be lost forever.",
+        "ConfirmPermanentlyDeleteNote": "您确定要永久删除'{{noteTitle}}'笔记吗？ 它将永远丢失。",
+        "ConfirmPermanentlyDeleteNotes": "您确定要永久删除这些笔记吗？它将永远丢失。",
         "ConfirmDeleteNotebook": "您确定要删除笔记本'{{notebookName}}吗'？ 笔记本中包含的笔记不会被删除，它们会变成未归档的。",
         "ConfirmDeleteNotebooks": "您确定要删除这些笔记本吗？ 笔记本中包含的笔记不会被删除，它们会变成未归档的。",
-        "SelectDirectoryContainingOldVersionExports": "请选择包含从Knowte 1.x导出的文件的文件夹。",
+        "SelectDirectoryContainingOldVersionExports": "请选择包含从 Knowte 1.x 导出的文件的文件夹。",
         "YouHaveSelectedDirectory": "您已选择目录：",
         "Importing": "正在导入",
         "ImportSuccessful": "导入成功！",
@@ -156,8 +156,8 @@
         "ChooseNotebook": "选择笔记本"
     },
     "Input": {
-        "Collection": "Collection",
-        "NotebookName": "Notebook name"
+        "Collection": "收藏",
+        "NotebookName": "笔记本名称"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "文件夹'{{storageDirectory}}'不能用来保存你的笔记。您可能没有足够的权限在其中创建项目。如果您需要更多信息，请验证日志。",
@@ -170,7 +170,7 @@
         "DeleteCollectionError": "删除收藏'{{collection}}'时发生错误。如果您需要更多信息，请验证日志。",
         "DeleteNotebooksError": "删除笔记本时发生错误。如果您需要更多信息，请验证日志。",
         "DeleteNotesError": "删除笔记时发生错误。如果您需要更多信息，请验证日志。",
-        "RestoreNotesError": "An error occurred while restoring the notes. Please verify the log if you need more information.",
+        "RestoreNotesError": "恢复笔记时出错。 如果您需要更多信息，请验证日志。",
         "SaveNoteError": "保存笔记'{{noteTitle}}'时发生错误。如果您需要更多信息，请验证日志。",
         "UpdateNoteContentError": "保存笔记内容时发生错误。如果您需要更多信息，请验证日志。",
         "GetNoteContentError": "获取日记内容时发生错误。如果您需要更多信息，请验证日志。",
@@ -192,7 +192,7 @@
         "NewVersionAvailable": "新的版本已发行: {{version}}"
     },
     "SnackBarActions": {
-        "Ok": "好"
+        "Ok": "确定"
     },
     "MainPage": {
         "Notebooks": "笔记本",
@@ -216,7 +216,7 @@
         "LastWeek": "上个星期",
         "WeeksAgo": "{{count}} 星期之前",
         "MonthsAgo": "{{count}} 月之前",
-        "LongAgo": "Long ago"
+        "LongAgo": "很久之前"
     },
     "ContextMenu": {
         "Cut": "剪切",
@@ -225,10 +225,10 @@
         "Delete": "删除"
     },
     "Trash": {
-        "Trash": "Trash",
-        "MovedToTrash": "Moved to trash",
-        "SelectAllNotes": "Select all notes",
-        "Restore": "Restore",
-        "DeletePermanently": "Delete permanently"
+        "Trash": "垃圾箱",
+        "MovedToTrash": "已移至垃圾箱",
+        "SelectAllNotes": "选择所有笔记",
+        "Restore": "恢复",
+        "DeletePermanently": "永久删除"
     }
 }
