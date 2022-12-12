@@ -207,6 +207,12 @@ export class NoteComponent implements OnInit, OnDestroy {
             }
         };
 
+        document.addEventListener('wheel', (e: WheelEvent) => {
+            if (e.ctrlKey) {
+                this.setEditorFontSizeByMouseScroll(e.deltaY);
+            }
+        });
+
         const window: BrowserWindow = remote.getCurrentWindow();
 
         electronLocalshortcut.register(window, 'ESC', () => {
@@ -614,6 +620,27 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private setEditorFontSize(): void {
         document.body.setAttribute('editor-font-size', this.settings.fontSizeInNotes.toString());
+    }
+
+    private setEditorFontSizeByMouseScroll(mouseWheelDeltaY: number): void {
+        const availableFontSizes: number[] = Constants.noteFontSizes;
+        const currentFontSize: number = this.settings.fontSizeInNotes;
+        const minimumFontize: number = Math.min(...availableFontSizes);
+        const maximumFontize: number = Math.max(...availableFontSizes);
+
+        if(mouseWheelDeltaY < 0){
+            // scrolling up
+            if(currentFontSize < maximumFontize){
+                this.settings.fontSizeInNotes++;
+            }
+        }else{
+            // scrolling down
+            if(currentFontSize > minimumFontize){
+                this.settings.fontSizeInNotes--;
+            }
+        }
+
+        this.setEditorFontSize();
     }
 
     private setWindowTitle(noteTitle: string): void {
