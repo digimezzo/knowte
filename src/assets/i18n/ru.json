@@ -1,0 +1,232 @@
+{
+    "WelcomePage": {
+        "Title": "Приветствуем в Knowte!",
+        "Text": "Чтобы начать пользоваться Knowte, выберите директорию для хранения своих заметок. Если хотите импортировать уже существующие заметки, просто выберите директорию, в которой они находятся, и Knowte импортирует их для вас.",
+        "SelectButton": "ВЫБРАТЬ..."
+    },
+    "LoadingPage": {
+        "Text": "Загрузка..."
+    },
+    "NotesTabs": {
+        "All": "Все",
+        "Today": "Сегодня",
+        "Yesterday": "Вчера",
+        "ThisWeek": "На этой неделе",
+        "Marked": "Избранные"
+    },
+    "SettingsTabs": {
+        "Appearance": "Оформление",
+        "Notes": "Заметки",
+        "Advanced": "Дополнительно"
+    },
+    "InformationTabs": {
+        "About": "О программе",
+        "Components": "Компоненты"
+    },
+    "AboutPage": {
+        "About": "О программе",
+        "Donate": "Пожертвование",
+        "GetInTouch": "Свяжитесь с нами",
+        "Version": "Версия",
+        "License": "Лицензия",
+        "IsKnowteUseful": "Программа вам понравилась? Если да, пожалуйста, поддержите разработчика. Спасибо!",
+        "Website": "Сайт"
+    },
+    "SettingsPage": {
+        "Import": "Импорт",
+        "ImportFromOldVersion": "Импорт из Knowte 1.x",
+        "FontSize": "Размер шрифта",
+        "FontSizeInNotes": "Размер шрифта в заметках",
+        "PixelsShort": "px",
+        "Closing": "Закрытие",
+        "CloseNotesWithEscape": "Закрывать заметки по нажатию клавиши [Esc]",
+        "Dates": "Даты",
+        "ShowExactDatesInTheNotesList": "Показывать точные даты в списке заметок",
+        "Language": "Язык",
+        "Color": "Цвет",
+        "TitleBar": "Строка заголовка",
+        "UseCustomTitleBar": "Использовать пользовательскую строку заголовка (требуется перезагрузка)",
+        "Updates": "Обновления",
+        "CheckForUpdates": "Проверка обновлений",
+        "Trash": "Корзина",
+        "MoveDeletedNotesToTrash": "Перемещать удалённые заметки в корзину вместо полного удаления.",
+        "HeaderBar": "Панель меню",
+        "UseLightHeaderBar": "Использовать светлую панель меню"
+    },
+    "ComponentsPage": {
+        "Components": "Компоненты"
+    },
+    "MainMenu": {
+        "Notes": "Заметки",
+        "Settings": "Настройки",
+        "Information": "Информация"
+    },
+    "CollectionSwitcher": {
+        "AddCollection": "Добавить коллекцию...",
+        "OpenTrash": "Открыть корзину...",
+        "Download": "Скачать"
+    },
+    "Tooltips": {
+        "Rename": "Переименовать",
+        "Delete": "Удалить",
+        "ChangeCollection": "Изменить коллекцию",
+        "ChangeNotebook": "Изменить блокнот",
+        "Actions": "Действия",
+        "MarkNote": "Добавить в избранные",
+        "UnmarkNote": "Удалить отметку",
+        "PrintNote": "Печать заметки...",
+        "ExportNote": "Экспорт заметки...",
+        "ExportNoteToPdf": "Экспорт заметки в PDF...",
+        "ImportNotes": "Импорт заметок...",
+        "AddNotebook": "Добавить блокнот...",
+        "RenameNotebook": "Переименовать блокнот...",
+        "DeleteNotebook": "Удалить блокнот...",
+        "DeleteNotebooks": "Удалить блокноты...",
+        "AddNote": "Добавить заметку",
+        "DeleteNote": "Удалить заметку...",
+        "DeleteNotes": "Удалить заметки...",
+        "LastChanged": "Последнее изменение",
+        "Highlight": "Выделение цветом",
+        "Undo": "Отменить (Ctrl+Z)",
+        "Redo": "Вернуть (Ctrl+Y)",
+        "Bold": "Жирный (Ctrl+B)",
+        "Italic": "Курсив (Ctrl+I)",
+        "Underline": "Подчёркнутый (Ctrl+U)",
+        "Strikethrough": "Зачёркнутый (Ctrl+S)",
+        "Heading1": "Заголовок 1 (Ctrl+1)",
+        "Heading2": "Заголовок 2 (Ctrl+2)",
+        "NumberedList": "Нумерованный список",
+        "BulletedList": "Маркированный список",
+        "TaskList": "Список заданий",
+        "Link": "Ссылка",
+        "Quote": "Цитата",
+        "Code": "Код",
+        "Image": "Изображение",
+        "ClearFormatting": "Очистить форматирование",
+        "Close": "Закрыть",
+        "BackToNotes": "Вернуться к заметкам"
+    },
+    "LicenseDialog": {
+        "License": "Лицензия"
+    },
+    "Buttons": {
+        "Ok": "OK",
+        "Cancel": "ОТМЕНА",
+        "License": "ЛИЦЕНЗИЯ",
+        "Donate": "ПОЖЕРТВОВАНИЕ",
+        "ViewLog": "ПРОСМОТР ЖУРНАЛА",
+        "Yes": "ДА",
+        "No": "НЕТ",
+        "Import": "ИМПОРТ",
+        "StartImport": "НАЧАТЬ ИМПОРТ",
+        "Select": "ВЫБРАТЬ",
+        "SelectAgain": "ВЫБРАТЬ ЕЩЁ РАЗ",
+        "Close": "ЗАКРЫТЬ"
+    },
+    "DialogTitles": {
+        "AddCollection": "Добавить коллекцию",
+        "RenameCollection": "Переименовать коллекцию",
+        "SelectFolder": "Выбрать папку",
+        "Error": "Ошибка",
+        "ConfirmDeleteCollection": "Удалить коллекцию?",
+        "AddNotebook": "Добавить блокнот",
+        "RenameNotebook": "Переименовать блокнот",
+        "ConfirmDeleteNotebook": "Удалить блокнот?",
+        "ConfirmDeleteNotebooks": "Удалить блокноты?",
+        "ConfirmDeleteNote": "Удалить заметку?",
+        "ConfirmDeleteNotes": "Удалить заметки?",
+        "Import": "Импортировать"
+    },
+    "DialogTexts": {
+        "ConfirmDeleteCollection": "Хотите удалить коллекцию '{{collection}}'? При подтверждении все блокноты и заметки будут потеряны.",
+        "ConfirmDeleteNote": "Хотите удалить заметку '{{noteTitle}}'?",
+        "ConfirmDeleteNotes": "Хотите удалить эти заметки?",
+        "ConfirmPermanentlyDeleteNote": "Хотите полностью удалить заметку '{{noteTitle}}'? Она будет удалена навсегда.",
+        "ConfirmPermanentlyDeleteNotes": "Хотите полностью удалить эти заметки? Они будут потеряны навсегда.",
+        "ConfirmDeleteNotebook": "Хотите удалить блокнот '{{notebookName}}'? Входящие в блокнот заметки не будут удалены, а лишь станут неупорядоченными.",
+        "ConfirmDeleteNotebooks": "Хотите удалить эти блокноты? Их заметки не будут удалены, а лишь станут неупорядоченными.",
+        "SelectDirectoryContainingOldVersionExports": "Пожалуйста, выберите директорию, содержащую файлы, которые были экспортированы из Knowte 1.x.",
+        "YouHaveSelectedDirectory": "Вы выбрали директорию:",
+        "Importing": "Идёт импорт",
+        "ImportSuccessful": "Импорт успешен!",
+        "ImportFailed": "Импорт не удался!",
+        "AllFiles": "Все файлы",
+        "ChooseNotebook": "Выбрать блокнот"
+    },
+    "Input": {
+        "Collection": "Коллекция",
+        "NotebookName": "Название блокнота"
+    },
+    "ErrorTexts": {
+        "StorageDirectoryCreationError": "Директория '{{storageDirectory}}' не может использоваться для сохранения ваших заметок. Возможно, у вас недостаточно прав для создания элементов в ней. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "GlobalError": "Произошла ошибка, которая приведет к закрытию приложения. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "AddCollectionError": "Произошла ошибка при добавлении коллекции '{{collection}}'. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "AddNotebookError": "Произошла ошибка при добавлении блокнота '{{notebookName}}'. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "RenameNoteError": "Произошла ошибка при переименовании заметки '{{noteTitle}}'. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "RenameNotebookError": "Произошла ошибка при переименовании блокнота '{{notebookName}}'. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "RenameCollectionError": "Произошла ошибка при переименовании коллекции '{{collection}}'. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "DeleteCollectionError": "Произошла ошибка при удалении коллекции '{{collection}}'. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "DeleteNotebooksError": "Произошла ошибка при удалении блокнотов. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "DeleteNotesError": "Произошла ошибка при удалении заметок. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "RestoreNotesError": "Произошла ошибка при восстановлении заметок. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "SaveNoteError": "Произошла ошибка при сохранении заметки '{{noteTitle}}'. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "UpdateNoteContentError": "Произошла ошибка при сохранении содержимого заметки. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "GetNoteContentError": "Произошла ошибка при получении содержимого заметки. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "ExportNoteError": "Произошла ошибка при экспорте заметки '{{noteTitle}}'. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "ImportNotesError": "Произошла ошибка при импорте заметок. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "ChangeNotebookError": "Произошла ошибка при смене блокнота. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация."
+    },
+    "SnackBarMessages": {
+        "DuplicateCollection": "Уже есть коллекция с названием '{{collection}}'",
+        "DuplicateNotebook": "Уже есть блокнот с названием '{{notebookName}}'",
+        "NoteTitleCannotBeEmpty": "Заголовок заметки не может быть пустым",
+        "CloseNoteBeforeChangingCollections": "Пожалуйста, закройте все заметки перед изменением коллекций",
+        "NoteExported": "Заметка '{{noteTitle}}' была экспортирована",
+        "NoteMovedToNotebook": "Заметка была перемещена в '{{notebookName}}'",
+        "NotesMovedToNotebook": "Заметки были перемещены в '{{notebookName}}'",
+        "NotesImportedIntoNotebook": "Заметки были импортированы в блокнот '{{notebookName}}'",
+        "NotesImported": "Заметки были импортированы",
+        "NoNoteFilesToImport": "Не было файлов заметок для импорта",
+        "NewVersionAvailable": "Доступна новая версия: {{version}}"
+    },
+    "SnackBarActions": {
+        "Ok": "OK"
+    },
+    "MainPage": {
+        "Notebooks": "Блокноты",
+        "AllNotes": "Все заметки",
+        "UnfiledNotes": "Неупорядоченные заметки",
+        "Search": "Искать",
+        "ClearSearch": "Очистить поиск",
+        "DragNotesCount": "{{noteCount}} заметок",
+        "TasksCount": "{{closedTasksCount}} из {{totalTasksCount}}"
+    },
+    "Notes": {
+        "NewNote": "Новая заметка",
+        "NotePlaceholder": "Текст заметки...",
+        "Imported": "Импортировано",
+        "Search": "Поиск"
+    },
+    "NoteDates": {
+        "Today": "Сегодня",
+        "Yesterday": "Вчера",
+        "DaysAgo": "{{count}} дней назад",
+        "LastWeek": "На прошлой неделе",
+        "WeeksAgo": "{{count}} недель назад",
+        "MonthsAgo": "{{count}} месяцев назад",
+        "LongAgo": "Давным-давно"
+    },
+    "ContextMenu": {
+        "Cut": "Вырезать",
+        "Copy": "Копировать",
+        "Paste": "Вставить",
+        "Delete": "Удалить"
+    },
+    "Trash": {
+        "Trash": "Корзина",
+        "MovedToTrash": "Перемещено в корзину",
+        "SelectAllNotes": "Выбрать все заметки",
+        "Restore": "Восстановить",
+        "DeletePermanently": "Удалить полностью"
+    }
+}
