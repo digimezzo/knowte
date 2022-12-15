@@ -148,6 +148,15 @@ export class Settings implements BaseSettings {
         this.settings.set('enableSpellChecker', v);
     }
 
+    // Active spell check languages
+    public get activeSpellCheckLanguages(): string {
+        return this.settings.get('activeSpellCheckLanguages');
+    }
+
+    public set activeSpellCheckLanguages(v: string) {
+        this.settings.set('activeSpellCheckLanguages', v);
+    }
+
     private initialize(): void {
         // storageDirectory and activeCollection cannot be initialized here.
         // Their value is set later, depending on user action.
@@ -207,6 +216,10 @@ export class Settings implements BaseSettings {
 
         if (!this.settings.has('useLightHeaderBar')) {
             this.settings.set('useLightHeaderBar', false);
+        }
+
+        if (!this.settings.has('activeSpellCheckLanguages')) {
+            this.settings.set('activeSpellCheckLanguages', '');
         }
     }
 }

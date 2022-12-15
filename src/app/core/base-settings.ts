@@ -14,4 +14,5 @@ export class BaseSettings {
     public moveDeletedNotesToTrash: boolean;
     public useLightHeaderBar: boolean;
     public enableSpellChecker: boolean;
+    public activeSpellCheckLanguages: string;
 }

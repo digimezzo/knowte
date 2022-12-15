@@ -72,6 +72,7 @@ import { CollectionService } from './services/collection/collection.service';
 import { ElectronService } from './services/electron.service';
 import { FileService } from './services/file/file.service';
 import { PrintService } from './services/print/print.service';
+import { SpellCheckService } from './services/spell-check/spell-check.service';
 import { TrashService } from './services/trash/trash.service';
 import { UpdateService } from './services/update/update.service';
 
@@ -162,6 +163,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         UpdateService,
         TrashService,
         PrintService,
+        SpellCheckService,
         GitHubApi,
         DateFormatter,
         Scheduler,

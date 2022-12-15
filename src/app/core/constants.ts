@@ -1,6 +1,7 @@
 import { ColorScheme } from './color-scheme';
 import { FontSize } from './font-size';
 import { Language } from './language';
+import { SpellCheckLanguage } from './spell-check-language';
 
 export class Constants {
     public static readonly logFileName: string = 'Knowte.log';
@@ -58,6 +59,18 @@ export class Constants {
         { code: 'zh-cn', englishName: 'Chinese', localizedName: '中國人' },
         { code: 'pt-br', englishName: 'Brazilian Portuguese', localizedName: 'Português brasileiro' },
         { code: 'ru', englishName: 'Russian', localizedName: 'Русский' },
+    ];
+
+    /**
+     * These are the languages that are returned by window.webContents.session.availableSpellCheckerLanguages
+     * (Where window is a BrowserWindow). It's unclear if this list ever changes. The documentation is non-existent.
+     * af,bg,ca,cs,cy,da,de,de-DE,el,en-AU,en-CA,en-GB,en-GB-oxendict,en-US,es,es-419,es-AR,es-ES,es-MX,es-US,et,fa,
+     * fo,fr,fr-FR,he,hi,hr,hu,hy,id,it,it-IT,ko,lt,lv,nb,nl,pl,pt,pt-BR,pt-PT,ro,ru,sh,sk,sl,sq,sr,sv,ta,tg,tr,uk,vi
+     */
+    public static readonly spellCheckLanguages: SpellCheckLanguage[] = [
+        new SpellCheckLanguage('nl', 'Nederlands'),
+        new SpellCheckLanguage('fr', 'Français'),
+        new SpellCheckLanguage('en-US', 'English (US)'),
     ];
 
     public static readonly colorSchemes: ColorScheme[] = [
