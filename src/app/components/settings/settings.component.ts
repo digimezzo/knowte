@@ -19,7 +19,7 @@ export class SettingsComponent implements OnInit {
         private dialog: MatDialog,
         public translator: TranslatorService,
         public appearance: AppearanceService,
-        private settings: BaseSettings,
+        public settings: BaseSettings,
         private router: Router
     ) {}
 
