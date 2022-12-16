@@ -51,7 +51,9 @@
         "Trash": "Corbeille",
         "MoveDeletedNotesToTrash": "Déplacez les notes supprimées dans la corbeille au lieu de les supprimer définitivement.",
         "HeaderBar": "Barre d'en-tête",
-        "UseLightHeaderBar": "Utiliser barre d'en-tête claire"
+        "UseLightHeaderBar": "Utiliser barre d'en-tête claire",
+        "SpellChecker": "Correcteur orthographique",
+        "EnableSpellChecker": "Activer le correcteur orthographique"
     },
     "ComponentsPage": {
         "Components": "Composants"
@@ -121,7 +123,8 @@
         "StartImport": "COMMENCER L'IMPORT",
         "Select": "SÉLECTIONNER",
         "SelectAgain": "SÉLECTIONNER À NOUVEAU",
-        "Close": "FERMER"
+        "Close": "FERMER",
+        "Languages": "LANGUES"
     },
     "DialogTitles": {
         "AddCollection": "Ajouter collection",
@@ -135,7 +138,8 @@
         "ConfirmDeleteNotebooks": "Supprimer blocs-notes?",
         "ConfirmDeleteNote": "Supprimer note?",
         "ConfirmDeleteNotes": "Supprimer notes?",
-        "Import": "Importer"
+        "Import": "Importer",
+        "Languages": "Langues"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Êtes-vous sûr de vouloir supprimer la collection '{{collection}}'? Si vous continuez, ses bloc-notes et ses notes seront perdues.",

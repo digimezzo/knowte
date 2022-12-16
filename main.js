@@ -76,6 +76,7 @@ function createMainWindow() {
                 webSecurity: false,
                 nodeIntegration: true,
                 contextIsolation: false,
+                spellcheck: false,
             },
             show: false,
         });
@@ -147,6 +148,7 @@ function windowhasFrame() {
     return !settings.get('useCustomTitleBar');
 }
 function createNoteWindow(notePath, noteId, windowHasFrame) {
+    const settings = new Store();
     // Load the previous state with fallback to defaults
     const noteWindowState = windowStateKeeper({
         defaultWidth: 620,
@@ -167,6 +169,7 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
             webSecurity: false,
             nodeIntegration: true,
             contextIsolation: false,
+            spellcheck: settings.get('enableSpellChecker'),
         },
         show: true,
     });
@@ -226,6 +229,7 @@ try {
             show: false,
             webPreferences: {
                 nodeIntegration: true,
+                spellcheck: false,
             },
         });
         win.loadURL(`file://${data.printHtmlFilePath}`);
@@ -239,6 +243,7 @@ try {
             show: false,
             webPreferences: {
                 nodeIntegration: true,
+                spellcheck: false,
             },
         });
         win.loadURL(`file://${data.printHtmlFilePath}`);

@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { AppearanceService } from './services/appearance/appearance.service';
 import { CollectionService } from './services/collection/collection.service';
 import { ElectronService } from './services/electron.service';
+import { SpellCheckService } from './services/spell-check/spell-check.service';
 import { TrashService } from './services/trash/trash.service';
 
 @Component({
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
         public router: Router,
         public appearance: AppearanceService,
         private collection: CollectionService,
+        private spellCheckerService: SpellCheckService,
         private trash: TrashService
     ) {
         log.create('renderer');
@@ -36,6 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     public ngOnInit(): void {
         this.appearance.initialize();
+        this.spellCheckerService.applyActiveSpellCheckLanguagesIfEnabled();
 
         this.subscription.add(
             this.trash.openTrashRequested$.subscribe(() => {

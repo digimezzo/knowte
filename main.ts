@@ -77,6 +77,7 @@ function createMainWindow(): void {
                 webSecurity: false,
                 nodeIntegration: true,
                 contextIsolation: false,
+                spellcheck: false,
             },
             show: false,
         });
@@ -164,6 +165,8 @@ function windowhasFrame(): boolean {
 }
 
 function createNoteWindow(notePath: string, noteId: string, windowHasFrame: boolean): void {
+    const settings: Store<any> = new Store();
+
     // Load the previous state with fallback to defaults
     const noteWindowState = windowStateKeeper({
         defaultWidth: 620,
@@ -185,6 +188,7 @@ function createNoteWindow(notePath: string, noteId: string, windowHasFrame: bool
             webSecurity: false,
             nodeIntegration: true,
             contextIsolation: false,
+            spellcheck: settings.get('enableSpellChecker'),
         },
         show: true,
     });
@@ -258,6 +262,7 @@ try {
             show: false,
             webPreferences: {
                 nodeIntegration: true,
+                spellcheck: false,
             },
         });
 
@@ -274,6 +279,7 @@ try {
             show: false,
             webPreferences: {
                 nodeIntegration: true,
+                spellcheck: false,
             },
         });
 

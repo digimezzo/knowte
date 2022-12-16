@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.10] - 2022-11-15
+## [2.0.10] - 2022-12-12
 
 ### Added
 
 -   Added Mac support
+-   Added option to enable spell checker
+-   Added note font resizing using CTRL + mouse wheel
+-   Added Russian translation
 
 ### Changed
 

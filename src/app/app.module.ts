@@ -41,6 +41,7 @@ import { InputDialogComponent } from './components/dialogs/input-dialog/input-di
 import { LicenseDialogComponent } from './components/dialogs/license-dialog/license-dialog.component';
 import { RenameCollectionDialogComponent } from './components/dialogs/rename-collection-dialog/rename-collection-dialog.component';
 import { RenameNotebookDialogComponent } from './components/dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
+import { SetSpellCheckerLanguagesDialogComponent } from './components/dialogs/set-spell-checker-languages-dialog/set-spell-checker-languages-dialog.component';
 import { FontSizeSwitcherComponent } from './components/font-size-switcher/font-size-switcher.component';
 import { InformationComponent } from './components/information/information.component';
 import { LoadingComponent } from './components/loading/loading.component';
@@ -72,6 +73,7 @@ import { CollectionService } from './services/collection/collection.service';
 import { ElectronService } from './services/electron.service';
 import { FileService } from './services/file/file.service';
 import { PrintService } from './services/print/print.service';
+import { SpellCheckService } from './services/spell-check/spell-check.service';
 import { TrashService } from './services/trash/trash.service';
 import { UpdateService } from './services/update/update.service';
 
@@ -108,6 +110,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         TrashComponent,
         DialogHeaderComponent,
         ImportFromOldVersionDialogComponent,
+        SetSpellCheckerLanguagesDialogComponent,
         LogoFullComponent,
         LogoMainComponent,
         MainMenuComponent,
@@ -162,6 +165,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         UpdateService,
         TrashService,
         PrintService,
+        SpellCheckService,
         GitHubApi,
         DateFormatter,
         Scheduler,
@@ -184,6 +188,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         ImportFromOldVersionDialogComponent,
         RenameNotebookDialogComponent,
         ConfirmationDialogComponent,
+        SetSpellCheckerLanguagesDialogComponent,
         TrashComponent,
     ],
 })

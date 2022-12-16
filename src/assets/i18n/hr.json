@@ -51,7 +51,9 @@
         "Trash": "Trash",
         "MoveDeletedNotesToTrash": "Move deleted notes to the trash instead of deleting them permanently.",
         "HeaderBar": "Header bar",
-        "UseLightHeaderBar": "Use light header bar"
+        "UseLightHeaderBar": "Use light header bar",
+        "SpellChecker": "Spell checker",
+        "EnableSpellChecker": "Enable spell checker"
     },
     "ComponentsPage": {
         "Components": "Komponente"
@@ -121,7 +123,8 @@
         "StartImport": "POKRENI UVOZ",
         "Select": "ODABERI",
         "SelectAgain": "ODABERI PONOVNO",
-        "Close": "ZATVORI"
+        "Close": "ZATVORI",
+        "Languages": "LANGUAGES"
     },
     "DialogTitles": {
         "AddCollection": "Dodavanje kolekcije",
@@ -135,7 +138,8 @@
         "ConfirmDeleteNotebooks": "Izbrisati bilježnice?",
         "ConfirmDeleteNote": "Izbrisati bilješku?",
         "ConfirmDeleteNotes": "Izbrisati bilješke?",
-        "Import": "Uvoz"
+        "Import": "Uvoz",
+        "Languages": "Languages"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Jeste li sigurni da želite izbrisati kolekciju '{{collection}}'? Ako nastavite, njene bilježnice i bilješke bit će izgubljene.",

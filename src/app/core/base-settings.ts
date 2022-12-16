@@ -1,4 +1,4 @@
-export class BaseSettings implements BaseSettings {
+export class BaseSettings {
     public defaultLanguage: string;
     public language: string;
     public checkForUpdates: boolean;
@@ -13,4 +13,6 @@ export class BaseSettings implements BaseSettings {
     public notebooksPaneWidth: number;
     public moveDeletedNotesToTrash: boolean;
     public useLightHeaderBar: boolean;
+    public enableSpellChecker: boolean;
+    public activeSpellCheckLanguages: string;
 }

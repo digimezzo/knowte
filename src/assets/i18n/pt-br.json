@@ -51,7 +51,9 @@
         "Trash": "Lixeira",
         "MoveDeletedNotesToTrash": "Mova notas deletadas para a lixeira ao invés de deleta-lás permanentemente.",
         "HeaderBar": "Header bar",
-        "UseLightHeaderBar": "Use light header bar"
+        "UseLightHeaderBar": "Use light header bar",
+        "SpellChecker": "Spell checker",
+        "EnableSpellChecker": "Enable spell checker"
     },
     "ComponentsPage": {
         "Components": "Componentes"
@@ -121,7 +123,8 @@
         "StartImport": "COMEÇAR A IMPORTAR",
         "Select": "SELECIONAR",
         "SelectAgain": "SELECIONAR NOVAMENTE",
-        "Close": "FECHAR"
+        "Close": "FECHAR",
+        "Languages": "LANGUAGES"
     },
     "DialogTitles": {
         "AddCollection": "Adicionar coleção",
@@ -135,7 +138,8 @@
         "ConfirmDeleteNotebooks": "Deletar cadernetas?",
         "ConfirmDeleteNote": "Deletar note?",
         "ConfirmDeleteNotes": "Deletar notes?",
-        "Import": "Importar"
+        "Import": "Importar",
+        "Languages": "Languages"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Você tem certeza que quer deletar a coleção '{{collection}}'? Caso continue, suas cadernetas e notas serão apagadas.",

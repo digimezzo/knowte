@@ -1,6 +1,7 @@
 import { ColorScheme } from './color-scheme';
 import { FontSize } from './font-size';
 import { Language } from './language';
+import { SpellCheckLanguage } from './spell-check-language';
 
 export class Constants {
     public static readonly logFileName: string = 'Knowte.log';
@@ -58,6 +59,53 @@ export class Constants {
         { code: 'zh-cn', englishName: 'Chinese', localizedName: '中國人' },
         { code: 'pt-br', englishName: 'Brazilian Portuguese', localizedName: 'Português brasileiro' },
         { code: 'ru', englishName: 'Russian', localizedName: 'Русский' },
+    ];
+
+    /**
+     * These are the languages that are returned by window.webContents.session.availableSpellCheckerLanguages
+     * (Where window is a BrowserWindow). It's unclear if this list ever changes. The documentation is non-existent.
+     * af,bg,ca,cs,cy,da,de,de-DE,el,en-AU,en-CA,en-GB,en-GB-oxendict,en-US,es,es-419,es-AR,es-ES,es-MX,es-US,et,fa,
+     * fo,fr,fr-FR,he,hi,hr,hu,hy,id,it,it-IT,ko,lt,lv,nb,nl,pl,pt,pt-BR,pt-PT,ro,ru,sh,sk,sl,sq,sr,sv,ta,tg,tr,uk,vi
+     */
+    public static readonly spellCheckLanguages: SpellCheckLanguage[] = [
+        new SpellCheckLanguage('af', 'Afrikaans', 'Afrikaans', true),
+        new SpellCheckLanguage('bg', 'Bulgarian', 'български', false),
+        new SpellCheckLanguage('ca', 'Catalan', 'Català', true),
+        new SpellCheckLanguage('cs', 'Czech', 'Čeština', true),
+        new SpellCheckLanguage('cy', 'Welsh', 'Cymraeg', true),
+        new SpellCheckLanguage('da', 'Danish', 'Dansk', true),
+        new SpellCheckLanguage('de', 'German', 'Deutsch', true),
+        new SpellCheckLanguage('el', 'Greek', 'Ελληνικά', false),
+        new SpellCheckLanguage('en-GB', 'English (UK)', 'English (UK)', true),
+        new SpellCheckLanguage('en-US', 'English (US)', 'English (US)', true),
+        new SpellCheckLanguage('es', 'Spanish', 'Español', true),
+        new SpellCheckLanguage('et', 'Estonian', 'Eesti', true),
+        new SpellCheckLanguage('fr', 'French', 'Français', true),
+        new SpellCheckLanguage('hi', 'Hindi', 'हिंदी', false),
+        new SpellCheckLanguage('hr', 'Croatian', 'Hrvatski', true),
+        new SpellCheckLanguage('hu', 'Hungarian', 'Magyar', true),
+        new SpellCheckLanguage('hy', 'Armenian', 'Հայերեն', false),
+        new SpellCheckLanguage('id', 'Indonesian', 'Bahasa Indonesia', true),
+        new SpellCheckLanguage('it', 'Italian', 'Italiano', true),
+        new SpellCheckLanguage('ko', 'Korean', '한국인', false),
+        new SpellCheckLanguage('lt', 'Lithuanian', 'Lietuvių', true),
+        new SpellCheckLanguage('lv', 'Latvian', 'Latviešu', true),
+        new SpellCheckLanguage('nb', 'Norwegian', 'Norsk', true),
+        new SpellCheckLanguage('nl', 'Dutch', 'Nederlands', true),
+        new SpellCheckLanguage('pl', 'Polish', 'Polski', true),
+        new SpellCheckLanguage('pt', 'Portuguese', 'Português', true),
+        new SpellCheckLanguage('ro', 'Romanian', 'Română', true),
+        new SpellCheckLanguage('ru', 'Russian', 'Русский', false),
+        new SpellCheckLanguage('sk', 'Slovak', 'Slovenský', true),
+        new SpellCheckLanguage('sl', 'Slovenian', 'Slovenščina', true),
+        new SpellCheckLanguage('sq', 'Albanian', 'Shqiptare', true),
+        new SpellCheckLanguage('sr', 'Serbian', 'Српски', false),
+        new SpellCheckLanguage('sv', 'Swedish', 'Svenska', true),
+        new SpellCheckLanguage('ta', 'Tamil', 'தமிழ்', false),
+        new SpellCheckLanguage('tg', 'Tajik', 'Тоҷикӣ', false),
+        new SpellCheckLanguage('tr', 'Turkish', 'Türkçe', true),
+        new SpellCheckLanguage('uk', 'Ukrainian', 'Українська', false),
+        new SpellCheckLanguage('vi', 'Vietnamese', 'Tiếng Việt', true),
     ];
 
     public static readonly colorSchemes: ColorScheme[] = [

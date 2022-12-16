@@ -51,7 +51,9 @@
         "Trash": "Prullenbak",
         "MoveDeletedNotesToTrash": "Verplaats verwijderde notities naar de prullenbak in plaats van ze permanent te verwijderen.",
         "HeaderBar": "Kopbalk",
-        "UseLightHeaderBar": "Gebruik lichte kopbalk"
+        "UseLightHeaderBar": "Gebruik lichte kopbalk",
+        "SpellChecker": "Spellingscontrole",
+        "EnableSpellChecker": "Spellingcontrole inschakelen"
     },
     "ComponentsPage": {
         "Components": "Componenten"
@@ -121,7 +123,8 @@
         "StartImport": "IMPORTEREN STARTEN",
         "Select": "SELECTEER",
         "SelectAgain": "SELECTEER OPNIEUW",
-        "Close": "SLUITEN"
+        "Close": "SLUITEN",
+        "Languages": "TALEN"
     },
     "DialogTitles": {
         "AddCollection": "Collectie toevoegen",
@@ -135,7 +138,8 @@
         "ConfirmDeleteNotebooks": "Notitieboeken verwijderen?",
         "ConfirmDeleteNote": "Notitie verwijderen?",
         "ConfirmDeleteNotes": "Notities verwijderen?",
-        "Import": "Importeren"
+        "Import": "Importeren",
+        "Languages": "Talen"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Weet u zeker dat u de collectie '{{collection}}' wilt verwijderen? Als u doorgaat, gaan de notitieboeken en notities verloren.",

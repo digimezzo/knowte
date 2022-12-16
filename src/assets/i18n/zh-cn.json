@@ -51,7 +51,9 @@
         "Trash": "垃圾箱",
         "MoveDeletedNotesToTrash": "将已删除的笔记移动到垃圾箱，而不是永久删除它们。",
         "HeaderBar": "标题栏",
-        "UseLightHeaderBar": "使用浅色标题栏"
+        "UseLightHeaderBar": "使用浅色标题栏",
+        "SpellChecker": "Spell checker",
+        "EnableSpellChecker": "Enable spell checker"
     },
     "ComponentsPage": {
         "Components": "组件"
@@ -121,7 +123,8 @@
         "StartImport": "开始导入",
         "Select": "选择",
         "SelectAgain": "重新选择",
-        "Close": "关闭"
+        "Close": "关闭",
+        "Languages": "LANGUAGES"
     },
     "DialogTitles": {
         "AddCollection": "添加收藏",
@@ -135,7 +138,8 @@
         "ConfirmDeleteNotebooks": "删除多个笔记本？",
         "ConfirmDeleteNote": "删除笔记？",
         "ConfirmDeleteNotes": "删除多个笔记？",
-        "Import": "导入"
+        "Import": "导入",
+        "Languages": "Languages"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "您确定要删除收藏'{{collection}}'吗？ 如果继续，其笔记本和笔记将丢失。",

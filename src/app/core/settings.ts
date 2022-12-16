@@ -3,11 +3,12 @@ import * as remote from '@electron/remote';
 import * as Store from 'electron-store';
 import * as os from 'os';
 import { Constants } from '../core/constants';
+import { BaseSettings } from './base-settings';
 
 @Injectable({
     providedIn: 'root',
 })
-export class Settings {
+export class Settings implements BaseSettings {
     private settings: Store<any> = new Store();
     private globalEmitter: any = remote.getGlobal('globalEmitter');
 
@@ -138,6 +139,24 @@ export class Settings {
         this.settings.set('useLightHeaderBar', v);
     }
 
+    // Enable spell checker
+    public get enableSpellChecker(): boolean {
+        return this.settings.get('enableSpellChecker');
+    }
+
+    public set enableSpellChecker(v: boolean) {
+        this.settings.set('enableSpellChecker', v);
+    }
+
+    // Active spell check languages
+    public get activeSpellCheckLanguages(): string {
+        return this.settings.get('activeSpellCheckLanguages');
+    }
+
+    public set activeSpellCheckLanguages(v: string) {
+        this.settings.set('activeSpellCheckLanguages', v);
+    }
+
     private initialize(): void {
         // storageDirectory and activeCollection cannot be initialized here.
         // Their value is set later, depending on user action.
@@ -197,6 +216,10 @@ export class Settings {
 
         if (!this.settings.has('useLightHeaderBar')) {
             this.settings.set('useLightHeaderBar', false);
+        }
+
+        if (!this.settings.has('activeSpellCheckLanguages')) {
+            this.settings.set('activeSpellCheckLanguages', '');
         }
     }
 }
