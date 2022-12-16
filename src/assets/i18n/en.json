@@ -123,7 +123,8 @@
         "StartImport": "START IMPORT",
         "Select": "SELECT",
         "SelectAgain": "SELECT AGAIN",
-        "Close": "CLOSE"
+        "Close": "CLOSE",
+        "Languages": "LANGUAGES"
     },
     "DialogTitles": {
         "AddCollection": "Add collection",
@@ -137,7 +138,8 @@
         "ConfirmDeleteNotebooks": "Delete notebooks?",
         "ConfirmDeleteNote": "Delete note?",
         "ConfirmDeleteNotes": "Delete notes?",
-        "Import": "Import"
+        "Import": "Import",
+        "Languages": "Languages"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Are you sure you want to delete the collection '{{collection}}'? If you continue, its notebooks and notes will be lost.",
@@ -153,7 +155,8 @@
         "ImportSuccessful": "Import successful!",
         "ImportFailed": "Import failed!",
         "AllFiles": "All files",
-        "ChooseNotebook": "Choose a notebook"
+        "ChooseNotebook": "Choose a notebook",
+        "SelectSpellCheckLanguages": "Select the languages you want to enable."
     },
     "Input": {
         "Collection": "Collection",

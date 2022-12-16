@@ -123,7 +123,8 @@
         "StartImport": "IMPORTEREN STARTEN",
         "Select": "SELECTEER",
         "SelectAgain": "SELECTEER OPNIEUW",
-        "Close": "SLUITEN"
+        "Close": "SLUITEN",
+        "Languages": "TALEN"
     },
     "DialogTitles": {
         "AddCollection": "Collectie toevoegen",
@@ -137,7 +138,8 @@
         "ConfirmDeleteNotebooks": "Notitieboeken verwijderen?",
         "ConfirmDeleteNote": "Notitie verwijderen?",
         "ConfirmDeleteNotes": "Notities verwijderen?",
-        "Import": "Importeren"
+        "Import": "Importeren",
+        "Languages": "Talen"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Weet u zeker dat u de collectie '{{collection}}' wilt verwijderen? Als u doorgaat, gaan de notitieboeken en notities verloren.",
@@ -153,7 +155,8 @@
         "ImportSuccessful": "Import succesvol!",
         "ImportFailed": "Importeren mislukt!",
         "AllFiles": "Alle bestanden",
-        "ChooseNotebook": "Kies een notitieboek"
+        "ChooseNotebook": "Kies een notitieboek",
+        "SelectSpellCheckLanguages": "Select the languages you want to enable."
     },
     "Input": {
         "Collection": "Collectie",

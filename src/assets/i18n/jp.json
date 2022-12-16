@@ -123,7 +123,8 @@
         "StartImport": "インポートの開始",
         "Select": "選択",
         "SelectAgain": "再選択",
-        "Close": "閉じる"
+        "Close": "閉じる",
+        "Languages": "LANGUAGES"
     },
     "DialogTitles": {
         "AddCollection": "コレクションの追加",
@@ -137,7 +138,8 @@
         "ConfirmDeleteNotebooks": "メモ帳を削除しますか？",
         "ConfirmDeleteNote": "メモを削除しますか？",
         "ConfirmDeleteNotes": "メモを削除しますか？",
-        "Import": "インポート"
+        "Import": "インポート",
+        "Languages": "Languages"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "コレクション '{{collection}}' を削除しますか？ コレクションを削除すると、メモ帳とメモも削除されます。",
@@ -153,7 +155,8 @@
         "ImportSuccessful": "インポートが完了しました！",
         "ImportFailed": "インポートに失敗しました！",
         "AllFiles": "すべてのファイル",
-        "ChooseNotebook": "メモ帳の選択"
+        "ChooseNotebook": "メモ帳の選択",
+        "SelectSpellCheckLanguages": "Select the languages you want to enable."
     },
     "Input": {
         "Collection": "コレクション",

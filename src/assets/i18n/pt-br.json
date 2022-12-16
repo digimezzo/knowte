@@ -123,7 +123,8 @@
         "StartImport": "COMEÇAR A IMPORTAR",
         "Select": "SELECIONAR",
         "SelectAgain": "SELECIONAR NOVAMENTE",
-        "Close": "FECHAR"
+        "Close": "FECHAR",
+        "Languages": "LANGUAGES"
     },
     "DialogTitles": {
         "AddCollection": "Adicionar coleção",
@@ -137,7 +138,8 @@
         "ConfirmDeleteNotebooks": "Deletar cadernetas?",
         "ConfirmDeleteNote": "Deletar note?",
         "ConfirmDeleteNotes": "Deletar notes?",
-        "Import": "Importar"
+        "Import": "Importar",
+        "Languages": "Languages"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Você tem certeza que quer deletar a coleção '{{collection}}'? Caso continue, suas cadernetas e notas serão apagadas.",
@@ -153,7 +155,8 @@
         "ImportSuccessful": "Importado com sucesso!",
         "ImportFailed": "Importação falhou!",
         "AllFiles": "Todos os arquivos",
-        "ChooseNotebook": "Escolha uma caderneta"
+        "ChooseNotebook": "Escolha uma caderneta",
+        "SelectSpellCheckLanguages": "Select the languages you want to enable."
     },
     "Input": {
         "Collection": "Coleção",

@@ -6,6 +6,7 @@ import { Constants } from '../../core/constants';
 import { AppearanceService } from '../../services/appearance/appearance.service';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { ImportFromOldVersionDialogComponent } from '../dialogs/import-from-old-version-dialog/import-from-old-version-dialog.component';
+import { SetSpellCheckerLanguagesDialogComponent } from '../dialogs/set-spell-checker-languages-dialog/set-spell-checker-languages-dialog.component';
 
 @Component({
     selector: 'app-settings',
@@ -87,6 +88,12 @@ export class SettingsComponent implements OnInit {
 
     public import(): void {
         const dialogRef: MatDialogRef<ImportFromOldVersionDialogComponent> = this.dialog.open(ImportFromOldVersionDialogComponent, {
+            width: '450px',
+        });
+    }
+
+    public setSpellCheckerLanguages(): void {
+        const dialogRef: MatDialogRef<SetSpellCheckerLanguagesDialogComponent> = this.dialog.open(SetSpellCheckerLanguagesDialogComponent, {
             width: '450px',
         });
     }

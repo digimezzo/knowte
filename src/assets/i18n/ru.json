@@ -123,7 +123,8 @@
         "StartImport": "НАЧАТЬ ИМПОРТ",
         "Select": "ВЫБРАТЬ",
         "SelectAgain": "ВЫБРАТЬ ЕЩЁ РАЗ",
-        "Close": "ЗАКРЫТЬ"
+        "Close": "ЗАКРЫТЬ",
+        "Languages": "LANGUAGES"
     },
     "DialogTitles": {
         "AddCollection": "Добавить коллекцию",
@@ -137,7 +138,8 @@
         "ConfirmDeleteNotebooks": "Удалить блокноты?",
         "ConfirmDeleteNote": "Удалить заметку?",
         "ConfirmDeleteNotes": "Удалить заметки?",
-        "Import": "Импортировать"
+        "Import": "Импортировать",
+        "Languages": "Languages"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Хотите удалить коллекцию '{{collection}}'? При подтверждении все блокноты и заметки будут потеряны.",
@@ -153,7 +155,8 @@
         "ImportSuccessful": "Импорт успешен!",
         "ImportFailed": "Импорт не удался!",
         "AllFiles": "Все файлы",
-        "ChooseNotebook": "Выбрать блокнот"
+        "ChooseNotebook": "Выбрать блокнот",
+        "SelectSpellCheckLanguages": "Select the languages you want to enable."
     },
     "Input": {
         "Collection": "Коллекция",

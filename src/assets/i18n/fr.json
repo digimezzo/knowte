@@ -123,7 +123,8 @@
         "StartImport": "COMMENCER L'IMPORT",
         "Select": "SÉLECTIONNER",
         "SelectAgain": "SÉLECTIONNER À NOUVEAU",
-        "Close": "FERMER"
+        "Close": "FERMER",
+        "Languages": "LANGUES"
     },
     "DialogTitles": {
         "AddCollection": "Ajouter collection",
@@ -137,7 +138,8 @@
         "ConfirmDeleteNotebooks": "Supprimer blocs-notes?",
         "ConfirmDeleteNote": "Supprimer note?",
         "ConfirmDeleteNotes": "Supprimer notes?",
-        "Import": "Importer"
+        "Import": "Importer",
+        "Languages": "Langues"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Êtes-vous sûr de vouloir supprimer la collection '{{collection}}'? Si vous continuez, ses bloc-notes et ses notes seront perdues.",
@@ -153,7 +155,8 @@
         "ImportSuccessful": "Import réussi!",
         "ImportFailed": "Import échoué!",
         "AllFiles": "Tous les fichiers",
-        "ChooseNotebook": "Choisissez un bloc-notes"
+        "ChooseNotebook": "Choisissez un bloc-notes",
+        "SelectSpellCheckLanguages": "Select the languages you want to enable."
     },
     "Input": {
         "Collection": "Collection",

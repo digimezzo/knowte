@@ -123,7 +123,8 @@
         "StartImport": "IMPORTIEREN STARTEN",
         "Select": "AUSWÄHLEN",
         "SelectAgain": "ERNEUT AUSWÄHLEN",
-        "Close": "SCHLIESSEN"
+        "Close": "SCHLIESSEN",
+        "Languages": "LANGUAGES"
     },
     "DialogTitles": {
         "AddCollection": "Kollektion hinzufügen",
@@ -137,7 +138,8 @@
         "ConfirmDeleteNotebooks": "Notizbücher löschen?",
         "ConfirmDeleteNote": "Notiz löschen?",
         "ConfirmDeleteNotes": "Notizen löschen?",
-        "Import": "Importieren"
+        "Import": "Importieren",
+        "Languages": "Languages"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Sicher das Du die Kollektion '{{collection}}' löschen möchtest? Wenn Du fortfährst, werden dessen Notizbücher und Notizen verloren gehen.",
@@ -153,7 +155,8 @@
         "ImportSuccessful": "Import erfolgreich!",
         "ImportFailed": "Import fehlgeschlagen!",
         "AllFiles": "Alle Dateien",
-        "ChooseNotebook": "Wähle ein Notizbuch"
+        "ChooseNotebook": "Wähle ein Notizbuch",
+        "SelectSpellCheckLanguages": "Select the languages you want to enable."
     },
     "Input": {
         "Collection": "Kollektion",
