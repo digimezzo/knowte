@@ -1,12 +1,15 @@
 <app-dialog-header titleText="{{ 'DialogTitles.Languages' | translate }}"></app-dialog-header>
-<mat-dialog-content>{{ 'DialogTexts.SelectSpellCheckLanguages' | translate }}</mat-dialog-content>
-<mat-dialog-actions
-    ><div class="d-flex flex-column">
+<mat-dialog-content>
+    <div class="d-flex flex-column">
         <mat-checkbox
             *ngFor="let spellCheckLanguage of this.spellCheckLanguages"
             (change)="toggleSpellCheckLanguage(spellCheckLanguage)"
             [(ngModel)]="spellCheckLanguage.isEnabled"
-            >{{ spellCheckLanguage.name }}</mat-checkbox
         >
-    </div></mat-dialog-actions
+            {{ spellCheckLanguage.localizedName }} ({{ spellCheckLanguage.englishName }})
+        </mat-checkbox>
+    </div></mat-dialog-content
+>
+<mat-dialog-actions
+    ><button mat-raised-button color="primary" [mat-dialog-close]>{{ 'Buttons.Ok' | translate }}</button></mat-dialog-actions
 >

@@ -155,8 +155,7 @@
         "ImportSuccessful": "Import réussi!",
         "ImportFailed": "Import échoué!",
         "AllFiles": "Tous les fichiers",
-        "ChooseNotebook": "Choisissez un bloc-notes",
-        "SelectSpellCheckLanguages": "Select the languages you want to enable."
+        "ChooseNotebook": "Choisissez un bloc-notes"
     },
     "Input": {
         "Collection": "Collection",

@@ -155,8 +155,7 @@
         "ImportSuccessful": "导入成功！",
         "ImportFailed": "导入失败！",
         "AllFiles": "所有文件",
-        "ChooseNotebook": "选择笔记本",
-        "SelectSpellCheckLanguages": "Select the languages you want to enable."
+        "ChooseNotebook": "选择笔记本"
     },
     "Input": {
         "Collection": "收藏",

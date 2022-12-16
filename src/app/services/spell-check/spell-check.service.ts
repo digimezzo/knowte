@@ -14,7 +14,7 @@ export class SpellCheckService {
 
     public applyActiveSpellCheckLanguagesIfEnabled(): void {
         if (!this.settings.enableSpellChecker) {
-            this.logger.info('Spell check is disabled.', 'SpellCheckService', 'applyActiveSpellCheckLanguages');
+            this.logger.info('Spell check is disabled.', 'SpellCheckService', 'applyActiveSpellCheckLanguagesIfEnabled');
 
             return;
         }
@@ -22,24 +22,44 @@ export class SpellCheckService {
         const languageCodesFromSettings: string[] = this.getLanguageCodesFromSettings();
 
         if (languageCodesFromSettings.length === 0) {
-            this.logger.info('No spell check languages found.', 'SpellCheckService', 'applyActiveSpellCheckLanguages');
+            this.logger.info('No spell check languages found.', 'SpellCheckService', 'applyActiveSpellCheckLanguagesIfEnabled');
 
             return;
         }
 
         try {
             const window: BrowserWindow = remote.getCurrentWindow();
-            window.webContents.session.setSpellCheckerLanguages(languageCodesFromSettings);
+            const supportedLanguageCodes: string[] = window.webContents.session.availableSpellCheckerLanguages;
+            const languageCodesToSet: string[] = [];
+            const unsupportedLanguageCodes: string[] = [];
+
+            for (const languageCodeFromSettings of languageCodesFromSettings) {
+                if (supportedLanguageCodes.includes(languageCodeFromSettings)) {
+                    languageCodesToSet.push(languageCodeFromSettings);
+                } else {
+                    unsupportedLanguageCodes.push(languageCodeFromSettings);
+                }
+            }
+
+            if (unsupportedLanguageCodes.length > 0) {
+                this.logger.warn(
+                    `These language codes are not supported: ${unsupportedLanguageCodes.join(', ')}`,
+                    'SpellCheckService',
+                    'applyActiveSpellCheckLanguagesIfEnabled'
+                );
+            }
+
+            window.webContents.session.setSpellCheckerLanguages(languageCodesToSet);
             this.logger.info(
                 `Applying spell check languages: ${languageCodesFromSettings.join(', ')}`,
                 'SpellCheckService',
-                'applyActiveSpellCheckLanguages'
+                'applyActiveSpellCheckLanguagesIfEnabled'
             );
         } catch (e) {
             this.logger.error(
                 `Could not apply spell check languages. Error: ${e.message}`,
                 'SpellCheckService',
-                'applyActiveSpellCheckLanguages'
+                'applyActiveSpellCheckLanguagesIfEnabled'
             );
         }
     }
@@ -60,12 +80,14 @@ export class SpellCheckService {
     }
 
     public getAllSpellCheckLanguages(): SpellCheckLanguage[] {
-        const allSpellCheckLanguages: SpellCheckLanguage[] = Constants.spellCheckLanguages;
+        let allSpellCheckLanguages: SpellCheckLanguage[] = Constants.spellCheckLanguages;
         const languageCodesFromSettings: string[] = this.getLanguageCodesFromSettings();
 
         for (const spellCheckLanguage of allSpellCheckLanguages) {
             spellCheckLanguage.isEnabled = languageCodesFromSettings.includes(spellCheckLanguage.code);
         }
+
+        allSpellCheckLanguages = allSpellCheckLanguages.sort((a, b) => (b.sortName.toLowerCase() > a.sortName.toLowerCase() ? -1 : 1));
 
         return allSpellCheckLanguages;
     }

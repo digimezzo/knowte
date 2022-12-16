@@ -155,8 +155,7 @@
         "ImportSuccessful": "インポートが完了しました！",
         "ImportFailed": "インポートに失敗しました！",
         "AllFiles": "すべてのファイル",
-        "ChooseNotebook": "メモ帳の選択",
-        "SelectSpellCheckLanguages": "Select the languages you want to enable."
+        "ChooseNotebook": "メモ帳の選択"
     },
     "Input": {
         "Collection": "コレクション",

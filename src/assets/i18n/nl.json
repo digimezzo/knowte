@@ -155,8 +155,7 @@
         "ImportSuccessful": "Import succesvol!",
         "ImportFailed": "Importeren mislukt!",
         "AllFiles": "Alle bestanden",
-        "ChooseNotebook": "Kies een notitieboek",
-        "SelectSpellCheckLanguages": "Select the languages you want to enable."
+        "ChooseNotebook": "Kies een notitieboek"
     },
     "Input": {
         "Collection": "Collectie",
