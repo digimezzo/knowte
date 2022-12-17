@@ -25,7 +25,7 @@ export class SettingsComponent implements OnInit {
 
     public isBusy: boolean = false;
     public selectedIndex: number;
-    public fontSizes: number[] = Constants.noteFontSizes;
+    public noteZoomPercentages: number[] = Constants.noteZoomPercentages;
 
     public get closeNotesWithEscapeChecked(): boolean {
         return this.settings.closeNotesWithEscape;
@@ -34,11 +34,11 @@ export class SettingsComponent implements OnInit {
         this.settings.closeNotesWithEscape = v;
     }
 
-    public get selectedFontSize(): number {
-        return this.settings.fontSizeInNotes;
+    public get selectedNoteZoomPercentage(): number {
+        return this.settings.noteZoomPercentage;
     }
-    public set selectedFontSize(v: number) {
-        this.settings.fontSizeInNotes = v;
+    public set selectedNoteZoomPercentage(v: number) {
+        this.settings.noteZoomPercentage = v;
     }
 
     public get showExactDatesInTheNotesListChecked(): boolean {

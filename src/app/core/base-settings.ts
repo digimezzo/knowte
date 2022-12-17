@@ -6,7 +6,7 @@ export class BaseSettings {
     public fontSize: number;
     public colorScheme: string;
     public closeNotesWithEscape: boolean;
-    public fontSizeInNotes: number;
+    public noteZoomPercentage: number;
     public showExactDatesInTheNotesList: boolean;
     public storageDirectory: string;
     public activeCollection: string;

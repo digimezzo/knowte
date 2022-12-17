@@ -40,12 +40,12 @@ export class Constants {
     public static readonly themeChangedEvent: string = 'f132f4ce-ae3c-4e1d-958a-a9cd28517b68';
     public static readonly uiFontSizeChangedEvent: string = 'e49b82b5-f960-49bf-83f8-9721edc386cb';
     public static readonly languageChangedEvent: string = '0f8d004f-080d-4901-b813-477432809519';
-    public static readonly noteFontSizeChangedEvent: string = '6ec3f042-27ea-49e1-a012-49693f44db02';
+    public static readonly noteZoomPercentageChangedEvent: string = '6ec3f042-27ea-49e1-a012-49693f44db02';
 
     public static readonly previewApplicationTag: string = 'preview';
     public static readonly releaseCandidateApplicationTag: string = 'rc';
 
-    public static noteFontSizes: number[] = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
+    public static noteZoomPercentages: number[] = [70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200];
 
     public static readonly uiFontSizes: FontSize[] = [new FontSize(12), new FontSize(13), new FontSize(14), new FontSize(15)];
 

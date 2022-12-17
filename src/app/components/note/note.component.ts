@@ -55,7 +55,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     private focusNoteListener: any = this.focusNoteHandler.bind(this);
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
     private languageChangedListener: any = this.languageChangedHandler.bind(this);
-    private fontSizeChangedListener: any = this.fontSizeChangedHandler.bind(this);
+    private noteZoomPercentageChangedListener: any = this.noteZoomPercentageChangedHandler.bind(this);
 
     private contextMenu: any;
     private cutContextMenuItem: any;
@@ -91,7 +91,7 @@ export class NoteComponent implements OnInit, OnDestroy {
     public ngOnDestroy(): void {}
 
     public async ngOnInit(): Promise<void> {
-        this.setEditorFontSize();
+        this.setEditorZoomPercentage();
         this.addContextMenuAsync();
 
         const notePlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
@@ -209,7 +209,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         document.addEventListener('wheel', (e: WheelEvent) => {
             if (e.ctrlKey) {
-                this.setEditorFontSizeByMouseScroll(e.deltaY);
+                this.setEditorZoomPercentByMouseScroll(e.deltaY);
             }
         });
 
@@ -545,7 +545,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.globalEmitter.removeListener(Constants.focusNoteEvent, this.focusNoteListener);
         this.globalEmitter.removeListener(Constants.closeNoteEvent, this.closeNoteListener);
         this.globalEmitter.removeListener(Constants.languageChangedEvent, this.languageChangedListener);
-        this.globalEmitter.removeListener(Constants.noteFontSizeChangedEvent, this.fontSizeChangedListener);
+        this.globalEmitter.removeListener(Constants.noteZoomPercentageChangedEvent, this.noteZoomPercentageChangedListener);
     }
 
     private addListeners(): void {
@@ -553,7 +553,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
         this.globalEmitter.on(Constants.closeNoteEvent, this.closeNoteListener);
         this.globalEmitter.on(Constants.languageChangedEvent, this.languageChangedListener);
-        this.globalEmitter.on(Constants.noteFontSizeChangedEvent, this.fontSizeChangedListener);
+        this.globalEmitter.on(Constants.noteZoomPercentageChangedEvent, this.noteZoomPercentageChangedListener);
     }
 
     private cleanup(): void {
@@ -618,29 +618,37 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
     }
 
-    private setEditorFontSize(): void {
-        document.body.setAttribute('editor-font-size', this.settings.fontSizeInNotes.toString());
+    private setEditorZoomPercentage(): void {
+        const pFontSize: number = (13 * this.settings.noteZoomPercentage) / 100;
+        const h1FontSize: number = pFontSize * 1.7;
+        const h2FontSize: number = pFontSize * 1.5;
+
+        const element: HTMLElement = document.documentElement;
+
+        element.style.setProperty('--editor-p-font-size', pFontSize + 'px');
+        element.style.setProperty('--editor-h1-font-size', h1FontSize + 'px');
+        element.style.setProperty('--editor-h2-font-size', h2FontSize + 'px');
     }
 
-    private setEditorFontSizeByMouseScroll(mouseWheelDeltaY: number): void {
-        const availableFontSizes: number[] = Constants.noteFontSizes;
-        const currentFontSize: number = this.settings.fontSizeInNotes;
-        const minimumFontize: number = Math.min(...availableFontSizes);
-        const maximumFontize: number = Math.max(...availableFontSizes);
+    private setEditorZoomPercentByMouseScroll(mouseWheelDeltaY: number): void {
+        const availableNoteZoomPercentages: number[] = Constants.noteZoomPercentages;
+        const currentNoteZoomPercentage: number = this.settings.noteZoomPercentage;
+        const minimumNoteZoomPercentage: number = Math.min(...availableNoteZoomPercentages);
+        const maximumNoteZoomPercentage: number = Math.max(...availableNoteZoomPercentages);
 
         if (mouseWheelDeltaY < 0) {
             // scrolling up
-            if (currentFontSize < maximumFontize) {
-                this.settings.fontSizeInNotes++;
+            if (currentNoteZoomPercentage < maximumNoteZoomPercentage) {
+                this.settings.noteZoomPercentage += 10;
             }
         } else {
             // scrolling down
-            if (currentFontSize > minimumFontize) {
-                this.settings.fontSizeInNotes--;
+            if (currentNoteZoomPercentage > minimumNoteZoomPercentage) {
+                this.settings.noteZoomPercentage -= 10;
             }
         }
 
-        this.setEditorFontSize();
+        this.setEditorZoomPercentage();
     }
 
     private setWindowTitle(noteTitle: string): void {
@@ -678,8 +686,8 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.addContextMenuAsync();
     }
 
-    private fontSizeChangedHandler(): void {
-        this.setEditorFontSize();
+    private noteZoomPercentageChangedHandler(): void {
+        this.setEditorZoomPercentage();
     }
 
     public clearSearch(): void {

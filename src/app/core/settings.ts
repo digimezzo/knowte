@@ -75,14 +75,14 @@ export class Settings implements BaseSettings {
         this.settings.set('closeNotesWithEscape', v);
     }
 
-    // Font size in notes
-    public get fontSizeInNotes(): number {
-        return this.settings.get('fontSizeInNotes');
+    // Note zoom percentage
+    public get noteZoomPercentage(): number {
+        return this.settings.get('noteZoomPercentage');
     }
 
-    public set fontSizeInNotes(v: number) {
-        this.settings.set('fontSizeInNotes', v);
-        this.globalEmitter.emit(Constants.noteFontSizeChangedEvent);
+    public set noteZoomPercentage(v: number) {
+        this.settings.set('noteZoomPercentage', v);
+        this.globalEmitter.emit(Constants.noteZoomPercentageChangedEvent);
     }
 
     // Show exact dates in the notes list
@@ -198,8 +198,8 @@ export class Settings implements BaseSettings {
             this.settings.set('closeNotesWithEscape', true);
         }
 
-        if (!this.settings.has('fontSizeInNotes')) {
-            this.settings.set('fontSizeInNotes', 13);
+        if (!this.settings.has('noteZoomPercentage')) {
+            this.settings.set('noteZoomPercentage', 100);
         }
 
         if (!this.settings.has('showExactDatesInTheNotesList')) {
