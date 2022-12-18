@@ -106,7 +106,8 @@
         "Image": "Imagem",
         "ClearFormatting": "Limpar formatação",
         "Close": "Fechar",
-        "BackToNotes": "Back to notes"
+        "BackToNotes": "Back to notes",
+        "TextSize": "Text size"
     },
     "LicenseDialog": {
         "License": "Licensa"

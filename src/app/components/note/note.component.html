@@ -99,6 +99,23 @@
                     (keydown.control.1)="heading1($event)"
                     (keydown.control.2)="heading2($event)"
                 ></div>
+                <div class="note-content-status no-select">
+                    <i class="note-content-status-color las la-search mr-05"></i>
+                    <div
+                        class="note-content-status-color mr-2"
+                        matTooltip="{{ 'Tooltips.TextSize' | translate }}: {{ this.settings.noteZoomPercentage }}%"
+                    >
+                        {{ this.settings.noteZoomPercentage }}%
+                    </div>
+                    <div class="pointer">
+                        <div *ngIf="isMarked" (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">
+                            <i class="note-content-status-color las la-heart"></i>
+                        </div>
+                        <div *ngIf="!isMarked" (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.MarkNote' | translate }}">
+                            <i class="note-content-status-color lar la-heart"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

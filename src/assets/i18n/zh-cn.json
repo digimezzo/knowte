@@ -106,7 +106,8 @@
         "Image": "图像",
         "ClearFormatting": "清除格式",
         "Close": "关闭",
-        "BackToNotes": "返回到笔记"
+        "BackToNotes": "返回到笔记",
+        "TextSize": "Text size"
     },
     "LicenseDialog": {
         "License": "许可证"

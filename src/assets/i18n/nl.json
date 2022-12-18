@@ -106,7 +106,8 @@
         "Image": "Afbeelding",
         "ClearFormatting": "Opmaak verwijderen",
         "Close": "Sluiten",
-        "BackToNotes": "Terug naar notities"
+        "BackToNotes": "Terug naar notities",
+        "TextSize": "Text size"
     },
     "LicenseDialog": {
         "License": "Licentie"

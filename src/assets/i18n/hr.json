@@ -106,7 +106,8 @@
         "Image": "Slika",
         "ClearFormatting": "Očisti formatiranje",
         "Close": "Zatvori",
-        "BackToNotes": "Back to notes"
+        "BackToNotes": "Back to notes",
+        "TextSize": "Text size"
     },
     "LicenseDialog": {
         "License": "Licencija"

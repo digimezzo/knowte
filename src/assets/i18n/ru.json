@@ -106,7 +106,8 @@
         "Image": "Изображение",
         "ClearFormatting": "Очистить форматирование",
         "Close": "Закрыть",
-        "BackToNotes": "Вернуться к заметкам"
+        "BackToNotes": "Вернуться к заметкам",
+        "TextSize": "Text size"
     },
     "LicenseDialog": {
         "License": "Лицензия"

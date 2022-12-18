@@ -106,7 +106,8 @@
         "Image": "画像",
         "ClearFormatting": "書式の消去",
         "Close": "閉じる",
-        "BackToNotes": "Back to notes"
+        "BackToNotes": "Back to notes",
+        "TextSize": "Text size"
     },
     "LicenseDialog": {
         "License": "ライセンス"

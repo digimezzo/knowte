@@ -87,6 +87,19 @@
     color: var(--theme-header-text-color);
 }
 
+.note-content-status {
+    border-top: 1px solid var(--theme-header-border-color);
+    padding: 4px 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+}
+
+.note-content-status-color {
+    color: var(--theme-soft-text-color);
+}
+
 .note-editor {
     height: 100%;
     width: 100%;
