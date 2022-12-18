@@ -107,7 +107,7 @@
         "ClearFormatting": "Clear formatting",
         "Close": "Close",
         "BackToNotes": "Back to notes",
-        "TextSize": "Text size"
+        "ChangeTextSize": "Change text size"
     },
     "LicenseDialog": {
         "License": "License"

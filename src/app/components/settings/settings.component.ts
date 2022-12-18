@@ -2,7 +2,6 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BaseSettings } from '../../core/base-settings';
-import { Constants } from '../../core/constants';
 import { AppearanceService } from '../../services/appearance/appearance.service';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { ImportFromOldVersionDialogComponent } from '../dialogs/import-from-old-version-dialog/import-from-old-version-dialog.component';
@@ -25,20 +24,12 @@ export class SettingsComponent implements OnInit {
 
     public isBusy: boolean = false;
     public selectedIndex: number;
-    public noteZoomPercentages: number[] = Constants.noteZoomPercentages;
 
     public get closeNotesWithEscapeChecked(): boolean {
         return this.settings.closeNotesWithEscape;
     }
     public set closeNotesWithEscapeChecked(v: boolean) {
         this.settings.closeNotesWithEscape = v;
-    }
-
-    public get selectedNoteZoomPercentage(): number {
-        return this.settings.noteZoomPercentage;
-    }
-    public set selectedNoteZoomPercentage(v: number) {
-        this.settings.noteZoomPercentage = v;
     }
 
     public get showExactDatesInTheNotesListChecked(): boolean {

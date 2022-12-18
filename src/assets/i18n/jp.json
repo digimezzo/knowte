@@ -107,7 +107,7 @@
         "ClearFormatting": "書式の消去",
         "Close": "閉じる",
         "BackToNotes": "Back to notes",
-        "TextSize": "Text size"
+        "ChangeTextSize": "Change text size"
     },
     "LicenseDialog": {
         "License": "ライセンス"

@@ -100,12 +100,13 @@
                     (keydown.control.2)="heading2($event)"
                 ></div>
                 <div class="note-content-status no-select">
-                    <i class="note-content-status-color las la-search mr-05"></i>
                     <div
-                        class="note-content-status-color mr-2"
-                        matTooltip="{{ 'Tooltips.TextSize' | translate }}: {{ this.settings.noteZoomPercentage }}%"
+                        class="d-flex flex-row align-items-center pointer"
+                        (click)="openTextSizeBottomSheet()"
+                        matTooltip="{{ 'Tooltips.ChangeTextSize' | translate }}"
                     >
-                        {{ this.settings.noteZoomPercentage }}%
+                        <i class="note-content-status-color las la-search mr-05"></i>
+                        <div class="note-content-status-color mr-2">{{ this.settings.noteZoomPercentage }}%</div>
                     </div>
                     <div class="pointer">
                         <div *ngIf="isMarked" (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">

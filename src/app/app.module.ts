@@ -2,6 +2,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRippleModule } from '@angular/material/core';
@@ -48,9 +49,11 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { LogoFullComponent } from './components/logo-full/logo-full.component';
 import { LogoMainComponent } from './components/logo-main/logo-main.component';
 import { MainMenuComponent } from './components/main-menu/main-menu.component';
+import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet.component';
 import { NoteComponent } from './components/note/note.component';
 import { NotebookSwitcherComponent } from './components/notebook-switcher/notebook-switcher.component';
 import { NotesComponent } from './components/notes/notes.component';
+import { SettingsTextSizeInNotesComponent } from './components/settings/settings-text-size-in-notes/settings-text-size-in-notes.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { TasksProgressComponent } from './components/tasks-progress/tasks-progress.component';
 import { TrashComponent } from './components/trash/trash.component';
@@ -118,7 +121,9 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         TasksProgressComponent,
         ColorSchemeSwitcherComponent,
         FontSizeSwitcherComponent,
+        SettingsTextSizeInNotesComponent,
         NoteComponent,
+        TextSizeBottomSheetComponent,
         WebviewDirective,
         CdkVirtualScrollViewportPatchDirective,
         TruncatePipe,
@@ -141,6 +146,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         MatRippleModule,
         MatSidenavModule,
         MatCheckboxModule,
+        MatBottomSheetModule,
         BrowserAnimationsModule,
         BrowserModule,
         ScrollingModule,

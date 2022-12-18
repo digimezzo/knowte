@@ -1,0 +1,11 @@
+<div>
+    {{ 'SettingsPage.TextSizeInNotes' | translate }}:
+    <mat-form-field class="font-size-selector mx-1">
+        <mat-select [(ngModel)]="selectedNoteZoomPercentage">
+            <mat-option *ngFor="let noteZoomPercentage of noteZoomPercentages" [value]="noteZoomPercentage">
+                {{ noteZoomPercentage }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    %
+</div>

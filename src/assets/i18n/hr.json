@@ -107,7 +107,7 @@
         "ClearFormatting": "Očisti formatiranje",
         "Close": "Zatvori",
         "BackToNotes": "Back to notes",
-        "TextSize": "Text size"
+        "ChangeTextSize": "Change text size"
     },
     "LicenseDialog": {
         "License": "Licencija"

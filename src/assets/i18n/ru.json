@@ -107,7 +107,7 @@
         "ClearFormatting": "Очистить форматирование",
         "Close": "Закрыть",
         "BackToNotes": "Вернуться к заметкам",
-        "TextSize": "Text size"
+        "ChangeTextSize": "Change text size"
     },
     "LicenseDialog": {
         "License": "Лицензия"

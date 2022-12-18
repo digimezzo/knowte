@@ -1,5 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, HostListener, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as remote from '@electron/remote';
@@ -28,6 +29,7 @@ import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
+import { TextSizeBottomSheetComponent } from './bottom-sheets/text-size-bottom-sheet.component';
 import { CustomImageSpec } from './custom-image-spec';
 
 @Component({
@@ -73,7 +75,8 @@ export class NoteComponent implements OnInit, OnDestroy {
         private translator: TranslatorService,
         private settings: BaseSettings,
         public appearance: AppearanceService,
-        private clipboard: ClipboardManager
+        private clipboard: ClipboardManager,
+        private bottomSheet: MatBottomSheet
     ) {}
 
     public noteId: string;
@@ -877,5 +880,9 @@ export class NoteComponent implements OnInit, OnDestroy {
         const closedTasksCount: number = (noteContent.match(/"list":"checked"/g) || []).length;
 
         return new TasksCount(openTasksCount, closedTasksCount);
+    }
+
+    public openTextSizeBottomSheet(): void {
+        this.bottomSheet.open(TextSizeBottomSheetComponent);
     }
 }

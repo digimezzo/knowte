@@ -73,17 +73,7 @@
                 <mat-tab>
                     <div class="m-3">
                         <h1>{{ 'SettingsPage.TextSize' | translate }}</h1>
-                        <div>
-                            {{ 'SettingsPage.TextSizeInNotes' | translate }}:
-                            <mat-form-field class="font-size-selector mx-1">
-                                <mat-select [(ngModel)]="selectedNoteZoomPercentage">
-                                    <mat-option *ngFor="let noteZoomPercentage of noteZoomPercentages" [value]="noteZoomPercentage">
-                                        {{ noteZoomPercentage }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            %
-                        </div>
+                        <app-settings-text-size-in-notes></app-settings-text-size-in-notes>
                     </div>
                     <hr />
                     <div class="m-3">

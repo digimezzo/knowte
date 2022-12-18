@@ -107,7 +107,7 @@
         "ClearFormatting": "清除格式",
         "Close": "关闭",
         "BackToNotes": "返回到笔记",
-        "TextSize": "Text size"
+        "ChangeTextSize": "Change text size"
     },
     "LicenseDialog": {
         "License": "许可证"
