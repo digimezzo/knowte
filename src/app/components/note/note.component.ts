@@ -74,7 +74,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         private logger: Logger,
         private snackBar: SnackBarService,
         private translator: TranslatorService,
-        private settings: BaseSettings,
+        public settings: BaseSettings,
         public appearance: AppearanceService,
         public spellCheckService: SpellCheckService,
         private clipboard: ClipboardManager,
