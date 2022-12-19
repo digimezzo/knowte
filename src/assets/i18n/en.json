@@ -210,7 +210,8 @@
         "NewNote": "New note",
         "NotePlaceholder": "Write your note here...",
         "Imported": "Imported",
-        "Search": "Search"
+        "Search": "Search",
+        "Languages": "languages"
     },
     "NoteDates": {
         "Today": "Today",

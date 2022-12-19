@@ -87,7 +87,7 @@
     color: var(--theme-header-text-color);
 }
 
-.note-content-status {
+.note-status {
     border-top: 1px solid var(--theme-header-border-color);
     padding: 4px 8px;
     display: flex;
@@ -96,7 +96,12 @@
     justify-content: end;
 }
 
-.note-content-status-color {
+.note-status-icon {
+    color: var(--theme-soft-text-color);
+    font-size: var(--fontsize-status-icon);
+}
+
+.note-status-text {
     color: var(--theme-soft-text-color);
 }
 

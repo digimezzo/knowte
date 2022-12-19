@@ -103,6 +103,7 @@ export class AppearanceService {
     private applyFontSize(fontSize: FontSize): void {
         const element = document.documentElement;
         element.style.setProperty('--fontsize-normal', fontSize.normalSize + 'px');
+        element.style.setProperty('--fontsize-status-icon', fontSize.normalSize + 2 + 'px');
         element.style.setProperty('--fontsize-large', this._selectedFontSize.largeSize + 'px');
         element.style.setProperty('--fontsize-larger', this._selectedFontSize.largerSize + 'px');
     }

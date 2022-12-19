@@ -12,6 +12,24 @@ import { SpellCheckLanguage } from '../../core/spell-check-language';
 export class SpellCheckService {
     constructor(private settings: BaseSettings, private logger: Logger) {}
 
+    public get numberOfEnabledLanguages(): number {
+        const allSpellCheckLanguages: SpellCheckLanguage[] = this.getAllSpellCheckLanguages();
+        const enabledSpellCheckLanguages: SpellCheckLanguage[] = allSpellCheckLanguages.filter((x) => x.isEnabled);
+
+        return enabledSpellCheckLanguages.length;
+    }
+
+    public get firstEnabledLanguage(): string {
+        const allSpellCheckLanguages: SpellCheckLanguage[] = this.getAllSpellCheckLanguages();
+        const enabledSpellCheckLanguages: SpellCheckLanguage[] = allSpellCheckLanguages.filter((x) => x.isEnabled);
+
+        if (enabledSpellCheckLanguages.length === 0) {
+            return '';
+        }
+
+        return enabledSpellCheckLanguages[0].localizedName;
+    }
+
     public applyActiveSpellCheckLanguagesIfEnabled(): void {
         if (!this.settings.enableSpellChecker) {
             this.logger.info('Spell check is disabled.', 'SpellCheckService', 'applyActiveSpellCheckLanguagesIfEnabled');

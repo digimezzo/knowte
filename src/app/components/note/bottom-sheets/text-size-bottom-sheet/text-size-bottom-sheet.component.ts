@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
-import { BaseSettings } from '../../../core/base-settings';
-import { Constants } from '../../../core/constants';
+import { BaseSettings } from '../../../../core/base-settings';
+import { Constants } from '../../../../core/constants';
 
 @Component({
     selector: 'app-text-size-bottom-sheet',
@@ -17,10 +17,5 @@ export class TextSizeBottomSheetComponent {
     }
     public set selectedNoteZoomPercentage(v: number) {
         this.settings.noteZoomPercentage = v;
-    }
-
-    public openLink(event: MouseEvent): void {
-        this.bottomSheetRef.dismiss();
-        event.preventDefault();
     }
 }

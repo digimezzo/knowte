@@ -210,7 +210,8 @@
         "NewNote": "Nova bilješka",
         "NotePlaceholder": "Ovdje upišite bilješku...",
         "Imported": "Uvezeno",
-        "Search": "Pretraživanje"
+        "Search": "Pretraživanje",
+        "Languages": "languages"
     },
     "NoteDates": {
         "Today": "Danas",

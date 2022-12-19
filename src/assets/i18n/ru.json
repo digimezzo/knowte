@@ -210,7 +210,8 @@
         "NewNote": "Новая заметка",
         "NotePlaceholder": "Текст заметки...",
         "Imported": "Импортировано",
-        "Search": "Поиск"
+        "Search": "Поиск",
+        "Languages": "languages"
     },
     "NoteDates": {
         "Today": "Сегодня",

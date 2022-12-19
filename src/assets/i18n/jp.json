@@ -210,7 +210,8 @@
         "NewNote": "新規メモ",
         "NotePlaceholder": "ここへメモを記入...",
         "Imported": "インポート済み",
-        "Search": "検索"
+        "Search": "検索",
+        "Languages": "languages"
     },
     "NoteDates": {
         "Today": "今日",

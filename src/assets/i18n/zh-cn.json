@@ -210,7 +210,8 @@
         "NewNote": "新笔记",
         "NotePlaceholder": "在这里写笔记...",
         "Imported": "已导入",
-        "Search": "搜索"
+        "Search": "搜索",
+        "Languages": "languages"
     },
     "NoteDates": {
         "Today": "今日",

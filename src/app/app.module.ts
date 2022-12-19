@@ -49,7 +49,7 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { LogoFullComponent } from './components/logo-full/logo-full.component';
 import { LogoMainComponent } from './components/logo-main/logo-main.component';
 import { MainMenuComponent } from './components/main-menu/main-menu.component';
-import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet.component';
+import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { NoteComponent } from './components/note/note.component';
 import { NotebookSwitcherComponent } from './components/notebook-switcher/notebook-switcher.component';
 import { NotesComponent } from './components/notes/notes.component';

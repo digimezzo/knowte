@@ -26,10 +26,11 @@ import { PrintService } from '../../services/print/print.service';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
+import { SpellCheckService } from '../../services/spell-check/spell-check.service';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
-import { TextSizeBottomSheetComponent } from './bottom-sheets/text-size-bottom-sheet.component';
+import { TextSizeBottomSheetComponent } from './bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { CustomImageSpec } from './custom-image-spec';
 
 @Component({
@@ -75,6 +76,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         private translator: TranslatorService,
         private settings: BaseSettings,
         public appearance: AppearanceService,
+        public spellCheckService: SpellCheckService,
         private clipboard: ClipboardManager,
         private bottomSheet: MatBottomSheet
     ) {}
@@ -883,6 +885,10 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public openTextSizeBottomSheet(): void {
+        this.bottomSheet.open(TextSizeBottomSheetComponent);
+    }
+
+    public openSpellCheckBottomSheet(): void {
         this.bottomSheet.open(TextSizeBottomSheetComponent);
     }
 }
