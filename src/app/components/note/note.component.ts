@@ -30,6 +30,7 @@ import { SpellCheckService } from '../../services/spell-check/spell-check.servic
 import { TranslatorService } from '../../services/translator/translator.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
+import { SpellCheckBottomSheetComponent } from './bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';
 import { TextSizeBottomSheetComponent } from './bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { CustomImageSpec } from './custom-image-spec';
 
@@ -889,6 +890,6 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
 
     public openSpellCheckBottomSheet(): void {
-        this.bottomSheet.open(TextSizeBottomSheetComponent);
+        this.bottomSheet.open(SpellCheckBottomSheetComponent);
     }
 }

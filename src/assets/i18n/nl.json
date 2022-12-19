@@ -107,7 +107,8 @@
         "ClearFormatting": "Opmaak verwijderen",
         "Close": "Sluiten",
         "BackToNotes": "Terug naar notities",
-        "ChangeTextSize": "Wijzig de tekstgrootte"
+        "ChangeTextSize": "Wijzig de tekstgrootte",
+        "ChangeSpellCheckerLanguages": "Wijzig de talen van de spellingcontrole"
     },
     "LicenseDialog": {
         "License": "Licentie"

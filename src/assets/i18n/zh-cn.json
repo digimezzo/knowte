@@ -107,7 +107,8 @@
         "ClearFormatting": "清除格式",
         "Close": "关闭",
         "BackToNotes": "返回到笔记",
-        "ChangeTextSize": "Change text size"
+        "ChangeTextSize": "Change text size",
+        "ChangeSpellCheckerLanguages": "Change spell checker languages"
     },
     "LicenseDialog": {
         "License": "许可证"

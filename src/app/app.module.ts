@@ -49,12 +49,14 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { LogoFullComponent } from './components/logo-full/logo-full.component';
 import { LogoMainComponent } from './components/logo-main/logo-main.component';
 import { MainMenuComponent } from './components/main-menu/main-menu.component';
+import { SpellCheckBottomSheetComponent } from './components/note/bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';
 import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { NoteComponent } from './components/note/note.component';
 import { NotebookSwitcherComponent } from './components/notebook-switcher/notebook-switcher.component';
 import { NotesComponent } from './components/notes/notes.component';
 import { SettingsTextSizeInNotesComponent } from './components/settings/settings-text-size-in-notes/settings-text-size-in-notes.component';
 import { SettingsComponent } from './components/settings/settings.component';
+import { SpellCheckLanguagesComponent } from './components/spell-check-languages/spell-check-languages.component';
 import { TasksProgressComponent } from './components/tasks-progress/tasks-progress.component';
 import { TrashComponent } from './components/trash/trash.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
@@ -124,6 +126,8 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         SettingsTextSizeInNotesComponent,
         NoteComponent,
         TextSizeBottomSheetComponent,
+        SpellCheckBottomSheetComponent,
+        SpellCheckLanguagesComponent,
         WebviewDirective,
         CdkVirtualScrollViewportPatchDirective,
         TruncatePipe,
