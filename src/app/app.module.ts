@@ -196,6 +196,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         ConfirmationDialogComponent,
         SetSpellCheckerLanguagesDialogComponent,
         TrashComponent,
+        SettingsTextSizeInNotesComponent
     ],
 })
 export class AppModule {}
