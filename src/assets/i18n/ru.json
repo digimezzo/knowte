@@ -212,7 +212,8 @@
         "NotePlaceholder": "Текст заметки...",
         "Imported": "Импортировано",
         "Search": "Поиск",
-        "Languages": "languages"
+        "Languages": "languages",
+        "Disabled": "Disabled"
     },
     "NoteDates": {
         "Today": "Сегодня",

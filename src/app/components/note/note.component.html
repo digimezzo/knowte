@@ -99,44 +99,7 @@
                     (keydown.control.1)="heading1($event)"
                     (keydown.control.2)="heading2($event)"
                 ></div>
-                <div class="note-status no-select">
-                    <div
-                        class="d-flex flex-row align-items-center pointer mr-2"
-                        (click)="openSpellCheckBottomSheet()"
-                        matTooltip="{{ 'Tooltips.ChangeSpellCheckerLanguages' | translate }}"
-                    >
-                        <i class="note-status-icon las la-spell-check mr-05"></i>
-                        <div class="d-flex flex-row align-items-center" *ngIf="!this.settings.enableSpellChecker">
-                            <div class="note-status-text" *ngIf="!this.settings.enableSpellChecker">{{ 'Notes.Disabled' | translate }}</div>
-                        </div>
-
-                        <div class="d-flex flex-row align-items-center" *ngIf="this.settings.enableSpellChecker">
-                            <div class="note-status-text" *ngIf="this.spellCheckService.numberOfEnabledLanguages !== 1">
-                                {{ this.spellCheckService.numberOfEnabledLanguages }} {{ 'Notes.Languages' | translate }}
-                            </div>
-                            <div class="note-status-text" *ngIf="this.spellCheckService.numberOfEnabledLanguages === 1">
-                                {{ this.spellCheckService.firstEnabledLanguage }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="fill"></div>
-                    <div
-                        class="d-flex flex-row align-items-center pointer"
-                        (click)="openTextSizeBottomSheet()"
-                        matTooltip="{{ 'Tooltips.ChangeTextSize' | translate }}"
-                    >
-                        <i class="note-status-icon las la-search mr-05"></i>
-                        <div class="note-status-text mr-2">{{ this.settings.noteZoomPercentage }}%</div>
-                    </div>
-                    <div class="pointer">
-                        <div *ngIf="isMarked" (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">
-                            <i class="note-status-icon las la-heart"></i>
-                        </div>
-                        <div *ngIf="!isMarked" (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.MarkNote' | translate }}">
-                            <i class="note-status-icon lar la-heart"></i>
-                        </div>
-                    </div>
-                </div>
+                <app-note-status-bar></app-note-status-bar>
             </div>
         </div>
     </div>

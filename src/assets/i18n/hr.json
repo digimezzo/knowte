@@ -212,7 +212,8 @@
         "NotePlaceholder": "Ovdje upišite bilješku...",
         "Imported": "Uvezeno",
         "Search": "Pretraživanje",
-        "Languages": "languages"
+        "Languages": "languages",
+        "Disabled": "Disabled"
     },
     "NoteDates": {
         "Today": "Danas",

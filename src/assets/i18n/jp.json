@@ -212,7 +212,8 @@
         "NotePlaceholder": "ここへメモを記入...",
         "Imported": "インポート済み",
         "Search": "検索",
-        "Languages": "languages"
+        "Languages": "languages",
+        "Disabled": "Disabled"
     },
     "NoteDates": {
         "Today": "今日",

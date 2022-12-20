@@ -212,7 +212,8 @@
         "NotePlaceholder": "在这里写笔记...",
         "Imported": "已导入",
         "Search": "搜索",
-        "Languages": "languages"
+        "Languages": "languages",
+        "Disabled": "Disabled"
     },
     "NoteDates": {
         "Today": "今日",

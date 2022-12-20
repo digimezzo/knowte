@@ -51,6 +51,7 @@ import { LogoMainComponent } from './components/logo-main/logo-main.component';
 import { MainMenuComponent } from './components/main-menu/main-menu.component';
 import { SpellCheckBottomSheetComponent } from './components/note/bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';
 import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
+import { NoteStatusBarComponent } from './components/note/note-status-bar/note-status-bar.component';
 import { NoteComponent } from './components/note/note.component';
 import { NotebookSwitcherComponent } from './components/notebook-switcher/notebook-switcher.component';
 import { NotesComponent } from './components/notes/notes.component';
@@ -128,6 +129,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         TextSizeBottomSheetComponent,
         SpellCheckBottomSheetComponent,
         SpellCheckLanguagesComponent,
+        NoteStatusBarComponent,
         WebviewDirective,
         CdkVirtualScrollViewportPatchDirective,
         TruncatePipe,

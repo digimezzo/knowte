@@ -212,7 +212,8 @@
         "NotePlaceholder": "Schrijf je notitie hier...",
         "Imported": "Geïmporteerd",
         "Search": "Zoeken",
-        "Languages": "talen"
+        "Languages": "talen",
+        "Disabled": "Uitgeschakeld"
     },
     "NoteDates": {
         "Today": "Vandaag",

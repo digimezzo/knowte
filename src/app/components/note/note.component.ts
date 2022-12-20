@@ -30,8 +30,6 @@ import { SpellCheckService } from '../../services/spell-check/spell-check.servic
 import { TranslatorService } from '../../services/translator/translator.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
-import { SpellCheckBottomSheetComponent } from './bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';
-import { TextSizeBottomSheetComponent } from './bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { CustomImageSpec } from './custom-image-spec';
 
 @Component({
@@ -79,7 +77,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         public appearance: AppearanceService,
         public spellCheckService: SpellCheckService,
         private clipboard: ClipboardManager,
-        private bottomSheet: MatBottomSheet
     ) {}
 
     public noteId: string;
@@ -883,13 +880,5 @@ export class NoteComponent implements OnInit, OnDestroy {
         const closedTasksCount: number = (noteContent.match(/"list":"checked"/g) || []).length;
 
         return new TasksCount(openTasksCount, closedTasksCount);
-    }
-
-    public openTextSizeBottomSheet(): void {
-        this.bottomSheet.open(TextSizeBottomSheetComponent);
-    }
-
-    public openSpellCheckBottomSheet(): void {
-        this.bottomSheet.open(SpellCheckBottomSheetComponent);
     }
 }

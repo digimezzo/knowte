@@ -212,7 +212,8 @@
         "NotePlaceholder": "Écrivez votre note ici...",
         "Imported": "Importée",
         "Search": "Chercher",
-        "Languages": "langues"
+        "Languages": "langues",
+        "Disabled": "Désactivé"
     },
     "NoteDates": {
         "Today": "Aujourd'hui",
