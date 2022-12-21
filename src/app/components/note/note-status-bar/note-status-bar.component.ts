@@ -16,11 +16,11 @@ export class NoteStatusBarComponent {
     @Input()
     public isMarked: boolean;
 
-    public openTextSizeBottomSheet(): void {
-        this.bottomSheet.open(TextSizeBottomSheetComponent);
-    }
-
     public openSpellCheckBottomSheet(): void {
         this.bottomSheet.open(SpellCheckBottomSheetComponent);
+    }
+
+    public openTextSizeBottomSheet(): void {
+        this.bottomSheet.open(TextSizeBottomSheetComponent);
     }
 }

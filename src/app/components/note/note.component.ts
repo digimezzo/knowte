@@ -468,6 +468,13 @@ export class NoteComponent implements OnInit, OnDestroy {
                 })
             );
 
+            contextMenu.append(
+                new remote.MenuItem({
+                    label: await this.translator.getAsync('ContextMenu.SpellingSuggestions'),
+                    enabled: false
+                })
+            );
+
             for (const suggestion of params.dictionarySuggestions) {
                 contextMenu.append(
                     new remote.MenuItem({

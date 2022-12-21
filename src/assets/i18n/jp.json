@@ -228,7 +228,8 @@
         "Cut": "切り取り",
         "Copy": "コピー",
         "Paste": "貼り付け",
-        "Delete": "削除"
+        "Delete": "削除",
+        "SpellingSuggestions": "Spelling suggestions"
     },
     "Trash": {
         "Trash": "Trash",

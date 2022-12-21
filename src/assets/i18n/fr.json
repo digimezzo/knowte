@@ -228,7 +228,8 @@
         "Cut": "Couper",
         "Copy": "Copier",
         "Paste": "Coller",
-        "Delete": "Supprimer"
+        "Delete": "Supprimer",
+        "SpellingSuggestions": "Suggestions d'orthographe"
     },
     "Trash": {
         "Trash": "Corbeille",

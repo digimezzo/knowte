@@ -228,7 +228,8 @@
         "Cut": "Cortar",
         "Copy": "Copiar",
         "Paste": "Colar",
-        "Delete": "Deletar"
+        "Delete": "Deletar",
+        "SpellingSuggestions": "Spelling suggestions"
     },
     "Trash": {
         "Trash": "Lixeira",

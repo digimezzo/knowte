@@ -228,7 +228,8 @@
         "Cut": "Knippen",
         "Copy": "Kopiëren",
         "Paste": "Plakken",
-        "Delete": "Verwijderen"
+        "Delete": "Verwijderen",
+        "SpellingSuggestions": "Spellingsuggesties"
     },
     "Trash": {
         "Trash": "Prullenbak",

@@ -228,7 +228,8 @@
         "Cut": "剪切",
         "Copy": "复制",
         "Paste": "粘贴",
-        "Delete": "删除"
+        "Delete": "删除",
+        "SpellingSuggestions": "Spelling suggestions"
     },
     "Trash": {
         "Trash": "垃圾箱",
