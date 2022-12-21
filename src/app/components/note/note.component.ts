@@ -457,6 +457,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         // Add each spelling suggestion
         if (
+            this.settings.enableSpellChecker &&
             params.dictionarySuggestions !== null &&
             params.dictionarySuggestions !== undefined &&
             params.dictionarySuggestions.length > 0
@@ -466,27 +467,18 @@ export class NoteComponent implements OnInit, OnDestroy {
                     type: 'separator',
                 })
             );
-        }
 
-        for (const suggestion of params.dictionarySuggestions) {
-            contextMenu.append(
-                new remote.MenuItem({
-                    label: suggestion,
-                    click: () => webContents.replaceMisspelling(suggestion),
-                })
-            );
+            for (const suggestion of params.dictionarySuggestions) {
+                contextMenu.append(
+                    new remote.MenuItem({
+                        label: suggestion,
+                        click: () => webContents.replaceMisspelling(suggestion),
+                    })
+                );
+            }
         }
 
         contextMenu.popup();
-
-        // const editor: HTMLElement = document.getElementById('editor');
-        // editor.removeEventListener('contextmenu', this.contextMenuListener.bind(this));
-        // editor.addEventListener('contextmenu', this.contextMenuListener.bind(this), false);
-        // }
-        // private contextMenuListener(e: MouseEvent): void {
-        //     e.preventDefault();
-        //     this.updateContextMenuItemsEnabledState();
-        //     this.contextMenu.popup({ window: remote.getCurrentWindow() });
     }
 
     private hasSelectedRange(): boolean {
