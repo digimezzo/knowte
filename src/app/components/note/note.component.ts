@@ -1,6 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, HostListener, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as remote from '@electron/remote';
@@ -30,8 +29,6 @@ import { SpellCheckService } from '../../services/spell-check/spell-check.servic
 import { TranslatorService } from '../../services/translator/translator.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
-import { SpellingSuggestionsBottomSheetComponent } from './bottom-sheets/spelling-suggestions-bottom-sheet/spelling-suggestions-bottom-sheet.component';
-import { TextSizeBottomSheetComponent } from './bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { CustomImageSpec } from './custom-image-spec';
 
 @Component({
@@ -76,8 +73,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         public settings: BaseSettings,
         public appearance: AppearanceService,
         public spellCheckService: SpellCheckService,
-        private clipboard: ClipboardManager,
-        private bottomSheet: MatBottomSheet
+        private clipboard: ClipboardManager
     ) {}
 
     public noteId: string;
@@ -460,7 +456,12 @@ export class NoteComponent implements OnInit, OnDestroy {
         );
 
         // Add each spelling suggestion
-        if (this.settings.enableSpellChecker) {
+        if (
+            this.settings.enableSpellChecker &&
+            params.dictionarySuggestions !== null &&
+            params.dictionarySuggestions !== undefined &&
+            params.dictionarySuggestions.length > 0
+        ) {
             contextMenu.append(
                 new remote.MenuItem({
                     type: 'separator',
@@ -470,30 +471,21 @@ export class NoteComponent implements OnInit, OnDestroy {
             contextMenu.append(
                 new remote.MenuItem({
                     label: await this.translator.getAsync('ContextMenu.SpellingSuggestions'),
-                    click: () => this.openSpellingSuggestionsBottomSheet(webContents, params.dictionarySuggestions),
+                    enabled: false
                 })
             );
 
-            // for (const suggestion of params.dictionarySuggestions) {
-            //     contextMenu.append(
-            //         new remote.MenuItem({
-            //             label: suggestion,
-            //             click: () => webContents.replaceMisspelling(suggestion),
-            //         })
-            //     );
-            // }
+            for (const suggestion of params.dictionarySuggestions) {
+                contextMenu.append(
+                    new remote.MenuItem({
+                        label: suggestion,
+                        click: () => webContents.replaceMisspelling(suggestion),
+                    })
+                );
+            }
         }
 
         contextMenu.popup();
-    }
-
-    private openSpellingSuggestionsBottomSheet(webContents: WebContents, dictionarySuggestions: string[]): void {
-        this.spellCheckService.range = this.quill.getSelection();
-        this.spellCheckService.quill = this.quill;
-        this.spellCheckService.webContents = webContents;
-        this.spellCheckService.dictionarySuggestions = dictionarySuggestions;
-
-        this.zone.run(() => this.bottomSheet.open(SpellingSuggestionsBottomSheetComponent));
     }
 
     private hasSelectedRange(): boolean {
@@ -895,7 +887,6 @@ export class NoteComponent implements OnInit, OnDestroy {
             this.quill.format('header', headingSize);
         } else {
             this.quill.removeFormat(range.index, range.length);
-            this.quill.selec
         }
     }
 
