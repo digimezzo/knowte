@@ -1,10 +1,9 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, HostListener, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as remote from '@electron/remote';
-import { BrowserWindow, SaveDialogOptions, SaveDialogReturnValue } from 'electron';
+import { BrowserWindow, ContextMenuParams, SaveDialogOptions, SaveDialogReturnValue, WebContents } from 'electron';
 import * as electronLocalshortcut from 'electron-localshortcut';
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -56,14 +55,12 @@ export class NoteComponent implements OnInit, OnDestroy {
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
     private focusNoteListener: any = this.focusNoteHandler.bind(this);
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
-    private languageChangedListener: any = this.languageChangedHandler.bind(this);
     private noteZoomPercentageChangedListener: any = this.noteZoomPercentageChangedHandler.bind(this);
 
-    private contextMenu: any;
-    private cutContextMenuItem: any;
-    private copyContextMenuItem: any;
-    private pasteContextMenuItem: any;
-    private deleteContextMenuItem: any;
+    private canCut: boolean = false;
+    private canCopy: boolean = false;
+    private canPaste: boolean = false;
+    private canDelete: boolean = false;
 
     constructor(
         private print: PrintService,
@@ -76,7 +73,7 @@ export class NoteComponent implements OnInit, OnDestroy {
         public settings: BaseSettings,
         public appearance: AppearanceService,
         public spellCheckService: SpellCheckService,
-        private clipboard: ClipboardManager,
+        private clipboard: ClipboardManager
     ) {}
 
     public noteId: string;
@@ -95,7 +92,6 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     public async ngOnInit(): Promise<void> {
         this.setEditorZoomPercentage();
-        this.addContextMenuAsync();
 
         const notePlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
 
@@ -222,6 +218,10 @@ export class NoteComponent implements OnInit, OnDestroy {
             if (this.settings.closeNotesWithEscape) {
                 window.close();
             }
+        });
+
+        window.webContents.on('context-menu', (event, params) => {
+            this.createContextMenuAsync(window.webContents, params);
         });
     }
 
@@ -409,52 +409,84 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    private async addContextMenuAsync(): Promise<void> {
-        this.contextMenu = new remote.Menu();
-
-        this.cutContextMenuItem = new remote.MenuItem({
-            label: await this.translator.getAsync('ContextMenu.Cut'),
-            click: () => {
-                this.performCut();
-            },
-        });
-
-        this.copyContextMenuItem = new remote.MenuItem({
-            label: await this.translator.getAsync('ContextMenu.Copy'),
-            click: () => {
-                this.performCopy();
-            },
-        });
-
-        this.pasteContextMenuItem = new remote.MenuItem({
-            label: await this.translator.getAsync('ContextMenu.Paste'),
-            click: () => {
-                this.performPaste();
-            },
-        });
-
-        this.deleteContextMenuItem = new remote.MenuItem({
-            label: await this.translator.getAsync('ContextMenu.Delete'),
-            click: () => {
-                this.performDelete();
-            },
-        });
-
-        this.contextMenu.append(this.cutContextMenuItem);
-        this.contextMenu.append(this.copyContextMenuItem);
-        this.contextMenu.append(this.pasteContextMenuItem);
-        this.contextMenu.append(this.deleteContextMenuItem);
-
-        const editor: HTMLElement = document.getElementById('editor');
-
-        editor.removeEventListener('contextmenu', this.contextMenuListener.bind(this));
-        editor.addEventListener('contextmenu', this.contextMenuListener.bind(this), false);
-    }
-
-    private contextMenuListener(e: MouseEvent): void {
-        e.preventDefault();
+    private async createContextMenuAsync(webContents: WebContents, params: ContextMenuParams): Promise<void> {
         this.updateContextMenuItemsEnabledState();
-        this.contextMenu.popup({ window: remote.getCurrentWindow() });
+
+        const contextMenu = new remote.Menu();
+
+        // Add fixed items
+        contextMenu.append(
+            new remote.MenuItem({
+                label: await this.translator.getAsync('ContextMenu.Cut'),
+                click: () => {
+                    this.performCut();
+                },
+                enabled: this.canCut,
+            })
+        );
+
+        contextMenu.append(
+            new remote.MenuItem({
+                label: await this.translator.getAsync('ContextMenu.Copy'),
+                click: () => {
+                    this.performCopy();
+                },
+                enabled: this.canCopy,
+            })
+        );
+
+        contextMenu.append(
+            new remote.MenuItem({
+                label: await this.translator.getAsync('ContextMenu.Paste'),
+                click: () => {
+                    this.performPaste();
+                },
+                enabled: this.canPaste,
+            })
+        );
+
+        contextMenu.append(
+            new remote.MenuItem({
+                label: await this.translator.getAsync('ContextMenu.Delete'),
+                click: () => {
+                    this.performDelete();
+                },
+                enabled: this.canDelete,
+            })
+        );
+
+        // Add each spelling suggestion
+        if (
+            params.dictionarySuggestions !== null &&
+            params.dictionarySuggestions !== undefined &&
+            params.dictionarySuggestions.length > 0
+        ) {
+            contextMenu.append(
+                new remote.MenuItem({
+                    type: 'separator',
+                })
+            );
+        }
+
+        for (const suggestion of params.dictionarySuggestions) {
+            contextMenu.append(
+                new remote.MenuItem({
+                    label: suggestion,
+                    click: () => webContents.replaceMisspelling(suggestion),
+                })
+            );
+        }
+
+        contextMenu.popup();
+
+        // const editor: HTMLElement = document.getElementById('editor');
+        // editor.removeEventListener('contextmenu', this.contextMenuListener.bind(this));
+        // editor.addEventListener('contextmenu', this.contextMenuListener.bind(this), false);
+        // }
+        // private contextMenuListener(e: MouseEvent): void {
+        //     e.preventDefault();
+        //     this.updateContextMenuItemsEnabledState();
+        //     this.contextMenu.popup({ window: remote.getCurrentWindow() });
     }
 
     private hasSelectedRange(): boolean {
@@ -470,12 +502,12 @@ export class NoteComponent implements OnInit, OnDestroy {
     private updateContextMenuItemsEnabledState(): void {
         // Cut, Copy, Delete.
         const hasSelectedText: boolean = this.hasSelectedRange();
-        this.cutContextMenuItem.enabled = hasSelectedText;
-        this.copyContextMenuItem.enabled = hasSelectedText;
-        this.deleteContextMenuItem.enabled = hasSelectedText;
+        this.canCut = hasSelectedText;
+        this.canCopy = hasSelectedText;
+        this.canDelete = hasSelectedText;
 
         // Paste
-        this.pasteContextMenuItem.enabled = this.clipboard.containsText() || this.clipboard.containsImage();
+        this.canPaste = this.clipboard.containsText() || this.clipboard.containsImage();
     }
 
     private performCut(): void {
@@ -501,6 +533,26 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.clipboard.writeText(text);
     }
 
+    private performPaste(): void {
+        if (this.clipboard.containsImage()) {
+            // Image found on clipboard. Try to paste as JPG.
+            this.pasteImageFromClipboard();
+        } else {
+            // No image found on clipboard. Try to paste as text.
+            this.pastTextFromClipboard();
+        }
+    }
+
+    private performDelete(): void {
+        const range: any = this.quill.getSelection();
+
+        if (!range || range.length === 0) {
+            return;
+        }
+
+        this.quill.deleteText(range.index, range.length);
+    }
+
     private pasteImageFromClipboard(): void {
         try {
             this.insertImage(this.clipboard.readImage());
@@ -523,31 +575,10 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    private performPaste(): void {
-        if (this.clipboard.containsImage()) {
-            // Image found on clipboard. Try to paste as JPG.
-            this.pasteImageFromClipboard();
-        } else {
-            // No image found on clipboard. Try to paste as text.
-            this.pastTextFromClipboard();
-        }
-    }
-
-    private performDelete(): void {
-        const range: any = this.quill.getSelection();
-
-        if (!range || range.length === 0) {
-            return;
-        }
-
-        this.quill.deleteText(range.index, range.length);
-    }
-
     private removeListeners(): void {
         this.globalEmitter.removeListener(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
         this.globalEmitter.removeListener(Constants.focusNoteEvent, this.focusNoteListener);
         this.globalEmitter.removeListener(Constants.closeNoteEvent, this.closeNoteListener);
-        this.globalEmitter.removeListener(Constants.languageChangedEvent, this.languageChangedListener);
         this.globalEmitter.removeListener(Constants.noteZoomPercentageChangedEvent, this.noteZoomPercentageChangedListener);
     }
 
@@ -555,7 +586,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.globalEmitter.on(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
         this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
         this.globalEmitter.on(Constants.closeNoteEvent, this.closeNoteListener);
-        this.globalEmitter.on(Constants.languageChangedEvent, this.languageChangedListener);
         this.globalEmitter.on(Constants.noteZoomPercentageChangedEvent, this.noteZoomPercentageChangedListener);
     }
 
@@ -683,10 +713,6 @@ export class NoteComponent implements OnInit, OnDestroy {
             const window: BrowserWindow = remote.getCurrentWindow();
             window.close();
         }
-    }
-
-    private languageChangedHandler(noteId: string): void {
-        this.addContextMenuAsync();
     }
 
     private noteZoomPercentageChangedHandler(): void {
