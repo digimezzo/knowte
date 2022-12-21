@@ -105,6 +105,10 @@ export class NoteComponent implements OnInit, OnDestroy {
     <path class="ql-stroke" d="M9.91,13.91A4.6,4.6,0,0,1,9,14a5,5,0,1,1,5-5"></path>
   </svg>`;
 
+        const block = Quill.import('blots/block');
+        block.tagName = 'DIV';
+        Quill.register(block, true);
+
         Quill.register('modules/blotFormatter', BlotFormatter);
 
         this.quill = new Quill('#editor', {
