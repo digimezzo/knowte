@@ -23,7 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
--   Fixed a bug where the collection switcher icon is invisible when using a dark header bar.
+-   Fixed a bug where the collection switcher icon is invisible when using a dark header bar
+-   Fixed extra new lines being added when copying note text to another application
 
 ## [2.0.9] - 2021-07-30
 
