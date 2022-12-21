@@ -414,6 +414,29 @@ export class NoteComponent implements OnInit, OnDestroy {
 
         const contextMenu = new remote.Menu();
 
+        // Add each spelling suggestion
+        if (
+            this.settings.enableSpellChecker &&
+            params.dictionarySuggestions !== null &&
+            params.dictionarySuggestions !== undefined &&
+            params.dictionarySuggestions.length > 0
+        ) {
+            for (const suggestion of params.dictionarySuggestions) {
+                contextMenu.append(
+                    new remote.MenuItem({
+                        label: suggestion,
+                        click: () => webContents.replaceMisspelling(suggestion),
+                    })
+                );
+            }
+
+            contextMenu.append(
+                new remote.MenuItem({
+                    type: 'separator',
+                })
+            );
+        }
+
         // Add fixed items
         contextMenu.append(
             new remote.MenuItem({
@@ -454,36 +477,6 @@ export class NoteComponent implements OnInit, OnDestroy {
                 enabled: this.canDelete,
             })
         );
-
-        // Add each spelling suggestion
-        if (
-            this.settings.enableSpellChecker &&
-            params.dictionarySuggestions !== null &&
-            params.dictionarySuggestions !== undefined &&
-            params.dictionarySuggestions.length > 0
-        ) {
-            contextMenu.append(
-                new remote.MenuItem({
-                    type: 'separator',
-                })
-            );
-
-            contextMenu.append(
-                new remote.MenuItem({
-                    label: await this.translator.getAsync('ContextMenu.SpellingSuggestions'),
-                    enabled: false
-                })
-            );
-
-            for (const suggestion of params.dictionarySuggestions) {
-                contextMenu.append(
-                    new remote.MenuItem({
-                        label: suggestion,
-                        click: () => webContents.replaceMisspelling(suggestion),
-                    })
-                );
-            }
-        }
 
         contextMenu.popup();
     }
