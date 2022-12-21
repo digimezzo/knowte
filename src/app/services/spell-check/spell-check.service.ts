@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, WebContents } from 'electron';
 import { BaseSettings } from '../../core/base-settings';
 import { Constants } from '../../core/constants';
 import { Logger } from '../../core/logger';
@@ -11,6 +11,11 @@ import { SpellCheckLanguage } from '../../core/spell-check-language';
 })
 export class SpellCheckService {
     constructor(private settings: BaseSettings, private logger: Logger) {}
+
+    public range: any = undefined;
+    public quill: any = undefined;
+    public webContents: WebContents = undefined;
+    public dictionarySuggestions: string[] = [];
 
     public get numberOfEnabledLanguages(): number {
         const allSpellCheckLanguages: SpellCheckLanguage[] = this.getAllSpellCheckLanguages();
