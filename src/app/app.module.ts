@@ -51,8 +51,10 @@ import { LogoMainComponent } from './components/logo-main/logo-main.component';
 import { MainMenuComponent } from './components/main-menu/main-menu.component';
 import { SpellCheckBottomSheetComponent } from './components/note/bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';
 import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
+import { NoteContextMenuFactory } from './components/note/note-context-menu-factory';
 import { NoteStatusBarComponent } from './components/note/note-status-bar/note-status-bar.component';
 import { NoteComponent } from './components/note/note.component';
+import { QuillFactory } from './components/note/quill-factory';
 import { NotebookSwitcherComponent } from './components/notebook-switcher/notebook-switcher.component';
 import { NotesComponent } from './components/notes/notes.component';
 import { SettingsTextSizeInNotesComponent } from './components/settings/settings-text-size-in-notes/settings-text-size-in-notes.component';
@@ -178,6 +180,8 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         TrashService,
         PrintService,
         SpellCheckService,
+        QuillFactory,
+        NoteContextMenuFactory,
         GitHubApi,
         DateFormatter,
         Scheduler,

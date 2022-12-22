@@ -3,12 +3,11 @@ import { Component, HostListener, NgZone, OnDestroy, OnInit, ViewEncapsulation }
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as remote from '@electron/remote';
-import { BrowserWindow, ContextMenuParams, SaveDialogOptions, SaveDialogReturnValue, WebContents } from 'electron';
+import { BrowserWindow, SaveDialogOptions, SaveDialogReturnValue } from 'electron';
 import * as electronLocalshortcut from 'electron-localshortcut';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as Quill from 'quill';
-import BlotFormatter from 'quill-blot-formatter';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
 import { BaseSettings } from '../../core/base-settings';
@@ -29,7 +28,9 @@ import { SpellCheckService } from '../../services/spell-check/spell-check.servic
 import { TranslatorService } from '../../services/translator/translator.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
-import { CustomImageSpec } from './custom-image-spec';
+import { ContextMenuItemsEnabledState } from './context-menu-items-enabled-state';
+import { NoteContextMenuFactory } from './note-context-menu-factory';
+import { QuillFactory } from './quill-factory';
 
 @Component({
     selector: 'app-note',
@@ -45,22 +46,18 @@ import { CustomImageSpec } from './custom-image-spec';
         ]),
     ],
 })
-export class NoteComponent implements OnInit, OnDestroy {
-    private saveTimeoutMilliseconds: number = 5000;
-    private windowCloseTimeoutMilliseconds: number = 500;
+export class NoteComponent implements OnInit {
     private quill: Quill;
+
     private globalEmitter: any = remote.getGlobal('globalEmitter');
+
     private isTitleDirty: boolean = false;
     private isTextDirty: boolean = false;
+
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
     private focusNoteListener: any = this.focusNoteHandler.bind(this);
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
     private noteZoomPercentageChangedListener: any = this.noteZoomPercentageChangedHandler.bind(this);
-
-    private canCut: boolean = false;
-    private canCopy: boolean = false;
-    private canPaste: boolean = false;
-    private canDelete: boolean = false;
 
     constructor(
         private print: PrintService,
@@ -73,7 +70,9 @@ export class NoteComponent implements OnInit, OnDestroy {
         public settings: BaseSettings,
         public appearance: AppearanceService,
         public spellCheckService: SpellCheckService,
-        private clipboard: ClipboardManager
+        private clipboard: ClipboardManager,
+        private quillFactory: QuillFactory,
+        private noteContextMenuFactory: NoteContextMenuFactory
     ) {}
 
     public noteId: string;
@@ -88,62 +87,10 @@ export class NoteComponent implements OnInit, OnDestroy {
     public actionIconRotation: string = 'default';
     public canSearch: boolean = false;
 
-    public ngOnDestroy(): void {}
-
     public async ngOnInit(): Promise<void> {
+        this.quill = await this.quillFactory.createAsync('#editor', this.performUndo, this.performRedo);
+
         this.setEditorZoomPercentage();
-
-        const notePlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
-
-        const icons: any = Quill.import('ui/icons');
-        icons['undo'] = `<svg class="custom-undo" viewbox="0 0 18 18">
-    <polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10"></polygon>
-    <path class="ql-stroke" d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9"></path>
-  </svg>`;
-        icons['redo'] = `<svg class="custom-redo" viewbox="0 0 18 18">
-    <polygon class="ql-fill ql-stroke" points="12 10 14 12 16 10 12 10"></polygon>
-    <path class="ql-stroke" d="M9.91,13.91A4.6,4.6,0,0,1,9,14a5,5,0,1,1,5-5"></path>
-  </svg>`;
-
-        const block = Quill.import('blots/block');
-        block.tagName = 'DIV';
-        Quill.register(block, true);
-
-        Quill.register('modules/blotFormatter', BlotFormatter);
-
-        this.quill = new Quill('#editor', {
-            modules: {
-                toolbar: {
-                    container: [
-                        ['bold', 'italic', 'underline', 'strike'],
-                        ['undo', 'redo'],
-                        [
-                            { background: [] },
-                            { header: 1 },
-                            { header: 2 },
-                            { list: 'ordered' },
-                            { list: 'bullet' },
-                            { list: 'check' },
-                            'link',
-                            'blockquote',
-                            'code-block',
-                            'image',
-                            'clean',
-                        ],
-                    ],
-                    handlers: {
-                        undo: this.performUndo,
-                        redo: this.performRedo,
-                    },
-                },
-                blotFormatter: {
-                    specs: [CustomImageSpec],
-                },
-            },
-            placeholder: notePlaceHolder,
-            theme: 'snow',
-        });
-
         await this.setToolbarTooltipsAsync();
 
         this.quill.on('text-change', () => {
@@ -171,12 +118,12 @@ export class NoteComponent implements OnInit, OnDestroy {
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
 
-            this.addListeners();
+            this.addGlobalListeners();
             await this.getNoteDetailsAsync();
             this.applySearch();
         });
 
-        this.noteTitleChanged.pipe(debounceTime(this.saveTimeoutMilliseconds)).subscribe((finalNoteTitle) => {
+        this.noteTitleChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe((finalNoteTitle) => {
             this.globalEmitter.emit(
                 Constants.setNoteTitleEvent,
                 this.noteId,
@@ -186,7 +133,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             );
         });
 
-        this.noteTextChanged.pipe(debounceTime(this.saveTimeoutMilliseconds)).subscribe(async (_) => {
+        this.noteTextChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async (_) => {
             this.globalEmitter.emit(
                 Constants.setNoteTextEvent,
                 this.noteId,
@@ -196,7 +143,7 @@ export class NoteComponent implements OnInit, OnDestroy {
             );
         });
 
-        this.saveChangesAndCloseNoteWindow.pipe(debounceTime(this.windowCloseTimeoutMilliseconds)).subscribe((_) => {
+        this.saveChangesAndCloseNoteWindow.pipe(debounceTime(Constants.noteWindowCloseTimeoutMilliseconds)).subscribe((_) => {
             this.saveAndClose();
         });
 
@@ -225,7 +172,9 @@ export class NoteComponent implements OnInit, OnDestroy {
         });
 
         window.webContents.on('context-menu', (event, params) => {
-            this.createContextMenuAsync(window.webContents, params);
+            const hasSelectedText: boolean = this.hasSelectedRange();
+            const state:ContextMenuItemsEnabledState = new ContextMenuItemsEnabledState(hasSelectedText, this.clipboard.containsText() || this.clipboard.containsImage());
+            this.noteContextMenuFactory.createAsync(window.webContents, params, state, this.performCut, this.performCopy, this.performPaste, this.performDelete);
         });
     }
 
@@ -413,78 +362,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    private async createContextMenuAsync(webContents: WebContents, params: ContextMenuParams): Promise<void> {
-        this.updateContextMenuItemsEnabledState();
-
-        const contextMenu = new remote.Menu();
-
-        // Add each spelling suggestion
-        if (
-            this.settings.enableSpellChecker &&
-            params.dictionarySuggestions !== null &&
-            params.dictionarySuggestions !== undefined &&
-            params.dictionarySuggestions.length > 0
-        ) {
-            for (const suggestion of params.dictionarySuggestions) {
-                contextMenu.append(
-                    new remote.MenuItem({
-                        label: suggestion,
-                        click: () => webContents.replaceMisspelling(suggestion),
-                    })
-                );
-            }
-
-            contextMenu.append(
-                new remote.MenuItem({
-                    type: 'separator',
-                })
-            );
-        }
-
-        // Add fixed items
-        contextMenu.append(
-            new remote.MenuItem({
-                label: await this.translator.getAsync('ContextMenu.Cut'),
-                click: () => {
-                    this.performCut();
-                },
-                enabled: this.canCut,
-            })
-        );
-
-        contextMenu.append(
-            new remote.MenuItem({
-                label: await this.translator.getAsync('ContextMenu.Copy'),
-                click: () => {
-                    this.performCopy();
-                },
-                enabled: this.canCopy,
-            })
-        );
-
-        contextMenu.append(
-            new remote.MenuItem({
-                label: await this.translator.getAsync('ContextMenu.Paste'),
-                click: () => {
-                    this.performPaste();
-                },
-                enabled: this.canPaste,
-            })
-        );
-
-        contextMenu.append(
-            new remote.MenuItem({
-                label: await this.translator.getAsync('ContextMenu.Delete'),
-                click: () => {
-                    this.performDelete();
-                },
-                enabled: this.canDelete,
-            })
-        );
-
-        contextMenu.popup();
-    }
-
     private hasSelectedRange(): boolean {
         const range: any = this.quill.getSelection();
 
@@ -493,17 +370,6 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
 
         return false;
-    }
-
-    private updateContextMenuItemsEnabledState(): void {
-        // Cut, Copy, Delete.
-        const hasSelectedText: boolean = this.hasSelectedRange();
-        this.canCut = hasSelectedText;
-        this.canCopy = hasSelectedText;
-        this.canDelete = hasSelectedText;
-
-        // Paste
-        this.canPaste = this.clipboard.containsText() || this.clipboard.containsImage();
     }
 
     private performCut(): void {
@@ -571,14 +437,14 @@ export class NoteComponent implements OnInit, OnDestroy {
         }
     }
 
-    private removeListeners(): void {
+    private removeGlobalListeners(): void {
         this.globalEmitter.removeListener(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
         this.globalEmitter.removeListener(Constants.focusNoteEvent, this.focusNoteListener);
         this.globalEmitter.removeListener(Constants.closeNoteEvent, this.closeNoteListener);
         this.globalEmitter.removeListener(Constants.noteZoomPercentageChangedEvent, this.noteZoomPercentageChangedListener);
     }
 
-    private addListeners(): void {
+    private addGlobalListeners(): void {
         this.globalEmitter.on(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
         this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
         this.globalEmitter.on(Constants.closeNoteEvent, this.closeNoteListener);
@@ -587,7 +453,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 
     private cleanup(): void {
         this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, false);
-        this.removeListeners();
+        this.removeGlobalListeners();
     }
 
     private insertImage(file: any): void {

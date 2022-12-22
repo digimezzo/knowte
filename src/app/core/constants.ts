@@ -45,6 +45,9 @@ export class Constants {
     public static readonly previewApplicationTag: string = 'preview';
     public static readonly releaseCandidateApplicationTag: string = 'rc';
 
+    public static readonly noteSaveTimeoutMilliseconds: number = 5000;
+    public static readonly noteWindowCloseTimeoutMilliseconds: number = 500;
+
     public static noteZoomPercentages: number[] = [70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200];
 
     public static readonly uiFontSizes: FontSize[] = [new FontSize(12), new FontSize(13), new FontSize(14), new FontSize(15)];
