@@ -5,9 +5,7 @@ import { BaseSettings } from '../../core/base-settings';
 import { Constants } from '../../core/constants';
 import { Language } from '../../core/language';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class TranslatorService {
     private globalEmitter: any = remote.getGlobal('globalEmitter');
     private languageChangedListener: any = this.languageChangedHandler.bind(this);

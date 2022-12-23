@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import * as path from 'path';
-import { CollectionService } from '../collection/collection.service';
 import { Constants } from '../../core/constants';
+import { CollectionService } from '../collection/collection.service';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class FileService {
-    constructor(private collection: CollectionService) { }
+    constructor(private collection: CollectionService) {}
 
     public isDroppingFiles(dropEvent: any): boolean {
         return this.getDroppedFilesPaths(dropEvent).length > 0;
@@ -36,7 +34,7 @@ export class FileService {
     }
 
     public getNoteFilePaths(filePaths: string[]): string[] {
-        const noteFilePaths: string[] = filePaths.filter(x =>  path.extname(x) === Constants.noteExportExtension);
+        const noteFilePaths: string[] = filePaths.filter((x) => path.extname(x) === Constants.noteExportExtension);
 
         return noteFilePaths;
     }

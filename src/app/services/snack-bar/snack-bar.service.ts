@@ -2,9 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslatorService } from '../translator/translator.service';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class SnackBarService {
     constructor(private zone: NgZone, private translator: TranslatorService, private matSnackBar: MatSnackBar) {}
 

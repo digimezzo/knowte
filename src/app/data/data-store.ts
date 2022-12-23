@@ -14,7 +14,6 @@ export class DataStore {
     private notes: any;
 
     private isLoaded: boolean = false;
-    private databaseFile: string;
 
     private databaseLoaded(): void {
         let mustSaveDatabase: boolean = false;
@@ -42,7 +41,6 @@ export class DataStore {
 
     private loadDatabase(databaseFile: string): void {
         this.isLoaded = false;
-        this.databaseFile = databaseFile;
 
         this.db = new loki(databaseFile, {
             autoload: true,

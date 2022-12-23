@@ -4,9 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/internal/operators';
 import { Constants } from '../../core/constants';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class SearchService {
     private debouncingSearchTextChanged: Subject<string> = new Subject<string>();
     private searchTextChanged: Subject<string> = new Subject<string>();

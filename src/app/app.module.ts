@@ -71,6 +71,7 @@ import { DateFormatter } from './core/date-formatter';
 import { Desktop } from './core/desktop';
 import { FileSystem } from './core/file-system';
 import { GitHubApi } from './core/github-api';
+import { Logger } from './core/logger';
 import { Scheduler } from './core/scheduler';
 import { Settings } from './core/settings';
 import { DataStore } from './data/data-store';
@@ -78,11 +79,16 @@ import { CdkVirtualScrollViewportPatchDirective } from './directives/cdk-virtual
 import { WebviewDirective } from './directives/webview.directive';
 import { GlobalErrorHandler } from './globalErrorHandler';
 import { TruncatePipe } from './pipes/truncate.pipe';
+import { AppearanceService } from './services/appearance/appearance.service';
 import { CollectionService } from './services/collection/collection.service';
 import { ElectronService } from './services/electron.service';
 import { FileService } from './services/file/file.service';
+import { NotePersistanceService } from './services/note-persistance/note-persistance.service';
 import { PrintService } from './services/print/print.service';
+import { SearchService } from './services/search/search.service';
+import { SnackBarService } from './services/snack-bar/snack-bar.service';
 import { SpellCheckService } from './services/spell-check/spell-check.service';
+import { TranslatorService } from './services/translator/translator.service';
 import { TrashService } from './services/trash/trash.service';
 import { UpdateService } from './services/update/update.service';
 
@@ -181,6 +187,11 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         TrashService,
         PrintService,
         SpellCheckService,
+        NotePersistanceService,
+        AppearanceService,
+        TranslatorService,
+        SearchService,
+        SnackBarService,
         QuillFactory,
         NoteContextMenuFactory,
         QuillTweaker,
@@ -188,6 +199,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         DateFormatter,
         Scheduler,
         Desktop,
+        Logger,
         FileSystem,
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
         DataStore,

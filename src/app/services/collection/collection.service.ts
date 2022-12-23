@@ -27,9 +27,7 @@ import { NotesCountResult } from '../results/notes-count-result';
 import { SearchService } from '../search/search.service';
 import { TranslatorService } from '../translator/translator.service';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class CollectionService {
     private dataStore: DataStore = new DataStore();
     private isInitializing: boolean = false;

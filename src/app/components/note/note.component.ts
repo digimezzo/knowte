@@ -5,8 +5,6 @@ import { ActivatedRoute } from '@angular/router';
 import * as remote from '@electron/remote';
 import { BrowserWindow, SaveDialogOptions, SaveDialogReturnValue } from 'electron';
 import * as electronLocalShortcut from 'electron-localshortcut';
-import * as fs from 'fs-extra';
-import * as path from 'path';
 import * as Quill from 'quill';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
@@ -15,11 +13,11 @@ import { ClipboardManager } from '../../core/clipboard-manager';
 import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
 import { Logger } from '../../core/logger';
-import { NoteExport } from '../../core/note-export';
 import { ProductInformation } from '../../core/product-information';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { AppearanceService } from '../../services/appearance/appearance.service';
+import { NotePersistanceService } from '../../services/note-persistance/note-persistance.service';
 import { PrintService } from '../../services/print/print.service';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
@@ -71,6 +69,7 @@ export class NoteComponent implements OnInit {
         public settings: BaseSettings,
         public appearance: AppearanceService,
         public spellCheckService: SpellCheckService,
+        private notePersistanceService: NotePersistanceService,
         private clipboard: ClipboardManager,
         private quillFactory: QuillFactory,
         private noteContextMenuFactory: NoteContextMenuFactory,
@@ -342,11 +341,15 @@ export class NoteComponent implements OnInit {
 
         const options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
         const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
-        const noteExport: NoteExport = new NoteExport(this.noteTitle, this.quill.getText(), JSON.stringify(this.quill.getContents()));
 
         try {
             if (saveDialogReturnValue.filePath != undefined && saveDialogReturnValue.filePath.length > 0) {
-                await fs.writeFile(saveDialogReturnValue.filePath, JSON.stringify(noteExport));
+                await this.notePersistanceService.exportNoteAsync(
+                    saveDialogReturnValue.filePath,
+                    this.noteTitle,
+                    this.quill.getText(),
+                    JSON.stringify(this.quill.getContents())
+                );
                 this.snackBar.noteExportedAsync(this.noteTitle);
             }
 
@@ -634,26 +637,15 @@ export class NoteComponent implements OnInit {
         this.isTitleDirty = false;
     }
 
-    private writeTextToNoteFile(): void {
-        // Update the note file on disk
-        const activeCollection: string = this.settings.activeCollection;
-        const storageDirectory: string = this.settings.storageDirectory;
-        const jsonContent: string = JSON.stringify(this.quill.getContents());
-        fs.writeFileSync(
-            path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${this.noteId}${Constants.noteContentExtension}`),
-            jsonContent
-        );
-    }
-
     private async setNoteTextCallbackAsync(operation: Operation): Promise<void> {
         let showErrorDialog = false;
 
         if (operation === Operation.Success) {
             try {
-                this.writeTextToNoteFile();
+                this.notePersistanceService.updateNoteContent(this.noteId, JSON.stringify(this.quill.getContents()));
             } catch (error) {
                 this.logger.error(
-                    `Could not set text for the note with id='${this.noteId}' in the note file. Cause: ${error}`,
+                    `Could not save content for the note with id='${this.noteId}'. Cause: ${error}`,
                     'NoteComponent',
                     'setNoteTextCallbackAsync'
                 );
@@ -690,13 +682,7 @@ export class NoteComponent implements OnInit {
 
         // Details from note file
         try {
-            const activeCollection: string = this.settings.activeCollection;
-            const storageDirectory: string = this.settings.storageDirectory;
-            const activeCollectionDirectory: string = Utils.collectionToPath(storageDirectory, activeCollection);
-            const noteContentFileName: string = `${this.noteId}${Constants.noteContentExtension}`;
-            const noteContentFileFullPath: string = path.join(activeCollectionDirectory, noteContentFileName);
-
-            const noteContent: string = await fs.readFile(noteContentFileFullPath, 'utf8');
+            const noteContent: string = await this.notePersistanceService.getNoteContentAsync(this.noteId);
 
             if (noteContent) {
                 // We can only parse to json if there is content

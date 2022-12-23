@@ -8,9 +8,7 @@ import { FontSize } from '../../core/font-size';
 import { Logger } from '../../core/logger';
 import { Palette } from './palette';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class AppearanceService {
     private globalEmitter: any = remote.getGlobal('globalEmitter');
     private windowHasFrame: boolean = remote.getGlobal('windowHasFrame');

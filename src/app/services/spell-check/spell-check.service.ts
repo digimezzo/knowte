@@ -6,9 +6,7 @@ import { Constants } from '../../core/constants';
 import { Logger } from '../../core/logger';
 import { SpellCheckLanguage } from '../../core/spell-check-language';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class SpellCheckService {
     constructor(private settings: BaseSettings, private logger: Logger) {}
 

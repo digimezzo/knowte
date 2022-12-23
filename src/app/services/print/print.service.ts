@@ -4,9 +4,7 @@ import * as fs from 'fs-extra';
 import { FileSystem } from '../../core/file-system';
 import { Logger } from '../../core/logger';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class PrintService {
     public constructor(private fileSystem: FileSystem, private logger: Logger) {}
 

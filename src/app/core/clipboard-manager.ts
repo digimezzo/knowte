@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { clipboard, NativeImage } from 'electron';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class ClipboardManager {
     public containsImage(): boolean {
         const availableFormats = clipboard.availableFormats('clipboard');

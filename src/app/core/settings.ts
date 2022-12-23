@@ -5,9 +5,7 @@ import * as os from 'os';
 import { Constants } from '../core/constants';
 import { BaseSettings } from './base-settings';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class Settings implements BaseSettings {
     private settings: Store<any> = new Store();
     private globalEmitter: any = remote.getGlobal('globalEmitter');
