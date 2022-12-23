@@ -31,6 +31,7 @@ import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.compo
 import { ContextMenuItemsEnabledState } from './context-menu-items-enabled-state';
 import { NoteContextMenuFactory } from './note-context-menu-factory';
 import { QuillFactory } from './quill-factory';
+import { QuillTweaker } from './quill-tweaker';
 
 @Component({
     selector: 'app-note',
@@ -72,7 +73,8 @@ export class NoteComponent implements OnInit {
         public spellCheckService: SpellCheckService,
         private clipboard: ClipboardManager,
         private quillFactory: QuillFactory,
-        private noteContextMenuFactory: NoteContextMenuFactory
+        private noteContextMenuFactory: NoteContextMenuFactory,
+        private quillTweaker: QuillTweaker
     ) {}
 
     public noteId: string;
@@ -89,31 +91,14 @@ export class NoteComponent implements OnInit {
 
     public async ngOnInit(): Promise<void> {
         this.quill = await this.quillFactory.createAsync('#editor', this.performUndo.bind(this), this.performRedo.bind(this));
+        this.quillTweaker.forcePasteOfUnformattedText(this.quill);
+        this.quillTweaker.assignActionToControlKeyCombination(this.quill, 'Y', this.performRedo.bind(this));
+        this.quillTweaker.assignActionToTextChange(this.quill, this.onNoteTextChange.bind(this));
 
         this.setEditorZoomPercentage();
         await this.setToolbarTooltipsAsync();
-
-        this.quill.on('text-change', () => {
-            this.isTextDirty = true;
-            this.clearSearch();
-            this.noteTextChanged.next('');
-        });
-
-        // Forces paste of unformatted text
-        // (See: https://stackoverflow.com/questions/41237486/how-to-paste-plain-text-in-a-quill-based-editor)
-        this.quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
-            const plaintext = node.innerText;
-            const Delta = Quill.import('delta');
-            return new Delta().insert(plaintext);
-        });
-
-        this.quill.keyboard.addBinding({
-            key: 'Y',
-            ctrlKey: true,
-            handler: () => {
-                this.performRedo();
-            },
-        });
+        this.addSubscriptions();
+        this.addDocumentListeners();
 
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
@@ -121,46 +106,6 @@ export class NoteComponent implements OnInit {
             this.addGlobalListeners();
             await this.getNoteDetailsAsync();
             this.applySearch();
-        });
-
-        this.noteTitleChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe((finalNoteTitle) => {
-            this.globalEmitter.emit(
-                Constants.setNoteTitleEvent,
-                this.noteId,
-                this.initialNoteTitle,
-                finalNoteTitle,
-                this.setNoteTitleCallbackAsync.bind(this)
-            );
-        });
-
-        this.noteTextChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async (_) => {
-            this.globalEmitter.emit(
-                Constants.setNoteTextEvent,
-                this.noteId,
-                this.quill.getText(),
-                this.getTasksCount(),
-                this.setNoteTextCallbackAsync.bind(this)
-            );
-        });
-
-        this.saveChangesAndCloseNoteWindow.pipe(debounceTime(Constants.noteWindowCloseTimeoutMilliseconds)).subscribe((_) => {
-            this.saveAndClose();
-        });
-
-        document.onpaste = (e: ClipboardEvent) => {
-            if (this.clipboard.containsImage()) {
-                // Clipboard contains image. Cancel default paste (it pastes the path to the image instead of the image data).
-                e.preventDefault();
-
-                // Execute our own paste, which pastes the image data.
-                this.pasteImageFromClipboard();
-            }
-        };
-
-        document.addEventListener('wheel', (e: WheelEvent) => {
-            if (e.ctrlKey) {
-                this.setEditorZoomPercentByMouseScroll(e.deltaY);
-            }
         });
 
         const window: BrowserWindow = remote.getCurrentWindow();
@@ -186,6 +131,50 @@ export class NoteComponent implements OnInit {
                 this.performPaste.bind(this),
                 this.performDelete.bind(this)
             );
+        });
+    }
+
+    private addSubscriptions(): void {
+        this.noteTitleChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe((finalNoteTitle) => {
+            this.globalEmitter.emit(
+                Constants.setNoteTitleEvent,
+                this.noteId,
+                this.initialNoteTitle,
+                finalNoteTitle,
+                this.setNoteTitleCallbackAsync.bind(this)
+            );
+        });
+
+        this.noteTextChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async (_) => {
+            this.globalEmitter.emit(
+                Constants.setNoteTextEvent,
+                this.noteId,
+                this.quill.getText(),
+                this.getTasksCount(),
+                this.setNoteTextCallbackAsync.bind(this)
+            );
+        });
+
+        this.saveChangesAndCloseNoteWindow.pipe(debounceTime(Constants.noteWindowCloseTimeoutMilliseconds)).subscribe((_) => {
+            this.saveAndClose();
+        });
+    }
+
+    private addDocumentListeners(): void {
+        document.onpaste = (e: ClipboardEvent) => {
+            if (this.clipboard.containsImage()) {
+                // Clipboard contains image. Cancel default paste (it pastes the path to the image instead of the image data).
+                e.preventDefault();
+
+                // Execute our own paste, which pastes the image data.
+                this.pasteImageFromClipboard();
+            }
+        };
+
+        document.addEventListener('wheel', (e: WheelEvent) => {
+            if (e.ctrlKey) {
+                this.setEditorZoomPercentByMouseScroll(e.deltaY);
+            }
         });
     }
 
@@ -249,6 +238,12 @@ export class NoteComponent implements OnInit {
         this.isTitleDirty = true;
         this.clearSearch();
         this.noteTitleChanged.next(newNoteTitle);
+    }
+
+    public onNoteTextChange(): void {
+        this.isTextDirty = true;
+        this.clearSearch();
+        this.noteTextChanged.next('');
     }
 
     // ngOnDestroy doesn't tell us when a note window is closed, so we use this event instead.
@@ -384,7 +379,6 @@ export class NoteComponent implements OnInit {
     }
 
     private performCut(): void {
-        alert('cutting');
         const range: any = this.quill.getSelection();
 
         if (!range || range.length === 0) {
