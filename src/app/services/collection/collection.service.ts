@@ -121,6 +121,13 @@ export class CollectionService {
         return true;
     }
 
+    private getActiveStorageDirectory(): string {
+        const activeCollection: string = this.settings.activeCollection;
+        const storageDirectory: string = this.settings.storageDirectory;
+
+        return Utils.collectionToPath(storageDirectory, activeCollection);
+    }
+
     public async getCollectionsAsync(): Promise<string[]> {
         const storageDirectory: string = this.settings.storageDirectory;
         const fileNames: string[] = await fs.readdir(storageDirectory);
@@ -514,9 +521,9 @@ export class CollectionService {
         this.dataStore.deleteNote(noteId);
 
         // 2. Delete all files from disk, which are related to the note.
-        const notePath: string = this.getNotePath(noteId);
-        const noteFilePath: string = path.join(notePath, `${noteId}${Constants.noteContentExtension}`);
-        const noteStateFilePath: string = path.join(notePath, `${noteId}${Constants.noteStateExtension}`);
+        const noteDirectory: string = this.getActiveStorageDirectory();
+        const noteFilePath: string = path.join(noteDirectory, `${noteId}${Constants.noteContentExtension}`);
+        const noteStateFilePath: string = path.join(noteDirectory, `${noteId}${Constants.noteStateExtension}`);
 
         // Note file
         fs.unlinkSync(noteFilePath);
@@ -690,7 +697,7 @@ export class CollectionService {
 
         try {
             // 1. Add note to data store
-            uniqueTitle = this.getUniqueNewNoteNoteTitle(baseTitle);
+            uniqueTitle = this.getUniqueNoteTitle(baseTitle, true);
             result.noteId = this.dataStore.addNote(uniqueTitle, notebookId);
 
             // 2. Create note file
@@ -782,7 +789,7 @@ export class CollectionService {
         if (initialNoteTitle !== uniqueNoteTitle) {
             try {
                 // 1. Make sure the final title is unique
-                uniqueNoteTitle = this.getUniqueNoteNoteTitle(finalNoteTitle);
+                uniqueNoteTitle = this.getUniqueNoteTitle(finalNoteTitle, false);
 
                 // 2. Rename the note
                 const note: Note = this.dataStore.getNoteById(noteId);
@@ -1015,7 +1022,7 @@ export class CollectionService {
         return isImportSuccessful;
     }
 
-    public async importNoteFilesAsync(noteFilePaths: string[], notebookId: string = null): Promise<Operation> {
+    public async importNoteFilesAsync(noteFilePaths: string[], notebookId?: string): Promise<Operation> {
         let numberofImportedNoteFiles: number = 0;
         let operation: Operation = Operation.Success;
 
@@ -1024,7 +1031,7 @@ export class CollectionService {
                 const noteFileContent: string = await fs.readFile(noteFilePath, 'utf8');
                 const noteExport: NoteExport = JSON.parse(noteFileContent);
                 const proposedNoteTitle: string = `${noteExport.title} (${await this.translator.getAsync('Notes.Imported')})`;
-                const uniqueNoteTitle: string = this.getUniqueNoteNoteTitle(proposedNoteTitle);
+                const uniqueNoteTitle: string = this.getUniqueNoteTitle(proposedNoteTitle, false);
 
                 this.dataStore.addNote(uniqueNoteTitle, '');
 
@@ -1076,12 +1083,6 @@ export class CollectionService {
         return trashedNotes;
     }
 
-    private getNotePath(noteId: string): string {
-        const activeCollection: string = this.settings.activeCollection;
-        const storageDirectory: string = this.settings.storageDirectory;
-        return Utils.collectionToPath(storageDirectory, activeCollection);
-    }
-
     private async collectionExistsAsync(collection: string): Promise<boolean> {
         const collections: string[] = await this.getCollectionsAsync();
         const existingCollections: string[] = collections.filter((x) => x.toLowerCase() === collection.toLowerCase());
@@ -1129,10 +1130,10 @@ export class CollectionService {
             if (!this.openNoteIds.includes(noteId)) {
                 this.openNoteIds.push(noteId);
 
-                const notePath: string = this.getNotePath(noteId);
-                this.logger.info(`note directory=${notePath}`, 'CollectionService', 'importNoteFilesAsync');
+                const noteDirectory: string = this.getActiveStorageDirectory();
+                this.logger.info(`Note directory=${noteDirectory}`, 'CollectionService', 'importNoteFilesAsync');
                 const window: BrowserWindow = remote.getCurrentWindow();
-                const arg: any = { notePath: notePath, noteId: noteId, windowHasFrame: this.appearance.windowHasNativeTitleBar };
+                const arg: any = { notePath: noteDirectory, noteId: noteId, windowHasFrame: this.appearance.windowHasNativeTitleBar };
                 ipcRenderer.send('open-note-window', arg);
             }
         } else {
@@ -1142,24 +1143,14 @@ export class CollectionService {
         }
     }
 
-    private getUniqueNewNoteNoteTitle(baseTitle: string): string {
-        let counter: number = 1;
-        let uniqueTitle: string = `${baseTitle} ${counter}`;
-
-        const notesWithIdenticalBaseTitle: Note[] = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
-        const similarTitles: string[] = notesWithIdenticalBaseTitle.map((x) => x.title);
-
-        while (similarTitles.includes(uniqueTitle)) {
-            counter++;
-            uniqueTitle = `${baseTitle} ${counter}`;
-        }
-
-        return uniqueTitle;
-    }
-
-    private getUniqueNoteNoteTitle(baseTitle: string): string {
+    private getUniqueNoteTitle(baseTitle: string, isNewNote: boolean): string {
         let counter: number = 0;
         let uniqueTitle: string = baseTitle;
+
+        if (isNewNote) {
+            counter = 1;
+            uniqueTitle = `${baseTitle} ${counter}`;
+        }
 
         const notesWithIdenticalBaseTitle: Note[] = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
         const similarTitles: string[] = notesWithIdenticalBaseTitle.map((x) => x.title);
@@ -1176,12 +1167,6 @@ export class CollectionService {
         const notebook: Notebook = this.dataStore.getNotebookByName(notebookName);
 
         return notebook != undefined;
-    }
-
-    private noteExists(noteTitle: string): boolean {
-        const note: Note = this.dataStore.getNoteByTitle(noteTitle);
-
-        return note != undefined;
     }
 
     private async getNoteDateFormatAsync(millisecondsSinceEpoch: number, useExactDates: boolean): Promise<NoteDateFormatResult> {
