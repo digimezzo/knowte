@@ -1,10 +1,10 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, HostListener, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, HostListener, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as remote from '@electron/remote';
 import { BrowserWindow, SaveDialogOptions, SaveDialogReturnValue } from 'electron';
-import * as electronLocalshortcut from 'electron-localshortcut';
+import * as electronLocalShortcut from 'electron-localshortcut';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as Quill from 'quill';
@@ -54,10 +54,10 @@ export class NoteComponent implements OnInit {
     private isTitleDirty: boolean = false;
     private isTextDirty: boolean = false;
 
+    private noteZoomPercentageChangedListener: any = this.noteZoomPercentageChangedHandler.bind(this);
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
     private focusNoteListener: any = this.focusNoteHandler.bind(this);
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
-    private noteZoomPercentageChangedListener: any = this.noteZoomPercentageChangedHandler.bind(this);
 
     constructor(
         private print: PrintService,
@@ -88,7 +88,7 @@ export class NoteComponent implements OnInit {
     public canSearch: boolean = false;
 
     public async ngOnInit(): Promise<void> {
-        this.quill = await this.quillFactory.createAsync('#editor', this.performUndo, this.performRedo);
+        this.quill = await this.quillFactory.createAsync('#editor', this.performUndo.bind(this), this.performRedo.bind(this));
 
         this.setEditorZoomPercentage();
         await this.setToolbarTooltipsAsync();
@@ -165,7 +165,7 @@ export class NoteComponent implements OnInit {
 
         const window: BrowserWindow = remote.getCurrentWindow();
 
-        electronLocalshortcut.register(window, 'ESC', () => {
+        electronLocalShortcut.register(window, 'ESC', () => {
             if (this.settings.closeNotesWithEscape) {
                 window.close();
             }
@@ -173,8 +173,19 @@ export class NoteComponent implements OnInit {
 
         window.webContents.on('context-menu', (event, params) => {
             const hasSelectedText: boolean = this.hasSelectedRange();
-            const state:ContextMenuItemsEnabledState = new ContextMenuItemsEnabledState(hasSelectedText, this.clipboard.containsText() || this.clipboard.containsImage());
-            this.noteContextMenuFactory.createAsync(window.webContents, params, state, this.performCut, this.performCopy, this.performPaste, this.performDelete);
+            const contextMenuItemsEnabledState: ContextMenuItemsEnabledState = new ContextMenuItemsEnabledState(
+                hasSelectedText,
+                this.clipboard.containsText() || this.clipboard.containsImage()
+            );
+            this.noteContextMenuFactory.createAsync(
+                window.webContents,
+                params,
+                contextMenuItemsEnabledState,
+                this.performCut.bind(this),
+                this.performCopy.bind(this),
+                this.performPaste.bind(this),
+                this.performDelete.bind(this)
+            );
         });
     }
 
@@ -234,13 +245,13 @@ export class NoteComponent implements OnInit {
         toolbarElement.querySelector('button.ql-clean').setAttribute('title', await this.translator.getAsync('Tooltips.ClearFormatting'));
     }
 
-    public onNotetitleChange(newNoteTitle: string): void {
+    public onNoteTitleChange(newNoteTitle: string): void {
         this.isTitleDirty = true;
         this.clearSearch();
         this.noteTitleChanged.next(newNoteTitle);
     }
 
-    // ngOndestroy doesn't tell us when a note window is closed, so we use this event instead.
+    // ngOnDestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     public beforeunloadHandler(event: any): void {
         this.logger.info(`Detected closing of note with id=${this.noteId}`, 'NoteComponent', 'beforeunloadHandler');
@@ -373,6 +384,7 @@ export class NoteComponent implements OnInit {
     }
 
     private performCut(): void {
+        alert('cutting');
         const range: any = this.quill.getSelection();
 
         if (!range || range.length === 0) {

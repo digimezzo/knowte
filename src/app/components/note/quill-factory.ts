@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import * as Quill from 'quill';
-import { CustomImageSpec } from './custom-image-spec';
 import BlotFormatter from 'quill-blot-formatter';
 import { TranslatorService } from '../../services/translator/translator.service';
+import { CustomImageSpec } from './custom-image-spec';
 
 @Injectable()
-export class QuillFactory{
-    public constructor(private translator: TranslatorService){}
+export class QuillFactory {
+    public constructor(private translator: TranslatorService) {}
 
-    public async createAsync(editorId: string, undoAction: () => void, redoAction: () => void): Promise<Quill>{
+    public async createAsync(editorId: string, undoAction: () => void, redoAction: () => void): Promise<Quill> {
         const noteTextPlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
 
         // Adds undo and redo icons
         const icons: any = Quill.import('ui/icons');
-        
+
         icons['undo'] = `<svg class="custom-undo" viewbox="0 0 18 18">
                             <polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10"></polygon>
                             <path class="ql-stroke" d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9"></path>
