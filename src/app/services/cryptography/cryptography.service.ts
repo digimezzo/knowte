@@ -14,4 +14,8 @@ export class CryptographyService {
 
         return decryptedText;
     }
+
+    public createHash(text: string): string {
+        return CryptoJS.SHA256(text).toString();
+    }
 }

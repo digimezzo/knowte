@@ -14,10 +14,12 @@ import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
 import { Logger } from '../../core/logger';
 import { ProductInformation } from '../../core/product-information';
+import { Strings } from '../../core/strings';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { AppearanceService } from '../../services/appearance/appearance.service';
-import { CollectionService } from '../../services/collection/collection.service';
+import { CryptographyService } from '../../services/cryptography/cryptography.service';
+import { PersistanceService } from '../../services/persistance/persistance.service';
 import { PrintService } from '../../services/print/print.service';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
@@ -62,6 +64,7 @@ export class NoteComponent implements OnInit {
 
     private isEncrypted: boolean = false;
     private secretKey: string = '';
+    private secretKeyHash: string = '';
 
     constructor(
         private print: PrintService,
@@ -71,7 +74,8 @@ export class NoteComponent implements OnInit {
         private logger: Logger,
         private snackBar: SnackBarService,
         private translator: TranslatorService,
-        private collection: CollectionService,
+        private cryptography: CryptographyService,
+        private persistance: PersistanceService,
         public settings: BaseSettings,
         public appearance: AppearanceService,
         public spellCheckService: SpellCheckService,
@@ -93,24 +97,31 @@ export class NoteComponent implements OnInit {
     public actionIconRotation: string = 'default';
     public canSearch: boolean = false;
 
-    public async ngOnInit(): Promise<void> {
-        await this.collection.initializeAsync();
+    private isSecretKeyCorrect(): boolean {
+        return this.cryptography.createHash(this.secretKey) === this.secretKeyHash;
+    }
 
+    public async ngOnInit(): Promise<void> {
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
-            this.isEncrypted = this.collection.isNoteEncrypted(this.noteId);
+            this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNoteDetailsCallback.bind(this));
+
+            // TODO: this is an ugly hack
+            while (Strings.isNullOrWhiteSpace(this.noteTitle)) {
+                await Utils.sleep(50);
+            }
 
             this.addGlobalListeners();
 
             if (this.isEncrypted) {
                 let isClosing: boolean = false;
 
-                while (!this.collection.isNoteSecretKeyCorrect(this.noteId, this.secretKey) && !isClosing) {
+                while (!this.isSecretKeyCorrect() && !isClosing) {
                     if (!(await this.requestSecretKeyAsync())) {
                         isClosing = true;
                         window.close();
                     } else {
-                        if (!this.collection.isNoteSecretKeyCorrect(this.noteId, this.secretKey)) {
+                        if (!this.isSecretKeyCorrect()) {
                             const notificationTitle: string = await this.translator.getAsync('NotificationTitles.IncorrectKey');
                             const notificationText: string = await this.translator.getAsync('NotificationTexts.SecretKeyIncorrect');
                             const dialogRef: MatDialogRef<NotificationDialogComponent> = this.dialog.open(NotificationDialogComponent, {
@@ -134,7 +145,7 @@ export class NoteComponent implements OnInit {
             this.addSubscriptions();
             this.addDocumentListeners();
 
-            await this.getNoteDetailsAsync();
+            await this.getNoteContentAsync();
             this.applySearch();
 
             window.webContents.on('context-menu', (event, contextMenuParams) => {
@@ -180,6 +191,8 @@ export class NoteComponent implements OnInit {
                 Constants.setNoteTextEvent,
                 this.noteId,
                 this.quill.getText(),
+                this.isEncrypted,
+                this.secretKey,
                 this.getTasksCount(),
                 this.setNoteTextCallbackAsync.bind(this)
             );
@@ -375,7 +388,7 @@ export class NoteComponent implements OnInit {
 
         try {
             if (saveDialogReturnValue.filePath != undefined && saveDialogReturnValue.filePath.length > 0) {
-                await this.collection.exportNoteAsync(
+                await this.persistance.exportNoteAsync(
                     saveDialogReturnValue.filePath,
                     this.noteTitle,
                     this.quill.getText(),
@@ -441,7 +454,16 @@ export class NoteComponent implements OnInit {
             if (result) {
                 this.isEncrypted = true;
                 this.secretKey = data.inputText;
-                this.collection.encryptAndUpdateNoteContent(this.noteId, this.getNoteJsonContent(), this.secretKey);
+                this.globalEmitter.emit(Constants.encryptNoteEvent, this.noteId, this.secretKey);
+                this.globalEmitter.emit(
+                    Constants.setNoteTextEvent,
+                    this.noteId,
+                    this.quill.getText(),
+                    this.isEncrypted,
+                    this.secretKey,
+                    this.getTasksCount(),
+                    this.setNoteTextCallbackAsync.bind(this)
+                );
             }
         });
     }
@@ -461,7 +483,16 @@ export class NoteComponent implements OnInit {
             if (result) {
                 this.isEncrypted = false;
                 this.secretKey = '';
-                this.collection.decryptAndUpdateNoteContent(this.noteId, this.getNoteJsonContent());
+                this.globalEmitter.emit(Constants.decryptNoteEvent, this.noteId);
+                this.globalEmitter.emit(
+                    Constants.setNoteTextEvent,
+                    this.noteId,
+                    this.quill.getText(),
+                    this.isEncrypted,
+                    this.secretKey,
+                    this.getTasksCount(),
+                    this.setNoteTextCallbackAsync.bind(this)
+                );
             }
         });
     }
@@ -589,6 +620,8 @@ export class NoteComponent implements OnInit {
                     Constants.setNoteTextEvent,
                     this.noteId,
                     this.quill.getText(),
+                    this.isEncrypted,
+                    this.secretKey,
                     this.getTasksCount(),
                     async (operation: Operation) => {
                         const setTextOperation: Operation = operation;
@@ -612,6 +645,8 @@ export class NoteComponent implements OnInit {
             this.initialNoteTitle = result.noteTitle;
             this.noteTitle = result.noteTitle;
             this.isMarked = result.isMarked;
+            this.isEncrypted = result.isEncrypted;
+            this.secretKeyHash = result.secretKeyHash;
 
             this.setWindowTitle(result.noteTitle);
         });
@@ -737,7 +772,7 @@ export class NoteComponent implements OnInit {
 
         if (operation === Operation.Success) {
             try {
-                this.collection.updateNoteContent(this.noteId, this.getNoteJsonContent(), this.secretKey);
+                this.persistance.updateNoteContent(this.noteId, this.getNoteJsonContent(), this.isEncrypted, this.secretKey);
             } catch (error) {
                 this.logger.error(
                     `Could not save content for the note with id='${this.noteId}'. Cause: ${error}`,
@@ -766,7 +801,7 @@ export class NoteComponent implements OnInit {
         this.isTextDirty = false;
     }
 
-    private async getNoteDetailsAsync(): Promise<void> {
+    private async getNoteContentAsync(): Promise<void> {
         // Details from data store
         while (!this.noteTitle) {
             // While, is a workaround for auto reload. CollectionService is not ready to
@@ -777,7 +812,7 @@ export class NoteComponent implements OnInit {
 
         // Details from note file
         try {
-            const noteContent: string = await this.collection.getNoteContentAsync(this.noteId, this.secretKey);
+            const noteContent: string = await this.persistance.getNoteContentAsync(this.noteId, this.isEncrypted, this.secretKey);
 
             if (noteContent) {
                 // We can only parse to json if there is content

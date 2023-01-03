@@ -41,6 +41,8 @@ export class Constants {
     public static readonly uiFontSizeChangedEvent: string = 'e49b82b5-f960-49bf-83f8-9721edc386cb';
     public static readonly languageChangedEvent: string = '0f8d004f-080d-4901-b813-477432809519';
     public static readonly noteZoomPercentageChangedEvent: string = '6ec3f042-27ea-49e1-a012-49693f44db02';
+    public static readonly encryptNoteEvent: string = '6b049e1b-b830-4165-8f3e-2f95d0562f52';
+    public static readonly decryptNoteEvent: string = '7a2d5f6e-1cfa-4cbc-a083-eb75e77a4582';
 
     public static readonly previewApplicationTag: string = 'preview';
     public static readonly releaseCandidateApplicationTag: string = 'rc';

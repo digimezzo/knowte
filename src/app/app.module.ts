@@ -85,6 +85,7 @@ import { CollectionService } from './services/collection/collection.service';
 import { CryptographyService } from './services/cryptography/cryptography.service';
 import { ElectronService } from './services/electron.service';
 import { FileService } from './services/file/file.service';
+import { PersistanceService } from './services/persistance/persistance.service';
 import { PrintService } from './services/print/print.service';
 import { SearchService } from './services/search/search.service';
 import { SnackBarService } from './services/snack-bar/snack-bar.service';
@@ -194,6 +195,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         SearchService,
         SnackBarService,
         CryptographyService,
+        PersistanceService,
         QuillFactory,
         NoteContextMenuFactory,
         QuillTweaker,
