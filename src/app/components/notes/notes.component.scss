@@ -129,3 +129,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.note-status-icon {
+    color: $color-grey;
+    font-size: var(--fontsize-status-icon);
+}

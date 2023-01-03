@@ -5,10 +5,10 @@
             <img class="drag-image-icon-pen" src="./assets/images/pencil_256x256.svg" />
         </div>
         <div class="drag-image-text mx-1" *ngIf="draggableNoteIds.length === 1">
-            {{ draggedNote.title | truncate: 30:true }}
+            {{ draggedNote.title | truncate : 30 : true }}
         </div>
         <div class="drag-image-text mx-1" *ngIf="draggableNoteIds.length > 1">
-            {{ 'MainPage.DragNotesCount' | translate: { noteCount: draggableNoteIds.length } }}
+            {{ 'MainPage.DragNotesCount' | translate : { noteCount: draggableNoteIds.length } }}
         </div>
     </div>
     <!-- Notes list -->
@@ -31,8 +31,9 @@
                     </div>
                     <div class="note-item-info-date-and-tasks">
                         <span>{{ note.displayModificationDate }}</span>
+                        <i class="note-status-icon las la-lock ml-1" *ngIf="note.isEncrypted"></i>
                         <app-tasks-progress
-                            class="ml-2"
+                            class="ml-1"
                             *ngIf="note.totalTasksCount > 0"
                             [closedTasksCount]="note.closedTasksCount"
                             [totalTasksCount]="note.totalTasksCount"

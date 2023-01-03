@@ -1,29 +1,29 @@
-@import "variables";
+@import 'variables';
 .tasks-progress {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.tasks-progress-count{
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: var(--fontsize-normal) !important;
+.tasks-progress-count {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: var(--fontsize-normal) !important;
 }
 
 .tasks-progress-icon {
-  color: $color-grey;
-  font-size: 20px;
+    color: $color-grey;
+    font-size: var(--fontsize-status-icon);
 }
 
-.tasks-progress-bar{
+.tasks-progress-bar {
     height: 6px;
     width: 100px;
     position: relative;
 }
 
-.tasks-progress-bar-handle{
+.tasks-progress-bar-handle {
     position: absolute;
     top: 0;
     left: 0;
@@ -32,7 +32,7 @@
     z-index: 1;
 }
 
-.tasks-progress-bar-track{
+.tasks-progress-bar-track {
     position: absolute;
     top: 0;
     left: 0;
