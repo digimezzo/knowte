@@ -108,7 +108,10 @@
         "Close": "Close",
         "BackToNotes": "Back to notes",
         "ChangeTextSize": "Change text size",
-        "ChangeSpellCheckerLanguages": "Change spell checker languages"
+        "ChangeSpellCheckerLanguages": "Change spell checker languages",
+        "EncryptNote": "Encrypt note...",
+        "DecryptNote": "Decrypt note...",
+        "ThisNoteIsEncrypted": "This note is encrypted"
     },
     "LicenseDialog": {
         "License": "License"
@@ -141,7 +144,10 @@
         "ConfirmDeleteNote": "Delete note?",
         "ConfirmDeleteNotes": "Delete notes?",
         "Import": "Import",
-        "Languages": "Languages"
+        "Languages": "Languages",
+        "EncryptNote": "Encrypt note",
+        "ConfirmDecryptNote": "Decrypt note?",
+        "NoteIsEncrypted": "Note is encrypted"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Are you sure you want to delete the collection '{{collection}}'? If you continue, its notebooks and notes will be lost.",
@@ -157,11 +163,13 @@
         "ImportSuccessful": "Import successful!",
         "ImportFailed": "Import failed!",
         "AllFiles": "All files",
-        "ChooseNotebook": "Choose a notebook"
+        "ChooseNotebook": "Choose a notebook",
+        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?"
     },
     "Input": {
         "Collection": "Collection",
-        "NotebookName": "Notebook name"
+        "NotebookName": "Notebook name",
+        "SecretKey": "Secret key"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "The directory '{{storageDirectory}}' cannot be used to save your notes. You might not have sufficient permissions to create items in it. Please verify the log if you need more information.",
@@ -236,5 +244,11 @@
         "SelectAllNotes": "Select all notes",
         "Restore": "Restore",
         "DeletePermanently": "Delete permanently"
+    },
+    "NotificationTitles": {
+        "IncorrectKey": "Incorrect key"
+    },
+    "NotificationTexts": {
+        "SecretKeyIncorrect": "The secret key is incorrect."
     }
 }

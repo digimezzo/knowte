@@ -108,7 +108,10 @@
         "Close": "閉じる",
         "BackToNotes": "Back to notes",
         "ChangeTextSize": "Change text size",
-        "ChangeSpellCheckerLanguages": "Change spell checker languages"
+        "ChangeSpellCheckerLanguages": "Change spell checker languages",
+        "EncryptNote": "Encrypt note...",
+        "DecryptNote": "Decrypt note...",
+        "ThisNoteIsEncrypted": "This note is encrypted"
     },
     "LicenseDialog": {
         "License": "ライセンス"
@@ -141,7 +144,10 @@
         "ConfirmDeleteNote": "メモを削除しますか？",
         "ConfirmDeleteNotes": "メモを削除しますか？",
         "Import": "インポート",
-        "Languages": "Languages"
+        "Languages": "Languages",
+        "EncryptNote": "Encrypt note",
+        "ConfirmDecryptNote": "Decrypt note?",
+        "NoteIsEncrypted": "Note is encrypted"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "コレクション '{{collection}}' を削除しますか？ コレクションを削除すると、メモ帳とメモも削除されます。",
@@ -157,11 +163,13 @@
         "ImportSuccessful": "インポートが完了しました！",
         "ImportFailed": "インポートに失敗しました！",
         "AllFiles": "すべてのファイル",
-        "ChooseNotebook": "メモ帳の選択"
+        "ChooseNotebook": "メモ帳の選択",
+        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?"
     },
     "Input": {
         "Collection": "コレクション",
-        "NotebookName": "メモ帳の名前"
+        "NotebookName": "メモ帳の名前",
+        "SecretKey": "Secret key"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "ディレクトリ '{{storageDirectory}}' にメモを保存することができません。項目を作成するための権限がない可能性があります。詳細はログを確認してください。",
@@ -236,5 +244,11 @@
         "SelectAllNotes": "Select all notes",
         "Restore": "Restore",
         "DeletePermanently": "Delete permanently"
+    },
+    "NotificationTitles": {
+        "IncorrectKey": "Incorrect key"
+    },
+    "NotificationTexts": {
+        "SecretKeyIncorrect": "The secret key is incorrect."
     }
 }

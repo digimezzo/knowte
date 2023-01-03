@@ -16,6 +16,9 @@ export class NoteStatusBarComponent {
     @Input()
     public isMarked: boolean;
 
+    @Input()
+    public isEncrypted: boolean;
+
     public openSpellCheckBottomSheet(): void {
         this.bottomSheet.open(SpellCheckBottomSheetComponent);
     }

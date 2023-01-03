@@ -108,7 +108,10 @@
         "Close": "Sluiten",
         "BackToNotes": "Terug naar notities",
         "ChangeTextSize": "Wijzig de tekstgrootte",
-        "ChangeSpellCheckerLanguages": "Wijzig de talen van de spellingcontrole"
+        "ChangeSpellCheckerLanguages": "Wijzig de talen van de spellingcontrole",
+        "EncryptNote": "Notitie versleutelen...",
+        "DecryptNote": "Notitie decoderen...",
+        "ThisNoteIsEncrypted": "Deze notitie is versleuteld"
     },
     "LicenseDialog": {
         "License": "Licentie"
@@ -141,7 +144,10 @@
         "ConfirmDeleteNote": "Notitie verwijderen?",
         "ConfirmDeleteNotes": "Notities verwijderen?",
         "Import": "Importeren",
-        "Languages": "Talen"
+        "Languages": "Talen",
+        "EncryptNote": "Notitie versleutelen",
+        "ConfirmDecryptNote": "Notitie decoderen?",
+        "NoteIsEncrypted": "Notitie is versleuteld"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Weet u zeker dat u de collectie '{{collection}}' wilt verwijderen? Als u doorgaat, gaan de notitieboeken en notities verloren.",
@@ -157,11 +163,13 @@
         "ImportSuccessful": "Import succesvol!",
         "ImportFailed": "Importeren mislukt!",
         "AllFiles": "Alle bestanden",
-        "ChooseNotebook": "Kies een notitieboek"
+        "ChooseNotebook": "Kies een notitieboek",
+        "ConfirmDecryptNote": "Weet je zeker dat je deze notitie wilt ontsleutelen?"
     },
     "Input": {
         "Collection": "Collectie",
-        "NotebookName": "Naam notitieboek"
+        "NotebookName": "Naam notitieboek",
+        "SecretKey": "Geheime sleutel"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "De map '{{storageDirectory}}' kan niet worden gebruikt om uw notities op te slaan. Mogelijk hebt u onvoldoende rechten om er items in te maken. Controleer het log bestand als u meer informatie nodig hebt.",
@@ -236,5 +244,11 @@
         "SelectAllNotes": "Selecteer alle notities",
         "Restore": "Herstellen",
         "DeletePermanently": "Permanent verwijderen"
+    },
+    "NotificationTitles": {
+        "IncorrectKey": "Verkeerde sleutel"
+    },
+    "NotificationTexts": {
+        "SecretKeyIncorrect": "The secret key is incorrect."
     }
 }

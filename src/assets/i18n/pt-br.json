@@ -108,7 +108,10 @@
         "Close": "Fechar",
         "BackToNotes": "Back to notes",
         "ChangeTextSize": "Change text size",
-        "ChangeSpellCheckerLanguages": "Change spell checker languages"
+        "ChangeSpellCheckerLanguages": "Change spell checker languages",
+        "EncryptNote": "Encrypt note...",
+        "DecryptNote": "Decrypt note...",
+        "ThisNoteIsEncrypted": "This note is encrypted"
     },
     "LicenseDialog": {
         "License": "Licensa"
@@ -141,7 +144,10 @@
         "ConfirmDeleteNote": "Deletar note?",
         "ConfirmDeleteNotes": "Deletar notes?",
         "Import": "Importar",
-        "Languages": "Languages"
+        "Languages": "Languages",
+        "EncryptNote": "Encrypt note",
+        "ConfirmDecryptNote": "Decrypt note?",
+        "NoteIsEncrypted": "Note is encrypted"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Você tem certeza que quer deletar a coleção '{{collection}}'? Caso continue, suas cadernetas e notas serão apagadas.",
@@ -157,11 +163,13 @@
         "ImportSuccessful": "Importado com sucesso!",
         "ImportFailed": "Importação falhou!",
         "AllFiles": "Todos os arquivos",
-        "ChooseNotebook": "Escolha uma caderneta"
+        "ChooseNotebook": "Escolha uma caderneta",
+        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?"
     },
     "Input": {
         "Collection": "Coleção",
-        "NotebookName": "Nome da caderneta"
+        "NotebookName": "Nome da caderneta",
+        "SecretKey": "Secret key"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "A pasta '{{storageDirectory}}' não pode ser usado para salvar suas notas. Você talvez não tenha permissões o suficiente para criar arquivos nela. Por favor verique o log se precisar de mais informações.",
@@ -236,5 +244,11 @@
         "SelectAllNotes": "Selecionar todas as notas",
         "Restore": "Restaurar",
         "DeletePermanently": "Deletar permanentemente"
+    },
+    "NotificationTitles": {
+        "IncorrectKey": "Incorrect key"
+    },
+    "NotificationTexts": {
+        "SecretKeyIncorrect": "The secret key is incorrect."
     }
 }

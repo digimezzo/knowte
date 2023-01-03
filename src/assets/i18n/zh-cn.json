@@ -108,7 +108,10 @@
         "Close": "关闭",
         "BackToNotes": "返回到笔记",
         "ChangeTextSize": "Change text size",
-        "ChangeSpellCheckerLanguages": "Change spell checker languages"
+        "ChangeSpellCheckerLanguages": "Change spell checker languages",
+        "EncryptNote": "Encrypt note...",
+        "DecryptNote": "Decrypt note...",
+        "ThisNoteIsEncrypted": "This note is encrypted"
     },
     "LicenseDialog": {
         "License": "许可证"
@@ -141,7 +144,10 @@
         "ConfirmDeleteNote": "删除笔记？",
         "ConfirmDeleteNotes": "删除多个笔记？",
         "Import": "导入",
-        "Languages": "Languages"
+        "Languages": "Languages",
+        "EncryptNote": "Encrypt note",
+        "ConfirmDecryptNote": "Decrypt note?",
+        "NoteIsEncrypted": "Note is encrypted"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "您确定要删除收藏'{{collection}}'吗？ 如果继续，其笔记本和笔记将丢失。",
@@ -157,11 +163,13 @@
         "ImportSuccessful": "导入成功！",
         "ImportFailed": "导入失败！",
         "AllFiles": "所有文件",
-        "ChooseNotebook": "选择笔记本"
+        "ChooseNotebook": "选择笔记本",
+        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?"
     },
     "Input": {
         "Collection": "收藏",
-        "NotebookName": "笔记本名称"
+        "NotebookName": "笔记本名称",
+        "SecretKey": "Secret key"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "文件夹'{{storageDirectory}}'不能用来保存你的笔记。您可能没有足够的权限在其中创建项目。如果您需要更多信息，请验证日志。",
@@ -236,5 +244,11 @@
         "SelectAllNotes": "选择所有笔记",
         "Restore": "恢复",
         "DeletePermanently": "永久删除"
+    },
+    "NotificationTitles": {
+        "IncorrectKey": "Incorrect key"
+    },
+    "NotificationTexts": {
+        "SecretKeyIncorrect": "The secret key is incorrect."
     }
 }

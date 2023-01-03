@@ -36,4 +36,7 @@
             <i class="note-status-icon lar la-heart"></i>
         </div>
     </div>
+    <div *ngIf="isEncrypted" matTooltip="{{ 'Tooltips.ThisNoteIsEncrypted' | translate }}">
+        <i class="note-status-icon las la-lock ml-1"></i>
+    </div>
 </div>

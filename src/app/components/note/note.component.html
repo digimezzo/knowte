@@ -52,6 +52,26 @@
                     <i class="note-content-floating-button-icon-action las la-file-export"></i>
                 </button>
                 <button
+                    *ngIf="canPerformActions && !this.isEncrypted"
+                    class="note-content-floating-button"
+                    mat-mini-fab
+                    color=""
+                    (click)="encryptNoteAsync()"
+                    matTooltip="{{ 'Tooltips.EncryptNote' | translate }}"
+                >
+                    <i class="note-content-floating-button-icon-action las la-lock"></i>
+                </button>
+                <button
+                    *ngIf="canPerformActions && this.isEncrypted"
+                    class="note-content-floating-button"
+                    mat-mini-fab
+                    color=""
+                    (click)="decryptNoteAsync()"
+                    matTooltip="{{ 'Tooltips.DecryptNote' | translate }}"
+                >
+                    <i class="note-content-floating-button-icon-action las la-lock-open"></i>
+                </button>
+                <button
                     *ngIf="canPerformActions"
                     class="note-content-floating-button"
                     mat-mini-fab
@@ -99,7 +119,7 @@
                     (keydown.control.1)="heading1($event)"
                     (keydown.control.2)="heading2($event)"
                 ></div>
-                <app-note-status-bar [isMarked]="this.isMarked"></app-note-status-bar>
+                <app-note-status-bar [isMarked]="this.isMarked" [isEncrypted]="this.isEncrypted"></app-note-status-bar>
             </div>
         </div>
     </div>

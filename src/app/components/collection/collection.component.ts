@@ -187,14 +187,16 @@ export class CollectionComponent implements OnInit, OnDestroy {
         const titleText: string = await this.translator.getAsync('DialogTitles.AddNotebook');
         const placeholderText: string = await this.translator.getAsync('Input.NotebookName');
 
+        const data: any = { titleText: titleText, inputText: '', placeholderText: placeholderText };
+
         const dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
             width: '450px',
-            data: { titleText: titleText, placeholderText: placeholderText },
+            data: data,
         });
 
         dialogRef.afterClosed().subscribe(async (result: any) => {
             if (result) {
-                const notebookName: string = dialogRef.componentInstance.inputText;
+                const notebookName: string = data.inputText;
 
                 const operation: Operation = this.collection.addNotebook(notebookName);
 

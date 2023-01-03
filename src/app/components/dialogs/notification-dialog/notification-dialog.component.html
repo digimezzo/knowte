@@ -1,0 +1,7 @@
+<app-dialog-header titleText="{{ this.data.notificationTitle }}"></app-dialog-header>
+<mat-dialog-content>
+    <p>{{ this.data.notificationText }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-raised-button color="primary" [mat-dialog-close]>{{ 'Buttons.Ok' | translate }}</button>
+</mat-dialog-actions>

@@ -6,6 +6,8 @@ export class Note {
 
     public id: string = nanoid();
     public isMarked: boolean = false;
+    public isEncrypted: boolean = false;
+    public secretKeyHash: string = '';
     public creationDate: number = moment().valueOf();
     public modificationDate: number = moment().valueOf();
     public text: string = '';

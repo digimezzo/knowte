@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
+import * as CryptoJS from 'crypto-js';
 import { BrowserWindow, ipcRenderer } from 'electron';
 import * as fs from 'fs-extra';
 import * as moment from 'moment';
@@ -13,12 +14,14 @@ import { DateFormatter } from '../../core/date-formatter';
 import { Operation } from '../../core/enums';
 import { Logger } from '../../core/logger';
 import { NoteExport } from '../../core/note-export';
+import { Strings } from '../../core/strings';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { DataStore } from '../../data/data-store';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
 import { AppearanceService } from '../appearance/appearance.service';
+import { CryptographyService } from '../cryptography/cryptography.service';
 import { NoteDateFormatResult } from '../results/note-date-format-result';
 import { NoteDetailsResult } from '../results/note-details-result';
 import { NoteMarkResult } from '../results/note-mark-result';
@@ -56,6 +59,7 @@ export class CollectionService {
         private translator: TranslatorService,
         private search: SearchService,
         private appearance: AppearanceService,
+        private cryptography: CryptographyService,
         private dateFormatter: DateFormatter,
         private settings: BaseSettings,
         private logger: Logger
@@ -1249,5 +1253,77 @@ export class CollectionService {
         const searchTextPieces: string[] = filter.trim().split(' ');
 
         return unfilteredNotes.filter((x) => Utils.containsAll(`${x.title} ${x.text}`, searchTextPieces));
+    }
+
+    public encryptAndUpdateNoteContent(noteId: string, noteJsonContent: string, secretKey: string): void {
+        const secretKeyHash: string = CryptoJS.SHA256(secretKey).toString();
+        this.dataStore.encryptNote(noteId, secretKeyHash);
+        this.updateNoteContent(noteId, noteJsonContent, secretKey);
+    }
+
+    public isNoteSecretKeyCorrect(noteId: string, secretKey: string): boolean {
+        const secretKeyHash: string = CryptoJS.SHA256(secretKey).toString();
+        const note: Note = this.dataStore.getNoteById(noteId);
+
+        return secretKeyHash === note.secretKeyHash;
+    }
+
+    public decryptAndUpdateNoteContent(noteId: string, noteJsonContent: string): void {
+        this.dataStore.decryptNote(noteId);
+        this.updateNoteContent(noteId, noteJsonContent, '');
+    }
+
+    public updateNoteContent(noteId: string, noteJsonContent: string, secretKey: string): void {
+        const activeCollection: string = this.settings.activeCollection;
+        const storageDirectory: string = this.settings.storageDirectory;
+
+        const noteFilePath: string = path.join(
+            Utils.collectionToPath(storageDirectory, activeCollection),
+            `${this.createNoteFileName(noteId)}`
+        );
+
+        let contentToWrite: string = noteJsonContent;
+
+        const note: Note = this.dataStore.getNoteById(noteId);
+
+        if (note.isEncrypted && !Strings.isNullOrWhiteSpace(secretKey)) {
+            contentToWrite = this.cryptography.encrypt(noteJsonContent, secretKey);
+        }
+
+        fs.writeFileSync(noteFilePath, contentToWrite);
+    }
+
+    public async getNoteContentAsync(noteId: string, secretKey: string): Promise<string> {
+        const activeCollection: string = this.settings.activeCollection;
+        const storageDirectory: string = this.settings.storageDirectory;
+        const activeCollectionDirectory: string = Utils.collectionToPath(storageDirectory, activeCollection);
+        const noteContentFileName: string = `${this.createNoteFileName(noteId)}`;
+        const noteContentFileFullPath: string = path.join(activeCollectionDirectory, noteContentFileName);
+
+        const noteContent: string = await fs.readFile(noteContentFileFullPath, 'utf8');
+
+        const note: Note = this.dataStore.getNoteById(noteId);
+
+        if (note.isEncrypted && !Strings.isNullOrWhiteSpace(secretKey)) {
+            return this.cryptography.decrypt(noteContent, secretKey);
+        }
+
+        return noteContent;
+    }
+
+    public async exportNoteAsync(exportFilePath: string, noteTitle: string, noteText: string, noteJsonContent: string): Promise<void> {
+        const noteExport: NoteExport = new NoteExport(noteTitle, noteText, noteJsonContent);
+
+        await fs.writeFile(exportFilePath, JSON.stringify(noteExport));
+    }
+
+    public isNoteEncrypted(noteId: string): boolean {
+        const note: Note = this.dataStore.getNoteById(noteId);
+
+        return note.isEncrypted;
+    }
+
+    private createNoteFileName(noteId: string): string {
+        return `${noteId}${Constants.noteContentExtension}`;
     }
 }

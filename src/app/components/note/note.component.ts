@@ -17,7 +17,7 @@ import { ProductInformation } from '../../core/product-information';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { AppearanceService } from '../../services/appearance/appearance.service';
-import { NotePersistanceService } from '../../services/note-persistance/note-persistance.service';
+import { CollectionService } from '../../services/collection/collection.service';
 import { PrintService } from '../../services/print/print.service';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
@@ -26,6 +26,8 @@ import { SpellCheckService } from '../../services/spell-check/spell-check.servic
 import { TranslatorService } from '../../services/translator/translator.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
+import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
+import { NotificationDialogComponent } from '../dialogs/notification-dialog/notification-dialog.component';
 import { ContextMenuItemsEnabledState } from './context-menu-items-enabled-state';
 import { NoteContextMenuFactory } from './note-context-menu-factory';
 import { QuillFactory } from './quill-factory';
@@ -58,6 +60,9 @@ export class NoteComponent implements OnInit {
     private focusNoteListener: any = this.focusNoteHandler.bind(this);
     private closeNoteListener: any = this.closeNoteHandler.bind(this);
 
+    private isEncrypted: boolean = false;
+    private secretKey: string = '';
+
     constructor(
         private print: PrintService,
         private activatedRoute: ActivatedRoute,
@@ -66,10 +71,10 @@ export class NoteComponent implements OnInit {
         private logger: Logger,
         private snackBar: SnackBarService,
         private translator: TranslatorService,
+        private collection: CollectionService,
         public settings: BaseSettings,
         public appearance: AppearanceService,
         public spellCheckService: SpellCheckService,
-        private notePersistanceService: NotePersistanceService,
         private clipboard: ClipboardManager,
         private quillFactory: QuillFactory,
         private noteContextMenuFactory: NoteContextMenuFactory,
@@ -89,22 +94,65 @@ export class NoteComponent implements OnInit {
     public canSearch: boolean = false;
 
     public async ngOnInit(): Promise<void> {
-        this.quill = await this.quillFactory.createAsync('#editor', this.performUndo.bind(this), this.performRedo.bind(this));
-        this.quillTweaker.forcePasteOfUnformattedText(this.quill);
-        this.quillTweaker.assignActionToControlKeyCombination(this.quill, 'Y', this.performRedo.bind(this));
-        this.quillTweaker.assignActionToTextChange(this.quill, this.onNoteTextChange.bind(this));
-
-        this.setEditorZoomPercentage();
-        await this.setToolbarTooltipsAsync();
-        this.addSubscriptions();
-        this.addDocumentListeners();
+        await this.collection.initializeAsync();
 
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
+            this.isEncrypted = this.collection.isNoteEncrypted(this.noteId);
 
             this.addGlobalListeners();
+
+            if (this.isEncrypted) {
+                let isClosing: boolean = false;
+
+                while (!this.collection.isNoteSecretKeyCorrect(this.noteId, this.secretKey) && !isClosing) {
+                    if (!(await this.requestSecretKeyAsync())) {
+                        isClosing = true;
+                        window.close();
+                    } else {
+                        if (!this.collection.isNoteSecretKeyCorrect(this.noteId, this.secretKey)) {
+                            const notificationTitle: string = await this.translator.getAsync('NotificationTitles.IncorrectKey');
+                            const notificationText: string = await this.translator.getAsync('NotificationTexts.SecretKeyIncorrect');
+                            const dialogRef: MatDialogRef<NotificationDialogComponent> = this.dialog.open(NotificationDialogComponent, {
+                                width: '450px',
+                                data: { notificationTitle: notificationTitle, notificationText: notificationText },
+                            });
+
+                            await dialogRef.afterClosed().toPromise();
+                        }
+                    }
+                }
+            }
+
+            this.quill = await this.quillFactory.createAsync('#editor', this.performUndo.bind(this), this.performRedo.bind(this));
+            this.quillTweaker.forcePasteOfUnformattedText(this.quill);
+            this.quillTweaker.assignActionToControlKeyCombination(this.quill, 'Y', this.performRedo.bind(this));
+            this.quillTweaker.assignActionToTextChange(this.quill, this.onNoteTextChange.bind(this));
+
+            this.setEditorZoomPercentage();
+            await this.setToolbarTooltipsAsync();
+            this.addSubscriptions();
+            this.addDocumentListeners();
+
             await this.getNoteDetailsAsync();
             this.applySearch();
+
+            window.webContents.on('context-menu', (event, contextMenuParams) => {
+                const hasSelectedText: boolean = this.hasSelectedRange();
+                const contextMenuItemsEnabledState: ContextMenuItemsEnabledState = new ContextMenuItemsEnabledState(
+                    hasSelectedText,
+                    this.clipboard.containsText() || this.clipboard.containsImage()
+                );
+                this.noteContextMenuFactory.createAsync(
+                    window.webContents,
+                    contextMenuParams,
+                    contextMenuItemsEnabledState,
+                    this.performCut.bind(this),
+                    this.performCopy.bind(this),
+                    this.performPaste.bind(this),
+                    this.performDelete.bind(this)
+                );
+            });
         });
 
         const window: BrowserWindow = remote.getCurrentWindow();
@@ -113,23 +161,6 @@ export class NoteComponent implements OnInit {
             if (this.settings.closeNotesWithEscape) {
                 window.close();
             }
-        });
-
-        window.webContents.on('context-menu', (event, params) => {
-            const hasSelectedText: boolean = this.hasSelectedRange();
-            const contextMenuItemsEnabledState: ContextMenuItemsEnabledState = new ContextMenuItemsEnabledState(
-                hasSelectedText,
-                this.clipboard.containsText() || this.clipboard.containsImage()
-            );
-            this.noteContextMenuFactory.createAsync(
-                window.webContents,
-                params,
-                contextMenuItemsEnabledState,
-                this.performCut.bind(this),
-                this.performCopy.bind(this),
-                this.performPaste.bind(this),
-                this.performDelete.bind(this)
-            );
         });
     }
 
@@ -344,11 +375,11 @@ export class NoteComponent implements OnInit {
 
         try {
             if (saveDialogReturnValue.filePath != undefined && saveDialogReturnValue.filePath.length > 0) {
-                await this.notePersistanceService.exportNoteAsync(
+                await this.collection.exportNoteAsync(
                     saveDialogReturnValue.filePath,
                     this.noteTitle,
                     this.quill.getText(),
-                    JSON.stringify(this.quill.getContents())
+                    this.getNoteJsonContent()
                 );
                 this.snackBar.noteExportedAsync(this.noteTitle);
             }
@@ -369,6 +400,70 @@ export class NoteComponent implements OnInit {
                 data: { errorText: errorText },
             });
         }
+    }
+
+    public async requestSecretKeyAsync(): Promise<boolean> {
+        const titleText: string = await this.translator.getAsync('DialogTitles.NoteIsEncrypted');
+        const placeholderText: string = await this.translator.getAsync('Input.SecretKey');
+
+        const data: any = { titleText: titleText, inputText: '', placeholderText: placeholderText };
+
+        const dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
+            width: '450px',
+            data: data,
+        });
+
+        const result: any = await dialogRef.afterClosed().toPromise();
+
+        if (result) {
+            this.secretKey = data.inputText;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public async encryptNoteAsync(): Promise<void> {
+        this.hideActionButtons();
+
+        const titleText: string = await this.translator.getAsync('DialogTitles.EncryptNote');
+        const placeholderText: string = await this.translator.getAsync('Input.SecretKey');
+
+        const data: any = { titleText: titleText, inputText: '', placeholderText: placeholderText };
+
+        const dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
+            width: '450px',
+            data: data,
+        });
+
+        dialogRef.afterClosed().subscribe(async (result: any) => {
+            if (result) {
+                this.isEncrypted = true;
+                this.secretKey = data.inputText;
+                this.collection.encryptAndUpdateNoteContent(this.noteId, this.getNoteJsonContent(), this.secretKey);
+            }
+        });
+    }
+
+    public async decryptNoteAsync(): Promise<void> {
+        this.hideActionButtons();
+
+        const title: string = await this.translator.getAsync('DialogTitles.ConfirmDecryptNote');
+        const text: string = await this.translator.getAsync('DialogTexts.ConfirmDecryptNote');
+
+        const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
+            width: '450px',
+            data: { dialogTitle: title, dialogText: text },
+        });
+
+        dialogRef.afterClosed().subscribe(async (result: any) => {
+            if (result) {
+                this.isEncrypted = false;
+                this.secretKey = '';
+                this.collection.decryptAndUpdateNoteContent(this.noteId, this.getNoteJsonContent());
+            }
+        });
     }
 
     private hasSelectedRange(): boolean {
@@ -642,7 +737,7 @@ export class NoteComponent implements OnInit {
 
         if (operation === Operation.Success) {
             try {
-                this.notePersistanceService.updateNoteContent(this.noteId, JSON.stringify(this.quill.getContents()));
+                this.collection.updateNoteContent(this.noteId, this.getNoteJsonContent(), this.secretKey);
             } catch (error) {
                 this.logger.error(
                     `Could not save content for the note with id='${this.noteId}'. Cause: ${error}`,
@@ -682,7 +777,7 @@ export class NoteComponent implements OnInit {
 
         // Details from note file
         try {
-            const noteContent: string = await this.notePersistanceService.getNoteContentAsync(this.noteId);
+            const noteContent: string = await this.collection.getNoteContentAsync(this.noteId, this.secretKey);
 
             if (noteContent) {
                 // We can only parse to json if there is content
@@ -755,10 +850,14 @@ export class NoteComponent implements OnInit {
     }
 
     private getTasksCount(): TasksCount {
-        const noteContent: string = JSON.stringify(this.quill.getContents());
+        const noteContent: string = this.getNoteJsonContent();
         const openTasksCount: number = (noteContent.match(/"list":"unchecked"/g) || []).length;
         const closedTasksCount: number = (noteContent.match(/"list":"checked"/g) || []).length;
 
         return new TasksCount(openTasksCount, closedTasksCount);
+    }
+
+    private getNoteJsonContent(): string {
+        return JSON.stringify(this.quill.getContents());
     }
 }

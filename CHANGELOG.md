@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Added spell checker
 -   Added note font resizing using CTRL + mouse wheel
 -   Added note status bar with quick options
+-   Added note encryption
 -   Added Russian translation
 
 ### Changed

@@ -108,7 +108,10 @@
         "Close": "Zatvori",
         "BackToNotes": "Back to notes",
         "ChangeTextSize": "Change text size",
-        "ChangeSpellCheckerLanguages": "Change spell checker languages"
+        "ChangeSpellCheckerLanguages": "Change spell checker languages",
+        "EncryptNote": "Encrypt note...",
+        "DecryptNote": "Decrypt note...",
+        "ThisNoteIsEncrypted": "This note is encrypted"
     },
     "LicenseDialog": {
         "License": "Licencija"
@@ -141,7 +144,10 @@
         "ConfirmDeleteNote": "Izbrisati bilješku?",
         "ConfirmDeleteNotes": "Izbrisati bilješke?",
         "Import": "Uvoz",
-        "Languages": "Languages"
+        "Languages": "Languages",
+        "EncryptNote": "Encrypt note",
+        "ConfirmDecryptNote": "Decrypt note?",
+        "NoteIsEncrypted": "Note is encrypted"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Jeste li sigurni da želite izbrisati kolekciju '{{collection}}'? Ako nastavite, njene bilježnice i bilješke bit će izgubljene.",
@@ -157,11 +163,13 @@
         "ImportSuccessful": "Uspješno uvezeno!",
         "ImportFailed": "Uvoz nije bio uspješan!",
         "AllFiles": "Sve datoteke",
-        "ChooseNotebook": "Odaberite bilježnicu"
+        "ChooseNotebook": "Odaberite bilježnicu",
+        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?"
     },
     "Input": {
         "Collection": "Kolekcija",
-        "NotebookName": "Naziv bilježnice"
+        "NotebookName": "Naziv bilježnice",
+        "SecretKey": "Secret key"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "Mapu '{{storageDirectory}}' nije moguće koristiti za spremanje Vaših bilješki. Možda nemate dozvolu za stvaranje stavki u njoj. Provjerite zapisnik, ako trebate više informacija.",
@@ -236,5 +244,11 @@
         "SelectAllNotes": "Select all notes",
         "Restore": "Restore",
         "DeletePermanently": "Delete permanently"
+    },
+    "NotificationTitles": {
+        "IncorrectKey": "Incorrect key"
+    },
+    "NotificationTexts": {
+        "SecretKeyIncorrect": "The secret key is incorrect."
     }
 }

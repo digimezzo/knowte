@@ -158,6 +158,12 @@ export class Constants {
             licenseUrl: 'https://github.com/angular/material2/blob/master/LICENSE',
         },
         {
+            name: 'crypto-js',
+            description: 'JavaScript library of crypto standards..',
+            url: 'https://github.com/brix/crypto-js',
+            licenseUrl: 'https://github.com/brix/crypto-js/blob/develop/LICENSE',
+        },
+        {
             name: 'Electron',
             description:
                 'The Electron framework lets you write cross-platform desktop applications using JavaScript, HTML and CSS. It is based on Node.js and Chromium.',

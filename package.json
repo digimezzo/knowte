@@ -42,6 +42,7 @@
         "@angular/material": "12.2.13",
         "@electron/remote": "^2.0.9",
         "angular-split": "^5.0.0",
+        "crypto-js": "^4.1.1",
         "electron-localshortcut": "^3.2.1",
         "electron-log": "4.4.8",
         "electron-store": "8.1.0",

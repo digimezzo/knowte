@@ -40,6 +40,7 @@ import { ErrorDialogComponent } from './components/dialogs/error-dialog/error-di
 import { ImportFromOldVersionDialogComponent } from './components/dialogs/import-from-old-version-dialog/import-from-old-version-dialog.component';
 import { InputDialogComponent } from './components/dialogs/input-dialog/input-dialog.component';
 import { LicenseDialogComponent } from './components/dialogs/license-dialog/license-dialog.component';
+import { NotificationDialogComponent } from './components/dialogs/notification-dialog/notification-dialog.component';
 import { RenameCollectionDialogComponent } from './components/dialogs/rename-collection-dialog/rename-collection-dialog.component';
 import { RenameNotebookDialogComponent } from './components/dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
 import { SetSpellCheckerLanguagesDialogComponent } from './components/dialogs/set-spell-checker-languages-dialog/set-spell-checker-languages-dialog.component';
@@ -81,9 +82,9 @@ import { GlobalErrorHandler } from './globalErrorHandler';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { AppearanceService } from './services/appearance/appearance.service';
 import { CollectionService } from './services/collection/collection.service';
+import { CryptographyService } from './services/cryptography/cryptography.service';
 import { ElectronService } from './services/electron.service';
 import { FileService } from './services/file/file.service';
-import { NotePersistanceService } from './services/note-persistance/note-persistance.service';
 import { PrintService } from './services/print/print.service';
 import { SearchService } from './services/search/search.service';
 import { SnackBarService } from './services/snack-bar/snack-bar.service';
@@ -126,6 +127,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         DialogHeaderComponent,
         ImportFromOldVersionDialogComponent,
         SetSpellCheckerLanguagesDialogComponent,
+        NotificationDialogComponent,
         LogoFullComponent,
         LogoMainComponent,
         MainMenuComponent,
@@ -187,11 +189,11 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         TrashService,
         PrintService,
         SpellCheckService,
-        NotePersistanceService,
         AppearanceService,
         TranslatorService,
         SearchService,
         SnackBarService,
+        CryptographyService,
         QuillFactory,
         NoteContextMenuFactory,
         QuillTweaker,
@@ -219,6 +221,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         RenameNotebookDialogComponent,
         ConfirmationDialogComponent,
         SetSpellCheckerLanguagesDialogComponent,
+        NotificationDialogComponent,
         TrashComponent,
     ],
 })

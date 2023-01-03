@@ -34,7 +34,7 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
     ) {}
 
     public applicationName: string = ProductInformation.applicationName;
-    
+
     public collections: string[];
     public activeCollection: string = '';
 
@@ -59,14 +59,16 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
         const titleText: string = await this.translator.getAsync('DialogTitles.AddCollection');
         const placeholderText: string = await this.translator.getAsync('Input.Collection');
 
+        const data: any = { titleText: titleText, inputText: '', placeholderText: placeholderText };
+
         const dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
             width: '450px',
-            data: { titleText: titleText, placeholderText: placeholderText },
+            data: data,
         });
 
         dialogRef.afterClosed().subscribe(async (result) => {
             if (result) {
-                const collection: string = dialogRef.componentInstance.inputText;
+                const collection: string = data.inputText;
 
                 const operation: Operation = await this.collection.addCollectionAsync(collection);
 

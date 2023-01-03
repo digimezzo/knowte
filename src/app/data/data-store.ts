@@ -194,6 +194,20 @@ export class DataStore {
         this.db.saveDatabase();
     }
 
+    public encryptNote(id: string, secretKeyHash: string): void {
+        const noteToEncrypt: Note = this.getNoteById(id);
+        noteToEncrypt.isEncrypted = true;
+        noteToEncrypt.secretKeyHash = secretKeyHash;
+        this.db.saveDatabase();
+    }
+
+    public decryptNote(id: string): void {
+        const noteToDecrypt: Note = this.getNoteById(id);
+        noteToDecrypt.isEncrypted = false;
+        noteToDecrypt.secretKeyHash = '';
+        this.db.saveDatabase();
+    }
+
     public restoreNote(id: string): void {
         const noteToRestore: Note = this.getNoteById(id);
         noteToRestore.isTrashed = false;

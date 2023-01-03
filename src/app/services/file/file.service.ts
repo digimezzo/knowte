@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import * as path from 'path';
 import { Constants } from '../../core/constants';
-import { CollectionService } from '../collection/collection.service';
 
 @Injectable()
 export class FileService {
-    constructor(private collection: CollectionService) {}
+    constructor() {}
 
     public isDroppingFiles(dropEvent: any): boolean {
         return this.getDroppedFilesPaths(dropEvent).length > 0;

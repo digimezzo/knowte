@@ -108,7 +108,10 @@
         "Close": "Schließen",
         "BackToNotes": "Back to notes",
         "ChangeTextSize": "Change text size",
-        "ChangeSpellCheckerLanguages": "Change spell checker languages"
+        "ChangeSpellCheckerLanguages": "Change spell checker languages",
+        "EncryptNote": "Encrypt note...",
+        "DecryptNote": "Decrypt note...",
+        "ThisNoteIsEncrypted": "This note is encrypted"
     },
     "LicenseDialog": {
         "License": "Lizenz"
@@ -141,7 +144,10 @@
         "ConfirmDeleteNote": "Notiz löschen?",
         "ConfirmDeleteNotes": "Notizen löschen?",
         "Import": "Importieren",
-        "Languages": "Languages"
+        "Languages": "Languages",
+        "EncryptNote": "Encrypt note",
+        "ConfirmDecryptNote": "Decrypt note?",
+        "NoteIsEncrypted": "Note is encrypted"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Sicher das Du die Kollektion '{{collection}}' löschen möchtest? Wenn Du fortfährst, werden dessen Notizbücher und Notizen verloren gehen.",
@@ -157,11 +163,13 @@
         "ImportSuccessful": "Import erfolgreich!",
         "ImportFailed": "Import fehlgeschlagen!",
         "AllFiles": "Alle Dateien",
-        "ChooseNotebook": "Wähle ein Notizbuch"
+        "ChooseNotebook": "Wähle ein Notizbuch",
+        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?"
     },
     "Input": {
         "Collection": "Kollektion",
-        "NotebookName": "Notizbuch Name"
+        "NotebookName": "Notizbuch Name",
+        "SecretKey": "Secret key"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "Das Verzeichnis '{{storageDirectory}}' kann nicht zum speichern Deiner Notizen verwendet werden. Möglicherweise verfügst Du nicht über ausreichende Berechtigungen um darin Elemente zu erstellen. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
@@ -236,5 +244,11 @@
         "SelectAllNotes": "Select all notes",
         "Restore": "Restore",
         "DeletePermanently": "Delete permanently"
+    },
+    "NotificationTitles": {
+        "IncorrectKey": "Incorrect key"
+    },
+    "NotificationTexts": {
+        "SecretKeyIncorrect": "The secret key is incorrect."
     }
 }
