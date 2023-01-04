@@ -29,6 +29,10 @@ import { NotesCountResult } from '../results/notes-count-result';
 import { SearchService } from '../search/search.service';
 import { TranslatorService } from '../translator/translator.service';
 
+/**
+ * There can only be 1 LokiJS Data Store in the whole application. So this class must only be initialized and
+ * used from the main window. Note windows must communicate with this class only via the main process.
+ */
 @Injectable()
 export class CollectionService {
     private dataStore: DataStore = new DataStore();
