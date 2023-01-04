@@ -33,8 +33,6 @@
         "Website": "ウェブサイト"
     },
     "SettingsPage": {
-        "Import": "インポート",
-        "ImportFromOldVersion": "Knowte 1.x からインポート",
         "FontSize": "フォント サイズ",
         "TextSize": "Text size",
         "TextSizeInNotes": "Text size in notes",
@@ -124,7 +122,6 @@
         "ViewLog": "ログを見る",
         "Yes": "はい",
         "No": "いいえ",
-        "Import": "インポート",
         "StartImport": "インポートの開始",
         "Select": "選択",
         "SelectAgain": "再選択",
@@ -143,7 +140,6 @@
         "ConfirmDeleteNotebooks": "メモ帳を削除しますか？",
         "ConfirmDeleteNote": "メモを削除しますか？",
         "ConfirmDeleteNotes": "メモを削除しますか？",
-        "Import": "インポート",
         "Languages": "Languages",
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",

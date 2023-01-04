@@ -33,8 +33,6 @@
         "Website": "Сайт"
     },
     "SettingsPage": {
-        "Import": "Импорт",
-        "ImportFromOldVersion": "Импорт из Knowte 1.x",
         "FontSize": "Размер шрифта",
         "TextSize": "Text size",
         "TextSizeInNotes": "Text size in notes",
@@ -124,7 +122,6 @@
         "ViewLog": "ПРОСМОТР ЖУРНАЛА",
         "Yes": "ДА",
         "No": "НЕТ",
-        "Import": "ИМПОРТ",
         "StartImport": "НАЧАТЬ ИМПОРТ",
         "Select": "ВЫБРАТЬ",
         "SelectAgain": "ВЫБРАТЬ ЕЩЁ РАЗ",
@@ -143,7 +140,6 @@
         "ConfirmDeleteNotebooks": "Удалить блокноты?",
         "ConfirmDeleteNote": "Удалить заметку?",
         "ConfirmDeleteNotes": "Удалить заметки?",
-        "Import": "Импортировать",
         "Languages": "Languages",
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",

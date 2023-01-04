@@ -33,8 +33,6 @@
         "Website": "Website"
     },
     "SettingsPage": {
-        "Import": "Importeren",
-        "ImportFromOldVersion": "Importeren van Knowte 1.x",
         "FontSize": "Lettergrootte",
         "TextSize": "Tekstgrootte",
         "TextSizeInNotes": "Tekstgrootte in notities",
@@ -124,7 +122,6 @@
         "ViewLog": "BEKIJK LOG",
         "Yes": "JA",
         "No": "NEE",
-        "Import": "IMPORTEREN",
         "StartImport": "IMPORTEREN STARTEN",
         "Select": "SELECTEER",
         "SelectAgain": "SELECTEER OPNIEUW",
@@ -143,7 +140,6 @@
         "ConfirmDeleteNotebooks": "Notitieboeken verwijderen?",
         "ConfirmDeleteNote": "Notitie verwijderen?",
         "ConfirmDeleteNotes": "Notities verwijderen?",
-        "Import": "Importeren",
         "Languages": "Talen",
         "EncryptNote": "Notitie versleutelen",
         "ConfirmDecryptNote": "Notitie decoderen?",

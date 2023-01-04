@@ -37,7 +37,6 @@ import { ColorSchemeSwitcherComponent } from './components/color-scheme-switcher
 import { ConfirmationDialogComponent } from './components/dialogs/confirmation-dialog/confirmation-dialog.component';
 import { DialogHeaderComponent } from './components/dialogs/dialog-header/dialog-header.component';
 import { ErrorDialogComponent } from './components/dialogs/error-dialog/error-dialog.component';
-import { ImportFromOldVersionDialogComponent } from './components/dialogs/import-from-old-version-dialog/import-from-old-version-dialog.component';
 import { InputDialogComponent } from './components/dialogs/input-dialog/input-dialog.component';
 import { LicenseDialogComponent } from './components/dialogs/license-dialog/license-dialog.component';
 import { NotificationDialogComponent } from './components/dialogs/notification-dialog/notification-dialog.component';
@@ -82,6 +81,7 @@ import { GlobalErrorHandler } from './globalErrorHandler';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { AppearanceService } from './services/appearance/appearance.service';
 import { CollectionService } from './services/collection/collection.service';
+import { NoteDateFormatter } from './services/collection/note-date-formatter';
 import { CryptographyService } from './services/cryptography/cryptography.service';
 import { ElectronService } from './services/electron.service';
 import { FileService } from './services/file/file.service';
@@ -126,7 +126,6 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         ConfirmationDialogComponent,
         TrashComponent,
         DialogHeaderComponent,
-        ImportFromOldVersionDialogComponent,
         SetSpellCheckerLanguagesDialogComponent,
         NotificationDialogComponent,
         LogoFullComponent,
@@ -198,6 +197,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         PersistanceService,
         QuillFactory,
         NoteContextMenuFactory,
+        NoteDateFormatter,
         QuillTweaker,
         GitHubApi,
         DateFormatter,
@@ -219,7 +219,6 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         InputDialogComponent,
         ErrorDialogComponent,
         RenameCollectionDialogComponent,
-        ImportFromOldVersionDialogComponent,
         RenameNotebookDialogComponent,
         ConfirmationDialogComponent,
         SetSpellCheckerLanguagesDialogComponent,

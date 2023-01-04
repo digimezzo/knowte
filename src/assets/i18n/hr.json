@@ -33,8 +33,6 @@
         "Website": "Web-stranica"
     },
     "SettingsPage": {
-        "Import": "Uvoz",
-        "ImportFromOldVersion": "Uvoz iz Knowtea 1.x",
         "FontSize": "Veličina fonta",
         "TextSize": "Text size",
         "TextSizeInNotes": "Text size in notes",
@@ -124,7 +122,6 @@
         "ViewLog": "PRIKAŽI ZAPISNIK",
         "Yes": "DA",
         "No": "NE",
-        "Import": "UVEZI",
         "StartImport": "POKRENI UVOZ",
         "Select": "ODABERI",
         "SelectAgain": "ODABERI PONOVNO",
@@ -143,7 +140,6 @@
         "ConfirmDeleteNotebooks": "Izbrisati bilježnice?",
         "ConfirmDeleteNote": "Izbrisati bilješku?",
         "ConfirmDeleteNotes": "Izbrisati bilješke?",
-        "Import": "Uvoz",
         "Languages": "Languages",
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",

@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
-import { BrowserWindow, ipcRenderer } from 'electron';
+import { ipcRenderer } from 'electron';
 import * as fs from 'fs-extra';
-import * as moment from 'moment';
-import { Duration, Moment } from 'moment';
 import * as path from 'path';
 import { Observable, Subject } from 'rxjs';
 import sanitize from 'sanitize-filename';
@@ -20,7 +18,6 @@ import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
 import { AppearanceService } from '../appearance/appearance.service';
 import { CryptographyService } from '../cryptography/cryptography.service';
-import { PersistanceService } from '../persistance/persistance.service';
 import { NoteDateFormatResult } from '../results/note-date-format-result';
 import { NoteDetailsResult } from '../results/note-details-result';
 import { NoteMarkResult } from '../results/note-mark-result';
@@ -28,10 +25,11 @@ import { NoteOperationResult } from '../results/note-operation-result';
 import { NotesCountResult } from '../results/notes-count-result';
 import { SearchService } from '../search/search.service';
 import { TranslatorService } from '../translator/translator.service';
+import { NoteDateFormatter } from './note-date-formatter';
 
 /**
- * There can only be 1 LokiJS Data Store in the whole application. So this class must only be initialized and
- * used from the main window. Note windows must communicate with this class only via the main process.
+ * There can only be 1 LokiJS Data Store in the whole application. So this class must only be initialized
+ * and used from the main window. Note windows must communicate with this class only via the main process.
  */
 @Injectable()
 export class CollectionService {
@@ -66,7 +64,7 @@ export class CollectionService {
         private search: SearchService,
         private appearance: AppearanceService,
         private cryptography: CryptographyService,
-        private persistance: PersistanceService,
+        private noteDateFormatter: NoteDateFormatter,
         private dateFormatter: DateFormatter,
         private settings: BaseSettings,
         private logger: Logger
@@ -661,7 +659,10 @@ export class CollectionService {
                     notes.push(note);
                 }
 
-                const result: NoteDateFormatResult = await this.getNoteDateFormatAsync(note.modificationDate, useExactDates);
+                const result: NoteDateFormatResult = await this.noteDateFormatter.getNoteDateFormatAsync(
+                    note.modificationDate,
+                    useExactDates
+                );
 
                 // More counts
                 if (result.isTodayNote) {
@@ -899,156 +900,6 @@ export class CollectionService {
         this.deleteNotes([noteId]);
     }
 
-    public async importFromOldVersionAsync(directoryContainingExportFiles: string): Promise<boolean> {
-        const notebooksExportFile: string = path.join(directoryContainingExportFiles, 'Notebooks.json');
-        const notesExportFile: string = path.join(directoryContainingExportFiles, 'Notes.json');
-
-        let isImportSuccessful: boolean = true;
-
-        try {
-            // Notebooks
-            try {
-                if (await fs.pathExists(notebooksExportFile)) {
-                    const notebooksJson: string = await fs.readFile(notebooksExportFile, 'utf8');
-                    const jsonNotebooks = JSON.parse(notebooksJson);
-
-                    this.logger.info(
-                        `${notebooksExportFile} was found. Importing notebooks.`,
-                        'CollectionService',
-                        'importFromOldVersionAsync'
-                    );
-
-                    for (const jsonNotebook of jsonNotebooks) {
-                        try {
-                            if (!this.notebookExists(jsonNotebook.Name)) {
-                                this.dataStore.addNotebook(jsonNotebook.Name);
-                            }
-                        } catch (error) {
-                            this.logger.error(
-                                `An error occurred while importing a notebook from an old version. Cause: ${error}`,
-                                'CollectionService',
-                                'importFromOldVersionAsync'
-                            );
-                            isImportSuccessful = false;
-                        }
-                    }
-                } else {
-                    this.logger.info(
-                        `${notebooksExportFile} was not found. Not importing notebooks.`,
-                        'CollectionService',
-                        'importFromOldVersionAsync'
-                    );
-                }
-            } catch (error) {
-                this.logger.error(
-                    `An error occurred while importing notebooks from an old version. Cause: ${error}`,
-                    'CollectionService',
-                    'importFromOldVersionAsync'
-                );
-                isImportSuccessful = false;
-            }
-
-            // Notes
-            try {
-                if (await fs.pathExists(notesExportFile)) {
-                    const notesJson: string = await fs.readFile(notesExportFile, 'utf8');
-                    const jsonNotes = JSON.parse(notesJson);
-
-                    this.logger.info(`${notesExportFile} was found. Importing notes.`, 'CollectionService', 'importFromOldVersionAsync');
-
-                    for (const jsonNote of jsonNotes) {
-                        try {
-                            if (!this.notebookExists(jsonNote.Title)) {
-                                let notebookId: string = '';
-
-                                try {
-                                    if (jsonNote.Notebook) {
-                                        const notebook: Notebook = this.dataStore.getNotebookByName(jsonNote.Notebook);
-
-                                        if (notebook) {
-                                            notebookId = notebook.id;
-                                        }
-                                    }
-                                } catch (error) {
-                                    this.logger.error(
-                                        `An error occurred while trying to find a notebook for a note. Cause: ${error}`,
-                                        'CollectionService',
-                                        'importFromOldVersionAsync'
-                                    );
-                                }
-
-                                this.dataStore.addNote(jsonNote.Title, notebookId);
-
-                                const note: Note = this.dataStore.getNoteByTitle(jsonNote.Title);
-                                note.text = jsonNote.Text;
-                                note.creationDate = moment(jsonNote.CreationDate, 'YYYY-MM-DD HH:mm:ss').valueOf();
-                                note.modificationDate = moment(jsonNote.ModificationDate, 'YYYY-MM-DD HH:mm:ss').valueOf();
-                                note.isMarked = jsonNote.IsMarked;
-                                this.dataStore.updateNoteWithoutDate(note);
-
-                                const quillText: string = `{"ops":[{"insert":${JSON.stringify(jsonNote.Text)}}]}`;
-
-                                const activeCollection: string = this.settings.activeCollection;
-                                const storageDirectory: string = this.settings.storageDirectory;
-                                await fs.writeFile(
-                                    path.join(
-                                        Utils.collectionToPath(storageDirectory, activeCollection),
-                                        `${note.id}${Constants.noteContentExtension}`
-                                    ),
-                                    quillText
-                                );
-                            }
-                        } catch (error) {
-                            this.logger.error(
-                                `An error occurred while importing a note from an old version. Cause: ${error}`,
-                                'CollectionService',
-                                'importFromOldVersionAsync'
-                            );
-                            isImportSuccessful = false;
-
-                            try {
-                                // Make sure there are no erroneous notes left in the data store
-                                const note: Note = this.dataStore.getNoteByTitle(jsonNote.Title);
-
-                                if (note) {
-                                    this.dataStore.deleteNote(note.id);
-                                }
-                            } catch (error) {
-                                this.logger.error(
-                                    `Could note delete note from data store. Cause: ${error}`,
-                                    'CollectionService',
-                                    'importFromOldVersionAsync'
-                                );
-                            }
-                        }
-                    }
-                } else {
-                    this.logger.info(
-                        `${notesExportFile} was not found. Not importing notes.`,
-                        'CollectionService',
-                        'importFromOldVersionAsync'
-                    );
-                }
-            } catch (error) {
-                this.logger.error(
-                    `An error occurred while importing notes from an old version. Cause: ${error}`,
-                    'CollectionService',
-                    'importFromOldVersionAsync'
-                );
-                isImportSuccessful = false;
-            }
-        } catch (error) {
-            this.logger.error(
-                `An error occurred while importing notebooks and/or notes from an old version. Cause: ${error}`,
-                'CollectionService',
-                'importFromOldVersionAsync'
-            );
-            isImportSuccessful = false;
-        }
-
-        return isImportSuccessful;
-    }
-
     public async importNoteFilesAsync(noteFilePaths: string[], notebookId?: string): Promise<Operation> {
         let numberofImportedNoteFiles: number = 0;
         let operation: Operation = Operation.Success;
@@ -1159,7 +1010,6 @@ export class CollectionService {
 
                 const noteDirectory: string = this.getActiveStorageDirectory();
                 this.logger.info(`Note directory=${noteDirectory}`, 'CollectionService', 'importNoteFilesAsync');
-                const window: BrowserWindow = remote.getCurrentWindow();
                 const arg: any = { notePath: noteDirectory, noteId: noteId, windowHasFrame: this.appearance.windowHasNativeTitleBar };
                 ipcRenderer.send('open-note-window', arg);
             }
@@ -1194,77 +1044,6 @@ export class CollectionService {
         const notebook: Notebook = this.dataStore.getNotebookByName(notebookName);
 
         return notebook != undefined;
-    }
-
-    private async getNoteDateFormatAsync(millisecondsSinceEpoch: number, useExactDates: boolean): Promise<NoteDateFormatResult> {
-        const result: NoteDateFormatResult = new NoteDateFormatResult();
-        const nowDateonly: Moment = moment().startOf('day');
-        const modificationDateOnly: Moment = moment(millisecondsSinceEpoch).startOf('day');
-        const duration: Duration = moment.duration(nowDateonly.diff(modificationDateOnly));
-
-        if (duration.asMonths() >= 12) {
-            result.dateText = await this.translator.getAsync('NoteDates.LongAgo');
-        } else if (duration.asMonths() >= 11) {
-            result.dateText = await this.translator.getAsync('NoteDates.MonthsAgo', { count: 11 });
-        } else if (duration.asMonths() >= 10) {
-            result.dateText = await this.translator.getAsync('NoteDates.MonthsAgo', { count: 10 });
-        } else if (duration.asMonths() >= 9) {
-            result.dateText = await this.translator.getAsync('NoteDates.MonthsAgo', { count: 9 });
-        } else if (duration.asMonths() >= 8) {
-            result.dateText = await this.translator.getAsync('NoteDates.MonthsAgo', { count: 8 });
-        } else if (duration.asMonths() >= 7) {
-            result.dateText = await this.translator.getAsync('NoteDates.MonthsAgo', { count: 7 });
-        } else if (duration.asMonths() >= 6) {
-            result.dateText = await this.translator.getAsync('NoteDates.MonthsAgo', { count: 6 });
-        } else if (duration.asMonths() >= 5) {
-            result.dateText = await this.translator.getAsync('NoteDates.MonthsAgo', { count: 5 });
-        } else if (duration.asMonths() >= 4) {
-            result.dateText = await this.translator.getAsync('NoteDates.MonthsAgo', { count: 4 });
-        } else if (duration.asMonths() >= 3) {
-            result.dateText = await this.translator.getAsync('NoteDates.MonthsAgo', { count: 3 });
-        } else if (duration.asMonths() >= 2) {
-            result.dateText = await this.translator.getAsync('NoteDates.MonthsAgo', { count: 2 });
-        } else if (duration.asMonths() >= 1) {
-            result.dateText = await this.translator.getAsync('NoteDates.MonthsAgo', { count: 1 });
-        } else if (duration.asDays() >= 21) {
-            result.dateText = await this.translator.getAsync('NoteDates.WeeksAgo', { count: 3 });
-        } else if (duration.asDays() >= 14) {
-            result.dateText = await this.translator.getAsync('NoteDates.WeeksAgo', { count: 2 });
-        } else if (duration.asDays() >= 8) {
-            result.dateText = await this.translator.getAsync('NoteDates.LastWeek');
-        } else if (duration.asDays() >= 7) {
-            result.dateText = await this.translator.getAsync('NoteDates.DaysAgo', { count: 7 });
-            result.isThisWeekNote = true;
-        } else if (duration.asDays() >= 6) {
-            result.dateText = await this.translator.getAsync('NoteDates.DaysAgo', { count: 6 });
-            result.isThisWeekNote = true;
-        } else if (duration.asDays() >= 5) {
-            result.dateText = await this.translator.getAsync('NoteDates.DaysAgo', { count: 5 });
-            result.isThisWeekNote = true;
-        } else if (duration.asDays() >= 4) {
-            result.dateText = await this.translator.getAsync('NoteDates.DaysAgo', { count: 4 });
-            result.isThisWeekNote = true;
-        } else if (duration.asDays() >= 3) {
-            result.dateText = await this.translator.getAsync('NoteDates.DaysAgo', { count: 3 });
-            result.isThisWeekNote = true;
-        } else if (duration.asDays() >= 2) {
-            result.dateText = await this.translator.getAsync('NoteDates.DaysAgo', { count: 2 });
-            result.isThisWeekNote = true;
-        } else if (duration.asDays() >= 1) {
-            result.dateText = await this.translator.getAsync('NoteDates.Yesterday');
-            result.isYesterdayNote = true;
-            result.isThisWeekNote = true;
-        } else if (duration.asDays() >= 0) {
-            result.dateText = await this.translator.getAsync('NoteDates.Today');
-            result.isTodayNote = true;
-            result.isThisWeekNote = true;
-        }
-
-        if (useExactDates) {
-            result.dateText = this.dateFormatter.getFormattedDate(millisecondsSinceEpoch);
-        }
-
-        return result;
     }
 
     private getFilteredNotes(unfilteredNotes: Note[], filter: string): Note[] {

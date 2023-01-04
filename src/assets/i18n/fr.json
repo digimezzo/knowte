@@ -33,8 +33,6 @@
         "Website": "Site web"
     },
     "SettingsPage": {
-        "Import": "Import",
-        "ImportFromOldVersion": "Importer de Knowte 1.x",
         "FontSize": "Taille de police",
         "TextSize": "Taille du texte",
         "TextSizeInNotes": "Taille du texte dans les notes",
@@ -124,7 +122,6 @@
         "ViewLog": "VÉRIFIER LOG",
         "Yes": "OUI",
         "No": "NON",
-        "Import": "IMPORTER",
         "StartImport": "COMMENCER L'IMPORT",
         "Select": "SÉLECTIONNER",
         "SelectAgain": "SÉLECTIONNER À NOUVEAU",
@@ -143,7 +140,6 @@
         "ConfirmDeleteNotebooks": "Supprimer blocs-notes?",
         "ConfirmDeleteNote": "Supprimer note?",
         "ConfirmDeleteNotes": "Supprimer notes?",
-        "Import": "Importer",
         "Languages": "Langues",
         "EncryptNote": "Chiffrer la note",
         "ConfirmDecryptNote": "Décrypter la note?",
