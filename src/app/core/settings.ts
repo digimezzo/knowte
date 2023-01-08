@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import * as remote from '@electron/remote';
 import * as Store from 'electron-store';
 import * as os from 'os';
 import { Constants } from '../core/constants';
@@ -8,7 +7,6 @@ import { BaseSettings } from './base-settings';
 @Injectable()
 export class Settings implements BaseSettings {
     private settings: Store<any> = new Store();
-    private globalEmitter: any = remote.getGlobal('globalEmitter');
 
     constructor() {
         this.initialize();
@@ -80,7 +78,6 @@ export class Settings implements BaseSettings {
 
     public set noteZoomPercentage(v: number) {
         this.settings.set('noteZoomPercentage', v);
-        this.globalEmitter.emit(Constants.noteZoomPercentageChangedEvent);
     }
 
     // Show exact dates in the notes list

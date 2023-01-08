@@ -682,6 +682,8 @@ export class NoteComponent implements OnInit {
             }
         }
 
+        this.globalEmitter.emit(Constants.noteZoomPercentageChangedEvent);
+
         this.setEditorZoomPercentage();
     }
 
