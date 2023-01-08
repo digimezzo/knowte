@@ -28,8 +28,8 @@ import { SpellCheckService } from '../../services/spell-check/spell-check.servic
 import { TranslatorService } from '../../services/translator/translator.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
-import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
 import { NotificationDialogComponent } from '../dialogs/notification-dialog/notification-dialog.component';
+import { PasswordInputDialogComponent } from '../dialogs/password-input-dialog/password-input-dialog.component';
 import { ContextMenuItemsEnabledState } from './context-menu-items-enabled-state';
 import { NoteContextMenuFactory } from './note-context-menu-factory';
 import { QuillFactory } from './quill-factory';
@@ -421,7 +421,7 @@ export class NoteComponent implements OnInit {
 
         const data: any = { titleText: titleText, inputText: '', placeholderText: placeholderText };
 
-        const dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
+        const dialogRef: MatDialogRef<PasswordInputDialogComponent> = this.dialog.open(PasswordInputDialogComponent, {
             width: '450px',
             data: data,
         });
@@ -445,7 +445,7 @@ export class NoteComponent implements OnInit {
 
         const data: any = { titleText: titleText, inputText: '', placeholderText: placeholderText };
 
-        const dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
+        const dialogRef: MatDialogRef<PasswordInputDialogComponent> = this.dialog.open(PasswordInputDialogComponent, {
             width: '450px',
             data: data,
         });

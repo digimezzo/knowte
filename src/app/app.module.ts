@@ -40,6 +40,7 @@ import { ErrorDialogComponent } from './components/dialogs/error-dialog/error-di
 import { InputDialogComponent } from './components/dialogs/input-dialog/input-dialog.component';
 import { LicenseDialogComponent } from './components/dialogs/license-dialog/license-dialog.component';
 import { NotificationDialogComponent } from './components/dialogs/notification-dialog/notification-dialog.component';
+import { PasswordInputDialogComponent } from './components/dialogs/password-input-dialog/password-input-dialog.component';
 import { RenameCollectionDialogComponent } from './components/dialogs/rename-collection-dialog/rename-collection-dialog.component';
 import { RenameNotebookDialogComponent } from './components/dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
 import { SetSpellCheckerLanguagesDialogComponent } from './components/dialogs/set-spell-checker-languages-dialog/set-spell-checker-languages-dialog.component';
@@ -123,6 +124,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         RenameNotebookDialogComponent,
         ErrorDialogComponent,
         InputDialogComponent,
+        PasswordInputDialogComponent,
         ConfirmationDialogComponent,
         TrashComponent,
         DialogHeaderComponent,
@@ -217,6 +219,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
     entryComponents: [
         LicenseDialogComponent,
         InputDialogComponent,
+        PasswordInputDialogComponent,
         ErrorDialogComponent,
         RenameCollectionDialogComponent,
         RenameNotebookDialogComponent,
