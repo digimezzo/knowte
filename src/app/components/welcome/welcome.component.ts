@@ -18,7 +18,7 @@ import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.compo
 export class WelcomeComponent implements OnInit {
     constructor(
         private translator: TranslatorService,
-        private collection: CollectionService,
+        private collectionService: CollectionService,
         public appearance: AppearanceService,
         private dialog: MatDialog,
         private zone: NgZone,
@@ -56,7 +56,7 @@ export class WelcomeComponent implements OnInit {
         this.zone.run(async () => {
             this.isBusy = true;
 
-            if (!(await this.collection.setStorageDirectoryAsync(selectedParentDirectory))) {
+            if (!(await this.collectionService.setStorageDirectoryAsync(selectedParentDirectory))) {
                 const errorText: string = await this.translator.getAsync('ErrorTexts.StorageDirectoryCreationError', {
                     storageDirectory: selectedParentDirectory,
                 });
@@ -66,7 +66,7 @@ export class WelcomeComponent implements OnInit {
                 });
             }
 
-            await this.collection.initializeAsync();
+            await this.collectionService.initializeAsync();
 
             this.isBusy = false;
 

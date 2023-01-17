@@ -14,10 +14,10 @@ import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
 import { Logger } from '../../core/logger';
 import { ProductInformation } from '../../core/product-information';
-import { Strings } from '../../core/strings';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { AppearanceService } from '../../services/appearance/appearance.service';
+import { CollectionClient } from '../../services/collection/collection.client';
 import { CryptographyService } from '../../services/cryptography/cryptography.service';
 import { PersistanceService } from '../../services/persistance/persistance.service';
 import { PrintService } from '../../services/print/print.service';
@@ -56,6 +56,7 @@ export class NoteComponent implements OnInit {
 
     private isTitleDirty: boolean = false;
     private isTextDirty: boolean = false;
+    private preventedClosing: boolean = false;
 
     private noteZoomPercentageChangedListener: any = this.noteZoomPercentageChangedHandler.bind(this);
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
@@ -82,7 +83,8 @@ export class NoteComponent implements OnInit {
         private clipboard: ClipboardManager,
         private quillFactory: QuillFactory,
         private noteContextMenuFactory: NoteContextMenuFactory,
-        private quillTweaker: QuillTweaker
+        private quillTweaker: QuillTweaker,
+        private collectionClient: CollectionClient
     ) {}
 
     public noteId: string;
@@ -92,24 +94,17 @@ export class NoteComponent implements OnInit {
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteTextChanged: Subject<string> = new Subject<string>();
     public saveChangesAndCloseNoteWindow: Subject<string> = new Subject<string>();
+    public closeNoteWindow: Subject<string> = new Subject<string>();
     public canPerformActions: boolean = false;
     public isBusy: boolean = false;
     public actionIconRotation: string = 'default';
     public canSearch: boolean = false;
 
-    private isSecretKeyCorrect(): boolean {
-        return this.cryptography.createHash(this.secretKey) === this.secretKeyHash;
-    }
-
     public async ngOnInit(): Promise<void> {
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
-            this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNoteDetailsCallback.bind(this));
 
-            // TODO: this is an ugly hack
-            while (Strings.isNullOrWhiteSpace(this.noteTitle)) {
-                await Utils.sleep(50);
-            }
+            await this.getNoteDetailsAsync();
 
             this.addGlobalListeners();
 
@@ -176,30 +171,20 @@ export class NoteComponent implements OnInit {
     }
 
     private addSubscriptions(): void {
-        this.noteTitleChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe((finalNoteTitle) => {
-            this.globalEmitter.emit(
-                Constants.setNoteTitleEvent,
-                this.noteId,
-                this.initialNoteTitle,
-                finalNoteTitle,
-                this.setNoteTitleCallbackAsync.bind(this)
-            );
+        this.noteTitleChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async (finalNoteTitle) => {
+            await this.setNoteTitleAsync(finalNoteTitle);
         });
 
         this.noteTextChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async (_) => {
-            this.globalEmitter.emit(
-                Constants.setNoteTextEvent,
-                this.noteId,
-                this.quill.getText(),
-                this.isEncrypted,
-                this.secretKey,
-                this.getTasksCount(),
-                this.setNoteTextCallbackAsync.bind(this)
-            );
+            await this.setNoteTextAsync();
         });
 
-        this.saveChangesAndCloseNoteWindow.pipe(debounceTime(Constants.noteWindowCloseTimeoutMilliseconds)).subscribe((_) => {
-            this.saveAndClose();
+        this.saveChangesAndCloseNoteWindow.pipe(debounceTime(Constants.noteWindowCloseTimeoutMilliseconds)).subscribe(async (_) => {
+            this.saveAndCloseAsync();
+        });
+
+        this.closeNoteWindow.subscribe(async (_) => {
+            this.closeAsync();
         });
     }
 
@@ -291,26 +276,30 @@ export class NoteComponent implements OnInit {
 
     // ngOnDestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
-    public beforeunloadHandler(event: any): void {
+    public async beforeunloadHandler(event: any): Promise<void> {
         this.logger.info(`Detected closing of note with id=${this.noteId}`, 'NoteComponent', 'beforeunloadHandler');
 
         // Prevents closing of the window
-        if (this.isTitleDirty || this.isTextDirty) {
-            this.isTitleDirty = false;
-            this.isTextDirty = false;
-
-            this.logger.info(
-                `Note with id=${this.noteId} is dirty. Preventing close to save changes first.`,
-                'NoteComponent',
-                'beforeunloadHandler'
-            );
+        if (!this.preventedClosing) {
             event.preventDefault();
             event.returnValue = '';
+            this.preventedClosing = true;
 
-            this.saveChangesAndCloseNoteWindow.next('');
-        } else {
-            this.logger.info(`Note with id=${this.noteId} is clean. Closing directly.`, 'NoteComponent', 'beforeunloadHandler');
-            this.cleanup();
+            if (this.isTitleDirty || this.isTextDirty) {
+                this.isTitleDirty = false;
+                this.isTextDirty = false;
+
+                this.logger.info(
+                    `Note with id=${this.noteId} is dirty. Preventing close to save changes first.`,
+                    'NoteComponent',
+                    'beforeunloadHandler'
+                );
+
+                this.saveChangesAndCloseNoteWindow.next('');
+            } else {
+                this.logger.info(`Note with id=${this.noteId} is clean. Closing directly.`, 'NoteComponent', 'beforeunloadHandler');
+                this.closeNoteWindow.next('');
+            }
         }
     }
 
@@ -324,9 +313,9 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    public toggleNoteMark(): void {
+    public async toggleNoteMarkAsync(): Promise<void> {
         this.hideActionButtonsDelayedAsync();
-        this.globalEmitter.emit(Constants.setNoteMarkEvent, this.noteId, !this.isMarked);
+        await this.collectionClient.setNoteMarkAsync(this.noteId, !this.isMarked);
     }
 
     public async exportNoteToPdfAsync(): Promise<void> {
@@ -358,7 +347,7 @@ export class NoteComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(async (result) => {
             if (result) {
-                this.globalEmitter.emit(Constants.deleteNoteEvent, this.noteId);
+                await this.collectionClient.deleteNoteAsync(this.noteId);
 
                 const window: BrowserWindow = remote.getCurrentWindow();
                 window.close();
@@ -454,16 +443,8 @@ export class NoteComponent implements OnInit {
             if (result) {
                 this.isEncrypted = true;
                 this.secretKey = data.inputText;
-                this.globalEmitter.emit(Constants.encryptNoteEvent, this.noteId, this.secretKey);
-                this.globalEmitter.emit(
-                    Constants.setNoteTextEvent,
-                    this.noteId,
-                    this.quill.getText(),
-                    this.isEncrypted,
-                    this.secretKey,
-                    this.getTasksCount(),
-                    this.setNoteTextCallbackAsync.bind(this)
-                );
+                await this.collectionClient.encryptNoteAsync(this.noteId, this.secretKey);
+                await this.setNoteTextAsync();
             }
         });
     }
@@ -483,16 +464,8 @@ export class NoteComponent implements OnInit {
             if (result) {
                 this.isEncrypted = false;
                 this.secretKey = '';
-                this.globalEmitter.emit(Constants.decryptNoteEvent, this.noteId);
-                this.globalEmitter.emit(
-                    Constants.setNoteTextEvent,
-                    this.noteId,
-                    this.quill.getText(),
-                    this.isEncrypted,
-                    this.secretKey,
-                    this.getTasksCount(),
-                    this.setNoteTextCallbackAsync.bind(this)
-                );
+                await this.collectionClient.decryptNoteAsync(this.noteId);
+                await this.setNoteTextAsync();
             }
         });
     }
@@ -586,8 +559,8 @@ export class NoteComponent implements OnInit {
         this.globalEmitter.on(Constants.noteZoomPercentageChangedEvent, this.noteZoomPercentageChangedListener);
     }
 
-    private cleanup(): void {
-        this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, false);
+    private async cleanupAsync(): Promise<void> {
+        await this.collectionClient.setNoteOpenAsync(this.noteId, false);
         this.removeGlobalListeners();
     }
 
@@ -606,50 +579,21 @@ export class NoteComponent implements OnInit {
         reader.readAsDataURL(file);
     }
 
-    private saveAndClose(): void {
-        this.globalEmitter.emit(
-            Constants.setNoteTitleEvent,
-            this.noteId,
-            this.initialNoteTitle,
-            this.noteTitle,
-            async (result: NoteOperationResult) => {
-                const setTitleOperation: Operation = result.operation;
-                await this.setNoteTitleCallbackAsync(result);
+    private async saveAndCloseAsync(): Promise<void> {
+        const setNoteTitleOperation: Operation = await this.setNoteTitleAsync(this.noteTitle);
+        const setNoteTextOperation: Operation = await this.setNoteTextAsync();
 
-                this.globalEmitter.emit(
-                    Constants.setNoteTextEvent,
-                    this.noteId,
-                    this.quill.getText(),
-                    this.isEncrypted,
-                    this.secretKey,
-                    this.getTasksCount(),
-                    async (operation: Operation) => {
-                        const setTextOperation: Operation = operation;
-                        await this.setNoteTextCallbackAsync(operation);
-
-                        // Close is only allowed when saving both title and text is successful
-                        if (setTitleOperation === Operation.Success && setTextOperation === Operation.Success) {
-                            this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, 'NoteComponent', 'saveAndClose');
-                            this.cleanup();
-                            const window: BrowserWindow = remote.getCurrentWindow();
-                            window.close();
-                        }
-                    }
-                );
-            }
-        );
+        // Close is only allowed when saving both title and text is successful
+        if (setNoteTitleOperation === Operation.Success && setNoteTextOperation === Operation.Success) {
+            this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, 'NoteComponent', 'saveAndCloseAsync');
+            await this.closeAsync();
+        }
     }
 
-    private getNoteDetailsCallback(result: NoteDetailsResult): void {
-        this.zone.run(() => {
-            this.initialNoteTitle = result.noteTitle;
-            this.noteTitle = result.noteTitle;
-            this.isMarked = result.isMarked;
-            this.isEncrypted = result.isEncrypted;
-            this.secretKeyHash = result.secretKeyHash;
-
-            this.setWindowTitle(result.noteTitle);
-        });
+    private async closeAsync(): Promise<void> {
+        await this.cleanupAsync();
+        const window: BrowserWindow = remote.getCurrentWindow();
+        window.close();
     }
 
     private setEditorZoomPercentage(): void {
@@ -742,7 +686,13 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    private async setNoteTitleCallbackAsync(result: NoteOperationResult): Promise<void> {
+    private async setNoteTitleAsync(finalNoteTitle: string): Promise<Operation> {
+        const result: NoteOperationResult = await this.collectionClient.seNoteTitleAsync(
+            this.noteId,
+            this.initialNoteTitle,
+            finalNoteTitle
+        );
+
         if (result.operation === Operation.Blank) {
             this.zone.run(() => (this.noteTitle = this.initialNoteTitle));
             this.snackBar.noteTitleCannotBeEmptyAsync();
@@ -767,9 +717,19 @@ export class NoteComponent implements OnInit {
         }
 
         this.isTitleDirty = false;
+
+        return result.operation;
     }
 
-    private async setNoteTextCallbackAsync(operation: Operation): Promise<void> {
+    private async setNoteTextAsync(): Promise<Operation> {
+        const operation: Operation = await this.collectionClient.setNoteTextAsync(
+            this.noteId,
+            this.quill.getText(),
+            this.isEncrypted,
+            this.secretKey,
+            this.getTasksCount()
+        );
+
         let showErrorDialog = false;
 
         if (operation === Operation.Success) {
@@ -801,18 +761,27 @@ export class NoteComponent implements OnInit {
         }
 
         this.isTextDirty = false;
+
+        return operation;
+    }
+
+    private isSecretKeyCorrect(): boolean {
+        return this.cryptography.createHash(this.secretKey) === this.secretKeyHash;
+    }
+
+    private async getNoteDetailsAsync(): Promise<void> {
+        const result: NoteDetailsResult = await this.collectionClient.getNoteDetailsAsync(this.noteId);
+
+        this.initialNoteTitle = result.noteTitle;
+        this.noteTitle = result.noteTitle;
+        this.isMarked = result.isMarked;
+        this.isEncrypted = result.isEncrypted;
+        this.secretKeyHash = result.secretKeyHash;
+
+        this.setWindowTitle(result.noteTitle);
     }
 
     private async getNoteContentAsync(): Promise<void> {
-        // Details from data store
-        while (!this.noteTitle) {
-            // While, is a workaround for auto reload. CollectionService is not ready to
-            // listen to events after a auto reload. So we keep trying, until it responds.
-            await Utils.sleep(50);
-            this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNoteDetailsCallback.bind(this));
-        }
-
-        // Details from note file
         try {
             const noteContent: string = await this.persistance.getNoteContentAsync(this.noteId, this.isEncrypted, this.secretKey);
 

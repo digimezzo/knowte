@@ -3,14 +3,13 @@ import * as remote from '@electron/remote';
 import { Subject, Subscription } from 'rxjs';
 import { BaseSettings } from '../../core/base-settings';
 import { Constants } from '../../core/constants';
+import { Logger } from '../../core/logger';
 import { SelectionWatcher } from '../../core/selection-watcher';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
 import { CollectionService } from '../../services/collection/collection.service';
-import { FileService } from '../../services/file/file.service';
 import { NoteMarkResult } from '../../services/results/note-mark-result';
 import { SearchService } from '../../services/search/search.service';
-import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 
 @Component({
     selector: 'app-notes',
@@ -26,11 +25,10 @@ export class NotesComponent implements OnInit, OnDestroy {
     private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
     constructor(
-        private collection: CollectionService,
-        private snackBar: SnackBarService,
-        public search: SearchService,
+        public searchService: SearchService,
+        private collectionService: CollectionService,
         private settings: BaseSettings,
-        private file: FileService,
+        private logger: Logger,
         private zone: NgZone
     ) {}
 
@@ -70,15 +68,15 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     public async ngOnInit(): Promise<void> {
         // Workaround for auto reload
-        await this.collection.initializeAsync();
+        await this.collectionService.initializeAsync();
 
-        this.subscription = this.collection.noteEdited$.subscribe(() => this.getNotes());
-        this.subscription.add(this.collection.notesChanged$.subscribe(() => this.getNotes()));
-        this.subscription.add(this.collection.noteNotebookChanged$.subscribe(() => this.getNotes()));
-        this.subscription.add(this.search.searchTextChanged$.subscribe((_) => this.getNotes()));
+        this.subscription = this.collectionService.noteEdited$.subscribe(() => this.getNotes());
+        this.subscription.add(this.collectionService.notesChanged$.subscribe(() => this.getNotes()));
+        this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(() => this.getNotes()));
+        this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => this.getNotes()));
 
         this.subscription.add(
-            this.collection.noteMarkChanged$.subscribe((result: NoteMarkResult) => {
+            this.collectionService.noteMarkChanged$.subscribe((result: NoteMarkResult) => {
                 if (this.componentCategory === Constants.markedCategory) {
                     this.getNotes();
                 } else {
@@ -110,16 +108,18 @@ export class NotesComponent implements OnInit, OnDestroy {
         this.selectedNoteIds.next(this.getSelectedNoteIds());
     }
 
-    public openNote(note: Note): void {
-        if (!this.collection.noteIsOpen(note.id)) {
-            this.globalEmitter.emit(Constants.setNoteOpenEvent, note.id, true);
+    public async openNoteAsync(note: Note): Promise<void> {
+        if (!this.collectionService.noteIsOpen(note.id)) {
+            this.logger.info(`Opening note with id=${note.id}`, 'NotesComponent', 'openNoteAsync');
+            await this.collectionService.setNoteOpen(note.id, true);
         } else {
+            this.logger.info(`Note with id=${note.id} is already open. Focusing.`, 'NotesComponent', 'openNoteAsync');
             this.globalEmitter.emit(Constants.focusNoteEvent, note.id);
         }
     }
 
     public toggleNoteMark(note: Note): void {
-        this.collection.setNoteMark(note.id, !note.isMarked);
+        this.collectionService.setNoteMark(note.id, !note.isMarked);
     }
 
     private markNote(result: NoteMarkResult): void {
@@ -140,7 +140,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
         if (this.activeNotebook) {
             this.zone.run(async () => {
-                this.notes = await this.collection.getNotesAsync(
+                this.notes = await this.collectionService.getNotesAsync(
                     this.activeNotebook.id,
                     this.componentCategory,
                     this.settings.showExactDatesInTheNotesList

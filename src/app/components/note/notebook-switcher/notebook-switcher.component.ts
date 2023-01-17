@@ -1,9 +1,10 @@
 import { Component, Input, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import * as remote from '@electron/remote';
-import { Constants } from '../../core/constants';
-import { Utils } from '../../core/utils';
-import { Notebook } from '../../data/entities/notebook';
-import { NoteDetailsResult } from '../../services/results/note-details-result';
+import { Constants } from '../../../core/constants';
+import { Utils } from '../../../core/utils';
+import { Notebook } from '../../../data/entities/notebook';
+import { CollectionClient } from '../../../services/collection/collection.client';
+import { NoteDetailsResult } from '../../../services/results/note-details-result';
 
 @Component({
     selector: 'app-notebook-switcher',
@@ -16,7 +17,7 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
     private languageChangedListener: any = this.languageChangedHandler.bind(this);
     private notebookChangedListener: any = this.notebookChangedHandler.bind(this);
 
-    constructor(private zone: NgZone) {}
+    constructor(private collectionClient: CollectionClient, private zone: NgZone) {}
 
     public selectedNotebookName: string;
 
@@ -36,7 +37,7 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
             await Utils.sleep(50);
         }
 
-        this.getNotebookName();
+        await this.getNotebookNameAsync();
     }
 
     private removeListeners(): void {
@@ -49,26 +50,21 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
         this.globalEmitter.on(Constants.languageChangedEvent, this.languageChangedListener);
     }
 
-    public getNotebooks(): void {
-        this.globalEmitter.emit(Constants.getNotebooksEvent, this.getNotebooksCallback.bind(this));
+    public async getNotebooksAsync(): Promise<void> {
+        this.notebooks = await this.collectionClient.getNotebooksAsync();
     }
 
-    public changeNotebook(notebook: Notebook): void {
-        this.globalEmitter.emit(Constants.setNotebookEvent, notebook.id, [this.noteId]);
-    }
-
-    private getNotebookName(): void {
-        this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNotebookNameCallback.bind(this));
+    public async changeNotebookAsync(notebook: Notebook): Promise<void> {
+        await this.collectionClient.setNotebookAsync(notebook.id, [this.noteId]);
     }
 
     private getNotebooksCallback(notebooks: Notebook[]): void {
         this.notebooks = notebooks;
     }
 
-    private getNotebookNameCallback(result: NoteDetailsResult): void {
-        this.zone.run(() => {
-            this.selectedNotebookName = result.notebookName;
-        });
+    private async getNotebookNameAsync(): Promise<void> {
+        const noteDetailsResult: NoteDetailsResult = await this.collectionClient.getNoteDetailsAsync(this.noteId);
+        this.selectedNotebookName = noteDetailsResult.notebookName;
     }
 
     private notebookChangedHandler(noteId: string, notebookName: string): void {
@@ -77,7 +73,7 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
         }
     }
 
-    private languageChangedHandler(noteId: string): void {
-        this.getNotebookName();
+    private languageChangedHandler(): void {
+        this.getNotebookNameAsync();
     }
 }

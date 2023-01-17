@@ -22,7 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
         public electron: ElectronService,
         public router: Router,
         public appearance: AppearanceService,
-        private collection: CollectionService,
+        private collectionService: CollectionService,
         private spellCheckerService: SpellCheckService,
         private trash: TrashService
     ) {
@@ -48,7 +48,7 @@ export class AppComponent implements OnInit, OnDestroy {
             })
         );
 
-        const showWelcome: boolean = !this.collection.hasStorageDirectory;
+        const showWelcome: boolean = !this.collectionService.hasStorageDirectory;
 
         if (showWelcome) {
             this.router.navigate(['/welcome']);

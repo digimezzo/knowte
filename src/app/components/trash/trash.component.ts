@@ -23,7 +23,7 @@ export class TrashComponent implements OnInit, OnDestroy {
     constructor(
         private dialog: MatDialog,
         private translator: TranslatorService,
-        public collection: CollectionService,
+        public collectionService: CollectionService,
         public trash: TrashService,
         private logger: Logger
     ) {}
@@ -42,8 +42,8 @@ export class TrashComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.subscription.add(
             this.trash.openTrashRequested$.subscribe(() => {
-                this.activeCollection = this.collection.getActiveCollection();
-                this.trashedNotes = this.collection.getTrashedNotes();
+                this.activeCollection = this.collectionService.getActiveCollection();
+                this.trashedNotes = this.collectionService.getTrashedNotes();
             })
         );
     }
@@ -74,7 +74,7 @@ export class TrashComponent implements OnInit, OnDestroy {
                 const noteIdsToDelete: string[] = this.trashedNotes.filter((x) => x.isSelected).map((x) => x.id);
 
                 if (noteIdsToDelete.length > 0) {
-                    const operation: Operation = this.collection.deleteNotesPermanently(noteIdsToDelete);
+                    const operation: Operation = this.collectionService.deleteNotesPermanently(noteIdsToDelete);
 
                     if (operation === Operation.Error) {
                         const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteNotesError');
@@ -84,7 +84,7 @@ export class TrashComponent implements OnInit, OnDestroy {
                         });
                     }
 
-                    this.trashedNotes = this.collection.getTrashedNotes();
+                    this.trashedNotes = this.collectionService.getTrashedNotes();
                 }
             }
         });
@@ -94,7 +94,7 @@ export class TrashComponent implements OnInit, OnDestroy {
         const noteIdsToRestore: string[] = this.trashedNotes.filter((x) => x.isSelected).map((x) => x.id);
 
         if (noteIdsToRestore.length > 0) {
-            const operation: Operation = this.collection.restoreNotes(noteIdsToRestore);
+            const operation: Operation = this.collectionService.restoreNotes(noteIdsToRestore);
 
             if (operation === Operation.Error) {
                 const errorText: string = await this.translator.getAsync('ErrorTexts.RestoreNotesError');
@@ -104,7 +104,7 @@ export class TrashComponent implements OnInit, OnDestroy {
                 });
             }
 
-            this.trashedNotes = this.collection.getTrashedNotes();
+            this.trashedNotes = this.collectionService.getTrashedNotes();
         }
     }
 }

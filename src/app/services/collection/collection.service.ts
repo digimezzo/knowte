@@ -25,6 +25,7 @@ import { NoteOperationResult } from '../results/note-operation-result';
 import { NotesCountResult } from '../results/notes-count-result';
 import { SearchService } from '../search/search.service';
 import { TranslatorService } from '../translator/translator.service';
+import { CollectionEvents } from './collection-events';
 import { NoteDateFormatter } from './note-date-formatter';
 
 /**
@@ -46,7 +47,7 @@ export class CollectionService {
     private notesCountChanged: Subject<NotesCountResult> = new Subject<NotesCountResult>();
     private noteMarkChanged: Subject<NoteMarkResult> = new Subject<NoteMarkResult>();
     private noteNotebookChanged: Subject<void> = new Subject();
-    private setNoteOpenEventListener: any = this.setNoteOpenAsync.bind(this);
+    private setNoteOpenEventListener: any = this.setNoteOpen.bind(this);
     private setNoteMarkEventListener: any = this.setNoteMark.bind(this);
     private setNotebookEventListener: any = this.setNotebook.bind(this);
     private getNoteDetailsEventListener: any = this.getNoteDetailsEventHandler.bind(this);
@@ -56,6 +57,7 @@ export class CollectionService {
     private deleteNoteEventListener: any = this.deleteNoteEventHandler.bind(this);
     private encryptNoteEventListener: any = this.encryptNoteEventHandler.bind(this);
     private decryptNoteEventListener: any = this.decryptNoteEventHandler.bind(this);
+    private getIsInitializedEventEventListener: any = this.getIsInitializedEventHandler.bind(this);
 
     private _activeCollection: string;
 
@@ -88,28 +90,30 @@ export class CollectionService {
 
     private listenToNoteEvents(): void {
         // Remove listeners
-        this.globalEmitter.removeListener(Constants.setNoteOpenEvent, this.setNoteOpenEventListener);
-        this.globalEmitter.removeListener(Constants.setNoteMarkEvent, this.setNoteMarkEventListener);
-        this.globalEmitter.removeListener(Constants.setNotebookEvent, this.setNotebookEventListener);
-        this.globalEmitter.removeListener(Constants.getNoteDetailsEvent, this.getNoteDetailsEventListener);
-        this.globalEmitter.removeListener(Constants.getNotebooksEvent, this.getNotebooksEventListener);
-        this.globalEmitter.removeListener(Constants.setNoteTitleEvent, this.setNoteTitleEventListener);
-        this.globalEmitter.removeListener(Constants.setNoteTextEvent, this.setNoteTextEventListener);
-        this.globalEmitter.removeListener(Constants.deleteNoteEvent, this.deleteNoteEventListener);
-        this.globalEmitter.removeListener(Constants.encryptNoteEvent, this.encryptNoteEventListener);
-        this.globalEmitter.removeListener(Constants.decryptNoteEvent, this.decryptNoteEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.setNoteOpenEvent, this.setNoteOpenEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.setNoteMarkEvent, this.setNoteMarkEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.setNotebookEvent, this.setNotebookEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.getNoteDetailsEvent, this.getNoteDetailsEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.getNotebooksEvent, this.getNotebooksEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.setNoteTitleEvent, this.setNoteTitleEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.setNoteTextEvent, this.setNoteTextEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.deleteNoteEvent, this.deleteNoteEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.encryptNoteEvent, this.encryptNoteEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.decryptNoteEvent, this.decryptNoteEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.getIsInitializedEvent, this.getIsInitializedEventEventListener);
 
         // Add listeners
-        this.globalEmitter.on(Constants.setNoteOpenEvent, this.setNoteOpenEventListener);
-        this.globalEmitter.on(Constants.setNoteMarkEvent, this.setNoteMarkEventListener);
-        this.globalEmitter.on(Constants.setNotebookEvent, this.setNotebookEventListener);
-        this.globalEmitter.on(Constants.getNoteDetailsEvent, this.getNoteDetailsEventListener);
-        this.globalEmitter.on(Constants.getNotebooksEvent, this.getNotebooksEventListener);
-        this.globalEmitter.on(Constants.setNoteTitleEvent, this.setNoteTitleEventListener);
-        this.globalEmitter.on(Constants.setNoteTextEvent, this.setNoteTextEventListener);
-        this.globalEmitter.on(Constants.deleteNoteEvent, this.deleteNoteEventListener);
-        this.globalEmitter.on(Constants.encryptNoteEvent, this.encryptNoteEventListener);
-        this.globalEmitter.on(Constants.decryptNoteEvent, this.decryptNoteEventListener);
+        this.globalEmitter.on(CollectionEvents.setNoteOpenEvent, this.setNoteOpenEventListener);
+        this.globalEmitter.on(CollectionEvents.setNoteMarkEvent, this.setNoteMarkEventListener);
+        this.globalEmitter.on(CollectionEvents.setNotebookEvent, this.setNotebookEventListener);
+        this.globalEmitter.on(CollectionEvents.getNoteDetailsEvent, this.getNoteDetailsEventListener);
+        this.globalEmitter.on(CollectionEvents.getNotebooksEvent, this.getNotebooksEventListener);
+        this.globalEmitter.on(CollectionEvents.setNoteTitleEvent, this.setNoteTitleEventListener);
+        this.globalEmitter.on(CollectionEvents.setNoteTextEvent, this.setNoteTextEventListener);
+        this.globalEmitter.on(CollectionEvents.deleteNoteEvent, this.deleteNoteEventListener);
+        this.globalEmitter.on(CollectionEvents.encryptNoteEvent, this.encryptNoteEventListener);
+        this.globalEmitter.on(CollectionEvents.decryptNoteEvent, this.decryptNoteEventListener);
+        this.globalEmitter.on(CollectionEvents.getIsInitializedEvent, this.getIsInitializedEventEventListener);
     }
 
     public get hasStorageDirectory(): boolean {
@@ -1003,7 +1007,7 @@ export class CollectionService {
         callback(notebooks);
     }
 
-    private async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
+    public setNoteOpen(noteId: string, isOpen: boolean): void {
         if (isOpen) {
             if (!this.openNoteIds.includes(noteId)) {
                 this.openNoteIds.push(noteId);
@@ -1064,5 +1068,9 @@ export class CollectionService {
 
     public decryptNoteEventHandler(noteId: string): void {
         this.dataStore.decryptNote(noteId);
+    }
+
+    private async getIsInitializedEventHandler(callback: any): Promise<void> {
+        callback(this.isInitialized);
     }
 }

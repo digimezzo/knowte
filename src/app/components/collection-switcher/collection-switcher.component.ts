@@ -24,13 +24,13 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
 
     constructor(
-        private dialog: MatDialog,
-        public collection: CollectionService,
-        private snackBar: SnackBarService,
+        public collectionService: CollectionService,
+        public updateService: UpdateService,
+        public router: Router,
         private translator: TranslatorService,
+        private snackBar: SnackBarService,
         private trash: TrashService,
-        public update: UpdateService,
-        public router: Router
+        private dialog: MatDialog
     ) {}
 
     public applicationName: string = ProductInformation.applicationName;
@@ -44,14 +44,14 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
 
     public async ngOnInit(): Promise<void> {
         // Workaround for auto reload
-        await this.collection.initializeAsync();
+        await this.collectionService.initializeAsync();
         await this.getCollectionsAsync();
 
-        this.subscription = this.collection.collectionsChanged$.subscribe(() => this.router.navigate(['/loading']));
+        this.subscription = this.collectionService.collectionsChanged$.subscribe(() => this.router.navigate(['/loading']));
     }
 
     public async addCollectionAsync(): Promise<void> {
-        if (this.collection.hasOpenNotes()) {
+        if (this.collectionService.hasOpenNotes()) {
             this.snackBar.closeNoteBeforeChangingCollectionsAsync();
             return;
         }
@@ -70,7 +70,7 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
             if (result) {
                 const collection: string = data.inputText;
 
-                const operation: Operation = await this.collection.addCollectionAsync(collection);
+                const operation: Operation = await this.collectionService.addCollectionAsync(collection);
 
                 switch (operation) {
                     case Operation.Duplicate: {
@@ -101,16 +101,16 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if (this.collection.hasOpenNotes()) {
+        if (this.collectionService.hasOpenNotes()) {
             this.snackBar.closeNoteBeforeChangingCollectionsAsync();
             return;
         }
 
-        this.collection.activateCollection(collection);
+        this.collectionService.activateCollection(collection);
     }
 
     public renameCollection(collection: string): void {
-        if (this.collection.hasOpenNotes()) {
+        if (this.collectionService.hasOpenNotes()) {
             this.snackBar.closeNoteBeforeChangingCollectionsAsync();
             return;
         }
@@ -122,7 +122,7 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
     }
 
     public async deleteCollectionAsync(collection: string): Promise<void> {
-        if (this.collection.hasOpenNotes()) {
+        if (this.collectionService.hasOpenNotes()) {
             this.snackBar.closeNoteBeforeChangingCollectionsAsync();
             return;
         }
@@ -137,7 +137,7 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
 
         dialogRef.afterClosed().subscribe(async (result) => {
             if (result) {
-                const operation: Operation = await this.collection.deleteCollectionAsync(collection);
+                const operation: Operation = await this.collectionService.deleteCollectionAsync(collection);
 
                 if (operation === Operation.Error) {
                     const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteCollectionError', {
@@ -153,8 +153,8 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
     }
 
     private async getCollectionsAsync(): Promise<void> {
-        this.collections = await this.collection.getCollectionsAsync();
-        this.activeCollection = this.collection.getActiveCollection();
+        this.collections = await this.collectionService.getCollectionsAsync();
+        this.activeCollection = this.collectionService.getActiveCollection();
     }
 
     public openTrash(): void {
@@ -162,6 +162,6 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
     }
 
     public downloadLatestRelease(): void {
-        this.update.downloadLatestRelease();
+        this.updateService.downloadLatestRelease();
     }
 }

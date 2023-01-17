@@ -14,7 +14,7 @@ import { SearchService } from '../../services/search/search.service';
 export class ActiveNotebookAndSearchComponent implements OnInit {
     @ViewChild('searchInput', { static: true }) public searchInputElement: ElementRef;
 
-    constructor(public search: SearchService) {}
+    constructor(public searchService: SearchService) {}
 
     @Input()
     public activeNotebook: Notebook;

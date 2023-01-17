@@ -17,7 +17,7 @@
         <button class="menu-button" mat-menu-item>
             <span
                 class="menu-item"
-                (click)="changeNotebook(notebook)"
+                (click)="this.changeNotebookAsync(notebook)"
                 [ngStyle]="{ 'font-weight': notebook.id === '1' ? 'bold' : 'normal' }"
             >
                 <i class="menu-icon las la-folder" [ngClass]="{ isActive: notebook.name === selectedNotebookName }"></i>

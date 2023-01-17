@@ -55,9 +55,9 @@ import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/te
 import { NoteContextMenuFactory } from './components/note/note-context-menu-factory';
 import { NoteStatusBarComponent } from './components/note/note-status-bar/note-status-bar.component';
 import { NoteComponent } from './components/note/note.component';
+import { NotebookSwitcherComponent } from './components/note/notebook-switcher/notebook-switcher.component';
 import { QuillFactory } from './components/note/quill-factory';
 import { QuillTweaker } from './components/note/quill-tweaker';
-import { NotebookSwitcherComponent } from './components/notebook-switcher/notebook-switcher.component';
 import { NotesComponent } from './components/notes/notes.component';
 import { SettingsTextSizeInNotesComponent } from './components/settings/settings-text-size-in-notes/settings-text-size-in-notes.component';
 import { SettingsComponent } from './components/settings/settings.component';
@@ -81,6 +81,7 @@ import { WebviewDirective } from './directives/webview.directive';
 import { GlobalErrorHandler } from './globalErrorHandler';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { AppearanceService } from './services/appearance/appearance.service';
+import { CollectionClient } from './services/collection/collection.client';
 import { CollectionService } from './services/collection/collection.service';
 import { NoteDateFormatter } from './services/collection/note-date-formatter';
 import { CryptographyService } from './services/cryptography/cryptography.service';
@@ -184,6 +185,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
     providers: [
         ElectronService,
         CollectionService,
+        CollectionClient,
         Settings,
         FileService,
         ClipboardManager,
