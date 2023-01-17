@@ -64,7 +64,6 @@ export class NoteComponent implements OnInit {
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
     private focusNoteListener: any = this.focusNote.bind(this);
 
-    private isEncrypted: boolean = false;
     private secretKey: string = '';
     private secretKeyHash: string = '';
 
@@ -90,6 +89,7 @@ export class NoteComponent implements OnInit {
         private collectionClient: CollectionClient
     ) {}
 
+    public isEncrypted: boolean = false;
     public noteId: string;
     public initialNoteTitle: string;
     public noteTitle: string;
@@ -280,7 +280,7 @@ export class NoteComponent implements OnInit {
 
     // ngOnDestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
-    public async beforeunloadHandler(event: any): Promise<void> {
+    public beforeunloadHandler(event: any): void {
         this.logger.info(`Detected closing of note with id=${this.noteId}`, 'NoteComponent', 'beforeunloadHandler');
 
         // Prevents closing of the window
