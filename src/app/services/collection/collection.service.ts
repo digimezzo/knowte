@@ -1073,4 +1073,8 @@ export class CollectionService {
     private async getIsInitializedEventHandler(callback: any): Promise<void> {
         callback(this.isInitialized);
     }
+
+    public onCloseNote(noteId: string): void {
+        this.globalEmitter.emit(CollectionEvents.closeNoteEvent, noteId);
+    }
 }

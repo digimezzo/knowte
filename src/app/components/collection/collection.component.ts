@@ -321,7 +321,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
                 for (const selectedNoteId of this.selectedNoteIds) {
                     // Close the note window
                     if (this.collectionService.noteIsOpen(selectedNoteId)) {
-                        this.globalEmitter.emit(Constants.closeNoteEvent, selectedNoteId);
+                        this.collectionService.onCloseNote(selectedNoteId);
                     }
                 }
 

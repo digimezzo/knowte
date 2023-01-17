@@ -10,4 +10,5 @@ export class CollectionEvents {
     public static readonly setNoteMarkEvent: string = '1386e290-1f5d-4ca8-b8c3-76c5991faeba';
     public static readonly getNotebooksEvent: string = '00169e63-412e-428b-b969-8dd4b3602a02';
     public static readonly setNotebookEvent: string = 'cf6f3e12-b435-4787-a81c-f40c99b176d9';
+    public static readonly closeNoteEvent: string = '0b7877ac-ca71-4cf5-a5a5-96798be7c5be';
 }

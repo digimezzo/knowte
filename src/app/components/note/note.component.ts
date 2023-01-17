@@ -6,7 +6,7 @@ import * as remote from '@electron/remote';
 import { BrowserWindow, SaveDialogOptions, SaveDialogReturnValue } from 'electron';
 import * as electronLocalShortcut from 'electron-localshortcut';
 import * as Quill from 'quill';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
 import { BaseSettings } from '../../core/base-settings';
 import { ClipboardManager } from '../../core/clipboard-manager';
@@ -52,6 +52,8 @@ import { QuillTweaker } from './quill-tweaker';
 export class NoteComponent implements OnInit {
     private quill: Quill;
 
+    private subscription: Subscription = new Subscription();
+
     private globalEmitter: any = remote.getGlobal('globalEmitter');
 
     private isTitleDirty: boolean = false;
@@ -60,12 +62,13 @@ export class NoteComponent implements OnInit {
 
     private noteZoomPercentageChangedListener: any = this.noteZoomPercentageChangedHandler.bind(this);
     private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
-    private focusNoteListener: any = this.focusNoteHandler.bind(this);
-    private closeNoteListener: any = this.closeNoteHandler.bind(this);
+    private focusNoteListener: any = this.focusNote.bind(this);
 
     private isEncrypted: boolean = false;
     private secretKey: string = '';
     private secretKeyHash: string = '';
+
+    private noteWindow: BrowserWindow;
 
     constructor(
         private print: PrintService,
@@ -92,9 +95,9 @@ export class NoteComponent implements OnInit {
     public noteTitle: string;
     public isMarked: boolean;
     public noteTitleChanged: Subject<string> = new Subject<string>();
-    public noteTextChanged: Subject<string> = new Subject<string>();
-    public saveChangesAndCloseNoteWindow: Subject<string> = new Subject<string>();
-    public closeNoteWindow: Subject<string> = new Subject<string>();
+    public noteTextChanged: Subject<void> = new Subject<void>();
+    public saveChangesAndCloseNoteWindow: Subject<void> = new Subject<void>();
+    public closeNoteWindow: Subject<void> = new Subject<void>();
     public canPerformActions: boolean = false;
     public isBusy: boolean = false;
     public actionIconRotation: string = 'default';
@@ -103,6 +106,7 @@ export class NoteComponent implements OnInit {
     public async ngOnInit(): Promise<void> {
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
+            this.noteWindow = remote.getCurrentWindow();
 
             await this.getNoteDetailsAsync();
 
@@ -114,7 +118,7 @@ export class NoteComponent implements OnInit {
                 while (!this.isSecretKeyCorrect() && !isClosing) {
                     if (!(await this.requestSecretKeyAsync())) {
                         isClosing = true;
-                        window.close();
+                        this.noteWindow.close();
                     } else {
                         if (!this.isSecretKeyCorrect()) {
                             const notificationTitle: string = await this.translator.getAsync('NotificationTitles.IncorrectKey');
@@ -143,14 +147,14 @@ export class NoteComponent implements OnInit {
             await this.getNoteContentAsync();
             this.applySearch();
 
-            window.webContents.on('context-menu', (event, contextMenuParams) => {
+            this.noteWindow.webContents.on('context-menu', (event, contextMenuParams) => {
                 const hasSelectedText: boolean = this.hasSelectedRange();
                 const contextMenuItemsEnabledState: ContextMenuItemsEnabledState = new ContextMenuItemsEnabledState(
                     hasSelectedText,
                     this.clipboard.containsText() || this.clipboard.containsImage()
                 );
                 this.noteContextMenuFactory.createAsync(
-                    window.webContents,
+                    this.noteWindow.webContents,
                     contextMenuParams,
                     contextMenuItemsEnabledState,
                     this.performCut.bind(this),
@@ -161,11 +165,9 @@ export class NoteComponent implements OnInit {
             });
         });
 
-        const window: BrowserWindow = remote.getCurrentWindow();
-
-        electronLocalShortcut.register(window, 'ESC', () => {
+        electronLocalShortcut.register(this.noteWindow, 'ESC', () => {
             if (this.settings.closeNotesWithEscape) {
-                window.close();
+                this.noteWindow.close();
             }
         });
     }
@@ -175,17 +177,19 @@ export class NoteComponent implements OnInit {
             await this.setNoteTitleAsync(finalNoteTitle);
         });
 
-        this.noteTextChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async (_) => {
+        this.noteTextChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async () => {
             await this.setNoteTextAsync();
         });
 
-        this.saveChangesAndCloseNoteWindow.pipe(debounceTime(Constants.noteWindowCloseTimeoutMilliseconds)).subscribe(async (_) => {
-            this.saveAndCloseAsync();
+        this.saveChangesAndCloseNoteWindow.pipe(debounceTime(Constants.noteWindowCloseTimeoutMilliseconds)).subscribe(async () => {
+            await this.saveAndCloseAsync();
         });
 
-        this.closeNoteWindow.subscribe(async (_) => {
-            this.closeAsync();
+        this.closeNoteWindow.subscribe(async () => {
+            await this.closeAsync();
         });
+
+        this.subscription.add(this.collectionClient.closeNote$.subscribe((noteId: string) => this.closeNote(noteId)));
     }
 
     private addDocumentListeners(): void {
@@ -271,7 +275,7 @@ export class NoteComponent implements OnInit {
     public onNoteTextChange(): void {
         this.isTextDirty = true;
         this.clearSearch();
-        this.noteTextChanged.next('');
+        this.noteTextChanged.next();
     }
 
     // ngOnDestroy doesn't tell us when a note window is closed, so we use this event instead.
@@ -295,10 +299,10 @@ export class NoteComponent implements OnInit {
                     'beforeunloadHandler'
                 );
 
-                this.saveChangesAndCloseNoteWindow.next('');
+                this.saveChangesAndCloseNoteWindow.next();
             } else {
                 this.logger.info(`Note with id=${this.noteId} is clean. Closing directly.`, 'NoteComponent', 'beforeunloadHandler');
-                this.closeNoteWindow.next('');
+                this.closeNoteWindow.next();
             }
         }
     }
@@ -349,8 +353,7 @@ export class NoteComponent implements OnInit {
             if (result) {
                 await this.collectionClient.deleteNoteAsync(this.noteId);
 
-                const window: BrowserWindow = remote.getCurrentWindow();
-                window.close();
+                this.noteWindow.close();
             }
         });
     }
@@ -545,23 +548,23 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    private removeGlobalListeners(): void {
+    private removeSubscriptions(): void {
+        this.subscription.unsubscribe();
+
         this.globalEmitter.removeListener(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
         this.globalEmitter.removeListener(Constants.focusNoteEvent, this.focusNoteListener);
-        this.globalEmitter.removeListener(Constants.closeNoteEvent, this.closeNoteListener);
         this.globalEmitter.removeListener(Constants.noteZoomPercentageChangedEvent, this.noteZoomPercentageChangedListener);
     }
 
     private addGlobalListeners(): void {
         this.globalEmitter.on(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
         this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
-        this.globalEmitter.on(Constants.closeNoteEvent, this.closeNoteListener);
         this.globalEmitter.on(Constants.noteZoomPercentageChangedEvent, this.noteZoomPercentageChangedListener);
     }
 
     private async cleanupAsync(): Promise<void> {
         await this.collectionClient.setNoteOpenAsync(this.noteId, false);
-        this.removeGlobalListeners();
+        this.removeSubscriptions();
     }
 
     private insertImage(file: any): void {
@@ -592,8 +595,7 @@ export class NoteComponent implements OnInit {
 
     private async closeAsync(): Promise<void> {
         await this.cleanupAsync();
-        const window: BrowserWindow = remote.getCurrentWindow();
-        window.close();
+        this.noteWindow.close();
     }
 
     private setEditorZoomPercentage(): void {
@@ -632,8 +634,7 @@ export class NoteComponent implements OnInit {
     }
 
     private setWindowTitle(noteTitle: string): void {
-        const window: BrowserWindow = remote.getCurrentWindow();
-        window.setTitle(`${ProductInformation.applicationName} - ${noteTitle}`);
+        this.noteWindow.setTitle(`${ProductInformation.applicationName} - ${noteTitle}`);
     }
 
     private noteMarkChangedHandler(noteId: string, isMarked: boolean): void {
@@ -642,23 +643,20 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    private focusNoteHandler(noteId: string): void {
+    private focusNote(noteId: string): void {
         if (this.noteId === noteId) {
-            const window: BrowserWindow = remote.getCurrentWindow();
-
-            if (window.isMinimized()) {
-                window.minimize(); // Workaround for notes not getting restored on Linux
-                window.restore();
+            if (this.noteWindow.isMinimized()) {
+                this.noteWindow.minimize(); // Workaround for notes not getting restored on Linux
+                this.noteWindow.restore();
             }
 
-            window.focus();
+            this.noteWindow.focus();
         }
     }
 
-    private closeNoteHandler(noteId: string): void {
+    private closeNote(noteId: string): void {
         if (this.noteId === noteId) {
-            const window: BrowserWindow = remote.getCurrentWindow();
-            window.close();
+            this.noteWindow.close();
         }
     }
 
@@ -667,8 +665,7 @@ export class NoteComponent implements OnInit {
     }
 
     public clearSearch(): void {
-        const window: BrowserWindow = remote.getCurrentWindow();
-        window.webContents.stopFindInPage('keepSelection');
+        this.noteWindow.webContents.stopFindInPage('keepSelection');
     }
 
     private applySearch(): void {
@@ -676,13 +673,11 @@ export class NoteComponent implements OnInit {
     }
 
     private getSearchTextCallback(searchText: string): void {
-        const window: BrowserWindow = remote.getCurrentWindow();
-
         if (searchText && searchText.length > 0) {
             const searchTextPieces: string[] = searchText.trim().split(' ');
 
             // For now, we can only search for 1 word.
-            window.webContents.findInPage(searchTextPieces[0]);
+            this.noteWindow.webContents.findInPage(searchTextPieces[0]);
         }
     }
 

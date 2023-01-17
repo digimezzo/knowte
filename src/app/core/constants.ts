@@ -28,7 +28,6 @@ export class Constants {
     public static readonly notebookChangedEvent: string = '2518f49c-50f0-4165-ad92-cfa00476d884';
     public static readonly noteMarkChangedEvent: string = '3b46bceb-dbcd-4013-935d-8e6f79e371a0';
     public static readonly focusNoteEvent: string = 'f45748e7-a7af-4057-a712-b9b181212119';
-    public static readonly closeNoteEvent: string = '0b7877ac-ca71-4cf5-a5a5-96798be7c5be';
     public static readonly themeChangedEvent: string = 'f132f4ce-ae3c-4e1d-958a-a9cd28517b68';
     public static readonly uiFontSizeChangedEvent: string = 'e49b82b5-f960-49bf-83f8-9721edc386cb';
     public static readonly languageChangedEvent: string = '0f8d004f-080d-4901-b813-477432809519';

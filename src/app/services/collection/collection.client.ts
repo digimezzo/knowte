@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
+import { Observable, Subject } from 'rxjs';
 import { Operation } from '../../core/enums';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
@@ -16,7 +17,14 @@ import { CollectionEvents } from './collection-events';
  */
 @Injectable()
 export class CollectionClient {
+    public constructor() {
+        this.globalEmitter.on(CollectionEvents.closeNoteEvent, (noteId: string) => this.closeNote.next(noteId));
+    }
+
     private globalEmitter: any = remote.getGlobal('globalEmitter');
+
+    private closeNote: Subject<string> = new Subject();
+    public closeNote$: Observable<string> = this.closeNote.asObservable();
 
     public async getNoteDetailsAsync(noteId: string): Promise<NoteDetailsResult> {
         await this.waitForInitializedAsync();
