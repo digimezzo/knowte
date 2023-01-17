@@ -7,7 +7,7 @@
         mat-icon-button
         [matMenuTriggerFor]="menu"
         matTooltip="{{ 'Tooltips.ChangeNotebook' | translate }}"
-        (click)="getNotebooks()"
+        (click)="getNotebooksAsync()"
     >
         <i class="notebook-switcher-button las la-bars"></i>
     </div>
