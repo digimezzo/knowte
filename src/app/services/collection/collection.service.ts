@@ -22,6 +22,7 @@ import { NoteDateFormatResult } from '../results/note-date-format-result';
 import { NoteDetailsResult } from '../results/note-details-result';
 import { NoteMarkResult } from '../results/note-mark-result';
 import { NoteOperationResult } from '../results/note-operation-result';
+import { NotebookChangedResult } from '../results/notebook-changed-result';
 import { NotesCountResult } from '../results/notes-count-result';
 import { SearchService } from '../search/search.service';
 import { TranslatorService } from '../translator/translator.service';
@@ -999,7 +1000,7 @@ export class CollectionService {
             }
         }
 
-        this.globalEmitter.emit(Constants.notebookChangedEvent, noteId, notebookName);
+        this.onNotebookChanged(noteId, notebookName);
     }
 
     private async getNotebooksEventHandler(callback: any): Promise<void> {
@@ -1084,6 +1085,10 @@ export class CollectionService {
 
     public onNoteZoomPercentageChanged(): void {
         this.globalEmitter.emit(CollectionEvents.noteZoomPercentageChangedEvent);
+    }
+
+    public onNotebookChanged(noteId: string, notebookName: string): void {
+        this.globalEmitter.emit(CollectionEvents.notebookChangedEvent, new NotebookChangedResult(noteId, notebookName));
     }
 
     private onNoteMarkChanged(noteId: string, isMarked: boolean): void {

@@ -1,10 +1,12 @@
-import { Component, Input, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import * as remote from '@electron/remote';
+import { Subscription } from 'rxjs';
 import { Constants } from '../../../core/constants';
 import { Utils } from '../../../core/utils';
 import { Notebook } from '../../../data/entities/notebook';
 import { CollectionClient } from '../../../services/collection/collection.client';
 import { NoteDetailsResult } from '../../../services/results/note-details-result';
+import { NotebookChangedResult } from '../../../services/results/notebook-changed-result';
 
 @Component({
     selector: 'app-notebook-switcher',
@@ -13,11 +15,11 @@ import { NoteDetailsResult } from '../../../services/results/note-details-result
     encapsulation: ViewEncapsulation.None,
 })
 export class NotebookSwitcherComponent implements OnInit, OnDestroy {
+    private subscription: Subscription = new Subscription();
     private globalEmitter: any = remote.getGlobal('globalEmitter');
     private languageChangedListener: any = this.languageChangedHandler.bind(this);
-    private notebookChangedListener: any = this.notebookChangedHandler.bind(this);
 
-    constructor(private collectionClient: CollectionClient, private zone: NgZone) {}
+    constructor(private collectionClient: CollectionClient) {}
 
     public selectedNotebookName: string;
 
@@ -26,11 +28,11 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
     public notebooks: Notebook[];
 
     public ngOnDestroy(): void {
-        this.removeListeners();
+        this.removeSubscriptions();
     }
 
     public async ngOnInit(): Promise<void> {
-        this.addListeners();
+        this.addSubscriptions();
 
         // TODO: there must be a better way to know when noteId is set
         while (!this.noteId) {
@@ -40,26 +42,27 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
         await this.getNotebookNameAsync();
     }
 
-    private removeListeners(): void {
-        this.globalEmitter.removeListener(Constants.notebookChangedEvent, this.notebookChangedListener);
+    private removeSubscriptions(): void {
+        this.subscription.unsubscribe();
         this.globalEmitter.removeListener(Constants.languageChangedEvent, this.languageChangedListener);
     }
 
-    private addListeners(): void {
-        this.globalEmitter.on(Constants.notebookChangedEvent, this.notebookChangedListener);
+    private addSubscriptions(): void {
+        this.subscription.add(
+            this.collectionClient.notebookChanged$.subscribe((result: NotebookChangedResult) =>
+                this.notebookChanged(result.noteId, result.notebookName)
+            )
+        );
+
         this.globalEmitter.on(Constants.languageChangedEvent, this.languageChangedListener);
     }
 
-    public getNotebooks(): void {
-        this.notebooks = this.collectionClient.getNotebooks();
+    public async getNotebooksAsync(): Promise<void> {
+        this.notebooks = await this.collectionClient.getNotebooksAsync();
     }
 
     public changeNotebook(notebook: Notebook): void {
         this.collectionClient.setNotebook(notebook.id, [this.noteId]);
-    }
-
-    private getNotebooksCallback(notebooks: Notebook[]): void {
-        this.notebooks = notebooks;
     }
 
     private async getNotebookNameAsync(): Promise<void> {
@@ -67,9 +70,9 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
         this.selectedNotebookName = noteDetailsResult.notebookName;
     }
 
-    private notebookChangedHandler(noteId: string, notebookName: string): void {
+    private notebookChanged(noteId: string, notebookName: string): void {
         if (this.noteId === noteId) {
-            this.zone.run(() => (this.selectedNotebookName = notebookName));
+            this.selectedNotebookName = notebookName;
         }
     }
 

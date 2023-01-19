@@ -25,9 +25,6 @@ export class Constants {
     public static readonly markedCategory: string = 'marked';
 
     public static readonly getSearchTextEvent: string = '22c2fc1d-6a81-459b-8829-2ee04c8d9c03';
-    public static readonly notebookChangedEvent: string = '2518f49c-50f0-4165-ad92-cfa00476d884';
-    public static readonly themeChangedEvent: string = 'f132f4ce-ae3c-4e1d-958a-a9cd28517b68';
-    public static readonly uiFontSizeChangedEvent: string = 'e49b82b5-f960-49bf-83f8-9721edc386cb';
     public static readonly languageChangedEvent: string = '0f8d004f-080d-4901-b813-477432809519';
 
     public static readonly previewApplicationTag: string = 'preview';

@@ -8,6 +8,7 @@ import { Notebook } from '../../data/entities/notebook';
 import { NoteDetailsResult } from '../results/note-details-result';
 import { NoteMarkResult } from '../results/note-mark-result';
 import { NoteOperationResult } from '../results/note-operation-result';
+import { NotebookChangedResult } from '../results/notebook-changed-result';
 import { CollectionEvents } from './collection-events';
 
 /**
@@ -23,6 +24,7 @@ export class CollectionClient {
         this.globalEmitter.on(CollectionEvents.focusNoteEvent, (noteId: string) => this.focusNote.next(noteId));
         this.globalEmitter.on(CollectionEvents.noteMarkChangedEvent, (result: NoteMarkResult) => this.noteMarkChanged.next(result));
         this.globalEmitter.on(CollectionEvents.noteZoomPercentageChangedEvent, () => this.noteZoomPercentageChanged.next());
+        this.globalEmitter.on(CollectionEvents.notebookChangedEvent, (result: NotebookChangedResult) => this.notebookChanged.next(result));
     }
 
     private globalEmitter: any = remote.getGlobal('globalEmitter');
@@ -35,6 +37,9 @@ export class CollectionClient {
 
     private noteMarkChanged: Subject<NoteMarkResult> = new Subject();
     public noteMarkChanged$: Observable<NoteMarkResult> = this.noteMarkChanged.asObservable();
+
+    private notebookChanged: Subject<NotebookChangedResult> = new Subject();
+    public notebookChanged$: Observable<NotebookChangedResult> = this.notebookChanged.asObservable();
 
     private noteZoomPercentageChanged: Subject<void> = new Subject();
     public noteZoomPercentageChanged$: Observable<void> = this.noteZoomPercentageChanged.asObservable();
@@ -125,10 +130,14 @@ export class CollectionClient {
         this.globalEmitter.emit(CollectionEvents.setNotebookEvent, notebookId, noteIds);
     }
 
-    public getNotebooks(): Notebook[] {
-        let notebooks: Notebook[] = [];
+    public async getNotebooksAsync(): Promise<Notebook[]> {
+        let notebooks: Notebook[] = undefined;
 
         this.globalEmitter.emit(CollectionEvents.getNotebooksEvent, (receivedNotebooks: Notebook[]) => (notebooks = receivedNotebooks));
+
+        while (notebooks === undefined) {
+            await Utils.sleep(50);
+        }
 
         return notebooks;
     }

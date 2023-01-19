@@ -14,4 +14,5 @@ export class CollectionEvents {
     public static readonly noteMarkChangedEvent: string = '3b46bceb-dbcd-4013-935d-8e6f79e371a0';
     public static readonly focusNoteEvent: string = 'f45748e7-a7af-4057-a712-b9b181212119';
     public static readonly noteZoomPercentageChangedEvent: string = '6ec3f042-27ea-49e1-a012-49693f44db02';
+    public static readonly notebookChangedEvent: string = '2518f49c-50f0-4165-ad92-cfa00476d884';
 }
