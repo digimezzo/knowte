@@ -50,12 +50,12 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
         this.globalEmitter.on(Constants.languageChangedEvent, this.languageChangedListener);
     }
 
-    public async getNotebooksAsync(): Promise<void> {
-        this.notebooks = await this.collectionClient.getNotebooksAsync();
+    public getNotebooks(): void {
+        this.notebooks = this.collectionClient.getNotebooks();
     }
 
-    public async changeNotebookAsync(notebook: Notebook): Promise<void> {
-        await this.collectionClient.setNotebookAsync(notebook.id, [this.noteId]);
+    public changeNotebook(notebook: Notebook): void {
+        this.collectionClient.setNotebook(notebook.id, [this.noteId]);
     }
 
     private getNotebooksCallback(notebooks: Notebook[]): void {

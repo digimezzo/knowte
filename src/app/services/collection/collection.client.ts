@@ -57,9 +57,7 @@ export class CollectionClient {
         return noteDetailsResult;
     }
 
-    public async seNoteTitleAsync(noteId: string, initialNoteTitle: string, finalNoteTitle: string): Promise<NoteOperationResult> {
-        await this.waitForInitializedAsync();
-
+    public async setNoteTitleAsync(noteId: string, initialNoteTitle: string, finalNoteTitle: string): Promise<NoteOperationResult> {
         let noteOperationResult: NoteOperationResult;
 
         this.globalEmitter.emit(
@@ -84,8 +82,6 @@ export class CollectionClient {
         secretKey: string,
         tasksCount: TasksCount
     ): Promise<Operation> {
-        await this.waitForInitializedAsync();
-
         let operation: Operation;
 
         this.globalEmitter.emit(
@@ -105,45 +101,31 @@ export class CollectionClient {
         return operation;
     }
 
-    public async deleteNoteAsync(noteId: string): Promise<void> {
-        await this.waitForInitializedAsync();
-
+    public deleteNote(noteId: string): void {
         this.globalEmitter.emit(CollectionEvents.deleteNoteEvent, noteId);
     }
 
-    public async encryptNoteAsync(noteId: string, secretKey: string): Promise<void> {
-        await this.waitForInitializedAsync();
-
+    public encryptNote(noteId: string, secretKey: string): void {
         this.globalEmitter.emit(CollectionEvents.encryptNoteEvent, noteId, secretKey);
     }
 
-    public async decryptNoteAsync(noteId: string): Promise<void> {
-        await this.waitForInitializedAsync();
-
+    public decryptNote(noteId: string): void {
         this.globalEmitter.emit(CollectionEvents.decryptNoteEvent, noteId);
     }
 
-    public async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
-        await this.waitForInitializedAsync();
-
+    public setNoteOpen(noteId: string, isOpen: boolean): void {
         this.globalEmitter.emit(CollectionEvents.setNoteOpenEvent, noteId, isOpen);
     }
 
-    public async setNoteMarkAsync(noteId: string, isMarked: boolean): Promise<void> {
-        await this.waitForInitializedAsync();
-
+    public setNoteMark(noteId: string, isMarked: boolean): void {
         this.globalEmitter.emit(CollectionEvents.setNoteMarkEvent, noteId, isMarked);
     }
 
-    public async setNotebookAsync(notebookId: string, noteIds: string[]): Promise<void> {
-        await this.waitForInitializedAsync();
-
+    public setNotebook(notebookId: string, noteIds: string[]): void {
         this.globalEmitter.emit(CollectionEvents.setNotebookEvent, notebookId, noteIds);
     }
 
-    public async getNotebooksAsync(): Promise<Notebook[]> {
-        await this.waitForInitializedAsync();
-
+    public getNotebooks(): Notebook[] {
         let notebooks: Notebook[] = [];
 
         this.globalEmitter.emit(CollectionEvents.getNotebooksEvent, (receivedNotebooks: Notebook[]) => (notebooks = receivedNotebooks));
@@ -151,6 +133,11 @@ export class CollectionClient {
         return notebooks;
     }
 
+    /**
+     * This is a workaround for hot-reload where it can happen that a note sends a
+     * command via CollectionClient when CollectionService is not yet initialized.
+     * Use this function in commands where this can happen.
+     */
     private async waitForInitializedAsync(): Promise<void> {
         let isInitialized: boolean = false;
 

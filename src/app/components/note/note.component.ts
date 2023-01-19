@@ -60,7 +60,6 @@ export class NoteComponent implements OnInit {
 
     private isTitleDirty: boolean = false;
     private isTextDirty: boolean = false;
-    private preventedClosing: boolean = false;
 
     private secretKey: string = '';
     private secretKeyHash: string = '';
@@ -95,7 +94,6 @@ export class NoteComponent implements OnInit {
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteTextChanged: Subject<void> = new Subject<void>();
     public saveChangesAndCloseNoteWindow: Subject<void> = new Subject<void>();
-    public closeNoteWindow: Subject<void> = new Subject<void>();
     public canPerformActions: boolean = false;
     public isBusy: boolean = false;
     public actionIconRotation: string = 'default';
@@ -151,10 +149,6 @@ export class NoteComponent implements OnInit {
 
         this.saveChangesAndCloseNoteWindow.pipe(debounceTime(Constants.noteWindowCloseTimeoutMilliseconds)).subscribe(async () => {
             await this.saveAndCloseAsync();
-        });
-
-        this.closeNoteWindow.subscribe(async () => {
-            await this.closeAsync();
         });
 
         this.subscription.add(this.collectionClient.closeNote$.subscribe((noteId: string) => this.closeNote(noteId)));
@@ -222,27 +216,23 @@ export class NoteComponent implements OnInit {
     public beforeunloadHandler(event: any): void {
         this.logger.info(`Detected closing of note with id=${this.noteId}`, 'NoteComponent', 'beforeunloadHandler');
 
-        // Prevents closing of the window
-        if (!this.preventedClosing) {
+        if (this.isTitleDirty || this.isTextDirty) {
+            this.isTitleDirty = false;
+            this.isTextDirty = false;
+
+            this.logger.info(
+                `Note with id=${this.noteId} is dirty. Preventing close to save changes first.`,
+                'NoteComponent',
+                'beforeunloadHandler'
+            );
+
             event.preventDefault();
             event.returnValue = '';
-            this.preventedClosing = true;
 
-            if (this.isTitleDirty || this.isTextDirty) {
-                this.isTitleDirty = false;
-                this.isTextDirty = false;
-
-                this.logger.info(
-                    `Note with id=${this.noteId} is dirty. Preventing close to save changes first.`,
-                    'NoteComponent',
-                    'beforeunloadHandler'
-                );
-
-                this.saveChangesAndCloseNoteWindow.next();
-            } else {
-                this.logger.info(`Note with id=${this.noteId} is clean. Closing directly.`, 'NoteComponent', 'beforeunloadHandler');
-                this.closeNoteWindow.next();
-            }
+            this.saveChangesAndCloseNoteWindow.next();
+        } else {
+            this.logger.info(`Note with id=${this.noteId} is clean. Closing directly.`, 'NoteComponent', 'beforeunloadHandler');
+            this.cleanup();
         }
     }
 
@@ -256,9 +246,9 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    public async toggleNoteMarkAsync(): Promise<void> {
+    public toggleNoteMark(): void {
         this.hideActionButtonsDelayedAsync();
-        await this.collectionClient.setNoteMarkAsync(this.noteId, !this.isMarked);
+        this.collectionClient.setNoteMark(this.noteId, !this.isMarked);
     }
 
     public async exportNoteToPdfAsync(): Promise<void> {
@@ -290,8 +280,7 @@ export class NoteComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(async (result) => {
             if (result) {
-                await this.collectionClient.deleteNoteAsync(this.noteId);
-
+                this.collectionClient.deleteNote(this.noteId);
                 this.noteWindow.close();
             }
         });
@@ -385,7 +374,7 @@ export class NoteComponent implements OnInit {
             if (result) {
                 this.isEncrypted = true;
                 this.secretKey = data.inputText;
-                await this.collectionClient.encryptNoteAsync(this.noteId, this.secretKey);
+                this.collectionClient.encryptNote(this.noteId, this.secretKey);
                 await this.setNoteTextAsync();
             }
         });
@@ -406,7 +395,7 @@ export class NoteComponent implements OnInit {
             if (result) {
                 this.isEncrypted = false;
                 this.secretKey = '';
-                await this.collectionClient.decryptNoteAsync(this.noteId);
+                this.collectionClient.decryptNote(this.noteId);
                 await this.setNoteTextAsync();
             }
         });
@@ -491,8 +480,8 @@ export class NoteComponent implements OnInit {
         this.subscription.unsubscribe();
     }
 
-    private async cleanupAsync(): Promise<void> {
-        await this.collectionClient.setNoteOpenAsync(this.noteId, false);
+    private cleanup(): void {
+        this.collectionClient.setNoteOpen(this.noteId, false);
         this.removeSubscriptions();
     }
 
@@ -518,12 +507,12 @@ export class NoteComponent implements OnInit {
         // Close is only allowed when saving both title and text is successful
         if (setNoteTitleOperation === Operation.Success && setNoteTextOperation === Operation.Success) {
             this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, 'NoteComponent', 'saveAndCloseAsync');
-            await this.closeAsync();
+            this.close();
         }
     }
 
-    private async closeAsync(): Promise<void> {
-        await this.cleanupAsync();
+    private close(): void {
+        this.cleanup();
         this.noteWindow.close();
     }
 
@@ -607,7 +596,7 @@ export class NoteComponent implements OnInit {
     }
 
     private async setNoteTitleAsync(finalNoteTitle: string): Promise<Operation> {
-        const result: NoteOperationResult = await this.collectionClient.seNoteTitleAsync(
+        const result: NoteOperationResult = await this.collectionClient.setNoteTitleAsync(
             this.noteId,
             this.initialNoteTitle,
             finalNoteTitle

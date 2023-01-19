@@ -7,7 +7,7 @@
         mat-icon-button
         [matMenuTriggerFor]="menu"
         matTooltip="{{ 'Tooltips.ChangeNotebook' | translate }}"
-        (click)="getNotebooksAsync()"
+        (click)="getNotebooks()"
     >
         <i class="notebook-switcher-button las la-bars"></i>
     </div>
@@ -17,7 +17,7 @@
         <button class="menu-button" mat-menu-item>
             <span
                 class="menu-item"
-                (click)="this.changeNotebookAsync(notebook)"
+                (click)="this.changeNotebook(notebook)"
                 [ngStyle]="{ 'font-weight': notebook.id === '1' ? 'bold' : 'normal' }"
             >
                 <i class="menu-icon las la-folder" [ngClass]="{ isActive: notebook.name === selectedNotebookName }"></i>
