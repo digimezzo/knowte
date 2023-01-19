@@ -761,7 +761,7 @@ export class CollectionService {
         const result: NoteMarkResult = new NoteMarkResult(noteId, note.isMarked, markedNotes.length);
 
         this.noteMarkChanged.next(result);
-        this.globalEmitter.emit(Constants.noteMarkChangedEvent, note.id, note.isMarked);
+        this.onNoteMarkChanged(note.id, note.isMarked);
     }
 
     public setNotebook(notebookId: string, noteIds: string[]): Operation {
@@ -1076,5 +1076,18 @@ export class CollectionService {
 
     public onCloseNote(noteId: string): void {
         this.globalEmitter.emit(CollectionEvents.closeNoteEvent, noteId);
+    }
+
+    public onFocusNote(noteId: string): void {
+        this.globalEmitter.emit(CollectionEvents.focusNoteEvent, noteId);
+    }
+
+    public onNoteZoomPercentageChanged(): void {
+        this.globalEmitter.emit(CollectionEvents.noteZoomPercentageChangedEvent);
+    }
+
+    private onNoteMarkChanged(noteId: string, isMarked: boolean): void {
+        const result: NoteMarkResult = new NoteMarkResult(noteId, isMarked, 0);
+        this.globalEmitter.emit(CollectionEvents.noteMarkChangedEvent, result);
     }
 }

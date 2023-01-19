@@ -6,6 +6,7 @@ import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { Notebook } from '../../data/entities/notebook';
 import { NoteDetailsResult } from '../results/note-details-result';
+import { NoteMarkResult } from '../results/note-mark-result';
 import { NoteOperationResult } from '../results/note-operation-result';
 import { CollectionEvents } from './collection-events';
 
@@ -19,12 +20,24 @@ import { CollectionEvents } from './collection-events';
 export class CollectionClient {
     public constructor() {
         this.globalEmitter.on(CollectionEvents.closeNoteEvent, (noteId: string) => this.closeNote.next(noteId));
+        this.globalEmitter.on(CollectionEvents.focusNoteEvent, (noteId: string) => this.focusNote.next(noteId));
+        this.globalEmitter.on(CollectionEvents.noteMarkChangedEvent, (result: NoteMarkResult) => this.noteMarkChanged.next(result));
+        this.globalEmitter.on(CollectionEvents.noteZoomPercentageChangedEvent, () => this.noteZoomPercentageChanged.next());
     }
 
     private globalEmitter: any = remote.getGlobal('globalEmitter');
 
     private closeNote: Subject<string> = new Subject();
     public closeNote$: Observable<string> = this.closeNote.asObservable();
+
+    private focusNote: Subject<string> = new Subject();
+    public focusNote$: Observable<string> = this.focusNote.asObservable();
+
+    private noteMarkChanged: Subject<NoteMarkResult> = new Subject();
+    public noteMarkChanged$: Observable<NoteMarkResult> = this.noteMarkChanged.asObservable();
+
+    private noteZoomPercentageChanged: Subject<void> = new Subject();
+    public noteZoomPercentageChanged$: Observable<void> = this.noteZoomPercentageChanged.asObservable();
 
     public async getNoteDetailsAsync(noteId: string): Promise<NoteDetailsResult> {
         await this.waitForInitializedAsync();

@@ -17,11 +17,13 @@ import { ProductInformation } from '../../core/product-information';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { AppearanceService } from '../../services/appearance/appearance.service';
+import { CollectionEvents } from '../../services/collection/collection-events';
 import { CollectionClient } from '../../services/collection/collection.client';
 import { CryptographyService } from '../../services/cryptography/cryptography.service';
 import { PersistanceService } from '../../services/persistance/persistance.service';
 import { PrintService } from '../../services/print/print.service';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
+import { NoteMarkResult } from '../../services/results/note-mark-result';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { SpellCheckService } from '../../services/spell-check/spell-check.service';
@@ -59,10 +61,6 @@ export class NoteComponent implements OnInit {
     private isTitleDirty: boolean = false;
     private isTextDirty: boolean = false;
     private preventedClosing: boolean = false;
-
-    private noteZoomPercentageChangedListener: any = this.noteZoomPercentageChangedHandler.bind(this);
-    private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
-    private focusNoteListener: any = this.focusNote.bind(this);
 
     private secretKey: string = '';
     private secretKeyHash: string = '';
@@ -109,41 +107,11 @@ export class NoteComponent implements OnInit {
             this.noteWindow = remote.getCurrentWindow();
 
             await this.getNoteDetailsAsync();
-
-            this.addGlobalListeners();
-
-            if (this.isEncrypted) {
-                let isClosing: boolean = false;
-
-                while (!this.isSecretKeyCorrect() && !isClosing) {
-                    if (!(await this.requestSecretKeyAsync())) {
-                        isClosing = true;
-                        this.noteWindow.close();
-                    } else {
-                        if (!this.isSecretKeyCorrect()) {
-                            const notificationTitle: string = await this.translator.getAsync('NotificationTitles.IncorrectKey');
-                            const notificationText: string = await this.translator.getAsync('NotificationTexts.SecretKeyIncorrect');
-                            const dialogRef: MatDialogRef<NotificationDialogComponent> = this.dialog.open(NotificationDialogComponent, {
-                                width: '450px',
-                                data: { notificationTitle: notificationTitle, notificationText: notificationText },
-                            });
-
-                            await dialogRef.afterClosed().toPromise();
-                        }
-                    }
-                }
-            }
-
-            this.quill = await this.quillFactory.createAsync('#editor', this.performUndo.bind(this), this.performRedo.bind(this));
-            this.quillTweaker.forcePasteOfUnformattedText(this.quill);
-            this.quillTweaker.assignActionToControlKeyCombination(this.quill, 'Y', this.performRedo.bind(this));
-            this.quillTweaker.assignActionToTextChange(this.quill, this.onNoteTextChange.bind(this));
-
+            await this.requestSecretKeyOrCloseNoteAsync();
+            await this.configureQuillEditorAsync();
             this.setEditorZoomPercentage();
-            await this.setToolbarTooltipsAsync();
             this.addSubscriptions();
             this.addDocumentListeners();
-
             await this.getNoteContentAsync();
             this.applySearch();
 
@@ -190,6 +158,13 @@ export class NoteComponent implements OnInit {
         });
 
         this.subscription.add(this.collectionClient.closeNote$.subscribe((noteId: string) => this.closeNote(noteId)));
+        this.subscription.add(this.collectionClient.focusNote$.subscribe((noteId: string) => this.focusNote(noteId)));
+        this.subscription.add(this.collectionClient.noteZoomPercentageChanged$.subscribe(() => this.setEditorZoomPercentage()));
+        this.subscription.add(
+            this.collectionClient.noteMarkChanged$.subscribe((result: NoteMarkResult) =>
+                this.noteMarkChanged(result.noteId, result.isMarked)
+            )
+        );
     }
 
     private addDocumentListeners(): void {
@@ -228,42 +203,6 @@ export class NoteComponent implements OnInit {
                 this.logger.error(`Could not perform redo. Cause: ${error}`, 'NoteComponent', 'performRedo');
             }
         }
-    }
-
-    private async setToolbarTooltipsAsync(): Promise<void> {
-        // See: https://github.com/quilljs/quill/issues/650
-        const toolbarElement: Element = document.querySelector('.ql-toolbar');
-        toolbarElement.querySelector('span.ql-background').setAttribute('title', await this.translator.getAsync('Tooltips.Highlight'));
-        toolbarElement.querySelector('button.ql-undo').setAttribute('title', await this.translator.getAsync('Tooltips.Undo'));
-        toolbarElement.querySelector('button.ql-redo').setAttribute('title', await this.translator.getAsync('Tooltips.Redo'));
-        toolbarElement.querySelector('button.ql-bold').setAttribute('title', await this.translator.getAsync('Tooltips.Bold'));
-        toolbarElement.querySelector('button.ql-italic').setAttribute('title', await this.translator.getAsync('Tooltips.Italic'));
-        toolbarElement.querySelector('button.ql-underline').setAttribute('title', await this.translator.getAsync('Tooltips.Underline'));
-        toolbarElement.querySelector('button.ql-strike').setAttribute('title', await this.translator.getAsync('Tooltips.Strikethrough'));
-
-        toolbarElement
-            .querySelector('[class="ql-header"][value="1"]')
-            .setAttribute('title', await this.translator.getAsync('Tooltips.Heading1'));
-        toolbarElement
-            .querySelector('[class="ql-header"][value="2"]')
-            .setAttribute('title', await this.translator.getAsync('Tooltips.Heading2'));
-
-        toolbarElement
-            .querySelector('[class="ql-list"][value="ordered"]')
-            .setAttribute('title', await this.translator.getAsync('Tooltips.NumberedList'));
-        toolbarElement
-            .querySelector('[class="ql-list"][value="bullet"]')
-            .setAttribute('title', await this.translator.getAsync('Tooltips.BulletedList'));
-        toolbarElement
-            .querySelector('[class="ql-list"][value="check"]')
-            .setAttribute('title', await this.translator.getAsync('Tooltips.TaskList'));
-
-        toolbarElement.querySelector('button.ql-link').setAttribute('title', await this.translator.getAsync('Tooltips.Link'));
-        toolbarElement.querySelector('button.ql-blockquote').setAttribute('title', await this.translator.getAsync('Tooltips.Quote'));
-        toolbarElement.querySelector('button.ql-code-block').setAttribute('title', await this.translator.getAsync('Tooltips.Code'));
-        toolbarElement.querySelector('button.ql-image').setAttribute('title', await this.translator.getAsync('Tooltips.Image'));
-
-        toolbarElement.querySelector('button.ql-clean').setAttribute('title', await this.translator.getAsync('Tooltips.ClearFormatting'));
     }
 
     public onNoteTitleChange(newNoteTitle: string): void {
@@ -407,7 +346,7 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    public async requestSecretKeyAsync(): Promise<boolean> {
+    private async requestSecretKeyAsync(): Promise<boolean> {
         const titleText: string = await this.translator.getAsync('DialogTitles.NoteIsEncrypted');
         const placeholderText: string = await this.translator.getAsync('Input.SecretKey');
 
@@ -550,16 +489,6 @@ export class NoteComponent implements OnInit {
 
     private removeSubscriptions(): void {
         this.subscription.unsubscribe();
-
-        this.globalEmitter.removeListener(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
-        this.globalEmitter.removeListener(Constants.focusNoteEvent, this.focusNoteListener);
-        this.globalEmitter.removeListener(Constants.noteZoomPercentageChangedEvent, this.noteZoomPercentageChangedListener);
-    }
-
-    private addGlobalListeners(): void {
-        this.globalEmitter.on(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
-        this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
-        this.globalEmitter.on(Constants.noteZoomPercentageChangedEvent, this.noteZoomPercentageChangedListener);
     }
 
     private async cleanupAsync(): Promise<void> {
@@ -628,7 +557,7 @@ export class NoteComponent implements OnInit {
             }
         }
 
-        this.globalEmitter.emit(Constants.noteZoomPercentageChangedEvent);
+        this.globalEmitter.emit(CollectionEvents.noteZoomPercentageChangedEvent);
 
         this.setEditorZoomPercentage();
     }
@@ -637,7 +566,7 @@ export class NoteComponent implements OnInit {
         this.noteWindow.setTitle(`${ProductInformation.applicationName} - ${noteTitle}`);
     }
 
-    private noteMarkChangedHandler(noteId: string, isMarked: boolean): void {
+    private noteMarkChanged(noteId: string, isMarked: boolean): void {
         if (this.noteId === noteId) {
             this.zone.run(() => (this.isMarked = isMarked));
         }
@@ -658,10 +587,6 @@ export class NoteComponent implements OnInit {
         if (this.noteId === noteId) {
             this.noteWindow.close();
         }
-    }
-
-    private noteZoomPercentageChangedHandler(): void {
-        this.setEditorZoomPercentage();
     }
 
     public clearSearch(): void {
@@ -860,5 +785,39 @@ export class NoteComponent implements OnInit {
 
     private getNoteJsonContent(): string {
         return JSON.stringify(this.quill.getContents());
+    }
+
+    private async requestSecretKeyOrCloseNoteAsync(): Promise<void> {
+        if (!this.isEncrypted) {
+            return;
+        }
+
+        let isClosing: boolean = false;
+
+        while (!this.isSecretKeyCorrect() && !isClosing) {
+            if (!(await this.requestSecretKeyAsync())) {
+                isClosing = true;
+                this.noteWindow.close();
+            } else {
+                if (!this.isSecretKeyCorrect()) {
+                    const notificationTitle: string = await this.translator.getAsync('NotificationTitles.IncorrectKey');
+                    const notificationText: string = await this.translator.getAsync('NotificationTexts.SecretKeyIncorrect');
+                    const dialogRef: MatDialogRef<NotificationDialogComponent> = this.dialog.open(NotificationDialogComponent, {
+                        width: '450px',
+                        data: { notificationTitle: notificationTitle, notificationText: notificationText },
+                    });
+
+                    await dialogRef.afterClosed().toPromise();
+                }
+            }
+        }
+    }
+
+    private async configureQuillEditorAsync(): Promise<void> {
+        this.quill = await this.quillFactory.createAsync('#editor', this.performUndo.bind(this), this.performRedo.bind(this));
+        await this.quillTweaker.setToolbarTooltipsAsync();
+        this.quillTweaker.forcePasteOfUnformattedText(this.quill);
+        this.quillTweaker.assignActionToControlKeyCombination(this.quill, 'Y', this.performRedo.bind(this));
+        this.quillTweaker.assignActionToTextChange(this.quill, this.onNoteTextChange.bind(this));
     }
 }

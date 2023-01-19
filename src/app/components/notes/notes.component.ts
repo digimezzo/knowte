@@ -114,7 +114,7 @@ export class NotesComponent implements OnInit, OnDestroy {
             await this.collectionService.setNoteOpen(note.id, true);
         } else {
             this.logger.info(`Note with id=${note.id} is already open. Focusing.`, 'NotesComponent', 'openNoteAsync');
-            this.globalEmitter.emit(Constants.focusNoteEvent, note.id);
+            this.collectionService.onFocusNote(note.id);
         }
     }
 

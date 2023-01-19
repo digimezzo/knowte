@@ -11,4 +11,7 @@ export class CollectionEvents {
     public static readonly getNotebooksEvent: string = '00169e63-412e-428b-b969-8dd4b3602a02';
     public static readonly setNotebookEvent: string = 'cf6f3e12-b435-4787-a81c-f40c99b176d9';
     public static readonly closeNoteEvent: string = '0b7877ac-ca71-4cf5-a5a5-96798be7c5be';
+    public static readonly noteMarkChangedEvent: string = '3b46bceb-dbcd-4013-935d-8e6f79e371a0';
+    public static readonly focusNoteEvent: string = 'f45748e7-a7af-4057-a712-b9b181212119';
+    public static readonly noteZoomPercentageChangedEvent: string = '6ec3f042-27ea-49e1-a012-49693f44db02';
 }
