@@ -24,7 +24,6 @@ export class Constants {
     public static readonly thisWeekCategory: string = 'thisweek';
     public static readonly markedCategory: string = 'marked';
 
-    public static readonly getSearchTextEvent: string = '22c2fc1d-6a81-459b-8829-2ee04c8d9c03';
     public static readonly languageChangedEvent: string = '0f8d004f-080d-4901-b813-477432809519';
 
     public static readonly previewApplicationTag: string = 'preview';

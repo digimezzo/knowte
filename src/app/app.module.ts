@@ -89,6 +89,7 @@ import { ElectronService } from './services/electron.service';
 import { FileService } from './services/file/file.service';
 import { PersistanceService } from './services/persistance/persistance.service';
 import { PrintService } from './services/print/print.service';
+import { SearchClient } from './services/search/search.client';
 import { SearchService } from './services/search/search.service';
 import { SnackBarService } from './services/snack-bar/snack-bar.service';
 import { SpellCheckService } from './services/spell-check/spell-check.service';
@@ -196,6 +197,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         AppearanceService,
         TranslatorService,
         SearchService,
+        SearchClient,
         SnackBarService,
         CryptographyService,
         PersistanceService,

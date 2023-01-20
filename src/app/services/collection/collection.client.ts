@@ -19,6 +19,8 @@ import { CollectionEvents } from './collection-events';
  */
 @Injectable()
 export class CollectionClient {
+    private globalEmitter: any = remote.getGlobal('globalEmitter');
+
     public constructor() {
         this.globalEmitter.on(CollectionEvents.closeNoteEvent, (noteId: string) => this.closeNote.next(noteId));
         this.globalEmitter.on(CollectionEvents.focusNoteEvent, (noteId: string) => this.focusNote.next(noteId));
@@ -26,8 +28,6 @@ export class CollectionClient {
         this.globalEmitter.on(CollectionEvents.noteZoomPercentageChangedEvent, () => this.noteZoomPercentageChanged.next());
         this.globalEmitter.on(CollectionEvents.notebookChangedEvent, (result: NotebookChangedResult) => this.notebookChanged.next(result));
     }
-
-    private globalEmitter: any = remote.getGlobal('globalEmitter');
 
     private closeNote: Subject<string> = new Subject();
     public closeNote$: Observable<string> = this.closeNote.asObservable();

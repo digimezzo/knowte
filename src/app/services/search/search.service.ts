@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/internal/operators';
-import { Constants } from '../../core/constants';
+import { SearchEvents } from './search-events';
 
 @Injectable()
 export class SearchService {
@@ -11,10 +11,10 @@ export class SearchService {
     private timeoutMilliseconds: number = 500;
     private _searchText: string;
     private globalEmitter: any = remote.getGlobal('globalEmitter');
-    private getSearchTextListener: any = this.getSearchTextHandler.bind(this);
+    private getSearchTextEventListener: any = this.getSearchTextEventHandler.bind(this);
 
     constructor() {
-        this.globalEmitter.on(Constants.getSearchTextEvent, this.getSearchTextListener);
+        this.globalEmitter.on(SearchEvents.getSearchTextEvent, this.getSearchTextEventListener);
 
         this.debouncingSearchTextChanged.pipe(debounceTime(this.timeoutMilliseconds), distinctUntilChanged()).subscribe((searchText) => {
             this.searchTextChanged.next(searchText);
@@ -32,7 +32,7 @@ export class SearchService {
         this.debouncingSearchTextChanged.next(v);
     }
 
-    private async getSearchTextHandler(callback: any): Promise<void> {
+    private getSearchTextEventHandler(callback: any): void {
         callback(this.searchText);
     }
 }

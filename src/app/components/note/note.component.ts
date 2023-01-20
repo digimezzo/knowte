@@ -25,6 +25,7 @@ import { PrintService } from '../../services/print/print.service';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { NoteMarkResult } from '../../services/results/note-mark-result';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
+import { SearchClient } from '../../services/search/search.client';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { SpellCheckService } from '../../services/spell-check/spell-check.service';
 import { TranslatorService } from '../../services/translator/translator.service';
@@ -83,7 +84,8 @@ export class NoteComponent implements OnInit {
         private quillFactory: QuillFactory,
         private noteContextMenuFactory: NoteContextMenuFactory,
         private quillTweaker: QuillTweaker,
-        private collectionClient: CollectionClient
+        private collectionClient: CollectionClient,
+        private searchClient: SearchClient
     ) {}
 
     public isEncrypted: boolean = false;
@@ -111,7 +113,7 @@ export class NoteComponent implements OnInit {
             this.addSubscriptions();
             this.addDocumentListeners();
             await this.getNoteContentAsync();
-            this.applySearch();
+            await this.applySearchAsync();
 
             this.noteWindow.webContents.on('context-menu', (event, contextMenuParams) => {
                 const hasSelectedText: boolean = this.hasSelectedRange();
@@ -582,11 +584,9 @@ export class NoteComponent implements OnInit {
         this.noteWindow.webContents.stopFindInPage('keepSelection');
     }
 
-    private applySearch(): void {
-        this.globalEmitter.emit(Constants.getSearchTextEvent, this.getSearchTextCallback.bind(this));
-    }
+    private async applySearchAsync(): Promise<void> {
+        const searchText: string = await this.searchClient.getSearchTextAsync();
 
-    private getSearchTextCallback(searchText: string): void {
         if (searchText && searchText.length > 0) {
             const searchTextPieces: string[] = searchText.trim().split(' ');
 
