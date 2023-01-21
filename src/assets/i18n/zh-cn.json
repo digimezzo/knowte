@@ -143,7 +143,8 @@
         "Languages": "Languages",
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",
-        "NoteIsEncrypted": "Note is encrypted"
+        "NoteIsEncrypted": "Note is encrypted",
+        "ConfirmCloseAllNotes": "Close all notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "您确定要删除收藏'{{collection}}'吗？ 如果继续，其笔记本和笔记将丢失。",
@@ -160,7 +161,8 @@
         "ImportFailed": "导入失败！",
         "AllFiles": "所有文件",
         "ChooseNotebook": "选择笔记本",
-        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?"
+        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
     },
     "Input": {
         "Collection": "收藏",
@@ -190,7 +192,6 @@
         "DuplicateCollection": "已经有一个名称为 '{{collection}}'",
         "DuplicateNotebook": "已经有一个笔记本，名字叫 '{{notebookName}}'",
         "NoteTitleCannotBeEmpty": "笔记标题不能为空",
-        "CloseNoteBeforeChangingCollections": "请在更改收藏之前关闭所有笔记",
         "NoteExported": "笔记'{{noteTitle}}'已经导出",
         "NoteMovedToNotebook": "笔记已经移动到'{{notebookName}}'",
         "NotesMovedToNotebook": "笔记已经移动到'{{notebookName}}'",

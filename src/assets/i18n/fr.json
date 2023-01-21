@@ -143,7 +143,8 @@
         "Languages": "Langues",
         "EncryptNote": "Chiffrer la note",
         "ConfirmDecryptNote": "Décrypter la note?",
-        "NoteIsEncrypted": "La note est cryptée"
+        "NoteIsEncrypted": "La note est cryptée",
+        "ConfirmCloseAllNotes": "Close all notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Êtes-vous sûr de vouloir supprimer la collection '{{collection}}'? Si vous continuez, ses bloc-notes et ses notes seront perdues.",
@@ -160,7 +161,8 @@
         "ImportFailed": "Import échoué!",
         "AllFiles": "Tous les fichiers",
         "ChooseNotebook": "Choisissez un bloc-notes",
-        "ConfirmDecryptNote": "Êtes-vous sûr de vouloir décrypter cette note?"
+        "ConfirmDecryptNote": "Êtes-vous sûr de vouloir décrypter cette note?",
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
     },
     "Input": {
         "Collection": "Collection",
@@ -190,7 +192,6 @@
         "DuplicateCollection": "Il existe déjà une collection portant le nom '{{collection}}'",
         "DuplicateNotebook": "Il existe déjà un bloc-notes portant le nom '{{notebookName}}'",
         "NoteTitleCannotBeEmpty": "Le titre de la note ne peut pas être vide",
-        "CloseNoteBeforeChangingCollections": "Veuillez fermer toutes les notes avant de changer de collection.",
         "NoteExported": "La note '{{noteTitle}}' a été exportée",
         "NoteMovedToNotebook": "La note a été déplacée vers '{{notebookName}}'",
         "NotesMovedToNotebook": "Les notes ont été déplacées vers '{{notebookName}}'",

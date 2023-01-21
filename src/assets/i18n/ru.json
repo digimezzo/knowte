@@ -143,7 +143,8 @@
         "Languages": "Languages",
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",
-        "NoteIsEncrypted": "Note is encrypted"
+        "NoteIsEncrypted": "Note is encrypted",
+        "ConfirmCloseAllNotes": "Close all notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Хотите удалить коллекцию '{{collection}}'? При подтверждении все блокноты и заметки будут потеряны.",
@@ -160,7 +161,8 @@
         "ImportFailed": "Импорт не удался!",
         "AllFiles": "Все файлы",
         "ChooseNotebook": "Выбрать блокнот",
-        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?"
+        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
     },
     "Input": {
         "Collection": "Коллекция",
@@ -190,7 +192,6 @@
         "DuplicateCollection": "Уже есть коллекция с названием '{{collection}}'",
         "DuplicateNotebook": "Уже есть блокнот с названием '{{notebookName}}'",
         "NoteTitleCannotBeEmpty": "Заголовок заметки не может быть пустым",
-        "CloseNoteBeforeChangingCollections": "Пожалуйста, закройте все заметки перед изменением коллекций",
         "NoteExported": "Заметка '{{noteTitle}}' была экспортирована",
         "NoteMovedToNotebook": "Заметка была перемещена в '{{notebookName}}'",
         "NotesMovedToNotebook": "Заметки были перемещены в '{{notebookName}}'",

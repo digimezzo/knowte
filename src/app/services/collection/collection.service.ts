@@ -40,6 +40,7 @@ export class CollectionService {
     private isInitialized: boolean = false;
     private globalEmitter: any = remote.getGlobal('globalEmitter');
     private openNoteIds: string[] = [];
+
     private collectionsChanged: Subject<void> = new Subject();
     private notebookEdited: Subject<void> = new Subject();
     private notebookDeleted: Subject<void> = new Subject();
@@ -48,6 +49,7 @@ export class CollectionService {
     private notesCountChanged: Subject<NotesCountResult> = new Subject<NotesCountResult>();
     private noteMarkChanged: Subject<NoteMarkResult> = new Subject<NoteMarkResult>();
     private noteNotebookChanged: Subject<void> = new Subject();
+
     private setNoteOpenEventListener: any = this.setNoteOpen.bind(this);
     private setNoteMarkEventListener: any = this.setNoteMark.bind(this);
     private setNotebookEventListener: any = this.setNotebook.bind(this);
@@ -1089,6 +1091,10 @@ export class CollectionService {
 
     public onNotebookChanged(noteId: string, notebookName: string): void {
         this.globalEmitter.emit(CollectionEvents.notebookChangedEvent, new NotebookChangedResult(noteId, notebookName));
+    }
+
+    public onCloseAllNotes(): void {
+        this.globalEmitter.emit(CollectionEvents.closeAllNotesEvent);
     }
 
     private onNoteMarkChanged(noteId: string, isMarked: boolean): void {

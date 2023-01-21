@@ -24,12 +24,6 @@ export class SnackBarService {
         this.showActionSnackBar(message, action, false);
     }
 
-    public async closeNoteBeforeChangingCollectionsAsync(): Promise<void> {
-        const message: string = await this.translator.getAsync('SnackBarMessages.CloseNoteBeforeChangingCollections');
-        const action: string = await this.translator.getAsync('SnackBarActions.Ok');
-        this.showActionSnackBar(message, action, false);
-    }
-
     public async noteExportedAsync(noteTitle: string): Promise<void> {
         const message: string = await this.translator.getAsync('SnackBarMessages.NoteExported', { noteTitle: noteTitle });
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');

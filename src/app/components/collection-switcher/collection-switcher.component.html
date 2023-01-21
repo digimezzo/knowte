@@ -17,7 +17,7 @@
     <mat-divider></mat-divider>
     <div *ngFor="let collection of collections">
         <button class="menu-button" mat-menu-item>
-            <span class="menu-item" (click)="activateCollection(collection)">
+            <span class="menu-item" (click)="activateCollectionAsync(collection)">
                 <i class="menu-icon las la-box" [ngClass]="{ isActive: collection === activeCollection }"> </i>
                 <span>{{ collection }}</span>
             </span>
@@ -25,7 +25,7 @@
                 <i
                     class="menu-command-item-icon mr-2 lar la-edit"
                     matTooltip="{{ 'Tooltips.Rename' | translate }}"
-                    (click)="renameCollection(collection)"
+                    (click)="renameCollectionAsync(collection)"
                 >
                 </i>
                 <i

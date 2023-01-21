@@ -143,7 +143,8 @@
         "Languages": "Talen",
         "EncryptNote": "Notitie versleutelen",
         "ConfirmDecryptNote": "Notitie decoderen?",
-        "NoteIsEncrypted": "Notitie is versleuteld"
+        "NoteIsEncrypted": "Notitie is versleuteld",
+        "ConfirmCloseAllNotes": "Close all notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Weet u zeker dat u de collectie '{{collection}}' wilt verwijderen? Als u doorgaat, gaan de notitieboeken en notities verloren.",
@@ -160,7 +161,8 @@
         "ImportFailed": "Importeren mislukt!",
         "AllFiles": "Alle bestanden",
         "ChooseNotebook": "Kies een notitieboek",
-        "ConfirmDecryptNote": "Weet je zeker dat je deze notitie wilt ontsleutelen?"
+        "ConfirmDecryptNote": "Weet je zeker dat je deze notitie wilt ontsleutelen?",
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
     },
     "Input": {
         "Collection": "Collectie",
@@ -190,7 +192,6 @@
         "DuplicateCollection": "Er is al een collectie met de naam '{{collection}}'",
         "DuplicateNotebook": "Er is al een notitieboek met de naam '{{notebookName}}'",
         "NoteTitleCannotBeEmpty": "De titel van de notitie mag niet leeg zijn",
-        "CloseNoteBeforeChangingCollections": "Sluit alle notities voordat u collecties wijzigt",
         "NoteExported": "Notitie '{{noteTitle}}' is geëxporteerd",
         "NoteMovedToNotebook": "De notitie is verplaatst naar '{{notebookName}}'",
         "NotesMovedToNotebook": "De notities werden verplaatst naar '{{notebookName}}'",

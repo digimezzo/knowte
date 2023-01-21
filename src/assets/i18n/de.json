@@ -143,7 +143,8 @@
         "Languages": "Languages",
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",
-        "NoteIsEncrypted": "Note is encrypted"
+        "NoteIsEncrypted": "Note is encrypted",
+        "ConfirmCloseAllNotes": "Close all notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Sicher das Du die Kollektion '{{collection}}' löschen möchtest? Wenn Du fortfährst, werden dessen Notizbücher und Notizen verloren gehen.",
@@ -160,7 +161,8 @@
         "ImportFailed": "Import fehlgeschlagen!",
         "AllFiles": "Alle Dateien",
         "ChooseNotebook": "Wähle ein Notizbuch",
-        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?"
+        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
     },
     "Input": {
         "Collection": "Kollektion",
@@ -190,7 +192,6 @@
         "DuplicateCollection": "Es existiert bereits eine Kollektion mit dem Namen '{{collection}}'",
         "DuplicateNotebook": "Es existiert bereits eine Notizbuch mit dem Namen '{{notebookName}}'",
         "NoteTitleCannotBeEmpty": "Der Titel der Notiz darf nicht leer sein",
-        "CloseNoteBeforeChangingCollections": "Bitte alle Notizen schließen vor Kollektion Änderung",
         "NoteExported": "Notiz '{{noteTitle}}' wurde exportiert",
         "NoteMovedToNotebook": "Die Notiz wurde verschoben zu '{{notebookName}}'",
         "NotesMovedToNotebook": "Die Notizen wurden verschoben zu '{{notebookName}}'",

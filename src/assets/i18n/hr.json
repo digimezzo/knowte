@@ -143,7 +143,8 @@
         "Languages": "Languages",
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",
-        "NoteIsEncrypted": "Note is encrypted"
+        "NoteIsEncrypted": "Note is encrypted",
+        "ConfirmCloseAllNotes": "Close all notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Jeste li sigurni da želite izbrisati kolekciju '{{collection}}'? Ako nastavite, njene bilježnice i bilješke bit će izgubljene.",
@@ -160,7 +161,8 @@
         "ImportFailed": "Uvoz nije bio uspješan!",
         "AllFiles": "Sve datoteke",
         "ChooseNotebook": "Odaberite bilježnicu",
-        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?"
+        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
     },
     "Input": {
         "Collection": "Kolekcija",
@@ -190,7 +192,6 @@
         "DuplicateCollection": "Već postoji kolekcija s nazivom '{{collection}}'",
         "DuplicateNotebook": "Već postoji bilježnica s nazivom '{{notebookName}}'",
         "NoteTitleCannotBeEmpty": "Naslov bilješke ne može biti prazan",
-        "CloseNoteBeforeChangingCollections": "Zatvorite sve bilješke prije promjene kolekcije",
         "NoteExported": "Bilješka '{{noteTitle}}' je izvezena",
         "NoteMovedToNotebook": "Bilješka je premještena u '{{notebookName}}'",
         "NotesMovedToNotebook": "Bilješke su premještene u '{{notebookName}}'",

@@ -143,7 +143,8 @@
         "Languages": "Languages",
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",
-        "NoteIsEncrypted": "Note is encrypted"
+        "NoteIsEncrypted": "Note is encrypted",
+        "ConfirmCloseAllNotes": "Close all notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "コレクション '{{collection}}' を削除しますか？ コレクションを削除すると、メモ帳とメモも削除されます。",
@@ -160,7 +161,8 @@
         "ImportFailed": "インポートに失敗しました！",
         "AllFiles": "すべてのファイル",
         "ChooseNotebook": "メモ帳の選択",
-        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?"
+        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
     },
     "Input": {
         "Collection": "コレクション",
@@ -190,7 +192,6 @@
         "DuplicateCollection": "コレクション名 '{{collection}}' はすでに存在しています",
         "DuplicateNotebook": "メモ帳 '{{notebookName}}' はすでに存在しています",
         "NoteTitleCannotBeEmpty": "メモのタイトルを空にすることはできません",
-        "CloseNoteBeforeChangingCollections": "コレクションを変更する前にすべてのメモを閉じてください",
         "NoteExported": "メモ '{{noteTitle}}' をエクスポートしました",
         "NoteMovedToNotebook": "メモを '{{notebookName}}' へ移動しました",
         "NotesMovedToNotebook": "メモを '{{notebookName}}' へ移動しました",

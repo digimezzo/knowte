@@ -27,7 +27,11 @@ export class CollectionClient {
         this.globalEmitter.on(CollectionEvents.noteMarkChangedEvent, (result: NoteMarkResult) => this.noteMarkChanged.next(result));
         this.globalEmitter.on(CollectionEvents.noteZoomPercentageChangedEvent, () => this.noteZoomPercentageChanged.next());
         this.globalEmitter.on(CollectionEvents.notebookChangedEvent, (result: NotebookChangedResult) => this.notebookChanged.next(result));
+        this.globalEmitter.on(CollectionEvents.closeAllNotesEvent, () => this.closeAllNotes.next());
     }
+
+    private closeAllNotes: Subject<void> = new Subject();
+    public closeAllNotes$: Observable<void> = this.closeAllNotes.asObservable();
 
     private closeNote: Subject<string> = new Subject();
     public closeNote$: Observable<string> = this.closeNote.asObservable();

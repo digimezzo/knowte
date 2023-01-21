@@ -143,7 +143,8 @@
         "Languages": "Languages",
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",
-        "NoteIsEncrypted": "Note is encrypted"
+        "NoteIsEncrypted": "Note is encrypted",
+        "ConfirmCloseAllNotes": "Close all notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Você tem certeza que quer deletar a coleção '{{collection}}'? Caso continue, suas cadernetas e notas serão apagadas.",
@@ -160,7 +161,8 @@
         "ImportFailed": "Importação falhou!",
         "AllFiles": "Todos os arquivos",
         "ChooseNotebook": "Escolha uma caderneta",
-        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?"
+        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
     },
     "Input": {
         "Collection": "Coleção",
@@ -190,7 +192,6 @@
         "DuplicateCollection": "Uma coleção já usa o nome '{{collection}}'",
         "DuplicateNotebook": "Uma cadernete já usa o nome '{{notebookName}}'",
         "NoteTitleCannotBeEmpty": "O título da nota não pode estar vazio",
-        "CloseNoteBeforeChangingCollections": "Por favor feche todas as notas antes de trocar de coleções",
         "NoteExported": "A Nota '{{noteTitle}}' foi exportada",
         "NoteMovedToNotebook": "A nota foi movida para '{{notebookName}}'",
         "NotesMovedToNotebook": "As notas foram movidas para '{{notebookName}}'",

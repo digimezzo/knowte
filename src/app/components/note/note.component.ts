@@ -150,7 +150,8 @@ export class NoteComponent implements OnInit {
             await this.saveAndCloseAsync();
         });
 
-        this.subscription.add(this.collectionClient.closeNote$.subscribe((noteId: string) => this.closeNote(noteId)));
+        this.subscription.add(this.collectionClient.closeNote$.subscribe((noteId: string) => this.closeNoteIfMatching(noteId)));
+        this.subscription.add(this.collectionClient.closeAllNotes$.subscribe(() => this.closeNote()));
         this.subscription.add(this.collectionClient.focusNote$.subscribe((noteId: string) => this.focusNote(noteId)));
         this.subscription.add(this.collectionClient.noteZoomPercentageChanged$.subscribe(() => this.setEditorZoomPercentage()));
         this.subscription.add(
@@ -571,10 +572,14 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    private closeNote(noteId: string): void {
+    private closeNoteIfMatching(noteId: string): void {
         if (this.noteId === noteId) {
             this.noteWindow.close();
         }
+    }
+
+    private closeNote(): void {
+        this.noteWindow.close();
     }
 
     public clearSearch(): void {
