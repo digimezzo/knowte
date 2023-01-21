@@ -1,12 +1,11 @@
 import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import * as remote from '@electron/remote';
 import { Subscription } from 'rxjs';
-import { Constants } from '../../../core/constants';
 import { Utils } from '../../../core/utils';
 import { Notebook } from '../../../data/entities/notebook';
 import { CollectionClient } from '../../../services/collection/collection.client';
 import { NoteDetailsResult } from '../../../services/results/note-details-result';
 import { NotebookChangedResult } from '../../../services/results/notebook-changed-result';
+import { TranslatorService } from '../../../services/translator/translator.service';
 
 @Component({
     selector: 'app-notebook-switcher',
@@ -16,10 +15,8 @@ import { NotebookChangedResult } from '../../../services/results/notebook-change
 })
 export class NotebookSwitcherComponent implements OnInit, OnDestroy {
     private subscription: Subscription = new Subscription();
-    private globalEmitter: any = remote.getGlobal('globalEmitter');
-    private languageChangedListener: any = this.languageChangedHandler.bind(this);
 
-    constructor(private collectionClient: CollectionClient) {}
+    constructor(private collectionClient: CollectionClient, private translatorService: TranslatorService) {}
 
     public selectedNotebookName: string;
 
@@ -44,7 +41,6 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
 
     private removeSubscriptions(): void {
         this.subscription.unsubscribe();
-        this.globalEmitter.removeListener(Constants.languageChangedEvent, this.languageChangedListener);
     }
 
     private addSubscriptions(): void {
@@ -54,7 +50,7 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
             )
         );
 
-        this.globalEmitter.on(Constants.languageChangedEvent, this.languageChangedListener);
+        this.subscription.add(this.translatorService.languageChanged$.subscribe(async (_) => await this.getNotebookNameAsync()));
     }
 
     public async getNotebooksAsync(): Promise<void> {
@@ -74,9 +70,5 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
         if (this.noteId === noteId) {
             this.selectedNotebookName = notebookName;
         }
-    }
-
-    private languageChangedHandler(): void {
-        this.getNotebookNameAsync();
     }
 }

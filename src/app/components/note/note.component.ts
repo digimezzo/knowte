@@ -17,7 +17,6 @@ import { ProductInformation } from '../../core/product-information';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { AppearanceService } from '../../services/appearance/appearance.service';
-import { CollectionEvents } from '../../services/collection/collection-events';
 import { CollectionClient } from '../../services/collection/collection.client';
 import { CryptographyService } from '../../services/cryptography/cryptography.service';
 import { PersistanceService } from '../../services/persistance/persistance.service';
@@ -56,8 +55,6 @@ export class NoteComponent implements OnInit {
     private quill: Quill;
 
     private subscription: Subscription = new Subscription();
-
-    private globalEmitter: any = remote.getGlobal('globalEmitter');
 
     private isTitleDirty: boolean = false;
     private isTextDirty: boolean = false;
@@ -548,7 +545,7 @@ export class NoteComponent implements OnInit {
             }
         }
 
-        this.globalEmitter.emit(CollectionEvents.noteZoomPercentageChangedEvent);
+        this.collectionClient.onNoteZoomPercentageChanged();
 
         this.setEditorZoomPercentage();
     }

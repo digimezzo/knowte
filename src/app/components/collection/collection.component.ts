@@ -54,6 +54,8 @@ import { RenameNotebookDialogComponent } from '../dialogs/rename-notebook-dialog
     ],
 })
 export class CollectionComponent implements OnInit, OnDestroy {
+    private subscription: Subscription;
+
     constructor(
         public appearanceService: AppearanceService,
         private collectionService: CollectionService,
@@ -86,8 +88,6 @@ export class CollectionComponent implements OnInit, OnDestroy {
     public get markedCategory(): string {
         return Constants.markedCategory;
     }
-    private globalEmitter: any = remote.getGlobal('globalEmitter');
-    private subscription: Subscription;
 
     @ViewChild('split', { static: false }) public split: SplitComponent;
     @ViewChild('area1', { static: false }) public area1: SplitAreaDirective;

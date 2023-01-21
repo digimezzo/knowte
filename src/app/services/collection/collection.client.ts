@@ -142,6 +142,10 @@ export class CollectionClient {
         return notebooks;
     }
 
+    public onNoteZoomPercentageChanged(): void {
+        this.globalEmitter.emit(CollectionEvents.noteZoomPercentageChangedEvent);
+    }
+
     /**
      * This is a workaround for hot-reload where it can happen that a note sends a
      * command via CollectionClient when CollectionService is not yet initialized.

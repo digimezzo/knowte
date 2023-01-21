@@ -24,8 +24,6 @@ export class Constants {
     public static readonly thisWeekCategory: string = 'thisweek';
     public static readonly markedCategory: string = 'marked';
 
-    public static readonly languageChangedEvent: string = '0f8d004f-080d-4901-b813-477432809519';
-
     public static readonly previewApplicationTag: string = 'preview';
     public static readonly releaseCandidateApplicationTag: string = 'rc';
 

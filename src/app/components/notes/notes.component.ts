@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import * as remote from '@electron/remote';
 import { Subject, Subscription } from 'rxjs';
 import { BaseSettings } from '../../core/base-settings';
 import { Constants } from '../../core/constants';
@@ -18,9 +17,7 @@ import { SearchService } from '../../services/search/search.service';
     encapsulation: ViewEncapsulation.None,
 })
 export class NotesComponent implements OnInit, OnDestroy {
-    private globalEmitter: any = remote.getGlobal('globalEmitter');
     private subscription: Subscription;
-    private readonly destroy$: Subject<void> = new Subject();
     private _activeNotebook: Notebook;
     private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
@@ -62,8 +59,6 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     public ngOnDestroy(): void {
         this.subscription.unsubscribe();
-        this.destroy$.next();
-        this.destroy$.complete();
     }
 
     public async ngOnInit(): Promise<void> {
