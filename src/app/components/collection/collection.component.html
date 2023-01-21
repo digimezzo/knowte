@@ -1,15 +1,18 @@
 <app-logo-main class="main-logo" [showBackArrow]="false"></app-logo-main>
-<app-collection-switcher class="collection-collection-switcher" *ngIf="appearance.windowHasNativeTitleBar"></app-collection-switcher>
+<app-collection-switcher
+    class="collection-collection-switcher"
+    *ngIf="this.appearanceService.windowHasNativeTitleBar"
+></app-collection-switcher>
 <div class="window-frame">
     <div class="window-frame-titlebar">
         <div class="window-frame-titlebar-dragarea pl-1"></div>
-        <app-collection-switcher *ngIf="!appearance.windowHasNativeTitleBar"></app-collection-switcher>
-        <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
+        <app-collection-switcher *ngIf="!this.appearanceService.windowHasNativeTitleBar"></app-collection-switcher>
+        <app-window-controls *ngIf="!this.appearanceService.windowHasNativeTitleBar"></app-window-controls>
     </div>
     <div class="window-frame-overlay" *ngIf="isBusy">
         <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
     </div>
-    <div class="window-frame-content" [ngStyle]="{ top: appearance.windowHasNativeTitleBar ? '10px' : '32px' }">
+    <div class="window-frame-content" [ngStyle]="{ top: this.appearanceService.windowHasNativeTitleBar ? '10px' : '32px' }">
         <div class="app-collection">
             <mat-tab-group
                 class="app-collection__headers"

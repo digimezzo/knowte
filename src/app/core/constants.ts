@@ -24,26 +24,6 @@ export class Constants {
     public static readonly thisWeekCategory: string = 'thisweek';
     public static readonly markedCategory: string = 'marked';
 
-    public static readonly setNoteOpenEvent: string = 'b4a112dd-25ac-4ec6-bd08-3b8e7fbdedda';
-    public static readonly setNotebookEvent: string = 'cf6f3e12-b435-4787-a81c-f40c99b176d9';
-    public static readonly setNoteMarkEvent: string = '1386e290-1f5d-4ca8-b8c3-76c5991faeba';
-    public static readonly setNoteTitleEvent: string = 'd81c66b1-34f3-4b9d-9275-2aa6cee35201';
-    public static readonly setNoteTextEvent: string = '7188b946-484c-4b6e-89d3-3e8a16ff33cd';
-    public static readonly getNotebooksEvent: string = '00169e63-412e-428b-b969-8dd4b3602a02';
-    public static readonly getNoteDetailsEvent: string = 'db3595b0-0997-414e-a30e-c5921c8d9861';
-    public static readonly getSearchTextEvent: string = '22c2fc1d-6a81-459b-8829-2ee04c8d9c03';
-    public static readonly notebookChangedEvent: string = '2518f49c-50f0-4165-ad92-cfa00476d884';
-    public static readonly noteMarkChangedEvent: string = '3b46bceb-dbcd-4013-935d-8e6f79e371a0';
-    public static readonly focusNoteEvent: string = 'f45748e7-a7af-4057-a712-b9b181212119';
-    public static readonly closeNoteEvent: string = '0b7877ac-ca71-4cf5-a5a5-96798be7c5be';
-    public static readonly deleteNoteEvent: string = '0896531e-ee16-4407-b4e5-120b55c6e82f';
-    public static readonly themeChangedEvent: string = 'f132f4ce-ae3c-4e1d-958a-a9cd28517b68';
-    public static readonly uiFontSizeChangedEvent: string = 'e49b82b5-f960-49bf-83f8-9721edc386cb';
-    public static readonly languageChangedEvent: string = '0f8d004f-080d-4901-b813-477432809519';
-    public static readonly noteZoomPercentageChangedEvent: string = '6ec3f042-27ea-49e1-a012-49693f44db02';
-    public static readonly encryptNoteEvent: string = '6b049e1b-b830-4165-8f3e-2f95d0562f52';
-    public static readonly decryptNoteEvent: string = '7a2d5f6e-1cfa-4cbc-a083-eb75e77a4582';
-
     public static readonly previewApplicationTag: string = 'preview';
     public static readonly releaseCandidateApplicationTag: string = 'rc';
 

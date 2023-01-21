@@ -6,7 +6,7 @@ import * as remote from '@electron/remote';
 import { BrowserWindow, SaveDialogOptions, SaveDialogReturnValue } from 'electron';
 import * as electronLocalShortcut from 'electron-localshortcut';
 import * as Quill from 'quill';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
 import { BaseSettings } from '../../core/base-settings';
 import { ClipboardManager } from '../../core/clipboard-manager';
@@ -14,15 +14,17 @@ import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
 import { Logger } from '../../core/logger';
 import { ProductInformation } from '../../core/product-information';
-import { Strings } from '../../core/strings';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { AppearanceService } from '../../services/appearance/appearance.service';
+import { CollectionClient } from '../../services/collection/collection.client';
 import { CryptographyService } from '../../services/cryptography/cryptography.service';
 import { PersistanceService } from '../../services/persistance/persistance.service';
 import { PrintService } from '../../services/print/print.service';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
+import { NoteMarkResult } from '../../services/results/note-mark-result';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
+import { SearchClient } from '../../services/search/search.client';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { SpellCheckService } from '../../services/spell-check/spell-check.service';
 import { TranslatorService } from '../../services/translator/translator.service';
@@ -52,19 +54,15 @@ import { QuillTweaker } from './quill-tweaker';
 export class NoteComponent implements OnInit {
     private quill: Quill;
 
-    private globalEmitter: any = remote.getGlobal('globalEmitter');
+    private subscription: Subscription = new Subscription();
 
     private isTitleDirty: boolean = false;
     private isTextDirty: boolean = false;
 
-    private noteZoomPercentageChangedListener: any = this.noteZoomPercentageChangedHandler.bind(this);
-    private noteMarkChangedListener: any = this.noteMarkChangedHandler.bind(this);
-    private focusNoteListener: any = this.focusNoteHandler.bind(this);
-    private closeNoteListener: any = this.closeNoteHandler.bind(this);
-
-    private isEncrypted: boolean = false;
     private secretKey: string = '';
     private secretKeyHash: string = '';
+
+    private noteWindow: BrowserWindow;
 
     constructor(
         private print: PrintService,
@@ -82,80 +80,46 @@ export class NoteComponent implements OnInit {
         private clipboard: ClipboardManager,
         private quillFactory: QuillFactory,
         private noteContextMenuFactory: NoteContextMenuFactory,
-        private quillTweaker: QuillTweaker
+        private quillTweaker: QuillTweaker,
+        private collectionClient: CollectionClient,
+        private searchClient: SearchClient
     ) {}
 
+    public isEncrypted: boolean = false;
     public noteId: string;
     public initialNoteTitle: string;
     public noteTitle: string;
     public isMarked: boolean;
     public noteTitleChanged: Subject<string> = new Subject<string>();
-    public noteTextChanged: Subject<string> = new Subject<string>();
-    public saveChangesAndCloseNoteWindow: Subject<string> = new Subject<string>();
+    public noteTextChanged: Subject<void> = new Subject<void>();
+    public saveChangesAndCloseNoteWindow: Subject<void> = new Subject<void>();
     public canPerformActions: boolean = false;
     public isBusy: boolean = false;
     public actionIconRotation: string = 'default';
     public canSearch: boolean = false;
 
-    private isSecretKeyCorrect(): boolean {
-        return this.cryptography.createHash(this.secretKey) === this.secretKeyHash;
-    }
-
     public async ngOnInit(): Promise<void> {
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
-            this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNoteDetailsCallback.bind(this));
+            this.noteWindow = remote.getCurrentWindow();
 
-            // TODO: this is an ugly hack
-            while (Strings.isNullOrWhiteSpace(this.noteTitle)) {
-                await Utils.sleep(50);
-            }
-
-            this.addGlobalListeners();
-
-            if (this.isEncrypted) {
-                let isClosing: boolean = false;
-
-                while (!this.isSecretKeyCorrect() && !isClosing) {
-                    if (!(await this.requestSecretKeyAsync())) {
-                        isClosing = true;
-                        window.close();
-                    } else {
-                        if (!this.isSecretKeyCorrect()) {
-                            const notificationTitle: string = await this.translator.getAsync('NotificationTitles.IncorrectKey');
-                            const notificationText: string = await this.translator.getAsync('NotificationTexts.SecretKeyIncorrect');
-                            const dialogRef: MatDialogRef<NotificationDialogComponent> = this.dialog.open(NotificationDialogComponent, {
-                                width: '450px',
-                                data: { notificationTitle: notificationTitle, notificationText: notificationText },
-                            });
-
-                            await dialogRef.afterClosed().toPromise();
-                        }
-                    }
-                }
-            }
-
-            this.quill = await this.quillFactory.createAsync('#editor', this.performUndo.bind(this), this.performRedo.bind(this));
-            this.quillTweaker.forcePasteOfUnformattedText(this.quill);
-            this.quillTweaker.assignActionToControlKeyCombination(this.quill, 'Y', this.performRedo.bind(this));
-            this.quillTweaker.assignActionToTextChange(this.quill, this.onNoteTextChange.bind(this));
-
+            await this.getNoteDetailsAsync();
+            await this.requestSecretKeyOrCloseNoteAsync();
+            await this.configureQuillEditorAsync();
             this.setEditorZoomPercentage();
-            await this.setToolbarTooltipsAsync();
             this.addSubscriptions();
             this.addDocumentListeners();
-
             await this.getNoteContentAsync();
-            this.applySearch();
+            await this.applySearchAsync();
 
-            window.webContents.on('context-menu', (event, contextMenuParams) => {
+            this.noteWindow.webContents.on('context-menu', (event, contextMenuParams) => {
                 const hasSelectedText: boolean = this.hasSelectedRange();
                 const contextMenuItemsEnabledState: ContextMenuItemsEnabledState = new ContextMenuItemsEnabledState(
                     hasSelectedText,
                     this.clipboard.containsText() || this.clipboard.containsImage()
                 );
                 this.noteContextMenuFactory.createAsync(
-                    window.webContents,
+                    this.noteWindow.webContents,
                     contextMenuParams,
                     contextMenuItemsEnabledState,
                     this.performCut.bind(this),
@@ -166,41 +130,34 @@ export class NoteComponent implements OnInit {
             });
         });
 
-        const window: BrowserWindow = remote.getCurrentWindow();
-
-        electronLocalShortcut.register(window, 'ESC', () => {
+        electronLocalShortcut.register(this.noteWindow, 'ESC', () => {
             if (this.settings.closeNotesWithEscape) {
-                window.close();
+                this.noteWindow.close();
             }
         });
     }
 
     private addSubscriptions(): void {
-        this.noteTitleChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe((finalNoteTitle) => {
-            this.globalEmitter.emit(
-                Constants.setNoteTitleEvent,
-                this.noteId,
-                this.initialNoteTitle,
-                finalNoteTitle,
-                this.setNoteTitleCallbackAsync.bind(this)
-            );
+        this.noteTitleChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async (finalNoteTitle) => {
+            await this.setNoteTitleAsync(finalNoteTitle);
         });
 
-        this.noteTextChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async (_) => {
-            this.globalEmitter.emit(
-                Constants.setNoteTextEvent,
-                this.noteId,
-                this.quill.getText(),
-                this.isEncrypted,
-                this.secretKey,
-                this.getTasksCount(),
-                this.setNoteTextCallbackAsync.bind(this)
-            );
+        this.noteTextChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async () => {
+            await this.setNoteTextAsync();
         });
 
-        this.saveChangesAndCloseNoteWindow.pipe(debounceTime(Constants.noteWindowCloseTimeoutMilliseconds)).subscribe((_) => {
-            this.saveAndClose();
+        this.saveChangesAndCloseNoteWindow.pipe(debounceTime(Constants.noteWindowCloseTimeoutMilliseconds)).subscribe(async () => {
+            await this.saveAndCloseAsync();
         });
+
+        this.subscription.add(this.collectionClient.closeNote$.subscribe((noteId: string) => this.closeNote(noteId)));
+        this.subscription.add(this.collectionClient.focusNote$.subscribe((noteId: string) => this.focusNote(noteId)));
+        this.subscription.add(this.collectionClient.noteZoomPercentageChanged$.subscribe(() => this.setEditorZoomPercentage()));
+        this.subscription.add(
+            this.collectionClient.noteMarkChanged$.subscribe((result: NoteMarkResult) =>
+                this.noteMarkChanged(result.noteId, result.isMarked)
+            )
+        );
     }
 
     private addDocumentListeners(): void {
@@ -241,42 +198,6 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    private async setToolbarTooltipsAsync(): Promise<void> {
-        // See: https://github.com/quilljs/quill/issues/650
-        const toolbarElement: Element = document.querySelector('.ql-toolbar');
-        toolbarElement.querySelector('span.ql-background').setAttribute('title', await this.translator.getAsync('Tooltips.Highlight'));
-        toolbarElement.querySelector('button.ql-undo').setAttribute('title', await this.translator.getAsync('Tooltips.Undo'));
-        toolbarElement.querySelector('button.ql-redo').setAttribute('title', await this.translator.getAsync('Tooltips.Redo'));
-        toolbarElement.querySelector('button.ql-bold').setAttribute('title', await this.translator.getAsync('Tooltips.Bold'));
-        toolbarElement.querySelector('button.ql-italic').setAttribute('title', await this.translator.getAsync('Tooltips.Italic'));
-        toolbarElement.querySelector('button.ql-underline').setAttribute('title', await this.translator.getAsync('Tooltips.Underline'));
-        toolbarElement.querySelector('button.ql-strike').setAttribute('title', await this.translator.getAsync('Tooltips.Strikethrough'));
-
-        toolbarElement
-            .querySelector('[class="ql-header"][value="1"]')
-            .setAttribute('title', await this.translator.getAsync('Tooltips.Heading1'));
-        toolbarElement
-            .querySelector('[class="ql-header"][value="2"]')
-            .setAttribute('title', await this.translator.getAsync('Tooltips.Heading2'));
-
-        toolbarElement
-            .querySelector('[class="ql-list"][value="ordered"]')
-            .setAttribute('title', await this.translator.getAsync('Tooltips.NumberedList'));
-        toolbarElement
-            .querySelector('[class="ql-list"][value="bullet"]')
-            .setAttribute('title', await this.translator.getAsync('Tooltips.BulletedList'));
-        toolbarElement
-            .querySelector('[class="ql-list"][value="check"]')
-            .setAttribute('title', await this.translator.getAsync('Tooltips.TaskList'));
-
-        toolbarElement.querySelector('button.ql-link').setAttribute('title', await this.translator.getAsync('Tooltips.Link'));
-        toolbarElement.querySelector('button.ql-blockquote').setAttribute('title', await this.translator.getAsync('Tooltips.Quote'));
-        toolbarElement.querySelector('button.ql-code-block').setAttribute('title', await this.translator.getAsync('Tooltips.Code'));
-        toolbarElement.querySelector('button.ql-image').setAttribute('title', await this.translator.getAsync('Tooltips.Image'));
-
-        toolbarElement.querySelector('button.ql-clean').setAttribute('title', await this.translator.getAsync('Tooltips.ClearFormatting'));
-    }
-
     public onNoteTitleChange(newNoteTitle: string): void {
         this.isTitleDirty = true;
         this.clearSearch();
@@ -286,7 +207,7 @@ export class NoteComponent implements OnInit {
     public onNoteTextChange(): void {
         this.isTextDirty = true;
         this.clearSearch();
-        this.noteTextChanged.next('');
+        this.noteTextChanged.next();
     }
 
     // ngOnDestroy doesn't tell us when a note window is closed, so we use this event instead.
@@ -294,7 +215,6 @@ export class NoteComponent implements OnInit {
     public beforeunloadHandler(event: any): void {
         this.logger.info(`Detected closing of note with id=${this.noteId}`, 'NoteComponent', 'beforeunloadHandler');
 
-        // Prevents closing of the window
         if (this.isTitleDirty || this.isTextDirty) {
             this.isTitleDirty = false;
             this.isTextDirty = false;
@@ -304,10 +224,11 @@ export class NoteComponent implements OnInit {
                 'NoteComponent',
                 'beforeunloadHandler'
             );
+
             event.preventDefault();
             event.returnValue = '';
 
-            this.saveChangesAndCloseNoteWindow.next('');
+            this.saveChangesAndCloseNoteWindow.next();
         } else {
             this.logger.info(`Note with id=${this.noteId} is clean. Closing directly.`, 'NoteComponent', 'beforeunloadHandler');
             this.cleanup();
@@ -326,7 +247,7 @@ export class NoteComponent implements OnInit {
 
     public toggleNoteMark(): void {
         this.hideActionButtonsDelayedAsync();
-        this.globalEmitter.emit(Constants.setNoteMarkEvent, this.noteId, !this.isMarked);
+        this.collectionClient.setNoteMark(this.noteId, !this.isMarked);
     }
 
     public async exportNoteToPdfAsync(): Promise<void> {
@@ -358,10 +279,8 @@ export class NoteComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(async (result) => {
             if (result) {
-                this.globalEmitter.emit(Constants.deleteNoteEvent, this.noteId);
-
-                const window: BrowserWindow = remote.getCurrentWindow();
-                window.close();
+                this.collectionClient.deleteNote(this.noteId);
+                this.noteWindow.close();
             }
         });
     }
@@ -415,7 +334,7 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    public async requestSecretKeyAsync(): Promise<boolean> {
+    private async requestSecretKeyAsync(): Promise<boolean> {
         const titleText: string = await this.translator.getAsync('DialogTitles.NoteIsEncrypted');
         const placeholderText: string = await this.translator.getAsync('Input.SecretKey');
 
@@ -454,16 +373,8 @@ export class NoteComponent implements OnInit {
             if (result) {
                 this.isEncrypted = true;
                 this.secretKey = data.inputText;
-                this.globalEmitter.emit(Constants.encryptNoteEvent, this.noteId, this.secretKey);
-                this.globalEmitter.emit(
-                    Constants.setNoteTextEvent,
-                    this.noteId,
-                    this.quill.getText(),
-                    this.isEncrypted,
-                    this.secretKey,
-                    this.getTasksCount(),
-                    this.setNoteTextCallbackAsync.bind(this)
-                );
+                this.collectionClient.encryptNote(this.noteId, this.secretKey);
+                await this.setNoteTextAsync();
             }
         });
     }
@@ -483,16 +394,8 @@ export class NoteComponent implements OnInit {
             if (result) {
                 this.isEncrypted = false;
                 this.secretKey = '';
-                this.globalEmitter.emit(Constants.decryptNoteEvent, this.noteId);
-                this.globalEmitter.emit(
-                    Constants.setNoteTextEvent,
-                    this.noteId,
-                    this.quill.getText(),
-                    this.isEncrypted,
-                    this.secretKey,
-                    this.getTasksCount(),
-                    this.setNoteTextCallbackAsync.bind(this)
-                );
+                this.collectionClient.decryptNote(this.noteId);
+                await this.setNoteTextAsync();
             }
         });
     }
@@ -572,23 +475,13 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    private removeGlobalListeners(): void {
-        this.globalEmitter.removeListener(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
-        this.globalEmitter.removeListener(Constants.focusNoteEvent, this.focusNoteListener);
-        this.globalEmitter.removeListener(Constants.closeNoteEvent, this.closeNoteListener);
-        this.globalEmitter.removeListener(Constants.noteZoomPercentageChangedEvent, this.noteZoomPercentageChangedListener);
-    }
-
-    private addGlobalListeners(): void {
-        this.globalEmitter.on(Constants.noteMarkChangedEvent, this.noteMarkChangedListener);
-        this.globalEmitter.on(Constants.focusNoteEvent, this.focusNoteListener);
-        this.globalEmitter.on(Constants.closeNoteEvent, this.closeNoteListener);
-        this.globalEmitter.on(Constants.noteZoomPercentageChangedEvent, this.noteZoomPercentageChangedListener);
+    private removeSubscriptions(): void {
+        this.subscription.unsubscribe();
     }
 
     private cleanup(): void {
-        this.globalEmitter.emit(Constants.setNoteOpenEvent, this.noteId, false);
-        this.removeGlobalListeners();
+        this.collectionClient.setNoteOpen(this.noteId, false);
+        this.removeSubscriptions();
     }
 
     private insertImage(file: any): void {
@@ -606,50 +499,20 @@ export class NoteComponent implements OnInit {
         reader.readAsDataURL(file);
     }
 
-    private saveAndClose(): void {
-        this.globalEmitter.emit(
-            Constants.setNoteTitleEvent,
-            this.noteId,
-            this.initialNoteTitle,
-            this.noteTitle,
-            async (result: NoteOperationResult) => {
-                const setTitleOperation: Operation = result.operation;
-                await this.setNoteTitleCallbackAsync(result);
+    private async saveAndCloseAsync(): Promise<void> {
+        const setNoteTitleOperation: Operation = await this.setNoteTitleAsync(this.noteTitle);
+        const setNoteTextOperation: Operation = await this.setNoteTextAsync();
 
-                this.globalEmitter.emit(
-                    Constants.setNoteTextEvent,
-                    this.noteId,
-                    this.quill.getText(),
-                    this.isEncrypted,
-                    this.secretKey,
-                    this.getTasksCount(),
-                    async (operation: Operation) => {
-                        const setTextOperation: Operation = operation;
-                        await this.setNoteTextCallbackAsync(operation);
-
-                        // Close is only allowed when saving both title and text is successful
-                        if (setTitleOperation === Operation.Success && setTextOperation === Operation.Success) {
-                            this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, 'NoteComponent', 'saveAndClose');
-                            this.cleanup();
-                            const window: BrowserWindow = remote.getCurrentWindow();
-                            window.close();
-                        }
-                    }
-                );
-            }
-        );
+        // Close is only allowed when saving both title and text is successful
+        if (setNoteTitleOperation === Operation.Success && setNoteTextOperation === Operation.Success) {
+            this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, 'NoteComponent', 'saveAndCloseAsync');
+            this.close();
+        }
     }
 
-    private getNoteDetailsCallback(result: NoteDetailsResult): void {
-        this.zone.run(() => {
-            this.initialNoteTitle = result.noteTitle;
-            this.noteTitle = result.noteTitle;
-            this.isMarked = result.isMarked;
-            this.isEncrypted = result.isEncrypted;
-            this.secretKeyHash = result.secretKeyHash;
-
-            this.setWindowTitle(result.noteTitle);
-        });
+    private close(): void {
+        this.cleanup();
+        this.noteWindow.close();
     }
 
     private setEditorZoomPercentage(): void {
@@ -682,67 +545,60 @@ export class NoteComponent implements OnInit {
             }
         }
 
-        this.globalEmitter.emit(Constants.noteZoomPercentageChangedEvent);
+        this.collectionClient.onNoteZoomPercentageChanged();
 
         this.setEditorZoomPercentage();
     }
 
     private setWindowTitle(noteTitle: string): void {
-        const window: BrowserWindow = remote.getCurrentWindow();
-        window.setTitle(`${ProductInformation.applicationName} - ${noteTitle}`);
+        this.noteWindow.setTitle(`${ProductInformation.applicationName} - ${noteTitle}`);
     }
 
-    private noteMarkChangedHandler(noteId: string, isMarked: boolean): void {
+    private noteMarkChanged(noteId: string, isMarked: boolean): void {
         if (this.noteId === noteId) {
             this.zone.run(() => (this.isMarked = isMarked));
         }
     }
 
-    private focusNoteHandler(noteId: string): void {
+    private focusNote(noteId: string): void {
         if (this.noteId === noteId) {
-            const window: BrowserWindow = remote.getCurrentWindow();
-
-            if (window.isMinimized()) {
-                window.minimize(); // Workaround for notes not getting restored on Linux
-                window.restore();
+            if (this.noteWindow.isMinimized()) {
+                this.noteWindow.minimize(); // Workaround for notes not getting restored on Linux
+                this.noteWindow.restore();
             }
 
-            window.focus();
+            this.noteWindow.focus();
         }
     }
 
-    private closeNoteHandler(noteId: string): void {
+    private closeNote(noteId: string): void {
         if (this.noteId === noteId) {
-            const window: BrowserWindow = remote.getCurrentWindow();
-            window.close();
+            this.noteWindow.close();
         }
-    }
-
-    private noteZoomPercentageChangedHandler(): void {
-        this.setEditorZoomPercentage();
     }
 
     public clearSearch(): void {
-        const window: BrowserWindow = remote.getCurrentWindow();
-        window.webContents.stopFindInPage('keepSelection');
+        this.noteWindow.webContents.stopFindInPage('keepSelection');
     }
 
-    private applySearch(): void {
-        this.globalEmitter.emit(Constants.getSearchTextEvent, this.getSearchTextCallback.bind(this));
-    }
-
-    private getSearchTextCallback(searchText: string): void {
-        const window: BrowserWindow = remote.getCurrentWindow();
+    private async applySearchAsync(): Promise<void> {
+        const searchText: string = await this.searchClient.getSearchTextAsync();
 
         if (searchText && searchText.length > 0) {
             const searchTextPieces: string[] = searchText.trim().split(' ');
 
             // For now, we can only search for 1 word.
-            window.webContents.findInPage(searchTextPieces[0]);
+            this.noteWindow.webContents.findInPage(searchTextPieces[0]);
         }
     }
 
-    private async setNoteTitleCallbackAsync(result: NoteOperationResult): Promise<void> {
+    private async setNoteTitleAsync(finalNoteTitle: string): Promise<Operation> {
+        const result: NoteOperationResult = await this.collectionClient.setNoteTitleAsync(
+            this.noteId,
+            this.initialNoteTitle,
+            finalNoteTitle
+        );
+
         if (result.operation === Operation.Blank) {
             this.zone.run(() => (this.noteTitle = this.initialNoteTitle));
             this.snackBar.noteTitleCannotBeEmptyAsync();
@@ -767,9 +623,19 @@ export class NoteComponent implements OnInit {
         }
 
         this.isTitleDirty = false;
+
+        return result.operation;
     }
 
-    private async setNoteTextCallbackAsync(operation: Operation): Promise<void> {
+    private async setNoteTextAsync(): Promise<Operation> {
+        const operation: Operation = await this.collectionClient.setNoteTextAsync(
+            this.noteId,
+            this.quill.getText(),
+            this.isEncrypted,
+            this.secretKey,
+            this.getTasksCount()
+        );
+
         let showErrorDialog = false;
 
         if (operation === Operation.Success) {
@@ -801,18 +667,27 @@ export class NoteComponent implements OnInit {
         }
 
         this.isTextDirty = false;
+
+        return operation;
+    }
+
+    private isSecretKeyCorrect(): boolean {
+        return this.cryptography.createHash(this.secretKey) === this.secretKeyHash;
+    }
+
+    private async getNoteDetailsAsync(): Promise<void> {
+        const result: NoteDetailsResult = await this.collectionClient.getNoteDetailsAsync(this.noteId);
+
+        this.initialNoteTitle = result.noteTitle;
+        this.noteTitle = result.noteTitle;
+        this.isMarked = result.isMarked;
+        this.isEncrypted = result.isEncrypted;
+        this.secretKeyHash = result.secretKeyHash;
+
+        this.setWindowTitle(result.noteTitle);
     }
 
     private async getNoteContentAsync(): Promise<void> {
-        // Details from data store
-        while (!this.noteTitle) {
-            // While, is a workaround for auto reload. CollectionService is not ready to
-            // listen to events after a auto reload. So we keep trying, until it responds.
-            await Utils.sleep(50);
-            this.globalEmitter.emit(Constants.getNoteDetailsEvent, this.noteId, this.getNoteDetailsCallback.bind(this));
-        }
-
-        // Details from note file
         try {
             const noteContent: string = await this.persistance.getNoteContentAsync(this.noteId, this.isEncrypted, this.secretKey);
 
@@ -896,5 +771,39 @@ export class NoteComponent implements OnInit {
 
     private getNoteJsonContent(): string {
         return JSON.stringify(this.quill.getContents());
+    }
+
+    private async requestSecretKeyOrCloseNoteAsync(): Promise<void> {
+        if (!this.isEncrypted) {
+            return;
+        }
+
+        let isClosing: boolean = false;
+
+        while (!this.isSecretKeyCorrect() && !isClosing) {
+            if (!(await this.requestSecretKeyAsync())) {
+                isClosing = true;
+                this.noteWindow.close();
+            } else {
+                if (!this.isSecretKeyCorrect()) {
+                    const notificationTitle: string = await this.translator.getAsync('NotificationTitles.IncorrectKey');
+                    const notificationText: string = await this.translator.getAsync('NotificationTexts.SecretKeyIncorrect');
+                    const dialogRef: MatDialogRef<NotificationDialogComponent> = this.dialog.open(NotificationDialogComponent, {
+                        width: '450px',
+                        data: { notificationTitle: notificationTitle, notificationText: notificationText },
+                    });
+
+                    await dialogRef.afterClosed().toPromise();
+                }
+            }
+        }
+    }
+
+    private async configureQuillEditorAsync(): Promise<void> {
+        this.quill = await this.quillFactory.createAsync('#editor', this.performUndo.bind(this), this.performRedo.bind(this));
+        await this.quillTweaker.setToolbarTooltipsAsync();
+        this.quillTweaker.forcePasteOfUnformattedText(this.quill);
+        this.quillTweaker.assignActionToControlKeyCombination(this.quill, 'Y', this.performRedo.bind(this));
+        this.quillTweaker.assignActionToTextChange(this.quill, this.onNoteTextChange.bind(this));
     }
 }

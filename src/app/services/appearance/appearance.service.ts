@@ -6,6 +6,7 @@ import { ColorScheme } from '../../core/color-scheme';
 import { Constants } from '../../core/constants';
 import { FontSize } from '../../core/font-size';
 import { Logger } from '../../core/logger';
+import { AppearanceEvents } from './appearance-events';
 import { Palette } from './palette';
 
 @Injectable()
@@ -46,13 +47,13 @@ export class AppearanceService {
         this.settings.fontSize = v.normalSize;
 
         // Global event because all windows need to be notified
-        this.globalEmitter.emit(Constants.uiFontSizeChangedEvent, v);
+        this.globalEmitter.emit(AppearanceEvents.uiFontSizeChangedEvent, v);
     }
 
     public onThemeChanged(): void {
         // Global event because all windows need to be notified
         this.globalEmitter.emit(
-            Constants.themeChangedEvent,
+            AppearanceEvents.themeChangedEvent,
             this.colorSchemes.find((x) => x.name === this.settings.colorScheme)
         );
     }
@@ -109,11 +110,11 @@ export class AppearanceService {
     public initialize(): void {
         this._selectedColorScheme = this.colorSchemes.find((x) => x.name === this.settings.colorScheme);
         this.applyTheme();
-        this.globalEmitter.on(Constants.themeChangedEvent, this.themeChangedListener);
+        this.globalEmitter.on(AppearanceEvents.themeChangedEvent, this.themeChangedListener);
 
         this._selectedFontSize = this.fontSizes.find((x) => x.normalSize === this.settings.fontSize);
         this.applyFontSize(this._selectedFontSize);
-        this.globalEmitter.on(Constants.uiFontSizeChangedEvent, this.fontSizeChangedListener);
+        this.globalEmitter.on(AppearanceEvents.uiFontSizeChangedEvent, this.fontSizeChangedListener);
 
         const element = document.documentElement;
 

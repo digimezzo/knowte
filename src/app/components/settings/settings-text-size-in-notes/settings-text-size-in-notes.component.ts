@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import * as remote from '@electron/remote';
 import { BaseSettings } from '../../../core/base-settings';
 import { Constants } from '../../../core/constants';
+import { CollectionService } from '../../../services/collection/collection.service';
 
 @Component({
     selector: 'app-settings-text-size-in-notes',
@@ -10,8 +10,7 @@ import { Constants } from '../../../core/constants';
     encapsulation: ViewEncapsulation.None,
 })
 export class SettingsTextSizeInNotesComponent {
-    private globalEmitter: any = remote.getGlobal('globalEmitter');
-    constructor(private settings: BaseSettings) {}
+    constructor(private collectionService: CollectionService, private settings: BaseSettings) {}
 
     public noteZoomPercentages: number[] = Constants.noteZoomPercentages;
 
@@ -21,6 +20,6 @@ export class SettingsTextSizeInNotesComponent {
 
     public set selectedNoteZoomPercentage(v: number) {
         this.settings.noteZoomPercentage = v;
-        this.globalEmitter.emit(Constants.noteZoomPercentageChangedEvent);
+        this.collectionService.onNoteZoomPercentageChanged();
     }
 }

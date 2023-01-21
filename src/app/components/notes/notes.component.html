@@ -16,7 +16,7 @@
         <div [ngClass]="{ 'selected-item': note.isSelected }" *cdkVirtualFor="let note of notes" matRipple>
             <div
                 class="note-item no-select"
-                (dblclick)="openNote(note)"
+                (dblclick)="openNoteAsync(note)"
                 matTooltip="{{ 'Tooltips.LastChanged' | translate }}: {{ note.displayExactModificationDate }}"
                 (click)="setSelectedNotes(note, $event)"
                 draggable="true"
