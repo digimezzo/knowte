@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.1.0] - 2023-01-04
+## [2.1.0] - 2023-01-21
 
 ### Added
 
@@ -15,10 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Added spell checker
 -   Added note font resizing using CTRL + mouse wheel
 -   Added note status bar with quick options
--   Added note encryption
+-   Added note encryption and password protection
 -   Added Russian translation
 
 ### Changed
+
+-   Knowte can, upon confirmation, now close all open notes for you when switching collections.
 
 ### Removed
 
