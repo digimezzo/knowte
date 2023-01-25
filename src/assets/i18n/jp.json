@@ -109,7 +109,9 @@
         "ChangeSpellCheckerLanguages": "Change spell checker languages",
         "EncryptNote": "Encrypt note...",
         "DecryptNote": "Decrypt note...",
-        "ThisNoteIsEncrypted": "This note is encrypted"
+        "ThisNoteIsEncrypted": "This note is encrypted",
+        "TransferNote": "Transfer note to another collection",
+        "TransferNotes": "Transfer notes to another collection"
     },
     "LicenseDialog": {
         "License": "ライセンス"
@@ -144,7 +146,9 @@
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",
         "NoteIsEncrypted": "Note is encrypted",
-        "ConfirmCloseAllNotes": "Close all notes?"
+        "ConfirmCloseAllNotes": "Close all notes?",
+        "ConfirmTransferNote": "Transfer note?",
+        "ConfirmTransferNotes": "Transfer notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "コレクション '{{collection}}' を削除しますか？ コレクションを削除すると、メモ帳とメモも削除されます。",
@@ -162,7 +166,9 @@
         "AllFiles": "すべてのファイル",
         "ChooseNotebook": "メモ帳の選択",
         "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
-        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?",
+        "ConfirmTransferNote": "Are you sure you want to transfer this note to collection '{{collection}}'?",
+        "ConfirmTransferNotes": "Are you sure you want to transfer these notes to collection '{{collection}}'?"
     },
     "Input": {
         "Collection": "コレクション",

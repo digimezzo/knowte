@@ -32,6 +32,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ActiveNotebookAndSearchComponent } from './components/active-notebook-and-search/active-notebook-and-search.component';
 import { CollectionSwitcherComponent } from './components/collection-switcher/collection-switcher.component';
+import { TransferNotesBottomSheetComponent } from './components/collection/bottom-sheets/transfer-notes-bottom-sheet/transfer-notes-bottom-sheet.component';
 import { CollectionComponent } from './components/collection/collection.component';
 import { ColorSchemeSwitcherComponent } from './components/color-scheme-switcher/color-scheme-switcher.component';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmation-dialog/confirmation-dialog.component';
@@ -143,6 +144,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         NoteComponent,
         TextSizeBottomSheetComponent,
         SpellCheckBottomSheetComponent,
+        TransferNotesBottomSheetComponent,
         SpellCheckLanguagesComponent,
         NoteStatusBarComponent,
         WebviewDirective,

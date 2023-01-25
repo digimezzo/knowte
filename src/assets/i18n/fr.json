@@ -109,7 +109,9 @@
         "ChangeSpellCheckerLanguages": "Modifier les langues du correcteur orthographique",
         "EncryptNote": "Chriffrer la note...",
         "DecryptNote": "Déchiffrer la note...",
-        "ThisNoteIsEncrypted": "Cette note est cryptée"
+        "ThisNoteIsEncrypted": "Cette note est cryptée",
+        "TransferNote": "Transférer la note vers une autre collection",
+        "TransferNotes": "Transférer les notes vers une autre collection"
     },
     "LicenseDialog": {
         "License": "Licence"
@@ -144,7 +146,9 @@
         "EncryptNote": "Chiffrer la note",
         "ConfirmDecryptNote": "Décrypter la note?",
         "NoteIsEncrypted": "La note est cryptée",
-        "ConfirmCloseAllNotes": "Close all notes?"
+        "ConfirmCloseAllNotes": "Fermer toutes les notes?",
+        "ConfirmTransferNote": "Transférer la note?",
+        "ConfirmTransferNotes": "Transférer les notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Êtes-vous sûr de vouloir supprimer la collection '{{collection}}'? Si vous continuez, ses bloc-notes et ses notes seront perdues.",
@@ -162,7 +166,9 @@
         "AllFiles": "Tous les fichiers",
         "ChooseNotebook": "Choisissez un bloc-notes",
         "ConfirmDecryptNote": "Êtes-vous sûr de vouloir décrypter cette note?",
-        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
+        "ConfirmCloseAllNotes": "Cela fermera toutes les notes ouvertes. Etes-vous sur de vouloir continuer?",
+        "ConfirmTransferNote": "Êtes-vous sûr de vouloir transférer cette note vers la collection '{{collection}}'?",
+        "ConfirmTransferNotes": "Êtes-vous sûr de vouloir transférer ces notes vers la collection '{{collection}}'?"
     },
     "Input": {
         "Collection": "Collection",
@@ -170,7 +176,7 @@
         "SecretKey": "Clé secrète"
     },
     "ErrorTexts": {
-        "StorageDirectoryCreationError": "Le répertoire '{{storageDirectory}}' ne peut pas être utilisé pour enregistrer vos notes. Vous n’avez peut-être pas les autorisations nécessaires pour y créer des éléments. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "StorageDirectoryCreationError": "Le répertoire '{{storageDirectory}}' ne peut pas être utilisé pour enregistrer vos notes. Vous n'avez peut-être pas les autorisations nécessaires pour y créer des éléments. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "GlobalError": "Une erreur s'est produite qui entraînera la fermeture de l'application. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "AddCollectionError": "Une erreur s'est produite lors de l'ajout de la collection '{{collection}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "AddNotebookError": "Une erreur s'est produite lors de l'ajout du bloc-notes '{{notebookName}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
@@ -246,6 +252,6 @@
         "IncorrectKey": "Clé incorrecte"
     },
     "NotificationTexts": {
-        "SecretKeyIncorrect": "The secret key is incorrect."
+        "SecretKeyIncorrect": "La clé secrète est incorrecte."
     }
 }

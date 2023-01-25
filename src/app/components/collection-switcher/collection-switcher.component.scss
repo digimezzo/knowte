@@ -51,23 +51,6 @@
     align-items: center;
 }
 
-.menu-item {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding-right: 80px;
-}
-
-.menu-icon {
-    font-size: 24px;
-    color: $color-grey-icon;
-    margin: 0 8px 0 0;
-}
-
-.menu-icon.isActive {
-    color: var(--theme-accent-color);
-}
-
 .menu-command-item {
     position: absolute;
     right: 8px;

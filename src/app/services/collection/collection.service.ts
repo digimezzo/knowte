@@ -907,6 +907,38 @@ export class CollectionService {
         this.deleteNotes([noteId]);
     }
 
+    public async transferNotesToCollectionAsync(noteIds: string[], destinationCollection: string): Promise<Operation> {
+        // const storageDirectory: string = this.settings.storageDirectory;
+        // const activeCollectionDirectory = Utils.collectionToPath(storageDirectory, this.settings.activeCollection);
+
+        // // 1. Switch to the destination collection
+        // const destinationCollectionDirectory: string = Utils.collectionToPath(storageDirectory, destinationCollection);
+        // const destinationDatabaseFile: string = path.join(destinationCollectionDirectory, `${destinationCollection}.db`);
+        // await this.dataStore.initializeAsync(destinationDatabaseFile);
+
+        // // 2. Import notes in destination collection
+        // const noteFilePaths: string[] = noteIds.map((x) => `${path.join(activeCollectionDirectory, x)}${Constants.noteContentExtension}`);
+        // const importOperation: Operation = await this.importNoteFilesBaseAsync(destinationCollection, noteFilePaths, '');
+
+        // // 3. Switch back to the active collection
+        // const activeDatabaseFile: string = path.join(activeCollectionDirectory, `${this.settings.activeCollection}.db`);
+        // await this.dataStore.initializeAsync(activeDatabaseFile);
+
+        // // 4. If import was successful, delete notes from active collection.
+        // let deleteOperation: Operation = Operation.Aborted;
+        // if (importOperation === Operation.Success) {
+        //     deleteOperation = await this.deleteNotesPermanently(noteIds);
+        // }
+
+        // this.notesChanged.next();
+
+        // if (importOperation !== Operation.Success || deleteOperation !== Operation.Success) {
+        //     return Operation.Error;
+        // }
+
+        return Operation.Success;
+    }
+
     public async importNoteFilesAsync(noteFilePaths: string[], notebookId?: string): Promise<Operation> {
         let numberofImportedNoteFiles: number = 0;
         let operation: Operation = Operation.Success;

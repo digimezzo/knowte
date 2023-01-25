@@ -203,13 +203,13 @@
                                         class="list-button"
                                         mat-mini-fab
                                         color=""
-                                        (click)="deleteNotesAsync()"
+                                        (click)="openTransferNotesBottomSheet()"
                                         matTooltip="{{
-                                            (selectedNoteIds.length > 1 ? 'Tooltips.DeleteNotes' : 'Tooltips.DeleteNote') | translate
+                                            (selectedNoteIds.length > 1 ? 'Tooltips.TransferNotes' : 'Tooltips.TransferNote') | translate
                                         }}"
-                                        *ngIf="canDeleteNotes"
+                                        *ngIf="hasSelectedNotes"
                                     >
-                                        <i class="edit-item-icon lar la-trash-alt"></i>
+                                        <i class="edit-item-icon las la-exchange-alt"></i>
                                     </button>
                                     <button
                                         class="list-button"
@@ -219,6 +219,18 @@
                                         matTooltip="{{ 'Tooltips.ImportNotes' | translate }}"
                                     >
                                         <i class="edit-item-icon las la-file-import"></i>
+                                    </button>
+                                    <button
+                                        class="list-button"
+                                        mat-mini-fab
+                                        color=""
+                                        (click)="deleteNotesAsync()"
+                                        matTooltip="{{
+                                            (selectedNoteIds.length > 1 ? 'Tooltips.DeleteNotes' : 'Tooltips.DeleteNote') | translate
+                                        }}"
+                                        *ngIf="hasSelectedNotes"
+                                    >
+                                        <i class="edit-item-icon lar la-trash-alt"></i>
                                     </button>
                                     <button
                                         class="list-button"

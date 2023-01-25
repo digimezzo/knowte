@@ -109,7 +109,9 @@
         "ChangeSpellCheckerLanguages": "Wijzig de talen van de spellingcontrole",
         "EncryptNote": "Notitie versleutelen...",
         "DecryptNote": "Notitie decoderen...",
-        "ThisNoteIsEncrypted": "Deze notitie is versleuteld"
+        "ThisNoteIsEncrypted": "Deze notitie is versleuteld",
+        "TransferNote": "Notitie overzetten naar een andere collectie",
+        "TransferNotes": "Notities overzetten naar een andere collectie"
     },
     "LicenseDialog": {
         "License": "Licentie"
@@ -144,7 +146,9 @@
         "EncryptNote": "Notitie versleutelen",
         "ConfirmDecryptNote": "Notitie decoderen?",
         "NoteIsEncrypted": "Notitie is versleuteld",
-        "ConfirmCloseAllNotes": "Close all notes?"
+        "ConfirmCloseAllNotes": "Alle notities sluiten?",
+        "ConfirmTransferNote": "Notitie overzetten?",
+        "ConfirmTransferNotes": "Notities overzetten?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Weet u zeker dat u de collectie '{{collection}}' wilt verwijderen? Als u doorgaat, gaan de notitieboeken en notities verloren.",
@@ -162,7 +166,9 @@
         "AllFiles": "Alle bestanden",
         "ChooseNotebook": "Kies een notitieboek",
         "ConfirmDecryptNote": "Weet je zeker dat je deze notitie wilt ontsleutelen?",
-        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
+        "ConfirmCloseAllNotes": "Hiermee worden alle geopende notities gesloten. Weet je zeker dat je door wilt gaan?",
+        "ConfirmTransferNote": "Weet u zeker dat u deze notitie wilt overzetten naar collectie '{{collection}}'?",
+        "ConfirmTransferNotes": "Weet u zeker dat u deze notities wilt overzetten naar collectie '{{collection}}'?"
     },
     "Input": {
         "Collection": "Collectie",
@@ -246,6 +252,6 @@
         "IncorrectKey": "Verkeerde sleutel"
     },
     "NotificationTexts": {
-        "SecretKeyIncorrect": "The secret key is incorrect."
+        "SecretKeyIncorrect": "De geheime sleutel is onjuist."
     }
 }

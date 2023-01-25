@@ -109,7 +109,9 @@
         "ChangeSpellCheckerLanguages": "Change spell checker languages",
         "EncryptNote": "Encrypt note...",
         "DecryptNote": "Decrypt note...",
-        "ThisNoteIsEncrypted": "This note is encrypted"
+        "ThisNoteIsEncrypted": "This note is encrypted",
+        "TransferNote": "Transfer note to another collection",
+        "TransferNotes": "Transfer notes to another collection"
     },
     "LicenseDialog": {
         "License": "许可证"
@@ -144,7 +146,9 @@
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",
         "NoteIsEncrypted": "Note is encrypted",
-        "ConfirmCloseAllNotes": "Close all notes?"
+        "ConfirmCloseAllNotes": "Close all notes?",
+        "ConfirmTransferNote": "Are you sure you want to transfer this note to collection '{{collection}}'?",
+        "ConfirmTransferNotes": "Are you sure you want to transfer these notes to collection '{{collection}}'?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "您确定要删除收藏'{{collection}}'吗？ 如果继续，其笔记本和笔记将丢失。",
@@ -162,7 +166,9 @@
         "AllFiles": "所有文件",
         "ChooseNotebook": "选择笔记本",
         "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
-        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?",
+        "ConfirmTransferNote": "Transfer note",
+        "ConfirmTransferNotes": "Transfer notes"
     },
     "Input": {
         "Collection": "收藏",
