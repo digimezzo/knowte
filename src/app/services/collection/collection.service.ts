@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
 import { ipcRenderer } from 'electron';
-import * as fs from 'fs-extra';
-import * as path from 'path';
 import { Observable, Subject } from 'rxjs';
 import sanitize from 'sanitize-filename';
 import { BaseSettings } from '../../core/base-settings';
@@ -27,6 +25,7 @@ import { NotesCountResult } from '../results/notes-count-result';
 import { SearchService } from '../search/search.service';
 import { TranslatorService } from '../translator/translator.service';
 import { CollectionEvents } from './collection-events';
+import { CollectionFileAccess } from './collection-file-access';
 import { NoteDateFormatter } from './note-date-formatter';
 
 /**
@@ -50,14 +49,14 @@ export class CollectionService {
     private noteMarkChanged: Subject<NoteMarkResult> = new Subject<NoteMarkResult>();
     private noteNotebookChanged: Subject<void> = new Subject();
 
-    private setNoteOpenEventListener: any = this.setNoteOpen.bind(this);
+    private setNoteOpenEventListener: any = this.setNoteOpenAsync.bind(this);
     private setNoteMarkEventListener: any = this.setNoteMark.bind(this);
     private setNotebookEventListener: any = this.setNotebook.bind(this);
     private getNoteDetailsEventListener: any = this.getNoteDetailsEventHandler.bind(this);
     private getNotebooksEventListener: any = this.getNotebooksEventHandler.bind(this);
     private setNoteTitleEventListener: any = this.setNoteTitleEventHandler.bind(this);
     private setNoteTextEventListener: any = this.setNoteTextEventHandler.bind(this);
-    private deleteNoteEventListener: any = this.deleteNoteEventHandler.bind(this);
+    private deleteNoteEventListener: any = this.deleteNoteEventHandlerAsync.bind(this);
     private encryptNoteEventListener: any = this.encryptNoteEventHandler.bind(this);
     private decryptNoteEventListener: any = this.decryptNoteEventHandler.bind(this);
     private getIsInitializedEventEventListener: any = this.getIsInitializedEventHandler.bind(this);
@@ -69,6 +68,7 @@ export class CollectionService {
         private search: SearchService,
         private appearance: AppearanceService,
         private cryptography: CryptographyService,
+        private collectionFileAccess: CollectionFileAccess,
         private noteDateFormatter: NoteDateFormatter,
         private dateFormatter: DateFormatter,
         private settings: BaseSettings,
@@ -119,76 +119,26 @@ export class CollectionService {
         this.globalEmitter.on(CollectionEvents.getIsInitializedEvent, this.getIsInitializedEventEventListener);
     }
 
-    public get hasStorageDirectory(): boolean {
-        // 1. Get the storage directory from the settings
-        const storageDirectory: string = this.settings.storageDirectory;
-
-        if (!storageDirectory) {
-            // Storage directory is empty
-            this.logger.info('Storage directory setting is empty', 'CollectionService', 'hasStorageDirectory');
-            return false;
-        }
-
-        // 2. If a storage directory was found in the settings, check if it exists on disk.
-        if (!fs.existsSync(storageDirectory)) {
-            // Storage directory is not found on disk
-            this.logger.info(`Storage directory '${storageDirectory}' is not found on disk`, 'CollectionService', 'hasStorageDirectory');
-            return false;
-        }
-
-        // Storage directory is OK.
-        this.logger.info(`Storage directory '${storageDirectory}' is OK`, 'CollectionService', 'hasStorageDirectory');
-        return true;
-    }
-
-    private getActiveStorageDirectory(): string {
-        const activeCollection: string = this.settings.activeCollection;
-        const storageDirectory: string = this.settings.storageDirectory;
-
-        return Utils.collectionToPath(storageDirectory, activeCollection);
+    public hasCollections(): boolean {
+        return this.collectionFileAccess.hasStorageDirectory();
     }
 
     public async getCollectionsAsync(): Promise<string[]> {
-        const storageDirectory: string = this.settings.storageDirectory;
-        const fileNames: string[] = await fs.readdir(storageDirectory);
-        const collections: string[] = [];
-
-        for (const fileName of fileNames) {
-            const absoluteFilePath: string = path.join(storageDirectory, fileName);
-            const stat: any = await fs.stat(absoluteFilePath);
-
-            if (stat.isDirectory()) {
-                collections.push(fileName);
-            }
-        }
-
-        return collections;
+        return await this.collectionFileAccess.getCollectionsAsync();
     }
 
     public async setStorageDirectoryAsync(parentDirectory: string): Promise<boolean> {
         try {
-            // Generate storage directory path based on parent directory
-            const storageDirectory: string = path.join(parentDirectory, Constants.collectionsDirectory);
-
-            // Create storage directory if it doesn't exist
-            if (!(await fs.pathExists(storageDirectory))) {
-                await fs.mkdir(storageDirectory);
-                this.logger.info(`Created storageDirectory '${storageDirectory}' on disk`, 'CollectionService', 'setStorageDirectoryAsync');
-            } else {
-                this.logger.info(
-                    `StorageDirectory '${storageDirectory}' already exists on disk. No need to create it.`,
-                    'CollectionService',
-                    'setStorageDirectoryAsync'
-                );
-            }
-
-            // Save storage directory in the settings store
-            this.settings.storageDirectory = storageDirectory;
+            const storageDirectory: string = this.collectionFileAccess.createStorageDirectory(parentDirectory);
             this.logger.info(
-                `Saved storage directory '${storageDirectory}' in settings store`,
+                `Created storageDirectory '${storageDirectory}' on disk if it did not exist yet.`,
                 'CollectionService',
                 'setStorageDirectoryAsync'
             );
+
+            // Save storage directory in the settings
+            this.settings.storageDirectory = storageDirectory;
+            this.logger.info(`Saved storage directory '${storageDirectory}' in settings`, 'CollectionService', 'setStorageDirectoryAsync');
         } catch (error) {
             this.logger.error(
                 `Could not create storage directory on disk. Cause: ${error}`,
@@ -220,22 +170,16 @@ export class CollectionService {
         this.isInitializing = true;
 
         // Get the active collection from the settings
-        const storageDirectory: string = this.settings.storageDirectory;
         let activeCollection: string = this.settings.activeCollection;
         let activeCollectionDirectory: string = '';
 
-        if (
-            activeCollection &&
-            Utils.collectionToPath(storageDirectory, activeCollection).includes(storageDirectory) &&
-            Utils.collectionToPath(storageDirectory, activeCollection) !== storageDirectory &&
-            (await fs.pathExists(Utils.collectionToPath(storageDirectory, activeCollection)))
-        ) {
+        if (await this.collectionFileAccess.activeCollectionAndItsDirectoryExistAsync()) {
             // There is an active collection and the collection directory exists
-            activeCollectionDirectory = Utils.collectionToPath(storageDirectory, activeCollection);
+            activeCollectionDirectory = await this.collectionFileAccess.getActiveCollectionDirectoryPath();
         } else {
             // There is no active collection or no collection directory
             // Get all collection directories in the storage directory
-            const collections: string[] = await this.getCollectionsAsync();
+            const collections: string[] = await this.collectionFileAccess.getCollectionsAsync();
 
             if (collections && collections.length > 0) {
                 // If there are collection directories, take the first one.
@@ -245,22 +189,18 @@ export class CollectionService {
                 activeCollection = Constants.defaultCollection;
             }
 
-            activeCollectionDirectory = Utils.collectionToPath(storageDirectory, activeCollection);
-
-            // If the collection directory doesn't exsist, create it.
-            if (!(await fs.pathExists(activeCollectionDirectory))) {
-                await fs.mkdir(activeCollectionDirectory);
-            }
+            // If the collection directory doesn't exist, create it.
+            await this.collectionFileAccess.createCollectionDirectoryIfNotExistsAsync(activeCollection);
         }
 
         this.setActiveCollection(activeCollection);
 
-        const databaseFile: string = path.join(activeCollectionDirectory, `${activeCollection}.db`);
+        const databaseFilePath: string = this.collectionFileAccess.getActiveCollectionDatabasePath();
 
         // Now initialize the data store.
-        await this.dataStore.initializeAsync(databaseFile);
+        await this.dataStore.initializeAsync(databaseFilePath);
 
-        this.logger.info(`Initialized data store: ${databaseFile}`, 'CollectionService', 'initializeAsync');
+        this.logger.info(`Initialized data store: ${databaseFilePath}`, 'CollectionService', 'initializeAsync');
 
         // Only an initialized collectionService can process global requests
         this.listenToNoteEvents();
@@ -295,8 +235,7 @@ export class CollectionService {
             }
 
             // Add the collection
-            const storageDirectory: string = this.settings.storageDirectory;
-            await fs.mkdir(Utils.collectionToPath(storageDirectory, sanitizedCollection));
+            await this.collectionFileAccess.createCollectionDirectoryAsync(sanitizedCollection);
 
             this.logger.info(`Added collection '${sanitizedCollection}'`, 'CollectionService', 'addCollectionAsync');
 
@@ -318,39 +257,27 @@ export class CollectionService {
         return Operation.Success;
     }
 
-    public async renameCollectionAsync(initialCollection: string, finalCollection: string): Promise<Operation> {
-        if (!finalCollection) {
-            this.logger.error('finalCollection is null', 'CollectionService', 'renameCollectionAsync');
+    public async renameCollectionAsync(oldCollection: string, newCollection: string): Promise<Operation> {
+        if (!newCollection) {
+            this.logger.error('newCollection is null', 'CollectionService', 'renameCollectionAsync');
             return Operation.Error;
         }
 
         // No rename required
-        if (initialCollection.toLowerCase() === finalCollection.toLowerCase()) {
+        if (oldCollection.toLowerCase() === newCollection.toLowerCase()) {
             return Operation.Aborted;
         }
 
         try {
-            if (await this.collectionExistsAsync(finalCollection)) {
+            if (await this.collectionExistsAsync(newCollection)) {
                 return Operation.Duplicate;
             }
 
-            const storageDirectory: string = this.settings.storageDirectory;
-
-            // Rename database file
-            await fs.move(
-                path.join(Utils.collectionToPath(storageDirectory, initialCollection), `${initialCollection}.db`),
-                path.join(Utils.collectionToPath(storageDirectory, initialCollection), `${finalCollection}.db`)
-            );
-
-            // Rename directory
-            await fs.move(
-                Utils.collectionToPath(storageDirectory, initialCollection),
-                Utils.collectionToPath(storageDirectory, finalCollection)
-            );
-            this.settings.activeCollection = finalCollection;
+            this.collectionFileAccess.renameCollectionFiles(oldCollection, newCollection);
+            this.settings.activeCollection = newCollection;
         } catch (error) {
             this.logger.error(
-                `Could not rename the collection '${initialCollection}' to '${finalCollection}'. Cause: ${error}`,
+                `Could not rename the collection '${oldCollection}' to '${newCollection}'. Cause: ${error}`,
                 'CollectionService',
                 'renameCollectionAsync'
             );
@@ -366,9 +293,8 @@ export class CollectionService {
 
     public async deleteCollectionAsync(collection: string): Promise<Operation> {
         try {
-            const storageDirectory: string = this.settings.storageDirectory;
-            await fs.remove(Utils.collectionToPath(storageDirectory, collection));
-            const collections: string[] = await this.getCollectionsAsync();
+            await this.collectionFileAccess.deleteCollectionDirectoryAsync(collection);
+            const collections: string[] = await this.collectionFileAccess.getCollectionsAsync();
 
             if (collections && collections.length > 0) {
                 this.settings.activeCollection = collections[0];
@@ -536,30 +462,17 @@ export class CollectionService {
         return operation;
     }
 
-    private deleteNotePermanently(noteId: string): void {
-        // 1. Delete note from data store
+    private async deleteNotePermanentlyAsync(noteId: string): Promise<void> {
         this.dataStore.deleteNote(noteId);
-
-        // 2. Delete all files from disk, which are related to the note.
-        const noteDirectory: string = this.getActiveStorageDirectory();
-        const noteFilePath: string = path.join(noteDirectory, `${noteId}${Constants.noteContentExtension}`);
-        const noteStateFilePath: string = path.join(noteDirectory, `${noteId}${Constants.noteStateExtension}`);
-
-        // Note file
-        fs.unlinkSync(noteFilePath);
-
-        // Note state file
-        if (fs.existsSync(noteStateFilePath)) {
-            fs.unlinkSync(noteStateFilePath);
-        }
+        await this.collectionFileAccess.deleteNoteFilesAsync(noteId);
     }
 
-    public deleteNotesPermanently(noteIds: string[]): Operation {
+    public async deleteNotesPermanentlyAsync(noteIds: string[]): Promise<Operation> {
         let operation: Operation = Operation.Success;
 
         for (const noteId of noteIds) {
             try {
-                this.deleteNotePermanently(noteId);
+                await this.deleteNotePermanentlyAsync(noteId);
             } catch (error) {
                 this.logger.error(
                     `Could not permanently delete the note with id='${noteId}'. Cause: ${error}`,
@@ -576,7 +489,7 @@ export class CollectionService {
         return operation;
     }
 
-    public deleteNotes(noteIds: string[]): Operation {
+    public async deleteNotesAsync(noteIds: string[]): Promise<Operation> {
         let operation: Operation = Operation.Success;
 
         for (const noteId of noteIds) {
@@ -594,7 +507,7 @@ export class CollectionService {
                 }
             } else {
                 try {
-                    this.deleteNotePermanently(noteId);
+                    await this.deleteNotePermanentlyAsync(noteId);
                 } catch (error) {
                     this.logger.error(
                         `Could not delete the note with id='${noteId}'. Cause: ${error}`,
@@ -709,7 +622,7 @@ export class CollectionService {
         return notes;
     }
 
-    public addNote(baseTitle: string, notebookId: string): NoteOperationResult {
+    public async addNoteAsync(baseTitle: string, notebookId: string): Promise<NoteOperationResult> {
         let uniqueTitle: string = '';
         const result: NoteOperationResult = new NoteOperationResult(Operation.Success);
 
@@ -724,13 +637,7 @@ export class CollectionService {
             result.noteId = this.dataStore.addNote(uniqueTitle, notebookId);
 
             // 2. Create note file
-            const activeCollection: string = this.settings.activeCollection;
-            const storageDirectory: string = this.settings.storageDirectory;
-            fs.writeFileSync(
-                path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${result.noteId}${Constants.noteContentExtension}`),
-                ''
-            );
-
+            await this.collectionFileAccess.saveNoteContentAsync(result.noteId, '');
             this.noteEdited.next();
         } catch (error) {
             this.logger.error(`Could not add note '${uniqueTitle}'. Cause: ${error}`, 'CollectionService', 'addNote');
@@ -903,11 +810,16 @@ export class CollectionService {
         return;
     }
 
-    public deleteNoteEventHandler(noteId: string): void {
-        this.deleteNotes([noteId]);
+    public async deleteNoteEventHandlerAsync(noteId: string): Promise<void> {
+        await this.deleteNotesAsync([noteId]);
     }
 
     public async transferNotesToCollectionAsync(noteIds: string[], destinationCollection: string): Promise<Operation> {
+        // 1. Copy note files to destination directory
+        // 2. Copy notes to destination data store
+        // 3. Delete notes from source directory
+        // 4. Delete notes from destination data store
+
         // const storageDirectory: string = this.settings.storageDirectory;
         // const activeCollectionDirectory = Utils.collectionToPath(storageDirectory, this.settings.activeCollection);
 
@@ -940,12 +852,12 @@ export class CollectionService {
     }
 
     public async importNoteFilesAsync(noteFilePaths: string[], notebookId?: string): Promise<Operation> {
-        let numberofImportedNoteFiles: number = 0;
+        let numberOfImportedNoteFiles: number = 0;
         let operation: Operation = Operation.Success;
 
         for (const noteFilePath of noteFilePaths) {
             try {
-                const noteFileContent: string = await fs.readFile(noteFilePath, 'utf8');
+                const noteFileContent: string = await this.collectionFileAccess.getNoteContentAsync(noteFilePath);
                 const noteExport: NoteExport = JSON.parse(noteFileContent);
                 const proposedNoteTitle: string = `${noteExport.title} (${await this.translator.getAsync('Notes.Imported')})`;
                 const uniqueNoteTitle: string = this.getUniqueNoteTitle(proposedNoteTitle, false);
@@ -961,13 +873,8 @@ export class CollectionService {
 
                 this.dataStore.updateNoteWithoutDate(note);
 
-                const activeCollection: string = this.settings.activeCollection;
-                const storageDirectory: string = this.settings.storageDirectory;
-                await fs.writeFile(
-                    path.join(Utils.collectionToPath(storageDirectory, activeCollection), `${note.id}${Constants.noteContentExtension}`),
-                    noteExport.content
-                );
-                numberofImportedNoteFiles++;
+                await this.collectionFileAccess.saveNoteContentAsync(note.id, noteExport.content);
+                numberOfImportedNoteFiles++;
             } catch (error) {
                 this.logger.error(
                     `An error occurred while importing note file '${noteFilePath}'. Cause: ${error}`,
@@ -978,7 +885,7 @@ export class CollectionService {
             }
         }
 
-        if (numberofImportedNoteFiles > 0) {
+        if (numberOfImportedNoteFiles > 0) {
             this.noteEdited.next();
         }
 
@@ -1001,7 +908,7 @@ export class CollectionService {
     }
 
     private async collectionExistsAsync(collection: string): Promise<boolean> {
-        const collections: string[] = await this.getCollectionsAsync();
+        const collections: string[] = await this.collectionFileAccess.getCollectionsAsync();
         const existingCollections: string[] = collections.filter((x) => x.toLowerCase() === collection.toLowerCase());
 
         return existingCollections && existingCollections.length > 0;
@@ -1042,14 +949,22 @@ export class CollectionService {
         callback(notebooks);
     }
 
-    public setNoteOpen(noteId: string, isOpen: boolean): void {
+    public async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
         if (isOpen) {
             if (!this.openNoteIds.includes(noteId)) {
                 this.openNoteIds.push(noteId);
 
-                const noteDirectory: string = this.getActiveStorageDirectory();
-                this.logger.info(`Note directory=${noteDirectory}`, 'CollectionService', 'importNoteFilesAsync');
-                const arg: any = { notePath: noteDirectory, noteId: noteId, windowHasFrame: this.appearance.windowHasNativeTitleBar };
+                const activeCollectionDirectoryPath: string = await this.collectionFileAccess.getActiveCollectionDirectoryPath();
+                this.logger.info(
+                    `Active collection directory=${activeCollectionDirectoryPath}`,
+                    'CollectionService',
+                    'importNoteFilesAsync'
+                );
+                const arg: any = {
+                    notePath: activeCollectionDirectoryPath,
+                    noteId: noteId,
+                    windowHasFrame: this.appearance.windowHasNativeTitleBar,
+                };
                 ipcRenderer.send('open-note-window', arg);
             }
         } else {

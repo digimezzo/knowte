@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ipcRenderer } from 'electron';
 import * as fs from 'fs-extra';
-import { FileSystem } from '../../core/file-system';
+import { FileAccess } from '../../core/file-access';
 import { Logger } from '../../core/logger';
 
 @Injectable()
 export class PrintService {
-    public constructor(private fileSystem: FileSystem, private logger: Logger) {}
+    public constructor(private fileAccess: FileAccess, private logger: Logger) {}
 
     public async printAsync(pageTitle: string, pageContent: string): Promise<void> {
         try {
@@ -89,7 +89,7 @@ export class PrintService {
     }
 
     private createPrintHtmlFilePath(): string {
-        return this.fileSystem.combinePath([this.fileSystem.applicationDataDirectory(), 'print.html']);
+        return this.fileAccess.combinePath(this.fileAccess.applicationDataDirectory(), 'print.html');
     }
 
     private async writePrintHtmlFileAsync(pageTitle: string, pageContent: string): Promise<string> {

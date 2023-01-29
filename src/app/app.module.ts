@@ -71,7 +71,7 @@ import { BaseSettings } from './core/base-settings';
 import { ClipboardManager } from './core/clipboard-manager';
 import { DateFormatter } from './core/date-formatter';
 import { Desktop } from './core/desktop';
-import { FileSystem } from './core/file-system';
+import { FileAccess } from './core/file-access';
 import { GitHubApi } from './core/github-api';
 import { Logger } from './core/logger';
 import { Scheduler } from './core/scheduler';
@@ -82,6 +82,7 @@ import { WebviewDirective } from './directives/webview.directive';
 import { GlobalErrorHandler } from './globalErrorHandler';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { AppearanceService } from './services/appearance/appearance.service';
+import { CollectionFileAccess } from './services/collection/collection-file-access';
 import { CollectionClient } from './services/collection/collection.client';
 import { CollectionService } from './services/collection/collection.service';
 import { NoteDateFormatter } from './services/collection/note-date-formatter';
@@ -212,7 +213,8 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         Scheduler,
         Desktop,
         Logger,
-        FileSystem,
+        FileAccess,
+        CollectionFileAccess,
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
         DataStore,
         {

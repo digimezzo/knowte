@@ -277,10 +277,10 @@ export class CollectionComponent implements OnInit, OnDestroy {
         const baseTitle: string = await this.translatorService.getAsync('Notes.NewNote');
 
         // Create a new note
-        const result: NoteOperationResult = this.collectionService.addNote(baseTitle, this.activeNotebook.id);
+        const result: NoteOperationResult = await this.collectionService.addNoteAsync(baseTitle, this.activeNotebook.id);
 
         if (result.operation === Operation.Success) {
-            await this.collectionService.setNoteOpen(result.noteId, true);
+            await this.collectionService.setNoteOpenAsync(result.noteId, true);
         }
     }
 
@@ -329,7 +329,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
             }
 
             // Delete the notes
-            const operation: Operation = this.collectionService.deleteNotes(this.selectedNoteIds);
+            const operation: Operation = await this.collectionService.deleteNotesAsync(this.selectedNoteIds);
 
             if (operation === Operation.Error) {
                 const errorText: string = await this.translatorService.getAsync('ErrorTexts.DeleteNotesError');

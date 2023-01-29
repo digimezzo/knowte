@@ -48,7 +48,7 @@ export class AppComponent implements OnInit, OnDestroy {
             })
         );
 
-        const showWelcome: boolean = !this.collectionService.hasStorageDirectory;
+        const showWelcome: boolean = !this.collectionService.hasCollections();
 
         if (showWelcome) {
             this.router.navigate(['/welcome']);

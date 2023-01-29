@@ -106,7 +106,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     public async openNoteAsync(note: Note): Promise<void> {
         if (!this.collectionService.noteIsOpen(note.id)) {
             this.logger.info(`Opening note with id=${note.id}`, 'NotesComponent', 'openNoteAsync');
-            await this.collectionService.setNoteOpen(note.id, true);
+            await this.collectionService.setNoteOpenAsync(note.id, true);
         } else {
             this.logger.info(`Note with id=${note.id} is already open. Focusing.`, 'NotesComponent', 'openNoteAsync');
             this.collectionService.onFocusNote(note.id);
