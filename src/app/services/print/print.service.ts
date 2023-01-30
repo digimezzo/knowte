@@ -17,8 +17,8 @@ export class PrintService {
             this.logger.info('Sending "print" command to main.', 'PrintService', 'printAsync');
 
             ipcRenderer.send('print', data);
-        } catch (e) {
-            this.logger.error(`Printing failed. Error: ${e.message}`, 'PrintService', 'printAsync');
+        } catch (error) {
+            this.logger.error(`Printing failed. Error: ${error.message}`, 'PrintService', 'printAsync');
         }
     }
 
@@ -31,8 +31,8 @@ export class PrintService {
             this.logger.info(`Sending "printToPDF" command with filePath='${pdfFilePath}' to main.`, 'PrintService', 'exportToPdfAsync');
 
             ipcRenderer.send('printToPDF', data);
-        } catch (e) {
-            this.logger.error(`Export to PDF failed. Error: ${e.message}`, 'PrintService', 'exportToPdfAsync');
+        } catch (error) {
+            this.logger.error(`Export to PDF failed. Error: ${error.message}`, 'PrintService', 'exportToPdfAsync');
         }
     }
 
@@ -98,9 +98,9 @@ export class PrintService {
 
         try {
             await fs.writeFile(printHtmlFilePath, printHtmlFileContent);
-        } catch (e) {
-            this.logger.error(`Could not create print.html file. Error: ${e.message}`, 'PrintService', 'writePrintHtmlFileAsync');
-            throw e;
+        } catch (error) {
+            this.logger.error(`Could not create print.html file. Error: ${error.message}`, 'PrintService', 'writePrintHtmlFileAsync');
+            throw error;
         }
 
         return printHtmlFilePath;

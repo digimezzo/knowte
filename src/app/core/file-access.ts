@@ -54,13 +54,13 @@ export class FileAccess {
                 if (fs.lstatSync(possibleDirectoryPath).isDirectory()) {
                     confirmedDirectoryPaths.push(possibleDirectoryPath);
                 }
-            } catch (e) {
+            } catch (error) {
                 if (continueOnError == undefined || !continueOnError) {
-                    throw e;
+                    throw error;
                 }
 
                 if (errors != undefined) {
-                    errors.push(e);
+                    errors.push(error);
                 }
             }
         }
