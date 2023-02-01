@@ -173,9 +173,9 @@ export class CollectionService {
         let activeCollection: string = this.settings.activeCollection;
         let activeCollectionDirectory: string = '';
 
-        if (await this.collectionFileAccess.activeCollectionAndItsDirectoryExistAsync()) {
+        if (await this.collectionFileAccess.collectionAndItsDirectoryExistAsync(this.settings.activeCollection)) {
             // There is an active collection and the collection directory exists
-            activeCollectionDirectory = await this.collectionFileAccess.getActiveCollectionDirectoryPath();
+            activeCollectionDirectory = await this.collectionFileAccess.getCollectionDirectoryPath(this.settings.activeCollection);
         } else {
             // There is no active collection or no collection directory
             // Get all collection directories in the storage directory
@@ -195,7 +195,7 @@ export class CollectionService {
 
         this.setActiveCollection(activeCollection);
 
-        const databaseFilePath: string = this.collectionFileAccess.getActiveCollectionDatabasePath();
+        const databaseFilePath: string = this.collectionFileAccess.getCollectionDatabasePath(this.settings.activeCollection);
 
         // Now initialize the data store.
         await this.dataStore.initializeAsync(databaseFilePath);
@@ -464,7 +464,7 @@ export class CollectionService {
 
     private async deleteNotePermanentlyAsync(noteId: string): Promise<void> {
         this.dataStore.deleteNote(noteId);
-        await this.collectionFileAccess.deleteNoteFilesAsync(noteId);
+        await this.collectionFileAccess.deleteNoteFilesAsync(noteId, this.settings.activeCollection);
     }
 
     public async deleteNotesPermanentlyAsync(noteIds: string[]): Promise<Operation> {
@@ -637,7 +637,7 @@ export class CollectionService {
             result.noteId = this.dataStore.addNote(uniqueTitle, notebookId);
 
             // 2. Create note file
-            await this.collectionFileAccess.saveNoteContentAsync(result.noteId, '');
+            await this.collectionFileAccess.saveNoteContentAsync(result.noteId, '', this.settings.activeCollection);
             this.noteEdited.next();
         } catch (error) {
             this.logger.error(`Could not add note '${uniqueTitle}'. Cause: ${error}`, 'CollectionService', 'addNote');
@@ -814,39 +814,36 @@ export class CollectionService {
         await this.deleteNotesAsync([noteId]);
     }
 
-    public async transferNotesToCollectionAsync(noteIds: string[], destinationCollection: string): Promise<Operation> {
-        // 1. Copy note files to destination directory
-        // 2. Copy notes to destination data store
-        // 3. Delete notes from source directory
-        // 4. Delete notes from destination data store
+    public async transferNotesToCollectionAsync(noteIds: string[], collection: string): Promise<Operation> {
+        // 1. Export notes from old collection
+        const noteExports: NoteExport[] = [];
 
-        // const storageDirectory: string = this.settings.storageDirectory;
-        // const activeCollectionDirectory = Utils.collectionToPath(storageDirectory, this.settings.activeCollection);
+        for (const noteId of noteIds) {
+            const note: Note = this.dataStore.getNoteById(noteId);
+            const noteFileContent: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(
+                noteId,
+                this.settings.activeCollection
+            );
 
-        // // 1. Switch to the destination collection
-        // const destinationCollectionDirectory: string = Utils.collectionToPath(storageDirectory, destinationCollection);
-        // const destinationDatabaseFile: string = path.join(destinationCollectionDirectory, `${destinationCollection}.db`);
-        // await this.dataStore.initializeAsync(destinationDatabaseFile);
+            const noteExport: NoteExport = new NoteExport(note.title, note.text, noteFileContent);
+            noteExports.push(noteExport);
+        }
 
-        // // 2. Import notes in destination collection
-        // const noteFilePaths: string[] = noteIds.map((x) => `${path.join(activeCollectionDirectory, x)}${Constants.noteContentExtension}`);
-        // const importOperation: Operation = await this.importNoteFilesBaseAsync(destinationCollection, noteFilePaths, '');
+        // 2. Switch data store to new collection
+        const newCollectionDatabaseFilePath: string = this.collectionFileAccess.getCollectionDatabasePath(collection);
+        await this.dataStore.initializeAsync(newCollectionDatabaseFilePath);
 
-        // // 3. Switch back to the active collection
-        // const activeDatabaseFile: string = path.join(activeCollectionDirectory, `${this.settings.activeCollection}.db`);
-        // await this.dataStore.initializeAsync(activeDatabaseFile);
+        // 3. Import all note exports into new collection
+        for (const noteExport of noteExports) {
+            await this.importNoteExportAsync(noteExport, collection);
+        }
 
-        // // 4. If import was successful, delete notes from active collection.
-        // let deleteOperation: Operation = Operation.Aborted;
-        // if (importOperation === Operation.Success) {
-        //     deleteOperation = await this.deleteNotesPermanently(noteIds);
-        // }
+        // 4. Switch data store back to old collection
+        const oldCollectionDatabaseFilePath: string = this.collectionFileAccess.getCollectionDatabasePath(this.settings.activeCollection);
+        await this.dataStore.initializeAsync(oldCollectionDatabaseFilePath);
 
-        // this.notesChanged.next();
-
-        // if (importOperation !== Operation.Success || deleteOperation !== Operation.Success) {
-        //     return Operation.Error;
-        // }
+        // 5. Delete notes from old collection
+        await this.deleteNotesAsync(noteIds);
 
         return Operation.Success;
     }
@@ -859,21 +856,7 @@ export class CollectionService {
             try {
                 const noteFileContent: string = await this.collectionFileAccess.getNoteContentAsync(noteFilePath);
                 const noteExport: NoteExport = JSON.parse(noteFileContent);
-                const proposedNoteTitle: string = `${noteExport.title} (${await this.translator.getAsync('Notes.Imported')})`;
-                const uniqueNoteTitle: string = this.getUniqueNoteTitle(proposedNoteTitle, false);
-
-                this.dataStore.addNote(uniqueNoteTitle, '');
-
-                const note: Note = this.dataStore.getNoteByTitle(uniqueNoteTitle);
-                note.text = noteExport.text;
-
-                if (notebookId && notebookId !== Constants.allNotesNotebookId && notebookId !== Constants.unfiledNotesNotebookId) {
-                    note.notebookId = notebookId;
-                }
-
-                this.dataStore.updateNoteWithoutDate(note);
-
-                await this.collectionFileAccess.saveNoteContentAsync(note.id, noteExport.content);
+                await this.importNoteExportAsync(noteExport, this.settings.activeCollection);
                 numberOfImportedNoteFiles++;
             } catch (error) {
                 this.logger.error(
@@ -890,6 +873,24 @@ export class CollectionService {
         }
 
         return operation;
+    }
+
+    private async importNoteExportAsync(noteExport: NoteExport, collection: string, notebookId?: string): Promise<void> {
+        const proposedNoteTitle: string = `${noteExport.title} (${await this.translator.getAsync('Notes.Imported')})`;
+        const uniqueNoteTitle: string = this.getUniqueNoteTitle(proposedNoteTitle, false);
+
+        this.dataStore.addNote(uniqueNoteTitle, '');
+
+        const note: Note = this.dataStore.getNoteByTitle(uniqueNoteTitle);
+        note.text = noteExport.text;
+
+        if (notebookId && notebookId !== Constants.allNotesNotebookId && notebookId !== Constants.unfiledNotesNotebookId) {
+            note.notebookId = notebookId;
+        }
+
+        this.dataStore.updateNoteWithoutDate(note);
+
+        await this.collectionFileAccess.saveNoteContentAsync(note.id, noteExport.content, collection);
     }
 
     public getTrashedNotes(): Note[] {
@@ -954,7 +955,9 @@ export class CollectionService {
             if (!this.openNoteIds.includes(noteId)) {
                 this.openNoteIds.push(noteId);
 
-                const activeCollectionDirectoryPath: string = await this.collectionFileAccess.getActiveCollectionDirectoryPath();
+                const activeCollectionDirectoryPath: string = await this.collectionFileAccess.getCollectionDirectoryPath(
+                    this.settings.activeCollection
+                );
                 this.logger.info(
                     `Active collection directory=${activeCollectionDirectoryPath}`,
                     'CollectionService',

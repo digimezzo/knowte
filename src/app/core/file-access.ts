@@ -103,4 +103,8 @@ export class FileAccess {
     public getDirectoryOrFileName(directoryOrFilePath: string): string {
         return path.basename(directoryOrFilePath);
     }
+
+    public async copyFileAsync(oldPath: string, newPath: string): Promise<void> {
+        return await fs.copyFile(oldPath, newPath);
+    }
 }

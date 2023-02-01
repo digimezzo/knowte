@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BaseSettings } from '../../core/base-settings';
 import { NoteExport } from '../../core/note-export';
 import { Strings } from '../../core/strings';
 import { CollectionFileAccess } from '../collection/collection-file-access';
@@ -6,10 +7,14 @@ import { CryptographyService } from '../cryptography/cryptography.service';
 
 @Injectable()
 export class PersistanceService {
-    constructor(private collectionFileAccess: CollectionFileAccess, private cryptography: CryptographyService) {}
+    constructor(
+        private collectionFileAccess: CollectionFileAccess,
+        private cryptography: CryptographyService,
+        private settings: BaseSettings
+    ) {}
 
     public async getNoteContentAsync(noteId: string, isEncrypted: boolean, secretKey: string): Promise<string> {
-        const noteContent: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(noteId);
+        const noteContent: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(noteId, this.settings.activeCollection);
 
         if (isEncrypted && !Strings.isNullOrWhiteSpace(secretKey)) {
             return this.cryptography.decrypt(noteContent, secretKey);
@@ -19,7 +24,7 @@ export class PersistanceService {
     }
 
     public async updateNoteContentAsync(noteId: string, noteJsonContent: string, isEncrypted: boolean, secretKey: string): Promise<void> {
-        const noteFilePath: string = this.collectionFileAccess.createNoteContentFilePath(noteId);
+        const noteFilePath: string = this.collectionFileAccess.createNoteContentFilePath(noteId, this.settings.activeCollection);
 
         let contentToWrite: string = noteJsonContent;
 
@@ -27,7 +32,7 @@ export class PersistanceService {
             contentToWrite = this.cryptography.encrypt(noteJsonContent, secretKey);
         }
 
-        await this.collectionFileAccess.saveNoteContentAsync(noteFilePath, contentToWrite);
+        await this.collectionFileAccess.saveNoteContentAsync(noteFilePath, contentToWrite, this.settings.activeCollection);
     }
 
     public async exportNoteAsync(exportFilePath: string, noteTitle: string, noteText: string, noteJsonContent: string): Promise<void> {
