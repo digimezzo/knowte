@@ -110,8 +110,8 @@
         "EncryptNote": "Notitie versleutelen...",
         "DecryptNote": "Notitie decoderen...",
         "ThisNoteIsEncrypted": "Deze notitie is versleuteld",
-        "TransferNote": "Notitie overzetten naar een andere collectie",
-        "TransferNotes": "Notities overzetten naar een andere collectie"
+        "MoveNote": "Notitie overzetten naar een andere collectie",
+        "MoveNotes": "Notities overzetten naar een andere collectie"
     },
     "LicenseDialog": {
         "License": "Licentie"
@@ -147,8 +147,8 @@
         "ConfirmDecryptNote": "Notitie decoderen?",
         "NoteIsEncrypted": "Notitie is versleuteld",
         "ConfirmCloseAllNotes": "Alle notities sluiten?",
-        "ConfirmTransferNote": "Notitie overzetten?",
-        "ConfirmTransferNotes": "Notities overzetten?"
+        "ConfirmMoveNote": "Notitie verplaatsen?",
+        "ConfirmMoveNotes": "Notities verplaatsen?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Weet u zeker dat u de collectie '{{collection}}' wilt verwijderen? Als u doorgaat, gaan de notitieboeken en notities verloren.",
@@ -167,8 +167,8 @@
         "ChooseNotebook": "Kies een notitieboek",
         "ConfirmDecryptNote": "Weet je zeker dat je deze notitie wilt ontsleutelen?",
         "ConfirmCloseAllNotes": "Hiermee worden alle geopende notities gesloten. Weet je zeker dat je door wilt gaan?",
-        "ConfirmTransferNote": "Weet u zeker dat u deze notitie wilt overzetten naar collectie '{{collection}}'?",
-        "ConfirmTransferNotes": "Weet u zeker dat u deze notities wilt overzetten naar collectie '{{collection}}'?"
+        "ConfirmMoveNote": "Weet u zeker dat u deze notitie wilt verplaatsen naar collectie '{{collection}}'?",
+        "ConfirmMoveNotes": "Weet u zeker dat u deze notities wilt verplaatsen naar collectie '{{collection}}'?"
     },
     "Input": {
         "Collection": "Collectie",
@@ -224,7 +224,8 @@
         "Imported": "Geïmporteerd",
         "Search": "Zoeken",
         "Languages": "talen",
-        "Disabled": "Uitgeschakeld"
+        "Disabled": "Uitgeschakeld",
+        "Moved": "Verplaatst"
     },
     "NoteDates": {
         "Today": "Vandaag",

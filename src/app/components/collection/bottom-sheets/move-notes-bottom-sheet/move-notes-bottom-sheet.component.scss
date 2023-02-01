@@ -1,18 +1,18 @@
 @import 'variables';
 @import 'theming';
 
-.transfer-collection-item {
+.move-collection-item {
     display: flex;
     align-items: center;
     width: 100%;
 }
 
-.transfer-collection-icon {
+.move-collection-icon {
     font-size: 24px;
     color: $color-grey-icon;
     margin: 0 8px 0 0;
 }
 
-.transfer-collection-icon.isActive {
+.move-collection-icon.isActive {
     color: var(--theme-accent-color);
 }

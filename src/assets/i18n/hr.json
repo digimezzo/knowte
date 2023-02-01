@@ -110,8 +110,8 @@
         "EncryptNote": "Encrypt note...",
         "DecryptNote": "Decrypt note...",
         "ThisNoteIsEncrypted": "This note is encrypted",
-        "TransferNote": "Transfer note to another collection",
-        "TransferNotes": "Transfer notes to another collection"
+        "MoveNote": "Move note to another collection",
+        "MoveNotes": "Move notes to another collection"
     },
     "LicenseDialog": {
         "License": "Licencija"
@@ -147,8 +147,8 @@
         "ConfirmDecryptNote": "Decrypt note?",
         "NoteIsEncrypted": "Note is encrypted",
         "ConfirmCloseAllNotes": "Close all notes?",
-        "ConfirmTransferNote": "Transfer note?",
-        "ConfirmTransferNotes": "Transfer notes?"
+        "ConfirmMoveNote": "Move note?",
+        "ConfirmMoveNotes": "Move notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Jeste li sigurni da želite izbrisati kolekciju '{{collection}}'? Ako nastavite, njene bilježnice i bilješke bit će izgubljene.",
@@ -167,8 +167,8 @@
         "ChooseNotebook": "Odaberite bilježnicu",
         "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
         "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?",
-        "ConfirmTransferNote": "Are you sure you want to transfer this note to collection '{{collection}}'?",
-        "ConfirmTransferNotes": "Are you sure you want to transfer these notes to collection '{{collection}}'?"
+        "ConfirmMoveNote": "Are you sure you want to move this note to collection '{{collection}}'?",
+        "ConfirmMoveNotes": "Are you sure you want to move these notes to collection '{{collection}}'?"
     },
     "Input": {
         "Collection": "Kolekcija",
@@ -224,7 +224,8 @@
         "Imported": "Uvezeno",
         "Search": "Pretraživanje",
         "Languages": "languages",
-        "Disabled": "Disabled"
+        "Disabled": "Disabled",
+        "Moved": "Moved"
     },
     "NoteDates": {
         "Today": "Danas",

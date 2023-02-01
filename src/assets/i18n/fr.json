@@ -110,8 +110,8 @@
         "EncryptNote": "Chriffrer la note...",
         "DecryptNote": "Déchiffrer la note...",
         "ThisNoteIsEncrypted": "Cette note est cryptée",
-        "TransferNote": "Transférer la note vers une autre collection",
-        "TransferNotes": "Transférer les notes vers une autre collection"
+        "MoveNote": "Déplacer la note vers une autre collection",
+        "MoveNotes": "Déplacer les notes vers une autre collection"
     },
     "LicenseDialog": {
         "License": "Licence"
@@ -147,8 +147,8 @@
         "ConfirmDecryptNote": "Décrypter la note?",
         "NoteIsEncrypted": "La note est cryptée",
         "ConfirmCloseAllNotes": "Fermer toutes les notes?",
-        "ConfirmTransferNote": "Transférer la note?",
-        "ConfirmTransferNotes": "Transférer les notes?"
+        "ConfirmMoveNote": "Déplacer la note?",
+        "ConfirmMoveNotes": "Déplacer les notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Êtes-vous sûr de vouloir supprimer la collection '{{collection}}'? Si vous continuez, ses bloc-notes et ses notes seront perdues.",
@@ -167,8 +167,8 @@
         "ChooseNotebook": "Choisissez un bloc-notes",
         "ConfirmDecryptNote": "Êtes-vous sûr de vouloir décrypter cette note?",
         "ConfirmCloseAllNotes": "Cela fermera toutes les notes ouvertes. Etes-vous sur de vouloir continuer?",
-        "ConfirmTransferNote": "Êtes-vous sûr de vouloir transférer cette note vers la collection '{{collection}}'?",
-        "ConfirmTransferNotes": "Êtes-vous sûr de vouloir transférer ces notes vers la collection '{{collection}}'?"
+        "ConfirmMoveNote": "Êtes-vous sûr de vouloir déplacer cette note vers la collection '{{collection}}'?",
+        "ConfirmMoveNotes": "Êtes-vous sûr de vouloir déplacer ces notes vers la collection '{{collection}}'?"
     },
     "Input": {
         "Collection": "Collection",
@@ -224,7 +224,8 @@
         "Imported": "Importée",
         "Search": "Chercher",
         "Languages": "langues",
-        "Disabled": "Désactivé"
+        "Disabled": "Désactivé",
+        "Moved": "Déplacé"
     },
     "NoteDates": {
         "Today": "Aujourd'hui",

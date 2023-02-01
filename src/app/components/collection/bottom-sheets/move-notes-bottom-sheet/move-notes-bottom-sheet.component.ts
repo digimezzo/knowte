@@ -7,15 +7,15 @@ import { TranslatorService } from '../../../../services/translator/translator.se
 import { ConfirmationDialogComponent } from '../../../dialogs/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-    selector: 'app-transfer-notes-bottom-sheet',
-    templateUrl: 'transfer-notes-bottom-sheet.component.html',
-    styleUrls: ['./transfer-notes-bottom-sheet.component.scss'],
+    selector: 'app-move-notes-bottom-sheet',
+    templateUrl: 'move-notes-bottom-sheet.component.html',
+    styleUrls: ['./move-notes-bottom-sheet.component.scss'],
 })
-export class TransferNotesBottomSheetComponent implements OnInit {
+export class MoveNotesBottomSheetComponent implements OnInit {
     constructor(
         @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
         private dialog: MatDialog,
-        private bottomSheetRef: MatBottomSheetRef<TransferNotesBottomSheetComponent>,
+        private bottomSheetRef: MatBottomSheetRef<MoveNotesBottomSheetComponent>,
         private collectionService: CollectionService,
         private translatorService: TranslatorService
     ) {}
@@ -27,15 +27,15 @@ export class TransferNotesBottomSheetComponent implements OnInit {
         await this.getCollectionsAsync();
     }
 
-    public async transferNotesToCollectionAsync(collection: string): Promise<void> {
+    public async moveNotesToCollectionAsync(collection: string): Promise<void> {
         this.bottomSheetRef.dismiss();
 
-        let title: string = await this.translatorService.getAsync('DialogTitles.ConfirmTransferNote');
-        let text: string = await this.translatorService.getAsync('DialogTexts.ConfirmTransferNote', { collection: collection });
+        let title: string = await this.translatorService.getAsync('DialogTitles.ConfirmMoveNote');
+        let text: string = await this.translatorService.getAsync('DialogTexts.ConfirmMoveNote', { collection: collection });
 
         if (this.data.selectedNoteIds.length > 1) {
-            title = await this.translatorService.getAsync('DialogTitles.ConfirmTransferNotes');
-            text = await this.translatorService.getAsync('DialogTexts.ConfirmTransferNotes', { collection: collection });
+            title = await this.translatorService.getAsync('DialogTitles.ConfirmMoveNotes');
+            text = await this.translatorService.getAsync('DialogTexts.ConfirmMoveNotes', { collection: collection });
         }
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
@@ -46,14 +46,14 @@ export class TransferNotesBottomSheetComponent implements OnInit {
         const result: any = await dialogRef.afterClosed().toPromise();
 
         if (result) {
-            const operation: Operation = await this.collectionService.transferNotesToCollectionAsync(this.data.selectedNoteIds, collection);
+            const operation: Operation = await this.collectionService.moveNotesToCollectionAsync(this.data.selectedNoteIds, collection);
 
             if (operation === Operation.Success) {
                 // TODO: notify the user of success via snackbar
-                alert('TRANSFER SUCCESS!');
+                alert('MOVE SUCCESS!');
             } else {
                 // TODO: notify the user via error popup
-                alert('TRANSFER FAILED!');
+                alert('MOVE FAILED!');
             }
         }
     }

@@ -29,7 +29,7 @@ import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/conf
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
 import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
 import { RenameNotebookDialogComponent } from '../dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
-import { TransferNotesBottomSheetComponent } from './bottom-sheets/transfer-notes-bottom-sheet/transfer-notes-bottom-sheet.component';
+import { MoveNotesBottomSheetComponent } from './bottom-sheets/move-notes-bottom-sheet/move-notes-bottom-sheet.component';
 
 @Component({
     selector: 'app-collection',
@@ -491,8 +491,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
         this.settings.notebooksPaneWidth = event.sizes[0];
     }
 
-    public openTransferNotesBottomSheet(): void {
-        this.bottomSheet.open(TransferNotesBottomSheetComponent, {
+    public openMoveNotesBottomSheet(): void {
+        this.bottomSheet.open(MoveNotesBottomSheetComponent, {
             data: { selectedNoteIds: this.selectedNoteIds },
         });
     }

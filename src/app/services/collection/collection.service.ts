@@ -814,7 +814,7 @@ export class CollectionService {
         await this.deleteNotesAsync([noteId]);
     }
 
-    public async transferNotesToCollectionAsync(noteIds: string[], collection: string): Promise<Operation> {
+    public async moveNotesToCollectionAsync(noteIds: string[], collection: string): Promise<Operation> {
         // 1. Export notes from old collection
         const noteExports: NoteExport[] = [];
 
@@ -834,8 +834,10 @@ export class CollectionService {
         await this.dataStore.initializeAsync(newCollectionDatabaseFilePath);
 
         // 3. Import all note exports into new collection
+        const proposedTitleSuffix: string = await this.translator.getAsync('Notes.Moved');
+
         for (const noteExport of noteExports) {
-            await this.importNoteExportAsync(noteExport, collection);
+            await this.importNoteExportAsync(noteExport, collection, proposedTitleSuffix);
         }
 
         // 4. Switch data store back to old collection
@@ -856,7 +858,8 @@ export class CollectionService {
             try {
                 const noteFileContent: string = await this.collectionFileAccess.getNoteContentAsync(noteFilePath);
                 const noteExport: NoteExport = JSON.parse(noteFileContent);
-                await this.importNoteExportAsync(noteExport, this.settings.activeCollection);
+                const proposedTitleSuffix: string = await this.translator.getAsync('Notes.Imported');
+                await this.importNoteExportAsync(noteExport, this.settings.activeCollection, proposedTitleSuffix);
                 numberOfImportedNoteFiles++;
             } catch (error) {
                 this.logger.error(
@@ -875,8 +878,13 @@ export class CollectionService {
         return operation;
     }
 
-    private async importNoteExportAsync(noteExport: NoteExport, collection: string, notebookId?: string): Promise<void> {
-        const proposedNoteTitle: string = `${noteExport.title} (${await this.translator.getAsync('Notes.Imported')})`;
+    private async importNoteExportAsync(
+        noteExport: NoteExport,
+        collection: string,
+        proposedTitleSuffix: string,
+        notebookId?: string
+    ): Promise<void> {
+        const proposedNoteTitle: string = `${noteExport.title} (${proposedTitleSuffix})`;
         const uniqueNoteTitle: string = this.getUniqueNoteTitle(proposedNoteTitle, false);
 
         this.dataStore.addNote(uniqueNoteTitle, '');

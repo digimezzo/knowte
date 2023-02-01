@@ -110,8 +110,8 @@
         "EncryptNote": "Encrypt note...",
         "DecryptNote": "Decrypt note...",
         "ThisNoteIsEncrypted": "This note is encrypted",
-        "TransferNote": "Transfer note to another collection",
-        "TransferNotes": "Transfer notes to another collection"
+        "MoveNote": "Move note to another collection",
+        "MoveNotes": "Move notes to another collection"
     },
     "LicenseDialog": {
         "License": "Лицензия"
@@ -147,8 +147,8 @@
         "ConfirmDecryptNote": "Decrypt note?",
         "NoteIsEncrypted": "Note is encrypted",
         "ConfirmCloseAllNotes": "Close all notes?",
-        "ConfirmTransferNote": "Are you sure you want to transfer this note to collection '{{collection}}'?",
-        "ConfirmTransferNotes": "Are you sure you want to transfer these notes to collection '{{collection}}'?"
+        "ConfirmMoveNote": "Are you sure you want to move this note to collection '{{collection}}'?",
+        "ConfirmMoveNotes": "Are you sure you want to move these notes to collection '{{collection}}'?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Хотите удалить коллекцию '{{collection}}'? При подтверждении все блокноты и заметки будут потеряны.",
@@ -167,8 +167,8 @@
         "ChooseNotebook": "Выбрать блокнот",
         "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
         "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?",
-        "ConfirmTransferNote": "Transfer note",
-        "ConfirmTransferNotes": "Transfer notes"
+        "ConfirmMoveNote": "Move note",
+        "ConfirmMoveNotes": "Move notes"
     },
     "Input": {
         "Collection": "Коллекция",
@@ -224,7 +224,8 @@
         "Imported": "Импортировано",
         "Search": "Поиск",
         "Languages": "languages",
-        "Disabled": "Disabled"
+        "Disabled": "Disabled",
+        "Moved": "Moved"
     },
     "NoteDates": {
         "Today": "Сегодня",

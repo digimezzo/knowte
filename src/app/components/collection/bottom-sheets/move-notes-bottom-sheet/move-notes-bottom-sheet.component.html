@@ -1,6 +1,6 @@
 <div class="d-flex flex-column">
     <div *ngFor="let collection of this.collections">
-        <span class="collection-switcher-item pointer p-1" (click)="transferNotesToCollectionAsync(collection)">
+        <span class="collection-switcher-item pointer p-1" (click)="moveNotesToCollectionAsync(collection)">
             <i class="collection-switcher-icon las la-box" [ngClass]="{ isActive: collection === activeCollection }"> </i>
             <span>{{ collection }}</span>
         </span>
