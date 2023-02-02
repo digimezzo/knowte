@@ -896,7 +896,14 @@ export class CollectionService {
         proposedTitleSuffix: string,
         notebookId?: string
     ): Promise<void> {
-        const proposedNoteTitle: string = `${noteExport.title} (${proposedTitleSuffix})`;
+        let proposedNoteTitle: string = noteExport.title;
+
+        const proposedTitleSuffixWithBrackets: string = `(${proposedTitleSuffix})`;
+
+        if (!proposedNoteTitle.includes(proposedTitleSuffixWithBrackets)) {
+            proposedNoteTitle = `${noteExport.title} ${proposedTitleSuffixWithBrackets}`;
+        }
+
         const uniqueNoteTitle: string = this.getUniqueNoteTitle(proposedNoteTitle, false);
 
         this.dataStore.addNote(uniqueNoteTitle, '');
