@@ -192,7 +192,8 @@
         "GetNoteContentError": "Произошла ошибка при получении содержимого заметки. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
         "ExportNoteError": "Произошла ошибка при экспорте заметки '{{noteTitle}}'. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
         "ImportNotesError": "Произошла ошибка при импорте заметок. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
-        "ChangeNotebookError": "Произошла ошибка при смене блокнота. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация."
+        "ChangeNotebookError": "Произошла ошибка при смене блокнота. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "MoveNotesError": "An error occurred while moving notes to the collection '{{collection}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "Уже есть коллекция с названием '{{collection}}'",
@@ -204,7 +205,9 @@
         "NotesImportedIntoNotebook": "Заметки были импортированы в блокнот '{{notebookName}}'",
         "NotesImported": "Заметки были импортированы",
         "NoNoteFilesToImport": "Не было файлов заметок для импорта",
-        "NewVersionAvailable": "Доступна новая версия: {{version}}"
+        "NewVersionAvailable": "Доступна новая версия: {{version}}",
+        "NoteMoved": "{{number}} note moved to '{{collection}}'",
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "OK"

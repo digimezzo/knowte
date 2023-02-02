@@ -192,7 +192,8 @@
         "GetNoteContentError": "An error occurred while getting the note content. Please verify the log if you need more information.",
         "ExportNoteError": "An error occurred while exporting the note '{{noteTitle}}'. Please verify the log if you need more information.",
         "ImportNotesError": "An error occurred while importing notes. Please verify the log if you need more information.",
-        "ChangeNotebookError": "An error occurred while changing the notebook. Please verify the log if you need more information."
+        "ChangeNotebookError": "An error occurred while changing the notebook. Please verify the log if you need more information.",
+        "MoveNotesError": "An error occurred while moving notes to the collection '{{collection}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "There is already a collection with the name '{{collection}}'",
@@ -204,7 +205,9 @@
         "NotesImportedIntoNotebook": "Notes were imported into notebook '{{notebookName}}'",
         "NotesImported": "Notes were imported",
         "NoNoteFilesToImport": "There were no note files to import",
-        "NewVersionAvailable": "A new version is available: {{version}}"
+        "NewVersionAvailable": "A new version is available: {{version}}",
+        "NoteMoved": "{{number}} note moved to '{{collection}}'",
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "OK"

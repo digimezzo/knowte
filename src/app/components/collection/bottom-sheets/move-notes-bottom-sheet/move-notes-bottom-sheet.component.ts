@@ -1,10 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Operation } from '../../../../core/enums';
 import { CollectionService } from '../../../../services/collection/collection.service';
+import { SnackBarService } from '../../../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../../../services/translator/translator.service';
 import { ConfirmationDialogComponent } from '../../../dialogs/confirmation-dialog/confirmation-dialog.component';
+import { ErrorDialogComponent } from '../../../dialogs/error-dialog/error-dialog.component';
 
 @Component({
     selector: 'app-move-notes-bottom-sheet',
@@ -17,7 +18,8 @@ export class MoveNotesBottomSheetComponent implements OnInit {
         private dialog: MatDialog,
         private bottomSheetRef: MatBottomSheetRef<MoveNotesBottomSheetComponent>,
         private collectionService: CollectionService,
-        private translatorService: TranslatorService
+        private translatorService: TranslatorService,
+        private snackBarService: SnackBarService
     ) {}
 
     public collections: string[];
@@ -46,14 +48,19 @@ export class MoveNotesBottomSheetComponent implements OnInit {
         const result: any = await dialogRef.afterClosed().toPromise();
 
         if (result) {
-            const operation: Operation = await this.collectionService.moveNotesToCollectionAsync(this.data.selectedNoteIds, collection);
+            const numberOfNotes: number = await this.collectionService.moveNotesToCollectionAsync(this.data.selectedNoteIds, collection);
 
-            if (operation === Operation.Success) {
-                // TODO: notify the user of success via snackbar
-                alert('MOVE SUCCESS!');
+            if (numberOfNotes > 0) {
+                await this.snackBarService.notesMoveToCollectionAsync(numberOfNotes, collection);
             } else {
-                // TODO: notify the user via error popup
-                alert('MOVE FAILED!');
+                const errorText: string = await this.translatorService.getAsync('ErrorTexts.MoveNotesError', {
+                    collection: collection,
+                });
+
+                this.dialog.open(ErrorDialogComponent, {
+                    width: '450px',
+                    data: { errorText: errorText },
+                });
             }
         }
     }

@@ -45,11 +45,11 @@ export class CollectionFileAccess {
     }
 
     public async createCollectionDirectoryAsync(collectionDirectory: string): Promise<void> {
-        await this.fileAccess.createFullDirectoryPathIfDoesNotExist(this.getDirectoryPathForGivenCollection(collectionDirectory));
+        await this.fileAccess.createFullDirectoryPathIfDoesNotExist(this.getCollectionDirectoryPath(collectionDirectory));
     }
 
     public async createCollectionDirectoryIfNotExistsAsync(collectionDirectory: string): Promise<void> {
-        const collectionDirectoryPath: string = this.getDirectoryPathForGivenCollection(collectionDirectory);
+        const collectionDirectoryPath: string = this.getCollectionDirectoryPath(collectionDirectory);
 
         if (!this.fileAccess.pathExists(collectionDirectoryPath)) {
             await this.fileAccess.createFullDirectoryPathIfDoesNotExist(collectionDirectoryPath);
@@ -57,7 +57,7 @@ export class CollectionFileAccess {
     }
 
     public async deleteCollectionDirectoryAsync(collectionDirectory: string): Promise<void> {
-        await this.fileAccess.deleteDirectoryRecursively(this.getDirectoryPathForGivenCollection(collectionDirectory));
+        await this.fileAccess.deleteDirectoryRecursively(this.getCollectionDirectoryPath(collectionDirectory));
     }
 
     public createNoteContentFilePath(noteId: string, collection: string): string {
@@ -69,28 +69,19 @@ export class CollectionFileAccess {
     }
 
     public createNoteContentFilePathForGivenCollection(noteId: string, collection: string): string {
-        return this.fileAccess.combinePath(
-            this.getDirectoryPathForGivenCollection(collection),
-            `${noteId}${Constants.noteContentExtension}`
-        );
+        return this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), `${noteId}${Constants.noteContentExtension}`);
     }
 
     private createNoteStateFilePathForGivenCollection(noteId: string, collection: string): string {
-        return this.fileAccess.combinePath(this.getDirectoryPathForGivenCollection(collection), `${noteId}${Constants.noteStateExtension}`);
+        return this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), `${noteId}${Constants.noteStateExtension}`);
     }
 
     public getCollectionDirectoryPath(collection: string): string {
-        return this.getDirectoryPathForGivenCollection(collection);
+        return this.fileAccess.combinePath(this.settings.storageDirectory, collection);
     }
 
     public getCollectionDatabasePath(collection: string): string {
         return this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), `${collection}.db`);
-    }
-
-    private getDirectoryPathForGivenCollection(collection: string): string {
-        const storageDirectoryPath: string = this.settings.storageDirectory;
-
-        return this.fileAccess.combinePath(storageDirectoryPath, collection);
     }
 
     public async collectionAndItsDirectoryExistAsync(collection: string): Promise<boolean> {
@@ -111,8 +102,8 @@ export class CollectionFileAccess {
     }
 
     public renameCollectionFiles(oldCollection: string, newCollection: string): void {
-        const oldCollectionDirectoryPath: string = this.getDirectoryPathForGivenCollection(oldCollection);
-        const newCollectionDirectoryPath: string = this.getDirectoryPathForGivenCollection(newCollection);
+        const oldCollectionDirectoryPath: string = this.getCollectionDirectoryPath(oldCollection);
+        const newCollectionDirectoryPath: string = this.getCollectionDirectoryPath(newCollection);
 
         // 1. First, rename the database file.
         this.fileAccess.renameFileOrDirectory(

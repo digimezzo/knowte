@@ -24,15 +24,13 @@ export class PersistanceService {
     }
 
     public async updateNoteContentAsync(noteId: string, noteJsonContent: string, isEncrypted: boolean, secretKey: string): Promise<void> {
-        const noteFilePath: string = this.collectionFileAccess.createNoteContentFilePath(noteId, this.settings.activeCollection);
-
         let contentToWrite: string = noteJsonContent;
 
         if (isEncrypted && !Strings.isNullOrWhiteSpace(secretKey)) {
             contentToWrite = this.cryptography.encrypt(noteJsonContent, secretKey);
         }
 
-        await this.collectionFileAccess.saveNoteContentAsync(noteFilePath, contentToWrite, this.settings.activeCollection);
+        await this.collectionFileAccess.saveNoteContentAsync(noteId, contentToWrite, this.settings.activeCollection);
     }
 
     public async exportNoteAsync(exportFilePath: string, noteTitle: string, noteText: string, noteJsonContent: string): Promise<void> {

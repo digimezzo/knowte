@@ -192,7 +192,8 @@
         "GetNoteContentError": "Er is een fout opgetreden bij het ophalen van de notitie-inhoud. Controleer het log bestand als u meer informatie nodig hebt.",
         "ExportNoteError": "Er is een fout opgetreden bij het exporteren van de notitie '{{noteTitle}}'. Controleer het log bestand als u meer informatie nodig hebt.",
         "ImportNotesError": "Er is een fout opgetreden bij het importeren van notities. Controleer het log bestand als u meer informatie nodig hebt.",
-        "ChangeNotebookError": "Er is een fout opgetreden bij het wijzigen van het notitieboek. Controleer het log bestand als u meer informatie nodig hebt."
+        "ChangeNotebookError": "Er is een fout opgetreden bij het wijzigen van het notitieboek. Controleer het log bestand als u meer informatie nodig hebt.",
+        "MoveNotesError": "Er is een fout opgetreden bij het verplaatsen van notities naar de collectie '{{collection}}'. Controleer het log bestand als u meer informatie nodig heeft."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "Er is al een collectie met de naam '{{collection}}'",
@@ -204,7 +205,9 @@
         "NotesImportedIntoNotebook": "Notities zijn geïmporteerd in notitieboek '{{notebookName}}'",
         "NotesImported": "Notities zijn geïmporteerd",
         "NoNoteFilesToImport": "Er waren geen notitiebestanden om te importeren",
-        "NewVersionAvailable": "Er is een nieuwe versie beschikbaar: {{version}}"
+        "NewVersionAvailable": "Er is een nieuwe versie beschikbaar: {{version}}",
+        "NoteMoved": "{{number}} notitie verplaatst naar '{{collection}}'",
+        "NotesMoved": "{{number}} notities verplaatst naar '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "OK"

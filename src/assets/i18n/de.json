@@ -192,7 +192,8 @@
         "GetNoteContentError": "Ein Fehler ist während dem lesen des Inhalts der Noitz aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
         "ExportNoteError": "Ein Fehler ist während dem exportierender Notiz '{{noteTitle}}' aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
         "ImportNotesError": "Ein Fehler ist während dem importieren der Notizen aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
-        "ChangeNotebookError": "Ein Fehler ist während dem ändern des Notizbuch aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst."
+        "ChangeNotebookError": "Ein Fehler ist während dem ändern des Notizbuch aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
+        "MoveNotesError": "An error occurred while moving notes to the collection '{{collection}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "Es existiert bereits eine Kollektion mit dem Namen '{{collection}}'",
@@ -204,7 +205,9 @@
         "NotesImportedIntoNotebook": "Notizen wurden importiert in das Notizbuch '{{notebookName}}'",
         "NotesImported": "Notizen wurden importiert",
         "NoNoteFilesToImport": "Es sind keine Notizen zum importieren vorhanden",
-        "NewVersionAvailable": "Eine neue Version ist verfügbar: {{version}}"
+        "NewVersionAvailable": "Eine neue Version ist verfügbar: {{version}}",
+        "NoteMoved": "{{number}} note moved to '{{collection}}'",
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "OK"

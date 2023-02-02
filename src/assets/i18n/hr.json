@@ -192,7 +192,8 @@
         "GetNoteContentError": "Dogodila se greška tijekom dohvaćanja sadržaja bilješke. Provjerite zapisnik, ako trebate više informacija.",
         "ExportNoteError": "Dogodila se greška tijekom izvoza bilješke '{{noteTitle}}'. Provjerite zapisnik, ako trebate više informacija.",
         "ImportNotesError": "Dogodila se greška tijekom uvoza bilješki. Provjerite zapisnik, ako trebate više informacija.",
-        "ChangeNotebookError": "Dogodila se greška tijekom izmjene bilježnice. Provjerite zapisnik, ako trebate više informacija."
+        "ChangeNotebookError": "Dogodila se greška tijekom izmjene bilježnice. Provjerite zapisnik, ako trebate više informacija.",
+        "MoveNotesError": "An error occurred while moving notes to the collection '{{collection}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "Već postoji kolekcija s nazivom '{{collection}}'",
@@ -204,7 +205,9 @@
         "NotesImportedIntoNotebook": "Bilješke su uvezene u bilježnicu '{{notebookName}}'",
         "NotesImported": "Bilješke su uvezene",
         "NoNoteFilesToImport": "Nije bilo datoteka bilješki za uvoz",
-        "NewVersionAvailable": "Dostupna je nova verzija: {{version}}"
+        "NewVersionAvailable": "Dostupna je nova verzija: {{version}}",
+        "NoteMoved": "{{number}} note moved to '{{collection}}'",
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "U redu"

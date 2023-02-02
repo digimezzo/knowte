@@ -192,7 +192,8 @@
         "GetNoteContentError": "Um erro ocorreu ao pegar as informações da nota. Por favor verique o log se precisar de mais informações.",
         "ExportNoteError": "Um erro ocorreu enquanto a nota '{{noteTitle}}' estava sendo exportada. Por favor verique o log se precisar de mais informações.",
         "ImportNotesError": "Um err ocorreu ao importar as notas. Por favor verique o log se precisar de mais informações.",
-        "ChangeNotebookError": "Um erro ocorreu na troca de cadernetas. Por favor verique o log se precisar de mais informações"
+        "ChangeNotebookError": "Um erro ocorreu na troca de cadernetas. Por favor verique o log se precisar de mais informações",
+        "MoveNotesError": "An error occurred while moving notes to the collection '{{collection}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "Uma coleção já usa o nome '{{collection}}'",
@@ -204,7 +205,9 @@
         "NotesImportedIntoNotebook": "Notas foram importadas para a caderneta '{{notebookName}}'",
         "NotesImported": "Notas foram importadas",
         "NoNoteFilesToImport": "Não havia arquivos de notas para importar",
-        "NewVersionAvailable": "Uma nova versão está disponível: {{version}}"
+        "NewVersionAvailable": "Uma nova versão está disponível: {{version}}",
+        "NoteMoved": "{{number}} note moved to '{{collection}}'",
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "OK"

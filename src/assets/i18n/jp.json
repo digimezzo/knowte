@@ -192,7 +192,8 @@
         "GetNoteContentError": "メモの内容の取得中にエラーが発生しました。詳細はログを確認してください。",
         "ExportNoteError": "メモ '{{noteTitle}}' のエクスポート中にエラーが発生しました。詳細はログを確認してください。",
         "ImportNotesError": "メモのインポート中にエラーが発生しました。詳細はログを確認してください。",
-        "ChangeNotebookError": "メモ帳の変更中にエラーが発生しました。詳細はログを確認してください。"
+        "ChangeNotebookError": "メモ帳の変更中にエラーが発生しました。詳細はログを確認してください。",
+        "MoveNotesError": "An error occurred while moving notes to the collection '{{collection}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "コレクション名 '{{collection}}' はすでに存在しています",
@@ -204,7 +205,9 @@
         "NotesImportedIntoNotebook": "メモをメモ帳 '{{notebookName}}' へインポートしました",
         "NotesImported": "メモをインポートしました",
         "NoNoteFilesToImport": "インポートするメモ ファイルはありませんでした",
-        "NewVersionAvailable": "新しいバージョンが利用可能です: {{version}}"
+        "NewVersionAvailable": "新しいバージョンが利用可能です: {{version}}",
+        "NoteMoved": "{{number}} note moved to '{{collection}}'",
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "OK"

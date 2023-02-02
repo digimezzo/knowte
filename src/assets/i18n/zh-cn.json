@@ -192,7 +192,8 @@
         "GetNoteContentError": "获取日记内容时发生错误。如果您需要更多信息，请验证日志。",
         "ExportNoteError": "导出笔记'{{noteTitle}}'时发生错误 .如果您需要更多信息，请验证日志。",
         "ImportNotesError": "导入笔记时发生错误。如果您需要更多信息，请验证日志。",
-        "ChangeNotebookError": "更换笔记本时发生错误。如果您需要更多信息，请验证日志。"
+        "ChangeNotebookError": "更换笔记本时发生错误。如果您需要更多信息，请验证日志。",
+        "MoveNotesError": "An error occurred while moving notes to the collection '{{collection}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "已经有一个名称为 '{{collection}}'",
@@ -204,7 +205,9 @@
         "NotesImportedIntoNotebook": "笔记已经导入到'{{notebookName}}'",
         "NotesImported": "笔记已经导入",
         "NoNoteFilesToImport": "没有要导入的笔记文件",
-        "NewVersionAvailable": "新的版本已发行: {{version}}"
+        "NewVersionAvailable": "新的版本已发行: {{version}}",
+        "NoteMoved": "{{number}} note moved to '{{collection}}'",
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "确定"

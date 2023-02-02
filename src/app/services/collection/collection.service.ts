@@ -814,40 +814,52 @@ export class CollectionService {
         await this.deleteNotesAsync([noteId]);
     }
 
-    public async moveNotesToCollectionAsync(noteIds: string[], collection: string): Promise<Operation> {
-        // 1. Export notes from old collection
-        const noteExports: NoteExport[] = [];
+    public async moveNotesToCollectionAsync(noteIds: string[], collection: string): Promise<number> {
+        try {
+            // 1. Export notes from old collection
+            const noteExports: NoteExport[] = [];
 
-        for (const noteId of noteIds) {
-            const note: Note = this.dataStore.getNoteById(noteId);
-            const noteFileContent: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(
-                noteId,
+            for (const noteId of noteIds) {
+                const note: Note = this.dataStore.getNoteById(noteId);
+                const noteFileContent: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(
+                    noteId,
+                    this.settings.activeCollection
+                );
+
+                const noteExport: NoteExport = new NoteExport(note.title, note.text, noteFileContent);
+                noteExports.push(noteExport);
+            }
+
+            // 2. Switch data store to new collection
+            const newCollectionDatabaseFilePath: string = this.collectionFileAccess.getCollectionDatabasePath(collection);
+            await this.dataStore.initializeAsync(newCollectionDatabaseFilePath);
+
+            // 3. Import all note exports into new collection
+            const proposedTitleSuffix: string = await this.translator.getAsync('Notes.Moved');
+
+            for (const noteExport of noteExports) {
+                await this.importNoteExportAsync(noteExport, collection, proposedTitleSuffix);
+            }
+
+            // 4. Switch data store back to old collection
+            const oldCollectionDatabaseFilePath: string = this.collectionFileAccess.getCollectionDatabasePath(
                 this.settings.activeCollection
             );
+            await this.dataStore.initializeAsync(oldCollectionDatabaseFilePath);
 
-            const noteExport: NoteExport = new NoteExport(note.title, note.text, noteFileContent);
-            noteExports.push(noteExport);
+            // 5. Delete notes from old collection
+            await this.deleteNotesAsync(noteIds);
+
+            return noteIds.length;
+        } catch (error) {
+            this.logger.error(
+                `Could not move ${noteIds.length} notes to collection '${collection}'. Error: ${error.message}`,
+                'CollectionService',
+                'moveNotesToCollectionAsync'
+            );
+
+            return 0;
         }
-
-        // 2. Switch data store to new collection
-        const newCollectionDatabaseFilePath: string = this.collectionFileAccess.getCollectionDatabasePath(collection);
-        await this.dataStore.initializeAsync(newCollectionDatabaseFilePath);
-
-        // 3. Import all note exports into new collection
-        const proposedTitleSuffix: string = await this.translator.getAsync('Notes.Moved');
-
-        for (const noteExport of noteExports) {
-            await this.importNoteExportAsync(noteExport, collection, proposedTitleSuffix);
-        }
-
-        // 4. Switch data store back to old collection
-        const oldCollectionDatabaseFilePath: string = this.collectionFileAccess.getCollectionDatabasePath(this.settings.activeCollection);
-        await this.dataStore.initializeAsync(oldCollectionDatabaseFilePath);
-
-        // 5. Delete notes from old collection
-        await this.deleteNotesAsync(noteIds);
-
-        return Operation.Success;
     }
 
     public async importNoteFilesAsync(noteFilePaths: string[], notebookId?: string): Promise<Operation> {
