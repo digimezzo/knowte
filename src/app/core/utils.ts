@@ -4,7 +4,7 @@ import { Constants } from './constants';
 
 export class Utils {
     public static async sleep(milliseconds: number): Promise<void> {
-        return new Promise<void>(resolve => setTimeout(resolve, milliseconds));
+        return new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
     }
 
     public static caseInsensitiveNameSort(object1: any, object2: any): any {
@@ -37,10 +37,6 @@ export class Utils {
 
     public static pathToCollection(collectionDirectoryPath: string): string {
         return path.dirname(collectionDirectoryPath).split(path.sep).pop();
-    }
-
-    public static collectionToPath(storageDirectory: string, collection: string): string {
-        return path.join(storageDirectory, collection);
     }
 
     public static getNoteExportPath(exportDirectory: string, noteTitle: string): string {

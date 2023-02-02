@@ -109,7 +109,9 @@
         "ChangeSpellCheckerLanguages": "Change spell checker languages",
         "EncryptNote": "Encrypt note...",
         "DecryptNote": "Decrypt note...",
-        "ThisNoteIsEncrypted": "This note is encrypted"
+        "ThisNoteIsEncrypted": "This note is encrypted",
+        "MoveNote": "Move note to another collection",
+        "MoveNotes": "Move notes to another collection"
     },
     "LicenseDialog": {
         "License": "许可证"
@@ -144,7 +146,9 @@
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",
         "NoteIsEncrypted": "Note is encrypted",
-        "ConfirmCloseAllNotes": "Close all notes?"
+        "ConfirmCloseAllNotes": "Close all notes?",
+        "ConfirmMoveNote": "Are you sure you want to move this note to collection '{{collection}}'?",
+        "ConfirmMoveNotes": "Are you sure you want to move these notes to collection '{{collection}}'?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "您确定要删除收藏'{{collection}}'吗？ 如果继续，其笔记本和笔记将丢失。",
@@ -162,7 +166,9 @@
         "AllFiles": "所有文件",
         "ChooseNotebook": "选择笔记本",
         "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
-        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?",
+        "ConfirmMoveNote": "Move note",
+        "ConfirmMoveNotes": "Move notes"
     },
     "Input": {
         "Collection": "收藏",
@@ -186,7 +192,8 @@
         "GetNoteContentError": "获取日记内容时发生错误。如果您需要更多信息，请验证日志。",
         "ExportNoteError": "导出笔记'{{noteTitle}}'时发生错误 .如果您需要更多信息，请验证日志。",
         "ImportNotesError": "导入笔记时发生错误。如果您需要更多信息，请验证日志。",
-        "ChangeNotebookError": "更换笔记本时发生错误。如果您需要更多信息，请验证日志。"
+        "ChangeNotebookError": "更换笔记本时发生错误。如果您需要更多信息，请验证日志。",
+        "MoveNotesError": "An error occurred while moving notes to the collection '{{collection}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "已经有一个名称为 '{{collection}}'",
@@ -198,7 +205,9 @@
         "NotesImportedIntoNotebook": "笔记已经导入到'{{notebookName}}'",
         "NotesImported": "笔记已经导入",
         "NoNoteFilesToImport": "没有要导入的笔记文件",
-        "NewVersionAvailable": "新的版本已发行: {{version}}"
+        "NewVersionAvailable": "新的版本已发行: {{version}}",
+        "NoteMoved": "{{number}} note moved to '{{collection}}'",
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "确定"
@@ -218,7 +227,8 @@
         "Imported": "已导入",
         "Search": "搜索",
         "Languages": "languages",
-        "Disabled": "Disabled"
+        "Disabled": "Disabled",
+        "Moved": "Moved"
     },
     "NoteDates": {
         "Today": "今日",

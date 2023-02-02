@@ -109,7 +109,9 @@
         "ChangeSpellCheckerLanguages": "Wijzig de talen van de spellingcontrole",
         "EncryptNote": "Notitie versleutelen...",
         "DecryptNote": "Notitie decoderen...",
-        "ThisNoteIsEncrypted": "Deze notitie is versleuteld"
+        "ThisNoteIsEncrypted": "Deze notitie is versleuteld",
+        "MoveNote": "Notitie overzetten naar een andere collectie",
+        "MoveNotes": "Notities overzetten naar een andere collectie"
     },
     "LicenseDialog": {
         "License": "Licentie"
@@ -144,7 +146,9 @@
         "EncryptNote": "Notitie versleutelen",
         "ConfirmDecryptNote": "Notitie decoderen?",
         "NoteIsEncrypted": "Notitie is versleuteld",
-        "ConfirmCloseAllNotes": "Close all notes?"
+        "ConfirmCloseAllNotes": "Alle notities sluiten?",
+        "ConfirmMoveNote": "Notitie verplaatsen?",
+        "ConfirmMoveNotes": "Notities verplaatsen?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Weet u zeker dat u de collectie '{{collection}}' wilt verwijderen? Als u doorgaat, gaan de notitieboeken en notities verloren.",
@@ -162,7 +166,9 @@
         "AllFiles": "Alle bestanden",
         "ChooseNotebook": "Kies een notitieboek",
         "ConfirmDecryptNote": "Weet je zeker dat je deze notitie wilt ontsleutelen?",
-        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
+        "ConfirmCloseAllNotes": "Hiermee worden alle geopende notities gesloten. Weet je zeker dat je door wilt gaan?",
+        "ConfirmMoveNote": "Weet u zeker dat u deze notitie wilt verplaatsen naar collectie '{{collection}}'?",
+        "ConfirmMoveNotes": "Weet u zeker dat u deze notities wilt verplaatsen naar collectie '{{collection}}'?"
     },
     "Input": {
         "Collection": "Collectie",
@@ -186,7 +192,8 @@
         "GetNoteContentError": "Er is een fout opgetreden bij het ophalen van de notitie-inhoud. Controleer het log bestand als u meer informatie nodig hebt.",
         "ExportNoteError": "Er is een fout opgetreden bij het exporteren van de notitie '{{noteTitle}}'. Controleer het log bestand als u meer informatie nodig hebt.",
         "ImportNotesError": "Er is een fout opgetreden bij het importeren van notities. Controleer het log bestand als u meer informatie nodig hebt.",
-        "ChangeNotebookError": "Er is een fout opgetreden bij het wijzigen van het notitieboek. Controleer het log bestand als u meer informatie nodig hebt."
+        "ChangeNotebookError": "Er is een fout opgetreden bij het wijzigen van het notitieboek. Controleer het log bestand als u meer informatie nodig hebt.",
+        "MoveNotesError": "Er is een fout opgetreden bij het verplaatsen van notities naar de collectie '{{collection}}'. Controleer het log bestand als u meer informatie nodig heeft."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "Er is al een collectie met de naam '{{collection}}'",
@@ -198,7 +205,9 @@
         "NotesImportedIntoNotebook": "Notities zijn geïmporteerd in notitieboek '{{notebookName}}'",
         "NotesImported": "Notities zijn geïmporteerd",
         "NoNoteFilesToImport": "Er waren geen notitiebestanden om te importeren",
-        "NewVersionAvailable": "Er is een nieuwe versie beschikbaar: {{version}}"
+        "NewVersionAvailable": "Er is een nieuwe versie beschikbaar: {{version}}",
+        "NoteMoved": "{{number}} notitie verplaatst naar '{{collection}}'",
+        "NotesMoved": "{{number}} notities verplaatst naar '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "OK"
@@ -218,7 +227,8 @@
         "Imported": "Geïmporteerd",
         "Search": "Zoeken",
         "Languages": "talen",
-        "Disabled": "Uitgeschakeld"
+        "Disabled": "Uitgeschakeld",
+        "Moved": "Verplaatst"
     },
     "NoteDates": {
         "Today": "Vandaag",
@@ -246,6 +256,6 @@
         "IncorrectKey": "Verkeerde sleutel"
     },
     "NotificationTexts": {
-        "SecretKeyIncorrect": "The secret key is incorrect."
+        "SecretKeyIncorrect": "De geheime sleutel is onjuist."
     }
 }

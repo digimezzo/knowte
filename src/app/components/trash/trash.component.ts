@@ -74,7 +74,7 @@ export class TrashComponent implements OnInit, OnDestroy {
                 const noteIdsToDelete: string[] = this.trashedNotes.filter((x) => x.isSelected).map((x) => x.id);
 
                 if (noteIdsToDelete.length > 0) {
-                    const operation: Operation = this.collectionService.deleteNotesPermanently(noteIdsToDelete);
+                    const operation: Operation = await this.collectionService.deleteNotesPermanentlyAsync(noteIdsToDelete);
 
                     if (operation === Operation.Error) {
                         const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteNotesError');

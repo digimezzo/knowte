@@ -12,7 +12,7 @@ export class Strings {
             if (stringToCheck.trim() === '') {
                 return true;
             }
-        } catch (e) {
+        } catch (error) {
             return true;
         }
 

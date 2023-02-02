@@ -293,8 +293,8 @@ try {
 
                 console.log('PDF generated successfully.');
                 shell.showItemInFolder(data.pdfFilePath);
-            } catch (e) {
-                console.log(`PDF generation failed. Error: ${e.message}`);
+            } catch (error) {
+                console.log(`PDF generation failed. Error: ${error.message}`);
             }
         });
     });
@@ -322,7 +322,7 @@ try {
             createMainWindow();
         }
     });
-} catch (e) {
+} catch (error) {
     // Catch Error
-    // throw e;
+    // throw error;
 }

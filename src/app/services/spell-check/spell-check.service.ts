@@ -71,9 +71,9 @@ export class SpellCheckService {
                 'SpellCheckService',
                 'applyActiveSpellCheckLanguagesIfEnabled'
             );
-        } catch (e) {
+        } catch (error) {
             this.logger.error(
-                `Could not apply spell check languages. Error: ${e.message}`,
+                `Could not apply spell check languages. Error: ${error.message}`,
                 'SpellCheckService',
                 'applyActiveSpellCheckLanguagesIfEnabled'
             );

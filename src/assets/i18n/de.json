@@ -109,7 +109,9 @@
         "ChangeSpellCheckerLanguages": "Change spell checker languages",
         "EncryptNote": "Encrypt note...",
         "DecryptNote": "Decrypt note...",
-        "ThisNoteIsEncrypted": "This note is encrypted"
+        "ThisNoteIsEncrypted": "This note is encrypted",
+        "MoveNote": "Move note to another collection",
+        "MoveNotes": "Move notes to another collection"
     },
     "LicenseDialog": {
         "License": "Lizenz"
@@ -144,7 +146,9 @@
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",
         "NoteIsEncrypted": "Note is encrypted",
-        "ConfirmCloseAllNotes": "Close all notes?"
+        "ConfirmCloseAllNotes": "Close all notes?",
+        "ConfirmMoveNote": "Move note?",
+        "ConfirmMoveNotes": "Move notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Sicher das Du die Kollektion '{{collection}}' löschen möchtest? Wenn Du fortfährst, werden dessen Notizbücher und Notizen verloren gehen.",
@@ -162,7 +166,9 @@
         "AllFiles": "Alle Dateien",
         "ChooseNotebook": "Wähle ein Notizbuch",
         "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
-        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?",
+        "ConfirmMoveNote": "Are you sure you want to move this note to collection '{{collection}}'?",
+        "ConfirmMoveNotes": "Are you sure you want to move these notes to collection '{{collection}}'?"
     },
     "Input": {
         "Collection": "Kollektion",
@@ -186,7 +192,8 @@
         "GetNoteContentError": "Ein Fehler ist während dem lesen des Inhalts der Noitz aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
         "ExportNoteError": "Ein Fehler ist während dem exportierender Notiz '{{noteTitle}}' aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
         "ImportNotesError": "Ein Fehler ist während dem importieren der Notizen aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
-        "ChangeNotebookError": "Ein Fehler ist während dem ändern des Notizbuch aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst."
+        "ChangeNotebookError": "Ein Fehler ist während dem ändern des Notizbuch aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
+        "MoveNotesError": "An error occurred while moving notes to the collection '{{collection}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "Es existiert bereits eine Kollektion mit dem Namen '{{collection}}'",
@@ -198,7 +205,9 @@
         "NotesImportedIntoNotebook": "Notizen wurden importiert in das Notizbuch '{{notebookName}}'",
         "NotesImported": "Notizen wurden importiert",
         "NoNoteFilesToImport": "Es sind keine Notizen zum importieren vorhanden",
-        "NewVersionAvailable": "Eine neue Version ist verfügbar: {{version}}"
+        "NewVersionAvailable": "Eine neue Version ist verfügbar: {{version}}",
+        "NoteMoved": "{{number}} note moved to '{{collection}}'",
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "OK"
@@ -218,7 +227,8 @@
         "Imported": "Importiert",
         "Search": "Suchen",
         "Languages": "languages",
-        "Disabled": "Disabled"
+        "Disabled": "Disabled",
+        "Moved": "Moved"
     },
     "NoteDates": {
         "Today": "Heute",

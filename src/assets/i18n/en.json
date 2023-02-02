@@ -109,7 +109,9 @@
         "ChangeSpellCheckerLanguages": "Change spell checker languages",
         "EncryptNote": "Encrypt note...",
         "DecryptNote": "Decrypt note...",
-        "ThisNoteIsEncrypted": "This note is encrypted"
+        "ThisNoteIsEncrypted": "This note is encrypted",
+        "MoveNote": "Move note to another collection",
+        "MoveNotes": "Move notes to another collection"
     },
     "LicenseDialog": {
         "License": "License"
@@ -144,7 +146,9 @@
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",
         "NoteIsEncrypted": "Note is encrypted",
-        "ConfirmCloseAllNotes": "Close all notes?"
+        "ConfirmCloseAllNotes": "Close all notes?",
+        "ConfirmMoveNote": "Move note?",
+        "ConfirmMoveNotes": "Move notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Are you sure you want to delete the collection '{{collection}}'? If you continue, its notebooks and notes will be lost.",
@@ -162,7 +166,9 @@
         "AllFiles": "All files",
         "ChooseNotebook": "Choose a notebook",
         "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
-        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?",
+        "ConfirmMoveNote": "Are you sure you want to move this note to collection '{{collection}}'?",
+        "ConfirmMoveNotes": "Are you sure you want to move these notes to collection '{{collection}}'?"
     },
     "Input": {
         "Collection": "Collection",
@@ -186,7 +192,8 @@
         "GetNoteContentError": "An error occurred while getting the note content. Please verify the log if you need more information.",
         "ExportNoteError": "An error occurred while exporting the note '{{noteTitle}}'. Please verify the log if you need more information.",
         "ImportNotesError": "An error occurred while importing notes. Please verify the log if you need more information.",
-        "ChangeNotebookError": "An error occurred while changing the notebook. Please verify the log if you need more information."
+        "ChangeNotebookError": "An error occurred while changing the notebook. Please verify the log if you need more information.",
+        "MoveNotesError": "An error occurred while moving notes to the collection '{{collection}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "There is already a collection with the name '{{collection}}'",
@@ -198,7 +205,9 @@
         "NotesImportedIntoNotebook": "Notes were imported into notebook '{{notebookName}}'",
         "NotesImported": "Notes were imported",
         "NoNoteFilesToImport": "There were no note files to import",
-        "NewVersionAvailable": "A new version is available: {{version}}"
+        "NewVersionAvailable": "A new version is available: {{version}}",
+        "NoteMoved": "{{number}} note moved to '{{collection}}'",
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "OK"
@@ -218,7 +227,8 @@
         "Imported": "Imported",
         "Search": "Search",
         "Languages": "languages",
-        "Disabled": "Disabled"
+        "Disabled": "Disabled",
+        "Moved": "Moved"
     },
     "NoteDates": {
         "Today": "Today",

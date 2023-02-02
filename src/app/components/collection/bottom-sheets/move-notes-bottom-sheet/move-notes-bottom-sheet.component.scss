@@ -1,0 +1,18 @@
+@import 'variables';
+@import 'theming';
+
+.move-collection-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.move-collection-icon {
+    font-size: 24px;
+    color: $color-grey-icon;
+    margin: 0 8px 0 0;
+}
+
+.move-collection-icon.isActive {
+    color: var(--theme-accent-color);
+}

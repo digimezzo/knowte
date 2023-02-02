@@ -50,8 +50,8 @@ export class UpdateService {
                         'checkForUpdatesAsync'
                     );
                 }
-            } catch (e) {
-                this.logger.error(`Could not check for updates. Error: ${e.message}`, 'UpdateService', 'checkForUpdatesAsync');
+            } catch (error) {
+                this.logger.error(`Could not check for updates. Error: ${error.message}`, 'UpdateService', 'checkForUpdatesAsync');
             }
         } else {
             this.logger.info('Not checking for updates', 'UpdateService', 'checkForUpdatesAsync');

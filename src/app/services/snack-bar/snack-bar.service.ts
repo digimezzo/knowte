@@ -50,6 +50,23 @@ export class SnackBarService {
         this.showActionSnackBar(message, action, false);
     }
 
+    public async notesMoveToCollectionAsync(number: number, collection: string): Promise<void> {
+        let message: string = await this.translator.getAsync('SnackBarMessages.NoteMoved', {
+            number: number,
+            collection: collection,
+        });
+
+        if (number > 1) {
+            message = await this.translator.getAsync('SnackBarMessages.NotesMoved', {
+                number: number,
+                collection: collection,
+            });
+        }
+
+        const action: string = await this.translator.getAsync('SnackBarActions.Ok');
+        this.showActionSnackBar(message, action, false);
+    }
+
     public async notesImportedAsync(): Promise<void> {
         const message: string = await this.translator.getAsync('SnackBarMessages.NotesImported');
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');

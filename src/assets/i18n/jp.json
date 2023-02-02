@@ -109,7 +109,9 @@
         "ChangeSpellCheckerLanguages": "Change spell checker languages",
         "EncryptNote": "Encrypt note...",
         "DecryptNote": "Decrypt note...",
-        "ThisNoteIsEncrypted": "This note is encrypted"
+        "ThisNoteIsEncrypted": "This note is encrypted",
+        "MoveNote": "Move note to another collection",
+        "MoveNotes": "Move notes to another collection"
     },
     "LicenseDialog": {
         "License": "ライセンス"
@@ -144,7 +146,9 @@
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",
         "NoteIsEncrypted": "Note is encrypted",
-        "ConfirmCloseAllNotes": "Close all notes?"
+        "ConfirmCloseAllNotes": "Close all notes?",
+        "ConfirmMoveNote": "Move note?",
+        "ConfirmMoveNotes": "Move notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "コレクション '{{collection}}' を削除しますか？ コレクションを削除すると、メモ帳とメモも削除されます。",
@@ -162,7 +166,9 @@
         "AllFiles": "すべてのファイル",
         "ChooseNotebook": "メモ帳の選択",
         "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
-        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?",
+        "ConfirmMoveNote": "Are you sure you want to move this note to collection '{{collection}}'?",
+        "ConfirmMoveNotes": "Are you sure you want to move these notes to collection '{{collection}}'?"
     },
     "Input": {
         "Collection": "コレクション",
@@ -186,7 +192,8 @@
         "GetNoteContentError": "メモの内容の取得中にエラーが発生しました。詳細はログを確認してください。",
         "ExportNoteError": "メモ '{{noteTitle}}' のエクスポート中にエラーが発生しました。詳細はログを確認してください。",
         "ImportNotesError": "メモのインポート中にエラーが発生しました。詳細はログを確認してください。",
-        "ChangeNotebookError": "メモ帳の変更中にエラーが発生しました。詳細はログを確認してください。"
+        "ChangeNotebookError": "メモ帳の変更中にエラーが発生しました。詳細はログを確認してください。",
+        "MoveNotesError": "An error occurred while moving notes to the collection '{{collection}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "コレクション名 '{{collection}}' はすでに存在しています",
@@ -198,7 +205,9 @@
         "NotesImportedIntoNotebook": "メモをメモ帳 '{{notebookName}}' へインポートしました",
         "NotesImported": "メモをインポートしました",
         "NoNoteFilesToImport": "インポートするメモ ファイルはありませんでした",
-        "NewVersionAvailable": "新しいバージョンが利用可能です: {{version}}"
+        "NewVersionAvailable": "新しいバージョンが利用可能です: {{version}}",
+        "NoteMoved": "{{number}} note moved to '{{collection}}'",
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "OK"
@@ -218,7 +227,8 @@
         "Imported": "インポート済み",
         "Search": "検索",
         "Languages": "languages",
-        "Disabled": "Disabled"
+        "Disabled": "Disabled",
+        "Moved": "Moved"
     },
     "NoteDates": {
         "Today": "今日",

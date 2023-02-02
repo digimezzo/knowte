@@ -109,7 +109,9 @@
         "ChangeSpellCheckerLanguages": "Modifier les langues du correcteur orthographique",
         "EncryptNote": "Chriffrer la note...",
         "DecryptNote": "Déchiffrer la note...",
-        "ThisNoteIsEncrypted": "Cette note est cryptée"
+        "ThisNoteIsEncrypted": "Cette note est cryptée",
+        "MoveNote": "Déplacer la note vers une autre collection",
+        "MoveNotes": "Déplacer les notes vers une autre collection"
     },
     "LicenseDialog": {
         "License": "Licence"
@@ -144,7 +146,9 @@
         "EncryptNote": "Chiffrer la note",
         "ConfirmDecryptNote": "Décrypter la note?",
         "NoteIsEncrypted": "La note est cryptée",
-        "ConfirmCloseAllNotes": "Close all notes?"
+        "ConfirmCloseAllNotes": "Fermer toutes les notes?",
+        "ConfirmMoveNote": "Déplacer la note?",
+        "ConfirmMoveNotes": "Déplacer les notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Êtes-vous sûr de vouloir supprimer la collection '{{collection}}'? Si vous continuez, ses bloc-notes et ses notes seront perdues.",
@@ -162,7 +166,9 @@
         "AllFiles": "Tous les fichiers",
         "ChooseNotebook": "Choisissez un bloc-notes",
         "ConfirmDecryptNote": "Êtes-vous sûr de vouloir décrypter cette note?",
-        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
+        "ConfirmCloseAllNotes": "Cela fermera toutes les notes ouvertes. Etes-vous sur de vouloir continuer?",
+        "ConfirmMoveNote": "Êtes-vous sûr de vouloir déplacer cette note vers la collection '{{collection}}'?",
+        "ConfirmMoveNotes": "Êtes-vous sûr de vouloir déplacer ces notes vers la collection '{{collection}}'?"
     },
     "Input": {
         "Collection": "Collection",
@@ -170,7 +176,7 @@
         "SecretKey": "Clé secrète"
     },
     "ErrorTexts": {
-        "StorageDirectoryCreationError": "Le répertoire '{{storageDirectory}}' ne peut pas être utilisé pour enregistrer vos notes. Vous n’avez peut-être pas les autorisations nécessaires pour y créer des éléments. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "StorageDirectoryCreationError": "Le répertoire '{{storageDirectory}}' ne peut pas être utilisé pour enregistrer vos notes. Vous n'avez peut-être pas les autorisations nécessaires pour y créer des éléments. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "GlobalError": "Une erreur s'est produite qui entraînera la fermeture de l'application. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "AddCollectionError": "Une erreur s'est produite lors de l'ajout de la collection '{{collection}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "AddNotebookError": "Une erreur s'est produite lors de l'ajout du bloc-notes '{{notebookName}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
@@ -186,7 +192,8 @@
         "GetNoteContentError": "Une erreur s'est produite lors de l'obtention du contenu de la note. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "ExportNoteError": "Une erreur s'est produite lors de l'export de la note '{{noteTitle}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "ImportNotesError": "Une erreur s'est produite lors de l'import de notes. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
-        "ChangeNotebookError": "Une erreur s'est produite lors du changement de bloc-note. Veuillez vérifier le log si vous avez besoin de plus d'informations."
+        "ChangeNotebookError": "Une erreur s'est produite lors du changement de bloc-note. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "MoveNotesError": "Une erreur s'est produite lors du déplacement des notes vers la collection '{{collection}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "Il existe déjà une collection portant le nom '{{collection}}'",
@@ -198,7 +205,9 @@
         "NotesImportedIntoNotebook": "Les notes ont été importées dans le bloc-notes '{{notebookName}}'",
         "NotesImported": "Les notes ont été importées",
         "NoNoteFilesToImport": "Il n'y avait aucun fichier de note à importer",
-        "NewVersionAvailable": "Une nouvelle version est disponible: {{version}}"
+        "NewVersionAvailable": "Une nouvelle version est disponible: {{version}}",
+        "NoteMoved": "{{number}} note déplacée vers '{{collection}}'",
+        "NotesMoved": "{{number}} notes déplacées vers '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "OK"
@@ -218,7 +227,8 @@
         "Imported": "Importée",
         "Search": "Chercher",
         "Languages": "langues",
-        "Disabled": "Désactivé"
+        "Disabled": "Désactivé",
+        "Moved": "Déplacé"
     },
     "NoteDates": {
         "Today": "Aujourd'hui",
@@ -246,6 +256,6 @@
         "IncorrectKey": "Clé incorrecte"
     },
     "NotificationTexts": {
-        "SecretKeyIncorrect": "The secret key is incorrect."
+        "SecretKeyIncorrect": "La clé secrète est incorrecte."
     }
 }

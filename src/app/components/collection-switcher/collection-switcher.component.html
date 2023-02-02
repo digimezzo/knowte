@@ -17,8 +17,8 @@
     <mat-divider></mat-divider>
     <div *ngFor="let collection of collections">
         <button class="menu-button" mat-menu-item>
-            <span class="menu-item" (click)="activateCollectionAsync(collection)">
-                <i class="menu-icon las la-box" [ngClass]="{ isActive: collection === activeCollection }"> </i>
+            <span class="collection-switcher-item" (click)="activateCollectionAsync(collection)">
+                <i class="collection-switcher-icon las la-box" [ngClass]="{ isActive: collection === activeCollection }"> </i>
                 <span>{{ collection }}</span>
             </span>
             <span class="menu-command-item mr-1">
@@ -39,7 +39,7 @@
     </div>
     <mat-divider></mat-divider>
     <button class="menu-button" mat-menu-item (click)="openTrash()">
-        <i class="menu-icon las la-trash-alt"></i>
+        <i class="collection-switcher-icon las la-trash-alt"></i>
         {{ 'CollectionSwitcher.OpenTrash' | translate }}
     </button>
     <div *ngIf="this.updateService.isUpdateAvailable">

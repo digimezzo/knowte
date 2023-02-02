@@ -645,7 +645,7 @@ export class NoteComponent implements OnInit {
 
         if (operation === Operation.Success) {
             try {
-                this.persistance.updateNoteContent(this.noteId, this.getNoteJsonContent(), this.isEncrypted, this.secretKey);
+                await this.persistance.updateNoteContentAsync(this.noteId, this.getNoteJsonContent(), this.isEncrypted, this.secretKey);
             } catch (error) {
                 this.logger.error(
                     `Could not save content for the note with id='${this.noteId}'. Cause: ${error}`,

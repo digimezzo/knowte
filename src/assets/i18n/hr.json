@@ -109,7 +109,9 @@
         "ChangeSpellCheckerLanguages": "Change spell checker languages",
         "EncryptNote": "Encrypt note...",
         "DecryptNote": "Decrypt note...",
-        "ThisNoteIsEncrypted": "This note is encrypted"
+        "ThisNoteIsEncrypted": "This note is encrypted",
+        "MoveNote": "Move note to another collection",
+        "MoveNotes": "Move notes to another collection"
     },
     "LicenseDialog": {
         "License": "Licencija"
@@ -144,7 +146,9 @@
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",
         "NoteIsEncrypted": "Note is encrypted",
-        "ConfirmCloseAllNotes": "Close all notes?"
+        "ConfirmCloseAllNotes": "Close all notes?",
+        "ConfirmMoveNote": "Move note?",
+        "ConfirmMoveNotes": "Move notes?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Jeste li sigurni da želite izbrisati kolekciju '{{collection}}'? Ako nastavite, njene bilježnice i bilješke bit će izgubljene.",
@@ -162,7 +166,9 @@
         "AllFiles": "Sve datoteke",
         "ChooseNotebook": "Odaberite bilježnicu",
         "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
-        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?",
+        "ConfirmMoveNote": "Are you sure you want to move this note to collection '{{collection}}'?",
+        "ConfirmMoveNotes": "Are you sure you want to move these notes to collection '{{collection}}'?"
     },
     "Input": {
         "Collection": "Kolekcija",
@@ -186,7 +192,8 @@
         "GetNoteContentError": "Dogodila se greška tijekom dohvaćanja sadržaja bilješke. Provjerite zapisnik, ako trebate više informacija.",
         "ExportNoteError": "Dogodila se greška tijekom izvoza bilješke '{{noteTitle}}'. Provjerite zapisnik, ako trebate više informacija.",
         "ImportNotesError": "Dogodila se greška tijekom uvoza bilješki. Provjerite zapisnik, ako trebate više informacija.",
-        "ChangeNotebookError": "Dogodila se greška tijekom izmjene bilježnice. Provjerite zapisnik, ako trebate više informacija."
+        "ChangeNotebookError": "Dogodila se greška tijekom izmjene bilježnice. Provjerite zapisnik, ako trebate više informacija.",
+        "MoveNotesError": "An error occurred while moving notes to the collection '{{collection}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "Već postoji kolekcija s nazivom '{{collection}}'",
@@ -198,7 +205,9 @@
         "NotesImportedIntoNotebook": "Bilješke su uvezene u bilježnicu '{{notebookName}}'",
         "NotesImported": "Bilješke su uvezene",
         "NoNoteFilesToImport": "Nije bilo datoteka bilješki za uvoz",
-        "NewVersionAvailable": "Dostupna je nova verzija: {{version}}"
+        "NewVersionAvailable": "Dostupna je nova verzija: {{version}}",
+        "NoteMoved": "{{number}} note moved to '{{collection}}'",
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "U redu"
@@ -218,7 +227,8 @@
         "Imported": "Uvezeno",
         "Search": "Pretraživanje",
         "Languages": "languages",
-        "Disabled": "Disabled"
+        "Disabled": "Disabled",
+        "Moved": "Moved"
     },
     "NoteDates": {
         "Today": "Danas",

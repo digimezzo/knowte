@@ -109,7 +109,9 @@
         "ChangeSpellCheckerLanguages": "Change spell checker languages",
         "EncryptNote": "Encrypt note...",
         "DecryptNote": "Decrypt note...",
-        "ThisNoteIsEncrypted": "This note is encrypted"
+        "ThisNoteIsEncrypted": "This note is encrypted",
+        "MoveNote": "Move note to another collection",
+        "MoveNotes": "Move notes to another collection"
     },
     "LicenseDialog": {
         "License": "Лицензия"
@@ -144,7 +146,9 @@
         "EncryptNote": "Encrypt note",
         "ConfirmDecryptNote": "Decrypt note?",
         "NoteIsEncrypted": "Note is encrypted",
-        "ConfirmCloseAllNotes": "Close all notes?"
+        "ConfirmCloseAllNotes": "Close all notes?",
+        "ConfirmMoveNote": "Are you sure you want to move this note to collection '{{collection}}'?",
+        "ConfirmMoveNotes": "Are you sure you want to move these notes to collection '{{collection}}'?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Хотите удалить коллекцию '{{collection}}'? При подтверждении все блокноты и заметки будут потеряны.",
@@ -162,7 +166,9 @@
         "AllFiles": "Все файлы",
         "ChooseNotebook": "Выбрать блокнот",
         "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
-        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?"
+        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?",
+        "ConfirmMoveNote": "Move note",
+        "ConfirmMoveNotes": "Move notes"
     },
     "Input": {
         "Collection": "Коллекция",
@@ -186,7 +192,8 @@
         "GetNoteContentError": "Произошла ошибка при получении содержимого заметки. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
         "ExportNoteError": "Произошла ошибка при экспорте заметки '{{noteTitle}}'. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
         "ImportNotesError": "Произошла ошибка при импорте заметок. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
-        "ChangeNotebookError": "Произошла ошибка при смене блокнота. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация."
+        "ChangeNotebookError": "Произошла ошибка при смене блокнота. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",
+        "MoveNotesError": "An error occurred while moving notes to the collection '{{collection}}'. Please verify the log if you need more information."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "Уже есть коллекция с названием '{{collection}}'",
@@ -198,7 +205,9 @@
         "NotesImportedIntoNotebook": "Заметки были импортированы в блокнот '{{notebookName}}'",
         "NotesImported": "Заметки были импортированы",
         "NoNoteFilesToImport": "Не было файлов заметок для импорта",
-        "NewVersionAvailable": "Доступна новая версия: {{version}}"
+        "NewVersionAvailable": "Доступна новая версия: {{version}}",
+        "NoteMoved": "{{number}} note moved to '{{collection}}'",
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "OK"
@@ -218,7 +227,8 @@
         "Imported": "Импортировано",
         "Search": "Поиск",
         "Languages": "languages",
-        "Disabled": "Disabled"
+        "Disabled": "Disabled",
+        "Moved": "Moved"
     },
     "NoteDates": {
         "Today": "Сегодня",
