@@ -32,6 +32,10 @@ export class MoveNotesBottomSheetComponent implements OnInit {
     public async moveNotesToCollectionAsync(collection: string): Promise<void> {
         this.bottomSheetRef.dismiss();
 
+        if (collection === this.activeCollection) {
+            return;
+        }
+
         let title: string = await this.translatorService.getAsync('DialogTitles.ConfirmMoveNote');
         let text: string = await this.translatorService.getAsync('DialogTexts.ConfirmMoveNote', { collection: collection });
 

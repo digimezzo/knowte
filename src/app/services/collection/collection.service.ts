@@ -848,7 +848,7 @@ export class CollectionService {
             await this.dataStore.initializeAsync(oldCollectionDatabaseFilePath);
 
             // 5. Delete notes from old collection
-            await this.deleteNotesAsync(noteIds);
+            await this.deleteNotesPermanentlyAsync(noteIds);
 
             return noteIds.length;
         } catch (error) {
