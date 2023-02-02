@@ -13,7 +13,7 @@
     </div>
     <div class="app-trash__body" *ngIf="this.trashedNotes.length > 0">
         <cdk-virtual-scroll-viewport class="app-trash__notes" itemSize="48">
-            <div class="trashed-note no-select" *cdkVirtualFor="let trashedNote of trashedNotes">
+            <div class="trashed-note no-select" *cdkVirtualFor="let trashedNote of trashedNotes" (dblclick)="openNoteAsync(trashedNote)">
                 <div class="trashed-note__checkbox mx-2">
                     <mat-checkbox (change)="changeNoteSelection(trashedNote, $event)" [(ngModel)]="trashedNote.isSelected"></mat-checkbox>
                 </div>

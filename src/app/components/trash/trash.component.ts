@@ -107,4 +107,14 @@ export class TrashComponent implements OnInit, OnDestroy {
             this.trashedNotes = this.collectionService.getTrashedNotes();
         }
     }
+
+    public async openNoteAsync(note: Note): Promise<void> {
+        if (!this.collectionService.noteIsOpen(note.id)) {
+            this.logger.info(`Opening note with id=${note.id}`, 'NotesComponent', 'openNoteAsync');
+            await this.collectionService.setNoteOpenAsync(note.id, true);
+        } else {
+            this.logger.info(`Note with id=${note.id} is already open. Focusing.`, 'NotesComponent', 'openNoteAsync');
+            this.collectionService.onFocusNote(note.id);
+        }
+    }
 }
