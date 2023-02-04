@@ -104,6 +104,7 @@
         "Image": "Изображение",
         "ClearFormatting": "Очистить форматирование",
         "Close": "Закрыть",
+        "Search": "Поиск",
         "BackToNotes": "Вернуться к заметкам",
         "ChangeTextSize": "Change text size",
         "ChangeSpellCheckerLanguages": "Change spell checker languages",
@@ -128,7 +129,8 @@
         "Select": "ВЫБРАТЬ",
         "SelectAgain": "ВЫБРАТЬ ЕЩЁ РАЗ",
         "Close": "ЗАКРЫТЬ",
-        "Languages": "LANGUAGES"
+        "Languages": "LANGUAGES",
+        "Search": "SEARCH"
     },
     "DialogTitles": {
         "AddCollection": "Добавить коллекцию",

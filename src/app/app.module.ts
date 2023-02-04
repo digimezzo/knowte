@@ -51,6 +51,7 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { LogoFullComponent } from './components/logo-full/logo-full.component';
 import { LogoMainComponent } from './components/logo-main/logo-main.component';
 import { MainMenuComponent } from './components/main-menu/main-menu.component';
+import { SearchBottomSheetComponent } from './components/note/bottom-sheets/search-bottom-sheet/search-bottom-sheet.component';
 import { SpellCheckBottomSheetComponent } from './components/note/bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';
 import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { NoteContextMenuFactory } from './components/note/note-context-menu-factory';
@@ -146,6 +147,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         TextSizeBottomSheetComponent,
         SpellCheckBottomSheetComponent,
         MoveNotesBottomSheetComponent,
+        SearchBottomSheetComponent,
         SpellCheckLanguagesComponent,
         NoteStatusBarComponent,
         WebviewDirective,

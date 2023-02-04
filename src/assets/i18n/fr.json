@@ -104,6 +104,7 @@
         "Image": "Image",
         "ClearFormatting": "Supprimer le formattage",
         "Close": "Fermer",
+        "Search": "Chercher",
         "BackToNotes": "Retour aux notes",
         "ChangeTextSize": "Modifier la taille du texte",
         "ChangeSpellCheckerLanguages": "Modifier les langues du correcteur orthographique",
@@ -128,7 +129,8 @@
         "Select": "SÉLECTIONNER",
         "SelectAgain": "SÉLECTIONNER À NOUVEAU",
         "Close": "FERMER",
-        "Languages": "LANGUES"
+        "Languages": "LANGUES",
+        "Search": "CHERCHER"
     },
     "DialogTitles": {
         "AddCollection": "Ajouter collection",

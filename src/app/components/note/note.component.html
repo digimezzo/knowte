@@ -22,6 +22,16 @@
                     </div>
                 </button>
                 <button
+                    *ngIf="canPerformActions"
+                    class="note-content-floating-button"
+                    mat-mini-fab
+                    color=""
+                    (click)="openSearchBottomSheet()"
+                    matTooltip="{{ 'Tooltips.Search' | translate }}"
+                >
+                    <i class="note-content-floating-button-icon-action las la-search"></i>
+                </button>
+                <button
                     *ngIf="canPerformActions && isMarked"
                     class="note-content-floating-button"
                     mat-mini-fab
@@ -41,6 +51,7 @@
                 >
                     <i class="note-content-floating-button-icon-action lar la-heart"></i>
                 </button>
+
                 <button
                     *ngIf="canPerformActions"
                     class="note-content-floating-button"
@@ -119,7 +130,11 @@
                     (keydown.control.1)="heading1($event)"
                     (keydown.control.2)="heading2($event)"
                 ></div>
-                <app-note-status-bar [isMarked]="this.isMarked" [isEncrypted]="this.isEncrypted"></app-note-status-bar>
+                <app-note-status-bar
+                    [noteId]="this.noteId"
+                    [isMarked]="this.isMarked"
+                    [isEncrypted]="this.isEncrypted"
+                ></app-note-status-bar>
             </div>
         </div>
     </div>

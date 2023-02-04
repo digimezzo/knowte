@@ -104,6 +104,7 @@
         "Image": "画像",
         "ClearFormatting": "書式の消去",
         "Close": "閉じる",
+        "Search": "検索",
         "BackToNotes": "Back to notes",
         "ChangeTextSize": "Change text size",
         "ChangeSpellCheckerLanguages": "Change spell checker languages",
@@ -128,7 +129,8 @@
         "Select": "選択",
         "SelectAgain": "再選択",
         "Close": "閉じる",
-        "Languages": "LANGUAGES"
+        "Languages": "LANGUAGES",
+        "Search": "SEARCH"
     },
     "DialogTitles": {
         "AddCollection": "コレクションの追加",

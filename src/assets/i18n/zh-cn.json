@@ -104,6 +104,7 @@
         "Image": "图像",
         "ClearFormatting": "清除格式",
         "Close": "关闭",
+        "Search": "搜索",
         "BackToNotes": "返回到笔记",
         "ChangeTextSize": "Change text size",
         "ChangeSpellCheckerLanguages": "Change spell checker languages",
@@ -128,7 +129,8 @@
         "Select": "选择",
         "SelectAgain": "重新选择",
         "Close": "关闭",
-        "Languages": "LANGUAGES"
+        "Languages": "LANGUAGES",
+        "SEARCH": "SEARCH"
     },
     "DialogTitles": {
         "AddCollection": "添加收藏",

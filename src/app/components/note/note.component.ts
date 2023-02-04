@@ -1,10 +1,10 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, HostListener, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
+import { MatBottomSheet, MatBottomSheetConfig, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as remote from '@electron/remote';
 import { BrowserWindow, SaveDialogOptions, SaveDialogReturnValue } from 'electron';
-import * as electronLocalShortcut from 'electron-localshortcut';
 import * as Quill from 'quill';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
@@ -14,6 +14,7 @@ import { Constants } from '../../core/constants';
 import { Operation } from '../../core/enums';
 import { Logger } from '../../core/logger';
 import { ProductInformation } from '../../core/product-information';
+import { Strings } from '../../core/strings';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { AppearanceService } from '../../services/appearance/appearance.service';
@@ -32,6 +33,7 @@ import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/conf
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
 import { NotificationDialogComponent } from '../dialogs/notification-dialog/notification-dialog.component';
 import { PasswordInputDialogComponent } from '../dialogs/password-input-dialog/password-input-dialog.component';
+import { SearchBottomSheetComponent } from './bottom-sheets/search-bottom-sheet/search-bottom-sheet.component';
 import { ContextMenuItemsEnabledState } from './context-menu-items-enabled-state';
 import { NoteContextMenuFactory } from './note-context-menu-factory';
 import { QuillFactory } from './quill-factory';
@@ -82,7 +84,8 @@ export class NoteComponent implements OnInit {
         private noteContextMenuFactory: NoteContextMenuFactory,
         private quillTweaker: QuillTweaker,
         private collectionClient: CollectionClient,
-        private searchClient: SearchClient
+        private searchClient: SearchClient,
+        private bottomSheet: MatBottomSheet
     ) {}
 
     public isEncrypted: boolean = false;
@@ -97,6 +100,7 @@ export class NoteComponent implements OnInit {
     public isBusy: boolean = false;
     public actionIconRotation: string = 'default';
     public canSearch: boolean = false;
+    private searchText: string = '';
 
     public async ngOnInit(): Promise<void> {
         this.activatedRoute.queryParams.subscribe(async (params) => {
@@ -110,7 +114,8 @@ export class NoteComponent implements OnInit {
             this.addSubscriptions();
             this.addDocumentListeners();
             await this.getNoteContentAsync();
-            await this.applySearchAsync();
+            this.searchText = await this.searchClient.getSearchTextAsync();
+            this.applySearch();
 
             this.noteWindow.webContents.on('context-menu', (event, contextMenuParams) => {
                 const hasSelectedText: boolean = this.hasSelectedRange();
@@ -129,12 +134,19 @@ export class NoteComponent implements OnInit {
                 );
             });
         });
+    }
 
-        electronLocalShortcut.register(this.noteWindow, 'ESC', () => {
-            if (this.settings.closeNotesWithEscape) {
-                this.noteWindow.close();
-            }
-        });
+    @HostListener('document:keydown.escape')
+    private handleEscape(): void {
+        if (this.searchBottomSheet !== null && this.searchBottomSheet !== undefined) {
+            this.closeSearchBottomSheet();
+
+            return;
+        }
+
+        if (this.settings.closeNotesWithEscape) {
+            this.noteWindow.close();
+        }
     }
 
     private addSubscriptions(): void {
@@ -150,6 +162,13 @@ export class NoteComponent implements OnInit {
             await this.saveAndCloseAsync();
         });
 
+        this.subscription.add(
+            this.searchClient.searchTextChanged$.subscribe((searchText: string) => {
+                this.searchText = searchText;
+                this.applySearch();
+            })
+        );
+        this.subscription.add(this.searchClient.searchClosed$.subscribe(() => this.closeSearchBottomSheet()));
         this.subscription.add(this.collectionClient.closeNote$.subscribe((noteId: string) => this.closeNoteIfMatching(noteId)));
         this.subscription.add(this.collectionClient.closeAllNotes$.subscribe(() => this.closeNote()));
         this.subscription.add(this.collectionClient.focusNote$.subscribe((noteId: string) => this.focusNote(noteId)));
@@ -586,14 +605,16 @@ export class NoteComponent implements OnInit {
         this.noteWindow.webContents.stopFindInPage('keepSelection');
     }
 
-    private async applySearchAsync(): Promise<void> {
-        const searchText: string = await this.searchClient.getSearchTextAsync();
-
-        if (searchText && searchText.length > 0) {
-            const searchTextPieces: string[] = searchText.trim().split(' ');
+    private applySearch(): void {
+        if (!Strings.isNullOrWhiteSpace(this.searchText)) {
+            const searchTextPieces: string[] = this.searchText.trim().split(' ');
 
             // For now, we can only search for 1 word.
             this.noteWindow.webContents.findInPage(searchTextPieces[0]);
+
+            this.openSearchBottomSheet();
+        } else {
+            this.clearSearch();
         }
     }
 
@@ -810,5 +831,28 @@ export class NoteComponent implements OnInit {
         this.quillTweaker.forcePasteOfUnformattedText(this.quill);
         this.quillTweaker.assignActionToControlKeyCombination(this.quill, 'Y', this.performRedo.bind(this));
         this.quillTweaker.assignActionToTextChange(this.quill, this.onNoteTextChange.bind(this));
+    }
+
+    @HostListener('document:keydown.control.f')
+    public openSearchBottomSheet(): void {
+        this.hideActionButtonsDelayedAsync();
+
+        const config: MatBottomSheetConfig = {
+            hasBackdrop: false,
+            data: { searchText: this.searchText },
+        };
+
+        if (this.searchBottomSheet === null || this.searchBottomSheet === undefined) {
+            this.searchBottomSheet = this.bottomSheet.open(SearchBottomSheetComponent, config);
+        }
+    }
+
+    private searchBottomSheet: MatBottomSheetRef = undefined;
+
+    public closeSearchBottomSheet(): void {
+        if (this.searchBottomSheet !== null && this.searchBottomSheet !== undefined) {
+            this.searchBottomSheet.dismiss();
+            this.searchBottomSheet = undefined;
+        }
     }
 }

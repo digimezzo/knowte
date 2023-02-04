@@ -104,6 +104,7 @@
         "Image": "Slika",
         "ClearFormatting": "Očisti formatiranje",
         "Close": "Zatvori",
+        "Search": "Pretraživanje",
         "BackToNotes": "Back to notes",
         "ChangeTextSize": "Change text size",
         "ChangeSpellCheckerLanguages": "Change spell checker languages",
@@ -128,7 +129,8 @@
         "Select": "ODABERI",
         "SelectAgain": "ODABERI PONOVNO",
         "Close": "ZATVORI",
-        "Languages": "LANGUAGES"
+        "Languages": "LANGUAGES",
+        "Search": "CHERCHER"
     },
     "DialogTitles": {
         "AddCollection": "Dodavanje kolekcije",

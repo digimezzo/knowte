@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import * as remote from '@electron/remote';
 import { BrowserWindow } from 'electron';
-import * as electronLocalshortcut from 'electron-localshortcut';
+import * as electronLocalShortcut from 'electron-localshortcut';
 import { Notebook } from '../../data/entities/notebook';
 import { SearchService } from '../../services/search/search.service';
 
@@ -25,7 +25,7 @@ export class ActiveNotebookAndSearchComponent implements OnInit {
     public ngOnInit(): void {
         const window: BrowserWindow = remote.getCurrentWindow();
 
-        electronLocalshortcut.register(window, 'Ctrl+F', () => {
+        electronLocalShortcut.register(window, 'Ctrl+F', () => {
             this.focusSearch();
         });
     }
