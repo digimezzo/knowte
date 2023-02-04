@@ -104,6 +104,7 @@
         "Image": "Afbeelding",
         "ClearFormatting": "Opmaak verwijderen",
         "Close": "Sluiten",
+        "Search": "Zoeken",
         "BackToNotes": "Terug naar notities",
         "ChangeTextSize": "Wijzig de tekstgrootte",
         "ChangeSpellCheckerLanguages": "Wijzig de talen van de spellingcontrole",
@@ -128,7 +129,8 @@
         "Select": "SELECTEER",
         "SelectAgain": "SELECTEER OPNIEUW",
         "Close": "SLUITEN",
-        "Languages": "TALEN"
+        "Languages": "TALEN",
+        "Search": "ZOEKEN"
     },
     "DialogTitles": {
         "AddCollection": "Collectie toevoegen",

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
+import { Observable, Subject } from 'rxjs';
 import { Utils } from '../../core/utils';
 import { SearchEvents } from './search-events';
 
@@ -12,8 +13,13 @@ import { SearchEvents } from './search-events';
 @Injectable()
 export class SearchClient {
     private globalEmitter: any = remote.getGlobal('globalEmitter');
+    private searchTextChanged: Subject<string> = new Subject();
+    private searchClosed: Subject<void> = new Subject();
 
     public constructor() {}
+
+    public searchTextChanged$: Observable<string> = this.searchTextChanged.asObservable();
+    public searchClosed$: Observable<void> = this.searchClosed.asObservable();
 
     public async getSearchTextAsync(): Promise<string> {
         /**
@@ -29,5 +35,13 @@ export class SearchClient {
         }
 
         return searchTexts[0];
+    }
+
+    public onSearchTextChanged(searchText: string): void {
+        this.searchTextChanged.next(searchText);
+    }
+
+    public onSearchClosed(): void {
+        this.searchClosed.next();
     }
 }

@@ -1,0 +1,19 @@
+<div class="d-flex flex-row align-items-center justify-content-center">
+    <mat-form-field class="note-content-search mr-4">
+        <mat-label>{{ 'MainPage.Search' | translate }}</mat-label>
+        <input matInput type="text" #searchInput [(ngModel)]="this.searchText" (keyup.enter)="performSearch()" />
+        <button
+            class="note-content-search-clearbutton"
+            mat-button
+            *ngIf="this.searchText"
+            matSuffix
+            mat-icon-button
+            matTooltip="{{ 'MainPage.ClearSearch' | translate }}"
+            (click)="this.clearSearch()"
+        >
+            <i class="las la-times"></i>
+        </button>
+    </mat-form-field>
+    <button class="mr-1" mat-raised-button color="primary" (click)="performSearch()">{{ 'Buttons.Search' | translate }}</button>
+    <button mat-raised-button (click)="closeSearch()">{{ 'Buttons.Close' | translate }}</button>
+</div>

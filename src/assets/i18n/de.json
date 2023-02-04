@@ -104,6 +104,7 @@
         "Image": "Bild",
         "ClearFormatting": "Entferne Formatierung",
         "Close": "Schließen",
+        "Search": "Suchen",
         "BackToNotes": "Back to notes",
         "ChangeTextSize": "Change text size",
         "ChangeSpellCheckerLanguages": "Change spell checker languages",
@@ -128,7 +129,8 @@
         "Select": "AUSWÄHLEN",
         "SelectAgain": "ERNEUT AUSWÄHLEN",
         "Close": "SCHLIESSEN",
-        "Languages": "LANGUAGES"
+        "Languages": "LANGUAGES",
+        "Search": "SUCHEN"
     },
     "DialogTitles": {
         "AddCollection": "Kollektion hinzufügen",
