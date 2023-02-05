@@ -278,13 +278,13 @@ export class NoteComponent implements OnInit {
         const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
 
         if (saveDialogReturnValue.filePath != undefined) {
-            this.print.exportToPdfAsync(saveDialogReturnValue.filePath, this.noteTitle, this.quill.root.innerHTML);
+            await this.print.exportToPdfAsync(saveDialogReturnValue.filePath, this.noteTitle, this.quill.root.innerHTML);
         }
     }
 
     public async printNoteAsync(): Promise<void> {
         this.hideActionButtons();
-        this.print.printAsync(this.noteTitle, this.quill.root.innerHTML);
+        await this.print.printAsync(this.noteTitle, this.quill.root.innerHTML);
     }
 
     public async deleteNoteAsync(): Promise<void> {
