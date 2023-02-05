@@ -103,7 +103,7 @@
                     <i class="note-content-floating-button-icon-action las la-print"></i>
                 </button>
                 <button
-                    *ngIf="canPerformActions"
+                    *ngIf="canPerformActions && !this.isTrashed"
                     class="note-content-floating-button"
                     mat-mini-fab
                     color=""

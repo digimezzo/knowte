@@ -93,6 +93,7 @@ export class NoteComponent implements OnInit {
     public initialNoteTitle: string;
     public noteTitle: string;
     public isMarked: boolean;
+    public isTrashed: boolean;
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteTextChanged: Subject<void> = new Subject<void>();
     public saveChangesAndCloseNoteWindow: Subject<void> = new Subject<void>();
@@ -707,6 +708,7 @@ export class NoteComponent implements OnInit {
         this.initialNoteTitle = result.noteTitle;
         this.noteTitle = result.noteTitle;
         this.isMarked = result.isMarked;
+        this.isTrashed = result.isTrashed;
         this.isEncrypted = result.isEncrypted;
         this.secretKeyHash = result.secretKeyHash;
 

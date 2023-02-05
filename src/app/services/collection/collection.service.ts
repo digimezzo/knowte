@@ -954,7 +954,7 @@ export class CollectionService {
             }
         }
 
-        callback(new NoteDetailsResult(note.title, notebookName, note.isMarked, note.isEncrypted, note.secretKeyHash));
+        callback(new NoteDetailsResult(note.title, notebookName, note.isMarked, note.isTrashed, note.isEncrypted, note.secretKeyHash));
     }
 
     private async sendNotebookNameAsync(noteId: string): Promise<void> {
