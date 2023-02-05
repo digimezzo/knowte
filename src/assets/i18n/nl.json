@@ -74,9 +74,6 @@
         "Actions": "Acties",
         "MarkNote": "Notitie markeren",
         "UnmarkNote": "Markering verwijderen",
-        "PrintNote": "Notitie afdrukken...",
-        "ExportNote": "Notitie exporteren...",
-        "ExportNoteToPdf": "Notitie exporteren naar PDF...",
         "ImportNotes": "Notities importeren...",
         "AddNotebook": "Notitieboek toevoegen...",
         "RenameNotebook": "Notitieboek hernoemen...",
@@ -112,7 +109,8 @@
         "DecryptNote": "Notitie decoderen...",
         "ThisNoteIsEncrypted": "Deze notitie is versleuteld",
         "MoveNote": "Notitie overzetten naar een andere collectie",
-        "MoveNotes": "Notities overzetten naar een andere collectie"
+        "MoveNotes": "Notities overzetten naar een andere collectie",
+        "Share": "Delen..."
     },
     "LicenseDialog": {
         "License": "Licentie"
@@ -224,6 +222,9 @@
         "TasksCount": "{{closedTasksCount}} van {{totalTasksCount}}"
     },
     "Notes": {
+        "PrintNote": "Notitie afdrukken...",
+        "ExportNote": "Notitie exporteren...",
+        "ExportNoteToPdf": "Notitie exporteren naar PDF...",
         "NewNote": "Nieuwe notitie",
         "NotePlaceholder": "Schrijf je notitie hier...",
         "Imported": "Geïmporteerd",

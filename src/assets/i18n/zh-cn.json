@@ -74,9 +74,6 @@
         "Actions": "操作",
         "MarkNote": "标记笔记",
         "UnmarkNote": "移除标记",
-        "PrintNote": "打印笔记...",
-        "ExportNote": "导出笔记...",
-        "ExportNoteToPdf": "导出 PDF...",
         "ImportNotes": "导入笔记...",
         "AddNotebook": "添加笔记本...",
         "RenameNotebook": "重命名笔记本...",
@@ -112,7 +109,8 @@
         "DecryptNote": "Decrypt note...",
         "ThisNoteIsEncrypted": "This note is encrypted",
         "MoveNote": "Move note to another collection",
-        "MoveNotes": "Move notes to another collection"
+        "MoveNotes": "Move notes to another collection",
+        "Share": "Share..."
     },
     "LicenseDialog": {
         "License": "许可证"
@@ -224,6 +222,9 @@
         "TasksCount": "{{closedTasksCount}} / {{totalTasksCount}}"
     },
     "Notes": {
+        "PrintNote": "打印笔记...",
+        "ExportNote": "导出笔记...",
+        "ExportNoteToPdf": "导出 PDF...",
         "NewNote": "新笔记",
         "NotePlaceholder": "在这里写笔记...",
         "Imported": "已导入",

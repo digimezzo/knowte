@@ -74,9 +74,6 @@
         "Actions": "Aktionen",
         "MarkNote": "Markiere Notiz",
         "UnmarkNote": "Entferne Markierung",
-        "PrintNote": "Drucke Notiz...",
-        "ExportNote": "Exportiere Notiz...",
-        "ExportNoteToPdf": "Exportiere Notiz zu PDF...",
         "ImportNotes": "Importiere Notizen...",
         "AddNotebook": "Notizbuch hinzufügen...",
         "RenameNotebook": "Notizbuch umbennen...",
@@ -112,7 +109,8 @@
         "DecryptNote": "Decrypt note...",
         "ThisNoteIsEncrypted": "This note is encrypted",
         "MoveNote": "Move note to another collection",
-        "MoveNotes": "Move notes to another collection"
+        "MoveNotes": "Move notes to another collection",
+        "Share": "Share..."
     },
     "LicenseDialog": {
         "License": "Lizenz"
@@ -224,6 +222,9 @@
         "TasksCount": "{{closedTasksCount}} von {{totalTasksCount}}"
     },
     "Notes": {
+        "PrintNote": "Drucke Notiz...",
+        "ExportNote": "Exportiere Notiz...",
+        "ExportNoteToPdf": "Exportiere Notiz zu PDF...",
         "NewNote": "Neue Notiz",
         "NotePlaceholder": "Schreibe Deine Notiz hier...",
         "Imported": "Importiert",

@@ -74,9 +74,6 @@
         "Actions": "Действия",
         "MarkNote": "Добавить в избранные",
         "UnmarkNote": "Удалить отметку",
-        "PrintNote": "Печать заметки...",
-        "ExportNote": "Экспорт заметки...",
-        "ExportNoteToPdf": "Экспорт заметки в PDF...",
         "ImportNotes": "Импорт заметок...",
         "AddNotebook": "Добавить блокнот...",
         "RenameNotebook": "Переименовать блокнот...",
@@ -112,7 +109,8 @@
         "DecryptNote": "Decrypt note...",
         "ThisNoteIsEncrypted": "This note is encrypted",
         "MoveNote": "Move note to another collection",
-        "MoveNotes": "Move notes to another collection"
+        "MoveNotes": "Move notes to another collection",
+        "Share": "Share..."
     },
     "LicenseDialog": {
         "License": "Лицензия"
@@ -224,6 +222,9 @@
         "TasksCount": "{{closedTasksCount}} из {{totalTasksCount}}"
     },
     "Notes": {
+        "PrintNote": "Печать заметки...",
+        "ExportNote": "Экспорт заметки...",
+        "ExportNoteToPdf": "Экспорт заметки в PDF...",
         "NewNote": "Новая заметка",
         "NotePlaceholder": "Текст заметки...",
         "Imported": "Импортировано",

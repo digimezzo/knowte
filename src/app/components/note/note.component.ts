@@ -4,7 +4,7 @@ import { MatBottomSheet, MatBottomSheetConfig, MatBottomSheetRef } from '@angula
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as remote from '@electron/remote';
-import { BrowserWindow, SaveDialogOptions, SaveDialogReturnValue } from 'electron';
+import { BrowserWindow } from 'electron';
 import * as Quill from 'quill';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
@@ -34,6 +34,7 @@ import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.compo
 import { NotificationDialogComponent } from '../dialogs/notification-dialog/notification-dialog.component';
 import { PasswordInputDialogComponent } from '../dialogs/password-input-dialog/password-input-dialog.component';
 import { SearchBottomSheetComponent } from './bottom-sheets/search-bottom-sheet/search-bottom-sheet.component';
+import { ShareBottomSheetComponent } from './bottom-sheets/share-bottom-sheet/share-bottom-sheet.component';
 import { ContextMenuItemsEnabledState } from './context-menu-items-enabled-state';
 import { NoteContextMenuFactory } from './note-context-menu-factory';
 import { QuillFactory } from './quill-factory';
@@ -102,6 +103,8 @@ export class NoteComponent implements OnInit {
     public actionIconRotation: string = 'default';
     public canSearch: boolean = false;
     private searchText: string = '';
+
+    private searchBottomSheet: MatBottomSheetRef = undefined;
 
     public async ngOnInit(): Promise<void> {
         this.activatedRoute.queryParams.subscribe(async (params) => {
@@ -271,22 +274,6 @@ export class NoteComponent implements OnInit {
         this.collectionClient.setNoteMark(this.noteId, !this.isMarked);
     }
 
-    public async exportNoteToPdfAsync(): Promise<void> {
-        this.hideActionButtons();
-
-        const options: SaveDialogOptions = { defaultPath: Utils.getPdfExportPath(remote.app.getPath('documents'), this.noteTitle) };
-        const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
-
-        if (saveDialogReturnValue.filePath != undefined) {
-            await this.print.exportToPdfAsync(saveDialogReturnValue.filePath, this.noteTitle, this.quill.root.innerHTML);
-        }
-    }
-
-    public async printNoteAsync(): Promise<void> {
-        this.hideActionButtons();
-        await this.print.printAsync(this.noteTitle, this.quill.root.innerHTML);
-    }
-
     public async deleteNoteAsync(): Promise<void> {
         this.hideActionButtons();
 
@@ -317,42 +304,6 @@ export class NoteComponent implements OnInit {
 
     public rotateActionsButton(): void {
         this.actionIconRotation = this.canPerformActions ? 'rotated' : 'default';
-    }
-
-    public async exportNoteAsync(): Promise<void> {
-        this.hideActionButtons();
-        this.isBusy = true;
-
-        const options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle) };
-        const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
-
-        try {
-            if (saveDialogReturnValue.filePath != undefined && saveDialogReturnValue.filePath.length > 0) {
-                await this.persistance.exportNoteAsync(
-                    saveDialogReturnValue.filePath,
-                    this.noteTitle,
-                    this.quill.getText(),
-                    this.getNoteJsonContent()
-                );
-                this.snackBar.noteExportedAsync(this.noteTitle);
-            }
-
-            this.isBusy = false;
-        } catch (error) {
-            this.isBusy = false;
-            this.logger.error(
-                `An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`,
-                'NoteComponent',
-                'exportNoteAsync'
-            );
-
-            const errorText: string = await this.translator.getAsync('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle });
-
-            this.dialog.open(ErrorDialogComponent, {
-                width: '450px',
-                data: { errorText: errorText },
-            });
-        }
     }
 
     private async requestSecretKeyAsync(): Promise<boolean> {
@@ -849,12 +800,20 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    private searchBottomSheet: MatBottomSheetRef = undefined;
-
     public closeSearchBottomSheet(): void {
         if (this.searchBottomSheet !== null && this.searchBottomSheet !== undefined) {
             this.searchBottomSheet.dismiss();
             this.searchBottomSheet = undefined;
         }
+    }
+
+    public openShareBottomSheet(): void {
+        this.hideActionButtonsDelayedAsync();
+
+        const config: MatBottomSheetConfig = {
+            data: { noteTitle: this.noteTitle, quill: this.quill },
+        };
+
+        this.bottomSheet.open(ShareBottomSheetComponent, config);
     }
 }

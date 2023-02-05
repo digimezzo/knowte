@@ -74,9 +74,6 @@
         "Actions": "Radnje",
         "MarkNote": "Označi bilješku",
         "UnmarkNote": "Ukloni oznaku",
-        "PrintNote": "Ispiši bilješku...",
-        "ExportNote": "Izvezi bilješku...",
-        "ExportNoteToPdf": "Izvezi bilješku u PDF...",
         "ImportNotes": "Uvezi bilješke...",
         "AddNotebook": "Dodaj bilježnicu...",
         "RenameNotebook": "Preimenuj bilježnicu...",
@@ -112,7 +109,8 @@
         "DecryptNote": "Decrypt note...",
         "ThisNoteIsEncrypted": "This note is encrypted",
         "MoveNote": "Move note to another collection",
-        "MoveNotes": "Move notes to another collection"
+        "MoveNotes": "Move notes to another collection",
+        "Share": "Share..."
     },
     "LicenseDialog": {
         "License": "Licencija"
@@ -224,6 +222,9 @@
         "TasksCount": "{{closedTasksCount}} od {{totalTasksCount}}"
     },
     "Notes": {
+        "PrintNote": "Ispiši bilješku...",
+        "ExportNote": "Izvezi bilješku...",
+        "ExportNoteToPdf": "Izvezi bilješku u PDF...",
         "NewNote": "Nova bilješka",
         "NotePlaceholder": "Ovdje upišite bilješku...",
         "Imported": "Uvezeno",

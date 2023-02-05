@@ -1,0 +1,14 @@
+<div class="d-flex flex-row align-items-center justify-content-center">
+    <div class="d-flex flex-column align-items-center justify-content-center pointer mx-2" (click)="this.exportNoteAsync()">
+        <div><i class="share-item-icon las la-file-export"></i></div>
+        <div>{{ 'Notes.ExportNote' | translate }}</div>
+    </div>
+    <div class="d-flex flex-column align-items-center justify-content-center pointer mx-2" (click)="this.exportNoteToPdfAsync()">
+        <div><i class="share-item-icon las la-file-pdf"></i></div>
+        <div>{{ 'Notes.ExportNoteToPdf' | translate }}</div>
+    </div>
+    <div class="d-flex flex-column align-items-center justify-content-center pointer mx-2" (click)="this.printNoteAsync()">
+        <div><i class="share-item-icon las la-print"></i></div>
+        <div>{{ 'Notes.PrintNote' | translate }}</div>
+    </div>
+</div>

@@ -51,16 +51,15 @@
                 >
                     <i class="note-content-floating-button-icon-action lar la-heart"></i>
                 </button>
-
                 <button
                     *ngIf="canPerformActions"
                     class="note-content-floating-button"
                     mat-mini-fab
                     color=""
-                    (click)="exportNoteAsync()"
-                    matTooltip="{{ 'Tooltips.ExportNote' | translate }}"
+                    (click)="openShareBottomSheet()"
+                    matTooltip="{{ 'Tooltips.Share' | translate }}"
                 >
-                    <i class="note-content-floating-button-icon-action las la-file-export"></i>
+                    <i class="note-content-floating-button-icon-action las la-share-alt"></i>
                 </button>
                 <button
                     *ngIf="canPerformActions && !this.isEncrypted"
@@ -81,26 +80,6 @@
                     matTooltip="{{ 'Tooltips.DecryptNote' | translate }}"
                 >
                     <i class="note-content-floating-button-icon-action las la-lock-open"></i>
-                </button>
-                <button
-                    *ngIf="canPerformActions"
-                    class="note-content-floating-button"
-                    mat-mini-fab
-                    color=""
-                    (click)="exportNoteToPdfAsync()"
-                    matTooltip="{{ 'Tooltips.ExportNoteToPdf' | translate }}"
-                >
-                    <i class="note-content-floating-button-icon-action lar la-file-pdf"></i>
-                </button>
-                <button
-                    *ngIf="canPerformActions"
-                    class="note-content-floating-button"
-                    mat-mini-fab
-                    color=""
-                    (click)="printNoteAsync()"
-                    matTooltip="{{ 'Tooltips.PrintNote' | translate }}"
-                >
-                    <i class="note-content-floating-button-icon-action las la-print"></i>
                 </button>
                 <button
                     *ngIf="canPerformActions && !this.isTrashed"
