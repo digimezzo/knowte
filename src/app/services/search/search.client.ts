@@ -14,12 +14,10 @@ import { SearchEvents } from './search-events';
 export class SearchClient {
     private globalEmitter: any = remote.getGlobal('globalEmitter');
     private searchTextChanged: Subject<string> = new Subject();
-    private searchClosed: Subject<void> = new Subject();
 
     public constructor() {}
 
     public searchTextChanged$: Observable<string> = this.searchTextChanged.asObservable();
-    public searchClosed$: Observable<void> = this.searchClosed.asObservable();
 
     public async getSearchTextAsync(): Promise<string> {
         /**
@@ -39,9 +37,5 @@ export class SearchClient {
 
     public onSearchTextChanged(searchText: string): void {
         this.searchTextChanged.next(searchText);
-    }
-
-    public onSearchClosed(): void {
-        this.searchClosed.next();
     }
 }

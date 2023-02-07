@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, HostListener, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
-import { MatBottomSheet, MatBottomSheetConfig, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { MatBottomSheet, MatBottomSheetConfig } from '@angular/material/bottom-sheet';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as remote from '@electron/remote';
@@ -104,8 +104,6 @@ export class NoteComponent implements OnInit {
     public canSearch: boolean = false;
     private searchText: string = '';
 
-    private searchBottomSheet: MatBottomSheetRef = undefined;
-
     public async ngOnInit(): Promise<void> {
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
@@ -142,12 +140,6 @@ export class NoteComponent implements OnInit {
 
     @HostListener('document:keydown.escape')
     private handleEscape(): void {
-        if (this.searchBottomSheet !== null && this.searchBottomSheet !== undefined) {
-            this.closeSearchBottomSheet();
-
-            return;
-        }
-
         if (this.settings.closeNotesWithEscape) {
             this.noteWindow.close();
         }
@@ -172,7 +164,6 @@ export class NoteComponent implements OnInit {
                 this.applySearch();
             })
         );
-        this.subscription.add(this.searchClient.searchClosed$.subscribe(() => this.closeSearchBottomSheet()));
         this.subscription.add(this.collectionClient.closeNote$.subscribe((noteId: string) => this.closeNoteIfMatching(noteId)));
         this.subscription.add(this.collectionClient.closeAllNotes$.subscribe(() => this.closeNote()));
         this.subscription.add(this.collectionClient.focusNote$.subscribe((noteId: string) => this.focusNote(noteId)));
@@ -562,9 +553,9 @@ export class NoteComponent implements OnInit {
             const searchTextPieces: string[] = this.searchText.trim().split(' ');
 
             // For now, we can only search for 1 word.
-            this.noteWindow.webContents.findInPage(searchTextPieces[0]);
-
-            this.openSearchBottomSheet();
+            setTimeout(() => {
+                this.noteWindow.webContents.findInPage(searchTextPieces[0]);
+            }, 0);
         } else {
             this.clearSearch();
         }
@@ -791,20 +782,10 @@ export class NoteComponent implements OnInit {
         this.hideActionButtonsDelayedAsync();
 
         const config: MatBottomSheetConfig = {
-            hasBackdrop: false,
             data: { searchText: this.searchText },
         };
 
-        if (this.searchBottomSheet === null || this.searchBottomSheet === undefined) {
-            this.searchBottomSheet = this.bottomSheet.open(SearchBottomSheetComponent, config);
-        }
-    }
-
-    public closeSearchBottomSheet(): void {
-        if (this.searchBottomSheet !== null && this.searchBottomSheet !== undefined) {
-            this.searchBottomSheet.dismiss();
-            this.searchBottomSheet = undefined;
-        }
+        this.bottomSheet.open(SearchBottomSheetComponent, config);
     }
 
     public openShareBottomSheet(): void {
