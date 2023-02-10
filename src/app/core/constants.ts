@@ -11,7 +11,8 @@ export class Constants {
     public static readonly mastodonUrl: string = 'https://hachyderm.io/@digimezzo';
     public static readonly githubUrl: string = 'https://github.com/digimezzo/knowte';
     public static readonly collectionsDirectory: string = 'Knowte collections';
-    public static readonly noteContentExtension: string = '.content';
+    public static readonly standardNoteContentExtension: string = '.content';
+    public static readonly markdownNoteContentExtension: string = '.md';
     public static readonly noteStateExtension: string = '.state';
     public static readonly noteExportExtension: string = '.knowte';
     public static readonly defaultCollection: string = 'Default';

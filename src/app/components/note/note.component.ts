@@ -21,7 +21,6 @@ import { AppearanceService } from '../../services/appearance/appearance.service'
 import { CollectionClient } from '../../services/collection/collection.client';
 import { CryptographyService } from '../../services/cryptography/cryptography.service';
 import { PersistanceService } from '../../services/persistance/persistance.service';
-import { PrintService } from '../../services/print/print.service';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { NoteMarkResult } from '../../services/results/note-mark-result';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
@@ -68,7 +67,6 @@ export class NoteComponent implements OnInit {
     private noteWindow: BrowserWindow;
 
     constructor(
-        private print: PrintService,
         private activatedRoute: ActivatedRoute,
         private zone: NgZone,
         private dialog: MatDialog,
@@ -90,6 +88,7 @@ export class NoteComponent implements OnInit {
     ) {}
 
     public isEncrypted: boolean = false;
+    private isMarkdownNote: boolean = false;
     public noteId: string;
     public initialNoteTitle: string;
     public noteTitle: string;
@@ -609,7 +608,13 @@ export class NoteComponent implements OnInit {
 
         if (operation === Operation.Success) {
             try {
-                await this.persistance.updateNoteContentAsync(this.noteId, this.getNoteJsonContent(), this.isEncrypted, this.secretKey);
+                await this.persistance.updateNoteContentAsync(
+                    this.noteId,
+                    this.getNoteJsonContent(),
+                    this.isEncrypted,
+                    this.secretKey,
+                    this.isMarkdownNote
+                );
             } catch (error) {
                 this.logger.error(
                     `Could not save content for the note with id='${this.noteId}'. Cause: ${error}`,
@@ -653,13 +658,19 @@ export class NoteComponent implements OnInit {
         this.isTrashed = result.isTrashed;
         this.isEncrypted = result.isEncrypted;
         this.secretKeyHash = result.secretKeyHash;
+        this.isMarkdownNote = result.isMarkdownNote;
 
         this.setWindowTitle(result.noteTitle);
     }
 
     private async getNoteContentAsync(): Promise<void> {
         try {
-            const noteContent: string = await this.persistance.getNoteContentAsync(this.noteId, this.isEncrypted, this.secretKey);
+            const noteContent: string = await this.persistance.getNoteContentAsync(
+                this.noteId,
+                this.isEncrypted,
+                this.secretKey,
+                this.isMarkdownNote
+            );
 
             if (noteContent) {
                 // We can only parse to json if there is content

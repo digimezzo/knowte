@@ -9,16 +9,18 @@ export class NoteCreator {
     public constructor(private collectionService: CollectionService, private translatorService: TranslatorService) {}
 
     public async createStandardNoteAsync(notebookId: string): Promise<void> {
-        const baseTitle: string = await this.translatorService.getAsync('Notes.NewNote');
+        await this.createNoteAsync(notebookId, false);
+    }
 
-        const result: NoteOperationResult = await this.collectionService.addNoteAsync(baseTitle, notebookId);
+    public async createMarkdownNoteAsync(notebookId: string): Promise<void> {
+        await this.createNoteAsync(notebookId, true);
+    }
+
+    private async createNoteAsync(notebookId: string, isMarkdownNote: boolean): Promise<void> {
+        const result: NoteOperationResult = await this.collectionService.addNoteAsync(notebookId, isMarkdownNote);
 
         if (result.operation === Operation.Success) {
             await this.collectionService.setNoteOpenAsync(result.noteId, true);
         }
-    }
-
-    public async createMarkdownNoteAsync(notebookId: string): Promise<void> {
-        alert('Markdown note');
     }
 }

@@ -463,8 +463,9 @@ export class CollectionService {
     }
 
     private async deleteNotePermanentlyAsync(noteId: string): Promise<void> {
+        const note: Note = this.dataStore.getNoteById(noteId);
         this.dataStore.deleteNote(noteId);
-        await this.collectionFileAccess.deleteNoteFilesAsync(noteId, this.settings.activeCollection);
+        await this.collectionFileAccess.deleteNoteFilesAsync(noteId, this.settings.activeCollection, note.isMarkdownNote);
     }
 
     public async deleteNotesPermanentlyAsync(noteIds: string[]): Promise<Operation> {
@@ -622,7 +623,7 @@ export class CollectionService {
         return notes;
     }
 
-    public async addNoteAsync(baseTitle: string, notebookId: string): Promise<NoteOperationResult> {
+    public async addNoteAsync(notebookId: string, isMarkdownNote: boolean): Promise<NoteOperationResult> {
         let uniqueTitle: string = '';
         const result: NoteOperationResult = new NoteOperationResult(Operation.Success);
 
@@ -633,11 +634,12 @@ export class CollectionService {
 
         try {
             // 1. Add note to data store
+            const baseTitle: string = await this.translator.getAsync('Notes.NewNote');
             uniqueTitle = this.getUniqueNoteTitle(baseTitle, true);
-            result.noteId = this.dataStore.addNote(uniqueTitle, notebookId);
+            result.noteId = this.dataStore.addNote(uniqueTitle, notebookId, isMarkdownNote);
 
             // 2. Create note file
-            await this.collectionFileAccess.saveNoteContentAsync(result.noteId, '', this.settings.activeCollection);
+            await this.collectionFileAccess.saveNoteContentAsync(result.noteId, '', this.settings.activeCollection, isMarkdownNote);
             this.noteEdited.next();
         } catch (error) {
             this.logger.error(`Could not add note '${uniqueTitle}'. Cause: ${error}`, 'CollectionService', 'addNote');
@@ -823,7 +825,8 @@ export class CollectionService {
                 const note: Note = this.dataStore.getNoteById(noteId);
                 const noteFileContent: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(
                     noteId,
-                    this.settings.activeCollection
+                    this.settings.activeCollection,
+                    note.isMarkdownNote
                 );
 
                 const noteExport: NoteExport = new NoteExport(note.title, note.text, noteFileContent);
@@ -906,7 +909,7 @@ export class CollectionService {
 
         const uniqueNoteTitle: string = this.getUniqueNoteTitle(proposedNoteTitle, false);
 
-        this.dataStore.addNote(uniqueNoteTitle, '');
+        this.dataStore.addNote(uniqueNoteTitle, '', false);
 
         const note: Note = this.dataStore.getNoteByTitle(uniqueNoteTitle);
         note.text = noteExport.text;
@@ -917,7 +920,7 @@ export class CollectionService {
 
         this.dataStore.updateNoteWithoutDate(note);
 
-        await this.collectionFileAccess.saveNoteContentAsync(note.id, noteExport.content, collection);
+        await this.collectionFileAccess.saveNoteContentAsync(note.id, noteExport.content, collection, false);
     }
 
     public getTrashedNotes(): Note[] {
@@ -954,7 +957,17 @@ export class CollectionService {
             }
         }
 
-        callback(new NoteDetailsResult(note.title, notebookName, note.isMarked, note.isTrashed, note.isEncrypted, note.secretKeyHash));
+        callback(
+            new NoteDetailsResult(
+                note.title,
+                notebookName,
+                note.isMarked,
+                note.isTrashed,
+                note.isEncrypted,
+                note.secretKeyHash,
+                note.isMarkdownNote
+            )
+        );
     }
 
     private async sendNotebookNameAsync(noteId: string): Promise<void> {

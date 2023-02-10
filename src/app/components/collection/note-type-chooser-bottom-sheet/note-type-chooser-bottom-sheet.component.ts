@@ -16,9 +16,11 @@ export class NoteTypeChooserBottomSheetComponent {
 
     public async addStandardNoteAsync(): Promise<void> {
         await this.noteCreator.createStandardNoteAsync(this.data.activeNotebookId);
+        this.bottomSheetRef.dismiss();
     }
 
-    public async addMarkdownNoteAsync(notebookId: string): Promise<void> {
-        alert('Markdown note');
+    public async addMarkdownNoteAsync(): Promise<void> {
+        await this.noteCreator.createMarkdownNoteAsync(this.data.activeNotebookId);
+        this.bottomSheetRef.dismiss();
     }
 }

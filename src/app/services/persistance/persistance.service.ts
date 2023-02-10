@@ -13,8 +13,12 @@ export class PersistanceService {
         private settings: BaseSettings
     ) {}
 
-    public async getNoteContentAsync(noteId: string, isEncrypted: boolean, secretKey: string): Promise<string> {
-        const noteContent: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(noteId, this.settings.activeCollection);
+    public async getNoteContentAsync(noteId: string, isEncrypted: boolean, secretKey: string, isMarkdownNote: boolean): Promise<string> {
+        const noteContent: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(
+            noteId,
+            this.settings.activeCollection,
+            isMarkdownNote
+        );
 
         if (isEncrypted && !Strings.isNullOrWhiteSpace(secretKey)) {
             return this.cryptography.decrypt(noteContent, secretKey);
@@ -23,14 +27,20 @@ export class PersistanceService {
         return noteContent;
     }
 
-    public async updateNoteContentAsync(noteId: string, noteJsonContent: string, isEncrypted: boolean, secretKey: string): Promise<void> {
+    public async updateNoteContentAsync(
+        noteId: string,
+        noteJsonContent: string,
+        isEncrypted: boolean,
+        secretKey: string,
+        isMarkdownNote: boolean
+    ): Promise<void> {
         let contentToWrite: string = noteJsonContent;
 
         if (isEncrypted && !Strings.isNullOrWhiteSpace(secretKey)) {
             contentToWrite = this.cryptography.encrypt(noteJsonContent, secretKey);
         }
 
-        await this.collectionFileAccess.saveNoteContentAsync(noteId, contentToWrite, this.settings.activeCollection);
+        await this.collectionFileAccess.saveNoteContentAsync(noteId, contentToWrite, this.settings.activeCollection, isMarkdownNote);
     }
 
     public async exportNoteAsync(exportFilePath: string, noteTitle: string, noteText: string, noteJsonContent: string): Promise<void> {

@@ -5,6 +5,7 @@ export class NoteDetailsResult {
         public isMarked: boolean,
         public isTrashed: boolean,
         public isEncrypted: boolean,
-        public secretKeyHash: string
+        public secretKeyHash: string,
+        public isMarkdownNote: boolean
     ) {}
 }
