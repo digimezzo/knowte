@@ -1,0 +1,10 @@
+<div class="d-flex flex-column">
+    <span class="note-type-item pointer p-1" (click)="addStandardNoteAsync()">
+        <i class="note-type-icon lar la-edit"> </i>
+        <span>{{ 'Notes.StandardNote' | translate }}</span>
+    </span>
+    <span class="note-type-item pointer p-1" (click)="addMarkdownNoteAsync()">
+        <i class="note-type-icon lab la-markdown"> </i>
+        <span>{{ 'Notes.MarkdownNote' | translate }}</span>
+    </span>
+</div>

@@ -51,7 +51,10 @@
         "HeaderBar": "Barre d'en-tête",
         "UseLightHeaderBar": "Utiliser barre d'en-tête claire",
         "SpellChecker": "Correcteur orthographique",
-        "EnableSpellChecker": "Activer le correcteur orthographique"
+        "EnableSpellChecker": "Activer le correcteur orthographique",
+        "FormatsForNewNotes": "Formats pour les nouvelles notes",
+        "StandardNote": "Note standard",
+        "MarkdownNote": "Note markdown"
     },
     "ComponentsPage": {
         "Components": "Composants"
@@ -206,8 +209,8 @@
         "NotesImported": "Les notes ont été importées",
         "NoNoteFilesToImport": "Il n'y avait aucun fichier de note à importer",
         "NewVersionAvailable": "Une nouvelle version est disponible: {{version}}",
-        "NoteMoved": "{{number}} note déplacée vers '{{collection}}'",
-        "NotesMoved": "{{number}} notes déplacées vers '{{collection}}'"
+        "NoteMoved": "{{number}} note déplacée vers '{{collection}}'",
+        "NotesMoved": "{{number}} notes déplacées vers '{{collection}}'"
     },
     "SnackBarActions": {
         "Ok": "OK"
@@ -231,7 +234,9 @@
         "Search": "Chercher",
         "Languages": "langues",
         "Disabled": "Désactivé",
-        "Moved": "Déplacé"
+        "Moved": "Déplacé",
+        "StandardNote": "Note standard",
+        "MarkdownNote": "Note markdown"
     },
     "NoteDates": {
         "Today": "Aujourd'hui",

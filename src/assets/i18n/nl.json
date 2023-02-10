@@ -51,7 +51,10 @@
         "HeaderBar": "Kopbalk",
         "UseLightHeaderBar": "Gebruik lichte kopbalk",
         "SpellChecker": "Spellingscontrole",
-        "EnableSpellChecker": "Spellingcontrole inschakelen"
+        "EnableSpellChecker": "Spellingcontrole inschakelen",
+        "FormatsForNewNotes": "Formaten voor nieuwe notities",
+        "StandardNote": "Standaard notitie",
+        "MarkdownNote": "Markdown notitie"
     },
     "ComponentsPage": {
         "Components": "Componenten"
@@ -231,7 +234,9 @@
         "Search": "Zoeken",
         "Languages": "talen",
         "Disabled": "Uitgeschakeld",
-        "Moved": "Verplaatst"
+        "Moved": "Verplaatst",
+        "StandardNote": "Standaard notitie",
+        "MarkdownNote": "Markdown notitie"
     },
     "NoteDates": {
         "Today": "Vandaag",

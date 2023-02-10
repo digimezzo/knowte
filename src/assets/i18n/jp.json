@@ -51,7 +51,10 @@
         "HeaderBar": "Header bar",
         "UseLightHeaderBar": "Use light header bar",
         "SpellChecker": "Spell checker",
-        "EnableSpellChecker": "Enable spell checker"
+        "EnableSpellChecker": "Enable spell checker",
+        "FormatsForNewNotes": "Formats for new notes",
+        "StandardNote": "Standard note",
+        "MarkdownNote": "Markdown note"
     },
     "ComponentsPage": {
         "Components": "コンポーネント"
@@ -231,7 +234,9 @@
         "Search": "検索",
         "Languages": "languages",
         "Disabled": "Disabled",
-        "Moved": "Moved"
+        "Moved": "Moved",
+        "StandardNote": "Standard note",
+        "MarkdownNote": "Markdown note"
     },
     "NoteDates": {
         "Today": "今日",

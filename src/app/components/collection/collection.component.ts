@@ -20,7 +20,6 @@ import { AppearanceService } from '../../services/appearance/appearance.service'
 import { CollectionService } from '../../services/collection/collection.service';
 import { FileService } from '../../services/file/file.service';
 import { NoteMarkResult } from '../../services/results/note-mark-result';
-import { NoteOperationResult } from '../../services/results/note-operation-result';
 import { NotesCountResult } from '../../services/results/notes-count-result';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../services/translator/translator.service';
@@ -30,6 +29,7 @@ import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.compo
 import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
 import { RenameNotebookDialogComponent } from '../dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
 import { MoveNotesBottomSheetComponent } from './bottom-sheets/move-notes-bottom-sheet/move-notes-bottom-sheet.component';
+import { NoteTypeChooserBottomSheetComponent } from './note-type-chooser-bottom-sheet/note-type-chooser-bottom-sheet.component';
 
 @Component({
     selector: 'app-collection',
@@ -273,17 +273,6 @@ export class CollectionComponent implements OnInit, OnDestroy {
         this.notesCount = notesCount;
     }
 
-    public async addNoteAsync(): Promise<void> {
-        const baseTitle: string = await this.translatorService.getAsync('Notes.NewNote');
-
-        // Create a new note
-        const result: NoteOperationResult = await this.collectionService.addNoteAsync(baseTitle, this.activeNotebook.id);
-
-        if (result.operation === Operation.Success) {
-            await this.collectionService.setNoteOpenAsync(result.noteId, true);
-        }
-    }
-
     public async deleteNotesAsync(): Promise<void> {
         // Assume multiple selected notes
         let title: string = await this.translatorService.getAsync('DialogTitles.ConfirmDeleteNotes');
@@ -494,6 +483,12 @@ export class CollectionComponent implements OnInit, OnDestroy {
     public openMoveNotesBottomSheet(): void {
         this.bottomSheet.open(MoveNotesBottomSheetComponent, {
             data: { selectedNoteIds: this.selectedNoteIds },
+        });
+    }
+
+    public openNoteTypeChooserBottomSheet(): void {
+        this.bottomSheet.open(NoteTypeChooserBottomSheetComponent, {
+            data: { activeNotebookId: this.activeNotebook.id },
         });
     }
 }

@@ -51,7 +51,10 @@
         "HeaderBar": "Панель меню",
         "UseLightHeaderBar": "Использовать светлую панель меню",
         "SpellChecker": "Spell checker",
-        "EnableSpellChecker": "Enable spell checker"
+        "EnableSpellChecker": "Enable spell checker",
+        "FormatsForNewNotes": "Formats for new notes",
+        "StandardNote": "Standard note",
+        "MarkdownNote": "Markdown note"
     },
     "ComponentsPage": {
         "Components": "Компоненты"
@@ -231,7 +234,9 @@
         "Search": "Поиск",
         "Languages": "languages",
         "Disabled": "Disabled",
-        "Moved": "Moved"
+        "Moved": "Moved",
+        "StandardNote": "Standard note",
+        "MarkdownNote": "Markdown note"
     },
     "NoteDates": {
         "Today": "Сегодня",

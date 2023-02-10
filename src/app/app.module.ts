@@ -34,6 +34,8 @@ import { ActiveNotebookAndSearchComponent } from './components/active-notebook-a
 import { CollectionSwitcherComponent } from './components/collection-switcher/collection-switcher.component';
 import { MoveNotesBottomSheetComponent } from './components/collection/bottom-sheets/move-notes-bottom-sheet/move-notes-bottom-sheet.component';
 import { CollectionComponent } from './components/collection/collection.component';
+import { NoteCreator } from './components/collection/note-creator';
+import { NoteTypeChooserBottomSheetComponent } from './components/collection/note-type-chooser-bottom-sheet/note-type-chooser-bottom-sheet.component';
 import { ColorSchemeSwitcherComponent } from './components/color-scheme-switcher/color-scheme-switcher.component';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmation-dialog/confirmation-dialog.component';
 import { DialogHeaderComponent } from './components/dialogs/dialog-header/dialog-header.component';
@@ -151,6 +153,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         SearchBottomSheetComponent,
         ShareBottomSheetComponent,
         SpellCheckLanguagesComponent,
+        NoteTypeChooserBottomSheetComponent,
         NoteStatusBarComponent,
         WebviewDirective,
         CdkVirtualScrollViewportPatchDirective,
@@ -217,6 +220,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         Scheduler,
         Desktop,
         Logger,
+        NoteCreator,
         FileAccess,
         CollectionFileAccess,
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
