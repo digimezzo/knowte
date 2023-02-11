@@ -598,7 +598,7 @@ export class NoteComponent implements OnInit {
     private async setNoteTextAsync(): Promise<Operation> {
         const operation: Operation = await this.collectionClient.setNoteTextAsync(
             this.noteId,
-            this.quill.getText(),
+            this.getNoteText(),
             this.isEncrypted,
             this.secretKey,
             this.getTasksCount()
@@ -750,6 +750,10 @@ export class NoteComponent implements OnInit {
         return new TasksCount(openTasksCount, closedTasksCount);
     }
 
+    private getNoteText(): string {
+        return this.quill.getText();
+    }
+
     private getNoteJsonContent(): string {
         return JSON.stringify(this.quill.getContents());
     }
@@ -803,7 +807,12 @@ export class NoteComponent implements OnInit {
         this.hideActionButtonsDelayedAsync();
 
         const config: MatBottomSheetConfig = {
-            data: { noteTitle: this.noteTitle, quill: this.quill },
+            data: {
+                noteTitle: this.noteTitle,
+                noteText: this.getNoteText(),
+                noteContent: JSON.stringify(this.getNoteJsonContent()),
+                noteHtml: this.quill.root.innerHTML,
+            },
         };
 
         this.bottomSheet.open(ShareBottomSheetComponent, config);

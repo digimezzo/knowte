@@ -34,13 +34,13 @@ export class ShareBottomSheetComponent {
         const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
 
         if (saveDialogReturnValue.filePath != undefined) {
-            await this.print.exportToPdfAsync(saveDialogReturnValue.filePath, this.data.noteTitle, this.data.quill.root.innerHTML);
+            await this.print.exportToPdfAsync(saveDialogReturnValue.filePath, this.data.noteTitle, this.data.noteHtml);
         }
     }
 
     public async printNoteAsync(): Promise<void> {
         this.bottomSheetRef.dismiss();
-        await this.print.printAsync(this.data.noteTitle, this.data.quill.root.innerHTML);
+        await this.print.printAsync(this.data.noteTitle, this.data.noteHtml);
     }
 
     public async exportNoteAsync(): Promise<void> {
@@ -53,7 +53,7 @@ export class ShareBottomSheetComponent {
                 await this.persistance.exportNoteAsync(
                     saveDialogReturnValue.filePath,
                     this.data.noteTitle,
-                    this.data.quill.getText(),
+                    this.data.noteText,
                     this.getNoteJsonContent()
                 );
                 this.snackBar.noteExportedAsync(this.data.noteTitle);
@@ -75,6 +75,6 @@ export class ShareBottomSheetComponent {
     }
 
     private getNoteJsonContent(): string {
-        return JSON.stringify(this.data.quill.getContents());
+        return JSON.stringify(this.data.noteContent);
     }
 }
