@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
 import * as remote from '@electron/remote';
 import { SaveDialogOptions, SaveDialogReturnValue } from 'electron';
@@ -19,6 +19,7 @@ import { ErrorDialogComponent } from '../../../dialogs/error-dialog/error-dialog
 export class ShareBottomSheetComponent {
     constructor(
         @Inject(MAT_BOTTOM_SHEET_DATA) private data: any,
+        private bottomSheetRef: MatBottomSheetRef<ShareBottomSheetComponent>,
         private print: PrintService,
         private translator: TranslatorService,
         private persistance: PersistanceService,
@@ -28,6 +29,7 @@ export class ShareBottomSheetComponent {
     ) {}
 
     public async exportNoteToPdfAsync(): Promise<void> {
+        this.bottomSheetRef.dismiss();
         const options: SaveDialogOptions = { defaultPath: Utils.getPdfExportPath(remote.app.getPath('documents'), this.data.noteTitle) };
         const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
 
@@ -37,10 +39,12 @@ export class ShareBottomSheetComponent {
     }
 
     public async printNoteAsync(): Promise<void> {
+        this.bottomSheetRef.dismiss();
         await this.print.printAsync(this.data.noteTitle, this.data.quill.root.innerHTML);
     }
 
     public async exportNoteAsync(): Promise<void> {
+        this.bottomSheetRef.dismiss();
         const options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.data.noteTitle) };
         const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
 
