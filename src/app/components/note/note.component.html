@@ -110,7 +110,10 @@
                     (keydown.control.1)="heading1($event)"
                     (keydown.control.2)="heading2($event)"
                 ></div>
-                <div *ngIf="this.isMarkdownNote" class="note-editor">Markdown editor comes here</div>
+                <div *ngIf="this.isMarkdownNote" class="note-editor d-flex flex-row">
+                    <textarea class="variable-textarea" [(ngModel)]="this.noteEditor.content"></textarea>
+                    <markdown class="variable-binding" [data]="this.noteEditor.content"></markdown>
+                </div>
                 <app-note-status-bar
                     [noteId]="this.noteId"
                     [isMarked]="this.isMarked"

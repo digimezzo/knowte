@@ -20,6 +20,8 @@ export class ClassicNoteEditor implements INoteEditor {
         private logger: Logger
     ) {}
 
+    public content: string;
+
     public noteTextChanged$: Observable<void> = this.noteTextChanged.asObservable();
 
     public async initializeAsync(): Promise<void> {

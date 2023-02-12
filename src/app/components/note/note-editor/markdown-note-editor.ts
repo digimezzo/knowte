@@ -3,11 +3,21 @@ import { TasksCount } from '../../../core/tasks-count';
 import { INoteEditor } from './i-note-editor';
 
 export class MarkdownNoteEditor implements INoteEditor {
+    private _content: string;
     private noteTextChanged: Subject<void> = new Subject<void>();
 
     public noteTextChanged$: Observable<void> = this.noteTextChanged.asObservable();
 
+    public get content(): string {
+        return this._content;
+    }
+    public set content(v: string) {
+        this._content = v;
+        this.noteTextChanged.next();
+    }
+
     public async initializeAsync(): Promise<void> {}
+
     public strikeThrough(): void {}
     public applyHeading(headingSize: number): void {}
 
@@ -24,11 +34,11 @@ export class MarkdownNoteEditor implements INoteEditor {
     public performDelete(): void {}
 
     public getNoteText(): string {
-        return '';
+        return this.content;
     }
 
     public getNoteContent(): string {
-        return '';
+        return this.content;
     }
 
     public getNoteHtml(): string {
@@ -39,7 +49,9 @@ export class MarkdownNoteEditor implements INoteEditor {
         return new TasksCount(0, 0);
     }
 
-    public setNoteContent(content: string): void {}
+    public setNoteContent(content: string): void {
+        this._content = content;
+    }
 
     public pasteImageFromClipboard(): void {}
 

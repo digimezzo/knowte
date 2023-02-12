@@ -40,7 +40,7 @@
                         "stylePreprocessorOptions": {
                             "includePaths": ["src/css"]
                         },
-                        "scripts": ["./node_modules/quill/dist/quill.js"],
+                        "scripts": ["./node_modules/quill/dist/quill.js", "./node_modules/marked/marked.min.js"],
                         "vendorChunk": true,
                         "extractLicenses": false,
                         "buildOptimizer": false,

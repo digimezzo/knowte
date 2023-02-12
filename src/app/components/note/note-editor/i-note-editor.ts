@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 import { TasksCount } from '../../../core/tasks-count';
 
 export interface INoteEditor {
+    content: string;
     noteTextChanged$: Observable<void>;
     initializeAsync(): Promise<void>;
     hasSelectedText(): boolean;
