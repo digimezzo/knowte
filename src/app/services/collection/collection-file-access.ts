@@ -61,7 +61,7 @@ export class CollectionFileAccess {
     }
 
     public createNoteContentFilePath(noteId: string, collection: string, isMarkdownNote: boolean): string {
-        let extension: string = Constants.standardNoteContentExtension;
+        let extension: string = Constants.classicNoteContentExtension;
 
         if (isMarkdownNote) {
             extension = Constants.markdownNoteContentExtension;
@@ -75,7 +75,7 @@ export class CollectionFileAccess {
     }
 
     public createNoteContentFilePathForGivenCollection(noteId: string, collection: string, isMarkdownNote: boolean): string {
-        let extension: string = Constants.standardNoteContentExtension;
+        let extension: string = Constants.classicNoteContentExtension;
 
         if (isMarkdownNote) {
             extension = Constants.markdownNoteContentExtension;
@@ -83,7 +83,7 @@ export class CollectionFileAccess {
 
         return this.fileAccess.combinePath(
             this.getCollectionDirectoryPath(collection),
-            `${noteId}${Constants.standardNoteContentExtension}`
+            `${noteId}${Constants.classicNoteContentExtension}`
         );
     }
 

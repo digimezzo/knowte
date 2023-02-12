@@ -66,11 +66,11 @@ export class CollectionClient {
         return noteDetailsResult;
     }
 
-    public async setNoteTitleAsync(noteId: string, initialNoteTitle: string, finalNoteTitle: string): Promise<NoteOperationResult> {
+    public async saveNoteTitleAsync(noteId: string, initialNoteTitle: string, finalNoteTitle: string): Promise<NoteOperationResult> {
         let noteOperationResult: NoteOperationResult;
 
         this.globalEmitter.emit(
-            CollectionEvents.setNoteTitleEvent,
+            CollectionEvents.saveNoteTitleEvent,
             noteId,
             initialNoteTitle,
             finalNoteTitle,
@@ -84,7 +84,7 @@ export class CollectionClient {
         return noteOperationResult;
     }
 
-    public async setNoteTextAsync(
+    public async saveNoteTextAsync(
         noteId: string,
         noteText: string,
         isEncrypted: boolean,
@@ -94,7 +94,7 @@ export class CollectionClient {
         let operation: Operation;
 
         this.globalEmitter.emit(
-            CollectionEvents.setNoteTextEvent,
+            CollectionEvents.saveNoteTextEvent,
             noteId,
             noteText,
             isEncrypted,

@@ -5,7 +5,6 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as remote from '@electron/remote';
 import { BrowserWindow } from 'electron';
-import * as Quill from 'quill';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
 import { BaseSettings } from '../../core/base-settings';
@@ -15,7 +14,6 @@ import { Operation } from '../../core/enums';
 import { Logger } from '../../core/logger';
 import { ProductInformation } from '../../core/product-information';
 import { Strings } from '../../core/strings';
-import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { AppearanceService } from '../../services/appearance/appearance.service';
 import { CollectionClient } from '../../services/collection/collection.client';
@@ -36,8 +34,8 @@ import { SearchBottomSheetComponent } from './bottom-sheets/search-bottom-sheet/
 import { ShareBottomSheetComponent } from './bottom-sheets/share-bottom-sheet/share-bottom-sheet.component';
 import { ContextMenuItemsEnabledState } from './context-menu-items-enabled-state';
 import { NoteContextMenuFactory } from './note-context-menu-factory';
-import { QuillFactory } from './quill-factory';
-import { QuillTweaker } from './quill-tweaker';
+import { INoteEditor } from './note-editor/i-note-editor';
+import { NoteEditorFactory } from './note-editor/note-editor-factory';
 
 @Component({
     selector: 'app-note',
@@ -54,8 +52,6 @@ import { QuillTweaker } from './quill-tweaker';
     ],
 })
 export class NoteComponent implements OnInit {
-    private quill: Quill;
-
     private subscription: Subscription = new Subscription();
 
     private isTitleDirty: boolean = false;
@@ -79,12 +75,11 @@ export class NoteComponent implements OnInit {
         public appearance: AppearanceService,
         public spellCheckService: SpellCheckService,
         private clipboard: ClipboardManager,
-        private quillFactory: QuillFactory,
         private noteContextMenuFactory: NoteContextMenuFactory,
-        private quillTweaker: QuillTweaker,
         private collectionClient: CollectionClient,
         private searchClient: SearchClient,
-        private bottomSheet: MatBottomSheet
+        private bottomSheet: MatBottomSheet,
+        private noteEditorFactory: NoteEditorFactory
     ) {}
 
     public isEncrypted: boolean = false;
@@ -102,24 +97,27 @@ export class NoteComponent implements OnInit {
     public actionIconRotation: string = 'default';
     public canSearch: boolean = false;
     private searchText: string = '';
+    private noteEditor: INoteEditor;
 
     public async ngOnInit(): Promise<void> {
         this.activatedRoute.queryParams.subscribe(async (params) => {
             this.noteId = params['id'];
             this.noteWindow = remote.getCurrentWindow();
-
             await this.getNoteDetailsAsync();
+
+            this.noteEditor = this.noteEditorFactory.create(this.isMarkdownNote);
+            await this.noteEditor.initializeAsync();
+
             await this.requestSecretKeyOrCloseNoteAsync();
-            await this.configureQuillEditorAsync();
-            this.setEditorZoomPercentage();
             this.addSubscriptions();
             this.addDocumentListeners();
+
             await this.getNoteContentAsync();
             this.searchText = await this.searchClient.getSearchTextAsync();
             this.applySearch();
 
             this.noteWindow.webContents.on('context-menu', (event, contextMenuParams) => {
-                const hasSelectedText: boolean = this.hasSelectedRange();
+                const hasSelectedText: boolean = this.noteEditor.hasSelectedText();
                 const contextMenuItemsEnabledState: ContextMenuItemsEnabledState = new ContextMenuItemsEnabledState(
                     hasSelectedText,
                     this.clipboard.containsText() || this.clipboard.containsImage()
@@ -128,10 +126,10 @@ export class NoteComponent implements OnInit {
                     this.noteWindow.webContents,
                     contextMenuParams,
                     contextMenuItemsEnabledState,
-                    this.performCut.bind(this),
-                    this.performCopy.bind(this),
-                    this.performPaste.bind(this),
-                    this.performDelete.bind(this)
+                    () => this.noteEditor.performCut(),
+                    () => this.noteEditor.performCopy(),
+                    () => this.noteEditor.performPaste(),
+                    () => this.noteEditor.performDelete()
                 );
             });
         });
@@ -146,11 +144,11 @@ export class NoteComponent implements OnInit {
 
     private addSubscriptions(): void {
         this.noteTitleChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async (finalNoteTitle) => {
-            await this.setNoteTitleAsync(finalNoteTitle);
+            await this.saveNoteTitleAsync(finalNoteTitle);
         });
 
         this.noteTextChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async () => {
-            await this.setNoteTextAsync();
+            await this.saveNoteTextAsync();
         });
 
         this.saveChangesAndCloseNoteWindow.pipe(debounceTime(Constants.noteWindowCloseTimeoutMilliseconds)).subscribe(async () => {
@@ -166,12 +164,15 @@ export class NoteComponent implements OnInit {
         this.subscription.add(this.collectionClient.closeNote$.subscribe((noteId: string) => this.closeNoteIfMatching(noteId)));
         this.subscription.add(this.collectionClient.closeAllNotes$.subscribe(() => this.closeNote()));
         this.subscription.add(this.collectionClient.focusNote$.subscribe((noteId: string) => this.focusNote(noteId)));
-        this.subscription.add(this.collectionClient.noteZoomPercentageChanged$.subscribe(() => this.setEditorZoomPercentage()));
+        this.subscription.add(
+            this.collectionClient.noteZoomPercentageChanged$.subscribe(() => this.noteEditor.applyZoomPercentageFromSettings())
+        );
         this.subscription.add(
             this.collectionClient.noteMarkChanged$.subscribe((result: NoteMarkResult) =>
                 this.noteMarkChanged(result.noteId, result.isMarked)
             )
         );
+        this.subscription.add(this.noteEditor.noteTextChanged$.subscribe(() => this.onNoteTextChange()));
     }
 
     private addDocumentListeners(): void {
@@ -181,7 +182,7 @@ export class NoteComponent implements OnInit {
                 e.preventDefault();
 
                 // Execute our own paste, which pastes the image data.
-                this.pasteImageFromClipboard();
+                this.noteEditor.pasteImageFromClipboard();
             }
         };
 
@@ -190,26 +191,6 @@ export class NoteComponent implements OnInit {
                 this.setEditorZoomPercentByMouseScroll(e.deltaY);
             }
         });
-    }
-
-    private performUndo(): void {
-        if (this.quill != undefined && this.quill.history != undefined) {
-            try {
-                this.quill.history.undo();
-            } catch (error) {
-                this.logger.error(`Could not perform undo. Cause: ${error}`, 'NoteComponent', 'performUndo');
-            }
-        }
-    }
-
-    private performRedo(): void {
-        if (this.quill != undefined && this.quill.history != undefined) {
-            try {
-                this.quill.history.redo();
-            } catch (error) {
-                this.logger.error(`Could not perform redo. Cause: ${error}`, 'NoteComponent', 'performRedo');
-            }
-        }
     }
 
     public onNoteTitleChange(newNoteTitle: string): void {
@@ -255,7 +236,7 @@ export class NoteComponent implements OnInit {
             event.preventDefault();
 
             // Sets focus to editor when pressing enter on title
-            this.quill.setSelection(0, 0);
+            this.noteEditor.focus();
         }
     }
 
@@ -336,7 +317,7 @@ export class NoteComponent implements OnInit {
                 this.isEncrypted = true;
                 this.secretKey = data.inputText;
                 this.collectionClient.encryptNote(this.noteId, this.secretKey);
-                await this.setNoteTextAsync();
+                await this.saveNoteTextAsync();
             }
         });
     }
@@ -357,84 +338,9 @@ export class NoteComponent implements OnInit {
                 this.isEncrypted = false;
                 this.secretKey = '';
                 this.collectionClient.decryptNote(this.noteId);
-                await this.setNoteTextAsync();
+                await this.saveNoteTextAsync();
             }
         });
-    }
-
-    private hasSelectedRange(): boolean {
-        const range: any = this.quill.getSelection();
-
-        if (range && range.length > 0) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private performCut(): void {
-        const range: any = this.quill.getSelection();
-
-        if (!range || range.length === 0) {
-            return;
-        }
-
-        const text: string = this.quill.getText(range.index, range.length);
-        this.clipboard.writeText(text);
-        this.quill.deleteText(range.index, range.length);
-    }
-
-    private performCopy(): void {
-        const range: any = this.quill.getSelection();
-
-        if (!range || range.length === 0) {
-            return;
-        }
-
-        const text: string = this.quill.getText(range.index, range.length);
-        this.clipboard.writeText(text);
-    }
-
-    private performPaste(): void {
-        if (this.clipboard.containsImage()) {
-            // Image found on clipboard. Try to paste as JPG.
-            this.pasteImageFromClipboard();
-        } else {
-            // No image found on clipboard. Try to paste as text.
-            this.pastTextFromClipboard();
-        }
-    }
-
-    private performDelete(): void {
-        const range: any = this.quill.getSelection();
-
-        if (!range || range.length === 0) {
-            return;
-        }
-
-        this.quill.deleteText(range.index, range.length);
-    }
-
-    private pasteImageFromClipboard(): void {
-        try {
-            this.insertImage(this.clipboard.readImage());
-        } catch (error) {
-            this.logger.error('Could not paste as image', 'NoteComponent', 'performPaste');
-        }
-    }
-
-    private pastTextFromClipboard(): void {
-        const range: any = this.quill.getSelection();
-
-        if (!range) {
-            return;
-        }
-
-        const clipboardText: string = this.clipboard.readText();
-
-        if (clipboardText) {
-            this.quill.insertText(range.index, clipboardText);
-        }
     }
 
     private removeSubscriptions(): void {
@@ -446,24 +352,9 @@ export class NoteComponent implements OnInit {
         this.removeSubscriptions();
     }
 
-    private insertImage(file: any): void {
-        const reader: FileReader = new FileReader();
-
-        reader.onload = (e: any) => {
-            const img: HTMLImageElement = document.createElement('img');
-            img.src = e.target.result;
-
-            const range: Range = window.getSelection().getRangeAt(0);
-            range.deleteContents();
-            range.insertNode(img);
-        };
-
-        reader.readAsDataURL(file);
-    }
-
     private async saveAndCloseAsync(): Promise<void> {
-        const setNoteTitleOperation: Operation = await this.setNoteTitleAsync(this.noteTitle);
-        const setNoteTextOperation: Operation = await this.setNoteTextAsync();
+        const setNoteTitleOperation: Operation = await this.saveNoteTitleAsync(this.noteTitle);
+        const setNoteTextOperation: Operation = await this.saveNoteTextAsync();
 
         // Close is only allowed when saving both title and text is successful
         if (setNoteTitleOperation === Operation.Success && setNoteTextOperation === Operation.Success) {
@@ -475,18 +366,6 @@ export class NoteComponent implements OnInit {
     private close(): void {
         this.cleanup();
         this.noteWindow.close();
-    }
-
-    private setEditorZoomPercentage(): void {
-        const pFontSize: number = (13 * this.settings.noteZoomPercentage) / 100;
-        const h1FontSize: number = pFontSize * 1.7;
-        const h2FontSize: number = pFontSize * 1.5;
-
-        const element: HTMLElement = document.documentElement;
-
-        element.style.setProperty('--editor-p-font-size', pFontSize + 'px');
-        element.style.setProperty('--editor-h1-font-size', h1FontSize + 'px');
-        element.style.setProperty('--editor-h2-font-size', h2FontSize + 'px');
     }
 
     private setEditorZoomPercentByMouseScroll(mouseWheelDeltaY: number): void {
@@ -509,7 +388,7 @@ export class NoteComponent implements OnInit {
 
         this.collectionClient.onNoteZoomPercentageChanged();
 
-        this.setEditorZoomPercentage();
+        this.noteEditor.applyZoomPercentageFromSettings();
     }
 
     private setWindowTitle(noteTitle: string): void {
@@ -560,8 +439,8 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    private async setNoteTitleAsync(finalNoteTitle: string): Promise<Operation> {
-        const result: NoteOperationResult = await this.collectionClient.setNoteTitleAsync(
+    private async saveNoteTitleAsync(finalNoteTitle: string): Promise<Operation> {
+        const result: NoteOperationResult = await this.collectionClient.saveNoteTitleAsync(
             this.noteId,
             this.initialNoteTitle,
             finalNoteTitle
@@ -595,13 +474,13 @@ export class NoteComponent implements OnInit {
         return result.operation;
     }
 
-    private async setNoteTextAsync(): Promise<Operation> {
-        const operation: Operation = await this.collectionClient.setNoteTextAsync(
+    private async saveNoteTextAsync(): Promise<Operation> {
+        const operation: Operation = await this.collectionClient.saveNoteTextAsync(
             this.noteId,
-            this.getNoteText(),
+            this.noteEditor.getNoteText(),
             this.isEncrypted,
             this.secretKey,
-            this.getTasksCount()
+            this.noteEditor.getTasksCount()
         );
 
         let showErrorDialog = false;
@@ -610,7 +489,7 @@ export class NoteComponent implements OnInit {
             try {
                 await this.persistance.updateNoteContentAsync(
                     this.noteId,
-                    this.getNoteJsonContent(),
+                    this.noteEditor.getNoteContent(),
                     this.isEncrypted,
                     this.secretKey,
                     this.isMarkdownNote
@@ -675,8 +554,7 @@ export class NoteComponent implements OnInit {
             if (noteContent) {
                 // We can only parse to json if there is content
                 this.logger.info(`Setting the content for the note with id='${this.noteId}'`, 'NoteComponent', 'getNoteDetailsAsync');
-                this.quill.setContents(JSON.parse(noteContent), 'silent');
-                this.quill.history.clear();
+                this.noteEditor.setNoteContent(noteContent);
             } else {
                 this.logger.error(
                     `Could not get the content for the note with id='${this.noteId}'`,
@@ -712,50 +590,11 @@ export class NoteComponent implements OnInit {
     }
 
     public heading1(event: any): void {
-        this.applyHeading(1);
+        this.noteEditor.applyHeading(1);
     }
 
     public heading2(event: any): void {
-        this.applyHeading(2);
-    }
-
-    private applyHeading(headingSize: number): void {
-        const range: any = this.quill.getSelection();
-        const format: any = this.quill.getFormat(range.index, range.length);
-        const formatString: string = JSON.stringify(format);
-
-        const selectionContainsHeader: boolean = !formatString.includes(`"header":${headingSize}`);
-
-        if (selectionContainsHeader) {
-            this.quill.format('header', headingSize);
-        } else {
-            this.quill.removeFormat(range.index, range.length);
-        }
-    }
-
-    public strikeThrough(event: any): void {
-        const range: any = this.quill.getSelection();
-        const format: any = this.quill.getFormat(range.index, range.length);
-        const formatString: string = JSON.stringify(format);
-
-        const applyStrikeThrough: boolean = !formatString.includes('strike');
-        this.quill.formatText(range.index, range.length, 'strike', applyStrikeThrough);
-    }
-
-    private getTasksCount(): TasksCount {
-        const noteContent: string = this.getNoteJsonContent();
-        const openTasksCount: number = (noteContent.match(/"list":"unchecked"/g) || []).length;
-        const closedTasksCount: number = (noteContent.match(/"list":"checked"/g) || []).length;
-
-        return new TasksCount(openTasksCount, closedTasksCount);
-    }
-
-    private getNoteText(): string {
-        return this.quill.getText();
-    }
-
-    private getNoteJsonContent(): string {
-        return JSON.stringify(this.quill.getContents());
+        this.noteEditor.applyHeading(2);
     }
 
     private async requestSecretKeyOrCloseNoteAsync(): Promise<void> {
@@ -784,14 +623,6 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    private async configureQuillEditorAsync(): Promise<void> {
-        this.quill = await this.quillFactory.createAsync('#editor', this.performUndo.bind(this), this.performRedo.bind(this));
-        await this.quillTweaker.setToolbarTooltipsAsync();
-        this.quillTweaker.forcePasteOfUnformattedText(this.quill);
-        this.quillTweaker.assignActionToControlKeyCombination(this.quill, 'Y', this.performRedo.bind(this));
-        this.quillTweaker.assignActionToTextChange(this.quill, this.onNoteTextChange.bind(this));
-    }
-
     @HostListener('document:keydown.control.f')
     public openSearchBottomSheet(): void {
         this.hideActionButtonsDelayedAsync();
@@ -809,12 +640,16 @@ export class NoteComponent implements OnInit {
         const config: MatBottomSheetConfig = {
             data: {
                 noteTitle: this.noteTitle,
-                noteText: this.getNoteText(),
-                noteContent: JSON.stringify(this.getNoteJsonContent()),
-                noteHtml: this.quill.root.innerHTML,
+                noteText: this.noteEditor.getNoteText(),
+                noteContent: this.noteEditor.getNoteContent(),
+                noteHtml: this.noteEditor.getNoteHtml(),
             },
         };
 
         this.bottomSheet.open(ShareBottomSheetComponent, config);
+    }
+
+    public strikeThrough(event: any): void {
+        this.noteEditor.strikeThrough();
     }
 }

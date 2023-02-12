@@ -14,8 +14,8 @@ export class NoteTypeChooserBottomSheetComponent {
         private bottomSheetRef: MatBottomSheetRef<NoteTypeChooserBottomSheetComponent>
     ) {}
 
-    public async addStandardNoteAsync(): Promise<void> {
-        await this.noteCreator.createStandardNoteAsync(this.data.activeNotebookId);
+    public async addClassicNoteAsync(): Promise<void> {
+        await this.noteCreator.createClassicNoteAsync(this.data.activeNotebookId);
         this.bottomSheetRef.dismiss();
     }
 

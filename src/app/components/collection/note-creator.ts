@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { Operation } from '../../core/enums';
 import { CollectionService } from '../../services/collection/collection.service';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
-import { TranslatorService } from '../../services/translator/translator.service';
 
 @Injectable()
 export class NoteCreator {
-    public constructor(private collectionService: CollectionService, private translatorService: TranslatorService) {}
+    public constructor(private collectionService: CollectionService) {}
 
-    public async createStandardNoteAsync(notebookId: string): Promise<void> {
+    public async createClassicNoteAsync(notebookId: string): Promise<void> {
         await this.createNoteAsync(notebookId, false);
     }
 

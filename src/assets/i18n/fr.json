@@ -53,7 +53,7 @@
         "SpellChecker": "Correcteur orthographique",
         "EnableSpellChecker": "Activer le correcteur orthographique",
         "FormatsForNewNotes": "Formats pour les nouvelles notes",
-        "StandardNote": "Note standard",
+        "ClassicNote": "Note classique",
         "MarkdownNote": "Note markdown"
     },
     "ComponentsPage": {
@@ -235,7 +235,7 @@
         "Languages": "langues",
         "Disabled": "Désactivé",
         "Moved": "Déplacé",
-        "StandardNote": "Note standard",
+        "ClassicNote": "Note classique",
         "MarkdownNote": "Note markdown"
     },
     "NoteDates": {

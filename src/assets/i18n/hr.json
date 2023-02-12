@@ -53,7 +53,7 @@
         "SpellChecker": "Spell checker",
         "EnableSpellChecker": "Enable spell checker",
         "FormatsForNewNotes": "Formats for new notes",
-        "StandardNote": "Standard note",
+        "ClassicNote": "Classic note",
         "MarkdownNote": "Markdown note"
     },
     "ComponentsPage": {
@@ -235,7 +235,7 @@
         "Languages": "languages",
         "Disabled": "Disabled",
         "Moved": "Moved",
-        "StandardNote": "Standard note",
+        "ClassicNote": "Classic note",
         "MarkdownNote": "Markdown note"
     },
     "NoteDates": {

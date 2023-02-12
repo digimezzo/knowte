@@ -54,8 +54,8 @@ export class CollectionService {
     private setNotebookEventListener: any = this.setNotebook.bind(this);
     private getNoteDetailsEventListener: any = this.getNoteDetailsEventHandler.bind(this);
     private getNotebooksEventListener: any = this.getNotebooksEventHandler.bind(this);
-    private setNoteTitleEventListener: any = this.setNoteTitleEventHandler.bind(this);
-    private setNoteTextEventListener: any = this.setNoteTextEventHandler.bind(this);
+    private saveNoteTitleEventListener: any = this.saveNoteTitleEventHandler.bind(this);
+    private saveNoteTextEventListener: any = this.saveNoteTextEventHandler.bind(this);
     private deleteNoteEventListener: any = this.deleteNoteEventHandlerAsync.bind(this);
     private encryptNoteEventListener: any = this.encryptNoteEventHandler.bind(this);
     private decryptNoteEventListener: any = this.decryptNoteEventHandler.bind(this);
@@ -98,8 +98,8 @@ export class CollectionService {
         this.globalEmitter.removeListener(CollectionEvents.setNotebookEvent, this.setNotebookEventListener);
         this.globalEmitter.removeListener(CollectionEvents.getNoteDetailsEvent, this.getNoteDetailsEventListener);
         this.globalEmitter.removeListener(CollectionEvents.getNotebooksEvent, this.getNotebooksEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.setNoteTitleEvent, this.setNoteTitleEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.setNoteTextEvent, this.setNoteTextEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.saveNoteTitleEvent, this.saveNoteTitleEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.saveNoteTextEvent, this.saveNoteTextEventListener);
         this.globalEmitter.removeListener(CollectionEvents.deleteNoteEvent, this.deleteNoteEventListener);
         this.globalEmitter.removeListener(CollectionEvents.encryptNoteEvent, this.encryptNoteEventListener);
         this.globalEmitter.removeListener(CollectionEvents.decryptNoteEvent, this.decryptNoteEventListener);
@@ -111,8 +111,8 @@ export class CollectionService {
         this.globalEmitter.on(CollectionEvents.setNotebookEvent, this.setNotebookEventListener);
         this.globalEmitter.on(CollectionEvents.getNoteDetailsEvent, this.getNoteDetailsEventListener);
         this.globalEmitter.on(CollectionEvents.getNotebooksEvent, this.getNotebooksEventListener);
-        this.globalEmitter.on(CollectionEvents.setNoteTitleEvent, this.setNoteTitleEventListener);
-        this.globalEmitter.on(CollectionEvents.setNoteTextEvent, this.setNoteTextEventListener);
+        this.globalEmitter.on(CollectionEvents.saveNoteTitleEvent, this.saveNoteTitleEventListener);
+        this.globalEmitter.on(CollectionEvents.saveNoteTextEvent, this.saveNoteTextEventListener);
         this.globalEmitter.on(CollectionEvents.deleteNoteEvent, this.deleteNoteEventListener);
         this.globalEmitter.on(CollectionEvents.encryptNoteEvent, this.encryptNoteEventListener);
         this.globalEmitter.on(CollectionEvents.decryptNoteEvent, this.decryptNoteEventListener);
@@ -710,7 +710,7 @@ export class CollectionService {
         return setNotebookOperation;
     }
 
-    public setNoteTitleEventHandler(noteId: string, initialNoteTitle: string, finalNoteTitle: string, callback: any): void {
+    public saveNoteTitleEventHandler(noteId: string, initialNoteTitle: string, finalNoteTitle: string, callback: any): void {
         let uniqueNoteTitle: string = finalNoteTitle.trim();
 
         if (uniqueNoteTitle.length === 0) {
@@ -733,20 +733,20 @@ export class CollectionService {
                     this.logger.info(
                         `Renamed note with id=${noteId} from ${initialNoteTitle} to ${uniqueNoteTitle}.`,
                         'CollectionService',
-                        'setNoteTitleEventHandler'
+                        'saveNoteTitleEventHandler'
                     );
                 } else {
                     this.logger.warn(
                         `Note with id=${noteId} could not be found. It was probably deleted.`,
                         'CollectionService',
-                        'setNoteTitleEventHandler'
+                        'saveNoteTitleEventHandler'
                     );
                 }
             } catch (error) {
                 this.logger.error(
                     `Could not rename the note with id='${noteId}' to '${uniqueNoteTitle}'. Cause: ${error}`,
                     'CollectionService',
-                    'setNoteTitleEventHandler'
+                    'saveNoteTitleEventHandler'
                 );
                 callback(new NoteOperationResult(Operation.Error));
                 return;
@@ -755,7 +755,7 @@ export class CollectionService {
             this.logger.info(
                 'Final title is the same as initial title. No rename required.',
                 'CollectionService',
-                'setNoteTitleEventHandler'
+                'saveNoteTitleEventHandler'
             );
         }
 
@@ -767,7 +767,7 @@ export class CollectionService {
         callback(result);
     }
 
-    public setNoteTextEventHandler(
+    public saveNoteTextEventHandler(
         noteId: string,
         noteText: string,
         isEncrypted: boolean,
@@ -789,19 +789,19 @@ export class CollectionService {
                 note.totalTasksCount = tasksCount.totalTasksCount;
                 this.dataStore.updateNote(note);
 
-                this.logger.info(`Set text of note with id=${noteId}.`, 'CollectionService', 'setNoteTextEventHandler');
+                this.logger.info(`Set text of note with id=${noteId}.`, 'CollectionService', 'saveNoteTextEventHandler');
             } else {
                 this.logger.warn(
                     `Note with id=${noteId} could not be found. It was probably deleted.`,
                     'CollectionService',
-                    'setNoteTextEventHandler'
+                    'saveNoteTextEventHandler'
                 );
             }
         } catch (error) {
             this.logger.error(
                 `Could not set text for the note with id='${noteId}' in the data store. Cause: ${error}`,
                 'CollectionService',
-                'setNoteTextEventHandler'
+                'saveNoteTextEventHandler'
             );
             callback(Operation.Error);
             return;

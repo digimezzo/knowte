@@ -53,7 +53,7 @@
         "SpellChecker": "Spellingscontrole",
         "EnableSpellChecker": "Spellingcontrole inschakelen",
         "FormatsForNewNotes": "Formaten voor nieuwe notities",
-        "StandardNote": "Standaard notitie",
+        "ClassicNote": "Kassieke notitie",
         "MarkdownNote": "Markdown notitie"
     },
     "ComponentsPage": {
@@ -235,7 +235,7 @@
         "Languages": "talen",
         "Disabled": "Uitgeschakeld",
         "Moved": "Verplaatst",
-        "StandardNote": "Standaard notitie",
+        "ClassicNote": "Kassieke notitie",
         "MarkdownNote": "Markdown notitie"
     },
     "NoteDates": {
