@@ -235,8 +235,9 @@
         "Languages": "languages",
         "Disabled": "Disabled",
         "Moved": "Moved",
-        "ClassicNote": "Classic note",
-        "MarkdownNote": "Markdown note"
+        "AddClassicNote": "Add classic note",
+        "AddMarkdownNote": "Add Markdown note",
+        "Edit": "Edit"
     },
     "NoteDates": {
         "Today": "Danas",
