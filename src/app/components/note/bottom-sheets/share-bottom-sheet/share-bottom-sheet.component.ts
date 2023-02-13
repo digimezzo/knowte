@@ -54,7 +54,8 @@ export class ShareBottomSheetComponent {
                     saveDialogReturnValue.filePath,
                     this.data.noteTitle,
                     this.data.noteText,
-                    this.getNoteJsonContent()
+                    this.data.noteContent,
+                    this.data.isMarkdownNote
                 );
                 this.snackBar.noteExportedAsync(this.data.noteTitle);
             }
@@ -74,7 +75,7 @@ export class ShareBottomSheetComponent {
         }
     }
 
-    private getNoteJsonContent(): string {
-        return JSON.stringify(this.data.noteContent);
-    }
+    // private getNoteJsonContent(): string {
+    //     return JSON.stringify(this.data.noteContent);
+    // }
 }

@@ -43,8 +43,14 @@ export class PersistanceService {
         await this.collectionFileAccess.saveNoteContentAsync(noteId, contentToWrite, this.settings.activeCollection, isMarkdownNote);
     }
 
-    public async exportNoteAsync(exportFilePath: string, noteTitle: string, noteText: string, noteJsonContent: string): Promise<void> {
-        const noteExport: NoteExport = new NoteExport(noteTitle, noteText, noteJsonContent);
+    public async exportNoteAsync(
+        exportFilePath: string,
+        noteTitle: string,
+        noteText: string,
+        noteContent: string,
+        isMarkdownNote: boolean
+    ): Promise<void> {
+        const noteExport: NoteExport = new NoteExport(noteTitle, noteText, noteContent, isMarkdownNote);
         await this.collectionFileAccess.saveNoteExportToFileAsync(exportFilePath, noteExport);
     }
 }

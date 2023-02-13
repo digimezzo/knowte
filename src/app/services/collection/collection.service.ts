@@ -823,13 +823,13 @@ export class CollectionService {
 
             for (const noteId of noteIds) {
                 const note: Note = this.dataStore.getNoteById(noteId);
-                const noteFileContent: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(
+                const noteContent: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(
                     noteId,
                     this.settings.activeCollection,
                     note.isMarkdownNote
                 );
 
-                const noteExport: NoteExport = new NoteExport(note.title, note.text, noteFileContent);
+                const noteExport: NoteExport = new NoteExport(note.title, note.text, noteContent, note.isMarkdownNote);
                 noteExports.push(noteExport);
             }
 
@@ -913,6 +913,7 @@ export class CollectionService {
 
         const note: Note = this.dataStore.getNoteByTitle(uniqueNoteTitle);
         note.text = noteExport.text;
+        note.isMarkdownNote = noteExport.isMarkdownNote;
 
         if (notebookId && notebookId !== Constants.allNotesNotebookId && notebookId !== Constants.unfiledNotesNotebookId) {
             note.notebookId = notebookId;
@@ -920,7 +921,7 @@ export class CollectionService {
 
         this.dataStore.updateNoteWithoutDate(note);
 
-        await this.collectionFileAccess.saveNoteContentAsync(note.id, noteExport.content, collection, false);
+        await this.collectionFileAccess.saveNoteContentAsync(note.id, noteExport.content, collection, note.isMarkdownNote);
     }
 
     public getTrashedNotes(): Note[] {

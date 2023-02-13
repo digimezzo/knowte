@@ -649,6 +649,7 @@ export class NoteComponent implements OnInit {
                 noteText: this.noteEditor.getNoteText(),
                 noteContent: this.noteEditor.getNoteContent(),
                 noteHtml: this.noteEditor.getNoteHtml(),
+                isMarkdownNote: this.isMarkdownNote
             },
         };
 
