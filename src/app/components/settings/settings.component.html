@@ -104,11 +104,11 @@
                     <hr />
                     <div class="m-3">
                         <h1 class="mt-2">{{ 'SettingsPage.SpellChecker' | translate }}</h1>
-                        <p>
+                        <div>
                             <mat-slide-toggle class="mt-2" [(ngModel)]="enableSpellCheckerChecked">
                                 {{ 'SettingsPage.EnableSpellChecker' | translate }}</mat-slide-toggle
                             >
-                        </p>
+                        </div>
                         <button
                             class="mt-2"
                             [ngClass]="{ inactive: !this.settings.enableSpellChecker }"

@@ -37,7 +37,7 @@ export class PrintService {
     }
 
     private createPrintHtmlFileContent(pageTitle: string, pageContent: string): string {
-        return `<html><body><div>${this.createPrintCss()}<p class="page-title">${pageTitle}</p><p>${pageContent}</p></div></body></html>`;
+        return `<html><body><div>${this.createPrintCss()}<div class="page-title">${pageTitle}</div><div>${pageContent}</div></div></body></html>`;
     }
 
     private createPrintCss(): string {
