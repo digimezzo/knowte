@@ -74,8 +74,4 @@ export class ShareBottomSheetComponent {
             });
         }
     }
-
-    // private getNoteJsonContent(): string {
-    //     return JSON.stringify(this.data.noteContent);
-    // }
 }
