@@ -104,15 +104,28 @@
                 </div>
                 <div
                     *ngIf="!this.isMarkdownNote"
-                    class="note-editor"
+                    class="fill w-100 h-100 overflow-hidden"
                     id="editor"
                     (keydown.control.s)="strikeThrough($event)"
                     (keydown.control.1)="heading1($event)"
                     (keydown.control.2)="heading2($event)"
                 ></div>
-                <div *ngIf="this.isMarkdownNote" class="note-editor d-flex flex-row">
-                    <textarea class="markdown-input" [(ngModel)]="this.noteEditor.content"></textarea>
-                    <markdown class="markdown-output markdown-body" [data]="this.noteEditor.content"></markdown>
+                <div *ngIf="this.isMarkdownNote" class="d-flex flex-column fill w-100 h-100 overflow-hidden">
+                    <div class="d-flex flex-row fill">
+                        <i class="markdown-icon las la-columns" (click)="toggleIsEditing()"></i>
+                    </div>
+                    <div class="d-flex flex-row overflow-hidden">
+                        <textarea
+                            class="markdown-input"
+                            [ngClass]="{ 'markdown-input-hidden': !this.isEditing }"
+                            [(ngModel)]="this.noteEditor.content"
+                        ></textarea>
+                        <markdown
+                            class="markdown-output markdown-body"
+                            [ngClass]="{ 'markdown-output-maximized': !this.isEditing }"
+                            [data]="this.noteEditor.content"
+                        ></markdown>
+                    </div>
                 </div>
                 <app-note-status-bar
                     [noteId]="this.noteId"

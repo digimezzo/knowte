@@ -87,13 +87,6 @@
     color: var(--theme-header-text-color);
 }
 
-.note-editor {
-    height: 100%;
-    width: 100%;
-    flex: 1;
-    overflow: hidden;
-}
-
 .ql-toolbar.ql-snow {
     padding-right: 50px !important;
 }
@@ -160,8 +153,23 @@
     padding: 16px;
 }
 
+.markdown-input-hidden {
+    width: 0% !important;
+    padding: 0px !important;
+}
+
 .markdown-output {
+    width: 50%;
     overflow: auto;
     padding: 16px;
-    width: 50%;
+}
+
+.markdown-output-maximized {
+    width: 100% !important;
+}
+
+.markdown-icon {
+    padding: 8px;
+    font-size: 20px;
+    cursor: pointer;
 }

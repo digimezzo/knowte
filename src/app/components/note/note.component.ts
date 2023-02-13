@@ -82,6 +82,12 @@ export class NoteComponent implements OnInit {
         private noteEditorFactory: NoteEditorFactory
     ) {}
 
+    public isEditing: boolean; // TODO: this should become a markdown editor specific property
+
+    public toggleIsEditing(): void {
+        this.isEditing = !this.isEditing;
+    }
+
     public isEncrypted: boolean = false;
     private isMarkdownNote: boolean = false;
     public noteId: string;
