@@ -235,8 +235,9 @@
         "Languages": "talen",
         "Disabled": "Uitgeschakeld",
         "Moved": "Verplaatst",
-        "ClassicNote": "Kassieke notitie",
-        "MarkdownNote": "Markdown notitie"
+        "AddClassicNote": "Klassieke notitie toevoegen",
+        "AddMarkdownNote": "Markdown notitie toevoegen",
+        "Edit": "Bewerken"
     },
     "NoteDates": {
         "Today": "Vandaag",

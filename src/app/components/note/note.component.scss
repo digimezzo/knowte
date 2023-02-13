@@ -168,8 +168,14 @@
     width: 100% !important;
 }
 
-.markdown-icon {
-    padding: 8px;
-    font-size: 20px;
+.markdown-edit-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     cursor: pointer;
+}
+
+.markdown-icon {
+    padding: 6px;
+    font-size: 20px;
 }
