@@ -89,7 +89,7 @@ export class NoteComponent implements OnInit {
     }
 
     public isEncrypted: boolean = false;
-    private isMarkdownNote: boolean = false;
+    public isMarkdownNote: boolean = false;
     public noteId: string;
     public initialNoteTitle: string;
     public noteTitle: string;
