@@ -560,7 +560,7 @@ export class NoteComponent implements OnInit {
             if (noteContent) {
                 // We can only parse to json if there is content
                 this.logger.info(`Setting the content for the note with id='${this.noteId}'`, 'NoteComponent', 'getNoteDetailsAsync');
-                this.noteEditor.setNoteContent(noteContent);
+                this.noteEditor.content = noteContent;
             } else {
                 this.logger.error(
                     `Could not get the content for the note with id='${this.noteId}'`,

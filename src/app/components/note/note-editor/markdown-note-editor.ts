@@ -1,10 +1,13 @@
 import { Observable, Subject } from 'rxjs';
 import { TasksCount } from '../../../core/tasks-count';
 import { INoteEditor } from './i-note-editor';
+import { ImagePathConverter } from './image-path-replacer';
 
 export class MarkdownNoteEditor implements INoteEditor {
     private _content: string;
     private noteContentChanged: Subject<void> = new Subject<void>();
+
+    public constructor(private imagePathConverter: ImagePathConverter) {}
 
     public noteContentChanged$: Observable<void> = this.noteContentChanged.asObservable();
 

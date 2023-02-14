@@ -15,7 +15,6 @@ export interface INoteEditor {
     performPaste(): void;
     performDelete(): void;
     getTasksCount(): TasksCount;
-    setNoteContent(content: string): void;
     pasteImageFromClipboard(): void;
     focus(): void;
     applyZoomPercentageFromSettings(): void;

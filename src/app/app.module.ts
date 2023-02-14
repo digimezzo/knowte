@@ -59,12 +59,13 @@ import { ShareBottomSheetComponent } from './components/note/bottom-sheets/share
 import { SpellCheckBottomSheetComponent } from './components/note/bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';
 import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { NoteContextMenuFactory } from './components/note/note-context-menu-factory';
+import { ImagePathConverter } from './components/note/note-editor/image-path-replacer';
 import { NoteEditorFactory } from './components/note/note-editor/note-editor-factory';
 import { QuillFactory } from './components/note/note-editor/quill-factory';
+import { QuillTweaker } from './components/note/note-editor/quill-tweaker';
 import { NoteStatusBarComponent } from './components/note/note-status-bar/note-status-bar.component';
 import { NoteComponent } from './components/note/note.component';
 import { NotebookSwitcherComponent } from './components/note/notebook-switcher/notebook-switcher.component';
-import { QuillTweaker } from './components/note/quill-tweaker';
 import { NotesComponent } from './components/notes/notes.component';
 import { SettingsTextSizeInNotesComponent } from './components/settings/settings-text-size-in-notes/settings-text-size-in-notes.component';
 import { SettingsComponent } from './components/settings/settings.component';
@@ -218,6 +219,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         NoteContextMenuFactory,
         NoteDateFormatter,
         QuillTweaker,
+        ImagePathConverter,
         GitHubApi,
         DateFormatter,
         Scheduler,

@@ -30,7 +30,10 @@ export class ClassicNoteEditor implements INoteEditor {
         return JSON.stringify(this.quill.getContents());
     }
 
-    public set content(v: string) {}
+    public set content(v: string) {
+        this.quill.setContents(JSON.parse(v), 'silent');
+        this.quill.history.clear();
+    }
 
     public get html(): string {
         return this.quill.root.innerHTML;
@@ -194,11 +197,6 @@ export class ClassicNoteEditor implements INoteEditor {
         const closedTasksCount: number = (this.content.match(/"list":"checked"/g) || []).length;
 
         return new TasksCount(openTasksCount, closedTasksCount);
-    }
-
-    public setNoteContent(content: string): void {
-        this.quill.setContents(JSON.parse(content), 'silent');
-        this.quill.history.clear();
     }
 
     public focus(): void {
