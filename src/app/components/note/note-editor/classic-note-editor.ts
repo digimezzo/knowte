@@ -4,9 +4,9 @@ import { BaseSettings } from '../../../core/base-settings';
 import { ClipboardManager } from '../../../core/clipboard-manager';
 import { Logger } from '../../../core/logger';
 import { TasksCount } from '../../../core/tasks-count';
-import { QuillFactory } from '../quill-factory';
-import { QuillTweaker } from '../quill-tweaker';
 import { INoteEditor } from './i-note-editor';
+import { QuillFactory } from './quill-factory';
+import { QuillTweaker } from './quill-tweaker';
 
 export class ClassicNoteEditor implements INoteEditor {
     private quill: Quill;
