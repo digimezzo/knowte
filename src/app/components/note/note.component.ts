@@ -96,7 +96,7 @@ export class NoteComponent implements OnInit {
     public isMarked: boolean;
     public isTrashed: boolean;
     public noteTitleChanged: Subject<string> = new Subject<string>();
-    public noteTextChanged: Subject<void> = new Subject<void>();
+    public noteContentChanged: Subject<void> = new Subject<void>();
     public saveChangesAndCloseNoteWindow: Subject<void> = new Subject<void>();
     public canPerformActions: boolean = false;
     public isBusy: boolean = false;
@@ -153,8 +153,8 @@ export class NoteComponent implements OnInit {
             await this.saveNoteTitleAsync(finalNoteTitle);
         });
 
-        this.noteTextChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async () => {
-            await this.saveNoteTextAsync();
+        this.noteContentChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async () => {
+            await this.saveNoteContentAsync();
         });
 
         this.saveChangesAndCloseNoteWindow.pipe(debounceTime(Constants.noteWindowCloseTimeoutMilliseconds)).subscribe(async () => {
@@ -178,7 +178,7 @@ export class NoteComponent implements OnInit {
                 this.noteMarkChanged(result.noteId, result.isMarked)
             )
         );
-        this.subscription.add(this.noteEditor.noteTextChanged$.subscribe(() => this.onNoteTextChange()));
+        this.subscription.add(this.noteEditor.noteContentChanged$.subscribe(() => this.onNoteContentChange()));
     }
 
     private addDocumentListeners(): void {
@@ -205,10 +205,10 @@ export class NoteComponent implements OnInit {
         this.noteTitleChanged.next(newNoteTitle);
     }
 
-    public onNoteTextChange(): void {
+    private onNoteContentChange(): void {
         this.isTextDirty = true;
         this.clearSearch();
-        this.noteTextChanged.next();
+        this.noteContentChanged.next();
     }
 
     // ngOnDestroy doesn't tell us when a note window is closed, so we use this event instead.
@@ -323,7 +323,7 @@ export class NoteComponent implements OnInit {
                 this.isEncrypted = true;
                 this.secretKey = data.inputText;
                 this.collectionClient.encryptNote(this.noteId, this.secretKey);
-                await this.saveNoteTextAsync();
+                await this.saveNoteContentAsync();
             }
         });
     }
@@ -344,7 +344,7 @@ export class NoteComponent implements OnInit {
                 this.isEncrypted = false;
                 this.secretKey = '';
                 this.collectionClient.decryptNote(this.noteId);
-                await this.saveNoteTextAsync();
+                await this.saveNoteContentAsync();
             }
         });
     }
@@ -360,7 +360,7 @@ export class NoteComponent implements OnInit {
 
     private async saveAndCloseAsync(): Promise<void> {
         const setNoteTitleOperation: Operation = await this.saveNoteTitleAsync(this.noteTitle);
-        const setNoteTextOperation: Operation = await this.saveNoteTextAsync();
+        const setNoteTextOperation: Operation = await this.saveNoteContentAsync();
 
         // Close is only allowed when saving both title and text is successful
         if (setNoteTitleOperation === Operation.Success && setNoteTextOperation === Operation.Success) {
@@ -480,10 +480,10 @@ export class NoteComponent implements OnInit {
         return result.operation;
     }
 
-    private async saveNoteTextAsync(): Promise<Operation> {
+    private async saveNoteContentAsync(): Promise<Operation> {
         const operation: Operation = await this.collectionClient.saveNoteTextAsync(
             this.noteId,
-            this.noteEditor.getNoteText(),
+            this.noteEditor.text,
             this.isEncrypted,
             this.secretKey,
             this.noteEditor.getTasksCount()
@@ -495,7 +495,7 @@ export class NoteComponent implements OnInit {
             try {
                 await this.persistance.updateNoteContentAsync(
                     this.noteId,
-                    this.noteEditor.getNoteContent(),
+                    this.noteEditor.content,
                     this.isEncrypted,
                     this.secretKey,
                     this.isMarkdownNote
@@ -646,10 +646,10 @@ export class NoteComponent implements OnInit {
         const config: MatBottomSheetConfig = {
             data: {
                 noteTitle: this.noteTitle,
-                noteText: this.noteEditor.getNoteText(),
-                noteContent: this.noteEditor.getNoteContent(),
-                noteHtml: this.noteEditor.getNoteHtml(),
-                isMarkdownNote: this.isMarkdownNote
+                noteText: this.noteEditor.text,
+                noteContent: this.noteEditor.content,
+                noteHtml: this.noteEditor.html,
+                isMarkdownNote: this.isMarkdownNote,
             },
         };
 

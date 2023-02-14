@@ -10,7 +10,7 @@ import { INoteEditor } from './i-note-editor';
 
 export class ClassicNoteEditor implements INoteEditor {
     private quill: Quill;
-    private noteTextChanged: Subject<void> = new Subject<void>();
+    private noteContentChanged: Subject<void> = new Subject<void>();
 
     public constructor(
         private quillFactory: QuillFactory,
@@ -20,9 +20,24 @@ export class ClassicNoteEditor implements INoteEditor {
         private logger: Logger
     ) {}
 
-    public content: string;
+    public get text(): string {
+        return this.quill.getText();
+    }
 
-    public noteTextChanged$: Observable<void> = this.noteTextChanged.asObservable();
+    public set text(v: string) {}
+
+    public get content(): string {
+        return JSON.stringify(this.quill.getContents());
+    }
+
+    public set content(v: string) {}
+
+    public get html(): string {
+        return this.quill.root.innerHTML;
+    }
+    public set html(v: string) {}
+
+    public noteContentChanged$: Observable<void> = this.noteContentChanged.asObservable();
 
     public async initializeAsync(): Promise<void> {
         await this.configureQuillEditorAsync();
@@ -34,11 +49,11 @@ export class ClassicNoteEditor implements INoteEditor {
         await this.quillTweaker.setToolbarTooltipsAsync();
         this.quillTweaker.forcePasteOfUnformattedText(this.quill);
         this.quillTweaker.assignActionToControlKeyCombination(this.quill, 'Y', this.performRedo.bind(this));
-        this.quillTweaker.assignActionToTextChange(this.quill, this.onNoteTextChange.bind(this));
+        this.quillTweaker.assignActionToTextChange(this.quill, this.onNoteContentChange.bind(this));
     }
 
-    private onNoteTextChange(): void {
-        this.noteTextChanged.next();
+    private onNoteContentChange(): void {
+        this.noteContentChanged.next();
     }
 
     public hasSelectedText(): boolean {
@@ -174,22 +189,9 @@ export class ClassicNoteEditor implements INoteEditor {
         }
     }
 
-    public getNoteText(): string {
-        return this.quill.getText();
-    }
-
-    public getNoteContent(): string {
-        return JSON.stringify(this.quill.getContents());
-    }
-
-    public getNoteHtml(): string {
-        return this.quill.root.innerHTML;
-    }
-
     public getTasksCount(): TasksCount {
-        const noteContent: string = this.getNoteContent();
-        const openTasksCount: number = (noteContent.match(/"list":"unchecked"/g) || []).length;
-        const closedTasksCount: number = (noteContent.match(/"list":"checked"/g) || []).length;
+        const openTasksCount: number = (this.content.match(/"list":"unchecked"/g) || []).length;
+        const closedTasksCount: number = (this.content.match(/"list":"checked"/g) || []).length;
 
         return new TasksCount(openTasksCount, closedTasksCount);
     }

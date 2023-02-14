@@ -2,8 +2,10 @@ import { Observable } from 'rxjs';
 import { TasksCount } from '../../../core/tasks-count';
 
 export interface INoteEditor {
+    text: string;
     content: string;
-    noteTextChanged$: Observable<void>;
+    readonly html: string;
+    noteContentChanged$: Observable<void>;
     initializeAsync(): Promise<void>;
     hasSelectedText(): boolean;
     strikeThrough(): void;
@@ -12,9 +14,6 @@ export interface INoteEditor {
     performCopy(): void;
     performPaste(): void;
     performDelete(): void;
-    getNoteText(): string;
-    getNoteContent(): string;
-    getNoteHtml(): string;
     getTasksCount(): TasksCount;
     setNoteContent(content: string): void;
     pasteImageFromClipboard(): void;

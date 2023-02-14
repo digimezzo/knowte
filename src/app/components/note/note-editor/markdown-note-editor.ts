@@ -4,16 +4,32 @@ import { INoteEditor } from './i-note-editor';
 
 export class MarkdownNoteEditor implements INoteEditor {
     private _content: string;
-    private noteTextChanged: Subject<void> = new Subject<void>();
+    private noteContentChanged: Subject<void> = new Subject<void>();
 
-    public noteTextChanged$: Observable<void> = this.noteTextChanged.asObservable();
+    public noteContentChanged$: Observable<void> = this.noteContentChanged.asObservable();
 
     public get content(): string {
         return this._content;
     }
+
     public set content(v: string) {
         this._content = v;
-        this.noteTextChanged.next();
+        this.noteContentChanged.next();
+    }
+
+    public get text(): string {
+        return this._content;
+    }
+    public set text(v: string) {}
+
+    public get html(): string {
+        const markdownElement: HTMLElement = document.getElementById('markdown');
+
+        if (markdownElement === null || markdownElement === undefined) {
+            return '';
+        }
+
+        return markdownElement.innerHTML;
     }
 
     public async initializeAsync(): Promise<void> {}
@@ -32,18 +48,6 @@ export class MarkdownNoteEditor implements INoteEditor {
     public performPaste(): void {}
 
     public performDelete(): void {}
-
-    public getNoteText(): string {
-        return this.content;
-    }
-
-    public getNoteContent(): string {
-        return this.content;
-    }
-
-    public getNoteHtml(): string {
-        return '';
-    }
 
     public getTasksCount(): TasksCount {
         return new TasksCount(0, 0);
