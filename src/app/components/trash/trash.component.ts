@@ -61,8 +61,15 @@ export class TrashComponent implements OnInit, OnDestroy {
     }
 
     public async deleteSelectedNotesAsync(): Promise<void> {
-        const title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteNotes');
-        const text: string = await this.translator.getAsync('DialogTexts.ConfirmPermanentlyDeleteNotes');
+        let title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteNotes');
+        let text: string = await this.translator.getAsync('DialogTexts.ConfirmPermanentlyDeleteNotes');
+
+        const notesToDelete: Note[] = this.trashedNotes.filter((x) => x.isSelected);
+
+        if (notesToDelete.length === 1) {
+            title = await this.translator.getAsync('DialogTitles.ConfirmDeleteNote');
+            text = await this.translator.getAsync('DialogTexts.ConfirmPermanentlyDeleteNote', { noteTitle: notesToDelete[0].title });
+        }
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
@@ -71,9 +78,8 @@ export class TrashComponent implements OnInit, OnDestroy {
 
         dialogRef.afterClosed().subscribe(async (result) => {
             if (result) {
-                const noteIdsToDelete: string[] = this.trashedNotes.filter((x) => x.isSelected).map((x) => x.id);
-
-                if (noteIdsToDelete.length > 0) {
+                if (notesToDelete.length > 0) {
+                    const noteIdsToDelete: string[] = notesToDelete.map((x) => x.id);
                     const operation: Operation = await this.collectionService.deleteNotesPermanentlyAsync(noteIdsToDelete);
 
                     if (operation === Operation.Error) {
