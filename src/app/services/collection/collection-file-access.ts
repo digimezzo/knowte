@@ -10,7 +10,7 @@ export class CollectionFileAccess {
 
     public async saveNoteContentAsync(noteId: string, noteContent: string, collection: string, isMarkdownNote: boolean): Promise<void> {
         const noteContentFilePath: string = this.createNoteContentFilePath(noteId, collection, isMarkdownNote);
-        await this.fileAccess.writeToFileAsync(noteContentFilePath, noteContent);
+        await this.fileAccess.writeTextToFileAsync(noteContentFilePath, noteContent);
     }
 
     public async getNoteContentAsync(noteContentFilePath: string): Promise<string> {
@@ -148,7 +148,7 @@ export class CollectionFileAccess {
     }
 
     public async saveNoteExportToFileAsync(exportFilePath: string, noteExport: NoteExport): Promise<void> {
-        await this.fileAccess.writeToFileAsync(exportFilePath, JSON.stringify(noteExport));
+        await this.fileAccess.writeTextToFileAsync(exportFilePath, JSON.stringify(noteExport));
     }
 
     public createStorageDirectory(parentDirectory: string): string {
@@ -156,5 +156,13 @@ export class CollectionFileAccess {
         this.fileAccess.createFullDirectoryPathIfDoesNotExist(storageDirectory);
 
         return storageDirectory;
+    }
+
+    public async createNoteImageFileAsync(noteId: string, collection: string, imageBuffer: Buffer, imageId: string): Promise<void> {
+        const noteImageFileDirectory: string = this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), noteId);
+        this.fileAccess.createFullDirectoryPathIfDoesNotExist(noteImageFileDirectory);
+
+        const noteImageFullPath: string = this.fileAccess.combinePath(noteImageFileDirectory, `${imageId}.png`);
+        this.fileAccess.writeBufferToFileAsync(noteImageFullPath, imageBuffer);
     }
 }

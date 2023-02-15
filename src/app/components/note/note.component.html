@@ -118,14 +118,15 @@
                     <div class="d-flex flex-row fill overflow-hidden pt-1 pb-2">
                         <textarea
                             class="markdown-input"
+                            id="markdown-input"
                             [ngClass]="{ 'markdown-input-hidden': !this.isEditing }"
                             [(ngModel)]="this.noteEditor.content"
                         ></textarea>
                         <markdown
                             class="markdown-output markdown-body"
-                            id="markdown"
+                            id="markdown-output"
                             [ngClass]="{ 'markdown-output-maximized': !this.isEditing }"
-                            [data]="this.noteEditor.content"
+                            data="{{ this.noteEditor.content | fixImagePaths : this.noteId }}"
                         ></markdown>
                     </div>
                 </div>

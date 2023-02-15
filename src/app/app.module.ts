@@ -59,7 +59,6 @@ import { ShareBottomSheetComponent } from './components/note/bottom-sheets/share
 import { SpellCheckBottomSheetComponent } from './components/note/bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';
 import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { NoteContextMenuFactory } from './components/note/note-context-menu-factory';
-import { ImagePathConverter } from './components/note/note-editor/image-path-replacer';
 import { NoteEditorFactory } from './components/note/note-editor/note-editor-factory';
 import { QuillFactory } from './components/note/note-editor/quill-factory';
 import { QuillTweaker } from './components/note/note-editor/quill-tweaker';
@@ -87,6 +86,7 @@ import { DataStore } from './data/data-store';
 import { CdkVirtualScrollViewportPatchDirective } from './directives/cdk-virtual-scroll-viewport-patch-directive';
 import { WebviewDirective } from './directives/webview.directive';
 import { GlobalErrorHandler } from './globalErrorHandler';
+import { FixImagePathsPipe } from './pipes/fix-image-paths.pipe';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { AppearanceService } from './services/appearance/appearance.service';
 import { CollectionFileAccess } from './services/collection/collection-file-access';
@@ -161,6 +161,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         WebviewDirective,
         CdkVirtualScrollViewportPatchDirective,
         TruncatePipe,
+        FixImagePathsPipe,
     ],
     imports: [
         MarkdownModule.forRoot(),
@@ -219,7 +220,6 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         NoteContextMenuFactory,
         NoteDateFormatter,
         QuillTweaker,
-        ImagePathConverter,
         GitHubApi,
         DateFormatter,
         Scheduler,

@@ -111,7 +111,7 @@ export class NoteComponent implements OnInit {
             this.noteWindow = remote.getCurrentWindow();
             await this.getNoteDetailsAsync();
 
-            this.noteEditor = this.noteEditorFactory.create(this.isMarkdownNote);
+            this.noteEditor = this.noteEditorFactory.create(this.noteId, this.isMarkdownNote);
             await this.noteEditor.initializeAsync();
 
             await this.requestSecretKeyOrCloseNoteAsync();

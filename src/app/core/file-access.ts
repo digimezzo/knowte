@@ -92,8 +92,12 @@ export class FileAccess {
         fs.rmdirSync(directoryPath, { recursive: true });
     }
 
-    public async writeToFileAsync(filePath: string, textToWrite: string): Promise<void> {
+    public async writeTextToFileAsync(filePath: string, textToWrite: string): Promise<void> {
         await fs.writeFile(filePath, textToWrite);
+    }
+
+    public async writeBufferToFileAsync(filePath: string, bufferToWrite: Buffer): Promise<void> {
+        await fs.writeFile(filePath, bufferToWrite);
     }
 
     public async getFileContentAsStringAsync(filePath: string): Promise<string> {

@@ -13,6 +13,7 @@ export class ClassicNoteEditor implements INoteEditor {
     private noteContentChanged: Subject<void> = new Subject<void>();
 
     public constructor(
+        private noteId: string,
         private quillFactory: QuillFactory,
         private quillTweaker: QuillTweaker,
         private clipboard: ClipboardManager,
@@ -117,7 +118,7 @@ export class ClassicNoteEditor implements INoteEditor {
             try {
                 this.quill.history.undo();
             } catch (error) {
-                this.logger.error(`Could not perform undo. Cause: ${error}`, 'NoteComponent', 'performUndo');
+                this.logger.error(`Could not perform undo. Cause: ${error}`, 'ClassicNoteEditor', 'performUndo');
             }
         }
     }
@@ -127,7 +128,7 @@ export class ClassicNoteEditor implements INoteEditor {
             try {
                 this.quill.history.redo();
             } catch (error) {
-                this.logger.error(`Could not perform redo. Cause: ${error}`, 'NoteComponent', 'performRedo');
+                this.logger.error(`Could not perform redo. Cause: ${error}`, 'ClassicNoteEditor', 'performRedo');
             }
         }
     }
@@ -136,7 +137,7 @@ export class ClassicNoteEditor implements INoteEditor {
         try {
             this.insertImage(this.clipboard.readImage());
         } catch (error) {
-            this.logger.error('Could not paste as image', 'NoteComponent', 'performPaste');
+            this.logger.error('Could not paste image from clipboard', 'ClassicNoteEditor', 'pasteImageFromClipboard');
         }
     }
 

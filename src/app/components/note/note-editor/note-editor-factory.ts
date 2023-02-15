@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BaseSettings } from '../../../core/base-settings';
 import { ClipboardManager } from '../../../core/clipboard-manager';
+import { FileAccess } from '../../../core/file-access';
 import { Logger } from '../../../core/logger';
+import { CollectionFileAccess } from '../../../services/collection/collection-file-access';
 import { ClassicNoteEditor } from './classic-note-editor';
 import { INoteEditor } from './i-note-editor';
-import { ImagePathConverter } from './image-path-replacer';
 import { MarkdownNoteEditor } from './markdown-note-editor';
 import { QuillFactory } from './quill-factory';
 import { QuillTweaker } from './quill-tweaker';
@@ -12,19 +13,20 @@ import { QuillTweaker } from './quill-tweaker';
 @Injectable()
 export class NoteEditorFactory {
     public constructor(
-        private imagePathConverter: ImagePathConverter,
+        private collectionFileAccess: CollectionFileAccess,
         private quillFactory: QuillFactory,
         private quillTweaker: QuillTweaker,
         private clipboard: ClipboardManager,
+        private fileAccess: FileAccess,
         private settings: BaseSettings,
         private logger: Logger
     ) {}
 
-    public create(isMarkdownNote: boolean): INoteEditor {
+    public create(noteId: string, isMarkdownNote: boolean): INoteEditor {
         if (isMarkdownNote) {
-            return new MarkdownNoteEditor(this.imagePathConverter);
+            return new MarkdownNoteEditor(noteId, this.collectionFileAccess, this.clipboard, this.fileAccess, this.settings, this.logger);
         }
 
-        return new ClassicNoteEditor(this.quillFactory, this.quillTweaker, this.clipboard, this.settings, this.logger);
+        return new ClassicNoteEditor(noteId, this.quillFactory, this.quillTweaker, this.clipboard, this.settings, this.logger);
     }
 }
