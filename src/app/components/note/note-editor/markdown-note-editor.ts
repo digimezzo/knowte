@@ -66,7 +66,10 @@ export class MarkdownNoteEditor implements INoteEditor {
     public performDelete(): void {}
 
     public getTasksCount(): TasksCount {
-        return new TasksCount(0, 0);
+        const openTasksCount: number = (this.content.match(/- \[ \]/g) || []).length;
+        const closedTasksCount: number = (this.content.match(/- \[x\]/g) || []).length;
+
+        return new TasksCount(openTasksCount, closedTasksCount);
     }
 
     public setNoteContent(content: string): void {
