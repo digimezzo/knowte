@@ -465,7 +465,16 @@ export class CollectionService {
     private async deleteNotePermanentlyAsync(noteId: string): Promise<void> {
         const note: Note = this.dataStore.getNoteById(noteId);
         this.dataStore.deleteNote(noteId);
-        await this.collectionFileAccess.deleteNoteFilesAsync(noteId, this.settings.activeCollection, note.isMarkdownNote);
+
+        try {
+            await this.collectionFileAccess.deleteNoteFilesAsync(noteId, this.settings.activeCollection, note.isMarkdownNote);
+        } catch (error) {
+            this.logger.error(
+                `Could not delete the files of note id='${noteId}'. Cause: ${error}`,
+                'CollectionService',
+                'deleteNotePermanentlyAsync'
+            );
+        }
     }
 
     public async deleteNotesPermanentlyAsync(noteIds: string[]): Promise<Operation> {
@@ -1014,6 +1023,19 @@ export class CollectionService {
         } else {
             if (this.openNoteIds.includes(noteId)) {
                 this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);
+            }
+
+            const note: Note = this.dataStore.getNoteById(noteId);
+
+            // TODO: we'd better split up setNoteOpenAsync into 2 functions.
+            try {
+                await this.collectionFileAccess.deleteUnusedNoteAttachmentsAsync(noteId, this.settings.activeCollection, note.text);
+            } catch (error) {
+                this.logger.error(
+                    `Could not delete unused note attachments of note with id='${noteId}'. Cause: ${error}`,
+                    'CollectionService',
+                    'setNoteOpenAsync'
+                );
             }
         }
     }

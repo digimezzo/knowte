@@ -32,6 +32,9 @@ export class CollectionFileAccess {
         if (this.fileAccess.pathExists(noteStateFilePath)) {
             await this.fileAccess.deleteFileIfExistsAsync(noteStateFilePath);
         }
+
+        const noteAttachmentsDirectory: string = this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), noteId);
+        this.fileAccess.deleteDirectoryRecursively(noteAttachmentsDirectory);
     }
 
     public async copyNoteFilesToCollectionAsync(noteId: string, collection: string, isMarkdownNote: boolean): Promise<void> {
@@ -159,10 +162,23 @@ export class CollectionFileAccess {
     }
 
     public async createNoteImageFileAsync(noteId: string, collection: string, imageBuffer: Buffer, imageId: string): Promise<void> {
-        const noteImageFileDirectory: string = this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), noteId);
-        this.fileAccess.createFullDirectoryPathIfDoesNotExist(noteImageFileDirectory);
+        const noteAttachmentsDirectory: string = this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), noteId);
+        this.fileAccess.createFullDirectoryPathIfDoesNotExist(noteAttachmentsDirectory);
 
-        const noteImageFullPath: string = this.fileAccess.combinePath(noteImageFileDirectory, `${imageId}.png`);
+        const noteImageFullPath: string = this.fileAccess.combinePath(noteAttachmentsDirectory, `${imageId}.png`);
         this.fileAccess.writeBufferToFileAsync(noteImageFullPath, imageBuffer);
+    }
+
+    public async deleteUnusedNoteAttachmentsAsync(noteId: string, collection: string, noteText: string): Promise<void> {
+        const noteAttachmentsDirectory: string = this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), noteId);
+        const noteAttachmentFilePaths: string[] = await this.fileAccess.getFilesInDirectoryAsync(noteAttachmentsDirectory);
+
+        for (const noteAttachmentFilePath of noteAttachmentFilePaths) {
+            const noteAttachmentFileName: string = this.fileAccess.getFileName(noteAttachmentFilePath);
+
+            if (!noteText.includes(noteAttachmentFileName)) {
+                await this.fileAccess.deleteFileIfExistsAsync(noteAttachmentFilePath);
+            }
+        }
     }
 }

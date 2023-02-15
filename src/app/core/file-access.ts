@@ -68,6 +68,31 @@ export class FileAccess {
         return confirmedDirectoryPaths;
     }
 
+    public async getFilesInDirectoryAsync(directoryPath: string, continueOnError?: boolean, errors?: Error[]): Promise<string[]> {
+        const possibleFileNames: string[] = await fs.readdir(directoryPath);
+        const confirmedFilePaths: string[] = [];
+
+        for (const possibleFileName of possibleFileNames) {
+            const possibleFilePath: string = this.combinePath(directoryPath, possibleFileName);
+
+            try {
+                if (fs.lstatSync(possibleFilePath).isFile()) {
+                    confirmedFilePaths.push(possibleFilePath);
+                }
+            } catch (e) {
+                if (continueOnError == undefined || !continueOnError) {
+                    throw e;
+                }
+
+                if (errors != undefined) {
+                    errors.push(e);
+                }
+            }
+        }
+
+        return confirmedFilePaths;
+    }
+
     public createFullDirectoryPathIfDoesNotExist(directoryPath: string): boolean {
         if (!fs.existsSync(directoryPath)) {
             fs.mkdirSync(directoryPath, { recursive: true });
@@ -110,5 +135,9 @@ export class FileAccess {
 
     public async copyFileAsync(oldPath: string, newPath: string): Promise<void> {
         return await fs.copyFile(oldPath, newPath);
+    }
+
+    public getFileName(fileNameOrPath: string): string {
+        return path.basename(fileNameOrPath);
     }
 }
