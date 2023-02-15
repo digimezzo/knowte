@@ -25,7 +25,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AngularSplitModule } from 'angular-split';
-import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
+import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
 import 'reflect-metadata';
 import 'zone.js/mix';
 import '../polyfills';
@@ -118,6 +118,34 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
     touchendHideDelay: 0,
 };
 
+// function that returns `MarkedOptions` with renderer override
+export function markedOptionsFactory(): MarkedOptions {
+    const renderer = new MarkedRenderer();
+
+    // remove task list bullets
+    renderer.list = (body: string, ordered: boolean, start: number) => {
+        const divElement = document.createElement('div');
+        divElement.innerHTML = body;
+
+        divElement.querySelectorAll('li').forEach((li) => {
+            li.childNodes.forEach((child) => {
+                if (child instanceof HTMLInputElement && child.type === 'checkbox') {
+                    // list item
+                    li.style.marginLeft = '-1.5em';
+                    li.style.listStyleType = 'none';
+                    // checkbox
+                    child.style.margin = '0 0.2em 0.1em 0em';
+                    child.style.verticalAlign = 'middle';
+                }
+            });
+        });
+
+        return MarkedRenderer.prototype.list.call(renderer, divElement.innerHTML, ordered, start) as string;
+    };
+
+    return { renderer };
+}
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -167,9 +195,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         MarkdownModule.forRoot({
             markedOptions: {
                 provide: MarkedOptions,
-                useValue: {
-                    smartLists: true, // enable smartLists
-                },
+                useFactory: markedOptionsFactory,
             },
             sanitize: SecurityContext.NONE, // disable sanitization
         }),
