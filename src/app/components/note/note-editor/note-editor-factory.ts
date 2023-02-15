@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseSettings } from '../../../core/base-settings';
 import { ClipboardManager } from '../../../core/clipboard-manager';
-import { FileAccess } from '../../../core/file-access';
 import { Logger } from '../../../core/logger';
 import { CollectionFileAccess } from '../../../services/collection/collection-file-access';
 import { ClassicNoteEditor } from './classic-note-editor';
@@ -17,14 +16,13 @@ export class NoteEditorFactory {
         private quillFactory: QuillFactory,
         private quillTweaker: QuillTweaker,
         private clipboard: ClipboardManager,
-        private fileAccess: FileAccess,
         private settings: BaseSettings,
         private logger: Logger
     ) {}
 
     public create(noteId: string, isMarkdownNote: boolean): INoteEditor {
         if (isMarkdownNote) {
-            return new MarkdownNoteEditor(noteId, this.collectionFileAccess, this.clipboard, this.fileAccess, this.settings, this.logger);
+            return new MarkdownNoteEditor(noteId, this.collectionFileAccess, this.clipboard, this.settings, this.logger);
         }
 
         return new ClassicNoteEditor(noteId, this.quillFactory, this.quillTweaker, this.clipboard, this.settings, this.logger);

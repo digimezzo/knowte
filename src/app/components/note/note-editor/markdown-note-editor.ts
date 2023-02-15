@@ -2,7 +2,6 @@ import { nanoid } from 'nanoid';
 import { Observable, Subject } from 'rxjs';
 import { BaseSettings } from '../../../core/base-settings';
 import { ClipboardManager } from '../../../core/clipboard-manager';
-import { FileAccess } from '../../../core/file-access';
 import { Logger } from '../../../core/logger';
 import { TasksCount } from '../../../core/tasks-count';
 import { CollectionFileAccess } from '../../../services/collection/collection-file-access';
@@ -10,13 +9,13 @@ import { INoteEditor } from './i-note-editor';
 
 export class MarkdownNoteEditor implements INoteEditor {
     private _content: string;
+    private isFirstTimeSettingContent: boolean = true;
     private noteContentChanged: Subject<void> = new Subject<void>();
 
     public constructor(
         private noteId: string,
         private collectionFileAccess: CollectionFileAccess,
         private clipboard: ClipboardManager,
-        private fileAccess: FileAccess,
         private settings: BaseSettings,
         private logger: Logger
     ) {}
@@ -29,7 +28,12 @@ export class MarkdownNoteEditor implements INoteEditor {
 
     public set content(v: string) {
         this._content = v;
-        this.noteContentChanged.next();
+
+        if (!this.isFirstTimeSettingContent) {
+            this.noteContentChanged.next();
+        }
+
+        this.isFirstTimeSettingContent = false;
     }
 
     public get text(): string {
@@ -70,10 +74,6 @@ export class MarkdownNoteEditor implements INoteEditor {
         const closedTasksCount: number = (this.content.match(/- \[x\]/g) || []).length;
 
         return new TasksCount(openTasksCount, closedTasksCount);
-    }
-
-    public setNoteContent(content: string): void {
-        this._content = content;
     }
 
     public pasteImageFromClipboard(): void {
