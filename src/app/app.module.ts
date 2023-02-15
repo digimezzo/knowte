@@ -111,15 +111,18 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
-/** Custom options the configure the tooltip's default show/hide delays. */
+// Custom options the configure the tooltip's default show/hide delays.
 export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
     showDelay: 500,
     hideDelay: 0,
     touchendHideDelay: 0,
 };
 
-// function that returns `MarkedOptions` with renderer override
-export function markedOptionsFactory(): MarkedOptions {
+/**
+ * Function that returns `MarkedOptions` with renderer override
+ * See: https://github.com/jfcere/ngx-markdown/issues/315
+ */
+export function MarkedOptionsFactory(): MarkedOptions {
     const renderer = new MarkedRenderer();
 
     // remove task list bullets
@@ -144,6 +147,16 @@ export function markedOptionsFactory(): MarkedOptions {
     };
 
     return { renderer };
+
+    // See: https://snyk.io/advisor/npm-package/ngx-markdown/functions/ngx-markdown.MarkedRenderer
+    // return {
+    //     renderer: renderer,
+    //     gfm: true,
+    //     breaks: false,
+    //     pedantic: false,
+    //     smartLists: true,
+    //     smartypants: false,
+    // };
 }
 
 @NgModule({
@@ -195,7 +208,7 @@ export function markedOptionsFactory(): MarkedOptions {
         MarkdownModule.forRoot({
             markedOptions: {
                 provide: MarkedOptions,
-                useFactory: markedOptionsFactory,
+                useFactory: MarkedOptionsFactory,
             },
             sanitize: SecurityContext.NONE, // disable sanitization
         }),
