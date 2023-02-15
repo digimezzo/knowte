@@ -1,6 +1,6 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { ErrorHandler, NgModule } from '@angular/core';
+import { ErrorHandler, NgModule, SecurityContext } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,7 +25,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AngularSplitModule } from 'angular-split';
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import 'reflect-metadata';
 import 'zone.js/mix';
 import '../polyfills';
@@ -164,7 +164,15 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         FixImagePathsPipe,
     ],
     imports: [
-        MarkdownModule.forRoot(),
+        MarkdownModule.forRoot({
+            markedOptions: {
+                provide: MarkedOptions,
+                useValue: {
+                    smartLists: true, // enable smartLists
+                },
+            },
+            sanitize: SecurityContext.NONE, // disable sanitization
+        }),
         MatListModule,
         MatDialogModule,
         MatTooltipModule,

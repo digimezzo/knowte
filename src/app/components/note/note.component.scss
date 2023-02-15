@@ -179,3 +179,13 @@
     padding: 6px;
     font-size: 20px;
 }
+
+// li:has(input) {
+//     list-style-type: none !important;
+// }
+
+li input {
+    vertical-align: middle !important;
+    // margin: 0 0.2em 0.1em -1.5em !important;
+    margin: 0 0.2em 0.1em 0em !important;
+}
