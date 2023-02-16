@@ -52,7 +52,9 @@ export class MarkdownNoteEditor implements INoteEditor {
         return markdownOutputElement.innerHTML;
     }
 
-    public async initializeAsync(): Promise<void> {}
+    public async initializeAsync(): Promise<void> {
+        this.applyZoomPercentageFromSettings();
+    }
 
     public strikeThrough(): void {}
     public applyHeading(headingSize: number): void {}
@@ -104,7 +106,33 @@ export class MarkdownNoteEditor implements INoteEditor {
         markdownInputElement.selectionStart = markdownInputElement.value.length;
     }
 
-    public applyZoomPercentageFromSettings(): void {}
+    public applyZoomPercentageFromSettings(): void {
+        const pFontSize: number = (13 * this.settings.noteZoomPercentage) / 100;
+        const h1FontSize: number = pFontSize * 2;
+        const h2FontSize: number = pFontSize * 1.5;
+        const h3FontSize: number = pFontSize * 1.25;
+        const h4FontSize: number = pFontSize * 1;
+        const h5FontSize: number = pFontSize * 0.875;
+        const h6FontSize: number = pFontSize * 0.85;
+
+        const markdownInputElement: any = document.getElementById('markdown-input');
+
+        if (markdownInputElement !== null && markdownInputElement !== undefined) {
+            markdownInputElement.style.fontSize = pFontSize + 'px';
+        }
+
+        const element: HTMLElement = document.documentElement;
+
+        element.style.setProperty('--editor-p-font-size', pFontSize + 'px');
+        element.style.setProperty('--editor-input-size', pFontSize + 'px');
+
+        element.style.setProperty('--editor-h1-font-size', h1FontSize + 'px');
+        element.style.setProperty('--editor-h2-font-size', h2FontSize + 'px');
+        element.style.setProperty('--editor-h3-font-size', h3FontSize + 'px');
+        element.style.setProperty('--editor-h4-font-size', h4FontSize + 'px');
+        element.style.setProperty('--editor-h5-font-size', h5FontSize + 'px');
+        element.style.setProperty('--editor-h6-font-size', h6FontSize + 'px');
+    }
 
     private insertImage(file: any, imageId: string): void {
         const reader: FileReader = new FileReader();

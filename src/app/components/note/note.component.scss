@@ -151,6 +151,7 @@
     overflow: auto;
     border-right: 1px solid var(--theme-header-border-color);
     padding: 16px;
+    font-size: var(--editor-p-font-size);
 }
 
 .markdown-input-hidden {
@@ -178,4 +179,37 @@
 .markdown-icon {
     padding: 6px;
     font-size: 20px;
+}
+
+.markdown-body * {
+    font-size: var(--editor-p-font-size) !important;
+}
+
+.markdown-body h1 {
+    font-size: var(--editor-h1-font-size) !important;
+}
+
+.markdown-body h2 {
+    font-size: var(--editor-h2-font-size) !important;
+}
+
+.markdown-body h3 {
+    font-size: var(--editor-h3-font-size) !important;
+}
+
+.markdown-body h4 {
+    font-size: var(--editor-h4-font-size) !important;
+}
+
+.markdown-body h5 {
+    font-size: var(--editor-h5-font-size) !important;
+}
+
+.markdown-body h6 {
+    font-size: var(--editor-h6-font-size) !important;
+}
+
+.markdown-body input {
+    width: var(--editor-input-size) !important;
+    height: var(--editor-input-size) !important;
 }

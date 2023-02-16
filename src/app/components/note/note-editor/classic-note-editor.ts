@@ -206,7 +206,7 @@ export class ClassicNoteEditor implements INoteEditor {
 
     public applyZoomPercentageFromSettings(): void {
         const pFontSize: number = (13 * this.settings.noteZoomPercentage) / 100;
-        const h1FontSize: number = pFontSize * 1.7;
+        const h1FontSize: number = pFontSize * 2;
         const h2FontSize: number = pFontSize * 1.5;
 
         const element: HTMLElement = document.documentElement;

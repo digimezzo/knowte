@@ -137,7 +137,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
                     li.style.marginLeft = '-1.5em';
                     li.style.listStyleType = 'none';
                     // checkbox
-                    child.style.margin = '0 0.2em 0.1em 0em';
+                    child.style.margin = '0 0.2em 0.15em 0em';
                     child.style.verticalAlign = 'middle';
                 }
             });
