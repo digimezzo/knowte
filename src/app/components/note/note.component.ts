@@ -241,6 +241,11 @@ export class NoteComponent implements OnInit {
             // Make sure enter is not applied to the editor
             event.preventDefault();
 
+            // If this is a markdown note, make sure we're in edit mode.
+            if (this.isMarkdownNote) {
+                this.isEditing = true;
+            }
+
             // Sets focus to editor when pressing enter on title
             this.noteEditor.focus();
         }
