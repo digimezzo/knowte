@@ -99,8 +99,9 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     public focus(): void {
-        let markdownInputElement: HTMLElement = document.getElementById('markdown-input');
+        let markdownInputElement: any = document.getElementById('markdown-input');
         markdownInputElement.focus();
+        markdownInputElement.selectionStart = markdownInputElement.value.length;
     }
 
     public applyZoomPercentageFromSettings(): void {}
