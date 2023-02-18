@@ -3,6 +3,7 @@ import { BaseSettings } from '../../core/base-settings';
 import { Constants } from '../../core/constants';
 import { FileAccess } from '../../core/file-access';
 import { NoteExport } from '../../core/note-export';
+import { Strings } from '../../core/strings';
 
 @Injectable()
 export class CollectionFileAccess {
@@ -187,6 +188,10 @@ export class CollectionFileAccess {
     }
 
     public async copyAttachmentsAsync(noteId: string, collection: string, noteAttachmentsSourceDirectoryPath: string): Promise<void> {
+        if (Strings.isNullOrWhiteSpace(noteAttachmentsSourceDirectoryPath)) {
+            return;
+        }
+
         if (!this.fileAccess.pathExists(noteAttachmentsSourceDirectoryPath)) {
             return;
         }
