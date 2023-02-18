@@ -50,7 +50,7 @@ export class PersistanceService {
         noteContent: string,
         isMarkdownNote: boolean
     ): Promise<void> {
-        const noteExport: NoteExport = new NoteExport(noteTitle, noteText, noteContent, isMarkdownNote);
+        const noteExport: NoteExport = new NoteExport(noteTitle, noteText, noteContent, isMarkdownNote, '');
         await this.collectionFileAccess.saveNoteExportToFileAsync(exportFilePath, noteExport);
     }
 }

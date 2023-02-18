@@ -838,7 +838,22 @@ export class CollectionService {
                     note.isMarkdownNote
                 );
 
-                const noteExport: NoteExport = new NoteExport(note.title, note.text, noteContent, note.isMarkdownNote);
+                let noteAttachmentsDirectoryPath: string = '';
+
+                if (note.isMarkdownNote) {
+                    noteAttachmentsDirectoryPath = this.collectionFileAccess.getAttachmentsDirectoryPath(
+                        noteId,
+                        this.settings.activeCollection
+                    );
+                }
+
+                const noteExport: NoteExport = new NoteExport(
+                    note.title,
+                    note.text,
+                    noteContent,
+                    note.isMarkdownNote,
+                    noteAttachmentsDirectoryPath
+                );
                 noteExports.push(noteExport);
             }
 
@@ -931,6 +946,10 @@ export class CollectionService {
         this.dataStore.updateNoteWithoutDate(note);
 
         await this.collectionFileAccess.saveNoteContentAsync(note.id, noteExport.content, collection, note.isMarkdownNote);
+
+        if (note.isMarkdownNote) {
+            await this.collectionFileAccess.copyAttachmentsAsync(note.id, collection, noteExport.attachmentsDirectoryPath);
+        }
     }
 
     public getTrashedNotes(): Note[] {

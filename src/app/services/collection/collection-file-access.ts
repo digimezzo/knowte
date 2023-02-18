@@ -162,16 +162,16 @@ export class CollectionFileAccess {
     }
 
     public async createNoteImageFileAsync(noteId: string, collection: string, imageBuffer: Buffer, imageId: string): Promise<void> {
-        const noteAttachmentsDirectory: string = this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), noteId);
-        this.fileAccess.createFullDirectoryPathIfDoesNotExist(noteAttachmentsDirectory);
+        const noteAttachmentsDirectoryPath: string = this.getAttachmentsDirectoryPath(noteId, collection);
+        this.fileAccess.createFullDirectoryPathIfDoesNotExist(noteAttachmentsDirectoryPath);
 
-        const noteImageFullPath: string = this.fileAccess.combinePath(noteAttachmentsDirectory, `${imageId}.png`);
+        const noteImageFullPath: string = this.fileAccess.combinePath(noteAttachmentsDirectoryPath, `${imageId}.png`);
         this.fileAccess.writeBufferToFileAsync(noteImageFullPath, imageBuffer);
     }
 
     public async deleteUnusedNoteAttachmentsAsync(noteId: string, collection: string, noteText: string): Promise<void> {
-        const noteAttachmentsDirectory: string = this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), noteId);
-        const noteAttachmentFilePaths: string[] = await this.fileAccess.getFilesInDirectoryAsync(noteAttachmentsDirectory);
+        const noteAttachmentsDirectoryPath: string = this.getAttachmentsDirectoryPath(noteId, collection);
+        const noteAttachmentFilePaths: string[] = await this.fileAccess.getFilesInDirectoryAsync(noteAttachmentsDirectoryPath);
 
         for (const noteAttachmentFilePath of noteAttachmentFilePaths) {
             const noteAttachmentFileName: string = this.fileAccess.getFileName(noteAttachmentFilePath);
@@ -179,6 +179,30 @@ export class CollectionFileAccess {
             if (!noteText.includes(noteAttachmentFileName)) {
                 await this.fileAccess.deleteFileIfExistsAsync(noteAttachmentFilePath);
             }
+        }
+    }
+
+    public getAttachmentsDirectoryPath(noteId: string, collection: string): string {
+        return this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), noteId);
+    }
+
+    public async copyAttachmentsAsync(noteId: string, collection: string, noteAttachmentsSourceDirectoryPath: string): Promise<void> {
+        if (!this.fileAccess.pathExists(noteAttachmentsSourceDirectoryPath)) {
+            return;
+        }
+
+        const noteAttachmentsDestinationDirectoryPath: string = this.getAttachmentsDirectoryPath(noteId, collection);
+        this.fileAccess.createFullDirectoryPathIfDoesNotExist(noteAttachmentsDestinationDirectoryPath);
+        const noteAttachmentsSourceFilePaths: string[] = await this.fileAccess.getFilesInDirectoryAsync(noteAttachmentsSourceDirectoryPath);
+
+        for (const noteAttachmentsSourceFilePath of noteAttachmentsSourceFilePaths) {
+            const noteAttachmentFileName: string = this.fileAccess.getFileName(noteAttachmentsSourceFilePath);
+            const noteAttachmentsDestinationFilePath: string = this.fileAccess.combinePath(
+                noteAttachmentsDestinationDirectoryPath,
+                noteAttachmentFileName
+            );
+
+            await this.fileAccess.copyFileAsync(noteAttachmentsSourceFilePath, noteAttachmentsDestinationFilePath);
         }
     }
 }
