@@ -38,16 +38,6 @@ export class CollectionFileAccess {
         this.fileAccess.deleteDirectoryRecursively(noteAttachmentsDirectory);
     }
 
-    public async copyNoteFilesToCollectionAsync(noteId: string, collection: string, isMarkdownNote: boolean): Promise<void> {
-        const oldNoteContentFilePath: string = this.createNoteContentFilePath(noteId, collection, isMarkdownNote);
-        const newNoteContentFilePath: string = this.createNoteContentFilePathForGivenCollection(noteId, collection, isMarkdownNote);
-        await this.fileAccess.copyFileAsync(oldNoteContentFilePath, newNoteContentFilePath);
-
-        const oldNoteStateFilePath: string = this.createNoteStateFilePath(noteId, collection);
-        const newNoteStateFilePath: string = this.createNoteStateFilePathForGivenCollection(noteId, collection);
-        await this.fileAccess.copyFileAsync(oldNoteStateFilePath, newNoteStateFilePath);
-    }
-
     public async createCollectionDirectoryAsync(collectionDirectory: string): Promise<void> {
         await this.fileAccess.createFullDirectoryPathIfDoesNotExist(this.getCollectionDirectoryPath(collectionDirectory));
     }
@@ -75,23 +65,6 @@ export class CollectionFileAccess {
     }
 
     private createNoteStateFilePath(noteId: string, collection: string): string {
-        return this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), `${noteId}${Constants.noteStateExtension}`);
-    }
-
-    public createNoteContentFilePathForGivenCollection(noteId: string, collection: string, isMarkdownNote: boolean): string {
-        let extension: string = Constants.classicNoteContentExtension;
-
-        if (isMarkdownNote) {
-            extension = Constants.markdownNoteContentExtension;
-        }
-
-        return this.fileAccess.combinePath(
-            this.getCollectionDirectoryPath(collection),
-            `${noteId}${Constants.classicNoteContentExtension}`
-        );
-    }
-
-    private createNoteStateFilePathForGivenCollection(noteId: string, collection: string): string {
         return this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), `${noteId}${Constants.noteStateExtension}`);
     }
 
