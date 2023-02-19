@@ -133,8 +133,8 @@ export class FileAccess {
         return path.basename(directoryOrFilePath);
     }
 
-    public async copyFileAsync(oldPath: string, newPath: string): Promise<void> {
-        return await fs.copyFile(oldPath, newPath);
+    public async copyFileOrDirectoryAsync(oldPath: string, newPath: string): Promise<void> {
+        return await fs.copy(oldPath, newPath, { overwrite: true });
     }
 
     public getFileName(fileNameOrPath: string): string {

@@ -122,7 +122,7 @@ export class CollectionDataStoreAccess {
     }
 
     public addNote(uniqueNoteTitle: string, notebookId: string, isMarkdownNote: boolean): string {
-        return this.dataStore.addNote(uniqueNoteTitle, '', false);
+        return this.dataStore.addNote(uniqueNoteTitle, notebookId, isMarkdownNote);
     }
 
     public getMarkedNotes(): Note[] {

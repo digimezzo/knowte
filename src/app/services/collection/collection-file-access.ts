@@ -10,7 +10,7 @@ export class CollectionFileAccess {
     public constructor(private fileAccess: FileAccess, private settings: BaseSettings) {}
 
     public async saveNoteContentAsync(noteId: string, noteContent: string, collection: string, isMarkdownNote: boolean): Promise<void> {
-        const noteContentFilePath: string = this.createNoteContentFilePath(noteId, collection, isMarkdownNote);
+        const noteContentFilePath: string = this.getNoteContentFilePath(noteId, collection, isMarkdownNote);
         await this.fileAccess.writeTextToFileAsync(noteContentFilePath, noteContent);
     }
 
@@ -19,14 +19,14 @@ export class CollectionFileAccess {
     }
 
     public async getNoteContentByNoteIdAsync(noteId: string, collection: string, isMarkdownNote: boolean): Promise<string> {
-        const noteContentFilePath: string = this.createNoteContentFilePath(noteId, collection, isMarkdownNote);
+        const noteContentFilePath: string = this.getNoteContentFilePath(noteId, collection, isMarkdownNote);
 
         return this.fileAccess.getFileContentAsStringAsync(noteContentFilePath);
     }
 
     public async deleteNoteFilesAsync(noteId: string, collection: string, isMarkdownNote: boolean): Promise<void> {
-        const noteContentFilePath: string = this.createNoteContentFilePath(noteId, collection, isMarkdownNote);
-        const noteStateFilePath: string = this.createNoteStateFilePath(noteId, collection);
+        const noteContentFilePath: string = this.getNoteContentFilePath(noteId, collection, isMarkdownNote);
+        const noteStateFilePath: string = this.getNoteStateFilePath(noteId, collection);
 
         await this.fileAccess.deleteFileIfExistsAsync(noteContentFilePath);
 
@@ -54,7 +54,7 @@ export class CollectionFileAccess {
         await this.fileAccess.deleteDirectoryRecursively(this.getCollectionDirectoryPath(collectionDirectory));
     }
 
-    public createNoteContentFilePath(noteId: string, collection: string, isMarkdownNote: boolean): string {
+    public getNoteContentFilePath(noteId: string, collection: string, isMarkdownNote: boolean): string {
         let extension: string = Constants.classicNoteContentExtension;
 
         if (isMarkdownNote) {
@@ -64,7 +64,7 @@ export class CollectionFileAccess {
         return this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), `${noteId}${extension}`);
     }
 
-    private createNoteStateFilePath(noteId: string, collection: string): string {
+    private getNoteStateFilePath(noteId: string, collection: string): string {
         return this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), `${noteId}${Constants.noteStateExtension}`);
     }
 
@@ -167,16 +167,6 @@ export class CollectionFileAccess {
 
         const noteAttachmentsDestinationDirectoryPath: string = this.getAttachmentsDirectoryPath(noteId, collection);
         this.fileAccess.createFullDirectoryPathIfDoesNotExist(noteAttachmentsDestinationDirectoryPath);
-        const noteAttachmentsSourceFilePaths: string[] = await this.fileAccess.getFilesInDirectoryAsync(noteAttachmentsSourceDirectoryPath);
-
-        for (const noteAttachmentsSourceFilePath of noteAttachmentsSourceFilePaths) {
-            const noteAttachmentFileName: string = this.fileAccess.getFileName(noteAttachmentsSourceFilePath);
-            const noteAttachmentsDestinationFilePath: string = this.fileAccess.combinePath(
-                noteAttachmentsDestinationDirectoryPath,
-                noteAttachmentFileName
-            );
-
-            await this.fileAccess.copyFileAsync(noteAttachmentsSourceFilePath, noteAttachmentsDestinationFilePath);
-        }
+        await this.fileAccess.copyFileOrDirectoryAsync(noteAttachmentsSourceDirectoryPath, noteAttachmentsDestinationDirectoryPath);
     }
 }
