@@ -89,7 +89,9 @@ import { GlobalErrorHandler } from './globalErrorHandler';
 import { FixImagePathsPipe } from './pipes/fix-image-paths.pipe';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { AppearanceService } from './services/appearance/appearance.service';
+import { CollectionDataStoreAccess } from './services/collection/collection-data-store.access';
 import { CollectionFileAccess } from './services/collection/collection-file-access';
+import { CollectionPathConverter } from './services/collection/collection-path-converter';
 import { CollectionClient } from './services/collection/collection.client';
 import { CollectionService } from './services/collection/collection.service';
 import { NoteDateFormatter } from './services/collection/note-date-formatter';
@@ -274,7 +276,9 @@ export function MarkedOptionsFactory(): MarkedOptions {
         Logger,
         NoteCreator,
         FileAccess,
+        CollectionPathConverter,
         CollectionFileAccess,
+        CollectionDataStoreAccess,
         NoteEditorFactory,
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
         DataStore,

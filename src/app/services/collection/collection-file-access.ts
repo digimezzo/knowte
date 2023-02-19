@@ -99,10 +99,6 @@ export class CollectionFileAccess {
         return this.fileAccess.combinePath(this.settings.storageDirectory, collection);
     }
 
-    public getCollectionDatabasePath(collection: string): string {
-        return this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), `${collection}.db`);
-    }
-
     public async collectionAndItsDirectoryExistAsync(collection: string): Promise<boolean> {
         const storageDirectory: string = this.settings.storageDirectory;
         let activeCollection: string = this.settings.activeCollection;

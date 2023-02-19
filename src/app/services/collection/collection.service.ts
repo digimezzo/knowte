@@ -11,7 +11,6 @@ import { Logger } from '../../core/logger';
 import { NoteExport } from '../../core/note-export';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
-import { DataStore } from '../../data/data-store';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
 import { AppearanceService } from '../appearance/appearance.service';
@@ -24,6 +23,7 @@ import { NotebookChangedResult } from '../results/notebook-changed-result';
 import { NotesCountResult } from '../results/notes-count-result';
 import { SearchService } from '../search/search.service';
 import { TranslatorService } from '../translator/translator.service';
+import { CollectionDataStoreAccess } from './collection-data-store.access';
 import { CollectionEvents } from './collection-events';
 import { CollectionFileAccess } from './collection-file-access';
 import { NoteDateFormatter } from './note-date-formatter';
@@ -34,7 +34,6 @@ import { NoteDateFormatter } from './note-date-formatter';
  */
 @Injectable()
 export class CollectionService {
-    private dataStore: DataStore = new DataStore();
     private isInitializing: boolean = false;
     private isInitialized: boolean = false;
     private globalEmitter: any = remote.getGlobal('globalEmitter');
@@ -69,6 +68,7 @@ export class CollectionService {
         private appearance: AppearanceService,
         private cryptography: CryptographyService,
         private collectionFileAccess: CollectionFileAccess,
+        private collectionDataStoreAccess: CollectionDataStoreAccess,
         private noteDateFormatter: NoteDateFormatter,
         private dateFormatter: DateFormatter,
         private settings: BaseSettings,
@@ -195,12 +195,10 @@ export class CollectionService {
 
         this.setActiveCollection(activeCollection);
 
-        const databaseFilePath: string = this.collectionFileAccess.getCollectionDatabasePath(this.settings.activeCollection);
+        // Initialize the data store.
+        await this.collectionDataStoreAccess.initializeAsync(activeCollection);
 
-        // Now initialize the data store.
-        await this.dataStore.initializeAsync(databaseFilePath);
-
-        this.logger.info(`Initialized data store: ${databaseFilePath}`, 'CollectionService', 'initializeAsync');
+        this.logger.info(`Initialized collection: ${activeCollection}`, 'CollectionService', 'initializeAsync');
 
         // Only an initialized collectionService can process global requests
         this.listenToNoteEvents();
@@ -355,7 +353,7 @@ export class CollectionService {
             notebooks.push(unfiledNotesNotebook);
 
             // 4. Get the user defined notebooks
-            const userNotebooks: Notebook[] = this.dataStore.getNotebooks();
+            const userNotebooks: Notebook[] = this.collectionDataStoreAccess.getNotebooks();
 
             // 5. Add the user defined notebooks to the notebooks
             notebooks.push.apply(notebooks, userNotebooks);
@@ -385,7 +383,7 @@ export class CollectionService {
             }
 
             // Add the notebook to the data store
-            this.dataStore.addNotebook(notebookName);
+            this.collectionDataStoreAccess.addNotebook(notebookName);
             this.logger.info(`Added notebook '${notebookName}' to the data store`, 'CollectionService', 'addNotebook');
         } catch (error) {
             this.logger.error(`Could not add notebook '${notebookName}'. Cause: ${error}`, 'CollectionService', 'addNotebook');
@@ -412,7 +410,7 @@ export class CollectionService {
             }
 
             // Get the notebook
-            const notebook: Notebook = this.dataStore.getNotebookById(notebookId);
+            const notebook: Notebook = this.collectionDataStoreAccess.getNotebookById(notebookId);
 
             if (notebook.name === newNotebookName) {
                 // No rename required
@@ -421,7 +419,7 @@ export class CollectionService {
 
             // Rename the notebook
             notebook.name = newNotebookName;
-            this.dataStore.updateNotebook(notebook);
+            this.collectionDataStoreAccess.updateNotebook(notebook);
         } catch (error) {
             this.logger.error(
                 `Could not rename the notebook with id='${notebookId}' to '${newNotebookName}'. Cause: ${error}`,
@@ -438,7 +436,7 @@ export class CollectionService {
     }
 
     public getNotebookName(notebookId: string): string {
-        return this.dataStore.getNotebookById(notebookId).name;
+        return this.collectionDataStoreAccess.getNotebookById(notebookId).name;
     }
 
     public async deleteNotebooksAsync(notebookIds: string[]): Promise<Operation> {
@@ -446,7 +444,7 @@ export class CollectionService {
 
         for (const notebookId of notebookIds) {
             try {
-                this.dataStore.deleteNotebook(notebookId);
+                this.collectionDataStoreAccess.deleteNotebook(notebookId);
             } catch (error) {
                 this.logger.error(
                     `Could not delete the notebook with id='${notebookId}'. Cause: ${error}`,
@@ -463,8 +461,8 @@ export class CollectionService {
     }
 
     private async deleteNotePermanentlyAsync(noteId: string): Promise<void> {
-        const note: Note = this.dataStore.getNoteById(noteId);
-        this.dataStore.deleteNote(noteId);
+        const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
+        this.collectionDataStoreAccess.deleteNote(noteId);
 
         try {
             await this.collectionFileAccess.deleteNoteFilesAsync(noteId, this.settings.activeCollection, note.isMarkdownNote);
@@ -505,7 +503,7 @@ export class CollectionService {
         for (const noteId of noteIds) {
             if (this.settings.moveDeletedNotesToTrash) {
                 try {
-                    this.dataStore.trashNote(noteId);
+                    this.collectionDataStoreAccess.trashNote(noteId);
                 } catch (error) {
                     this.logger.error(
                         `Could not move the the note with id='${noteId}' to the trash. Cause: ${error}`,
@@ -540,7 +538,7 @@ export class CollectionService {
 
         for (const noteId of noteIds) {
             try {
-                this.dataStore.restoreNote(noteId);
+                this.collectionDataStoreAccess.restoreNote(noteId);
             } catch (error) {
                 this.logger.error(`Could not restore the note with id='${noteId}'. Cause: ${error}`, 'CollectionService', 'restoreNotes');
 
@@ -563,11 +561,11 @@ export class CollectionService {
             let uncategorizedNotes: Note[] = [];
 
             if (notebookId === Constants.allNotesNotebookId) {
-                uncategorizedNotes = this.dataStore.getNotes();
+                uncategorizedNotes = this.collectionDataStoreAccess.getNotes();
             } else if (notebookId === Constants.unfiledNotesNotebookId) {
-                uncategorizedNotes = this.dataStore.getUnfiledNotes();
+                uncategorizedNotes = this.collectionDataStoreAccess.getUnfiledNotes();
             } else {
-                uncategorizedNotes = this.dataStore.getNotebookNotes(notebookId);
+                uncategorizedNotes = this.collectionDataStoreAccess.getNotebookNotes(notebookId);
             }
 
             // TODO: filter uncategorizedNotes by search text
@@ -645,7 +643,7 @@ export class CollectionService {
             // 1. Add note to data store
             const baseTitle: string = await this.translator.getAsync('Notes.NewNote');
             uniqueTitle = this.getUniqueNoteTitle(baseTitle, true);
-            result.noteId = this.dataStore.addNote(uniqueTitle, notebookId, isMarkdownNote);
+            result.noteId = this.collectionDataStoreAccess.addNote(uniqueTitle, notebookId, isMarkdownNote);
 
             // 2. Create note file
             await this.collectionFileAccess.saveNoteContentAsync(result.noteId, '', this.settings.activeCollection, isMarkdownNote);
@@ -659,12 +657,12 @@ export class CollectionService {
     }
 
     public getNote(noteId: string): Note {
-        return this.dataStore.getNoteById(noteId);
+        return this.collectionDataStoreAccess.getNoteById(noteId);
     }
 
     public async getNotebookAsync(noteId: string): Promise<Notebook> {
-        const note: Note = this.dataStore.getNoteById(noteId);
-        let notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
+        const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
+        let notebook: Notebook = this.collectionDataStoreAccess.getNotebookById(note.notebookId);
 
         if (!note.notebookId || !notebook) {
             notebook = new Notebook(await this.translator.getAsync('MainPage.UnfiledNotes'));
@@ -674,11 +672,11 @@ export class CollectionService {
     }
 
     public setNoteMark(noteId: string, isMarked: boolean): void {
-        const note: Note = this.dataStore.getNoteById(noteId);
+        const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
         note.isMarked = isMarked;
-        this.dataStore.updateNote(note);
+        this.collectionDataStoreAccess.updateNote(note);
 
-        const markedNotes: Note[] = this.dataStore.getMarkedNotes();
+        const markedNotes: Note[] = this.collectionDataStoreAccess.getMarkedNotes();
         const result: NoteMarkResult = new NoteMarkResult(noteId, note.isMarked, markedNotes.length);
 
         this.noteMarkChanged.next(result);
@@ -690,7 +688,7 @@ export class CollectionService {
 
         for (const noteId of noteIds) {
             try {
-                const note: Note = this.dataStore.getNoteById(noteId);
+                const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
 
                 if (notebookId === Constants.allNotesNotebookId || notebookId === note.notebookId) {
                     // Skip this note
@@ -702,7 +700,7 @@ export class CollectionService {
                 }
 
                 note.notebookId = notebookId;
-                this.dataStore.updateNote(note);
+                this.collectionDataStoreAccess.updateNote(note);
                 this.sendNotebookNameAsync(noteId);
             } catch (error) {
                 this.logger.error(
@@ -733,11 +731,11 @@ export class CollectionService {
                 uniqueNoteTitle = this.getUniqueNoteTitle(finalNoteTitle, false);
 
                 // 2. Rename the note
-                const note: Note = this.dataStore.getNoteById(noteId);
+                const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
 
                 if (note) {
                     note.title = uniqueNoteTitle;
-                    this.dataStore.updateNote(note);
+                    this.collectionDataStoreAccess.updateNote(note);
 
                     this.logger.info(
                         `Renamed note with id=${noteId} from ${initialNoteTitle} to ${uniqueNoteTitle}.`,
@@ -785,7 +783,7 @@ export class CollectionService {
         callback: any
     ): void {
         try {
-            const note: Note = this.dataStore.getNoteById(noteId);
+            const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
 
             if (note) {
                 if (isEncrypted) {
@@ -796,7 +794,7 @@ export class CollectionService {
 
                 note.closedTasksCount = tasksCount.closedTasksCount;
                 note.totalTasksCount = tasksCount.totalTasksCount;
-                this.dataStore.updateNote(note);
+                this.collectionDataStoreAccess.updateNote(note);
 
                 this.logger.info(`Set text of note with id=${noteId}.`, 'CollectionService', 'saveNoteTextEventHandler');
             } else {
@@ -831,7 +829,7 @@ export class CollectionService {
             const noteExports: NoteExport[] = [];
 
             for (const noteId of noteIds) {
-                const note: Note = this.dataStore.getNoteById(noteId);
+                const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
                 const noteContent: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(
                     noteId,
                     this.settings.activeCollection,
@@ -858,8 +856,7 @@ export class CollectionService {
             }
 
             // 2. Switch data store to new collection
-            const newCollectionDatabaseFilePath: string = this.collectionFileAccess.getCollectionDatabasePath(collection);
-            await this.dataStore.initializeAsync(newCollectionDatabaseFilePath);
+            await this.collectionDataStoreAccess.initializeAsync(collection);
 
             // 3. Import all note exports into new collection
             const proposedTitleSuffix: string = await this.translator.getAsync('Notes.Moved');
@@ -869,10 +866,7 @@ export class CollectionService {
             }
 
             // 4. Switch data store back to old collection
-            const oldCollectionDatabaseFilePath: string = this.collectionFileAccess.getCollectionDatabasePath(
-                this.settings.activeCollection
-            );
-            await this.dataStore.initializeAsync(oldCollectionDatabaseFilePath);
+            await this.collectionDataStoreAccess.initializeAsync(this.settings.activeCollection);
 
             // 5. Delete notes from old collection
             await this.deleteNotesPermanentlyAsync(noteIds);
@@ -933,9 +927,9 @@ export class CollectionService {
 
         const uniqueNoteTitle: string = this.getUniqueNoteTitle(proposedNoteTitle, false);
 
-        this.dataStore.addNote(uniqueNoteTitle, '', false);
+        this.collectionDataStoreAccess.addNote(uniqueNoteTitle, '', false);
 
-        const note: Note = this.dataStore.getNoteByTitle(uniqueNoteTitle);
+        const note: Note = this.collectionDataStoreAccess.getNoteByTitle(uniqueNoteTitle);
         note.text = noteExport.text;
         note.isMarkdownNote = noteExport.isMarkdownNote;
 
@@ -943,7 +937,7 @@ export class CollectionService {
             note.notebookId = notebookId;
         }
 
-        this.dataStore.updateNoteWithoutDate(note);
+        this.collectionDataStoreAccess.updateNoteWithoutDate(note);
 
         await this.collectionFileAccess.saveNoteContentAsync(note.id, noteExport.content, collection, note.isMarkdownNote);
 
@@ -953,7 +947,7 @@ export class CollectionService {
     }
 
     public getTrashedNotes(): Note[] {
-        const trashedNotes: Note[] = this.dataStore.getTrashedNotes();
+        const trashedNotes: Note[] = this.collectionDataStoreAccess.getTrashedNotes();
 
         if (trashedNotes == undefined) {
             return [];
@@ -975,11 +969,11 @@ export class CollectionService {
     }
 
     private async getNoteDetailsEventHandler(noteId: string, callback: any): Promise<void> {
-        const note: Note = this.dataStore.getNoteById(noteId);
+        const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
         let notebookName: string = await this.translator.getAsync('MainPage.UnfiledNotes');
 
         if (note.notebookId) {
-            const notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
+            const notebook: Notebook = this.collectionDataStoreAccess.getNotebookById(note.notebookId);
 
             if (notebook) {
                 notebookName = notebook.name;
@@ -1000,11 +994,11 @@ export class CollectionService {
     }
 
     private async sendNotebookNameAsync(noteId: string): Promise<void> {
-        const note: Note = this.dataStore.getNoteById(noteId);
+        const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
         let notebookName: string = await this.translator.getAsync('MainPage.UnfiledNotes');
 
         if (note.notebookId) {
-            const notebook: Notebook = this.dataStore.getNotebookById(note.notebookId);
+            const notebook: Notebook = this.collectionDataStoreAccess.getNotebookById(note.notebookId);
 
             if (notebook) {
                 notebookName = notebook.name;
@@ -1044,7 +1038,7 @@ export class CollectionService {
                 this.openNoteIds.splice(this.openNoteIds.indexOf(noteId), 1);
             }
 
-            const note: Note = this.dataStore.getNoteById(noteId);
+            const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
 
             // TODO: we'd better split up setNoteOpenAsync into 2 functions.
             try {
@@ -1068,7 +1062,7 @@ export class CollectionService {
             uniqueTitle = `${baseTitle} ${counter}`;
         }
 
-        const notesWithIdenticalBaseTitle: Note[] = this.dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
+        const notesWithIdenticalBaseTitle: Note[] = this.collectionDataStoreAccess.getNotesWithIdenticalBaseTitle(baseTitle);
         const similarTitles: string[] = notesWithIdenticalBaseTitle.map((x) => x.title);
 
         while (similarTitles.includes(uniqueTitle)) {
@@ -1080,7 +1074,7 @@ export class CollectionService {
     }
 
     private notebookExists(notebookName: string): boolean {
-        const notebook: Notebook = this.dataStore.getNotebookByName(notebookName);
+        const notebook: Notebook = this.collectionDataStoreAccess.getNotebookByName(notebookName);
 
         return notebook != undefined;
     }
@@ -1098,11 +1092,11 @@ export class CollectionService {
 
     public encryptNoteEventHandler(noteId: string, secretKey: string): void {
         const secretKeyHash: string = this.cryptography.createHash(secretKey);
-        this.dataStore.encryptNote(noteId, secretKeyHash);
+        this.collectionDataStoreAccess.encryptNote(noteId, secretKeyHash);
     }
 
     public decryptNoteEventHandler(noteId: string): void {
-        this.dataStore.decryptNote(noteId);
+        this.collectionDataStoreAccess.decryptNote(noteId);
     }
 
     private async getIsInitializedEventHandler(callback: any): Promise<void> {

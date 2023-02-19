@@ -35,10 +35,6 @@ export class Utils {
         return true;
     }
 
-    public static pathToCollection(collectionDirectoryPath: string): string {
-        return path.dirname(collectionDirectoryPath).split(path.sep).pop();
-    }
-
     public static getNoteExportPath(exportDirectory: string, noteTitle: string): string {
         return path.join(exportDirectory, `${sanitize(noteTitle)}${Constants.noteExportExtension}`);
     }

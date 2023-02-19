@@ -140,4 +140,8 @@ export class FileAccess {
     public getFileName(fileNameOrPath: string): string {
         return path.basename(fileNameOrPath);
     }
+
+    public getLastDirectoryInDirectoryPath(directoryPath: string): string {
+        return path.dirname(directoryPath).split(path.sep).pop();
+    }
 }
