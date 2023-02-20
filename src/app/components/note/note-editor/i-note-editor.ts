@@ -8,7 +8,6 @@ export interface INoteEditor {
     noteContentChanged$: Observable<void>;
     initializeAsync(): Promise<void>;
     hasSelectedText(): boolean;
-    strikeThrough(): void;
     applyHeading(headingSize: number): void;
     performCut(): void;
     performCopy(): void;
@@ -19,4 +18,6 @@ export interface INoteEditor {
     focus(): void;
     applyZoomPercentageFromSettings(): void;
     applyBold(): void;
+    applyItalic(): void;
+    applyStrikeThrough(): void;
 }

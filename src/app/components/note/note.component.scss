@@ -176,6 +176,12 @@
     cursor: pointer;
 }
 
+.markdown-action-separator {
+    border-right: 1px solid var(--theme-header-border-color);
+    padding: 4px;
+    margin: 4px;
+}
+
 .markdown-icon {
     padding: 6px;
     font-size: 20px;

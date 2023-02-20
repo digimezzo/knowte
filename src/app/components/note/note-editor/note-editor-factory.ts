@@ -25,6 +25,6 @@ export class NoteEditorFactory {
             return new MarkdownNoteEditor(noteId, this.collectionFileAccess, this.clipboard, this.settings, this.logger);
         }
 
-        return new ClassicNoteEditor(noteId, this.quillFactory, this.quillTweaker, this.clipboard, this.settings, this.logger);
+        return new ClassicNoteEditor(this.quillFactory, this.quillTweaker, this.clipboard, this.settings, this.logger);
     }
 }

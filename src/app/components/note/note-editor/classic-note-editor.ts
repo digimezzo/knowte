@@ -13,7 +13,6 @@ export class ClassicNoteEditor implements INoteEditor {
     private noteContentChanged: Subject<void> = new Subject<void>();
 
     public constructor(
-        private noteId: string,
         private quillFactory: QuillFactory,
         private quillTweaker: QuillTweaker,
         private clipboard: ClipboardManager,
@@ -170,15 +169,6 @@ export class ClassicNoteEditor implements INoteEditor {
         }
     }
 
-    public strikeThrough(): void {
-        const range: any = this.quill.getSelection();
-        const format: any = this.quill.getFormat(range.index, range.length);
-        const formatString: string = JSON.stringify(format);
-
-        const applyStrikeThrough: boolean = !formatString.includes('strike');
-        this.quill.formatText(range.index, range.length, 'strike', applyStrikeThrough);
-    }
-
     public applyHeading(headingSize: number): void {
         const range: any = this.quill.getSelection();
         const format: any = this.quill.getFormat(range.index, range.length);
@@ -218,5 +208,18 @@ export class ClassicNoteEditor implements INoteEditor {
 
     public applyBold(): void {
         // Not used in ClassicNoteEditor
+    }
+
+    public applyItalic(): void {
+        // Not used in ClassicNoteEditor
+    }
+
+    public applyStrikeThrough(): void {
+        const range: any = this.quill.getSelection();
+        const format: any = this.quill.getFormat(range.index, range.length);
+        const formatString: string = JSON.stringify(format);
+
+        const applyStrikeThrough: boolean = !formatString.includes('strike');
+        this.quill.formatText(range.index, range.length, 'strike', applyStrikeThrough);
     }
 }

@@ -662,6 +662,6 @@ export class NoteComponent implements OnInit {
     }
 
     public strikeThrough(event: any): void {
-        this.noteEditor.strikeThrough();
+        this.noteEditor.applyStrikeThrough();
     }
 }

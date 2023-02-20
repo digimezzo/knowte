@@ -57,7 +57,6 @@ export class MarkdownNoteEditor implements INoteEditor {
         this.applyZoomPercentageFromSettings();
     }
 
-    public strikeThrough(): void {}
     public applyHeading(headingSize: number): void {}
 
     public hasSelectedText(): boolean {
@@ -147,6 +146,18 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     public applyBold(): void {
+        this.applyFormatting('**');
+    }
+
+    public applyItalic(): void {
+        this.applyFormatting('*');
+    }
+
+    public applyStrikeThrough(): void {
+        this.applyFormatting('~~');
+    }
+
+    private applyFormatting(formatting: string): void {
         const markdownInputElement: any = document.getElementById('markdown-input');
         const selectionText: string = markdownInputElement.value.substring(
             markdownInputElement.selectionStart,
@@ -158,7 +169,7 @@ export class MarkdownNoteEditor implements INoteEditor {
         }
 
         const [start, end] = [markdownInputElement.selectionStart, markdownInputElement.selectionEnd];
-        markdownInputElement.setRangeText('**' + selectionText + '**', start, end, 'select');
+        markdownInputElement.setRangeText(`${formatting}${selectionText}${formatting}`, start, end, 'select');
         this.content = markdownInputElement.value;
     }
 }
