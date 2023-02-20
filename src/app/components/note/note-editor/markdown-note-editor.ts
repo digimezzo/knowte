@@ -3,6 +3,7 @@ import { Observable, Subject } from 'rxjs';
 import { BaseSettings } from '../../../core/base-settings';
 import { ClipboardManager } from '../../../core/clipboard-manager';
 import { Logger } from '../../../core/logger';
+import { Strings } from '../../../core/strings';
 import { TasksCount } from '../../../core/tasks-count';
 import { CollectionFileAccess } from '../../../services/collection/collection-file-access';
 import { INoteEditor } from './i-note-editor';
@@ -143,5 +144,21 @@ export class MarkdownNoteEditor implements INoteEditor {
         };
 
         reader.readAsArrayBuffer(file);
+    }
+
+    public applyBold(): void {
+        const markdownInputElement: any = document.getElementById('markdown-input');
+        const selectionText: string = markdownInputElement.value.substring(
+            markdownInputElement.selectionStart,
+            markdownInputElement.selectionEnd
+        );
+
+        if (Strings.isNullOrWhiteSpace(selectionText)) {
+            return;
+        }
+
+        const [start, end] = [markdownInputElement.selectionStart, markdownInputElement.selectionEnd];
+        markdownInputElement.setRangeText('**' + selectionText + '**', start, end, 'select');
+        this.content = markdownInputElement.value;
     }
 }

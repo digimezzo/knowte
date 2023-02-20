@@ -18,4 +18,5 @@ export interface INoteEditor {
     pasteImageFromClipboard(): void;
     focus(): void;
     applyZoomPercentageFromSettings(): void;
+    applyBold(): void;
 }

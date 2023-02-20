@@ -215,4 +215,8 @@ export class ClassicNoteEditor implements INoteEditor {
         element.style.setProperty('--editor-h1-font-size', h1FontSize + 'px');
         element.style.setProperty('--editor-h2-font-size', h2FontSize + 'px');
     }
+
+    public applyBold(): void {
+        // Not used in ClassicNoteEditor
+    }
 }

@@ -111,9 +111,14 @@
                     (keydown.control.2)="heading2($event)"
                 ></div>
                 <div *ngIf="this.isMarkdownNote" class="d-flex flex-column fill w-100 h-100 overflow-hidden">
-                    <div class="markdown-edit-button no-select" [ngClass]="{ accent: this.isEditing }" (click)="toggleIsEditing()">
-                        <i class="markdown-icon las la-columns" [ngClass]="{ accent: this.isEditing }"></i>
-                        {{ 'Notes.Edit' | translate }}
+                    <div class="d-flex flex-row">
+                        <div class="markdown-action-button no-select" (click)="toggleIsEditing()">
+                            <i class="markdown-icon las la-columns" [ngClass]="{ accent: this.isEditing }"></i>
+                            {{ 'Notes.Edit' | translate }}
+                        </div>
+                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyBold()" title="Bold">
+                            <i class="markdown-icon las la-bold"></i>
+                        </div>
                     </div>
                     <div class="d-flex flex-row fill overflow-hidden pt-1 pb-2">
                         <textarea
