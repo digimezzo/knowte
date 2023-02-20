@@ -88,16 +88,20 @@ export class MarkdownNoteEditor implements INoteEditor {
 
             const imageId: string = nanoid();
             this.insertImage(this.clipboard.readImage(), imageId);
-
-            const imageAnchor: string = `![${imageId}.png](./attachments/${imageId}.png)`;
-
-            const [start, end] = [markdownInputElement.selectionStart, markdownInputElement.selectionEnd];
-            markdownInputElement.setRangeText(imageAnchor, start, end, 'select');
-
-            this.content = markdownInputElement.value;
+            this.insertText(`![${imageId}.png](./attachments/${imageId}.png)`);
         } catch (error) {
             this.logger.error('Could not paste image from clipboard', 'MarkdownNoteEditor', 'pasteImageFromClipboard');
         }
+    }
+
+    private insertText(textToInsert: string): void {
+        // This also works, but has no undo.
+        // let markdownInputElement: any = document.getElementById('markdown-input');
+        // const [start, end] = [markdownInputElement.selectionStart, markdownInputElement.selectionEnd];
+        // markdownInputElement.setRangeText(textToInsert, start, end, 'select');
+        // this.content = markdownInputElement.value;
+
+        document.execCommand('insertText', false, textToInsert);
     }
 
     public focus(): void {
@@ -168,8 +172,6 @@ export class MarkdownNoteEditor implements INoteEditor {
             return;
         }
 
-        const [start, end] = [markdownInputElement.selectionStart, markdownInputElement.selectionEnd];
-        markdownInputElement.setRangeText(`${formatting}${selectionText}${formatting}`, start, end, 'select');
-        this.content = markdownInputElement.value;
+        this.insertText(`${formatting}${selectionText}${formatting}`);
     }
 }
