@@ -645,6 +645,31 @@ export class NoteComponent implements OnInit {
         this.bottomSheet.open(SearchBottomSheetComponent, config);
     }
 
+    @HostListener('document:keydown.control.b')
+    public applyBold(): void {
+        this.noteEditor.applyBold();
+    }
+
+    @HostListener('document:keydown.control.i')
+    public applyItalic(): void {
+        this.noteEditor.applyItalic();
+    }
+
+    @HostListener('document:keydown.control.s')
+    public applyStrikeThrough(): void {
+        this.noteEditor.applyStrikeThrough();
+    }
+
+    @HostListener('document:keydown.control.1')
+    public applyHeading1(): void {
+        this.noteEditor.applyHeading(1);
+    }
+
+    @HostListener('document:keydown.control.2')
+    public applyHeading2(): void {
+        this.noteEditor.applyHeading(2);
+    }
+
     public openShareBottomSheet(): void {
         this.hideActionButtonsDelayedAsync();
 

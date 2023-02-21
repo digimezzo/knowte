@@ -102,14 +102,7 @@
                         (keydown)="onTitleKeydown($event)"
                     />
                 </div>
-                <div
-                    *ngIf="!this.isMarkdownNote"
-                    class="fill w-100 h-100 overflow-hidden"
-                    id="editor"
-                    (keydown.control.s)="strikeThrough($event)"
-                    (keydown.control.1)="heading1($event)"
-                    (keydown.control.2)="heading2($event)"
-                ></div>
+                <div *ngIf="!this.isMarkdownNote" class="fill w-100 h-100 overflow-hidden" id="editor"></div>
                 <div *ngIf="this.isMarkdownNote" class="d-flex flex-column fill w-100 h-100 overflow-hidden">
                     <div class="d-flex flex-row">
                         <div class="markdown-action-button no-select" (click)="toggleIsEditing()">

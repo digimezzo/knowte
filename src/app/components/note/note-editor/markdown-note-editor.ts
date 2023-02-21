@@ -57,7 +57,13 @@ export class MarkdownNoteEditor implements INoteEditor {
         this.applyZoomPercentageFromSettings();
     }
 
-    public applyHeading(headingSize: number): void {}
+    public applyHeading(headingSize: number): void {
+        if (headingSize === 1) {
+            // TODO
+        } else if (headingSize === 2) {
+            // TODO
+        }
+    }
 
     public hasSelectedText(): boolean {
         return false;
