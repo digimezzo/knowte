@@ -1,25 +1,32 @@
 import { nanoid } from 'nanoid';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { BaseSettings } from '../../../core/base-settings';
 import { ClipboardManager } from '../../../core/clipboard-manager';
 import { Logger } from '../../../core/logger';
 import { Strings } from '../../../core/strings';
 import { TasksCount } from '../../../core/tasks-count';
-import { CollectionFileAccess } from '../../../services/collection/collection-file-access';
 import { INoteEditor } from './i-note-editor';
+import { NoteImageSaver } from './note-image-saver';
 
 export class MarkdownNoteEditor implements INoteEditor {
     private _content: string;
     private isFirstTimeSettingContent: boolean = true;
     private noteContentChanged: Subject<void> = new Subject<void>();
+    private subscription: Subscription = new Subscription();
 
     public constructor(
         private noteId: string,
-        private collectionFileAccess: CollectionFileAccess,
+        private noteImageSaver: NoteImageSaver,
         private clipboard: ClipboardManager,
         private settings: BaseSettings,
         private logger: Logger
-    ) {}
+    ) {
+        this.subscription.add(
+            this.noteImageSaver.imageSaved$.subscribe((imageId) => {
+                this.insertImage(imageId);
+            })
+        );
+    }
 
     public noteContentChanged$: Observable<void> = this.noteContentChanged.asObservable();
 
@@ -59,9 +66,11 @@ export class MarkdownNoteEditor implements INoteEditor {
 
     public applyHeading(headingSize: number): void {
         if (headingSize === 1) {
-            // TODO
+            this.applyFormatting('# ', true);
         } else if (headingSize === 2) {
-            // TODO
+            this.applyFormatting('## ', true);
+        } else if (headingSize === 3) {
+            this.applyFormatting('### ', true);
         }
     }
 
@@ -92,22 +101,21 @@ export class MarkdownNoteEditor implements INoteEditor {
                 return;
             }
 
-            const imageId: string = nanoid();
-            this.insertImage(this.clipboard.readImage(), imageId);
-            this.insertText(`![${imageId}.png](./attachments/${imageId}.png)`);
+            this.saveImageFile(this.clipboard.readImage());
         } catch (error) {
             this.logger.error('Could not paste image from clipboard', 'MarkdownNoteEditor', 'pasteImageFromClipboard');
         }
     }
 
     private insertText(textToInsert: string): void {
-        // This also works, but has no undo.
-        // let markdownInputElement: any = document.getElementById('markdown-input');
-        // const [start, end] = [markdownInputElement.selectionStart, markdownInputElement.selectionEnd];
-        // markdownInputElement.setRangeText(textToInsert, start, end, 'select');
-        // this.content = markdownInputElement.value;
-
         document.execCommand('insertText', false, textToInsert);
+    }
+
+    private insertImage(imageId: string): void {
+        // setTimeout required to ensure that the file exists before the link is pasted
+        setTimeout(() => {
+            this.insertText(`![${imageId}.png](./attachments/${imageId}.png)`);
+        }, 50);
     }
 
     public focus(): void {
@@ -144,30 +152,31 @@ export class MarkdownNoteEditor implements INoteEditor {
         element.style.setProperty('--editor-h6-font-size', h6FontSize + 'px');
     }
 
-    private insertImage(file: any, imageId: string): void {
+    private saveImageFile(file: any): void {
         const reader: FileReader = new FileReader();
 
         reader.onload = (e: any) => {
             const imageBuffer: Buffer = Buffer.from(e.target.result);
-            this.collectionFileAccess.createNoteImageFileAsync(this.noteId, this.settings.activeCollection, imageBuffer, imageId);
+            const imageId: string = nanoid();
+            this.noteImageSaver.saveImageAsync(this.noteId, this.settings.activeCollection, imageBuffer, imageId);
         };
 
         reader.readAsArrayBuffer(file);
     }
 
     public applyBold(): void {
-        this.applyFormatting('**');
+        this.applyFormatting('**', false);
     }
 
     public applyItalic(): void {
-        this.applyFormatting('*');
+        this.applyFormatting('*', false);
     }
 
     public applyStrikeThrough(): void {
-        this.applyFormatting('~~');
+        this.applyFormatting('~~', false);
     }
 
-    private applyFormatting(formatting: string): void {
+    private applyFormatting(formatting: string, onlyBefore: boolean): void {
         const markdownInputElement: any = document.getElementById('markdown-input');
         const selectionText: string = markdownInputElement.value.substring(
             markdownInputElement.selectionStart,
@@ -178,6 +187,10 @@ export class MarkdownNoteEditor implements INoteEditor {
             return;
         }
 
-        this.insertText(`${formatting}${selectionText}${formatting}`);
+        if (onlyBefore) {
+            this.insertText(`${formatting}${selectionText}`);
+        } else {
+            this.insertText(`${formatting}${selectionText}${formatting}`);
+        }
     }
 }

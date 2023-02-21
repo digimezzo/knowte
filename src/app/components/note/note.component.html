@@ -105,19 +105,33 @@
                 <div *ngIf="!this.isMarkdownNote" class="fill w-100 h-100 overflow-hidden" id="editor"></div>
                 <div *ngIf="this.isMarkdownNote" class="d-flex flex-column fill w-100 h-100 overflow-hidden">
                     <div class="d-flex flex-row">
-                        <div class="markdown-action-button no-select" (click)="toggleIsEditing()">
+                        <div class="markdown-edit-button no-select ml-1" (click)="toggleIsEditing()">
                             <i class="markdown-icon las la-columns" [ngClass]="{ accent: this.isEditing }"></i>
                             {{ 'Notes.Edit' | translate }}
                         </div>
                         <div class="markdown-action-separator no-select"></div>
-                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyBold()" title="Bold">
-                            <i class="markdown-icon las la-bold"></i>
+                        <div class="markdown-action-button no-select font-bold" (click)="this.noteEditor.applyBold()" title="Bold">B</div>
+                        <div class="markdown-action-button no-select font-italic" (click)="this.noteEditor.applyItalic()" title="Italic">
+                            I
                         </div>
-                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyItalic()" title="Italic">
-                            <i class="markdown-icon las la-italic"></i>
+                        <div
+                            class="markdown-action-button no-select font-strikethrough"
+                            (click)="this.noteEditor.applyStrikeThrough()"
+                            title="Strikethrough"
+                        >
+                            S
                         </div>
-                        <div class="markdown-action-button no-select" (click)="this.noteEditor.strikeThrough()" title="Strikethrough">
-                            <i class="markdown-icon las la-strikethrough"></i>
+                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyHeading(1)" title="Heading 1">
+                            H
+                            <div class="markdown-action-button-subscript">1</div>
+                        </div>
+                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyHeading(2)" title="Heading 2">
+                            H
+                            <div class="markdown-action-button-subscript">2</div>
+                        </div>
+                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyHeading(3)" title="Heading 3">
+                            H
+                            <div class="markdown-action-button-subscript">3</div>
                         </div>
                     </div>
                     <div class="d-flex flex-row fill overflow-hidden pt-1 pb-2">

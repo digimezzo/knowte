@@ -169,11 +169,27 @@
     width: 100% !important;
 }
 
+.markdown-edit-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
 .markdown-action-button {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     cursor: pointer;
+    font-size: 20px;
+    width: 30px;
+}
+
+.markdown-action-button-subscript {
+    padding-top: 5px;
+    font-size: 10px;
 }
 
 .markdown-action-separator {

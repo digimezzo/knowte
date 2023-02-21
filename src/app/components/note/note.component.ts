@@ -670,6 +670,11 @@ export class NoteComponent implements OnInit {
         this.noteEditor.applyHeading(2);
     }
 
+    @HostListener('document:keydown.control.3')
+    public applyHeading3(): void {
+        this.noteEditor.applyHeading(3);
+    }
+
     public openShareBottomSheet(): void {
         this.hideActionButtonsDelayedAsync();
 
