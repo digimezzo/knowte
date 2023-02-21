@@ -66,11 +66,11 @@ export class MarkdownNoteEditor implements INoteEditor {
 
     public applyHeading(headingSize: number): void {
         if (headingSize === 1) {
-            this.applyFormatting('# ', true);
+            this.applyHeadingFormatting('# ');
         } else if (headingSize === 2) {
-            this.applyFormatting('## ', true);
+            this.applyHeadingFormatting('## ');
         } else if (headingSize === 3) {
-            this.applyFormatting('### ', true);
+            this.applyHeadingFormatting('### ');
         }
     }
 
@@ -165,18 +165,18 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     public applyBold(): void {
-        this.applyFormatting('**', false);
+        this.applyFormatting('**');
     }
 
     public applyItalic(): void {
-        this.applyFormatting('*', false);
+        this.applyFormatting('*');
     }
 
     public applyStrikeThrough(): void {
-        this.applyFormatting('~~', false);
+        this.applyFormatting('~~');
     }
 
-    private applyFormatting(formatting: string, onlyBefore: boolean): void {
+    private applyFormatting(formatting: string): void {
         const markdownInputElement: any = document.getElementById('markdown-input');
         const selectionText: string = markdownInputElement.value.substring(
             markdownInputElement.selectionStart,
@@ -184,13 +184,55 @@ export class MarkdownNoteEditor implements INoteEditor {
         );
 
         if (Strings.isNullOrWhiteSpace(selectionText)) {
-            return;
-        }
+            const pattern: RegExp = /\r?\n|\r|\s/;
 
-        if (onlyBefore) {
-            this.insertText(`${formatting}${selectionText}`);
+            let wordStartIndex: number = 0;
+
+            for (let index = 0; index < markdownInputElement.selectionStart; index++) {
+                if (markdownInputElement.value.substr(index, 1).match(pattern)) {
+                    wordStartIndex = index + 1;
+                }
+            }
+
+            let wordEndIndex: number = 0;
+
+            let mustStop: boolean = false;
+            for (let index = markdownInputElement.selectionStart; index < markdownInputElement.selectionStart + 100; index++) {
+                if (markdownInputElement.value.substr(index, 1).match(pattern)) {
+                    if (!mustStop) {
+                        mustStop = true;
+                        wordEndIndex = index + 1;
+                    }
+                }
+            }
+
+            markdownInputElement.focus();
+
+            markdownInputElement.setSelectionRange(wordStartIndex, wordStartIndex);
+            this.insertText(formatting);
+
+            markdownInputElement.setSelectionRange(wordEndIndex + formatting.length - 1, wordEndIndex + formatting.length - 1);
+            this.insertText(formatting);
         } else {
             this.insertText(`${formatting}${selectionText}${formatting}`);
         }
+    }
+
+    private applyHeadingFormatting(formatting: string): void {
+        const markdownInputElement: any = document.getElementById('markdown-input');
+        const pattern: RegExp = /\r?\n|\r/;
+
+        let lineStartIndex: number = 0;
+
+        for (let index = 0; index < markdownInputElement.selectionStart; index++) {
+            if (markdownInputElement.value.substr(index, 1).match(pattern)) {
+                lineStartIndex = index + 1;
+            }
+        }
+
+        markdownInputElement.focus();
+        markdownInputElement.setSelectionRange(lineStartIndex, lineStartIndex);
+
+        this.insertText(formatting);
     }
 }
