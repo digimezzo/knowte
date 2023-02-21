@@ -110,27 +110,25 @@
                             {{ 'Notes.Edit' | translate }}
                         </div>
                         <div class="markdown-action-separator no-select"></div>
-                        <div class="markdown-action-button no-select font-bold" (click)="this.noteEditor.applyBold()" title="Bold">B</div>
-                        <div class="markdown-action-button no-select font-italic" (click)="this.noteEditor.applyItalic()" title="Italic">
-                            I
+                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyBold()" title="Bold">
+                            <i class="fa-solid fa-bold"></i>
                         </div>
-                        <div
-                            class="markdown-action-button no-select font-strikethrough"
-                            (click)="this.noteEditor.applyStrikeThrough()"
-                            title="Strikethrough"
-                        >
-                            S
+                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyItalic()" title="Italic">
+                            <i class="fa-solid fa-italic"></i>
+                        </div>
+                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyStrikeThrough()" title="Strikethrough">
+                            <i class="fa-solid fa-strikethrough"></i>
                         </div>
                         <div class="markdown-action-button no-select" (click)="this.noteEditor.applyHeading(1)" title="Heading 1">
-                            H
+                            <i class="fa-solid fa-heading"></i>
                             <div class="markdown-action-button-subscript">1</div>
                         </div>
                         <div class="markdown-action-button no-select" (click)="this.noteEditor.applyHeading(2)" title="Heading 2">
-                            H
+                            <i class="fa-solid fa-heading"></i>
                             <div class="markdown-action-button-subscript">2</div>
                         </div>
                         <div class="markdown-action-button no-select" (click)="this.noteEditor.applyHeading(3)" title="Heading 3">
-                            H
+                            <i class="fa-solid fa-heading"></i>
                             <div class="markdown-action-button-subscript">3</div>
                         </div>
                     </div>

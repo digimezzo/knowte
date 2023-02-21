@@ -179,6 +179,12 @@ export class Constants {
             licenseUrl: 'https://github.com/mawie81/electron-window-state/blob/master/license',
         },
         {
+            name: 'Font Awesome free',
+            description: `Font Awesome is the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.`,
+            url: 'https://github.com/FortAwesome/Font-Awesome',
+            licenseUrl: 'https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt',
+        },
+        {
             name: 'fs-extra',
             description:
                 "Adds file system methods that aren't included in the native fs module and adds promise support to the fs methods.",
