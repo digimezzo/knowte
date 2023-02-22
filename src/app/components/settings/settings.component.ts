@@ -74,6 +74,28 @@ export class SettingsComponent implements OnInit {
         this.settings.enableSpellChecker = v;
     }
 
+    public get classicNoteChecked(): boolean {
+        return this.settings.canCreateClassicNotes;
+    }
+    public set classicNoteChecked(v: boolean) {
+        if (!v && !this.markdownNoteChecked) {
+            this.markdownNoteChecked = true;
+        }
+
+        this.settings.canCreateClassicNotes = v;
+    }
+
+    public get markdownNoteChecked(): boolean {
+        return this.settings.canCreateMarkdownNotes;
+    }
+    public set markdownNoteChecked(v: boolean) {
+        if (!v && !this.classicNoteChecked) {
+            this.classicNoteChecked = true;
+        }
+
+        this.settings.canCreateMarkdownNotes = v;
+    }
+
     public ngOnInit(): void {}
 
     public setSpellCheckerLanguages(): void {

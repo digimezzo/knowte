@@ -29,6 +29,7 @@ import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.compo
 import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
 import { RenameNotebookDialogComponent } from '../dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
 import { MoveNotesBottomSheetComponent } from './bottom-sheets/move-notes-bottom-sheet/move-notes-bottom-sheet.component';
+import { NoteCreator } from './note-creator';
 import { NoteTypeChooserBottomSheetComponent } from './note-type-chooser-bottom-sheet/note-type-chooser-bottom-sheet.component';
 
 @Component({
@@ -66,6 +67,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
         private updateService: UpdateService,
         private fileService: FileService,
         private bottomSheet: MatBottomSheet,
+        private noteCreator: NoteCreator,
         private settings: BaseSettings,
         private dialog: MatDialog,
         private logger: Logger,
@@ -486,9 +488,15 @@ export class CollectionComponent implements OnInit, OnDestroy {
         });
     }
 
-    public openNoteTypeChooserBottomSheet(): void {
-        this.bottomSheet.open(NoteTypeChooserBottomSheetComponent, {
-            data: { activeNotebookId: this.activeNotebook.id },
-        });
+    public async addNoteAsync(): Promise<void> {
+        if (this.settings.canCreateClassicNotes && this.settings.canCreateMarkdownNotes) {
+            this.bottomSheet.open(NoteTypeChooserBottomSheetComponent, {
+                data: { activeNotebookId: this.activeNotebook.id },
+            });
+        } else if (this.settings.canCreateClassicNotes) {
+            await this.noteCreator.createClassicNoteAsync(this.activeNotebook.id);
+        } else if (this.settings.canCreateMarkdownNotes) {
+            await this.noteCreator.createMarkdownNoteAsync(this.activeNotebook.id);
+        }
     }
 }

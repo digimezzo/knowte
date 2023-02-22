@@ -15,4 +15,6 @@ export class BaseSettings {
     public useLightHeaderBar: boolean;
     public enableSpellChecker: boolean;
     public activeSpellCheckLanguages: string;
+    public canCreateClassicNotes: boolean;
+    public canCreateMarkdownNotes: boolean;
 }
