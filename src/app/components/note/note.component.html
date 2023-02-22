@@ -104,48 +104,7 @@
                 </div>
                 <div *ngIf="!this.isMarkdownNote" class="fill w-100 h-100 overflow-hidden" id="editor"></div>
                 <div *ngIf="this.isMarkdownNote" class="d-flex flex-column fill w-100 h-100 overflow-hidden">
-                    <div class="d-flex flex-row">
-                        <div class="markdown-edit-button no-select ml-1" (click)="toggleIsEditing()">
-                            <i class="markdown-icon las la-columns" [ngClass]="{ accent: this.isEditing }"></i>
-                            {{ 'Notes.Edit' | translate }}
-                        </div>
-                        <div class="markdown-action-separator no-select"></div>
-                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyBold()" title="Bold">
-                            <i class="fa-solid fa-bold"></i>
-                        </div>
-                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyItalic()" title="Italic">
-                            <i class="fa-solid fa-italic"></i>
-                        </div>
-                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyStrikeThrough()" title="Strikethrough">
-                            <i class="fa-solid fa-strikethrough"></i>
-                        </div>
-                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyHeading(1)" title="Heading 1">
-                            <i class="fa-solid fa-heading"></i>
-                            <div class="markdown-action-button-subscript">1</div>
-                        </div>
-                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyHeading(2)" title="Heading 2">
-                            <i class="fa-solid fa-heading"></i>
-                            <div class="markdown-action-button-subscript">2</div>
-                        </div>
-                        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyHeading(3)" title="Heading 3">
-                            <i class="fa-solid fa-heading"></i>
-                            <div class="markdown-action-button-subscript">3</div>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-row fill overflow-hidden pt-1 pb-2">
-                        <textarea
-                            class="markdown-input"
-                            id="markdown-input"
-                            [ngClass]="{ 'markdown-input-hidden': !this.isEditing }"
-                            [(ngModel)]="this.noteEditor.content"
-                        ></textarea>
-                        <markdown
-                            class="markdown-output markdown-body"
-                            id="markdown-output"
-                            [ngClass]="{ 'markdown-output-maximized': !this.isEditing }"
-                            data="{{ this.noteEditor.content | fixImagePaths : this.noteId }}"
-                        ></markdown>
-                    </div>
+                    <app-markdown-note [noteEditor]="this.noteEditor"></app-markdown-note>
                 </div>
                 <app-note-status-bar
                     [noteId]="this.noteId"

@@ -82,12 +82,6 @@ export class NoteComponent implements OnInit {
         private noteEditorFactory: NoteEditorFactory
     ) {}
 
-    public isEditing: boolean; // TODO: this should become a markdown editor specific property
-
-    public toggleIsEditing(): void {
-        this.isEditing = !this.isEditing;
-    }
-
     public isEncrypted: boolean = false;
     public isMarkdownNote: boolean = false;
     public noteId: string;
@@ -243,7 +237,7 @@ export class NoteComponent implements OnInit {
 
             // If this is a markdown note, make sure we're in edit mode.
             if (this.isMarkdownNote) {
-                this.isEditing = true;
+                this.noteEditor.isEditing = true;
             }
 
             // Sets focus to editor when pressing enter on title

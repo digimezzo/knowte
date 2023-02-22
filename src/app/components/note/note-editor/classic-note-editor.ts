@@ -20,6 +20,8 @@ export class ClassicNoteEditor implements INoteEditor {
         private logger: Logger
     ) {}
 
+    public isEditing: boolean;
+
     public get text(): string {
         return this.quill.getText();
     }

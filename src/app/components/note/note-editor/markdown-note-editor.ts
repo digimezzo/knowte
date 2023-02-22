@@ -28,6 +28,8 @@ export class MarkdownNoteEditor implements INoteEditor {
         );
     }
 
+    public isEditing: boolean;
+
     public noteContentChanged$: Observable<void> = this.noteContentChanged.asObservable();
 
     public get content(): string {
@@ -119,9 +121,12 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     public focus(): void {
-        let markdownInputElement: any = document.getElementById('markdown-input');
-        markdownInputElement.focus();
-        markdownInputElement.selectionStart = markdownInputElement.value.length;
+        // setTimeout required to ensure that markdown-input is visible before setting focus
+        setTimeout(() => {
+            let markdownInputElement: any = document.getElementById('markdown-input');
+            markdownInputElement.focus();
+            markdownInputElement.selectionStart = markdownInputElement.value.length;
+        }, 50);
     }
 
     public applyZoomPercentageFromSettings(): void {

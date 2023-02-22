@@ -58,6 +58,7 @@ import { SearchBottomSheetComponent } from './components/note/bottom-sheets/sear
 import { ShareBottomSheetComponent } from './components/note/bottom-sheets/share-bottom-sheet/share-bottom-sheet.component';
 import { SpellCheckBottomSheetComponent } from './components/note/bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';
 import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
+import { MarkdownNoteComponent } from './components/note/markdown-note/markdown-note.component';
 import { NoteContextMenuFactory } from './components/note/note-context-menu-factory';
 import { NoteEditorFactory } from './components/note/note-editor/note-editor-factory';
 import { NoteImageSaver } from './components/note/note-editor/note-image-saver';
@@ -202,6 +203,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
         SpellCheckLanguagesComponent,
         NoteTypeChooserBottomSheetComponent,
         NoteStatusBarComponent,
+        MarkdownNoteComponent,
         WebviewDirective,
         CdkVirtualScrollViewportPatchDirective,
         TruncatePipe,
