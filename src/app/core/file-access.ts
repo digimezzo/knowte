@@ -129,6 +129,10 @@ export class FileAccess {
         return await fs.readFile(filePath, 'utf-8');
     }
 
+    public getFileContentAsString(filePath: string): string {
+        return fs.readFileSync(filePath, 'utf-8');
+    }
+
     public getDirectoryOrFileName(directoryOrFilePath: string): string {
         return path.basename(directoryOrFilePath);
     }

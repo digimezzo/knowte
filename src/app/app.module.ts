@@ -97,6 +97,7 @@ import { CollectionPathConverter } from './services/collection/collection-path-c
 import { CollectionClient } from './services/collection/collection.client';
 import { CollectionService } from './services/collection/collection.service';
 import { NoteDateFormatter } from './services/collection/note-date-formatter';
+import { NoteModelFactory } from './services/collection/note-model-factory';
 import { CryptographyService } from './services/cryptography/cryptography.service';
 import { ElectronService } from './services/electron.service';
 import { FileService } from './services/file/file.service';
@@ -270,6 +271,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
         PersistanceService,
         QuillFactory,
         NoteContextMenuFactory,
+        NoteModelFactory,
         NoteDateFormatter,
         QuillTweaker,
         GitHubApi,

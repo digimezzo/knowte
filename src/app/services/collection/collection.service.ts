@@ -27,6 +27,8 @@ import { CollectionDataStoreAccess } from './collection-data-store.access';
 import { CollectionEvents } from './collection-events';
 import { CollectionFileAccess } from './collection-file-access';
 import { NoteDateFormatter } from './note-date-formatter';
+import { NoteModel } from './note-model';
+import { NoteModelFactory } from './note-model-factory';
 
 /**
  * There can only be 1 LokiJS Data Store in the whole application. So this class must only be initialized
@@ -69,6 +71,7 @@ export class CollectionService {
         private cryptography: CryptographyService,
         private collectionFileAccess: CollectionFileAccess,
         private collectionDataStoreAccess: CollectionDataStoreAccess,
+        private noteModelFactory: NoteModelFactory,
         private noteDateFormatter: NoteDateFormatter,
         private dateFormatter: DateFormatter,
         private settings: BaseSettings,
@@ -823,46 +826,22 @@ export class CollectionService {
         await this.deleteNotesAsync([noteId]);
     }
 
-    public async moveNotesToCollectionAsync(noteIds: string[], collection: string): Promise<number> {
+    public async moveNotesToCollectionAsync(noteIds: string[], newCollection: string): Promise<number> {
         try {
-            // 1. Export notes from old collection
-            const noteExports: NoteExport[] = [];
+            // 1. Get notes from old collection
+            const noteModels: NoteModel[] = [];
 
             for (const noteId of noteIds) {
                 const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
-                const noteContent: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(
-                    noteId,
-                    this.settings.activeCollection,
-                    note.isMarkdownNote
-                );
-
-                let noteAttachmentsDirectoryPath: string = '';
-
-                if (note.isMarkdownNote) {
-                    noteAttachmentsDirectoryPath = this.collectionFileAccess.getAttachmentsDirectoryPath(
-                        noteId,
-                        this.settings.activeCollection
-                    );
-                }
-
-                const noteExport: NoteExport = new NoteExport(
-                    note.title,
-                    note.text,
-                    noteContent,
-                    note.isMarkdownNote,
-                    noteAttachmentsDirectoryPath
-                );
-                noteExports.push(noteExport);
+                noteModels.push(this.noteModelFactory.create(note));
             }
 
             // 2. Switch data store to new collection
-            await this.collectionDataStoreAccess.initializeAsync(collection);
+            await this.collectionDataStoreAccess.initializeAsync(newCollection);
 
-            // 3. Import all note exports into new collection
-            const proposedTitleSuffix: string = await this.translator.getAsync('Notes.Moved');
-
-            for (const noteExport of noteExports) {
-                await this.importNoteExportAsync(noteExport, collection, proposedTitleSuffix);
+            // 3. Copy all notes into new collection
+            for (const noteModel of noteModels) {
+                await this.copyNoteToCollectionAsync(noteModel, newCollection);
             }
 
             // 4. Switch data store back to old collection
@@ -874,7 +853,7 @@ export class CollectionService {
             return noteIds.length;
         } catch (error) {
             this.logger.error(
-                `Could not move ${noteIds.length} notes to collection '${collection}'. Error: ${error.message}`,
+                `Could not move ${noteIds.length} notes to collection '${newCollection}'. Error: ${error.message}`,
                 'CollectionService',
                 'moveNotesToCollectionAsync'
             );
@@ -943,6 +922,39 @@ export class CollectionService {
 
         if (note.isMarkdownNote) {
             await this.collectionFileAccess.copyAttachmentsAsync(note.id, collection, noteExport.attachmentsDirectoryPath);
+        }
+    }
+
+    private async getUniqueTitleForMovedNoteAsync(title: string): Promise<string> {
+        const titleSuffix: string = await this.translator.getAsync('Notes.Moved');
+        const titleSuffixWithBrackets: string = `(${titleSuffix})`;
+
+        let noteTitle: string = title;
+
+        if (!noteTitle.includes(titleSuffixWithBrackets)) {
+            noteTitle = `${title} ${titleSuffixWithBrackets}`;
+        }
+
+        const uniqueNoteTitle: string = this.getUniqueNoteTitle(noteTitle, false);
+
+        return uniqueNoteTitle;
+    }
+
+    private async copyNoteToCollectionAsync(noteModel: NoteModel, newCollection: string): Promise<void> {
+        const uniqueNoteTitle: string = await this.getUniqueTitleForMovedNoteAsync(noteModel.title);
+
+        this.collectionDataStoreAccess.addNote(uniqueNoteTitle, '', false);
+
+        const note: Note = this.collectionDataStoreAccess.getNoteByTitle(uniqueNoteTitle);
+        note.text = noteModel.text;
+        note.isMarkdownNote = noteModel.isMarkdownNote;
+
+        this.collectionDataStoreAccess.updateNoteWithoutDate(note);
+
+        await this.collectionFileAccess.saveNoteContentAsync(note.id, noteModel.content, newCollection, note.isMarkdownNote);
+
+        if (note.isMarkdownNote) {
+            await this.collectionFileAccess.copyAttachmentsAsync(note.id, newCollection, noteModel.attachmentsDirectoryPath);
         }
     }
 

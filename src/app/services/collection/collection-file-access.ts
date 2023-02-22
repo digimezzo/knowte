@@ -24,6 +24,12 @@ export class CollectionFileAccess {
         return this.fileAccess.getFileContentAsStringAsync(noteContentFilePath);
     }
 
+    public getNoteContentByNoteId(noteId: string, collection: string, isMarkdownNote: boolean): string {
+        const noteContentFilePath: string = this.getNoteContentFilePath(noteId, collection, isMarkdownNote);
+
+        return this.fileAccess.getFileContentAsString(noteContentFilePath);
+    }
+
     public async deleteNoteFilesAsync(noteId: string, collection: string, isMarkdownNote: boolean): Promise<void> {
         const noteContentFilePath: string = this.getNoteContentFilePath(noteId, collection, isMarkdownNote);
         const noteStateFilePath: string = this.getNoteStateFilePath(noteId, collection);
