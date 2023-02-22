@@ -219,7 +219,7 @@ export class MarkdownNoteEditor implements INoteEditor {
                 }
             }
 
-            let wordEndIndex: number = 0;
+            let wordEndIndex: number = markdownInputElement.selectionEnd;
 
             let foundEndOfWord: boolean = false;
 
