@@ -103,9 +103,11 @@
                     />
                 </div>
                 <div *ngIf="!this.isMarkdownNote" class="fill w-100 h-100 overflow-hidden" id="editor"></div>
-                <div *ngIf="this.isMarkdownNote" class="d-flex flex-column fill w-100 h-100 overflow-hidden">
-                    <app-markdown-note [noteEditor]="this.noteEditor"></app-markdown-note>
-                </div>
+                <app-markdown-note
+                    *ngIf="this.isMarkdownNote"
+                    class="fill w-100 h-100 overflow-hidden"
+                    [noteEditor]="this.noteEditor"
+                ></app-markdown-note>
                 <app-note-status-bar
                     [noteId]="this.noteId"
                     [isMarked]="this.isMarked"

@@ -228,4 +228,12 @@ export class ClassicNoteEditor implements INoteEditor {
     public insertLink(): void {
         // Not used in ClassicNoteEditor
     }
+
+    public applyQuote(): void {
+        // Not used in ClassicNoteEditor
+    }
+
+    public applyCode(): void {
+        // Not used in ClassicNoteEditor
+    }
 }

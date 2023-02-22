@@ -192,6 +192,14 @@ export class MarkdownNoteEditor implements INoteEditor {
         this.insertText('[](https://)');
     }
 
+    public applyQuote(): void {
+        this.applyHeadingFormatting('> ');
+    }
+
+    public applyCode(): void {
+        this.applyFormatting('```');
+    }
+
     private applyFormatting(formatting: string): void {
         const markdownInputElement: any = document.getElementById('markdown-input');
         const selectionText: string = markdownInputElement.value.substring(
@@ -202,6 +210,7 @@ export class MarkdownNoteEditor implements INoteEditor {
         if (Strings.isNullOrWhiteSpace(selectionText)) {
             const pattern: RegExp = /\r?\n|\r|\s/;
 
+            const originalCursorIndex: number = markdownInputElement.selectionStart;
             let wordStartIndex: number = 0;
 
             for (let index = 0; index < markdownInputElement.selectionStart; index++) {
@@ -212,11 +221,12 @@ export class MarkdownNoteEditor implements INoteEditor {
 
             let wordEndIndex: number = 0;
 
-            let mustStop: boolean = false;
+            let foundEndOfWord: boolean = false;
+
             for (let index = markdownInputElement.selectionStart; index < markdownInputElement.selectionStart + 100; index++) {
                 if (markdownInputElement.value.substr(index, 1).match(pattern)) {
-                    if (!mustStop) {
-                        mustStop = true;
+                    if (!foundEndOfWord) {
+                        foundEndOfWord = true;
                         wordEndIndex = index + 1;
                     }
                 }
@@ -227,8 +237,12 @@ export class MarkdownNoteEditor implements INoteEditor {
             markdownInputElement.setSelectionRange(wordStartIndex, wordStartIndex);
             this.insertText(formatting);
 
-            markdownInputElement.setSelectionRange(wordEndIndex + formatting.length - 1, wordEndIndex + formatting.length - 1);
+            const wordEndIndexAfterAddingStartFormatting: number = wordEndIndex + formatting.length - 1;
+            markdownInputElement.setSelectionRange(wordEndIndexAfterAddingStartFormatting, wordEndIndexAfterAddingStartFormatting);
             this.insertText(formatting);
+
+            const cursorIndexAfterAddingFormatting: number = originalCursorIndex + formatting.length;
+            markdownInputElement.setSelectionRange(cursorIndexAfterAddingFormatting, cursorIndexAfterAddingFormatting);
         } else {
             this.insertText(`${formatting}${selectionText}${formatting}`);
         }
@@ -238,6 +252,7 @@ export class MarkdownNoteEditor implements INoteEditor {
         const markdownInputElement: any = document.getElementById('markdown-input');
         const pattern: RegExp = /\r?\n|\r/;
 
+        const originalCursorIndex: number = markdownInputElement.selectionStart;
         let lineStartIndex: number = 0;
 
         for (let index = 0; index < markdownInputElement.selectionStart; index++) {
@@ -250,5 +265,8 @@ export class MarkdownNoteEditor implements INoteEditor {
         markdownInputElement.setSelectionRange(lineStartIndex, lineStartIndex);
 
         this.insertText(formatting);
+
+        const cursorIndexAfterAddingFormatting: number = originalCursorIndex + formatting.length;
+        markdownInputElement.setSelectionRange(cursorIndexAfterAddingFormatting, cursorIndexAfterAddingFormatting);
     }
 }
