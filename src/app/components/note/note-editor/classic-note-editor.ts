@@ -224,4 +224,8 @@ export class ClassicNoteEditor implements INoteEditor {
         const applyStrikeThrough: boolean = !formatString.includes('strike');
         this.quill.formatText(range.index, range.length, 'strike', applyStrikeThrough);
     }
+
+    public insertLink(): void {
+        // Not used in ClassicNoteEditor
+    }
 }

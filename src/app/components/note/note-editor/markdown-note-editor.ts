@@ -110,6 +110,13 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     private insertText(textToInsert: string): void {
+        const markdownInputElement: any = document.getElementById('markdown-input');
+
+        if (!this.isEditing) {
+            return;
+        }
+
+        markdownInputElement.focus();
         document.execCommand('insertText', false, textToInsert);
     }
 
@@ -179,6 +186,10 @@ export class MarkdownNoteEditor implements INoteEditor {
 
     public applyStrikeThrough(): void {
         this.applyFormatting('~~');
+    }
+
+    public insertLink(): void {
+        this.insertText('[](https://)');
     }
 
     private applyFormatting(formatting: string): void {

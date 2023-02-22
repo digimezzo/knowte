@@ -669,6 +669,11 @@ export class NoteComponent implements OnInit {
         this.noteEditor.applyHeading(3);
     }
 
+    @HostListener('document:keydown.control.l')
+    public insertLink(): void {
+        this.noteEditor.insertLink();
+    }
+
     public openShareBottomSheet(): void {
         this.hideActionButtonsDelayedAsync();
 
