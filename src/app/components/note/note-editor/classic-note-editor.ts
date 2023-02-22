@@ -13,6 +13,7 @@ export class ClassicNoteEditor implements INoteEditor {
     private noteContentChanged: Subject<void> = new Subject<void>();
 
     public constructor(
+        public noteId: string,
         private quillFactory: QuillFactory,
         private quillTweaker: QuillTweaker,
         private clipboard: ClipboardManager,

@@ -47,7 +47,7 @@
             class="markdown-output markdown-body"
             id="markdown-output"
             [ngClass]="{ 'markdown-output-maximized': !this.noteEditor.isEditing }"
-            data="{{ this.noteEditor.content | fixImagePaths : this.noteId }}"
+            data="{{ this.noteEditor.content | fixImagePaths : this.noteEditor.noteId }}"
         ></markdown>
     </div>
 </div>

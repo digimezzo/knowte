@@ -15,7 +15,7 @@ export class MarkdownNoteEditor implements INoteEditor {
     private subscription: Subscription = new Subscription();
 
     public constructor(
-        private noteId: string,
+        public noteId: string,
         private noteImageSaver: NoteImageSaver,
         private clipboard: ClipboardManager,
         private settings: BaseSettings,
