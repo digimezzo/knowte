@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 import { TasksCount } from '../../../core/tasks-count';
 
 export interface INoteEditor {
+    noteId: string;
     isEditing: boolean;
     text: string;
     content: string;
