@@ -29,7 +29,7 @@ export class MarkdownNoteEditor implements INoteEditor {
             })
         );
 
-        document.addEventListener('dblclick', (event: any) => this.ignoreTargetImages(event));
+        document.addEventListener('dblclick', (event: any) => this.openIfImage(event));
     }
 
     public isEditing: boolean;
@@ -274,7 +274,7 @@ export class MarkdownNoteEditor implements INoteEditor {
         markdownInputElement.setSelectionRange(cursorIndexAfterAddingFormatting, cursorIndexAfterAddingFormatting);
     }
 
-    private ignoreTargetImages(event: any): void {
+    private openIfImage(event: any): void {
         let imagePath: string = '';
 
         try {
@@ -290,7 +290,7 @@ export class MarkdownNoteEditor implements INoteEditor {
                 this.desktop.openPath(imagePath);
             }
         } catch (error) {
-            this.logger.error(`Could not open image '${imagePath}'`, 'MarkdownNoteEditor', 'ignoreTargetImages');
+            this.logger.error(`Could not open image '${imagePath}'`, 'MarkdownNoteEditor', 'openIfImage');
         }
     }
 }
