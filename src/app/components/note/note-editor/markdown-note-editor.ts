@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { BaseSettings } from '../../../core/base-settings';
 import { ClipboardManager } from '../../../core/clipboard-manager';
+import { Desktop } from '../../../core/desktop';
 import { Logger } from '../../../core/logger';
 import { Strings } from '../../../core/strings';
 import { TasksCount } from '../../../core/tasks-count';
@@ -18,6 +19,7 @@ export class MarkdownNoteEditor implements INoteEditor {
         public noteId: string,
         private noteImageSaver: NoteImageSaver,
         private clipboard: ClipboardManager,
+        private desktop: Desktop,
         private settings: BaseSettings,
         private logger: Logger
     ) {
@@ -26,6 +28,8 @@ export class MarkdownNoteEditor implements INoteEditor {
                 this.insertImage(imageId);
             })
         );
+
+        document.addEventListener('dblclick', (event: any) => this.ignoreTargetImages(event));
     }
 
     public isEditing: boolean;
@@ -268,5 +272,25 @@ export class MarkdownNoteEditor implements INoteEditor {
 
         const cursorIndexAfterAddingFormatting: number = originalCursorIndex + formatting.length;
         markdownInputElement.setSelectionRange(cursorIndexAfterAddingFormatting, cursorIndexAfterAddingFormatting);
+    }
+
+    private ignoreTargetImages(event: any): void {
+        let imagePath: string = '';
+
+        try {
+            if (event.target.tagName === 'IMG') {
+                imagePath = event.target.currentSrc;
+                imagePath = Strings.replaceAll(imagePath, 'file://', '');
+                imagePath = Strings.replaceAll(imagePath, '%20', ' ');
+
+                if (imagePath.includes(':/')) {
+                    imagePath = Strings.replaceAll(imagePath, '/', '\\');
+                }
+
+                this.desktop.openPath(imagePath);
+            }
+        } catch (error) {
+            this.logger.error(`Could not open image '${imagePath}'`, 'MarkdownNoteEditor', 'ignoreTargetImages');
+        }
     }
 }
