@@ -181,19 +181,23 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     public applyBold(): void {
-        this.applyFormatting('**');
+        this.applyFormatting('**', false);
     }
 
     public applyItalic(): void {
-        this.applyFormatting('*');
+        this.applyFormatting('*', false);
     }
 
     public applyStrikeThrough(): void {
-        this.applyFormatting('~~');
+        this.applyFormatting('~~', false);
     }
 
     public insertLink(): void {
         this.insertText('[](https://)');
+    }
+
+    public insertTable(): void {
+        this.insertText('| | | |\n|-|-|-|\n| | | |\n| | | |');
     }
 
     public applyQuote(): void {
@@ -201,10 +205,10 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     public applyCode(): void {
-        this.applyFormatting('```');
+        this.applyFormatting('```', true);
     }
 
-    private applyFormatting(formatting: string): void {
+    private applyFormatting(formatting: string, addNewLines: boolean): void {
         const markdownInputElement: any = document.getElementById('markdown-input');
         const selectionText: string = markdownInputElement.value.substring(
             markdownInputElement.selectionStart,
@@ -239,16 +243,22 @@ export class MarkdownNoteEditor implements INoteEditor {
             markdownInputElement.focus();
 
             markdownInputElement.setSelectionRange(wordStartIndex, wordStartIndex);
+
             this.insertText(formatting);
 
             const wordEndIndexAfterAddingStartFormatting: number = wordEndIndex + formatting.length - 1;
             markdownInputElement.setSelectionRange(wordEndIndexAfterAddingStartFormatting, wordEndIndexAfterAddingStartFormatting);
+
             this.insertText(formatting);
 
             const cursorIndexAfterAddingFormatting: number = originalCursorIndex + formatting.length;
             markdownInputElement.setSelectionRange(cursorIndexAfterAddingFormatting, cursorIndexAfterAddingFormatting);
         } else {
-            this.insertText(`${formatting}${selectionText}${formatting}`);
+            if (addNewLines) {
+                this.insertText(`${formatting}\n${selectionText}\n${formatting}`);
+            } else {
+                this.insertText(`${formatting}${selectionText}${formatting}`);
+            }
         }
     }
 

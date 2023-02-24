@@ -230,6 +230,10 @@ export class ClassicNoteEditor implements INoteEditor {
         // Not used in ClassicNoteEditor
     }
 
+    public insertTable(): void {
+        // Not used in ClassicNoteEditor
+    }
+
     public applyQuote(): void {
         // Not used in ClassicNoteEditor
     }
