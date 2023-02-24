@@ -290,11 +290,13 @@ export class MarkdownNoteEditor implements INoteEditor {
         try {
             if (event.target.tagName === 'IMG') {
                 imagePath = event.target.currentSrc;
-                imagePath = Strings.replaceAll(imagePath, 'file://', '');
+                imagePath = Strings.replaceAll(imagePath, 'file:///', '');
                 imagePath = Strings.replaceAll(imagePath, '%20', ' ');
 
                 if (imagePath.includes(':/')) {
                     imagePath = Strings.replaceAll(imagePath, '/', '\\');
+                } else {
+                    imagePath = `/${imagePath}`;
                 }
 
                 this.desktop.openPath(imagePath);
