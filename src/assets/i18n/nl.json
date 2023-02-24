@@ -237,7 +237,17 @@
         "Moved": "Verplaatst",
         "AddClassicNote": "Klassieke notitie toevoegen",
         "AddMarkdownNote": "Markdown notitie toevoegen",
-        "Edit": "Bewerken"
+        "Edit": "Bewerken",
+        "Bold": "Vet",
+        "Italic": "Cursief",
+        "Strikethrough": "Doorhalen",
+        "Heading1": "Koptekst 1",
+        "Heading2": "Koptekst 2",
+        "Heading3": "Koptekst 3",
+        "Link": "Koppeling",
+        "Quote": "Citaat",
+        "Code": "Code",
+        "Table": "Tabel"
     },
     "NoteDates": {
         "Today": "Vandaag",

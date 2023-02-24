@@ -4,39 +4,57 @@
             <i class="markdown-icon las la-columns" [ngClass]="{ accent: this.noteEditor.isEditing }"></i>
             {{ 'Notes.Edit' | translate }}
         </div>
-        <div class="markdown-action-separator no-select"></div>
-        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyBold()" title="Bold">
-            <i class="fa-solid fa-bold"></i>
-        </div>
-        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyItalic()" title="Italic">
-            <i class="fa-solid fa-italic"></i>
-        </div>
-        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyStrikeThrough()" title="Strikethrough">
-            <i class="fa-solid fa-strikethrough"></i>
-        </div>
-        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyHeading(1)" title="Heading 1">
-            <i class="fa-solid fa-heading"></i>
-            <div class="markdown-action-button-subscript">1</div>
-        </div>
-        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyHeading(2)" title="Heading 2">
-            <i class="fa-solid fa-heading"></i>
-            <div class="markdown-action-button-subscript">2</div>
-        </div>
-        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyHeading(3)" title="Heading 3">
-            <i class="fa-solid fa-heading"></i>
-            <div class="markdown-action-button-subscript">3</div>
-        </div>
-        <div class="markdown-action-button no-select" (click)="this.noteEditor.insertLink()" title="Link">
-            <i class="fa-solid fa-link"></i>
-        </div>
-        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyQuote()" title="Quote">
-            <i class="fa-solid fa-quote-right"></i>
-        </div>
-        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyCode()" title="Code">
-            <i class="fa-solid fa-code"></i>
-        </div>
-        <div class="markdown-action-button no-select" (click)="this.noteEditor.insertTable()" title="Table">
-            <i class="fa-solid fa-table"></i>
+        <div class="d-flex flex-row" *ngIf="this.noteEditor.isEditing">
+            <div class="markdown-action-separator no-select"></div>
+            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyBold()" title="{{ 'Notes.Bold' | translate }}">
+                <i class="fa-solid fa-bold"></i>
+            </div>
+            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyItalic()" title="{{ 'Notes.Italic' | translate }}">
+                <i class="fa-solid fa-italic"></i>
+            </div>
+            <div
+                class="markdown-action-button no-select"
+                (click)="this.noteEditor.applyStrikeThrough()"
+                title="{{ 'Notes.Strikethrough' | translate }}"
+            >
+                <i class="fa-solid fa-strikethrough"></i>
+            </div>
+            <div
+                class="markdown-action-button no-select"
+                (click)="this.noteEditor.applyHeading(1)"
+                title="{{ 'Notes.Heading1' | translate }}"
+            >
+                <i class="fa-solid fa-heading"></i>
+                <div class="markdown-action-button-subscript">1</div>
+            </div>
+            <div
+                class="markdown-action-button no-select"
+                (click)="this.noteEditor.applyHeading(2)"
+                title="{{ 'Notes.Heading2' | translate }}"
+            >
+                <i class="fa-solid fa-heading"></i>
+                <div class="markdown-action-button-subscript">2</div>
+            </div>
+            <div
+                class="markdown-action-button no-select"
+                (click)="this.noteEditor.applyHeading(3)"
+                title="{{ 'Notes.Heading3' | translate }}"
+            >
+                <i class="fa-solid fa-heading"></i>
+                <div class="markdown-action-button-subscript">3</div>
+            </div>
+            <div class="markdown-action-button no-select" (click)="this.noteEditor.insertLink()" title="{{ 'Notes.Link' | translate }}">
+                <i class="fa-solid fa-link"></i>
+            </div>
+            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyQuote()" title="{{ 'Notes.Quote' | translate }}">
+                <i class="fa-solid fa-quote-right"></i>
+            </div>
+            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyCode()" title="{{ 'Notes.Code' | translate }}">
+                <i class="fa-solid fa-code"></i>
+            </div>
+            <div class="markdown-action-button no-select" (click)="this.noteEditor.insertTable()" title="{{ 'Notes.Table' | translate }}">
+                <i class="fa-solid fa-table"></i>
+            </div>
         </div>
     </div>
     <div class="d-flex flex-row fill overflow-hidden pt-1 pb-2">

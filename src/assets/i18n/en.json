@@ -237,7 +237,17 @@
         "Moved": "Moved",
         "AddClassicNote": "Add classic note",
         "AddMarkdownNote": "Add Markdown note",
-        "Edit": "Edit"
+        "Edit": "Edit",
+        "Bold": "Bold",
+        "Italic": "Italic",
+        "Strikethrough": "Strikethrough",
+        "Heading1": "Heading 1",
+        "Heading2": "Heading 2",
+        "Heading3": "Heading 3",
+        "Link": "Link",
+        "Quote": "Quote",
+        "Code": "Code",
+        "Table": "Table"
     },
     "NoteDates": {
         "Today": "Today",
