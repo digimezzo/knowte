@@ -60,6 +60,7 @@ import { SpellCheckBottomSheetComponent } from './components/note/bottom-sheets/
 import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { MarkdownNoteComponent } from './components/note/markdown-note/markdown-note.component';
 import { NoteContextMenuFactory } from './components/note/note-context-menu-factory';
+import { BoundaryGetter } from './components/note/note-editor/boundary-getter';
 import { NoteEditorFactory } from './components/note/note-editor/note-editor-factory';
 import { NoteImageSaver } from './components/note/note-editor/note-image-saver';
 import { QuillFactory } from './components/note/note-editor/quill-factory';
@@ -82,6 +83,7 @@ import { Desktop } from './core/desktop';
 import { FileAccess } from './core/file-access';
 import { GitHubApi } from './core/github-api';
 import { Logger } from './core/logger';
+import { PathConverter } from './core/path-converter';
 import { Scheduler } from './core/scheduler';
 import { Settings } from './core/settings';
 import { DataStore } from './data/data-store';
@@ -286,6 +288,8 @@ export function MarkedOptionsFactory(): MarkedOptions {
         CollectionDataStoreAccess,
         NoteEditorFactory,
         NoteImageSaver,
+        BoundaryGetter,
+        PathConverter,
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
         DataStore,
         {

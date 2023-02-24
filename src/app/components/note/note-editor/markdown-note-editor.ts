@@ -4,10 +4,14 @@ import { BaseSettings } from '../../../core/base-settings';
 import { ClipboardManager } from '../../../core/clipboard-manager';
 import { Desktop } from '../../../core/desktop';
 import { Logger } from '../../../core/logger';
+import { PathConverter } from '../../../core/path-converter';
 import { Strings } from '../../../core/strings';
 import { TasksCount } from '../../../core/tasks-count';
+import { BoundaryGetter } from './boundary-getter';
 import { INoteEditor } from './i-note-editor';
+import { LineBoundary } from './line-boundary';
 import { NoteImageSaver } from './note-image-saver';
+import { WordBoundary } from './word-boundary';
 
 export class MarkdownNoteEditor implements INoteEditor {
     private _content: string;
@@ -19,6 +23,8 @@ export class MarkdownNoteEditor implements INoteEditor {
         public noteId: string,
         private noteImageSaver: NoteImageSaver,
         private clipboard: ClipboardManager,
+        private boundaryGetter: BoundaryGetter,
+        private pathConverter: PathConverter,
         private desktop: Desktop,
         private settings: BaseSettings,
         private logger: Logger
@@ -57,7 +63,7 @@ export class MarkdownNoteEditor implements INoteEditor {
     public set text(v: string) {}
 
     public get html(): string {
-        const markdownOutputElement: HTMLElement = document.getElementById('markdown-output');
+        const markdownOutputElement: HTMLElement = this.getMarkdownInputElement();
 
         if (markdownOutputElement === null || markdownOutputElement === undefined) {
             return '';
@@ -101,7 +107,7 @@ export class MarkdownNoteEditor implements INoteEditor {
 
     public pasteImageFromClipboard(): void {
         try {
-            let markdownInputElement: any = document.getElementById('markdown-input');
+            const markdownInputElement: any = this.getMarkdownInputElement();
 
             if (markdownInputElement === null || markdownInputElement === undefined) {
                 return;
@@ -114,7 +120,7 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     private insertText(textToInsert: string): void {
-        const markdownInputElement: any = document.getElementById('markdown-input');
+        const markdownInputElement: any = this.getMarkdownInputElement();
 
         if (!this.isEditing) {
             return;
@@ -134,7 +140,7 @@ export class MarkdownNoteEditor implements INoteEditor {
     public focus(): void {
         // setTimeout required to ensure that markdown-input is visible before setting focus
         setTimeout(() => {
-            let markdownInputElement: any = document.getElementById('markdown-input');
+            let markdownInputElement: any = this.getMarkdownInputElement();
             markdownInputElement.focus();
             markdownInputElement.selectionStart = markdownInputElement.value.length;
         }, 50);
@@ -149,7 +155,7 @@ export class MarkdownNoteEditor implements INoteEditor {
         const h5FontSize: number = pFontSize * 0.875;
         const h6FontSize: number = pFontSize * 0.85;
 
-        const markdownInputElement: any = document.getElementById('markdown-input');
+        const markdownInputElement: any = this.getMarkdownInputElement();
 
         if (markdownInputElement !== null && markdownInputElement !== undefined) {
             markdownInputElement.style.fontSize = pFontSize + 'px';
@@ -205,48 +211,41 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     public applyCode(): void {
-        this.applyFormatting('```', true);
+        if (this.areMultipleLinesSelected()) {
+            this.applyFormatting('```', true);
+        } else {
+            this.applyFormatting('`', false);
+        }
+    }
+
+    private getSelectedText(element: any): string {
+        const selectedText: string = element.value.substring(element.selectionStart, element.selectionEnd);
+
+        return selectedText;
+    }
+
+    private areMultipleLinesSelected(): boolean {
+        const markdownInputElement: any = this.getMarkdownInputElement();
+        const selectedText: string = this.getSelectedText(markdownInputElement);
+
+        return selectedText.includes('\n') || selectedText.includes('\r');
     }
 
     private applyFormatting(formatting: string, addNewLines: boolean): void {
-        const markdownInputElement: any = document.getElementById('markdown-input');
-        const selectionText: string = markdownInputElement.value.substring(
-            markdownInputElement.selectionStart,
-            markdownInputElement.selectionEnd
-        );
+        const markdownInputElement: any = this.getMarkdownInputElement();
+        const selectedText: string = this.getSelectedText(markdownInputElement);
 
-        if (Strings.isNullOrWhiteSpace(selectionText)) {
-            const pattern: RegExp = /\r?\n|\r|\s/;
-
+        if (Strings.isNullOrWhiteSpace(selectedText)) {
             const originalCursorIndex: number = markdownInputElement.selectionStart;
-            let wordStartIndex: number = 0;
-
-            for (let index = 0; index < markdownInputElement.selectionStart; index++) {
-                if (markdownInputElement.value.substr(index, 1).match(pattern)) {
-                    wordStartIndex = index + 1;
-                }
-            }
-
-            let wordEndIndex: number = markdownInputElement.selectionEnd;
-
-            let foundEndOfWord: boolean = false;
-
-            for (let index = markdownInputElement.selectionStart; index < markdownInputElement.selectionStart + 100; index++) {
-                if (markdownInputElement.value.substr(index, 1).match(pattern)) {
-                    if (!foundEndOfWord) {
-                        foundEndOfWord = true;
-                        wordEndIndex = index + 1;
-                    }
-                }
-            }
+            const wordBoundary: WordBoundary = this.boundaryGetter.getWordBoundary(markdownInputElement);
 
             markdownInputElement.focus();
 
-            markdownInputElement.setSelectionRange(wordStartIndex, wordStartIndex);
+            markdownInputElement.setSelectionRange(wordBoundary.start, wordBoundary.end);
 
             this.insertText(formatting);
 
-            const wordEndIndexAfterAddingStartFormatting: number = wordEndIndex + formatting.length - 1;
+            const wordEndIndexAfterAddingStartFormatting: number = wordBoundary.end + formatting.length - 1;
             markdownInputElement.setSelectionRange(wordEndIndexAfterAddingStartFormatting, wordEndIndexAfterAddingStartFormatting);
 
             this.insertText(formatting);
@@ -255,28 +254,21 @@ export class MarkdownNoteEditor implements INoteEditor {
             markdownInputElement.setSelectionRange(cursorIndexAfterAddingFormatting, cursorIndexAfterAddingFormatting);
         } else {
             if (addNewLines) {
-                this.insertText(`${formatting}\n${selectionText}\n${formatting}`);
+                this.insertText(`${formatting}\n${selectedText}\n${formatting}`);
             } else {
-                this.insertText(`${formatting}${selectionText}${formatting}`);
+                this.insertText(`${formatting}${selectedText}${formatting}`);
             }
         }
     }
 
     private applyHeadingFormatting(formatting: string): void {
-        const markdownInputElement: any = document.getElementById('markdown-input');
-        const pattern: RegExp = /\r?\n|\r/;
+        const markdownInputElement: any = this.getMarkdownInputElement();
 
         const originalCursorIndex: number = markdownInputElement.selectionStart;
-        let lineStartIndex: number = 0;
-
-        for (let index = 0; index < markdownInputElement.selectionStart; index++) {
-            if (markdownInputElement.value.substr(index, 1).match(pattern)) {
-                lineStartIndex = index + 1;
-            }
-        }
+        const lineBoundary: LineBoundary = this.boundaryGetter.getLineBoundary(markdownInputElement);
 
         markdownInputElement.focus();
-        markdownInputElement.setSelectionRange(lineStartIndex, lineStartIndex);
+        markdownInputElement.setSelectionRange(lineBoundary.start, lineBoundary.start);
 
         this.insertText(formatting);
 
@@ -288,21 +280,16 @@ export class MarkdownNoteEditor implements INoteEditor {
         let imagePath: string = '';
 
         try {
-            if (event.target.tagName === 'IMG') {
-                imagePath = event.target.currentSrc;
-                imagePath = Strings.replaceAll(imagePath, 'file:///', '');
-                imagePath = Strings.replaceAll(imagePath, '%20', ' ');
-
-                if (imagePath.includes(':/')) {
-                    imagePath = Strings.replaceAll(imagePath, '/', '\\');
-                } else {
-                    imagePath = `/${imagePath}`;
-                }
-
+            if (event.target.tagName.toUpperCase() === 'IMG') {
+                imagePath = this.pathConverter.fileUriToOperatingSystemPath(event.target.currentSrc);
                 this.desktop.openPath(imagePath);
             }
         } catch (error) {
-            this.logger.error(`Could not open image '${imagePath}'`, 'MarkdownNoteEditor', 'openIfImage');
+            this.logger.error(`Could not open image '${imagePath}'. Error: ${error.message}`, 'MarkdownNoteEditor', 'openIfImage');
         }
+    }
+
+    private getMarkdownInputElement(): any {
+        return document.getElementById('markdown-input');
     }
 }

@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { BaseSettings } from '../core/base-settings';
+import { PathConverter } from '../core/path-converter';
 import { Strings } from '../core/strings';
 import { CollectionFileAccess } from '../services/collection/collection-file-access';
 
@@ -7,7 +8,11 @@ import { CollectionFileAccess } from '../services/collection/collection-file-acc
     name: 'fixImagePaths',
 })
 export class FixImagePathsPipe implements PipeTransform {
-    public constructor(private collectionFileAccess: CollectionFileAccess, private settings: BaseSettings) {}
+    public constructor(
+        private collectionFileAccess: CollectionFileAccess,
+        private pathConverter: PathConverter,
+        private settings: BaseSettings
+    ) {}
 
     public transform(value: string, noteId: string): string {
         if (!value) {
@@ -15,10 +20,9 @@ export class FixImagePathsPipe implements PipeTransform {
         }
 
         let collectionDirectoryPath: string = this.collectionFileAccess.getCollectionDirectoryPath(this.settings.activeCollection);
-        collectionDirectoryPath = Strings.replaceAll(collectionDirectoryPath, '\\', '/');
-        collectionDirectoryPath = Strings.replaceAll(collectionDirectoryPath, ' ', '%20');
+        const collectionDirectoryFileUri: string = this.pathConverter.operatingSystemPathToFileUri(collectionDirectoryPath);
 
-        const replacedText: string = Strings.replaceAll(value, './attachments/', `file:///${collectionDirectoryPath}/${noteId}/`);
+        const replacedText: string = Strings.replaceAll(value, './attachments/', `${collectionDirectoryFileUri}/${noteId}/`);
 
         return replacedText;
     }
