@@ -266,31 +266,14 @@ export class MarkdownNoteEditor implements INoteEditor {
 
     private applyFormatting(formatting: string, addNewLines: boolean): void {
         const markdownInputElement: any = this.getMarkdownInputElement();
+        this.ensureTextIsSelected(markdownInputElement);
+
         const selectedText: string = this.getSelectedText(markdownInputElement);
 
-        if (Strings.isNullOrWhiteSpace(selectedText)) {
-            const originalCursorIndex: number = markdownInputElement.selectionStart;
-            const wordBoundary: WordBoundary = this.boundaryGetter.getWordBoundary(markdownInputElement);
-
-            markdownInputElement.focus();
-
-            markdownInputElement.setSelectionRange(wordBoundary.start, wordBoundary.start);
-
-            this.insertText(formatting);
-
-            const wordEndIndexAfterAddingStartFormatting: number = wordBoundary.end + formatting.length - 1;
-            markdownInputElement.setSelectionRange(wordEndIndexAfterAddingStartFormatting, wordEndIndexAfterAddingStartFormatting);
-
-            this.insertText(formatting);
-
-            const cursorIndexAfterAddingFormatting: number = originalCursorIndex + formatting.length;
-            markdownInputElement.setSelectionRange(cursorIndexAfterAddingFormatting, cursorIndexAfterAddingFormatting);
+        if (addNewLines) {
+            this.insertText(`${formatting}\n${selectedText}\n${formatting}`);
         } else {
-            if (addNewLines) {
-                this.insertText(`${formatting}\n${selectedText}\n${formatting}`);
-            } else {
-                this.insertText(`${formatting}${selectedText}${formatting}`);
-            }
+            this.insertText(`${formatting}${selectedText}${formatting}`);
         }
     }
 
@@ -324,5 +307,17 @@ export class MarkdownNoteEditor implements INoteEditor {
 
     private getMarkdownInputElement(): any {
         return document.getElementById('markdown-input');
+    }
+
+    private ensureTextIsSelected(element: any): void {
+        const selectedText: string = this.getSelectedText(element);
+
+        if (Strings.isNullOrWhiteSpace(selectedText)) {
+            const wordBoundary: WordBoundary = this.boundaryGetter.getWordBoundary(element);
+
+            element.focus();
+
+            element.setSelectionRange(wordBoundary.start, wordBoundary.end);
+        }
     }
 }

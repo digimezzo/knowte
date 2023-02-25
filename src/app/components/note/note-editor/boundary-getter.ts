@@ -24,7 +24,7 @@ export class BoundaryGetter {
             if (element.value.substr(index, 1).match(pattern)) {
                 if (!foundEndOfWord) {
                     foundEndOfWord = true;
-                    end = index + 1;
+                    end = index;
                 }
             }
         }
