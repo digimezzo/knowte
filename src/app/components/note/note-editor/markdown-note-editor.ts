@@ -193,7 +193,7 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     public applyItalic(): void {
-        if (!this.selectionContainsFormatting('*')) {
+        if (!this.selectionContainsFormatting('*') || !this.selectionContainsFormatting('***')) {
             this.applyFormatting('*', false);
         }
     }
@@ -254,10 +254,7 @@ export class MarkdownNoteEditor implements INoteEditor {
 
         let endContainsFormatting: boolean = false;
 
-        const possibleEndFormatting: string = markdownInputElement.value.substring(
-            wordBoundary.end - formatting.length - 1,
-            wordBoundary.end - 1
-        );
+        const possibleEndFormatting: string = markdownInputElement.value.substring(wordBoundary.end - formatting.length, wordBoundary.end);
 
         endContainsFormatting = possibleEndFormatting === formatting;
 
