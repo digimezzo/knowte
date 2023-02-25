@@ -189,18 +189,27 @@ export class MarkdownNoteEditor implements INoteEditor {
     public applyBold(): void {
         if (!this.selectionContainsFormatting('**')) {
             this.applyFormatting('**', false);
+        } else {
+            this.removeFormatting('**');
         }
     }
 
     public applyItalic(): void {
-        if (!this.selectionContainsFormatting('*') || !this.selectionContainsFormatting('***')) {
+        if (
+            !this.selectionContainsFormatting('*') ||
+            (this.selectionContainsFormatting('**') && !this.selectionContainsFormatting('***'))
+        ) {
             this.applyFormatting('*', false);
+        } else {
+            this.removeFormatting('*');
         }
     }
 
     public applyStrikeThrough(): void {
         if (!this.selectionContainsFormatting('~~')) {
             this.applyFormatting('~~', false);
+        } else {
+            this.removeFormatting('~~');
         }
     }
 
@@ -222,6 +231,8 @@ export class MarkdownNoteEditor implements INoteEditor {
         } else {
             if (!this.selectionContainsFormatting('`')) {
                 this.applyFormatting('`', false);
+            } else {
+                this.removeFormatting('`');
             }
         }
     }
@@ -263,7 +274,7 @@ export class MarkdownNoteEditor implements INoteEditor {
 
     private applyFormatting(formatting: string, addNewLines: boolean): void {
         const markdownInputElement: any = this.getMarkdownInputElement();
-        this.ensureTextIsSelected(markdownInputElement);
+        this.ensureTextIsSelected(markdownInputElement, false);
 
         const selectedText: string = this.getSelectedText(markdownInputElement);
 
@@ -272,6 +283,20 @@ export class MarkdownNoteEditor implements INoteEditor {
         } else {
             this.insertText(`${formatting}${selectedText}${formatting}`);
         }
+    }
+
+    private removeFormatting(formatting: string): void {
+        const markdownInputElement: any = this.getMarkdownInputElement();
+        this.ensureTextIsSelected(markdownInputElement, true);
+
+        const selectedText: string = this.getSelectedText(markdownInputElement);
+
+        const start: number = markdownInputElement.selectionStart + formatting.length;
+        const end: number = markdownInputElement.selectionEnd - formatting.length;
+
+        const selectedTextWithoutFormatting: string = markdownInputElement.value.substring(start, end);
+
+        this.insertText(selectedTextWithoutFormatting);
     }
 
     private applyHeadingFormatting(formatting: string): void {
@@ -306,10 +331,10 @@ export class MarkdownNoteEditor implements INoteEditor {
         return document.getElementById('markdown-input');
     }
 
-    private ensureTextIsSelected(element: any): void {
+    private ensureTextIsSelected(element: any, forceReselection: boolean): void {
         const selectedText: string = this.getSelectedText(element);
 
-        if (Strings.isNullOrWhiteSpace(selectedText)) {
+        if (Strings.isNullOrWhiteSpace(selectedText) || forceReselection) {
             const wordBoundary: WordBoundary = this.boundaryGetter.getWordBoundary(element);
 
             element.focus();
