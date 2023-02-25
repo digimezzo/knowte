@@ -187,15 +187,21 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     public applyBold(): void {
-        this.applyFormatting('**', false);
+        if (!this.selectionContainsFormatting('**')) {
+            this.applyFormatting('**', false);
+        }
     }
 
     public applyItalic(): void {
-        this.applyFormatting('*', false);
+        if (!this.selectionContainsFormatting('*')) {
+            this.applyFormatting('*', false);
+        }
     }
 
     public applyStrikeThrough(): void {
-        this.applyFormatting('~~', false);
+        if (!this.selectionContainsFormatting('~~')) {
+            this.applyFormatting('~~', false);
+        }
     }
 
     public insertLink(): void {
@@ -214,7 +220,9 @@ export class MarkdownNoteEditor implements INoteEditor {
         if (this.areMultipleLinesSelected()) {
             this.applyFormatting('```', true);
         } else {
-            this.applyFormatting('`', false);
+            if (!this.selectionContainsFormatting('`')) {
+                this.applyFormatting('`', false);
+            }
         }
     }
 
@@ -231,6 +239,31 @@ export class MarkdownNoteEditor implements INoteEditor {
         return selectedText.includes('\n') || selectedText.includes('\r');
     }
 
+    private selectionContainsFormatting(formatting): boolean {
+        const markdownInputElement: any = this.getMarkdownInputElement();
+        const wordBoundary: WordBoundary = this.boundaryGetter.getWordBoundary(markdownInputElement);
+
+        let startContainsFormatting: boolean = false;
+
+        const possibleStartFormatting: string = markdownInputElement.value.substring(
+            wordBoundary.start,
+            wordBoundary.start + formatting.length
+        );
+
+        startContainsFormatting = possibleStartFormatting === formatting;
+
+        let endContainsFormatting: boolean = false;
+
+        const possibleEndFormatting: string = markdownInputElement.value.substring(
+            wordBoundary.end - formatting.length - 1,
+            wordBoundary.end - 1
+        );
+
+        endContainsFormatting = possibleEndFormatting === formatting;
+
+        return startContainsFormatting && endContainsFormatting;
+    }
+
     private applyFormatting(formatting: string, addNewLines: boolean): void {
         const markdownInputElement: any = this.getMarkdownInputElement();
         const selectedText: string = this.getSelectedText(markdownInputElement);
@@ -241,7 +274,7 @@ export class MarkdownNoteEditor implements INoteEditor {
 
             markdownInputElement.focus();
 
-            markdownInputElement.setSelectionRange(wordBoundary.start, wordBoundary.end);
+            markdownInputElement.setSelectionRange(wordBoundary.start, wordBoundary.start);
 
             this.insertText(formatting);
 
