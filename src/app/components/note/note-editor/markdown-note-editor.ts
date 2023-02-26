@@ -326,7 +326,7 @@ export class MarkdownNoteEditor implements INoteEditor {
         return startContainsFormatting && endContainsFormatting;
     }
 
-    private lineContainsHeaderFormatting(formatting): boolean {
+    private lineContainsHeaderFormatting(formatting: string): boolean {
         const markdownInputElement: any = this.getMarkdownInputElement();
         const lineBoundary: LineBoundary = this.boundaryGetter.getLineBoundary(markdownInputElement);
 
