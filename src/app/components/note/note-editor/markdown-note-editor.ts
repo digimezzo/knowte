@@ -129,13 +129,33 @@ export class MarkdownNoteEditor implements INoteEditor {
         return !Strings.isNullOrWhiteSpace(selectedText);
     }
 
-    public performCut(): void {}
+    public performCut(): void {
+        const markdownInputElement: any = this.getMarkdownInputElement();
+        const selectedText: string = this.getSelectedText(markdownInputElement);
+        this.clipboard.writeText(selectedText);
 
-    public performCopy(): void {}
+        this.insertText('');
+    }
 
-    public performPaste(): void {}
+    public performCopy(): void {
+        const markdownInputElement: any = this.getMarkdownInputElement();
+        const selectedText: string = this.getSelectedText(markdownInputElement);
+        this.clipboard.writeText(selectedText);
+    }
 
-    public performDelete(): void {}
+    public performPaste(): void {
+        if (this.clipboard.containsImage()) {
+            // Image found on clipboard. Try to paste as JPG.
+            this.pasteImageFromClipboard();
+        } else {
+            // No image found on clipboard. Try to paste as text.
+            this.insertText(this.clipboard.readText());
+        }
+    }
+
+    public performDelete(): void {
+        this.insertText('');
+    }
 
     public getTasksCount(): TasksCount {
         const openTasksCount: number = (this.content.match(/- \[ \]/g) || []).length;
