@@ -359,8 +359,16 @@ export class MarkdownNoteEditor implements INoteEditor {
         const markdownInputElement: any = this.getMarkdownInputElement();
         this.ensureTextIsSelected(markdownInputElement);
 
-        const start: number = markdownInputElement.selectionStart + formatting.length;
-        const end: number = markdownInputElement.selectionEnd - formatting.length;
+        let start: number = markdownInputElement.selectionStart + formatting.length;
+        let end: number = markdownInputElement.selectionEnd - formatting.length;
+
+        const possibleNewLineAfterStartFormatting: string = markdownInputElement.value.substring(start, start + 1);
+        const possibleNewLineBeforeEndFormatting: string = markdownInputElement.value.substring(end, end - 1);
+
+        if (possibleNewLineAfterStartFormatting === '\n' && possibleNewLineBeforeEndFormatting === '\n') {
+            start = start + 1;
+            end = end - 1;
+        }
 
         const selectedTextWithoutFormatting: string = markdownInputElement.value.substring(start, end);
 
