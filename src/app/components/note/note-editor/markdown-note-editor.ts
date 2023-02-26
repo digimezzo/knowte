@@ -63,7 +63,7 @@ export class MarkdownNoteEditor implements INoteEditor {
     public set text(v: string) {}
 
     public get html(): string {
-        const markdownOutputElement: HTMLElement = this.getMarkdownInputElement();
+        const markdownOutputElement: HTMLElement = document.getElementById('markdown-output');
 
         if (markdownOutputElement === null || markdownOutputElement === undefined) {
             return '';
@@ -123,7 +123,10 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     public hasSelectedText(): boolean {
-        return false;
+        const markdownInputElement: any = this.getMarkdownInputElement();
+        const selectedText: string = this.getSelectedText(markdownInputElement);
+
+        return !Strings.isNullOrWhiteSpace(selectedText);
     }
 
     public performCut(): void {}
