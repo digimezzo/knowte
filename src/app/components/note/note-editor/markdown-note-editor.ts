@@ -78,11 +78,47 @@ export class MarkdownNoteEditor implements INoteEditor {
 
     public applyHeading(headingSize: number): void {
         if (headingSize === 1) {
-            this.applyHeadingFormatting('# ');
+            if (this.lineContainsHeaderFormatting('### ')) {
+                this.removeHeadingFormatting('### ');
+            }
+
+            if (this.lineContainsHeaderFormatting('## ')) {
+                this.removeHeadingFormatting('## ');
+            }
+
+            if (!this.lineContainsHeaderFormatting('# ')) {
+                this.applyHeadingFormatting('# ');
+            } else {
+                this.removeHeadingFormatting('# ');
+            }
         } else if (headingSize === 2) {
-            this.applyHeadingFormatting('## ');
+            if (this.lineContainsHeaderFormatting('### ')) {
+                this.removeHeadingFormatting('### ');
+            }
+
+            if (this.lineContainsHeaderFormatting('# ') && !this.lineContainsHeaderFormatting('## ')) {
+                this.removeHeadingFormatting('# ');
+            }
+
+            if (!this.lineContainsHeaderFormatting('## ')) {
+                this.applyHeadingFormatting('## ');
+            } else {
+                this.removeHeadingFormatting('## ');
+            }
         } else if (headingSize === 3) {
-            this.applyHeadingFormatting('### ');
+            if (this.lineContainsHeaderFormatting('## ') && !this.lineContainsHeaderFormatting('### ')) {
+                this.removeHeadingFormatting('## ');
+            }
+
+            if (this.lineContainsHeaderFormatting('# ') && !this.lineContainsHeaderFormatting('### ')) {
+                this.removeHeadingFormatting('# ');
+            }
+
+            if (!this.lineContainsHeaderFormatting('### ')) {
+                this.applyHeadingFormatting('### ');
+            } else {
+                this.removeHeadingFormatting('### ');
+            }
         }
     }
 
@@ -222,7 +258,11 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     public applyQuote(): void {
-        this.applyHeadingFormatting('> ');
+        if (!this.lineContainsHeaderFormatting('> ')) {
+            this.applyHeadingFormatting('> ');
+        } else {
+            this.removeHeadingFormatting('> ');
+        }
     }
 
     public applyCode(): void {
@@ -272,6 +312,22 @@ export class MarkdownNoteEditor implements INoteEditor {
         return startContainsFormatting && endContainsFormatting;
     }
 
+    private lineContainsHeaderFormatting(formatting): boolean {
+        const markdownInputElement: any = this.getMarkdownInputElement();
+        const lineBoundary: LineBoundary = this.boundaryGetter.getLineBoundary(markdownInputElement);
+
+        let startContainsFormatting: boolean = false;
+
+        const possibleStartFormatting: string = markdownInputElement.value.substring(
+            lineBoundary.start,
+            lineBoundary.start + formatting.length
+        );
+
+        startContainsFormatting = possibleStartFormatting === formatting;
+
+        return startContainsFormatting;
+    }
+
     private applyFormatting(formatting: string, addNewLines: boolean): void {
         const markdownInputElement: any = this.getMarkdownInputElement();
         this.ensureTextIsSelected(markdownInputElement, false);
@@ -288,8 +344,6 @@ export class MarkdownNoteEditor implements INoteEditor {
     private removeFormatting(formatting: string): void {
         const markdownInputElement: any = this.getMarkdownInputElement();
         this.ensureTextIsSelected(markdownInputElement, true);
-
-        const selectedText: string = this.getSelectedText(markdownInputElement);
 
         const start: number = markdownInputElement.selectionStart + formatting.length;
         const end: number = markdownInputElement.selectionEnd - formatting.length;
@@ -311,6 +365,21 @@ export class MarkdownNoteEditor implements INoteEditor {
         this.insertText(formatting);
 
         const cursorIndexAfterAddingFormatting: number = originalCursorIndex + formatting.length;
+        markdownInputElement.setSelectionRange(cursorIndexAfterAddingFormatting, cursorIndexAfterAddingFormatting);
+    }
+
+    private removeHeadingFormatting(formatting: string): void {
+        const markdownInputElement: any = this.getMarkdownInputElement();
+
+        const originalCursorIndex: number = markdownInputElement.selectionStart;
+        const lineBoundary: LineBoundary = this.boundaryGetter.getLineBoundary(markdownInputElement);
+
+        markdownInputElement.focus();
+        markdownInputElement.setSelectionRange(lineBoundary.start, lineBoundary.start + formatting.length);
+
+        this.insertText('');
+
+        const cursorIndexAfterAddingFormatting: number = originalCursorIndex - formatting.length;
         markdownInputElement.setSelectionRange(cursorIndexAfterAddingFormatting, cursorIndexAfterAddingFormatting);
     }
 
