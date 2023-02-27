@@ -247,7 +247,10 @@
         "Link": "Lien",
         "Quote": "Citation",
         "Code": "Code",
-        "Table": "Tableau"
+        "Table": "Tableau",
+        "UnorderedList": "Liste non ordonnée",
+        "OrderedList": "Liste ordonnée",
+        "TaskList": "Liste de tâches"
     },
     "NoteDates": {
         "Today": "Aujourd'hui",

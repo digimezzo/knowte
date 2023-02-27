@@ -247,7 +247,10 @@
         "Link": "Koppeling",
         "Quote": "Citaat",
         "Code": "Code",
-        "Table": "Tabel"
+        "Table": "Tabel",
+        "UnorderedList": "Ongeordende lijst",
+        "OrderedList": "Geordende lijst",
+        "TaskList": "Takenlijst"
     },
     "NoteDates": {
         "Today": "Vandaag",

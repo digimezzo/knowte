@@ -20,6 +20,7 @@ export class BoundaryGetter {
 
         let foundEndOfWord: boolean = false;
 
+        // TODO: is there a better way to find the end of a word?
         for (let index = element.selectionStart; index < element.selectionStart + 100; index++) {
             if (element.value.substr(index, 1).match(pattern)) {
                 if (!foundEndOfWord) {
@@ -43,6 +44,20 @@ export class BoundaryGetter {
             }
         }
 
-        return new LineBoundary(start);
+        let end: number = element.selectionEnd;
+
+        let foundEndOfLine: boolean = false;
+
+        // TODO: is there a better way to find the end of a line?
+        for (let index = element.selectionStart; index < element.selectionStart + 10000; index++) {
+            if (element.value.substr(index, 1).match(pattern)) {
+                if (!foundEndOfLine) {
+                    foundEndOfLine = true;
+                    end = index;
+                }
+            }
+        }
+
+        return new LineBoundary(start, end);
     }
 }

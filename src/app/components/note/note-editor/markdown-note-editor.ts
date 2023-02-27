@@ -304,6 +304,42 @@ export class MarkdownNoteEditor implements INoteEditor {
         }
     }
 
+    public applyUnorderedList(): void {
+        if (this.areMultipleLinesSelected()) {
+            this.toggleListFormattingForMultipleLines('- ');
+        } else {
+            if (!this.lineContainsHeaderFormatting('- ')) {
+                this.applyHeadingFormatting('- ');
+            } else {
+                this.removeHeadingFormatting('- ');
+            }
+        }
+    }
+
+    public applyOrderedList(): void {
+        if (this.areMultipleLinesSelected()) {
+            this.toggleListFormattingForMultipleLines('1. ');
+        } else {
+            if (!this.lineContainsHeaderFormatting('1. ')) {
+                this.applyHeadingFormatting('1. ');
+            } else {
+                this.removeHeadingFormatting('1. ');
+            }
+        }
+    }
+
+    public applyTaskList(): void {
+        if (this.areMultipleLinesSelected()) {
+            this.toggleListFormattingForMultipleLines('- [ ] ');
+        } else {
+            if (!this.lineContainsHeaderFormatting('- [ ] ')) {
+                this.applyHeadingFormatting('- [ ] ');
+            } else {
+                this.removeHeadingFormatting('- [ ] ');
+            }
+        }
+    }
+
     private getSelectedText(element: any): string {
         const selectedText: string = element.value.substring(element.selectionStart, element.selectionEnd);
 
@@ -408,6 +444,50 @@ export class MarkdownNoteEditor implements INoteEditor {
 
         const cursorIndexAfterAddingFormatting: number = originalCursorIndex + formatting.length;
         markdownInputElement.setSelectionRange(cursorIndexAfterAddingFormatting, cursorIndexAfterAddingFormatting);
+    }
+
+    private toggleListFormattingForMultipleLines(formatting: string): void {
+        const markdownInputElement: any = this.getMarkdownInputElement();
+        const selectedText: string = this.getSelectedText(markdownInputElement);
+        const selectedTextWithoutOldFormatting: string = this.removeOldFormatting(selectedText, formatting);
+
+        if (selectedTextWithoutOldFormatting.includes(formatting)) {
+            this.removeListFormattingForMultipleLines(selectedTextWithoutOldFormatting, formatting);
+        } else {
+            this.addListFormattingForMultipleLines(selectedTextWithoutOldFormatting, formatting);
+        }
+    }
+
+    private removeOldFormatting(text: string, newFormatting: string): string {
+        let textWithoutOldFormatting: string = text;
+
+        if (newFormatting !== '- [ ] ') {
+            textWithoutOldFormatting = Strings.replaceAll(textWithoutOldFormatting, '- [ ] ', '');
+        }
+
+        if (newFormatting !== '- [x] ') {
+            textWithoutOldFormatting = Strings.replaceAll(textWithoutOldFormatting, '- [x] ', '');
+        }
+
+        if (newFormatting !== '- ' && !text.includes('- [ ] ') && !text.includes('- [x] ')) {
+            textWithoutOldFormatting = Strings.replaceAll(textWithoutOldFormatting, '- ', '');
+        }
+
+        if (newFormatting !== '1. ') {
+            textWithoutOldFormatting = Strings.replaceAll(textWithoutOldFormatting, '1. ', '');
+        }
+
+        return textWithoutOldFormatting;
+    }
+
+    private addListFormattingForMultipleLines(text: string, formatting: string): void {
+        const textWithFormattingAdded: string = Strings.replaceAll(text, '\n', `\n${formatting}`);
+        this.insertText(`${formatting}${textWithFormattingAdded}`);
+    }
+
+    private removeListFormattingForMultipleLines(text: string, formatting: string): void {
+        const textWithFormattingRemoved: string = Strings.replaceAll(text, formatting, '');
+        this.insertText(textWithFormattingRemoved);
     }
 
     private removeHeadingFormatting(formatting: string): void {

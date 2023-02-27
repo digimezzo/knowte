@@ -19,6 +19,7 @@
             >
                 <i class="fa-solid fa-strikethrough"></i>
             </div>
+            <div class="markdown-action-separator no-select"></div>
             <div
                 class="markdown-action-button no-select"
                 (click)="this.noteEditor.applyHeading(1)"
@@ -43,6 +44,29 @@
                 <i class="fa-solid fa-heading"></i>
                 <div class="markdown-action-button-subscript">3</div>
             </div>
+            <div class="markdown-action-separator no-select"></div>
+            <div
+                class="markdown-action-button no-select"
+                (click)="this.noteEditor.applyUnorderedList()"
+                title="{{ 'Notes.UnorderedList' | translate }}"
+            >
+                <i class="fa-solid fa-list-ul"></i>
+            </div>
+            <div
+                class="markdown-action-button no-select"
+                (click)="this.noteEditor.applyOrderedList()"
+                title="{{ 'Notes.OrderedList' | translate }}"
+            >
+                <i class="fa-solid fa-list-ol"></i>
+            </div>
+            <div
+                class="markdown-action-button no-select"
+                (click)="this.noteEditor.applyTaskList()"
+                title="{{ 'Notes.TaskList' | translate }}"
+            >
+                <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div class="markdown-action-separator no-select"></div>
             <div class="markdown-action-button no-select" (click)="this.noteEditor.insertLink()" title="{{ 'Notes.Link' | translate }}">
                 <i class="fa-solid fa-link"></i>
             </div>
