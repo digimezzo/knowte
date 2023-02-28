@@ -250,7 +250,8 @@
         "Table": "Tabel",
         "UnorderedList": "Ongeordende lijst",
         "OrderedList": "Geordende lijst",
-        "TaskList": "Takenlijst"
+        "TaskList": "Takenlijst",
+        "Image": "Afbeelding"
     },
     "NoteDates": {
         "Today": "Vandaag",

@@ -26,4 +26,5 @@ export interface INoteEditor {
     insertTable(): void;
     applyQuote(): void;
     applyCode(): void;
+    addImageFromDiskAsync(): Promise<void>;
 }

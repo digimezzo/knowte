@@ -82,6 +82,7 @@ import { DateFormatter } from './core/date-formatter';
 import { Desktop } from './core/desktop';
 import { FileAccess } from './core/file-access';
 import { GitHubApi } from './core/github-api';
+import { ImageProcessor } from './core/image-processor';
 import { Logger } from './core/logger';
 import { PathConverter } from './core/path-converter';
 import { Scheduler } from './core/scheduler';
@@ -290,6 +291,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
         NoteImageSaver,
         BoundaryGetter,
         PathConverter,
+        ImageProcessor,
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
         DataStore,
         {

@@ -79,6 +79,14 @@
             <div class="markdown-action-button no-select" (click)="this.noteEditor.insertTable()" title="{{ 'Notes.Table' | translate }}">
                 <i class="fa-solid fa-table"></i>
             </div>
+            <div class="markdown-action-separator no-select"></div>
+            <div
+                class="markdown-action-button no-select"
+                (click)="this.noteEditor.addImageFromDiskAsync()"
+                title="{{ 'Notes.Image' | translate }}"
+            >
+                <i class="fa-regular fa-image"></i>
+            </div>
         </div>
     </div>
     <div class="d-flex flex-row fill overflow-hidden pt-1 pb-2">

@@ -250,7 +250,8 @@
         "Table": "Table",
         "UnorderedList": "Unordered list",
         "OrderedList": "Ordered list",
-        "TaskList": "Task list"
+        "TaskList": "Task list",
+        "Image": "Image"
     },
     "NoteDates": {
         "Today": "Сегодня",

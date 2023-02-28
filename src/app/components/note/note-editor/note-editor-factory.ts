@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { BaseSettings } from '../../../core/base-settings';
 import { ClipboardManager } from '../../../core/clipboard-manager';
 import { Desktop } from '../../../core/desktop';
+import { ImageProcessor } from '../../../core/image-processor';
 import { Logger } from '../../../core/logger';
 import { PathConverter } from '../../../core/path-converter';
+import { TranslatorService } from '../../../services/translator/translator.service';
 import { BoundaryGetter } from './boundary-getter';
 import { ClassicNoteEditor } from './classic-note-editor';
 import { INoteEditor } from './i-note-editor';
@@ -15,6 +17,8 @@ import { QuillTweaker } from './quill-tweaker';
 @Injectable()
 export class NoteEditorFactory {
     public constructor(
+        private translatorService: TranslatorService,
+        private imageProcessor: ImageProcessor,
         private noteImageSaver: NoteImageSaver,
         private quillFactory: QuillFactory,
         private quillTweaker: QuillTweaker,
@@ -30,6 +34,8 @@ export class NoteEditorFactory {
         if (isMarkdownNote) {
             return new MarkdownNoteEditor(
                 noteId,
+                this.translatorService,
+                this.imageProcessor,
                 this.noteImageSaver,
                 this.clipboard,
                 this.boundaryGetter,

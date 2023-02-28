@@ -1,12 +1,16 @@
+import * as remote from '@electron/remote';
+import { OpenDialogReturnValue } from 'electron';
 import { nanoid } from 'nanoid';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { BaseSettings } from '../../../core/base-settings';
 import { ClipboardManager } from '../../../core/clipboard-manager';
 import { Desktop } from '../../../core/desktop';
+import { ImageProcessor } from '../../../core/image-processor';
 import { Logger } from '../../../core/logger';
 import { PathConverter } from '../../../core/path-converter';
 import { Strings } from '../../../core/strings';
 import { TasksCount } from '../../../core/tasks-count';
+import { TranslatorService } from '../../../services/translator/translator.service';
 import { BoundaryGetter } from './boundary-getter';
 import { INoteEditor } from './i-note-editor';
 import { LineBoundary } from './line-boundary';
@@ -21,6 +25,8 @@ export class MarkdownNoteEditor implements INoteEditor {
 
     public constructor(
         public noteId: string,
+        private translatorService: TranslatorService,
+        private imageProcessor: ImageProcessor,
         private noteImageSaver: NoteImageSaver,
         private clipboard: ClipboardManager,
         private boundaryGetter: BoundaryGetter,
@@ -337,6 +343,26 @@ export class MarkdownNoteEditor implements INoteEditor {
             } else {
                 this.removeHeadingFormatting('- [ ] ');
             }
+        }
+    }
+
+    public async addImageFromDiskAsync(): Promise<void> {
+        const openDialogReturnValue: OpenDialogReturnValue = await remote.dialog.showOpenDialog({
+            filters: [
+                { name: '*.jpg, *.png, *.gif, *.bmp', extensions: ['jpg', 'png', 'gif', 'bmp'] },
+                { name: await this.translatorService.getAsync('DialogTexts.AllFiles'), extensions: ['*'] },
+            ],
+            properties: ['openFile'],
+        });
+
+        if (
+            openDialogReturnValue != undefined &&
+            openDialogReturnValue.filePaths != undefined &&
+            openDialogReturnValue.filePaths.length > 0
+        ) {
+            const imageBuffer: Buffer = await this.imageProcessor.convertLocalImageToBufferAsync(openDialogReturnValue.filePaths[0]);
+            const imageId: string = nanoid();
+            this.noteImageSaver.saveImageAsync(this.noteId, this.settings.activeCollection, imageBuffer, imageId);
         }
     }
 

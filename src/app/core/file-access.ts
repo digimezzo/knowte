@@ -148,4 +148,8 @@ export class FileAccess {
     public getLastDirectoryInDirectoryPath(directoryPath: string): string {
         return path.dirname(directoryPath).split(path.sep).pop();
     }
+
+    public async getFileContentAsBufferAsync(filePath: string): Promise<Buffer> {
+        return await fs.readFile(filePath);
+    }
 }

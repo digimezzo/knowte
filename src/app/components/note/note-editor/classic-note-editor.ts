@@ -241,4 +241,8 @@ export class ClassicNoteEditor implements INoteEditor {
     public applyCode(): void {
         // Not used in ClassicNoteEditor
     }
+
+    public async addImageFromDiskAsync(): Promise<void> {
+        // Not used in ClassicNoteEditor
+    }
 }
