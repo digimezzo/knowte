@@ -41,6 +41,7 @@ export class ClassicNoteEditor implements INoteEditor {
     public get html(): string {
         return this.quill.root.innerHTML;
     }
+
     public set html(v: string) {}
 
     public noteContentChanged$: Observable<void> = this.noteContentChanged.asObservable();
@@ -80,8 +81,13 @@ export class ClassicNoteEditor implements INoteEditor {
         }
 
         const text: string = this.quill.getText(range.index, range.length);
-        this.clipboard.writeText(text);
-        this.quill.deleteText(range.index, range.length);
+
+        try {
+            this.clipboard.writeText(text);
+            this.quill.deleteText(range.index, range.length);
+        } catch (error) {
+            // TODO: log + notification
+        }
     }
 
     public performCopy(): void {
@@ -92,16 +98,27 @@ export class ClassicNoteEditor implements INoteEditor {
         }
 
         const text: string = this.quill.getText(range.index, range.length);
-        this.clipboard.writeText(text);
+
+        try {
+            this.clipboard.writeText(text);
+        } catch (error) {
+            // TODO: log + notification
+        }
     }
 
     public performPaste(): void {
-        if (this.clipboard.containsImage()) {
-            // Image found on clipboard. Try to paste as JPG.
-            this.pasteImageFromClipboard();
-        } else {
-            // No image found on clipboard. Try to paste as text.
-            this.pastTextFromClipboard();
+        try {
+            const clipboardContainsImage: boolean = this.clipboard.containsImage();
+
+            if (clipboardContainsImage) {
+                // Image found on clipboard. Try to paste as JPG.
+                this.pasteImageFromClipboard();
+            } else {
+                // No image found on clipboard. Try to paste as text.
+                this.pastTextFromClipboard();
+            }
+        } catch (error) {
+            // TODO: log + notification
         }
     }
 
@@ -140,6 +157,7 @@ export class ClassicNoteEditor implements INoteEditor {
             this.insertImage(this.clipboard.readImage());
         } catch (error) {
             this.logger.error('Could not paste image from clipboard', 'ClassicNoteEditor', 'pasteImageFromClipboard');
+            // TODO: throw
         }
     }
 
@@ -165,10 +183,14 @@ export class ClassicNoteEditor implements INoteEditor {
             return;
         }
 
-        const clipboardText: string = this.clipboard.readText();
+        try {
+            const clipboardText: string = this.clipboard.readText();
 
-        if (clipboardText) {
-            this.quill.insertText(range.index, clipboardText);
+            if (clipboardText) {
+                this.quill.insertText(range.index, clipboardText);
+            }
+        } catch (error) {
+            // TODO: log + throw
         }
     }
 

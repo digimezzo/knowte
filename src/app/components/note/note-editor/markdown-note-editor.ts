@@ -83,48 +83,52 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     public applyHeading(headingSize: number): void {
-        if (headingSize === 1) {
-            if (this.lineContainsHeaderFormatting('### ')) {
-                this.removeHeadingFormatting('### ');
-            }
+        try {
+            if (headingSize === 1) {
+                if (this.lineContainsHeaderFormatting('### ')) {
+                    this.removeHeadingFormatting('### ');
+                }
 
-            if (this.lineContainsHeaderFormatting('## ')) {
-                this.removeHeadingFormatting('## ');
-            }
+                if (this.lineContainsHeaderFormatting('## ')) {
+                    this.removeHeadingFormatting('## ');
+                }
 
-            if (!this.lineContainsHeaderFormatting('# ')) {
-                this.applyHeadingFormatting('# ');
-            } else {
-                this.removeHeadingFormatting('# ');
-            }
-        } else if (headingSize === 2) {
-            if (this.lineContainsHeaderFormatting('### ')) {
-                this.removeHeadingFormatting('### ');
-            }
+                if (!this.lineContainsHeaderFormatting('# ')) {
+                    this.applyHeadingFormatting('# ');
+                } else {
+                    this.removeHeadingFormatting('# ');
+                }
+            } else if (headingSize === 2) {
+                if (this.lineContainsHeaderFormatting('### ')) {
+                    this.removeHeadingFormatting('### ');
+                }
 
-            if (this.lineContainsHeaderFormatting('# ') && !this.lineContainsHeaderFormatting('## ')) {
-                this.removeHeadingFormatting('# ');
-            }
+                if (this.lineContainsHeaderFormatting('# ') && !this.lineContainsHeaderFormatting('## ')) {
+                    this.removeHeadingFormatting('# ');
+                }
 
-            if (!this.lineContainsHeaderFormatting('## ')) {
-                this.applyHeadingFormatting('## ');
-            } else {
-                this.removeHeadingFormatting('## ');
-            }
-        } else if (headingSize === 3) {
-            if (this.lineContainsHeaderFormatting('## ') && !this.lineContainsHeaderFormatting('### ')) {
-                this.removeHeadingFormatting('## ');
-            }
+                if (!this.lineContainsHeaderFormatting('## ')) {
+                    this.applyHeadingFormatting('## ');
+                } else {
+                    this.removeHeadingFormatting('## ');
+                }
+            } else if (headingSize === 3) {
+                if (this.lineContainsHeaderFormatting('## ') && !this.lineContainsHeaderFormatting('### ')) {
+                    this.removeHeadingFormatting('## ');
+                }
 
-            if (this.lineContainsHeaderFormatting('# ') && !this.lineContainsHeaderFormatting('### ')) {
-                this.removeHeadingFormatting('# ');
-            }
+                if (this.lineContainsHeaderFormatting('# ') && !this.lineContainsHeaderFormatting('### ')) {
+                    this.removeHeadingFormatting('# ');
+                }
 
-            if (!this.lineContainsHeaderFormatting('### ')) {
-                this.applyHeadingFormatting('### ');
-            } else {
-                this.removeHeadingFormatting('### ');
+                if (!this.lineContainsHeaderFormatting('### ')) {
+                    this.applyHeadingFormatting('### ');
+                } else {
+                    this.removeHeadingFormatting('### ');
+                }
             }
+        } catch (error) {
+            // TODO: log + notification
         }
     }
 
@@ -138,24 +142,39 @@ export class MarkdownNoteEditor implements INoteEditor {
     public performCut(): void {
         const markdownInputElement: any = this.getMarkdownInputElement();
         const selectedText: string = this.getSelectedText(markdownInputElement);
-        this.clipboard.writeText(selectedText);
 
-        this.insertText('');
+        try {
+            this.clipboard.writeText(selectedText);
+            this.insertText('');
+        } catch (error) {
+            // TODO: logging + notification
+        }
     }
 
     public performCopy(): void {
         const markdownInputElement: any = this.getMarkdownInputElement();
         const selectedText: string = this.getSelectedText(markdownInputElement);
-        this.clipboard.writeText(selectedText);
+
+        try {
+            this.clipboard.writeText(selectedText);
+        } catch (error) {
+            // TODO: logging + notification
+        }
     }
 
     public performPaste(): void {
-        if (this.clipboard.containsImage()) {
-            // Image found on clipboard. Try to paste as JPG.
-            this.pasteImageFromClipboard();
-        } else {
-            // No image found on clipboard. Try to paste as text.
-            this.insertText(this.clipboard.readText());
+        try {
+            const clipboardContainsImage: boolean = this.clipboard.containsImage();
+
+            if (clipboardContainsImage) {
+                // Image found on clipboard. Try to paste as JPG.
+                this.pasteImageFromClipboard();
+            } else {
+                // No image found on clipboard. Try to paste as text.
+                this.pasteTextFromClipboard();
+            }
+        } catch (error) {
+            // TODO: logging + notification
         }
     }
 
@@ -181,6 +200,15 @@ export class MarkdownNoteEditor implements INoteEditor {
             this.saveImageFile(this.clipboard.readImage());
         } catch (error) {
             this.logger.error('Could not paste image from clipboard', 'MarkdownNoteEditor', 'pasteImageFromClipboard');
+            // TODO: throw
+        }
+    }
+
+    private pasteTextFromClipboard(): void {
+        try {
+            this.insertText(this.clipboard.readText());
+        } catch (error) {
+            // TODO: logging + throw
         }
     }
 
@@ -252,29 +280,41 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     public applyBold(): void {
-        if (!this.selectionContainsFormatting('**')) {
-            this.applyFormatting('**', false);
-        } else {
-            this.removeFormatting('**');
+        try {
+            if (!this.selectionContainsFormatting('**')) {
+                this.applyFormatting('**', false);
+            } else {
+                this.removeFormatting('**');
+            }
+        } catch (error) {
+            // TODO: log + notification
         }
     }
 
     public applyItalic(): void {
-        if (
-            !this.selectionContainsFormatting('*') ||
-            (this.selectionContainsFormatting('**') && !this.selectionContainsFormatting('***'))
-        ) {
-            this.applyFormatting('*', false);
-        } else {
-            this.removeFormatting('*');
+        try {
+            if (
+                !this.selectionContainsFormatting('*') ||
+                (this.selectionContainsFormatting('**') && !this.selectionContainsFormatting('***'))
+            ) {
+                this.applyFormatting('*', false);
+            } else {
+                this.removeFormatting('*');
+            }
+        } catch (error) {
+            // TODO: log + notification
         }
     }
 
     public applyStrikeThrough(): void {
-        if (!this.selectionContainsFormatting('~~')) {
-            this.applyFormatting('~~', false);
-        } else {
-            this.removeFormatting('~~');
+        try {
+            if (!this.selectionContainsFormatting('~~')) {
+                this.applyFormatting('~~', false);
+            } else {
+                this.removeFormatting('~~');
+            }
+        } catch (error) {
+            // TODO: log + notification
         }
     }
 
@@ -287,82 +327,106 @@ export class MarkdownNoteEditor implements INoteEditor {
     }
 
     public applyQuote(): void {
-        if (!this.lineContainsHeaderFormatting('> ')) {
-            this.applyHeadingFormatting('> ');
-        } else {
-            this.removeHeadingFormatting('> ');
+        try {
+            if (!this.lineContainsHeaderFormatting('> ')) {
+                this.applyHeadingFormatting('> ');
+            } else {
+                this.removeHeadingFormatting('> ');
+            }
+        } catch (error) {
+            // TODO: log + notification
         }
     }
 
     public applyCode(): void {
-        if (this.areMultipleLinesSelected()) {
-            if (!this.selectionContainsFormatting('```')) {
-                this.applyFormatting('```', true);
+        try {
+            if (this.areMultipleLinesSelected()) {
+                if (!this.selectionContainsFormatting('```')) {
+                    this.applyFormatting('```', true);
+                } else {
+                    this.removeFormatting('```');
+                }
             } else {
-                this.removeFormatting('```');
+                if (!this.selectionContainsFormatting('`')) {
+                    this.applyFormatting('`', false);
+                } else {
+                    this.removeFormatting('`');
+                }
             }
-        } else {
-            if (!this.selectionContainsFormatting('`')) {
-                this.applyFormatting('`', false);
-            } else {
-                this.removeFormatting('`');
-            }
+        } catch (error) {
+            // TODO: log + notification
         }
     }
 
     public applyUnorderedList(): void {
-        if (this.areMultipleLinesSelected()) {
-            this.toggleListFormattingForMultipleLines('- ');
-        } else {
-            if (!this.lineContainsHeaderFormatting('- ')) {
-                this.applyHeadingFormatting('- ');
+        try {
+            if (this.areMultipleLinesSelected()) {
+                this.toggleListFormattingForMultipleLines('- ');
             } else {
-                this.removeHeadingFormatting('- ');
+                if (!this.lineContainsHeaderFormatting('- ')) {
+                    this.applyHeadingFormatting('- ');
+                } else {
+                    this.removeHeadingFormatting('- ');
+                }
             }
+        } catch (error) {
+            // TODO: log + notification
         }
     }
 
     public applyOrderedList(): void {
-        if (this.areMultipleLinesSelected()) {
-            this.toggleListFormattingForMultipleLines('1. ');
-        } else {
-            if (!this.lineContainsHeaderFormatting('1. ')) {
-                this.applyHeadingFormatting('1. ');
+        try {
+            if (this.areMultipleLinesSelected()) {
+                this.toggleListFormattingForMultipleLines('1. ');
             } else {
-                this.removeHeadingFormatting('1. ');
+                if (!this.lineContainsHeaderFormatting('1. ')) {
+                    this.applyHeadingFormatting('1. ');
+                } else {
+                    this.removeHeadingFormatting('1. ');
+                }
             }
+        } catch (error) {
+            // TODO: log + notification
         }
     }
 
     public applyTaskList(): void {
-        if (this.areMultipleLinesSelected()) {
-            this.toggleListFormattingForMultipleLines('- [ ] ');
-        } else {
-            if (!this.lineContainsHeaderFormatting('- [ ] ')) {
-                this.applyHeadingFormatting('- [ ] ');
+        try {
+            if (this.areMultipleLinesSelected()) {
+                this.toggleListFormattingForMultipleLines('- [ ] ');
             } else {
-                this.removeHeadingFormatting('- [ ] ');
+                if (!this.lineContainsHeaderFormatting('- [ ] ')) {
+                    this.applyHeadingFormatting('- [ ] ');
+                } else {
+                    this.removeHeadingFormatting('- [ ] ');
+                }
             }
+        } catch (error) {
+            // TODO: log + notification
         }
     }
 
     public async addImageFromDiskAsync(): Promise<void> {
-        const openDialogReturnValue: OpenDialogReturnValue = await remote.dialog.showOpenDialog({
-            filters: [
-                { name: '*.jpg, *.png, *.gif, *.bmp', extensions: ['jpg', 'png', 'gif', 'bmp'] },
-                { name: await this.translatorService.getAsync('DialogTexts.AllFiles'), extensions: ['*'] },
-            ],
-            properties: ['openFile'],
-        });
+        try {
+            const openDialogReturnValue: OpenDialogReturnValue = await remote.dialog.showOpenDialog({
+                filters: [
+                    { name: '*.jpg, *.png, *.gif, *.bmp', extensions: ['jpg', 'png', 'gif', 'bmp'] },
+                    { name: await this.translatorService.getAsync('DialogTexts.AllFiles'), extensions: ['*'] },
+                ],
+                properties: ['openFile'],
+            });
 
-        if (
-            openDialogReturnValue != undefined &&
-            openDialogReturnValue.filePaths != undefined &&
-            openDialogReturnValue.filePaths.length > 0
-        ) {
-            const imageBuffer: Buffer = await this.imageProcessor.convertLocalImageToBufferAsync(openDialogReturnValue.filePaths[0]);
-            const imageId: string = nanoid();
-            this.noteImageSaver.saveImageAsync(this.noteId, this.settings.activeCollection, imageBuffer, imageId);
+            if (
+                openDialogReturnValue != undefined &&
+                openDialogReturnValue.filePaths != undefined &&
+                openDialogReturnValue.filePaths.length > 0
+            ) {
+                const imageBuffer: Buffer = await this.imageProcessor.convertLocalImageToBufferAsync(openDialogReturnValue.filePaths[0]);
+                const imageId: string = nanoid();
+                this.noteImageSaver.saveImageAsync(this.noteId, this.settings.activeCollection, imageBuffer, imageId);
+            }
+        } catch (error) {
+            // TODO: log + notification
         }
     }
 
@@ -541,6 +605,7 @@ export class MarkdownNoteEditor implements INoteEditor {
             }
         } catch (error) {
             this.logger.error(`Could not open image '${imagePath}'. Error: ${error.message}`, 'MarkdownNoteEditor', 'openIfImage');
+            // TODO: notification
         }
     }
 
