@@ -210,7 +210,8 @@
         "NoNoteFilesToImport": "There were no note files to import",
         "NewVersionAvailable": "A new version is available: {{version}}",
         "NoteMoved": "{{number}} note moved to '{{collection}}'",
-        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'",
+        "OopsAnErrorOccurred": "Oops! An error occurred."
     },
     "SnackBarActions": {
         "Ok": "OK"

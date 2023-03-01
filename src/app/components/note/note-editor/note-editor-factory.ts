@@ -5,6 +5,7 @@ import { Desktop } from '../../../core/desktop';
 import { ImageProcessor } from '../../../core/image-processor';
 import { Logger } from '../../../core/logger';
 import { PathConverter } from '../../../core/path-converter';
+import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../../services/translator/translator.service';
 import { BoundaryGetter } from './boundary-getter';
 import { ClassicNoteEditor } from './classic-note-editor';
@@ -18,6 +19,7 @@ import { QuillTweaker } from './quill-tweaker';
 export class NoteEditorFactory {
     public constructor(
         private translatorService: TranslatorService,
+        private snackBarService: SnackBarService,
         private imageProcessor: ImageProcessor,
         private noteImageSaver: NoteImageSaver,
         private quillFactory: QuillFactory,
@@ -35,6 +37,7 @@ export class NoteEditorFactory {
             return new MarkdownNoteEditor(
                 noteId,
                 this.translatorService,
+                this.snackBarService,
                 this.imageProcessor,
                 this.noteImageSaver,
                 this.clipboard,
@@ -46,6 +49,14 @@ export class NoteEditorFactory {
             );
         }
 
-        return new ClassicNoteEditor(noteId, this.quillFactory, this.quillTweaker, this.clipboard, this.settings, this.logger);
+        return new ClassicNoteEditor(
+            noteId,
+            this.snackBarService,
+            this.quillFactory,
+            this.quillTweaker,
+            this.clipboard,
+            this.settings,
+            this.logger
+        );
     }
 }

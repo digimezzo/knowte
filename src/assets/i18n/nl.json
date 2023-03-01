@@ -210,7 +210,8 @@
         "NoNoteFilesToImport": "Er waren geen notitiebestanden om te importeren",
         "NewVersionAvailable": "Er is een nieuwe versie beschikbaar: {{version}}",
         "NoteMoved": "{{number}} notitie verplaatst naar '{{collection}}'",
-        "NotesMoved": "{{number}} notities verplaatst naar '{{collection}}'"
+        "NotesMoved": "{{number}} notities verplaatst naar '{{collection}}'",
+        "OopsAnErrorOccurred": "Oeps, er is een fout opgetreden!"
     },
     "SnackBarActions": {
         "Ok": "OK"

@@ -10,6 +10,7 @@ import { Logger } from '../../../core/logger';
 import { PathConverter } from '../../../core/path-converter';
 import { Strings } from '../../../core/strings';
 import { TasksCount } from '../../../core/tasks-count';
+import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../../services/translator/translator.service';
 import { BoundaryGetter } from './boundary-getter';
 import { INoteEditor } from './i-note-editor';
@@ -26,6 +27,7 @@ export class MarkdownNoteEditor implements INoteEditor {
     public constructor(
         public noteId: string,
         private translatorService: TranslatorService,
+        private snackBarService: SnackBarService,
         private imageProcessor: ImageProcessor,
         private noteImageSaver: NoteImageSaver,
         private clipboard: ClipboardManager,
@@ -128,7 +130,8 @@ export class MarkdownNoteEditor implements INoteEditor {
                 }
             }
         } catch (error) {
-            // TODO: log + notification
+            this.logger.error(`Could not apply heading '${headingSize}'. Error: ${error.message}`, 'MarkdownNoteEditor', 'applyHeading');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -147,7 +150,8 @@ export class MarkdownNoteEditor implements INoteEditor {
             this.clipboard.writeText(selectedText);
             this.insertText('');
         } catch (error) {
-            // TODO: logging + notification
+            this.logger.error(`Could not perform cut. Error: ${error.message}`, 'MarkdownNoteEditor', 'performCut');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -158,7 +162,8 @@ export class MarkdownNoteEditor implements INoteEditor {
         try {
             this.clipboard.writeText(selectedText);
         } catch (error) {
-            // TODO: logging + notification
+            this.logger.error(`Could not perform copy. Error: ${error.message}`, 'MarkdownNoteEditor', 'performCopy');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -174,7 +179,8 @@ export class MarkdownNoteEditor implements INoteEditor {
                 this.pasteTextFromClipboard();
             }
         } catch (error) {
-            // TODO: logging + notification
+            this.logger.error(`Could not perform paste. Error: ${error.message}`, 'MarkdownNoteEditor', 'performPaste');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -199,8 +205,12 @@ export class MarkdownNoteEditor implements INoteEditor {
 
             this.saveImageFile(this.clipboard.readImage());
         } catch (error) {
-            this.logger.error('Could not paste image from clipboard', 'MarkdownNoteEditor', 'pasteImageFromClipboard');
-            // TODO: throw
+            this.logger.error(
+                `Could not paste image from clipboard. Error: ${error.message}`,
+                'MarkdownNoteEditor',
+                'pasteImageFromClipboard'
+            );
+            throw error;
         }
     }
 
@@ -208,7 +218,12 @@ export class MarkdownNoteEditor implements INoteEditor {
         try {
             this.insertText(this.clipboard.readText());
         } catch (error) {
-            // TODO: logging + throw
+            this.logger.error(
+                `Could not paste text from clipboard. Error: ${error.message}`,
+                'MarkdownNoteEditor',
+                'pasteTextFromClipboard'
+            );
+            throw error;
         }
     }
 
@@ -288,7 +303,8 @@ export class MarkdownNoteEditor implements INoteEditor {
                 this.removeFormatting('**');
             }
         } catch (error) {
-            // TODO: log + notification
+            this.logger.error(`Could not apply bold. Error: ${error.message}`, 'MarkdownNoteEditor', 'applyBold');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -303,7 +319,8 @@ export class MarkdownNoteEditor implements INoteEditor {
                 this.removeFormatting('*');
             }
         } catch (error) {
-            // TODO: log + notification
+            this.logger.error(`Could not apply italic. Error: ${error.message}`, 'MarkdownNoteEditor', 'applyItalic');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -315,7 +332,8 @@ export class MarkdownNoteEditor implements INoteEditor {
                 this.removeFormatting('~~');
             }
         } catch (error) {
-            // TODO: log + notification
+            this.logger.error(`Could not apply apply strikethrough. Error: ${error.message}`, 'MarkdownNoteEditor', 'applyStrikeThrough');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -335,7 +353,8 @@ export class MarkdownNoteEditor implements INoteEditor {
                 this.removeHeadingFormatting('> ');
             }
         } catch (error) {
-            // TODO: log + notification
+            this.logger.error(`Could not apply apply quote. Error: ${error.message}`, 'MarkdownNoteEditor', 'applyQuote');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -355,7 +374,8 @@ export class MarkdownNoteEditor implements INoteEditor {
                 }
             }
         } catch (error) {
-            // TODO: log + notification
+            this.logger.error(`Could not apply apply code. Error: ${error.message}`, 'MarkdownNoteEditor', 'applyCode');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -371,7 +391,8 @@ export class MarkdownNoteEditor implements INoteEditor {
                 }
             }
         } catch (error) {
-            // TODO: log + notification
+            this.logger.error(`Could not apply apply unordered list. Error: ${error.message}`, 'MarkdownNoteEditor', 'applyUnorderedList');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -387,7 +408,8 @@ export class MarkdownNoteEditor implements INoteEditor {
                 }
             }
         } catch (error) {
-            // TODO: log + notification
+            this.logger.error(`Could not apply apply ordered list. Error: ${error.message}`, 'MarkdownNoteEditor', 'applyOrderedList');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -403,7 +425,8 @@ export class MarkdownNoteEditor implements INoteEditor {
                 }
             }
         } catch (error) {
-            // TODO: log + notification
+            this.logger.error(`Could not apply apply task list. Error: ${error.message}`, 'MarkdownNoteEditor', 'applyTaskList');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -427,7 +450,8 @@ export class MarkdownNoteEditor implements INoteEditor {
                 this.noteImageSaver.saveImageAsync(this.noteId, this.settings.activeCollection, imageBuffer, imageId);
             }
         } catch (error) {
-            // TODO: log + notification
+            this.logger.error(`Could not add image from disk. Error: ${error.message}`, 'MarkdownNoteEditor', 'addImageFromDiskAsync');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -606,7 +630,7 @@ export class MarkdownNoteEditor implements INoteEditor {
             }
         } catch (error) {
             this.logger.error(`Could not open image '${imagePath}'. Error: ${error.message}`, 'MarkdownNoteEditor', 'openIfImage');
-            // TODO: notification
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 

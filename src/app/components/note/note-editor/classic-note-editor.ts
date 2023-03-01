@@ -4,6 +4,7 @@ import { BaseSettings } from '../../../core/base-settings';
 import { ClipboardManager } from '../../../core/clipboard-manager';
 import { Logger } from '../../../core/logger';
 import { TasksCount } from '../../../core/tasks-count';
+import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { INoteEditor } from './i-note-editor';
 import { QuillFactory } from './quill-factory';
 import { QuillTweaker } from './quill-tweaker';
@@ -14,6 +15,7 @@ export class ClassicNoteEditor implements INoteEditor {
 
     public constructor(
         public noteId: string,
+        private snackBarService: SnackBarService,
         private quillFactory: QuillFactory,
         private quillTweaker: QuillTweaker,
         private clipboard: ClipboardManager,
@@ -86,7 +88,8 @@ export class ClassicNoteEditor implements INoteEditor {
             this.clipboard.writeText(text);
             this.quill.deleteText(range.index, range.length);
         } catch (error) {
-            // TODO: log + notification
+            this.logger.error(`Could not perform cut. Error: ${error.message}`, 'ClassicNoteEditor', 'performCut');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -102,7 +105,8 @@ export class ClassicNoteEditor implements INoteEditor {
         try {
             this.clipboard.writeText(text);
         } catch (error) {
-            // TODO: log + notification
+            this.logger.error(`Could not perform copy. Error: ${error.message}`, 'ClassicNoteEditor', 'performCopy');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -118,7 +122,8 @@ export class ClassicNoteEditor implements INoteEditor {
                 this.pastTextFromClipboard();
             }
         } catch (error) {
-            // TODO: log + notification
+            this.logger.error(`Could not perform paste. Error: ${error.message}`, 'ClassicNoteEditor', 'performPaste');
+            this.snackBarService.oopsAnErrorOccurredAsync();
         }
     }
 
@@ -137,7 +142,8 @@ export class ClassicNoteEditor implements INoteEditor {
             try {
                 this.quill.history.undo();
             } catch (error) {
-                this.logger.error(`Could not perform undo. Cause: ${error}`, 'ClassicNoteEditor', 'performUndo');
+                this.logger.error(`Could not perform undo. Error: ${error.message}`, 'ClassicNoteEditor', 'performUndo');
+                this.snackBarService.oopsAnErrorOccurredAsync();
             }
         }
     }
@@ -147,7 +153,8 @@ export class ClassicNoteEditor implements INoteEditor {
             try {
                 this.quill.history.redo();
             } catch (error) {
-                this.logger.error(`Could not perform redo. Cause: ${error}`, 'ClassicNoteEditor', 'performRedo');
+                this.logger.error(`Could not perform redo. Error: ${error.message}`, 'ClassicNoteEditor', 'performRedo');
+                this.snackBarService.oopsAnErrorOccurredAsync();
             }
         }
     }
@@ -156,8 +163,12 @@ export class ClassicNoteEditor implements INoteEditor {
         try {
             this.insertImage(this.clipboard.readImage());
         } catch (error) {
-            this.logger.error('Could not paste image from clipboard', 'ClassicNoteEditor', 'pasteImageFromClipboard');
-            // TODO: throw
+            this.logger.error(
+                `Could not paste image from clipboard. Error: ${error.message}`,
+                'ClassicNoteEditor',
+                'pasteImageFromClipboard'
+            );
+            throw error;
         }
     }
 
@@ -190,7 +201,8 @@ export class ClassicNoteEditor implements INoteEditor {
                 this.quill.insertText(range.index, clipboardText);
             }
         } catch (error) {
-            // TODO: log + throw
+            this.logger.error(`Could not paste text from clipboard. Error: ${error.message}`, 'ClassicNoteEditor', 'pastTextFromClipboard');
+            throw error;
         }
     }
 

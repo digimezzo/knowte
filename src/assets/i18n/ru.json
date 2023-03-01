@@ -210,7 +210,8 @@
         "NoNoteFilesToImport": "Не было файлов заметок для импорта",
         "NewVersionAvailable": "Доступна новая версия: {{version}}",
         "NoteMoved": "{{number}} note moved to '{{collection}}'",
-        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'",
+        "OopsAnErrorOccurred": "Oops! An error occurred."
     },
     "SnackBarActions": {
         "Ok": "OK"

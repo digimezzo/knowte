@@ -210,7 +210,8 @@
         "NoNoteFilesToImport": "没有要导入的笔记文件",
         "NewVersionAvailable": "新的版本已发行: {{version}}",
         "NoteMoved": "{{number}} note moved to '{{collection}}'",
-        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'",
+        "OopsAnErrorOccurred": "Oops! An error occurred."
     },
     "SnackBarActions": {
         "Ok": "确定"

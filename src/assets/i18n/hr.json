@@ -210,7 +210,8 @@
         "NoNoteFilesToImport": "Nije bilo datoteka bilješki za uvoz",
         "NewVersionAvailable": "Dostupna je nova verzija: {{version}}",
         "NoteMoved": "{{number}} note moved to '{{collection}}'",
-        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'",
+        "OopsAnErrorOccurred": "Oops! An error occurred."
     },
     "SnackBarActions": {
         "Ok": "U redu"
