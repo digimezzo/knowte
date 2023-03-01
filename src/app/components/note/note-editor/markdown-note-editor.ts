@@ -236,6 +236,7 @@ export class MarkdownNoteEditor implements INoteEditor {
             let markdownInputElement: any = this.getMarkdownInputElement();
             markdownInputElement.focus();
             markdownInputElement.selectionStart = markdownInputElement.value.length;
+            markdownInputElement.scrollTop = markdownInputElement.scrollHeight;
         }, 50);
     }
 
