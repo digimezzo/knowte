@@ -34,13 +34,18 @@ export class ShareBottomSheetComponent {
         const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
 
         if (saveDialogReturnValue.filePath != undefined) {
-            await this.print.exportToPdfAsync(saveDialogReturnValue.filePath, this.data.noteTitle, this.data.noteHtml);
+            await this.print.exportToPdfAsync(
+                saveDialogReturnValue.filePath,
+                this.data.noteTitle,
+                this.data.noteHtml,
+                this.data.isMarkdownNote
+            );
         }
     }
 
     public async printNoteAsync(): Promise<void> {
         this.bottomSheetRef.dismiss();
-        await this.print.printAsync(this.data.noteTitle, this.data.noteHtml);
+        await this.print.printAsync(this.data.noteTitle, this.data.noteHtml, this.data.isMarkdownNote);
     }
 
     public async exportNoteAsync(): Promise<void> {
