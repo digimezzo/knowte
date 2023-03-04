@@ -37,15 +37,12 @@ export class PrintService {
     }
 
     private createPrintHtmlFileContent(pageTitle: string, pageContent: string, isMarkdownNote: boolean): string {
-        let printCss: string = this.createClassicPrintCss();
-
-        if (isMarkdownNote) {
-            printCss = this.createMarkdownPrintCss();
-        }
-        return `<html><body><div>${printCss}<div class="page-title">${pageTitle}</div><div>${pageContent}</div></div></body></html>`;
+        return `<html><body><div>${this.createPrintCss(
+            isMarkdownNote
+        )}<div class="page-title">${pageTitle}</div><div>${pageContent}</div></div></body></html>`;
     }
 
-    private createClassicPrintCss(): string {
+    private createPrintCss(isMarkdownNote: boolean): string {
         // Font stacks from: https://gist.github.com/001101/a8b0e5ce8fd81225bed7
         return `<style type="text/css" scoped>
                     * {
@@ -61,12 +58,19 @@ export class PrintService {
                         color: #1d7dd4;
                     }
 
+                    h1{
+                        padding-bottom: 0.3em;
+                        ${isMarkdownNote ? 'border-bottom: 1px solid #d7dee4;' : ''}
+                    }
+
                     h2{
                         color: #748393;
+                        padding-bottom: 0.3em;
+                        ${isMarkdownNote ? 'border-bottom: 1px solid #d7dee4;' : ''}
                     }
 
                     pre {
-                        background-color: #f0f0f0;
+                        background-color: #f6f8fa;
                         border-radius: 3px;
                         white-space: pre-wrap;
                         margin: 5px 0 5px 0;
@@ -82,60 +86,36 @@ export class PrintService {
                     }
 
                     blockquote {
-                        border-left: 4px solid #ccc;
+                        border-left: 4px solid #d0d7de;
                         margin: 5px 0 5px 0;
                         padding: 0 0 0 16px;
+                        color: #57606a;
                     }
 
                     .page-title{
                         font-size: 30px;
                     }
-                </style>`;
-    }
 
-    private createMarkdownPrintCss(): string {
-        return `<style type="text/css" scoped>
-                    * {
-                        font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans serif;
+                    table{
+                        border-spacing: 0;
+                        border-collapse: collapse;
+                        margin-top: 0;
+                        margin-bottom: 16px;
                     }
 
-                    body {
-                        -webkit-print-color-adjust:exact;
+                    table th,
+                    table td {
+                        padding: 6px 13px;
+                        border: 1px solid #d0d7de;
                     }
 
-                    h1,
-                    a {
-                        color: #1d7dd4;
+                    table tr {
+                        background-color: #ffffff;
+                        border-top: 1px solid #d7dee4;
                     }
 
-                    h2{
-                        color: #748393;
-                    }
-
-                    pre {
-                        background-color: #f0f0f0;
-                        border-radius: 3px;
-                        white-space: pre-wrap;
-                        margin: 5px 0 5px 0;
-                        padding: 5px 10px;
-                    }
-
-                    pre.ql-syntax {
-                        background-color: #23241f;
-                        color: #f8f8f2;
-                        overflow: visible;
-
-                        font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
-                    }
-
-                    blockquote {
-                        border-left: 4px solid #ccc;
-                        margin: 5px 0 5px 0;
-                        padding: 0 0 0 16px;
-                    }
-
-                    .page-title{
-                        font-size: 30px;
+                    table tr:nth-child(2n) {
+                        background-color: #f6f8fa;
                     }
                 </style>`;
     }
