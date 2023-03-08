@@ -4,11 +4,11 @@ import { ipcRenderer } from 'electron';
 import { Observable, Subject } from 'rxjs';
 import sanitize from 'sanitize-filename';
 import { BaseSettings } from '../../core/base-settings';
+import { ClassicNoteExport } from '../../core/classic-note-export';
 import { Constants } from '../../core/constants';
 import { DateFormatter } from '../../core/date-formatter';
 import { Operation } from '../../core/enums';
 import { Logger } from '../../core/logger';
-import { NoteExport } from '../../core/note-export';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { Note } from '../../data/entities/note';
@@ -868,10 +868,14 @@ export class CollectionService {
 
         for (const noteFilePath of noteFilePaths) {
             try {
-                const noteFileContent: string = await this.collectionFileAccess.getNoteContentAsync(noteFilePath);
-                const noteExport: NoteExport = JSON.parse(noteFileContent);
-                const proposedTitleSuffix: string = await this.translator.getAsync('Notes.Imported');
-                await this.importNoteExportAsync(noteExport, this.settings.activeCollection, proposedTitleSuffix);
+                if (this.collectionFileAccess.isMarkdownNoteExport(noteFilePath)) {
+                    // TODO
+                } else {
+                    const noteFileContent: string = await this.collectionFileAccess.getNoteContentAsync(noteFilePath);
+                    const classicNoteExport: ClassicNoteExport = JSON.parse(noteFileContent);
+                    await this.importClassicNoteExportAsync(classicNoteExport, this.settings.activeCollection, notebookId);
+                }
+
                 numberOfImportedNoteFiles++;
             } catch (error) {
                 this.logger.error(
@@ -890,18 +894,14 @@ export class CollectionService {
         return operation;
     }
 
-    private async importNoteExportAsync(
-        noteExport: NoteExport,
-        collection: string,
-        proposedTitleSuffix: string,
-        notebookId?: string
-    ): Promise<void> {
-        let proposedNoteTitle: string = noteExport.title;
+    private async importClassicNoteExportAsync(classicNoteExport: ClassicNoteExport, collection: string, notebookId?: string): Promise<void> {
+        const proposedTitleSuffix: string = await this.translator.getAsync('Notes.Imported');
+        let proposedNoteTitle: string = classicNoteExport.title;
 
         const proposedTitleSuffixWithBrackets: string = `(${proposedTitleSuffix})`;
 
         if (!proposedNoteTitle.includes(proposedTitleSuffixWithBrackets)) {
-            proposedNoteTitle = `${noteExport.title} ${proposedTitleSuffixWithBrackets}`;
+            proposedNoteTitle = `${classicNoteExport.title} ${proposedTitleSuffixWithBrackets}`;
         }
 
         const uniqueNoteTitle: string = this.getUniqueNoteTitle(proposedNoteTitle, false);
@@ -909,8 +909,8 @@ export class CollectionService {
         this.collectionDataStoreAccess.addNote(uniqueNoteTitle, '', false);
 
         const note: Note = this.collectionDataStoreAccess.getNoteByTitle(uniqueNoteTitle);
-        note.text = noteExport.text;
-        note.isMarkdownNote = noteExport.isMarkdownNote;
+        note.text = classicNoteExport.text;
+        note.isMarkdownNote = false;
 
         if (notebookId && notebookId !== Constants.allNotesNotebookId && notebookId !== Constants.unfiledNotesNotebookId) {
             note.notebookId = notebookId;
@@ -918,11 +918,7 @@ export class CollectionService {
 
         this.collectionDataStoreAccess.updateNoteWithoutDate(note);
 
-        await this.collectionFileAccess.saveNoteContentAsync(note.id, noteExport.content, collection, note.isMarkdownNote);
-
-        if (note.isMarkdownNote) {
-            await this.collectionFileAccess.copyAttachmentsAsync(note.id, collection, noteExport.attachmentsDirectoryPath);
-        }
+        await this.collectionFileAccess.saveNoteContentAsync(note.id, classicNoteExport.content, collection, note.isMarkdownNote);
     }
 
     private async getUniqueTitleForMovedNoteAsync(title: string): Promise<string> {

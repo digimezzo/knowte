@@ -8,7 +8,7 @@ export class NoteModel {
 
     public constructor(private note: Note, private settings: BaseSettings, private collectionFileAccess: CollectionFileAccess) {
         this._content = this.collectionFileAccess.getNoteContentByNoteId(note.id, this.settings.activeCollection, note.isMarkdownNote);
-        this._attachmentsDirectoryPath = this.collectionFileAccess.getAttachmentsDirectoryPath(note.id, this.settings.activeCollection);
+        this._attachmentsDirectoryPath = this.collectionFileAccess.getNoteAttachmentsDirectoryPath(note.id, this.settings.activeCollection);
     }
 
     public get id(): string {

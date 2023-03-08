@@ -14,7 +14,8 @@ export class Constants {
     public static readonly classicNoteContentExtension: string = '.content';
     public static readonly markdownNoteContentExtension: string = '.md';
     public static readonly noteStateExtension: string = '.state';
-    public static readonly noteExportExtension: string = '.knowte';
+    public static readonly classicNoteExportExtension: string = '.knowte';
+    public static readonly markdownNoteExportExtension: string = '.knowtemd';
     public static readonly defaultCollection: string = 'Default';
     public static readonly allNotesNotebookId: string = '0';
     public static readonly unfiledNotesNotebookId: string = '1';

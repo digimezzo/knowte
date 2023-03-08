@@ -35,8 +35,14 @@ export class Utils {
         return true;
     }
 
-    public static getNoteExportPath(exportDirectory: string, noteTitle: string): string {
-        return path.join(exportDirectory, `${sanitize(noteTitle)}${Constants.noteExportExtension}`);
+    public static getNoteExportPath(exportDirectory: string, noteTitle: string, isMarkdownNote: boolean): string {
+        let extension: string = Constants.classicNoteExportExtension;
+
+        if (isMarkdownNote) {
+            extension = Constants.markdownNoteExportExtension;
+        }
+
+        return path.join(exportDirectory, `${sanitize(noteTitle)}${extension}`);
     }
 
     public static getPdfExportPath(exportDirectory: string, noteTitle: string): string {

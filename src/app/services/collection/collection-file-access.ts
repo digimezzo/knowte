@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import archiver from 'archiver';
 import { BaseSettings } from '../../core/base-settings';
+import { ClassicNoteExport } from '../../core/classic-note-export';
 import { Constants } from '../../core/constants';
 import { FileAccess } from '../../core/file-access';
-import { NoteExport } from '../../core/note-export';
 import { Strings } from '../../core/strings';
 
 @Injectable()
@@ -126,8 +127,53 @@ export class CollectionFileAccess {
         return true;
     }
 
-    public async saveNoteExportToFileAsync(exportFilePath: string, noteExport: NoteExport): Promise<void> {
-        await this.fileAccess.writeTextToFileAsync(exportFilePath, JSON.stringify(noteExport));
+    public async exportNoteAsync(
+        exportFilePath: string,
+        noteId: string,
+        noteTitle: string,
+        noteText: string,
+        noteContent: string,
+        isMarkdownNote: boolean
+    ): Promise<void> {
+        if (isMarkdownNote) {
+            await this.exportMarkdownNoteAsync(exportFilePath, noteId);
+        } else {
+            const classicExport: ClassicNoteExport = new ClassicNoteExport(noteTitle, noteText, noteContent);
+            await this.exportClassicNote(exportFilePath, noteTitle, noteText, noteContent);
+        }
+    }
+
+    private async exportMarkdownNoteAsync(exportFilePath: string, noteId: string): Promise<void> {
+        const noteContentFilePath: string = this.getNoteContentFilePath(noteId, this.settings.activeCollection, true);
+        const noteAttachmentsDirectory: string = this.getNoteAttachmentsDirectoryPath(noteId, this.settings.activeCollection);
+
+        await this.createZipAsync(noteContentFilePath, noteAttachmentsDirectory, exportFilePath);
+    }
+
+    private async createZipAsync(noteContentFilePath: string, noteAttachmentsDirectoryPath: string, zipFilePath: string): Promise<void> {
+        const archive = archiver('zip', { zlib: { level: 9 } });
+        const stream = this.fileAccess.createWriteStream(zipFilePath);
+
+        const noteContentFileName: string = `${this.fileAccess.getFileNameWithoutExtension(zipFilePath)}${
+            Constants.markdownNoteContentExtension
+        }`;
+
+        archive.pipe(stream);
+        archive.append(this.fileAccess.createReadStream(noteContentFilePath), { name: noteContentFileName });
+
+        const noteAttachmentFilePaths: string[] = await this.fileAccess.getFilesInDirectoryAsync(noteAttachmentsDirectoryPath);
+
+        for (const noteAttachmentFilePath of noteAttachmentFilePaths) {
+            const noteAttachmentFileName: string = this.fileAccess.getFileName(noteAttachmentFilePath);
+            archive.append(this.fileAccess.createReadStream(noteAttachmentFilePath), { name: 'attachments/' + noteAttachmentFileName });
+        }
+
+        archive.finalize();
+    }
+
+    private async exportClassicNote(exportFilePath: string, noteTitle: string, noteText: string, noteContent: string): Promise<void> {
+        const classicExport: ClassicNoteExport = new ClassicNoteExport(noteTitle, noteText, noteContent);
+        await this.fileAccess.writeTextToFileAsync(exportFilePath, JSON.stringify(classicExport));
     }
 
     public createStorageDirectory(parentDirectory: string): string {
@@ -138,7 +184,7 @@ export class CollectionFileAccess {
     }
 
     public async createNoteImageFileAsync(noteId: string, collection: string, imageBuffer: Buffer, imageId: string): Promise<void> {
-        const noteAttachmentsDirectoryPath: string = this.getAttachmentsDirectoryPath(noteId, collection);
+        const noteAttachmentsDirectoryPath: string = this.getNoteAttachmentsDirectoryPath(noteId, collection);
         this.fileAccess.createFullDirectoryPathIfDoesNotExist(noteAttachmentsDirectoryPath);
 
         const noteImageFullPath: string = this.fileAccess.combinePath(noteAttachmentsDirectoryPath, `${imageId}.png`);
@@ -146,7 +192,7 @@ export class CollectionFileAccess {
     }
 
     public async deleteUnusedNoteAttachmentsAsync(noteId: string, collection: string, noteText: string): Promise<void> {
-        const noteAttachmentsDirectoryPath: string = this.getAttachmentsDirectoryPath(noteId, collection);
+        const noteAttachmentsDirectoryPath: string = this.getNoteAttachmentsDirectoryPath(noteId, collection);
         const noteAttachmentFilePaths: string[] = await this.fileAccess.getFilesInDirectoryAsync(noteAttachmentsDirectoryPath);
 
         for (const noteAttachmentFilePath of noteAttachmentFilePaths) {
@@ -158,7 +204,7 @@ export class CollectionFileAccess {
         }
     }
 
-    public getAttachmentsDirectoryPath(noteId: string, collection: string): string {
+    public getNoteAttachmentsDirectoryPath(noteId: string, collection: string): string {
         return this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), noteId);
     }
 
@@ -171,8 +217,12 @@ export class CollectionFileAccess {
             return;
         }
 
-        const noteAttachmentsDestinationDirectoryPath: string = this.getAttachmentsDirectoryPath(noteId, collection);
+        const noteAttachmentsDestinationDirectoryPath: string = this.getNoteAttachmentsDirectoryPath(noteId, collection);
         this.fileAccess.createFullDirectoryPathIfDoesNotExist(noteAttachmentsDestinationDirectoryPath);
         await this.fileAccess.copyFileOrDirectoryAsync(noteAttachmentsSourceDirectoryPath, noteAttachmentsDestinationDirectoryPath);
+    }
+
+    public isMarkdownNoteExport(noteExportPath: string): boolean {
+        return this.fileAccess.getFileExtension(noteExportPath) === Constants.markdownNoteExportExtension;
     }
 }

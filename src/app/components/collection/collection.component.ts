@@ -340,7 +340,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     public async importNotesAsync(): Promise<void> {
         const openDialogReturnValue: OpenDialogReturnValue = await remote.dialog.showOpenDialog({
             filters: [
-                { name: ProductInformation.applicationName, extensions: [Constants.noteExportExtension.replace('.', '')] },
+                { name: ProductInformation.applicationName, extensions: [Constants.classicNoteExportExtension.replace('.', '')] },
                 { name: await this.translatorService.getAsync('DialogTexts.AllFiles'), extensions: ['*'] },
             ],
             properties: ['openFile', 'multiSelections'],

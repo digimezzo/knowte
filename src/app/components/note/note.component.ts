@@ -689,6 +689,7 @@ export class NoteComponent implements OnInit {
 
         const config: MatBottomSheetConfig = {
             data: {
+                noteId: this.noteId,
                 noteTitle: this.noteTitle,
                 noteText: this.noteEditor.text,
                 noteContent: this.noteEditor.content,

@@ -50,13 +50,16 @@ export class ShareBottomSheetComponent {
 
     public async exportNoteAsync(): Promise<void> {
         this.bottomSheetRef.dismiss();
-        const options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.data.noteTitle) };
+        const options: SaveDialogOptions = {
+            defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.data.noteTitle, this.data.isMarkdownNote),
+        };
         const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
 
         try {
             if (saveDialogReturnValue.filePath != undefined && saveDialogReturnValue.filePath.length > 0) {
                 await this.persistance.exportNoteAsync(
                     saveDialogReturnValue.filePath,
+                    this.data.noteId,
                     this.data.noteTitle,
                     this.data.noteText,
                     this.data.noteContent,

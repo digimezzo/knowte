@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BaseSettings } from '../../core/base-settings';
-import { NoteExport } from '../../core/note-export';
 import { Strings } from '../../core/strings';
 import { CollectionFileAccess } from '../collection/collection-file-access';
 import { CryptographyService } from '../cryptography/cryptography.service';
@@ -45,12 +44,12 @@ export class PersistanceService {
 
     public async exportNoteAsync(
         exportFilePath: string,
+        noteId: string,
         noteTitle: string,
         noteText: string,
         noteContent: string,
         isMarkdownNote: boolean
     ): Promise<void> {
-        const noteExport: NoteExport = new NoteExport(noteTitle, noteText, noteContent, isMarkdownNote, '');
-        await this.collectionFileAccess.saveNoteExportToFileAsync(exportFilePath, noteExport);
+        await this.collectionFileAccess.exportNoteAsync(exportFilePath, noteId, noteTitle, noteText, noteContent, isMarkdownNote);
     }
 }

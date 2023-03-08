@@ -145,11 +145,28 @@ export class FileAccess {
         return path.basename(fileNameOrPath);
     }
 
+    public getFileNameWithoutExtension(fileNameOrPath: string): string {
+        const extension: string = path.extname(fileNameOrPath);
+        return path.basename(fileNameOrPath, extension);
+    }
+
     public getLastDirectoryInDirectoryPath(directoryPath: string): string {
         return path.dirname(directoryPath).split(path.sep).pop();
     }
 
     public async getFileContentAsBufferAsync(filePath: string): Promise<Buffer> {
         return await fs.readFile(filePath);
+    }
+
+    public getFileExtension(fileNameOrPath: string): string {
+        return path.extname(fileNameOrPath);
+    }
+
+    public createWriteStream(path: string): fs.WriteStream {
+        return fs.createWriteStream(path);
+    }
+
+    public createReadStream(path: string): fs.ReadStream {
+        return fs.createReadStream(path);
     }
 }

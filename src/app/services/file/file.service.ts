@@ -33,7 +33,7 @@ export class FileService {
     }
 
     public getNoteFilePaths(filePaths: string[]): string[] {
-        const noteFilePaths: string[] = filePaths.filter((x) => path.extname(x) === Constants.noteExportExtension);
+        const noteFilePaths: string[] = filePaths.filter((x) => path.extname(x) === Constants.classicNoteExportExtension);
 
         return noteFilePaths;
     }

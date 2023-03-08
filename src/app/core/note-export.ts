@@ -1,9 +1,0 @@
-export class NoteExport {
-    constructor(
-        public title: string,
-        public text: string,
-        public content: string,
-        public isMarkdownNote: boolean,
-        public attachmentsDirectoryPath: string
-    ) {}
-}
