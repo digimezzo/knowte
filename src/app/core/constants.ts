@@ -130,6 +130,12 @@ export class Constants {
             licenseUrl: 'https://github.com/angular/angular/blob/master/LICENSE',
         },
         {
+            name: 'Archiver',
+            description: 'A streaming interface for archive generation.',
+            url: 'https://www.archiverjs.com/',
+            licenseUrl: 'https://github.com/archiverjs/node-archiver/blob/master/LICENSE',
+        },
+        {
             name: 'angular-split',
             description: 'Angular UI library to split views and allow dragging to resize areas using CSS flexbox layout.',
             url: 'https://material.angular.io/',

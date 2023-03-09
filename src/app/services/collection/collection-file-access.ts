@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import archiver from 'archiver';
 import { BaseSettings } from '../../core/base-settings';
-import { ClassicNoteExport } from '../../core/classic-note-export';
 import { Constants } from '../../core/constants';
 import { FileAccess } from '../../core/file-access';
 import { Strings } from '../../core/strings';
+import { ClassicNoteExport } from './classic-note-export';
+import { MarkdownNoteExportMetadata } from './markdown-note-export-metadata';
 
 @Injectable()
 export class CollectionFileAccess {
@@ -136,21 +137,18 @@ export class CollectionFileAccess {
         isMarkdownNote: boolean
     ): Promise<void> {
         if (isMarkdownNote) {
-            await this.exportMarkdownNoteAsync(exportFilePath, noteId);
+            await this.exportMarkdownNoteAsync(exportFilePath, noteTitle, noteId);
         } else {
-            const classicExport: ClassicNoteExport = new ClassicNoteExport(noteTitle, noteText, noteContent);
             await this.exportClassicNote(exportFilePath, noteTitle, noteText, noteContent);
         }
     }
 
-    private async exportMarkdownNoteAsync(exportFilePath: string, noteId: string): Promise<void> {
-        const noteContentFilePath: string = this.getNoteContentFilePath(noteId, this.settings.activeCollection, true);
-        const noteAttachmentsDirectory: string = this.getNoteAttachmentsDirectoryPath(noteId, this.settings.activeCollection);
-
-        await this.createZipAsync(noteContentFilePath, noteAttachmentsDirectory, exportFilePath);
-    }
-
-    private async createZipAsync(noteContentFilePath: string, noteAttachmentsDirectoryPath: string, zipFilePath: string): Promise<void> {
+    private async createZipAsync(
+        markdownNoteExportMetadata: MarkdownNoteExportMetadata,
+        noteContentFilePath: string,
+        noteAttachmentsDirectoryPath: string,
+        zipFilePath: string
+    ): Promise<void> {
         const archive = archiver('zip', { zlib: { level: 9 } });
         const stream = this.fileAccess.createWriteStream(zipFilePath);
 
@@ -168,11 +166,24 @@ export class CollectionFileAccess {
             archive.append(this.fileAccess.createReadStream(noteAttachmentFilePath), { name: 'attachments/' + noteAttachmentFileName });
         }
 
+        const markdownNoteExportMetadataBuffer = Buffer.from(JSON.stringify(markdownNoteExportMetadata));
+        archive.append(markdownNoteExportMetadataBuffer, { name: 'metadata.json' });
+
         archive.finalize();
+    }
+
+    private async exportMarkdownNoteAsync(exportFilePath: string, noteTitle: string, noteId: string): Promise<void> {
+        const markdownNoteExportMetadata: MarkdownNoteExportMetadata = new MarkdownNoteExportMetadata(noteTitle);
+
+        const noteContentFilePath: string = this.getNoteContentFilePath(noteId, this.settings.activeCollection, true);
+        const noteAttachmentsDirectory: string = this.getNoteAttachmentsDirectoryPath(noteId, this.settings.activeCollection);
+
+        await this.createZipAsync(markdownNoteExportMetadata, noteContentFilePath, noteAttachmentsDirectory, exportFilePath);
     }
 
     private async exportClassicNote(exportFilePath: string, noteTitle: string, noteText: string, noteContent: string): Promise<void> {
         const classicExport: ClassicNoteExport = new ClassicNoteExport(noteTitle, noteText, noteContent);
+
         await this.fileAccess.writeTextToFileAsync(exportFilePath, JSON.stringify(classicExport));
     }
 
