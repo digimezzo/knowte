@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import * as remote from '@electron/remote';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
@@ -23,10 +22,6 @@ export class FileAccess {
         const combinedPath: string = pathPieces.join(this.pathSeparator);
 
         return combinedPath;
-    }
-
-    public applicationDataDirectory(): string {
-        return remote.app.getPath('userData');
     }
 
     public pathExists(pathToCheck: string): boolean {

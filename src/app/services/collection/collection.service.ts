@@ -7,6 +7,7 @@ import { BaseSettings } from '../../core/base-settings';
 import { Constants } from '../../core/constants';
 import { DateFormatter } from '../../core/date-formatter';
 import { Operation } from '../../core/enums';
+import { FileAccess } from '../../core/file-access';
 import { Logger } from '../../core/logger';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
@@ -21,6 +22,7 @@ import { NoteOperationResult } from '../results/note-operation-result';
 import { NotebookChangedResult } from '../results/notebook-changed-result';
 import { NotesCountResult } from '../results/notes-count-result';
 import { SearchService } from '../search/search.service';
+import { TemporaryStorageService } from '../temporary-storage/temporary-storage.service';
 import { TranslatorService } from '../translator/translator.service';
 import { ClassicNoteExport } from './classic-note-export';
 import { CollectionDataStoreAccess } from './collection-data-store.access';
@@ -72,9 +74,11 @@ export class CollectionService {
         private cryptography: CryptographyService,
         private collectionFileAccess: CollectionFileAccess,
         private collectionDataStoreAccess: CollectionDataStoreAccess,
+        private temporaryStorageService: TemporaryStorageService,
         private noteModelFactory: NoteModelFactory,
         private noteDateFormatter: NoteDateFormatter,
         private dateFormatter: DateFormatter,
+        private fileAccess: FileAccess,
         private settings: BaseSettings,
         private logger: Logger
     ) {}
@@ -931,10 +935,32 @@ export class CollectionService {
     }
 
     private async importMarkdownNoteAsync(noteFilePath: string, notebookId?: string): Promise<void> {
-        // TODO: we don't have the exact note title
-        const metadata: MarkdownNoteExportMetadata = new MarkdownNoteExportMetadata('The title');
+        const extractionPath: string = await this.temporaryStorageService.extractArchiveAsync(noteFilePath);
 
-        const noteId: string = await this.importNoteToDatastoreAsync(metadata.title, 'The text', notebookId, true);
+        const metadataPath: string = this.fileAccess.combinePath(extractionPath, 'metadata.json');
+        const metadataContent: string = await this.collectionFileAccess.getNoteContentAsync(metadataPath);
+        const metadata: MarkdownNoteExportMetadata = JSON.parse(metadataContent);
+
+        const filePathsInExtractionPath: string[] = await this.fileAccess.getFilesInDirectoryAsync(extractionPath);
+        let noteContentPath: string = '';
+
+        for (const filePathInExtractionPath of filePathsInExtractionPath) {
+            if (
+                this.fileAccess.getFileExtension(filePathInExtractionPath).toLowerCase() ===
+                Constants.markdownNoteContentExtension.toLowerCase()
+            ) {
+                noteContentPath = filePathInExtractionPath;
+            }
+        }
+
+        const noteContent: string = this.fileAccess.getFileContentAsString(noteContentPath);
+
+        const noteId: string = await this.importNoteToDatastoreAsync(metadata.title, noteContent, notebookId, true);
+
+        await this.collectionFileAccess.saveNoteContentAsync(noteId, noteContent, this.settings.activeCollection, true);
+
+        const attachmentsDirectoryPath: string = this.fileAccess.combinePath(extractionPath, 'attachments');
+        await this.collectionFileAccess.copyAttachmentsAsync(noteId, this.settings.activeCollection, attachmentsDirectoryPath);
     }
 
     private async importClassicNoteAsync(noteFilePath: string, notebookId?: string): Promise<void> {

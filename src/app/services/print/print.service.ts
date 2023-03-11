@@ -1,12 +1,18 @@
 import { Injectable } from '@angular/core';
 import { ipcRenderer } from 'electron';
-import * as fs from 'fs-extra';
+import { ApplicationPaths } from '../../core/applicationPaths';
 import { FileAccess } from '../../core/file-access';
 import { Logger } from '../../core/logger';
+import { TemporaryStorageService } from '../temporary-storage/temporary-storage.service';
 
 @Injectable()
 export class PrintService {
-    public constructor(private fileAccess: FileAccess, private logger: Logger) {}
+    public constructor(
+        private fileAccess: FileAccess,
+        private applicationPaths: ApplicationPaths,
+        private temporaryStorageService: TemporaryStorageService,
+        private logger: Logger
+    ) {}
 
     public async printAsync(pageTitle: string, pageContent: string, isMarkdownNote: boolean): Promise<void> {
         try {
@@ -120,21 +126,16 @@ export class PrintService {
                 </style>`;
     }
 
-    private createPrintHtmlFilePath(): string {
-        return this.fileAccess.combinePath(this.fileAccess.applicationDataDirectory(), 'print.html');
-    }
-
     private async writePrintHtmlFileAsync(pageTitle: string, pageContent: string, isMarkdownNote: boolean): Promise<string> {
-        const printHtmlFilePath: string = this.createPrintHtmlFilePath();
         const printHtmlFileContent: string = this.createPrintHtmlFileContent(pageTitle, pageContent, isMarkdownNote);
 
         try {
-            await fs.writeFile(printHtmlFilePath, printHtmlFileContent);
+            const printHtmlFilePath: string = await this.temporaryStorageService.createPrintHtmlFileAsync(printHtmlFileContent);
+
+            return printHtmlFilePath;
         } catch (error) {
             this.logger.error(`Could not create print.html file. Error: ${error.message}`, 'PrintService', 'writePrintHtmlFileAsync');
             throw error;
         }
-
-        return printHtmlFilePath;
     }
 }

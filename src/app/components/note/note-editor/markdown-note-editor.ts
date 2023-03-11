@@ -19,7 +19,7 @@ import { NoteImageSaver } from './note-image-saver';
 import { WordBoundary } from './word-boundary';
 
 export class MarkdownNoteEditor implements INoteEditor {
-    private _content: string;
+    private _content: string = '';
     private isFirstTimeSettingContent: boolean = true;
     private noteContentChanged: Subject<void> = new Subject<void>();
     private subscription: Subscription = new Subscription();

@@ -224,7 +224,6 @@ try {
     });
     // Print
     electron_1.ipcMain.on('print', (event, data) => {
-        // fs.writeFileSync('/home/raphael/.config/Knowte/print.html', content);
         const win = new electron_1.BrowserWindow({
             show: false,
             webPreferences: {

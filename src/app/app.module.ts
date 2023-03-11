@@ -76,6 +76,7 @@ import { TasksProgressComponent } from './components/tasks-progress/tasks-progre
 import { TrashComponent } from './components/trash/trash.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { WindowControlsComponent } from './components/window-controls/window-controls.component';
+import { ApplicationPaths } from './core/applicationPaths';
 import { BaseSettings } from './core/base-settings';
 import { ClipboardManager } from './core/clipboard-manager';
 import { DateFormatter } from './core/date-formatter';
@@ -110,6 +111,7 @@ import { SearchClient } from './services/search/search.client';
 import { SearchService } from './services/search/search.service';
 import { SnackBarService } from './services/snack-bar/snack-bar.service';
 import { SpellCheckService } from './services/spell-check/spell-check.service';
+import { TemporaryStorageService } from './services/temporary-storage/temporary-storage.service';
 import { TranslatorService } from './services/translator/translator.service';
 import { TrashService } from './services/trash/trash.service';
 import { UpdateService } from './services/update/update.service';
@@ -268,6 +270,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
         AppearanceService,
         TranslatorService,
         SearchService,
+        TemporaryStorageService,
         SearchClient,
         SnackBarService,
         CryptographyService,
@@ -292,6 +295,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
         BoundaryGetter,
         PathConverter,
         ImageProcessor,
+        ApplicationPaths,
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
         DataStore,
         {
