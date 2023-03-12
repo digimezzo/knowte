@@ -152,6 +152,24 @@ export class Settings implements BaseSettings {
         this.settings.set('activeSpellCheckLanguages', v);
     }
 
+    // Can create classic notes
+    public get canCreateClassicNotes(): boolean {
+        return this.settings.get('canCreateClassicNotes');
+    }
+
+    public set canCreateClassicNotes(v: boolean) {
+        this.settings.set('canCreateClassicNotes', v);
+    }
+
+    // Can create markdown notes
+    public get canCreateMarkdownNotes(): boolean {
+        return this.settings.get('canCreateMarkdownNotes');
+    }
+
+    public set canCreateMarkdownNotes(v: boolean) {
+        this.settings.set('canCreateMarkdownNotes', v);
+    }
+
     private initialize(): void {
         // storageDirectory and activeCollection cannot be initialized here.
         // Their value is set later, depending on user action.
@@ -215,6 +233,14 @@ export class Settings implements BaseSettings {
 
         if (!this.settings.has('activeSpellCheckLanguages')) {
             this.settings.set('activeSpellCheckLanguages', '');
+        }
+
+        if (!this.settings.has('canCreateClassicNotes')) {
+            this.settings.set('canCreateClassicNotes', true);
+        }
+
+        if (!this.settings.has('canCreateMarkdownNotes')) {
+            this.settings.set('canCreateMarkdownNotes', true);
         }
     }
 }

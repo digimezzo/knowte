@@ -1,16 +1,22 @@
 import { Injectable } from '@angular/core';
 import { ipcRenderer } from 'electron';
-import * as fs from 'fs-extra';
+import { ApplicationPaths } from '../../core/applicationPaths';
 import { FileAccess } from '../../core/file-access';
 import { Logger } from '../../core/logger';
+import { TemporaryStorageService } from '../temporary-storage/temporary-storage.service';
 
 @Injectable()
 export class PrintService {
-    public constructor(private fileAccess: FileAccess, private logger: Logger) {}
+    public constructor(
+        private fileAccess: FileAccess,
+        private applicationPaths: ApplicationPaths,
+        private temporaryStorageService: TemporaryStorageService,
+        private logger: Logger
+    ) {}
 
-    public async printAsync(pageTitle: string, pageContent: string): Promise<void> {
+    public async printAsync(pageTitle: string, pageContent: string, isMarkdownNote: boolean): Promise<void> {
         try {
-            const printHtmlFilePath: string = await this.writePrintHtmlFileAsync(pageTitle, pageContent);
+            const printHtmlFilePath: string = await this.writePrintHtmlFileAsync(pageTitle, pageContent, isMarkdownNote);
 
             const data: any = { printHtmlFilePath };
 
@@ -22,9 +28,9 @@ export class PrintService {
         }
     }
 
-    public async exportToPdfAsync(pdfFilePath: string, pageTitle: string, pageContent: string): Promise<void> {
+    public async exportToPdfAsync(pdfFilePath: string, pageTitle: string, pageContent: string, isMarkdownNote: boolean): Promise<void> {
         try {
-            const printHtmlFilePath: string = await this.writePrintHtmlFileAsync(pageTitle, pageContent);
+            const printHtmlFilePath: string = await this.writePrintHtmlFileAsync(pageTitle, pageContent, isMarkdownNote);
 
             const data: any = { pdfFilePath, printHtmlFilePath };
 
@@ -36,11 +42,13 @@ export class PrintService {
         }
     }
 
-    private createPrintHtmlFileContent(pageTitle: string, pageContent: string): string {
-        return `<html><body><div>${this.createPrintCss()}<p class="page-title">${pageTitle}</p><p>${pageContent}</p></div></body></html>`;
+    private createPrintHtmlFileContent(pageTitle: string, pageContent: string, isMarkdownNote: boolean): string {
+        return `<html><body><div>${this.createPrintCss(
+            isMarkdownNote
+        )}<div class="page-title">${pageTitle}</div><div>${pageContent}</div></div></body></html>`;
     }
 
-    private createPrintCss(): string {
+    private createPrintCss(isMarkdownNote: boolean): string {
         // Font stacks from: https://gist.github.com/001101/a8b0e5ce8fd81225bed7
         return `<style type="text/css" scoped>
                     * {
@@ -56,12 +64,19 @@ export class PrintService {
                         color: #1d7dd4;
                     }
 
+                    h1{
+                        padding-bottom: 0.3em;
+                        ${isMarkdownNote ? 'border-bottom: 1px solid #d7dee4;' : ''}
+                    }
+
                     h2{
                         color: #748393;
+                        padding-bottom: 0.3em;
+                        ${isMarkdownNote ? 'border-bottom: 1px solid #d7dee4;' : ''}
                     }
 
                     pre {
-                        background-color: #f0f0f0;
+                        background-color: #f6f8fa;
                         border-radius: 3px;
                         white-space: pre-wrap;
                         margin: 5px 0 5px 0;
@@ -77,32 +92,50 @@ export class PrintService {
                     }
 
                     blockquote {
-                        border-left: 4px solid #ccc;
+                        border-left: 4px solid #d0d7de;
                         margin: 5px 0 5px 0;
                         padding: 0 0 0 16px;
+                        color: #57606a;
                     }
 
                     .page-title{
                         font-size: 30px;
                     }
+
+                    table{
+                        border-spacing: 0;
+                        border-collapse: collapse;
+                        margin-top: 0;
+                        margin-bottom: 16px;
+                    }
+
+                    table th,
+                    table td {
+                        padding: 6px 13px;
+                        border: 1px solid #d0d7de;
+                    }
+
+                    table tr {
+                        background-color: #ffffff;
+                        border-top: 1px solid #d7dee4;
+                    }
+
+                    table tr:nth-child(2n) {
+                        background-color: #f6f8fa;
+                    }
                 </style>`;
     }
 
-    private createPrintHtmlFilePath(): string {
-        return this.fileAccess.combinePath(this.fileAccess.applicationDataDirectory(), 'print.html');
-    }
-
-    private async writePrintHtmlFileAsync(pageTitle: string, pageContent: string): Promise<string> {
-        const printHtmlFilePath: string = this.createPrintHtmlFilePath();
-        const printHtmlFileContent: string = this.createPrintHtmlFileContent(pageTitle, pageContent);
+    private async writePrintHtmlFileAsync(pageTitle: string, pageContent: string, isMarkdownNote: boolean): Promise<string> {
+        const printHtmlFileContent: string = this.createPrintHtmlFileContent(pageTitle, pageContent, isMarkdownNote);
 
         try {
-            await fs.writeFile(printHtmlFilePath, printHtmlFileContent);
+            const printHtmlFilePath: string = await this.temporaryStorageService.createPrintHtmlFileAsync(printHtmlFileContent);
+
+            return printHtmlFilePath;
         } catch (error) {
             this.logger.error(`Could not create print.html file. Error: ${error.message}`, 'PrintService', 'writePrintHtmlFileAsync');
             throw error;
         }
-
-        return printHtmlFilePath;
     }
 }

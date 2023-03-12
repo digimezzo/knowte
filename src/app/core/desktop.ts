@@ -7,7 +7,11 @@ export class Desktop {
         remote.shell.openExternal(url);
     }
 
-    public showInFolder(fileName: string): void {
-        remote.shell.showItemInFolder(fileName);
+    public showInFolder(fullPath: string): void {
+        remote.shell.showItemInFolder(fullPath);
+    }
+
+    public openPath(fullPath: string): void {
+        remote.shell.openPath(fullPath);
     }
 }

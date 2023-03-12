@@ -256,8 +256,6 @@ try {
 
     // Print
     ipcMain.on('print', (event: any, data: any) => {
-        // fs.writeFileSync('/home/raphael/.config/Knowte/print.html', content);
-
         const win = new BrowserWindow({
             show: false,
             webPreferences: {

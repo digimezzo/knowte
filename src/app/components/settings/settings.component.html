@@ -77,6 +77,18 @@
                     </div>
                     <hr />
                     <div class="m-3">
+                        <h1 class="mt-2">{{ 'SettingsPage.FormatsForNewNotes' | translate }}</h1>
+                        <div class="d-flex flex-column">
+                            <mat-slide-toggle class="mt-2" [(ngModel)]="classicNoteChecked">
+                                {{ 'SettingsPage.ClassicNote' | translate }}</mat-slide-toggle
+                            >
+                            <mat-slide-toggle class="mt-2" [(ngModel)]="markdownNoteChecked">
+                                {{ 'SettingsPage.MarkdownNote' | translate }}</mat-slide-toggle
+                            >
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="m-3">
                         <h1 class="mt-2">{{ 'SettingsPage.Closing' | translate }}</h1>
                         <mat-slide-toggle class="mt-2" [(ngModel)]="closeNotesWithEscapeChecked">
                             {{ 'SettingsPage.CloseNotesWithEscape' | translate }}</mat-slide-toggle
@@ -92,11 +104,11 @@
                     <hr />
                     <div class="m-3">
                         <h1 class="mt-2">{{ 'SettingsPage.SpellChecker' | translate }}</h1>
-                        <p>
+                        <div>
                             <mat-slide-toggle class="mt-2" [(ngModel)]="enableSpellCheckerChecked">
                                 {{ 'SettingsPage.EnableSpellChecker' | translate }}</mat-slide-toggle
                             >
-                        </p>
+                        </div>
                         <button
                             class="mt-2"
                             [ngClass]="{ inactive: !this.settings.enableSpellChecker }"

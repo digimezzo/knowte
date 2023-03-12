@@ -11,9 +11,11 @@ export class Constants {
     public static readonly mastodonUrl: string = 'https://hachyderm.io/@digimezzo';
     public static readonly githubUrl: string = 'https://github.com/digimezzo/knowte';
     public static readonly collectionsDirectory: string = 'Knowte collections';
-    public static readonly noteContentExtension: string = '.content';
+    public static readonly classicNoteContentExtension: string = '.content';
+    public static readonly markdownNoteContentExtension: string = '.md';
     public static readonly noteStateExtension: string = '.state';
-    public static readonly noteExportExtension: string = '.knowte';
+    public static readonly classicNoteExportExtension: string = '.knowte';
+    public static readonly markdownNoteExportExtension: string = '.knowtemd';
     public static readonly defaultCollection: string = 'Default';
     public static readonly allNotesNotebookId: string = '0';
     public static readonly unfiledNotesNotebookId: string = '1';
@@ -128,6 +130,12 @@ export class Constants {
             licenseUrl: 'https://github.com/angular/angular/blob/master/LICENSE',
         },
         {
+            name: 'Archiver',
+            description: 'A streaming interface for archive generation.',
+            url: 'https://www.archiverjs.com/',
+            licenseUrl: 'https://github.com/archiverjs/node-archiver/blob/master/LICENSE',
+        },
+        {
             name: 'angular-split',
             description: 'Angular UI library to split views and allow dragging to resize areas using CSS flexbox layout.',
             url: 'https://material.angular.io/',
@@ -176,6 +184,12 @@ export class Constants {
             description: 'A library to store and restore window sizes and positions for your Electron app.',
             url: 'https://github.com/mawie81/electron-window-state',
             licenseUrl: 'https://github.com/mawie81/electron-window-state/blob/master/license',
+        },
+        {
+            name: 'Font Awesome free',
+            description: `Font Awesome is the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.`,
+            url: 'https://github.com/FortAwesome/Font-Awesome',
+            licenseUrl: 'https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt',
         },
         {
             name: 'fs-extra',

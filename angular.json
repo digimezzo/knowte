@@ -35,12 +35,16 @@
                             "src/styles.scss",
                             "./node_modules/quill/dist/quill.snow.css",
                             "./node_modules/line-awesome/dist/line-awesome/css/line-awesome.css",
-                            "./node_modules/material-design-icons/iconfont/material-icons.css"
+                            "./node_modules/material-design-icons/iconfont/material-icons.css",
+                            "./node_modules/@fortawesome/fontawesome-free/css/brands.css",
+                            "./node_modules/@fortawesome/fontawesome-free/css/fontawesome.css",
+                            "./node_modules/@fortawesome/fontawesome-free/css/regular.css",
+                            "./node_modules/@fortawesome/fontawesome-free/css/solid.css"
                         ],
                         "stylePreprocessorOptions": {
                             "includePaths": ["src/css"]
                         },
-                        "scripts": ["./node_modules/quill/dist/quill.js"],
+                        "scripts": ["./node_modules/quill/dist/quill.js", "./node_modules/marked/marked.min.js"],
                         "vendorChunk": true,
                         "extractLicenses": false,
                         "buildOptimizer": false,

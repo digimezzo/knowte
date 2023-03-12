@@ -51,7 +51,10 @@
         "HeaderBar": "标题栏",
         "UseLightHeaderBar": "使用浅色标题栏",
         "SpellChecker": "Spell checker",
-        "EnableSpellChecker": "Enable spell checker"
+        "EnableSpellChecker": "Enable spell checker",
+        "FormatsForNewNotes": "Formats for new notes",
+        "ClassicNote": "Classic note",
+        "MarkdownNote": "Markdown note"
     },
     "ComponentsPage": {
         "Components": "组件"
@@ -207,7 +210,8 @@
         "NoNoteFilesToImport": "没有要导入的笔记文件",
         "NewVersionAvailable": "新的版本已发行: {{version}}",
         "NoteMoved": "{{number}} note moved to '{{collection}}'",
-        "NotesMoved": "{{number}} notes moved to '{{collection}}'"
+        "NotesMoved": "{{number}} notes moved to '{{collection}}'",
+        "OopsAnErrorOccurred": "Oops! An error occurred."
     },
     "SnackBarActions": {
         "Ok": "确定"
@@ -231,7 +235,24 @@
         "Search": "搜索",
         "Languages": "languages",
         "Disabled": "Disabled",
-        "Moved": "Moved"
+        "Moved": "Moved",
+        "AddClassicNote": "Add classic note",
+        "AddMarkdownNote": "Add Markdown note",
+        "Edit": "Edit",
+        "Bold": "Bold",
+        "Italic": "Italic",
+        "Strikethrough": "Strikethrough",
+        "Heading1": "Heading 1",
+        "Heading2": "Heading 2",
+        "Heading3": "Heading 3",
+        "Link": "Link",
+        "Quote": "Quote",
+        "Code": "Code",
+        "Table": "Table",
+        "UnorderedList": "Unordered list",
+        "OrderedList": "Ordered list",
+        "TaskList": "Task list",
+        "Image": "Image..."
     },
     "NoteDates": {
         "Today": "今日",

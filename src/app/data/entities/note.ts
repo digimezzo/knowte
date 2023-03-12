@@ -2,7 +2,7 @@ import * as moment from 'moment';
 import { nanoid } from 'nanoid';
 
 export class Note {
-    constructor(public title: string, public notebookId: string) {}
+    constructor(public title: string, public notebookId: string, public isMarkdownNote: boolean) {}
 
     public id: string = nanoid();
     public isMarked: boolean = false;

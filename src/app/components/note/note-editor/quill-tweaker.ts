@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as Quill from 'quill';
-import { TranslatorService } from '../../services/translator/translator.service';
+import { TranslatorService } from '../../../services/translator/translator.service';
 
 @Injectable()
 export class QuillTweaker {

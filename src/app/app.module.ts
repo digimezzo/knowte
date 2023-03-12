@@ -1,6 +1,6 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { ErrorHandler, NgModule } from '@angular/core';
+import { ErrorHandler, NgModule, SecurityContext } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,6 +25,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AngularSplitModule } from 'angular-split';
+import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
 import 'reflect-metadata';
 import 'zone.js/mix';
 import '../polyfills';
@@ -34,6 +35,8 @@ import { ActiveNotebookAndSearchComponent } from './components/active-notebook-a
 import { CollectionSwitcherComponent } from './components/collection-switcher/collection-switcher.component';
 import { MoveNotesBottomSheetComponent } from './components/collection/bottom-sheets/move-notes-bottom-sheet/move-notes-bottom-sheet.component';
 import { CollectionComponent } from './components/collection/collection.component';
+import { NoteCreator } from './components/collection/note-creator';
+import { NoteTypeChooserBottomSheetComponent } from './components/collection/note-type-chooser-bottom-sheet/note-type-chooser-bottom-sheet.component';
 import { ColorSchemeSwitcherComponent } from './components/color-scheme-switcher/color-scheme-switcher.component';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmation-dialog/confirmation-dialog.component';
 import { DialogHeaderComponent } from './components/dialogs/dialog-header/dialog-header.component';
@@ -55,12 +58,16 @@ import { SearchBottomSheetComponent } from './components/note/bottom-sheets/sear
 import { ShareBottomSheetComponent } from './components/note/bottom-sheets/share-bottom-sheet/share-bottom-sheet.component';
 import { SpellCheckBottomSheetComponent } from './components/note/bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';
 import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
+import { MarkdownNoteComponent } from './components/note/markdown-note/markdown-note.component';
 import { NoteContextMenuFactory } from './components/note/note-context-menu-factory';
+import { BoundaryGetter } from './components/note/note-editor/boundary-getter';
+import { NoteEditorFactory } from './components/note/note-editor/note-editor-factory';
+import { NoteImageSaver } from './components/note/note-editor/note-image-saver';
+import { QuillFactory } from './components/note/note-editor/quill-factory';
+import { QuillTweaker } from './components/note/note-editor/quill-tweaker';
 import { NoteStatusBarComponent } from './components/note/note-status-bar/note-status-bar.component';
 import { NoteComponent } from './components/note/note.component';
 import { NotebookSwitcherComponent } from './components/note/notebook-switcher/notebook-switcher.component';
-import { QuillFactory } from './components/note/quill-factory';
-import { QuillTweaker } from './components/note/quill-tweaker';
 import { NotesComponent } from './components/notes/notes.component';
 import { SettingsTextSizeInNotesComponent } from './components/settings/settings-text-size-in-notes/settings-text-size-in-notes.component';
 import { SettingsComponent } from './components/settings/settings.component';
@@ -69,25 +76,32 @@ import { TasksProgressComponent } from './components/tasks-progress/tasks-progre
 import { TrashComponent } from './components/trash/trash.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { WindowControlsComponent } from './components/window-controls/window-controls.component';
+import { ApplicationPaths } from './core/applicationPaths';
 import { BaseSettings } from './core/base-settings';
 import { ClipboardManager } from './core/clipboard-manager';
 import { DateFormatter } from './core/date-formatter';
 import { Desktop } from './core/desktop';
 import { FileAccess } from './core/file-access';
 import { GitHubApi } from './core/github-api';
+import { ImageProcessor } from './core/image-processor';
 import { Logger } from './core/logger';
+import { PathConverter } from './core/path-converter';
 import { Scheduler } from './core/scheduler';
 import { Settings } from './core/settings';
 import { DataStore } from './data/data-store';
 import { CdkVirtualScrollViewportPatchDirective } from './directives/cdk-virtual-scroll-viewport-patch-directive';
 import { WebviewDirective } from './directives/webview.directive';
 import { GlobalErrorHandler } from './globalErrorHandler';
+import { FixImagePathsPipe } from './pipes/fix-image-paths.pipe';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { AppearanceService } from './services/appearance/appearance.service';
+import { CollectionDataStoreAccess } from './services/collection/collection-data-store.access';
 import { CollectionFileAccess } from './services/collection/collection-file-access';
+import { CollectionPathConverter } from './services/collection/collection-path-converter';
 import { CollectionClient } from './services/collection/collection.client';
 import { CollectionService } from './services/collection/collection.service';
 import { NoteDateFormatter } from './services/collection/note-date-formatter';
+import { NoteModelFactory } from './services/collection/note-model-factory';
 import { CryptographyService } from './services/cryptography/cryptography.service';
 import { ElectronService } from './services/electron.service';
 import { FileService } from './services/file/file.service';
@@ -97,6 +111,7 @@ import { SearchClient } from './services/search/search.client';
 import { SearchService } from './services/search/search.service';
 import { SnackBarService } from './services/snack-bar/snack-bar.service';
 import { SpellCheckService } from './services/spell-check/spell-check.service';
+import { TemporaryStorageService } from './services/temporary-storage/temporary-storage.service';
 import { TranslatorService } from './services/translator/translator.service';
 import { TrashService } from './services/trash/trash.service';
 import { UpdateService } from './services/update/update.service';
@@ -106,12 +121,53 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
-/** Custom options the configure the tooltip's default show/hide delays. */
+// Custom options the configure the tooltip's default show/hide delays.
 export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
     showDelay: 500,
     hideDelay: 0,
     touchendHideDelay: 0,
 };
+
+/**
+ * Function that returns `MarkedOptions` with renderer override
+ * See: https://github.com/jfcere/ngx-markdown/issues/315
+ */
+export function MarkedOptionsFactory(): MarkedOptions {
+    const renderer = new MarkedRenderer();
+
+    // remove task list bullets
+    renderer.list = (body: string, ordered: boolean, start: number) => {
+        const divElement = document.createElement('div');
+        divElement.innerHTML = body;
+
+        divElement.querySelectorAll('li').forEach((li) => {
+            li.childNodes.forEach((child) => {
+                if (child instanceof HTMLInputElement && child.type === 'checkbox') {
+                    // list item
+                    li.style.marginLeft = '-1.5em';
+                    li.style.listStyleType = 'none';
+                    // checkbox
+                    child.style.margin = '0 0.2em 0.15em 0em';
+                    child.style.verticalAlign = 'middle';
+                }
+            });
+        });
+
+        return MarkedRenderer.prototype.list.call(renderer, divElement.innerHTML, ordered, start) as string;
+    };
+
+    return { renderer };
+
+    // See: https://snyk.io/advisor/npm-package/ngx-markdown/functions/ngx-markdown.MarkedRenderer
+    // return {
+    //     renderer: renderer,
+    //     gfm: true,
+    //     breaks: false,
+    //     pedantic: false,
+    //     smartLists: true,
+    //     smartypants: false,
+    // };
+}
 
 @NgModule({
     declarations: [
@@ -151,12 +207,22 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         SearchBottomSheetComponent,
         ShareBottomSheetComponent,
         SpellCheckLanguagesComponent,
+        NoteTypeChooserBottomSheetComponent,
         NoteStatusBarComponent,
+        MarkdownNoteComponent,
         WebviewDirective,
         CdkVirtualScrollViewportPatchDirective,
         TruncatePipe,
+        FixImagePathsPipe,
     ],
     imports: [
+        MarkdownModule.forRoot({
+            markedOptions: {
+                provide: MarkedOptions,
+                useFactory: MarkedOptionsFactory,
+            },
+            sanitize: SecurityContext.NONE, // disable sanitization
+        }),
         MatListModule,
         MatDialogModule,
         MatTooltipModule,
@@ -204,12 +270,14 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         AppearanceService,
         TranslatorService,
         SearchService,
+        TemporaryStorageService,
         SearchClient,
         SnackBarService,
         CryptographyService,
         PersistanceService,
         QuillFactory,
         NoteContextMenuFactory,
+        NoteModelFactory,
         NoteDateFormatter,
         QuillTweaker,
         GitHubApi,
@@ -217,8 +285,17 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         Scheduler,
         Desktop,
         Logger,
+        NoteCreator,
         FileAccess,
+        CollectionPathConverter,
         CollectionFileAccess,
+        CollectionDataStoreAccess,
+        NoteEditorFactory,
+        NoteImageSaver,
+        BoundaryGetter,
+        PathConverter,
+        ImageProcessor,
+        ApplicationPaths,
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
         DataStore,
         {

@@ -18,5 +18,6 @@ module.exports = {
         util: 'commonjs util',
         constants: 'commonjs constants',
         net: 'commonjs net',
+        zlib: 'commonjs zlib',
     },
 };

@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
 import * as remote from '@electron/remote';
 import { SaveDialogOptions, SaveDialogReturnValue } from 'electron';
@@ -19,6 +19,7 @@ import { ErrorDialogComponent } from '../../../dialogs/error-dialog/error-dialog
 export class ShareBottomSheetComponent {
     constructor(
         @Inject(MAT_BOTTOM_SHEET_DATA) private data: any,
+        private bottomSheetRef: MatBottomSheetRef<ShareBottomSheetComponent>,
         private print: PrintService,
         private translator: TranslatorService,
         private persistance: PersistanceService,
@@ -28,29 +29,41 @@ export class ShareBottomSheetComponent {
     ) {}
 
     public async exportNoteToPdfAsync(): Promise<void> {
+        this.bottomSheetRef.dismiss();
         const options: SaveDialogOptions = { defaultPath: Utils.getPdfExportPath(remote.app.getPath('documents'), this.data.noteTitle) };
         const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
 
         if (saveDialogReturnValue.filePath != undefined) {
-            await this.print.exportToPdfAsync(saveDialogReturnValue.filePath, this.data.noteTitle, this.data.quill.root.innerHTML);
+            await this.print.exportToPdfAsync(
+                saveDialogReturnValue.filePath,
+                this.data.noteTitle,
+                this.data.noteHtml,
+                this.data.isMarkdownNote
+            );
         }
     }
 
     public async printNoteAsync(): Promise<void> {
-        await this.print.printAsync(this.data.noteTitle, this.data.quill.root.innerHTML);
+        this.bottomSheetRef.dismiss();
+        await this.print.printAsync(this.data.noteTitle, this.data.noteHtml, this.data.isMarkdownNote);
     }
 
     public async exportNoteAsync(): Promise<void> {
-        const options: SaveDialogOptions = { defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.data.noteTitle) };
+        this.bottomSheetRef.dismiss();
+        const options: SaveDialogOptions = {
+            defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.data.noteTitle, this.data.isMarkdownNote),
+        };
         const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
 
         try {
             if (saveDialogReturnValue.filePath != undefined && saveDialogReturnValue.filePath.length > 0) {
                 await this.persistance.exportNoteAsync(
                     saveDialogReturnValue.filePath,
+                    this.data.noteId,
                     this.data.noteTitle,
-                    this.data.quill.getText(),
-                    this.getNoteJsonContent()
+                    this.data.noteText,
+                    this.data.noteContent,
+                    this.data.isMarkdownNote
                 );
                 this.snackBar.noteExportedAsync(this.data.noteTitle);
             }
@@ -68,9 +81,5 @@ export class ShareBottomSheetComponent {
                 data: { errorText: errorText },
             });
         }
-    }
-
-    private getNoteJsonContent(): string {
-        return JSON.stringify(this.data.quill.getContents());
     }
 }

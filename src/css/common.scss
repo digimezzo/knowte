@@ -42,3 +42,24 @@
     pointer-events: none;
     opacity: 0.4;
 }
+
+.w-100 {
+    width: 100%;
+}
+
+.h-100 {
+    height: 100%;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.overflow-visible {
+    overflow: visible !important;
+}
+
+/* See: https://stackoverflow.com/questions/54404573/mouse-hover-over-textarea-scrollbar-gives-text-cursor-instead-of-default-cursor */
+textarea {
+    cursor: auto;
+}

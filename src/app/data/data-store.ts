@@ -162,8 +162,8 @@ export class DataStore {
         return notesWithIdenticalBaseTitle;
     }
 
-    public addNote(title: string, notebookId: string): string {
-        const newNote: Note = new Note(title, notebookId);
+    public addNote(title: string, notebookId: string, isMarkdownNote: boolean): string {
+        const newNote: Note = new Note(title, notebookId, isMarkdownNote);
         this.notes.insert(newNote);
         this.db.saveDatabase();
 

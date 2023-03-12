@@ -51,7 +51,10 @@
         "HeaderBar": "Barre d'en-tête",
         "UseLightHeaderBar": "Utiliser barre d'en-tête claire",
         "SpellChecker": "Correcteur orthographique",
-        "EnableSpellChecker": "Activer le correcteur orthographique"
+        "EnableSpellChecker": "Activer le correcteur orthographique",
+        "FormatsForNewNotes": "Formats pour les nouvelles notes",
+        "ClassicNote": "Note classique",
+        "MarkdownNote": "Note markdown"
     },
     "ComponentsPage": {
         "Components": "Composants"
@@ -206,8 +209,9 @@
         "NotesImported": "Les notes ont été importées",
         "NoNoteFilesToImport": "Il n'y avait aucun fichier de note à importer",
         "NewVersionAvailable": "Une nouvelle version est disponible: {{version}}",
-        "NoteMoved": "{{number}} note déplacée vers '{{collection}}'",
-        "NotesMoved": "{{number}} notes déplacées vers '{{collection}}'"
+        "NoteMoved": "{{number}} note déplacée vers '{{collection}}'",
+        "NotesMoved": "{{number}} notes déplacées vers '{{collection}}'",
+        "OopsAnErrorOccurred": "Oups! Une erreur est survenue."
     },
     "SnackBarActions": {
         "Ok": "OK"
@@ -231,7 +235,24 @@
         "Search": "Chercher",
         "Languages": "langues",
         "Disabled": "Désactivé",
-        "Moved": "Déplacé"
+        "Moved": "Déplacé",
+        "AddClassicNote": "Ajouter note classique",
+        "AddMarkdownNote": "Ajouter note Markdown",
+        "Edit": "Modifier",
+        "Bold": "Gras",
+        "Italic": "Italique",
+        "Strikethrough": "Barré",
+        "Heading1": "Titre 1",
+        "Heading2": "Titre 2",
+        "Heading3": "Titre 3",
+        "Link": "Lien",
+        "Quote": "Citation",
+        "Code": "Code",
+        "Table": "Tableau",
+        "UnorderedList": "Liste non ordonnée",
+        "OrderedList": "Liste ordonnée",
+        "TaskList": "Liste de tâches",
+        "Image": "Image..."
     },
     "NoteDates": {
         "Today": "Aujourd'hui",

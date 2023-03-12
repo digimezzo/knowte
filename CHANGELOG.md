@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.1.0] - 2023-02-02
+## [3.0.0] - 2023-02-08
 
 ### Added
 
@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Added note encryption and password protection
 -   Added Russian translation
 -   Added option to move notes from one collection to another
+-   Added possibility to search inside notes
 
 ### Changed
 

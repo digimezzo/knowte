@@ -51,7 +51,10 @@
         "HeaderBar": "Kopbalk",
         "UseLightHeaderBar": "Gebruik lichte kopbalk",
         "SpellChecker": "Spellingscontrole",
-        "EnableSpellChecker": "Spellingcontrole inschakelen"
+        "EnableSpellChecker": "Spellingcontrole inschakelen",
+        "FormatsForNewNotes": "Formaten voor nieuwe notities",
+        "ClassicNote": "Kassieke notitie",
+        "MarkdownNote": "Markdown notitie"
     },
     "ComponentsPage": {
         "Components": "Componenten"
@@ -207,7 +210,8 @@
         "NoNoteFilesToImport": "Er waren geen notitiebestanden om te importeren",
         "NewVersionAvailable": "Er is een nieuwe versie beschikbaar: {{version}}",
         "NoteMoved": "{{number}} notitie verplaatst naar '{{collection}}'",
-        "NotesMoved": "{{number}} notities verplaatst naar '{{collection}}'"
+        "NotesMoved": "{{number}} notities verplaatst naar '{{collection}}'",
+        "OopsAnErrorOccurred": "Oeps, er is een fout opgetreden!"
     },
     "SnackBarActions": {
         "Ok": "OK"
@@ -231,7 +235,24 @@
         "Search": "Zoeken",
         "Languages": "talen",
         "Disabled": "Uitgeschakeld",
-        "Moved": "Verplaatst"
+        "Moved": "Verplaatst",
+        "AddClassicNote": "Klassieke notitie toevoegen",
+        "AddMarkdownNote": "Markdown notitie toevoegen",
+        "Edit": "Bewerken",
+        "Bold": "Vet",
+        "Italic": "Cursief",
+        "Strikethrough": "Doorhalen",
+        "Heading1": "Koptekst 1",
+        "Heading2": "Koptekst 2",
+        "Heading3": "Koptekst 3",
+        "Link": "Koppeling",
+        "Quote": "Citaat",
+        "Code": "Code",
+        "Table": "Tabel",
+        "UnorderedList": "Ongeordende lijst",
+        "OrderedList": "Geordende lijst",
+        "TaskList": "Takenlijst",
+        "Image": "Afbeelding..."
     },
     "NoteDates": {
         "Today": "Vandaag",

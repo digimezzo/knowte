@@ -35,12 +35,14 @@ export class Utils {
         return true;
     }
 
-    public static pathToCollection(collectionDirectoryPath: string): string {
-        return path.dirname(collectionDirectoryPath).split(path.sep).pop();
-    }
+    public static getNoteExportPath(exportDirectory: string, noteTitle: string, isMarkdownNote: boolean): string {
+        let extension: string = Constants.classicNoteExportExtension;
 
-    public static getNoteExportPath(exportDirectory: string, noteTitle: string): string {
-        return path.join(exportDirectory, `${sanitize(noteTitle)}${Constants.noteExportExtension}`);
+        if (isMarkdownNote) {
+            extension = Constants.markdownNoteExportExtension;
+        }
+
+        return path.join(exportDirectory, `${sanitize(noteTitle)}${extension}`);
     }
 
     public static getPdfExportPath(exportDirectory: string, noteTitle: string): string {

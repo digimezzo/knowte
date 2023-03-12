@@ -102,13 +102,12 @@
                         (keydown)="onTitleKeydown($event)"
                     />
                 </div>
-                <div
-                    class="note-editor"
-                    id="editor"
-                    (keydown.control.s)="strikeThrough($event)"
-                    (keydown.control.1)="heading1($event)"
-                    (keydown.control.2)="heading2($event)"
-                ></div>
+                <div *ngIf="!this.isMarkdownNote" class="fill w-100 h-100 overflow-hidden" id="editor"></div>
+                <app-markdown-note
+                    *ngIf="this.isMarkdownNote"
+                    class="fill w-100 h-100 overflow-hidden"
+                    [noteEditor]="this.noteEditor"
+                ></app-markdown-note>
                 <app-note-status-bar
                     [noteId]="this.noteId"
                     [isMarked]="this.isMarked"

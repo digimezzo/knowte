@@ -1,0 +1,14 @@
+@import 'variables';
+@import 'theming';
+
+.note-type-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.note-type-icon {
+    font-size: 24px;
+    color: $color-grey-icon;
+    margin: 0 8px 0 0;
+}

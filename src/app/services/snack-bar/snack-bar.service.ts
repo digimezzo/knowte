@@ -79,6 +79,12 @@ export class SnackBarService {
         this.showActionSnackBar(message, action, false);
     }
 
+    public async oopsAnErrorOccurredAsync(): Promise<void> {
+        const message: string = await this.translator.getAsync('SnackBarMessages.OopsAnErrorOccurred');
+        const action: string = await this.translator.getAsync('SnackBarActions.Ok');
+        this.showActionSnackBar(message, action, false);
+    }
+
     private showActionLessSnackBar(message: string): void {
         this.zone.run(() => {
             this.matSnackBar.open(message, '', { duration: this.calculateDuration(message) });
@@ -92,7 +98,9 @@ export class SnackBarService {
             config = {};
         }
 
-        this.matSnackBar.open(message, action, config);
+        this.zone.run(() => {
+            this.matSnackBar.open(message, action, config);
+        });
     }
 
     private calculateDuration(message: string): number {

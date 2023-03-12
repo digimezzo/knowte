@@ -20,7 +20,6 @@ import { AppearanceService } from '../../services/appearance/appearance.service'
 import { CollectionService } from '../../services/collection/collection.service';
 import { FileService } from '../../services/file/file.service';
 import { NoteMarkResult } from '../../services/results/note-mark-result';
-import { NoteOperationResult } from '../../services/results/note-operation-result';
 import { NotesCountResult } from '../../services/results/notes-count-result';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../services/translator/translator.service';
@@ -30,6 +29,8 @@ import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.compo
 import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
 import { RenameNotebookDialogComponent } from '../dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
 import { MoveNotesBottomSheetComponent } from './bottom-sheets/move-notes-bottom-sheet/move-notes-bottom-sheet.component';
+import { NoteCreator } from './note-creator';
+import { NoteTypeChooserBottomSheetComponent } from './note-type-chooser-bottom-sheet/note-type-chooser-bottom-sheet.component';
 
 @Component({
     selector: 'app-collection',
@@ -66,6 +67,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
         private updateService: UpdateService,
         private fileService: FileService,
         private bottomSheet: MatBottomSheet,
+        private noteCreator: NoteCreator,
         private settings: BaseSettings,
         private dialog: MatDialog,
         private logger: Logger,
@@ -273,17 +275,6 @@ export class CollectionComponent implements OnInit, OnDestroy {
         this.notesCount = notesCount;
     }
 
-    public async addNoteAsync(): Promise<void> {
-        const baseTitle: string = await this.translatorService.getAsync('Notes.NewNote');
-
-        // Create a new note
-        const result: NoteOperationResult = await this.collectionService.addNoteAsync(baseTitle, this.activeNotebook.id);
-
-        if (result.operation === Operation.Success) {
-            await this.collectionService.setNoteOpenAsync(result.noteId, true);
-        }
-    }
-
     public async deleteNotesAsync(): Promise<void> {
         // Assume multiple selected notes
         let title: string = await this.translatorService.getAsync('DialogTitles.ConfirmDeleteNotes');
@@ -349,7 +340,13 @@ export class CollectionComponent implements OnInit, OnDestroy {
     public async importNotesAsync(): Promise<void> {
         const openDialogReturnValue: OpenDialogReturnValue = await remote.dialog.showOpenDialog({
             filters: [
-                { name: ProductInformation.applicationName, extensions: [Constants.noteExportExtension.replace('.', '')] },
+                {
+                    name: ProductInformation.applicationName,
+                    extensions: [
+                        Constants.classicNoteExportExtension.replace('.', ''),
+                        Constants.markdownNoteExportExtension.replace('.', ''),
+                    ],
+                },
                 { name: await this.translatorService.getAsync('DialogTexts.AllFiles'), extensions: ['*'] },
             ],
             properties: ['openFile', 'multiSelections'],
@@ -495,5 +492,17 @@ export class CollectionComponent implements OnInit, OnDestroy {
         this.bottomSheet.open(MoveNotesBottomSheetComponent, {
             data: { selectedNoteIds: this.selectedNoteIds },
         });
+    }
+
+    public async addNoteAsync(): Promise<void> {
+        if (this.settings.canCreateClassicNotes && this.settings.canCreateMarkdownNotes) {
+            this.bottomSheet.open(NoteTypeChooserBottomSheetComponent, {
+                data: { activeNotebookId: this.activeNotebook.id },
+            });
+        } else if (this.settings.canCreateClassicNotes) {
+            await this.noteCreator.createClassicNoteAsync(this.activeNotebook.id);
+        } else if (this.settings.canCreateMarkdownNotes) {
+            await this.noteCreator.createMarkdownNoteAsync(this.activeNotebook.id);
+        }
     }
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as Quill from 'quill';
 import BlotFormatter from 'quill-blot-formatter';
-import { TranslatorService } from '../../services/translator/translator.service';
-import { CustomImageSpec } from './custom-image-spec';
+import { TranslatorService } from '../../../services/translator/translator.service';
+import { CustomImageSpec } from '../custom-image-spec';
 
 @Injectable()
 export class QuillFactory {
