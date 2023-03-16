@@ -22,6 +22,7 @@ import { PersistanceService } from '../../services/persistance/persistance.servi
 import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { NoteMarkResult } from '../../services/results/note-mark-result';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
+import { NotePinResult } from '../../services/results/note-pin-result';
 import { SearchClient } from '../../services/search/search.client';
 import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
 import { SpellCheckService } from '../../services/spell-check/spell-check.service';
@@ -88,6 +89,7 @@ export class NoteComponent implements OnInit {
     public initialNoteTitle: string;
     public noteTitle: string;
     public isMarked: boolean;
+    public isPinned: boolean;
     public isTrashed: boolean;
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteContentChanged: Subject<void> = new Subject<void>();
@@ -172,6 +174,9 @@ export class NoteComponent implements OnInit {
                 this.noteMarkChanged(result.noteId, result.isMarked)
             )
         );
+        this.subscription.add(
+            this.collectionClient.notePinChanged$.subscribe((result: NotePinResult) => this.notePinChanged(result.noteId, result.isPinned))
+        );
         this.subscription.add(this.noteEditor.noteContentChanged$.subscribe(() => this.onNoteContentChange()));
     }
 
@@ -248,6 +253,11 @@ export class NoteComponent implements OnInit {
     public toggleNoteMark(): void {
         this.hideActionButtonsDelayedAsync();
         this.collectionClient.setNoteMark(this.noteId, !this.isMarked);
+    }
+
+    public toggleNotePin(): void {
+        this.hideActionButtonsDelayedAsync();
+        this.collectionClient.setNotePin(this.noteId, !this.isPinned);
     }
 
     public async deleteNoteAsync(): Promise<void> {
@@ -406,6 +416,12 @@ export class NoteComponent implements OnInit {
         }
     }
 
+    private notePinChanged(noteId: string, isPinned: boolean): void {
+        if (this.noteId === noteId) {
+            this.zone.run(() => (this.isPinned = isPinned));
+        }
+    }
+
     private focusNote(noteId: string): void {
         if (this.noteId === noteId) {
             if (this.noteWindow.isMinimized()) {
@@ -539,6 +555,7 @@ export class NoteComponent implements OnInit {
         this.initialNoteTitle = result.noteTitle;
         this.noteTitle = result.noteTitle;
         this.isMarked = result.isMarked;
+        this.isPinned = result.isPinned;
         this.isTrashed = result.isTrashed;
         this.isEncrypted = result.isEncrypted;
         this.secretKeyHash = result.secretKeyHash;

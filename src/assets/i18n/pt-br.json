@@ -113,7 +113,9 @@
         "ThisNoteIsEncrypted": "This note is encrypted",
         "MoveNote": "Move note to another collection",
         "MoveNotes": "Move notes to another collection",
-        "Share": "Share..."
+        "Share": "Share...",
+        "PinNote": "Pin note",
+        "UnpinNote": "Unpin note"
     },
     "LicenseDialog": {
         "License": "Licensa"

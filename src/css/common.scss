@@ -59,6 +59,14 @@
     overflow: visible !important;
 }
 
+.rotate-45-ccw {
+    transform: rotate(-45deg);
+}
+
+.rotate-45-cw {
+    transform: rotate(45deg);
+}
+
 /* See: https://stackoverflow.com/questions/54404573/mouse-hover-over-textarea-scrollbar-gives-text-cursor-instead-of-default-cursor */
 textarea {
     cursor: auto;

@@ -8,6 +8,7 @@ import { Notebook } from '../../data/entities/notebook';
 import { NoteDetailsResult } from '../results/note-details-result';
 import { NoteMarkResult } from '../results/note-mark-result';
 import { NoteOperationResult } from '../results/note-operation-result';
+import { NotePinResult } from '../results/note-pin-result';
 import { NotebookChangedResult } from '../results/notebook-changed-result';
 import { CollectionEvents } from './collection-events';
 
@@ -25,6 +26,7 @@ export class CollectionClient {
         this.globalEmitter.on(CollectionEvents.closeNoteEvent, (noteId: string) => this.closeNote.next(noteId));
         this.globalEmitter.on(CollectionEvents.focusNoteEvent, (noteId: string) => this.focusNote.next(noteId));
         this.globalEmitter.on(CollectionEvents.noteMarkChangedEvent, (result: NoteMarkResult) => this.noteMarkChanged.next(result));
+        this.globalEmitter.on(CollectionEvents.notePinChangedEvent, (result: NotePinResult) => this.notePinChanged.next(result));
         this.globalEmitter.on(CollectionEvents.noteZoomPercentageChangedEvent, () => this.noteZoomPercentageChanged.next());
         this.globalEmitter.on(CollectionEvents.notebookChangedEvent, (result: NotebookChangedResult) => this.notebookChanged.next(result));
         this.globalEmitter.on(CollectionEvents.closeAllNotesEvent, () => this.closeAllNotes.next());
@@ -41,6 +43,9 @@ export class CollectionClient {
 
     private noteMarkChanged: Subject<NoteMarkResult> = new Subject();
     public noteMarkChanged$: Observable<NoteMarkResult> = this.noteMarkChanged.asObservable();
+
+    private notePinChanged: Subject<NotePinResult> = new Subject();
+    public notePinChanged$: Observable<NotePinResult> = this.notePinChanged.asObservable();
 
     private notebookChanged: Subject<NotebookChangedResult> = new Subject();
     public notebookChanged$: Observable<NotebookChangedResult> = this.notebookChanged.asObservable();
@@ -128,6 +133,10 @@ export class CollectionClient {
 
     public setNoteMark(noteId: string, isMarked: boolean): void {
         this.globalEmitter.emit(CollectionEvents.setNoteMarkEvent, noteId, isMarked);
+    }
+
+    public setNotePin(noteId: string, isPinned: boolean): void {
+        this.globalEmitter.emit(CollectionEvents.setNotePinEvent, noteId, isPinned);
     }
 
     public setNotebook(notebookId: string, noteIds: string[]): void {

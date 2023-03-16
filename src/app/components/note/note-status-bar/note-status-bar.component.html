@@ -29,6 +29,14 @@
         <div class="note-status-text mr-2">{{ this.settings.noteZoomPercentage }}%</div>
     </div>
     <div class="pointer">
+        <div *ngIf="isPinned" (click)="toggleNotePin()" matTooltip="{{ 'Tooltips.UnpinNote' | translate }}">
+            <i class="note-status-icon rotate-45-ccw las la-thumbtack"></i>
+        </div>
+        <div *ngIf="!isPinned" (click)="toggleNotePin()" matTooltip="{{ 'Tooltips.PinNote' | translate }}">
+            <i class="note-status-icon rotate-45-cw las la-thumbtack"></i>
+        </div>
+    </div>
+    <div class="pointer ml-1">
         <div *ngIf="isMarked" (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">
             <i class="note-status-icon las la-heart"></i>
         </div>
@@ -36,7 +44,8 @@
             <i class="note-status-icon lar la-heart"></i>
         </div>
     </div>
-    <div *ngIf="isEncrypted" matTooltip="{{ 'Tooltips.ThisNoteIsEncrypted' | translate }}">
-        <i class="note-status-icon las la-lock ml-1"></i>
+
+    <div class="ml-1" *ngIf="isEncrypted" matTooltip="{{ 'Tooltips.ThisNoteIsEncrypted' | translate }}">
+        <i class="note-status-icon las la-lock"></i>
     </div>
 </div>

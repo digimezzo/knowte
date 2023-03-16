@@ -19,6 +19,7 @@ import { NoteDateFormatResult } from '../results/note-date-format-result';
 import { NoteDetailsResult } from '../results/note-details-result';
 import { NoteMarkResult } from '../results/note-mark-result';
 import { NoteOperationResult } from '../results/note-operation-result';
+import { NotePinResult } from '../results/note-pin-result';
 import { NotebookChangedResult } from '../results/notebook-changed-result';
 import { NotesCountResult } from '../results/notes-count-result';
 import { SearchService } from '../search/search.service';
@@ -51,10 +52,12 @@ export class CollectionService {
     private notesChanged: Subject<void> = new Subject();
     private notesCountChanged: Subject<NotesCountResult> = new Subject<NotesCountResult>();
     private noteMarkChanged: Subject<NoteMarkResult> = new Subject<NoteMarkResult>();
+    private notePinChanged: Subject<NotePinResult> = new Subject<NotePinResult>();
     private noteNotebookChanged: Subject<void> = new Subject();
 
     private setNoteOpenEventListener: any = this.setNoteOpenAsync.bind(this);
     private setNoteMarkEventListener: any = this.setNoteMark.bind(this);
+    private setNotePinEventListener: any = this.setNotePin.bind(this);
     private setNotebookEventListener: any = this.setNotebook.bind(this);
     private getNoteDetailsEventListener: any = this.getNoteDetailsEventHandler.bind(this);
     private getNotebooksEventListener: any = this.getNotebooksEventHandler.bind(this);
@@ -90,6 +93,7 @@ export class CollectionService {
     public notesChanged$: Observable<void> = this.notesChanged.asObservable();
     public notesCountChanged$: Observable<NotesCountResult> = this.notesCountChanged.asObservable();
     public noteMarkChanged$: Observable<NoteMarkResult> = this.noteMarkChanged.asObservable();
+    public notePinChanged$: Observable<NotePinResult> = this.notePinChanged.asObservable();
     public noteNotebookChanged$: Observable<void> = this.noteNotebookChanged.asObservable();
 
     public get activeCollection(): string {
@@ -103,6 +107,7 @@ export class CollectionService {
         // Remove listeners
         this.globalEmitter.removeListener(CollectionEvents.setNoteOpenEvent, this.setNoteOpenEventListener);
         this.globalEmitter.removeListener(CollectionEvents.setNoteMarkEvent, this.setNoteMarkEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.setNotePinEvent, this.setNotePinEventListener);
         this.globalEmitter.removeListener(CollectionEvents.setNotebookEvent, this.setNotebookEventListener);
         this.globalEmitter.removeListener(CollectionEvents.getNoteDetailsEvent, this.getNoteDetailsEventListener);
         this.globalEmitter.removeListener(CollectionEvents.getNotebooksEvent, this.getNotebooksEventListener);
@@ -116,6 +121,7 @@ export class CollectionService {
         // Add listeners
         this.globalEmitter.on(CollectionEvents.setNoteOpenEvent, this.setNoteOpenEventListener);
         this.globalEmitter.on(CollectionEvents.setNoteMarkEvent, this.setNoteMarkEventListener);
+        this.globalEmitter.on(CollectionEvents.setNotePinEvent, this.setNotePinEventListener);
         this.globalEmitter.on(CollectionEvents.setNotebookEvent, this.setNotebookEventListener);
         this.globalEmitter.on(CollectionEvents.getNoteDetailsEvent, this.getNoteDetailsEventListener);
         this.globalEmitter.on(CollectionEvents.getNotebooksEvent, this.getNotebooksEventListener);
@@ -576,7 +582,14 @@ export class CollectionService {
                 uncategorizedNotes = this.collectionDataStoreAccess.getNotebookNotes(notebookId);
             }
 
-            // TODO: filter uncategorizedNotes by search text
+            // Set pinned notes at the top
+            let pinnedUncategorizedNotes: Note[] = uncategorizedNotes.filter((x) => x.isPinned);
+            let unpinnedUncategorizedNotes: Note[] = uncategorizedNotes.filter((x) => !x.isPinned);
+
+            uncategorizedNotes = [];
+            uncategorizedNotes.push(...pinnedUncategorizedNotes);
+            uncategorizedNotes.push(...unpinnedUncategorizedNotes);
+
             uncategorizedNotes = this.getFilteredNotes(uncategorizedNotes, this.search.searchText);
 
             // Fill in count
@@ -689,6 +702,17 @@ export class CollectionService {
 
         this.noteMarkChanged.next(result);
         this.onNoteMarkChanged(note.id, note.isMarked);
+    }
+
+    public setNotePin(noteId: string, isPinned: boolean): void {
+        const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
+        note.isPinned = isPinned;
+        this.collectionDataStoreAccess.updateNote(note);
+
+        const result: NotePinResult = new NotePinResult(noteId, note.isMarked);
+
+        this.notePinChanged.next(result);
+        this.onNotePinChanged(note.id, note.isPinned);
     }
 
     public setNotebook(notebookId: string, noteIds: string[]): Operation {
@@ -1044,6 +1068,7 @@ export class CollectionService {
                 note.title,
                 notebookName,
                 note.isMarked,
+                note.isPinned,
                 note.isTrashed,
                 note.isEncrypted,
                 note.secretKeyHash,
@@ -1185,5 +1210,10 @@ export class CollectionService {
     private onNoteMarkChanged(noteId: string, isMarked: boolean): void {
         const result: NoteMarkResult = new NoteMarkResult(noteId, isMarked, 0);
         this.globalEmitter.emit(CollectionEvents.noteMarkChangedEvent, result);
+    }
+
+    private onNotePinChanged(noteId: string, isPinned: boolean): void {
+        const result: NotePinResult = new NotePinResult(noteId, isPinned);
+        this.globalEmitter.emit(CollectionEvents.notePinChangedEvent, result);
     }
 }

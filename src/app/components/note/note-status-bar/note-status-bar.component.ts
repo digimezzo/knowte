@@ -26,6 +26,9 @@ export class NoteStatusBarComponent {
     public isMarked: boolean;
 
     @Input()
+    public isPinned: boolean;
+
+    @Input()
     public isEncrypted: boolean;
 
     public openSpellCheckBottomSheet(): void {
@@ -46,5 +49,9 @@ export class NoteStatusBarComponent {
 
     public toggleNoteMark(): void {
         this.collectionClient.setNoteMark(this.noteId, !this.isMarked);
+    }
+
+    public toggleNotePin(): void {
+        this.collectionClient.setNotePin(this.noteId, !this.isPinned);
     }
 }

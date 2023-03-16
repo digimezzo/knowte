@@ -32,6 +32,26 @@
                     <i class="note-content-floating-button-icon-action las la-search"></i>
                 </button>
                 <button
+                    *ngIf="canPerformActions && isPinned"
+                    class="note-content-floating-button"
+                    mat-mini-fab
+                    color=""
+                    (click)="toggleNotePin()"
+                    matTooltip="{{ 'Tooltips.UnpinNote' | translate }}"
+                >
+                    <i class="note-content-floating-button-icon-action rotate-45-ccw las la-thumbtack"></i>
+                </button>
+                <button
+                    *ngIf="canPerformActions && !isPinned"
+                    class="note-content-floating-button"
+                    mat-mini-fab
+                    color=""
+                    (click)="toggleNotePin()"
+                    matTooltip="{{ 'Tooltips.PinNote' | translate }}"
+                >
+                    <i class="note-content-floating-button-icon-action rotate-45-cw las la-thumbtack"></i>
+                </button>
+                <button
                     *ngIf="canPerformActions && isMarked"
                     class="note-content-floating-button"
                     mat-mini-fab
@@ -111,6 +131,7 @@
                 <app-note-status-bar
                     [noteId]="this.noteId"
                     [isMarked]="this.isMarked"
+                    [isPinned]="this.isPinned"
                     [isEncrypted]="this.isEncrypted"
                 ></app-note-status-bar>
             </div>

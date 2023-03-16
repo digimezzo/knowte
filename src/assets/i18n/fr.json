@@ -113,7 +113,9 @@
         "ThisNoteIsEncrypted": "Cette note est cryptée",
         "MoveNote": "Déplacer la note vers une autre collection",
         "MoveNotes": "Déplacer les notes vers une autre collection",
-        "Share": "Partager..."
+        "Share": "Partager...",
+        "PinNote": "Attacher note",
+        "UnpinNote": "Détacher note"
     },
     "LicenseDialog": {
         "License": "Licence"

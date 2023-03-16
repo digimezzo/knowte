@@ -8,6 +8,7 @@ import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
 import { CollectionService } from '../../services/collection/collection.service';
 import { NoteMarkResult } from '../../services/results/note-mark-result';
+import { NotePinResult } from '../../services/results/note-pin-result';
 import { SearchService } from '../../services/search/search.service';
 
 @Component({
@@ -77,6 +78,12 @@ export class NotesComponent implements OnInit, OnDestroy {
                 } else {
                     this.markNote(result);
                 }
+            })
+        );
+
+        this.subscription.add(
+            this.collectionService.notePinChanged$.subscribe((result: NotePinResult) => {
+                this.getNotes();
             })
         );
 

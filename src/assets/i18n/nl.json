@@ -113,7 +113,9 @@
         "ThisNoteIsEncrypted": "Deze notitie is versleuteld",
         "MoveNote": "Notitie overzetten naar een andere collectie",
         "MoveNotes": "Notities overzetten naar een andere collectie",
-        "Share": "Delen..."
+        "Share": "Delen...",
+        "PinNote": "Notitie vastmaken",
+        "UnpinNote": "Notitie losmaken"
     },
     "LicenseDialog": {
         "License": "Licentie"
