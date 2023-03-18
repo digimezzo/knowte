@@ -14,11 +14,36 @@ export class PasswordInputDialogComponent implements OnInit {
 
     public isHidden: boolean = true;
 
+    public confirmationInputText: string = '';
+    public errorText: string = '';
+
+    public get canCloseDialog(): boolean {
+        if (!this.data.requiresConfirmation) {
+            if (this.data.inputText) {
+                return true;
+            }
+        }
+
+        if (this.data.inputText && this.confirmationInputText && this.data.inputText === this.confirmationInputText) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public get hasConfirmationError(): boolean {
+        if (this.data.inputText !== this.confirmationInputText) {
+            return true;
+        }
+
+        return false;
+    }
+
     public ngOnInit(): void {}
 
     public closeDialog(): void {
-        if (this.data.inputText) {
-            this.dialogRef.close(true); // Force return "true"
+        if (this.canCloseDialog) {
+            this.dialogRef.close(true); // Force return "true"}
         }
     }
 }

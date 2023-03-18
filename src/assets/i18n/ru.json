@@ -178,7 +178,9 @@
     "Input": {
         "Collection": "Коллекция",
         "NotebookName": "Название блокнота",
-        "SecretKey": "Secret key"
+        "SecretKey": "Secret key",
+        "ConfirmSecretKey": "Confirm secret key",
+        "SecretKeysDoNotMatch": "Secret keys do not match"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "Директория '{{storageDirectory}}' не может использоваться для сохранения ваших заметок. Возможно, у вас недостаточно прав для создания элементов в ней. Пожалуйста, проверьте журнал, если вам нужна дополнительная информация.",

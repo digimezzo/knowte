@@ -178,7 +178,9 @@
     "Input": {
         "Collection": "Collection",
         "NotebookName": "Nom du bloc-notes",
-        "SecretKey": "Clé secrète"
+        "SecretKey": "Clé secrète",
+        "ConfirmSecretKey": "Confirmer la clé secrète",
+        "SecretKeysDoNotMatch": "Les clés secrètes ne correspondent pas"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "Le répertoire '{{storageDirectory}}' ne peut pas être utilisé pour enregistrer vos notes. Vous n'avez peut-être pas les autorisations nécessaires pour y créer des éléments. Veuillez vérifier le log si vous avez besoin de plus d'informations.",

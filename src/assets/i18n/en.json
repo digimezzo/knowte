@@ -178,7 +178,9 @@
     "Input": {
         "Collection": "Collection",
         "NotebookName": "Notebook name",
-        "SecretKey": "Secret key"
+        "SecretKey": "Secret key",
+        "ConfirmSecretKey": "Confirm secret key",
+        "SecretKeysDoNotMatch": "Secret keys do not match"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "The directory '{{storageDirectory}}' cannot be used to save your notes. You might not have sufficient permissions to create items in it. Please verify the log if you need more information.",

@@ -178,7 +178,9 @@
     "Input": {
         "Collection": "Coleção",
         "NotebookName": "Nome da caderneta",
-        "SecretKey": "Secret key"
+        "SecretKey": "Secret key",
+        "ConfirmSecretKey": "Confirm secret key",
+        "SecretKeysDoNotMatch": "Secret keys do not match"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "A pasta '{{storageDirectory}}' não pode ser usado para salvar suas notas. Você talvez não tenha permissões o suficiente para criar arquivos nela. Por favor verique o log se precisar de mais informações.",

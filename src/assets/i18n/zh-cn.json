@@ -178,7 +178,9 @@
     "Input": {
         "Collection": "收藏",
         "NotebookName": "笔记本名称",
-        "SecretKey": "Secret key"
+        "SecretKey": "Secret key",
+        "ConfirmSecretKey": "Confirm secret key",
+        "SecretKeysDoNotMatch": "Secret keys do not match"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "文件夹'{{storageDirectory}}'不能用来保存你的笔记。您可能没有足够的权限在其中创建项目。如果您需要更多信息，请验证日志。",

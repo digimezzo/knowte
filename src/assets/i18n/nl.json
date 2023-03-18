@@ -178,7 +178,9 @@
     "Input": {
         "Collection": "Collectie",
         "NotebookName": "Naam notitieboek",
-        "SecretKey": "Geheime sleutel"
+        "SecretKey": "Geheime sleutel",
+        "ConfirmSecretKey": "Bevestig geheime sleutel",
+        "SecretKeysDoNotMatch": "Geheime sleutels komen niet overeen"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "De map '{{storageDirectory}}' kan niet worden gebruikt om uw notities op te slaan. Mogelijk hebt u onvoldoende rechten om er items in te maken. Controleer het log bestand als u meer informatie nodig hebt.",

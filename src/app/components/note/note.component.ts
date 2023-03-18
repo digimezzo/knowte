@@ -296,7 +296,14 @@ export class NoteComponent implements OnInit {
         const titleText: string = await this.translator.getAsync('DialogTitles.NoteIsEncrypted');
         const placeholderText: string = await this.translator.getAsync('Input.SecretKey');
 
-        const data: any = { titleText: titleText, inputText: '', placeholderText: placeholderText };
+        const data: any = {
+            titleText: titleText,
+            inputText: '',
+            placeholderText: placeholderText,
+            confirmationPlaceholderText: '',
+            confirmationErrorText: '',
+            requiresConfirmation: false,
+        };
 
         const dialogRef: MatDialogRef<PasswordInputDialogComponent> = this.dialog.open(PasswordInputDialogComponent, {
             width: '450px',
@@ -319,8 +326,17 @@ export class NoteComponent implements OnInit {
 
         const titleText: string = await this.translator.getAsync('DialogTitles.EncryptNote');
         const placeholderText: string = await this.translator.getAsync('Input.SecretKey');
+        const confirmationPlaceholderText: string = await this.translator.getAsync('Input.ConfirmSecretKey');
+        const confirmationErrorText: string = await this.translator.getAsync('Input.SecretKeysDoNotMatch');
 
-        const data: any = { titleText: titleText, inputText: '', placeholderText: placeholderText };
+        const data: any = {
+            titleText: titleText,
+            inputText: '',
+            placeholderText: placeholderText,
+            confirmationPlaceholderText: confirmationPlaceholderText,
+            confirmationErrorText: confirmationErrorText,
+            requiresConfirmation: true,
+        };
 
         const dialogRef: MatDialogRef<PasswordInputDialogComponent> = this.dialog.open(PasswordInputDialogComponent, {
             width: '450px',
