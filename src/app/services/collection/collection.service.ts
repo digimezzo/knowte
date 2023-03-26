@@ -7,7 +7,7 @@ import { BaseSettings } from '../../core/base-settings';
 import { Constants } from '../../core/constants';
 import { DateFormatter } from '../../core/date-formatter';
 import { Operation } from '../../core/enums';
-import { FileAccess } from '../../core/file-access';
+import { FileAccess } from '../../core/io/file-access';
 import { Logger } from '../../core/logger';
 import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';

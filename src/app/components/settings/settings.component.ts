@@ -2,6 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BaseSettings } from '../../core/base-settings';
+import { Desktop } from '../../core/io/desktop';
 import { AppearanceService } from '../../services/appearance/appearance.service';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { SetSpellCheckerLanguagesDialogComponent } from '../dialogs/set-spell-checker-languages-dialog/set-spell-checker-languages-dialog.component';
@@ -15,6 +16,7 @@ import { SetSpellCheckerLanguagesDialogComponent } from '../dialogs/set-spell-ch
 export class SettingsComponent implements OnInit {
     constructor(
         private dialog: MatDialog,
+        private desktop: Desktop,
         public translator: TranslatorService,
         public appearance: AppearanceService,
         public settings: BaseSettings,
@@ -43,14 +45,6 @@ export class SettingsComponent implements OnInit {
     }
     public set useCustomTitleBarChecked(v: boolean) {
         this.settings.useCustomTitleBar = v;
-    }
-
-    public get useLightHeaderBarChecked(): boolean {
-        return this.settings.useLightHeaderBar;
-    }
-    public set useLightHeaderBarChecked(v: boolean) {
-        this.settings.useLightHeaderBar = v;
-        this.appearance.onThemeChanged();
     }
 
     public get checkForUpdatesChecked(): boolean {
@@ -106,5 +100,9 @@ export class SettingsComponent implements OnInit {
 
     public goBackToCollection(): void {
         this.router.navigate(['/collection']);
+    }
+
+    public openThemesDirectory(): void {
+        this.desktop.openPath(this.appearance.themesDirectoryPath);
     }
 }

@@ -48,13 +48,17 @@
         "CheckForUpdates": "检查更新",
         "Trash": "垃圾箱",
         "MoveDeletedNotesToTrash": "将已删除的笔记移动到垃圾箱，而不是永久删除它们。",
-        "HeaderBar": "标题栏",
-        "UseLightHeaderBar": "使用浅色标题栏",
         "SpellChecker": "Spell checker",
         "EnableSpellChecker": "Enable spell checker",
         "FormatsForNewNotes": "Formats for new notes",
         "ClassicNote": "Classic note",
-        "MarkdownNote": "Markdown note"
+        "MarkdownNote": "Markdown note",
+        "Theme": "Theme",
+        "FollowSystemTheme": "Follow the system theme",
+        "UseLightTheme": "Use light theme",
+        "FollowSystemColor": "Follow the system color",
+        "RefreshThemes": "Refresh themes",
+        "AddMoreThemes": "Add more themes"
     },
     "ComponentsPage": {
         "Components": "组件"

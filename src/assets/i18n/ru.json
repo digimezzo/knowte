@@ -48,13 +48,17 @@
         "CheckForUpdates": "Проверка обновлений",
         "Trash": "Корзина",
         "MoveDeletedNotesToTrash": "Перемещать удалённые заметки в корзину вместо полного удаления.",
-        "HeaderBar": "Панель меню",
-        "UseLightHeaderBar": "Использовать светлую панель меню",
         "SpellChecker": "Spell checker",
         "EnableSpellChecker": "Enable spell checker",
         "FormatsForNewNotes": "Formats for new notes",
         "ClassicNote": "Classic note",
-        "MarkdownNote": "Markdown note"
+        "MarkdownNote": "Markdown note",
+        "Theme": "Theme",
+        "FollowSystemTheme": "Follow the system theme",
+        "UseLightTheme": "Use light theme",
+        "FollowSystemColor": "Follow the system color",
+        "RefreshThemes": "Refresh themes",
+        "AddMoreThemes": "Add more themes"
     },
     "ComponentsPage": {
         "Components": "Компоненты"

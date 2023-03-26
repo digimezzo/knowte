@@ -1,14 +1,9 @@
 @import 'variables';
 
 .dialog-header {
-    background-color: var(--theme-header-background-color);
-    border-bottom: 1px solid var(--theme-header-border-color);
+    border-bottom: 1px solid var(--theme-pane-separators);
     margin: -24px -24px 24px -24px !important;
     height: 64px;
     display: flex;
     align-items: center;
-}
-
-.dialog-header-title {
-    color: var(--theme-header-text-color) !important;
 }

@@ -37,7 +37,6 @@ import { MoveNotesBottomSheetComponent } from './components/collection/bottom-sh
 import { CollectionComponent } from './components/collection/collection.component';
 import { NoteCreator } from './components/collection/note-creator';
 import { NoteTypeChooserBottomSheetComponent } from './components/collection/note-type-chooser-bottom-sheet/note-type-chooser-bottom-sheet.component';
-import { ColorSchemeSwitcherComponent } from './components/color-scheme-switcher/color-scheme-switcher.component';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmation-dialog/confirmation-dialog.component';
 import { DialogHeaderComponent } from './components/dialogs/dialog-header/dialog-header.component';
 import { ErrorDialogComponent } from './components/dialogs/error-dialog/error-dialog.component';
@@ -73,17 +72,20 @@ import { SettingsTextSizeInNotesComponent } from './components/settings/settings
 import { SettingsComponent } from './components/settings/settings.component';
 import { SpellCheckLanguagesComponent } from './components/spell-check-languages/spell-check-languages.component';
 import { TasksProgressComponent } from './components/tasks-progress/tasks-progress.component';
+import { ThemeSwitcherComponent } from './components/theme-switcher/theme-switcher.component';
 import { TrashComponent } from './components/trash/trash.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { WindowControlsComponent } from './components/window-controls/window-controls.component';
-import { ApplicationPaths } from './core/applicationPaths';
 import { BaseSettings } from './core/base-settings';
 import { ClipboardManager } from './core/clipboard-manager';
 import { DateFormatter } from './core/date-formatter';
-import { Desktop } from './core/desktop';
-import { FileAccess } from './core/file-access';
 import { GitHubApi } from './core/github-api';
 import { ImageProcessor } from './core/image-processor';
+import { Application } from './core/io/application';
+import { BaseApplication } from './core/io/base-application';
+import { Desktop } from './core/io/desktop';
+import { DocumentProxy } from './core/io/document-proxy';
+import { FileAccess } from './core/io/file-access';
 import { Logger } from './core/logger';
 import { PathConverter } from './core/path-converter';
 import { Scheduler } from './core/scheduler';
@@ -95,6 +97,7 @@ import { GlobalErrorHandler } from './globalErrorHandler';
 import { FixImagePathsPipe } from './pipes/fix-image-paths.pipe';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { AppearanceService } from './services/appearance/appearance.service';
+import { DefaultThemesCreator } from './services/appearance/default-themes-creator';
 import { CollectionDataStoreAccess } from './services/collection/collection-data-store.access';
 import { CollectionFileAccess } from './services/collection/collection-file-access';
 import { CollectionPathConverter } from './services/collection/collection-path-converter';
@@ -197,7 +200,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
         MainMenuComponent,
         ActiveNotebookAndSearchComponent,
         TasksProgressComponent,
-        ColorSchemeSwitcherComponent,
+        ThemeSwitcherComponent,
         FontSizeSwitcherComponent,
         SettingsTextSizeInNotesComponent,
         NoteComponent,
@@ -295,7 +298,8 @@ export function MarkedOptionsFactory(): MarkedOptions {
         BoundaryGetter,
         PathConverter,
         ImageProcessor,
-        ApplicationPaths,
+        DocumentProxy,
+        DefaultThemesCreator,
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
         DataStore,
         {
@@ -303,6 +307,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
             useClass: GlobalErrorHandler,
         },
         { provide: BaseSettings, useClass: Settings },
+        { provide: BaseApplication, useClass: Application },
     ],
     bootstrap: [AppComponent],
     entryComponents: [

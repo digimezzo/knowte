@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ProductInformation } from '../../core/product-information';
 
 @Component({
@@ -11,7 +11,6 @@ import { ProductInformation } from '../../core/product-information';
 export class LogoFullComponent implements OnInit {
     constructor() {}
 
-    @Input() public textColor: string;
     public applicationName: string = ProductInformation.applicationName.toUpperCase();
 
     public ngOnInit(): void {}

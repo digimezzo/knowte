@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 $light-dividers: rgba(white, 0.12);
 $light-focused: rgba(white, 0.12);
 $light-primary-text: white;
@@ -10,7 +11,7 @@ $dark-primary-text: rgba(black, 0.87);
 $dark-secondary-text: rgba(black, 0.54);
 $dark-disabled-text: rgba(black, 0.38);
 
-$mat-grey: (
+$custom-grey-palette: (
     50: #fafafa,
     100: #f5f5f5,
     200: #eeeeee,
@@ -43,38 +44,59 @@ $mat-grey: (
     ),
 );
 
+// Background palette for dark themes.
+$custom-mat-dark-theme-background: (
+    status-bar: black,
+    app-bar: map_get($custom-grey-palette, 900),
+    background: var(--theme-main-background),
+    hover: rgba(var(--theme-rgb-base), 0.06),
+    card: var(--theme-dialog-background),
+    dialog: var(--theme-dialog-background),
+    disabled-button: rgba(white, 0.12),
+    raised-button: map-get($custom-grey-palette, 800),
+    focused-button: $light-focused,
+    selected-button: map_get($custom-grey-palette, 900),
+    selected-disabled-button: map_get($custom-grey-palette, 800),
+    disabled-button-toggle: black,
+    unselected-chip: map_get($custom-grey-palette, 700),
+    disabled-list-option: black,
+);
+
+// Foreground palette for dark themes.
+$custom-mat-dark-theme-foreground: (
+    base: white,
+    divider: $light-dividers,
+    dividers: $light-dividers,
+    disabled: $light-disabled-text,
+    disabled-button: rgba(white, 0.3),
+    disabled-text: $light-disabled-text,
+    elevation: black,
+    hint-text: $light-disabled-text,
+    secondary-text: $light-secondary-text,
+    icon: white,
+    icons: white,
+    text: var(--theme-primary-text),
+    slider-min: white,
+    slider-off: rgba(white, 0.3),
+    slider-off-active: rgba(white, 0.3),
+);
+
 // Background palette for light themes.
-// $custom-mat-light-theme-background: (
-//   status-bar: map_get($mat-grey, 300),
-//   app-bar:    map_get($mat-grey, 100),
-//   background: map_get($mat-grey, 50),
-//   hover:      rgba(black, 0.04),
-//   card:       white,
-//   dialog:     white,
-//   disabled-button: rgba(black, 0.12),
-//   raised-button: white,
-//   focused-button: $dark-focused,
-//   selected-button: map_get($mat-grey, 300),
-//   selected-disabled-button: map_get($mat-grey, 400),
-//   disabled-button-toggle: map_get($mat-grey, 200),
-//   unselected-chip: map_get($mat-grey, 300),
-//   disabled-list-option: map_get($mat-grey, 200),
-// );
 $custom-mat-light-theme-background: (
-    status-bar: map_get($mat-grey, 300),
-    app-bar: map_get($mat-grey, 100),
-    background: white,
-    hover: rgba(black, 0.04),
-    card: white,
-    dialog: white,
+    status-bar: map_get($custom-grey-palette, 300),
+    app-bar: map_get($custom-grey-palette, 100),
+    background: var(--theme-main-background),
+    hover: rgba(var(--theme-rgb-base), 0.06),
+    card: var(--theme-dialog-background),
+    dialog: var(--theme-dialog-background),
     disabled-button: rgba(black, 0.12),
     raised-button: white,
     focused-button: $dark-focused,
-    selected-button: map_get($mat-grey, 300),
-    selected-disabled-button: map_get($mat-grey, 400),
-    disabled-button-toggle: map_get($mat-grey, 200),
-    unselected-chip: map_get($mat-grey, 300),
-    disabled-list-option: map_get($mat-grey, 200),
+    selected-button: map_get($custom-grey-palette, 300),
+    selected-disabled-button: map_get($custom-grey-palette, 400),
+    disabled-button-toggle: map_get($custom-grey-palette, 200),
+    unselected-chip: map_get($custom-grey-palette, 300),
+    disabled-list-option: map_get($custom-grey-palette, 200),
 );
 
 // Foreground palette for light themes.
@@ -90,13 +112,13 @@ $custom-mat-light-theme-foreground: (
     secondary-text: $dark-secondary-text,
     icon: rgba(black, 0.54),
     icons: rgba(black, 0.54),
-    text: rgba(black, 0.87),
+    text: var(--theme-primary-text),
     slider-min: rgba(black, 0.87),
     slider-off: rgba(black, 0.26),
     slider-off-active: rgba(black, 0.38),
 );
 
-@function custom-mat-light-theme($primary, $accent, $warn: mat-palette($mat-red)) {
+@function custom-mat-light-theme($primary, $accent, $warn: mat.define-palette(mat.$red-palette)) {
     @return (
         primary: $primary,
         accent: $accent,
@@ -104,5 +126,16 @@ $custom-mat-light-theme-foreground: (
         is-dark: false,
         foreground: $custom-mat-light-theme-foreground,
         background: $custom-mat-light-theme-background
+    );
+}
+
+@function custom-mat-dark-theme($primary, $accent, $warn: mat.define-palette(mat.$red-palette)) {
+    @return (
+        primary: $primary,
+        accent: $accent,
+        warn: $warn,
+        is-dark: true,
+        foreground: $custom-mat-dark-theme-foreground,
+        background: $custom-mat-dark-theme-background
     );
 }

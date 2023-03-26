@@ -10,10 +10,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: var(--fontsize-normal) !important;
+    color: var(--theme-secondary-text);
 }
 
 .tasks-progress-icon {
-    color: $color-grey;
+    color: var(--theme-secondary-text);
     font-size: var(--fontsize-status-icon);
 }
 
@@ -28,7 +29,7 @@
     top: 0;
     left: 0;
     height: 6px;
-    background-color: $color-grey;
+    background-color: var(--theme-secondary-text);
     z-index: 1;
 }
 
@@ -38,6 +39,6 @@
     left: 0;
     height: 6px;
     width: 100px;
-    background-color: $color-lightgrey;
+    background-color: 1px solid var(--theme-pane-separators);
     z-index: 0;
 }

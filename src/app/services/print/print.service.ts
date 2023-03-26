@@ -1,18 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ipcRenderer } from 'electron';
-import { ApplicationPaths } from '../../core/applicationPaths';
-import { FileAccess } from '../../core/file-access';
 import { Logger } from '../../core/logger';
 import { TemporaryStorageService } from '../temporary-storage/temporary-storage.service';
 
 @Injectable()
 export class PrintService {
-    public constructor(
-        private fileAccess: FileAccess,
-        private applicationPaths: ApplicationPaths,
-        private temporaryStorageService: TemporaryStorageService,
-        private logger: Logger
-    ) {}
+    public constructor(private temporaryStorageService: TemporaryStorageService, private logger: Logger) {}
 
     public async printAsync(pageTitle: string, pageContent: string, isMarkdownNote: boolean): Promise<void> {
         try {

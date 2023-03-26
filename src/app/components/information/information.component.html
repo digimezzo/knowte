@@ -18,12 +18,12 @@
             <mat-tab-group class="app-information__headers" [(selectedIndex)]="selectedIndex">
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        <h4>{{ 'InformationTabs.About' | translate }}</h4>
+                        {{ 'InformationTabs.About' | translate }}
                     </ng-template>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        <h4>{{ 'InformationTabs.Components' | translate }}</h4>
+                        {{ 'InformationTabs.Components' | translate }}
                     </ng-template>
                 </mat-tab>
             </mat-tab-group>
@@ -31,8 +31,8 @@
             <mat-tab-group class="app-information__content viewport-height" [(selectedIndex)]="selectedIndex">
                 <mat-tab>
                     <div class="m-3">
-                        <h1>{{ 'AboutPage.About' | translate }}</h1>
-                        <app-logo-full class="mt-3" [textColor]="'black'"></app-logo-full>
+                        <div class="title1">{{ 'AboutPage.About' | translate }}</div>
+                        <app-logo-full class="mt-3"></app-logo-full>
                         <div class="mt-3">
                             {{ 'AboutPage.Version' | translate }}:
                             <strong> {{ applicationVersion }}</strong>
@@ -42,17 +42,17 @@
                             {{ 'Buttons.License' | translate }}
                         </button>
                     </div>
-                    <hr />
+                    <mat-divider></mat-divider>
                     <div class="m-3">
-                        <h1>{{ 'AboutPage.Donate' | translate }}</h1>
+                        <div class="title1">{{ 'AboutPage.Donate' | translate }}</div>
                         <div>{{ 'AboutPage.IsKnowteUseful' | translate }}</div>
                         <button class="mt-2" mat-raised-button color="primary" (click)="openDonateLink()">
                             {{ 'Buttons.Donate' | translate }}
                         </button>
                     </div>
-                    <hr />
+                    <mat-divider></mat-divider>
                     <div class="m-3">
-                        <h1>{{ 'AboutPage.GetInTouch' | translate }}</h1>
+                        <div class="title1">{{ 'AboutPage.GetInTouch' | translate }}</div>
 
                         <div class="contact-item mb-1">
                             <i class="contact-item-icon mr-1 las la-globe"></i>
@@ -74,7 +74,7 @@
                 </mat-tab>
                 <mat-tab>
                     <div class="m-3">
-                        <h1>{{ 'ComponentsPage.Components' | translate }}</h1>
+                        <div class="title1">{{ 'ComponentsPage.Components' | translate }}</div>
 
                         <div class="mb-2" *ngFor="let externalComponent of externalComponents">
                             <strong>{{ externalComponent.name }}</strong

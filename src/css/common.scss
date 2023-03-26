@@ -6,7 +6,7 @@
 
 .selected-item {
     color: var(--theme-accent-color);
-    background-color: $color-selected;
+    background-color: var(--theme-selected-item-background);
 }
 
 .selected-icon {
@@ -70,4 +70,20 @@
 /* See: https://stackoverflow.com/questions/54404573/mouse-hover-over-textarea-scrollbar-gives-text-cursor-instead-of-default-cursor */
 textarea {
     cursor: auto;
+}
+
+.title1 {
+    color: var(--theme-accent-color);
+    font-size: var(--fontsize-larger) !important;
+    font-weight: normal !important;
+    margin: 0px 0px 8px 0px !important;
+}
+
+.title2 {
+    font-size: var(--fontsize-larger) !important;
+    font-weight: lighter !important;
+}
+
+.upper {
+    text-transform: uppercase;
 }

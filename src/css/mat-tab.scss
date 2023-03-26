@@ -14,16 +14,27 @@ mat-tab-group {
     }
 }
 
+.mat-tab-label-container {
+    align-self: flex-end; // Fixes an alignment issue when opening the development tools
+}
+
 .mat-tab-label {
     min-width: 0 !important;
-    color: #aaa !important;
     opacity: 1 !important;
     user-select: none; // Prevents accidental selection of the header text
     padding: 0 12px !important;
+    -webkit-app-region: no-drag;
 }
 
-.mat-tab-label.mat-tab-label-active {
-    color: var(--theme-header-text-color) !important;
+.mat-tab-label-content {
+    color: var(--theme-tab-text) !important;
+    font-size: var(--fontsize-larger) !important;
+    font-weight: lighter !important;
+    text-transform: uppercase;
+}
+
+.mat-tab-label-active .mat-tab-label-content {
+    color: var(--theme-selected-tab-text) !important;
 }
 
 .mat-tab-group.mat-primary .mat-ink-bar,
@@ -32,10 +43,6 @@ mat-tab-group {
 }
 
 .mat-tab-header {
-    border-bottom: 1px solid var(--theme-header-border-color) !important;
+    border-bottom: 1px solid var(--theme-pane-separators) !important;
     padding-left: 110px;
-    background-color: var(--theme-header-background-color);
-}
-.mat-tab-header-pagination-chevron {
-    border-color: var(--theme-header-text-color) !important;
 }

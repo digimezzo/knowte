@@ -37,7 +37,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        this.appearance.initialize();
+        this.appearance.applyAppearance();
         this.spellCheckerService.applyActiveSpellCheckLanguagesIfEnabled();
 
         this.subscription.add(

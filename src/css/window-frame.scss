@@ -12,7 +12,6 @@
 .window-frame-titlebar {
     width: 100%;
     height: $titlebar-height;
-    background-color: var(--theme-header-background-color);
     display: flex;
     flex-direction: row;
 }
@@ -23,7 +22,6 @@
     line-height: $titlebar-height;
     flex: 1;
     -webkit-app-region: drag;
-    color: var(--theme-header-text-color);
 }
 
 .window-frame-overlay {
@@ -32,7 +30,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(0, 0, 0, 0.2);
+    // background-color: rgba(0, 0, 0, 0.2);
     z-index: 99;
     display: flex;
     align-items: center;

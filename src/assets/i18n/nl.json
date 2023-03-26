@@ -48,13 +48,17 @@
         "CheckForUpdates": "Controleer op updates",
         "Trash": "Prullenbak",
         "MoveDeletedNotesToTrash": "Verplaats verwijderde notities naar de prullenbak in plaats van ze permanent te verwijderen.",
-        "HeaderBar": "Kopbalk",
-        "UseLightHeaderBar": "Gebruik lichte kopbalk",
         "SpellChecker": "Spellingscontrole",
         "EnableSpellChecker": "Spellingcontrole inschakelen",
         "FormatsForNewNotes": "Formaten voor nieuwe notities",
         "ClassicNote": "Kassieke notitie",
-        "MarkdownNote": "Markdown notitie"
+        "MarkdownNote": "Markdown notitie",
+        "Theme": "Theme",
+        "FollowSystemTheme": "Volg het systeem thema",
+        "UseLightTheme": "Gebruik een licht thema",
+        "FollowSystemColor": "Volg de systeemkleur",
+        "RefreshThemes": "Thema's verversen",
+        "AddMoreThemes": "Meer thema's toevoegen"
     },
     "ComponentsPage": {
         "Components": "Componenten"

@@ -48,13 +48,17 @@
         "CheckForUpdates": "Checar updates",
         "Trash": "Lixeira",
         "MoveDeletedNotesToTrash": "Mova notas deletadas para a lixeira ao invés de deleta-lás permanentemente.",
-        "HeaderBar": "Header bar",
-        "UseLightHeaderBar": "Use light header bar",
         "SpellChecker": "Spell checker",
         "EnableSpellChecker": "Enable spell checker",
         "FormatsForNewNotes": "Formats for new notes",
         "ClassicNote": "Classic note",
-        "MarkdownNote": "Markdown note"
+        "MarkdownNote": "Markdown note",
+        "Theme": "Theme",
+        "FollowSystemTheme": "Follow the system theme",
+        "UseLightTheme": "Use light theme",
+        "FollowSystemColor": "Follow the system color",
+        "RefreshThemes": "Refresh themes",
+        "AddMoreThemes": "Add more themes"
     },
     "ComponentsPage": {
         "Components": "Componentes"

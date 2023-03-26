@@ -1,18 +1,15 @@
 <app-logo-main class="main-logo" [showBackArrow]="false"></app-logo-main>
-<app-collection-switcher
-    class="collection-collection-switcher"
-    *ngIf="this.appearanceService.windowHasNativeTitleBar"
-></app-collection-switcher>
+<app-collection-switcher class="collection-collection-switcher" *ngIf="this.appearance.windowHasNativeTitleBar"></app-collection-switcher>
 <div class="window-frame">
     <div class="window-frame-titlebar">
         <div class="window-frame-titlebar-dragarea pl-1"></div>
-        <app-collection-switcher *ngIf="!this.appearanceService.windowHasNativeTitleBar"></app-collection-switcher>
-        <app-window-controls *ngIf="!this.appearanceService.windowHasNativeTitleBar"></app-window-controls>
+        <app-collection-switcher *ngIf="!this.appearance.windowHasNativeTitleBar"></app-collection-switcher>
+        <app-window-controls *ngIf="!this.appearance.windowHasNativeTitleBar"></app-window-controls>
     </div>
     <div class="window-frame-overlay" *ngIf="isBusy">
         <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
     </div>
-    <div class="window-frame-content" [ngStyle]="{ top: this.appearanceService.windowHasNativeTitleBar ? '10px' : '32px' }">
+    <div class="window-frame-content" [ngStyle]="{ top: this.appearance.windowHasNativeTitleBar ? '10px' : '32px' }">
         <div class="app-collection">
             <mat-tab-group
                 class="app-collection__headers"
@@ -21,41 +18,41 @@
             >
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        <h4>{{ 'NotesTabs.All' | translate }}</h4>
+                        {{ 'NotesTabs.All' | translate }}
                         <div class="count-label">
-                            <div>{{ allNotesCount }}</div>
+                            {{ allNotesCount }}
                         </div>
                     </ng-template>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        <h4>{{ 'NotesTabs.Today' | translate }}</h4>
+                        {{ 'NotesTabs.Today' | translate }}
                         <div class="count-label">
-                            <div>{{ todayNotesCount }}</div>
+                            {{ todayNotesCount }}
                         </div>
                     </ng-template>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        <h4>{{ 'NotesTabs.Yesterday' | translate }}</h4>
+                        {{ 'NotesTabs.Yesterday' | translate }}
                         <div class="count-label">
-                            <div>{{ yesterdayNotesCount }}</div>
+                            {{ yesterdayNotesCount }}
                         </div>
                     </ng-template>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        <h4>{{ 'NotesTabs.ThisWeek' | translate }}</h4>
+                        {{ 'NotesTabs.ThisWeek' | translate }}
                         <div class="count-label">
-                            <div>{{ thisWeekNotesCount }}</div>
+                            {{ thisWeekNotesCount }}
                         </div>
                     </ng-template>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
-                        <h4>{{ 'NotesTabs.Marked' | translate }}</h4>
+                        {{ 'NotesTabs.Marked' | translate }}
                         <div class="count-label">
-                            <div>{{ markedNotesCount }}</div>
+                            {{ markedNotesCount }}
                         </div>
                     </ng-template>
                 </mat-tab>
@@ -68,9 +65,9 @@
                         <div class="notebooks-pane">
                             <div class="notebooks-pane-content pl-2 pr-2">
                                 <div class="notebooks-pane-content__title no-select">
-                                    <h3>{{ 'MainPage.Notebooks' | translate }}</h3>
+                                    <div class="title2">{{ 'MainPage.Notebooks' | translate }}</div>
                                     <div class="count-label">
-                                        <div>{{ notebooksCount }}</div>
+                                        {{ notebooksCount }}
                                     </div>
                                 </div>
                                 <ul class="notebooks-pane-content__list">

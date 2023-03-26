@@ -13,10 +13,11 @@
     font-family: roboto !important;
     font-weight: lighter !important;
     font-size: 48px;
+    color: var(--theme-primary-text);
 }
 
 .logo-full-icon {
-    background-color: var(--theme-accent-color);
+    background: linear-gradient(45deg, var(--theme-primary-color) 30%, var(--theme-secondary-color) 100%);
     width: 64px;
     min-width: 64px;
     height: 64px;

@@ -7,17 +7,15 @@
     align-items: center;
     width: 100%;
     height: 100%;
-    background-color: var(--theme-header-background-color);
     padding: 64px;
 }
 
 .welcome-title {
     font-size: 24px;
-    color: var(--theme-header-text-color);
+    color: var(--theme-accent-color);
 }
 
 .welcome-text {
     font-size: 16px;
-    color: var(--theme-soft-text-color);
     max-width: 600px;
 }

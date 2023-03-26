@@ -1,22 +1,10 @@
-// Font sizes
 :root {
     --fontsize-normal: 14px;
     --fontsize-status-icon: 15px;
     --fontsize-large: 20px;
     --fontsize-larger: 24px;
-    --loader-titlebar-height: 32px;
-    --viewport-height-correction: 122px;
-    --main-logo-top: 40px;
-    --theme-accent-color: #fff;
+    --viewport-height-correction: 0px; // Set in AppearanceService
+    --main-logo-top: 0px; // Set in AppearanceService
 }
 
-// Our own colors
-$color-grey: #aaaaaa;
-$color-lightergrey: #f0f0f0;
-$color-lightgrey: #dedede;
-$color-grey-icon: #727272;
-$color-hover: rgba(0, 0, 0, 0.05);
-$color-selected: rgba(0, 0, 0, 0.08);
-
-// Sizes
 $titlebar-height: 32px;

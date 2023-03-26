@@ -60,12 +60,12 @@ export class CollectionComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
 
     constructor(
-        public appearanceService: AppearanceService,
-        private collectionService: CollectionService,
-        private translatorService: TranslatorService,
-        private snackBarService: SnackBarService,
-        private updateService: UpdateService,
-        private fileService: FileService,
+        public appearance: AppearanceService,
+        private collection: CollectionService,
+        private translator: TranslatorService,
+        private snackBar: SnackBarService,
+        private update: UpdateService,
+        private file: FileService,
         private bottomSheet: MatBottomSheet,
         private noteCreator: NoteCreator,
         private settings: BaseSettings,
@@ -128,22 +128,20 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     public async ngOnInit(): Promise<void> {
         // Workaround for auto reload
-        await this.collectionService.initializeAsync();
+        await this.collection.initializeAsync();
 
         // Get notebooks
         await this.getNotebooksAsync();
 
         // Check for updates (don't await)
-        this.updateService.checkForUpdatesAsync();
+        this.update.checkForUpdatesAsync();
 
         // Subscriptions
-        this.subscription = this.collectionService.notebookEdited$.subscribe(async () => await this.getNotebooksAsync());
-        this.subscription.add(
-            this.collectionService.notebookDeleted$.subscribe(async () => await this.getNotebooksAndResetSelectionAsync())
-        );
+        this.subscription = this.collection.notebookEdited$.subscribe(async () => await this.getNotebooksAsync());
+        this.subscription.add(this.collection.notebookDeleted$.subscribe(async () => await this.getNotebooksAndResetSelectionAsync()));
 
         this.subscription.add(
-            this.collectionService.notesCountChanged$.subscribe((result: NotesCountResult) => {
+            this.collection.notesCountChanged$.subscribe((result: NotesCountResult) => {
                 this.allNotesCount = result.allNotesCount;
                 this.todayNotesCount = result.todayNotesCount;
                 this.yesterdayNotesCount = result.yesterdayNotesCount;
@@ -153,7 +151,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
         );
 
         this.subscription.add(
-            this.collectionService.noteMarkChanged$.subscribe((result: NoteMarkResult) => {
+            this.collection.noteMarkChanged$.subscribe((result: NoteMarkResult) => {
                 this.zone.run(() => {
                     this.markedNotesCount = result.markedNotesCount;
                 });
@@ -191,8 +189,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
     }
 
     public async addNotebookAsync(): Promise<void> {
-        const titleText: string = await this.translatorService.getAsync('DialogTitles.AddNotebook');
-        const placeholderText: string = await this.translatorService.getAsync('Input.NotebookName');
+        const titleText: string = await this.translator.getAsync('DialogTitles.AddNotebook');
+        const placeholderText: string = await this.translator.getAsync('Input.NotebookName');
 
         const data: any = { titleText: titleText, inputText: '', placeholderText: placeholderText };
 
@@ -205,15 +203,15 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
         if (result) {
             const notebookName: string = data.inputText;
-            const operation: Operation = this.collectionService.addNotebook(notebookName);
+            const operation: Operation = this.collection.addNotebook(notebookName);
 
             switch (operation) {
                 case Operation.Duplicate: {
-                    this.snackBarService.duplicateNotebookAsync(notebookName);
+                    this.snackBar.duplicateNotebookAsync(notebookName);
                     break;
                 }
                 case Operation.Error: {
-                    const errorText: string = await this.translatorService.getAsync('ErrorTexts.AddNotebookError', {
+                    const errorText: string = await this.translator.getAsync('ErrorTexts.AddNotebookError', {
                         notebookName: notebookName,
                     });
                     this.dialog.open(ErrorDialogComponent, {
@@ -239,12 +237,12 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     public async deleteNotebooksAsync(): Promise<void> {
         // Assume multiple selected notebooks
-        let title: string = await this.translatorService.getAsync('DialogTitles.ConfirmDeleteNotebooks');
-        let text: string = await this.translatorService.getAsync('DialogTexts.ConfirmDeleteNotebooks');
+        let title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteNotebooks');
+        let text: string = await this.translator.getAsync('DialogTexts.ConfirmDeleteNotebooks');
 
         if (this.selectionWatcher.selectedItemsCount === 1) {
-            title = await this.translatorService.getAsync('DialogTitles.ConfirmDeleteNotebook');
-            text = await this.translatorService.getAsync('DialogTexts.ConfirmDeleteNotebook', {
+            title = await this.translator.getAsync('DialogTitles.ConfirmDeleteNotebook');
+            text = await this.translator.getAsync('DialogTexts.ConfirmDeleteNotebook', {
                 notebookName: this.selectionWatcher.selectedItems[0].name,
             });
         }
@@ -257,12 +255,10 @@ export class CollectionComponent implements OnInit, OnDestroy {
         const result: any = await dialogRef.afterClosed().toPromise();
 
         if (result) {
-            const operation: Operation = await this.collectionService.deleteNotebooksAsync(
-                this.selectionWatcher.selectedItems.map((x) => x.id)
-            );
+            const operation: Operation = await this.collection.deleteNotebooksAsync(this.selectionWatcher.selectedItems.map((x) => x.id));
 
             if (operation === Operation.Error) {
-                const errorText: string = await this.translatorService.getAsync('ErrorTexts.DeleteNotebooksError');
+                const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteNotebooksError');
                 this.dialog.open(ErrorDialogComponent, {
                     width: '450px',
                     data: { errorText: errorText },
@@ -277,11 +273,11 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     public async deleteNotesAsync(): Promise<void> {
         // Assume multiple selected notes
-        let title: string = await this.translatorService.getAsync('DialogTitles.ConfirmDeleteNotes');
-        let text: string = await this.translatorService.getAsync('DialogTexts.ConfirmDeleteNotes');
+        let title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteNotes');
+        let text: string = await this.translator.getAsync('DialogTexts.ConfirmDeleteNotes');
 
         if (!this.settings.moveDeletedNotesToTrash) {
-            text = await this.translatorService.getAsync('DialogTexts.ConfirmPermanentlyDeleteNotes');
+            text = await this.translator.getAsync('DialogTexts.ConfirmPermanentlyDeleteNotes');
         }
 
         if (!this.selectedNoteIds || this.selectedNoteIds.length === 0) {
@@ -295,12 +291,12 @@ export class CollectionComponent implements OnInit, OnDestroy {
         }
 
         if (this.selectedNoteIds.length === 1) {
-            const note: Note = await this.collectionService.getNote(this.selectedNoteIds[0]);
-            title = await this.translatorService.getAsync('DialogTitles.ConfirmDeleteNote');
-            text = await this.translatorService.getAsync('DialogTexts.ConfirmDeleteNote', { noteTitle: note.title });
+            const note: Note = await this.collection.getNote(this.selectedNoteIds[0]);
+            title = await this.translator.getAsync('DialogTitles.ConfirmDeleteNote');
+            text = await this.translator.getAsync('DialogTexts.ConfirmDeleteNote', { noteTitle: note.title });
 
             if (!this.settings.moveDeletedNotesToTrash) {
-                text = await this.translatorService.getAsync('DialogTexts.ConfirmPermanentlyDeleteNote', { noteTitle: note.title });
+                text = await this.translator.getAsync('DialogTexts.ConfirmPermanentlyDeleteNote', { noteTitle: note.title });
             }
         }
 
@@ -314,16 +310,16 @@ export class CollectionComponent implements OnInit, OnDestroy {
         if (result) {
             for (const selectedNoteId of this.selectedNoteIds) {
                 // Close the note window
-                if (this.collectionService.noteIsOpen(selectedNoteId)) {
-                    this.collectionService.onCloseNote(selectedNoteId);
+                if (this.collection.noteIsOpen(selectedNoteId)) {
+                    this.collection.onCloseNote(selectedNoteId);
                 }
             }
 
             // Delete the notes
-            const operation: Operation = await this.collectionService.deleteNotesAsync(this.selectedNoteIds);
+            const operation: Operation = await this.collection.deleteNotesAsync(this.selectedNoteIds);
 
             if (operation === Operation.Error) {
-                const errorText: string = await this.translatorService.getAsync('ErrorTexts.DeleteNotesError');
+                const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteNotesError');
                 this.dialog.open(ErrorDialogComponent, {
                     width: '450px',
                     data: { errorText: errorText },
@@ -347,7 +343,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
                         Constants.markdownNoteExportExtension.replace('.', ''),
                     ],
                 },
-                { name: await this.translatorService.getAsync('DialogTexts.AllFiles'), extensions: ['*'] },
+                { name: await this.translator.getAsync('DialogTexts.AllFiles'), extensions: ['*'] },
             ],
             properties: ['openFile', 'multiSelections'],
         });
@@ -396,7 +392,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     }
 
     private async getNotebooksAsync(): Promise<void> {
-        this.notebooks = await this.collectionService.getNotebooksAsync(true);
+        this.notebooks = await this.collection.getNotebooksAsync(true);
         this.selectionWatcher.reset(this.notebooks, true);
 
         // Set 1st notebook active by default
@@ -422,22 +418,22 @@ export class CollectionComponent implements OnInit, OnDestroy {
         event.preventDefault();
         this.hoveredNotebook = null;
 
-        if (this.fileService.isDroppingFiles(event)) {
+        if (this.file.isDroppingFiles(event)) {
             // Dropping files
-            const pathsOfDroppedFiles: string[] = this.fileService.getDroppedFilesPaths(event);
+            const pathsOfDroppedFiles: string[] = this.file.getDroppedFilesPaths(event);
             await this.importNoteFilesAsync(pathsOfDroppedFiles, notebook);
         } else {
             const noteIds: string[] = JSON.parse(event.dataTransfer.getData('text'));
-            const operation: Operation = this.collectionService.setNotebook(notebook.id, noteIds);
+            const operation: Operation = this.collection.setNotebook(notebook.id, noteIds);
 
             if (operation === Operation.Success) {
                 if (noteIds.length > 1) {
-                    this.snackBarService.notesMovedToNotebookAsync(notebook.name);
+                    this.snackBar.notesMovedToNotebookAsync(notebook.name);
                 } else {
-                    this.snackBarService.noteMovedToNotebookAsync(notebook.name);
+                    this.snackBar.noteMovedToNotebookAsync(notebook.name);
                 }
             } else if (operation === Operation.Error) {
-                const errorText: string = await this.translatorService.getAsync('ErrorTexts.ChangeNotebookError');
+                const errorText: string = await this.translator.getAsync('ErrorTexts.ChangeNotebookError');
 
                 this.dialog.open(ErrorDialogComponent, {
                     width: '450px',
@@ -449,11 +445,11 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     public async notesDrop(event: any): Promise<void> {
         event.preventDefault();
-        const droppedFilesPaths: string[] = this.fileService.getDroppedFilesPaths(event);
+        const droppedFilesPaths: string[] = this.file.getDroppedFilesPaths(event);
 
-        if (this.fileService.isDroppingFiles(event)) {
+        if (this.file.isDroppingFiles(event)) {
             // Dropping files
-            const pathsOfDroppedFiles: string[] = this.fileService.getDroppedFilesPaths(event);
+            const pathsOfDroppedFiles: string[] = this.file.getDroppedFilesPaths(event);
             await this.importNoteFilesAsync(pathsOfDroppedFiles, this.activeNotebook);
         }
     }
@@ -463,19 +459,19 @@ export class CollectionComponent implements OnInit, OnDestroy {
     }
 
     private async importNoteFilesAsync(filePaths: string[], notebook: Notebook): Promise<void> {
-        const noteFilePaths: string[] = this.fileService.getNoteFilePaths(filePaths);
+        const noteFilePaths: string[] = this.file.getNoteFilePaths(filePaths);
 
         if (noteFilePaths.length === 0) {
-            await this.snackBarService.noNoteFilesToImportAsync();
+            await this.snackBar.noNoteFilesToImportAsync();
             return;
         }
 
-        const importOperation: Operation = await this.collectionService.importNoteFilesAsync(noteFilePaths, notebook.id);
+        const importOperation: Operation = await this.collection.importNoteFilesAsync(noteFilePaths, notebook.id);
 
         if (importOperation === Operation.Success) {
-            await this.snackBarService.notesImportedIntoNotebookAsync(notebook.name);
+            await this.snackBar.notesImportedIntoNotebookAsync(notebook.name);
         } else if (importOperation === Operation.Error) {
-            const errorText: string = await this.translatorService.getAsync('ErrorTexts.ImportNotesError');
+            const errorText: string = await this.translator.getAsync('ErrorTexts.ImportNotesError');
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px',

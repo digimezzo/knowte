@@ -1,4 +1,3 @@
-import { ColorScheme } from './color-scheme';
 import { FontSize } from './font-size';
 import { Language } from './language';
 import { SpellCheckLanguage } from './spell-check-language';
@@ -34,7 +33,7 @@ export class Constants {
 
     public static noteZoomPercentages: number[] = [70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200];
 
-    public static readonly uiFontSizes: FontSize[] = [new FontSize(12), new FontSize(13), new FontSize(14), new FontSize(15)];
+    public static readonly fontSizes: FontSize[] = [new FontSize(12), new FontSize(13), new FontSize(14), new FontSize(15)];
 
     public static readonly languages: Language[] = [
         { code: 'de', englishName: 'German', localizedName: 'Deutch' },
@@ -93,32 +92,6 @@ export class Constants {
         new SpellCheckLanguage('tr', 'Turkish', 'Türkçe', true),
         new SpellCheckLanguage('uk', 'Ukrainian', 'Українська', false),
         new SpellCheckLanguage('vi', 'Vietnamese', 'Tiếng Việt', true),
-    ];
-
-    public static readonly colorSchemes: ColorScheme[] = [
-        { name: 'Knowte blue', accentColor: '#1D7DD4' },
-        { name: 'Knowte green', accentColor: '#7FB718' },
-        { name: 'Knowte yellow', accentColor: '#F09609' },
-        { name: 'Knowte purple', accentColor: '#A835B2' },
-        { name: 'Knowte pink', accentColor: '#CE0058' },
-        { name: 'Ubuntu orange', accentColor: '#E95420' },
-        { name: 'Linux Mint green', accentColor: '#8bb158' },
-        { name: 'Manjaro green', accentColor: '#16a085' },
-        { name: 'Windows 10 blue', accentColor: '#0078d7' },
-        { name: 'Material red', accentColor: '#F44336' },
-        { name: 'Material pink', accentColor: '#E91E63' },
-        { name: 'Material purple', accentColor: '#9C27B0' },
-        { name: 'Material deep purple', accentColor: '#673AB7' },
-        { name: 'Material indigo', accentColor: '#3F51B5' },
-        { name: 'Material blue', accentColor: '#2196F3' },
-        { name: 'Material light blue', accentColor: '#03A9F4' },
-        { name: 'Material cyan', accentColor: '#00BCD4' },
-        { name: 'Material teal', accentColor: '#009688' },
-        { name: 'Material green', accentColor: '#4CAF50' },
-        { name: 'Material light green', accentColor: '#8BC34A' },
-        { name: 'Material amber', accentColor: '#FFC107' },
-        { name: 'Material orange', accentColor: '#FF9800' },
-        { name: 'Material deep orange', accentColor: '#FF5722' },
     ];
 
     public static readonly externalComponents: any[] = [

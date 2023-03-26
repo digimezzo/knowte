@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FileAccess } from '../../core/file-access';
+import { FileAccess } from '../../core/io/file-access';
 import { Logger } from '../../core/logger';
 import { DataStore } from '../../data/data-store';
 import { Note } from '../../data/entities/note';

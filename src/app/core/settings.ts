@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as Store from 'electron-store';
 import * as os from 'os';
-import { Constants } from '../core/constants';
 import { BaseSettings } from './base-settings';
 
 @Injectable()
@@ -12,12 +11,12 @@ export class Settings implements BaseSettings {
         this.initialize();
     }
 
-    // Default language
+    // defaultLanguage
     public get defaultLanguage(): string {
         return 'en';
     }
 
-    // Language
+    // language
     public get language(): string {
         return this.settings.get('language');
     }
@@ -26,7 +25,7 @@ export class Settings implements BaseSettings {
         this.settings.set('language', v);
     }
 
-    // Check for updates
+    // checkForUpdates
     public get checkForUpdates(): boolean {
         return this.settings.get('checkForUpdates');
     }
@@ -35,7 +34,7 @@ export class Settings implements BaseSettings {
         this.settings.set('checkForUpdates', v);
     }
 
-    // Use custom title bar
+    // useCustomTitleBar
     public get useCustomTitleBar(): boolean {
         return this.settings.get('useCustomTitleBar');
     }
@@ -44,7 +43,7 @@ export class Settings implements BaseSettings {
         this.settings.set('useCustomTitleBar', v);
     }
 
-    // FontSize
+    // fontSize
     public get fontSize(): number {
         return this.settings.get('fontSize');
     }
@@ -53,16 +52,16 @@ export class Settings implements BaseSettings {
         this.settings.set('fontSize', v);
     }
 
-    // Color theme
-    public get colorScheme(): string {
-        return this.settings.get('colorScheme');
+    // theme
+    public get theme(): string {
+        return this.settings.get('theme');
     }
 
-    public set colorScheme(v: string) {
-        this.settings.set('colorScheme', v);
+    public set theme(v: string) {
+        this.settings.set('theme', v);
     }
 
-    // Close notes with escape
+    // closeNotesWithEscape
     public get closeNotesWithEscape(): boolean {
         return this.settings.get('closeNotesWithEscape');
     }
@@ -71,7 +70,7 @@ export class Settings implements BaseSettings {
         this.settings.set('closeNotesWithEscape', v);
     }
 
-    // Note zoom percentage
+    // noteZoomPercentage
     public get noteZoomPercentage(): number {
         return this.settings.get('noteZoomPercentage');
     }
@@ -80,7 +79,7 @@ export class Settings implements BaseSettings {
         this.settings.set('noteZoomPercentage', v);
     }
 
-    // Show exact dates in the notes list
+    // showExactDatesInTheNotesList
     public get showExactDatesInTheNotesList(): boolean {
         return this.settings.get('showExactDatesInTheNotesList');
     }
@@ -89,7 +88,7 @@ export class Settings implements BaseSettings {
         this.settings.set('showExactDatesInTheNotesList', v);
     }
 
-    // Storage directory
+    // storageDirectory
     public get storageDirectory(): string {
         return this.settings.get('storageDirectory');
     }
@@ -107,7 +106,7 @@ export class Settings implements BaseSettings {
         this.settings.set('activeCollection', v);
     }
 
-    // Active collection
+    // notebooksPaneWidth
     public get notebooksPaneWidth(): number {
         return this.settings.get('notebooksPaneWidth');
     }
@@ -116,7 +115,7 @@ export class Settings implements BaseSettings {
         this.settings.set('notebooksPaneWidth', v);
     }
 
-    // Move deleted notes to trash
+    // moveDeletedNotesToTrash
     public get moveDeletedNotesToTrash(): boolean {
         return this.settings.get('moveDeletedNotesToTrash');
     }
@@ -125,7 +124,7 @@ export class Settings implements BaseSettings {
         this.settings.set('moveDeletedNotesToTrash', v);
     }
 
-    // Use light header bar
+    // useLightHeaderBar
     public get useLightHeaderBar(): boolean {
         return this.settings.get('useLightHeaderBar');
     }
@@ -134,7 +133,7 @@ export class Settings implements BaseSettings {
         this.settings.set('useLightHeaderBar', v);
     }
 
-    // Enable spell checker
+    // enableSpellChecker
     public get enableSpellChecker(): boolean {
         return this.settings.get('enableSpellChecker');
     }
@@ -143,7 +142,7 @@ export class Settings implements BaseSettings {
         this.settings.set('enableSpellChecker', v);
     }
 
-    // Active spell check languages
+    // activeSpellCheckLanguages
     public get activeSpellCheckLanguages(): string {
         return this.settings.get('activeSpellCheckLanguages');
     }
@@ -152,7 +151,7 @@ export class Settings implements BaseSettings {
         this.settings.set('activeSpellCheckLanguages', v);
     }
 
-    // Can create classic notes
+    // canCreateClassicNotes
     public get canCreateClassicNotes(): boolean {
         return this.settings.get('canCreateClassicNotes');
     }
@@ -161,13 +160,40 @@ export class Settings implements BaseSettings {
         this.settings.set('canCreateClassicNotes', v);
     }
 
-    // Can create markdown notes
+    // canCreateMarkdownNotes
     public get canCreateMarkdownNotes(): boolean {
         return this.settings.get('canCreateMarkdownNotes');
     }
 
     public set canCreateMarkdownNotes(v: boolean) {
         this.settings.set('canCreateMarkdownNotes', v);
+    }
+
+    // followSystemTheme
+    public get followSystemTheme(): boolean {
+        return this.settings.get('followSystemTheme');
+    }
+
+    public set followSystemTheme(v: boolean) {
+        this.settings.set('followSystemTheme', v);
+    }
+
+    // useLightBackgroundTheme
+    public get useLightBackgroundTheme(): boolean {
+        return this.settings.get('useLightBackgroundTheme');
+    }
+
+    public set useLightBackgroundTheme(v: boolean) {
+        this.settings.set('useLightBackgroundTheme', v);
+    }
+
+    // followSystemColor
+    public get followSystemColor(): boolean {
+        return this.settings.get('followSystemColor');
+    }
+
+    public set followSystemColor(v: boolean) {
+        this.settings.set('followSystemColor', v);
     }
 
     private initialize(): void {
@@ -194,17 +220,8 @@ export class Settings implements BaseSettings {
             this.settings.set('fontSize', 13);
         }
 
-        if (!this.settings.has('colorScheme')) {
-            this.settings.set('colorScheme', 'Knowte blue');
-        } else {
-            const settingsColorSchemeName: string = this.settings.get('colorScheme');
-
-            // Check if the color theme which is saved in the settings still exists
-            // in the app (The color themes might change between releases).
-            // If not, reset the color theme setting to the default color theme.
-            if (!Constants.colorSchemes.map((x) => x.name).includes(settingsColorSchemeName)) {
-                this.settings.set('colorScheme', 'Knowte blue');
-            }
+        if (!this.settings.has('theme')) {
+            this.settings.set('theme', 'Knowte');
         }
 
         if (!this.settings.has('closeNotesWithEscape')) {
@@ -241,6 +258,18 @@ export class Settings implements BaseSettings {
 
         if (!this.settings.has('canCreateMarkdownNotes')) {
             this.settings.set('canCreateMarkdownNotes', true);
+        }
+
+        if (!this.settings.has('followSystemTheme')) {
+            this.settings.set('followSystemTheme', false);
+        }
+
+        if (!this.settings.has('useLightBackgroundTheme')) {
+            this.settings.set('useLightBackgroundTheme', true);
+        }
+
+        if (!this.settings.has('followSystemColor')) {
+            this.settings.set('followSystemColor', false);
         }
     }
 }

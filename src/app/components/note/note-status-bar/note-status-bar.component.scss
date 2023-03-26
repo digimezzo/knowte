@@ -1,5 +1,5 @@
 .note-status {
-    border-top: 1px solid var(--theme-header-border-color);
+    border-top: 1px solid var(--theme-pane-separators);
     padding: 4px 8px;
     display: flex;
     flex-direction: row;
@@ -8,10 +8,10 @@
 }
 
 .note-status-icon {
-    color: var(--theme-soft-text-color);
+    color: var(--theme-secondary-text);
     font-size: var(--fontsize-status-icon);
 }
 
 .note-status-text {
-    color: var(--theme-soft-text-color);
+    color: var(--theme-secondary-text);
 }

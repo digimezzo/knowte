@@ -122,7 +122,7 @@
                         (keydown)="onTitleKeydown($event)"
                     />
                 </div>
-                <div *ngIf="!this.isMarkdownNote" class="fill w-100 h-100 overflow-hidden" id="editor"></div>
+                <div *ngIf="!this.isMarkdownNote" class="fill w-100 h-100 overflow-hidden markdown-body" id="editor"></div>
                 <app-markdown-note
                     *ngIf="this.isMarkdownNote"
                     class="fill w-100 h-100 overflow-hidden"

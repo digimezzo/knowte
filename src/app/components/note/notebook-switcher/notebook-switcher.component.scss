@@ -12,7 +12,6 @@
     height: $titlebar-height;
     display: flex;
     align-items: center;
-    color: var(--theme-header-text-color);
     flex: 1;
 }
 
@@ -29,7 +28,7 @@
 
 .menu-icon {
     font-size: 24px;
-    color: $color-grey-icon;
+    color: var(--theme-command-icon);
     margin: 0 8px 0 0;
     font-weight: normal;
 }

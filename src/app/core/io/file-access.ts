@@ -1,13 +1,20 @@
 import { Injectable } from '@angular/core';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import { Desktop } from './desktop';
 
 @Injectable()
 export class FileAccess {
+    private _applicationDataDirectory: string = '';
     private pathSeparator: string = '';
 
-    constructor() {
+    constructor(private desktop: Desktop) {
+        this._applicationDataDirectory = this.desktop.applicationDataDirectoryPath();
         this.pathSeparator = path.sep;
+    }
+
+    public applicationDataDirectory(): string {
+        return this._applicationDataDirectory;
     }
 
     public combinePath(...pathPieces: string[]): string {
@@ -65,6 +72,31 @@ export class FileAccess {
 
     public async getFilesInDirectoryAsync(directoryPath: string, continueOnError?: boolean, errors?: Error[]): Promise<string[]> {
         const possibleFileNames: string[] = await fs.readdir(directoryPath);
+        const confirmedFilePaths: string[] = [];
+
+        for (const possibleFileName of possibleFileNames) {
+            const possibleFilePath: string = this.combinePath(directoryPath, possibleFileName);
+
+            try {
+                if (fs.lstatSync(possibleFilePath).isFile()) {
+                    confirmedFilePaths.push(possibleFilePath);
+                }
+            } catch (e) {
+                if (continueOnError == undefined || !continueOnError) {
+                    throw e;
+                }
+
+                if (errors != undefined) {
+                    errors.push(e);
+                }
+            }
+        }
+
+        return confirmedFilePaths;
+    }
+
+    public getFilesInDirectory(directoryPath: string, continueOnError?: boolean, errors?: Error[]): string[] {
+        const possibleFileNames: string[] = fs.readdirSync(directoryPath);
         const confirmedFilePaths: string[] = [];
 
         for (const possibleFileName of possibleFileNames) {
@@ -163,5 +195,9 @@ export class FileAccess {
 
     public createReadStream(path: string): fs.ReadStream {
         return fs.createReadStream(path);
+    }
+
+    public writeToFile(filePath: string, textToWrite: string): void {
+        fs.writeFileSync(filePath, textToWrite);
     }
 }

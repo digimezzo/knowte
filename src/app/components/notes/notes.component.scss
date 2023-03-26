@@ -11,17 +11,17 @@
     top: -500px;
     left: 0;
     z-index: 0; // z-index is required. Otherwise the image isn't displayed while dragging. The value of z-index doesn't seem to matter.
-    border: 1px solid $color-lightgrey;
+    border: 1px solid var(--theme-drag-image-border);
     height: 38px;
     display: flex;
     flex-direction: row;
-    background: white;
+    background: var(--theme-drag-image-background);
     align-items: center;
     justify-content: center;
 }
 
 .drag-image-icon {
-    background-color: var(--theme-accent-color);
+    background: linear-gradient(45deg, var(--theme-primary-color) 30%, var(--theme-secondary-color) 100%);
     margin: 4px;
     width: 28px;
     min-width: 28px;
@@ -59,11 +59,11 @@
 }
 
 .note-item:hover {
-    background: $color-hover;
+    background-color: var(--theme-hovered-item-background);
 }
 
 .note-item-icon {
-    background-color: var(--theme-accent-color);
+    background: linear-gradient(45deg, var(--theme-primary-color) 30%, var(--theme-secondary-color) 100%);
     margin-left: 4px;
     width: 40px;
     height: 40px;
@@ -89,7 +89,7 @@
 }
 
 .note-item-actions-heart-unmarked {
-    color: $color-grey;
+    color: var(--theme-secondary-text);
     font-size: 22px;
 }
 
@@ -119,7 +119,7 @@
     margin-bottom: 4px;
     height: 20px;
     font-size: var(--fontsize-normal) !important;
-    color: $color-grey;
+    color: var(--theme-secondary-text);
     display: flex;
     align-items: center;
 }
@@ -131,6 +131,10 @@
 }
 
 .note-status-icon {
-    color: $color-grey;
+    color: var(--theme-secondary-text);
     font-size: var(--fontsize-status-icon);
+}
+
+.note-status-text {
+    color: var(--theme-secondary-text);
 }

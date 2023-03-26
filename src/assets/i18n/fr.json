@@ -48,13 +48,17 @@
         "CheckForUpdates": "Vérifier les mises à jour",
         "Trash": "Corbeille",
         "MoveDeletedNotesToTrash": "Déplacez les notes supprimées dans la corbeille au lieu de les supprimer définitivement.",
-        "HeaderBar": "Barre d'en-tête",
-        "UseLightHeaderBar": "Utiliser barre d'en-tête claire",
         "SpellChecker": "Correcteur orthographique",
         "EnableSpellChecker": "Activer le correcteur orthographique",
         "FormatsForNewNotes": "Formats pour les nouvelles notes",
         "ClassicNote": "Note classique",
-        "MarkdownNote": "Note markdown"
+        "MarkdownNote": "Note markdown",
+        "Theme": "Theme",
+        "FollowSystemTheme": "Suivre le thème du système",
+        "UseLightTheme": "Utiliser le thème clair",
+        "FollowSystemColor": "Suivre la couleur du système",
+        "RefreshThemes": "Actualiser les thèmes",
+        "AddMoreThemes": "Ajouter plus de thèmes"
     },
     "ComponentsPage": {
         "Components": "Composants"

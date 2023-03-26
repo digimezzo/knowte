@@ -1,9 +1,9 @@
 <div class="app-trash p-2">
     <div class="app-trash__header no-select">
         <div class="app-trash__title">
-            <h4>{{ 'Trash.Trash' | translate }}</h4>
+            <div class="title2">{{ 'Trash.Trash' | translate }}</div>
             <div class="count-label">
-                <div>{{ this.trashedNotes.length }}</div>
+                {{ this.trashedNotes.length }}
             </div>
         </div>
         <div class="app-trash-select-all-checkbox" *ngIf="this.trashedNotes.length > 0">

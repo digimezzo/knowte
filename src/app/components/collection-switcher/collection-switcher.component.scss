@@ -6,7 +6,7 @@
     height: $titlebar-height;
     display: flex;
     flex-direction: row;
-    color: var(--theme-header-text-color);
+    color: var(--theme-primary-text);
 }
 
 .collection-switcher-button {
@@ -31,7 +31,7 @@
     top: 50%;
     transform: translate(-50%, -50%);
     font-size: 20px !important;
-    color: var(--theme-header-text-color);
+    color: var(--theme-primary-text);
     z-index: 0;
 }
 
@@ -58,8 +58,8 @@
 
 .menu-command-item-icon {
     font-size: 22px;
-    color: $color-grey-icon;
-    opacity: 0.3;
+    color: var(--theme-command-icon);
+    opacity: 0.4;
 }
 
 .menu-command-item-icon:hover {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BaseSettings } from '../../core/base-settings';
-import { Desktop } from '../../core/desktop';
 import { GitHubApi } from '../../core/github-api';
+import { Desktop } from '../../core/io/desktop';
 import { Logger } from '../../core/logger';
 import { ProductInformation } from '../../core/product-information';
 import { VersionComparer } from './version-comparer';

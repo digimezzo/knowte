@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BaseSettings } from '../../../core/base-settings';
 import { ClipboardManager } from '../../../core/clipboard-manager';
-import { Desktop } from '../../../core/desktop';
 import { ImageProcessor } from '../../../core/image-processor';
+import { Desktop } from '../../../core/io/desktop';
 import { Logger } from '../../../core/logger';
 import { PathConverter } from '../../../core/path-converter';
 import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';

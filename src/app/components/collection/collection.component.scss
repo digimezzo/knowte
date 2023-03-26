@@ -4,16 +4,8 @@
 .collection-collection-switcher {
     position: absolute;
     right: 0;
-    top: 58px;
+    top: 59px;
     z-index: 2;
-}
-
-.collection-collection-switcher .collection-switcher {
-    color: black !important;
-}
-
-.collection-collection-switcher .collection-switcher-button__icon {
-    color: black !important;
 }
 
 .app-collection {
@@ -57,7 +49,7 @@
 .notebooks-pane {
     position: relative;
     height: 100%;
-    border-right: 1px solid $color-lightgrey;
+    border-right: 1px solid var(--theme-pane-separators);
 }
 
 .notebooks-pane-content {
@@ -90,7 +82,7 @@
 }
 
 .notebook:hover {
-    background: $color-hover;
+    background-color: var(--theme-hovered-item-background);
 }
 
 .notebook__name {
@@ -121,7 +113,7 @@
 
 .edit-item-icon {
     font-size: 22px;
-    color: $color-grey-icon;
+    color: var(--theme-command-icon);
 }
 
 .right-pane {

@@ -8,11 +8,11 @@
 .app-main-menu__item {
     text-transform: lowercase;
     margin-left: 16px;
-    color: $color-grey;
+    color: var(--theme-secondary-text);
     cursor: pointer;
 }
 
 .app-main-menu__selected {
-    color: black;
+    color: var(--theme-primary-text);
     font-weight: bold;
 }

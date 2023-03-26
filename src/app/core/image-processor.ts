@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FileAccess } from './file-access';
+import { FileAccess } from './io/file-access';
 
 @Injectable()
 export class ImageProcessor {

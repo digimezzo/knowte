@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import * as extract from 'extract-zip';
 import { nanoid } from 'nanoid';
-import { ApplicationPaths } from '../../core/applicationPaths';
-import { FileAccess } from '../../core/file-access';
+import { Desktop } from '../../core/io/desktop';
+import { FileAccess } from '../../core/io/file-access';
 import { Logger } from '../../core/logger';
 
 @Injectable()
 export class TemporaryStorageService {
     private temporaryStorageDirectoryPath: string = this.fileAccess.combinePath(
-        this.applicationPaths.applicationDataDirectoryPath(),
+        this.desktop.applicationDataDirectoryPath(),
         'TemporaryStorage'
     );
 
-    public constructor(private fileAccess: FileAccess, private applicationPaths: ApplicationPaths, private logger: Logger) {}
+    public constructor(private fileAccess: FileAccess, private desktop: Desktop, private logger: Logger) {}
 
     private ensureTemporaryStorageDirectory(): void {
         this.fileAccess.createFullDirectoryPathIfDoesNotExist(this.temporaryStorageDirectoryPath);

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import archiver from 'archiver';
 import { BaseSettings } from '../../core/base-settings';
 import { Constants } from '../../core/constants';
-import { FileAccess } from '../../core/file-access';
+import { FileAccess } from '../../core/io/file-access';
 import { Strings } from '../../core/strings';
 import { ClassicNoteExport } from './classic-note-export';
 import { MarkdownNoteExportMetadata } from './markdown-note-export-metadata';
