@@ -12,7 +12,6 @@ describe('Theme', () => {
             'black',
             'white',
             '#aaa',
-            '#bbb',
             '#ccc',
             '#ddd',
             '#eee',
@@ -24,7 +23,11 @@ describe('Theme', () => {
             '#555',
             '#666',
             '#777',
-            '#888'
+            '#888',
+            'orange',
+            'grey',
+            'magenta',
+            'brown'
         );
     }
 

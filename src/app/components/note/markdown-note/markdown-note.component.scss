@@ -3,6 +3,7 @@
     resize: none;
     overflow: auto;
     border-right: 1px solid var(--theme-pane-separators);
+    background: var(--theme-editor-background);
     padding: 16px;
     font-size: var(--editor-p-font-size);
 }

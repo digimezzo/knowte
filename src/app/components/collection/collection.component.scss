@@ -108,12 +108,12 @@
 
 .add-item-icon {
     font-size: 28px;
-    color: #fff;
+    color: var(--theme-primary-button-text) !important;
 }
 
 .edit-item-icon {
     font-size: 22px;
-    color: var(--theme-command-icon);
+    color: var(--theme-secondary-button-text);
 }
 
 .right-pane {

@@ -6,7 +6,6 @@ export class ThemeNeutralColors {
         public tabText: string,
         public selectedTabText: string,
         public mainBackground: string,
-        public headerBackground: string,
         public dragImageBackground: string,
         public dragImageBorder: string,
         public primaryText: string,
@@ -18,6 +17,10 @@ export class ThemeNeutralColors {
         public contextMenuSeparators: string,
         public scrollBars: string,
         public dialogBackground: string,
-        public commandIcon: string
+        public commandIcon: string,
+        public primaryButtonText: string,
+        public secondaryButtonBackground: string,
+        public secondaryButtonText: string,
+        public editorBackground: string
     ) {}
 }

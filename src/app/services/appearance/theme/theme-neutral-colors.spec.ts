@@ -9,7 +9,6 @@ describe('ThemeNeutralColors', () => {
             'black',
             'white',
             '#aaa',
-            '#bbb',
             '#ccc',
             '#ddd',
             '#eee',
@@ -21,7 +20,11 @@ describe('ThemeNeutralColors', () => {
             '#555',
             '#666',
             '#777',
-            '#888'
+            '#888',
+            'orange',
+            'grey',
+            'magenta',
+            'brown'
         );
     }
 
@@ -96,16 +99,6 @@ describe('ThemeNeutralColors', () => {
 
             // Assert
             expect(colors.mainBackground).toEqual('#aaa');
-        });
-
-        it('should set headerBackground', () => {
-            // Arrange
-
-            // Act
-            const colors: ThemeNeutralColors = createNeutralColors();
-
-            // Assert
-            expect(colors.headerBackground).toEqual('#bbb');
         });
 
         it('should set dragImageBackground', () => {
@@ -216,6 +209,46 @@ describe('ThemeNeutralColors', () => {
 
             // Assert
             expect(colors.commandIcon).toEqual('#777');
+        });
+
+        it('should set primaryButtonText', () => {
+            // Arrange
+
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
+
+            // Assert
+            expect(colors.primaryButtonText).toEqual('orange');
+        });
+
+        it('should set secondaryButtonBackground', () => {
+            // Arrange
+
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
+
+            // Assert
+            expect(colors.secondaryButtonBackground).toEqual('grey');
+        });
+
+        it('should set secondaryButtonText', () => {
+            // Arrange
+
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
+
+            // Assert
+            expect(colors.secondaryButtonText).toEqual('magenta');
+        });
+
+        it('should set editorBackground', () => {
+            // Arrange
+
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
+
+            // Assert
+            expect(colors.editorBackground).toEqual('brown');
         });
     });
 });

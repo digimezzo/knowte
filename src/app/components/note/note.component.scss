@@ -12,13 +12,13 @@
 .ql-snow.ql-toolbar button:hover .ql-stroke,
 .ql-snow.ql-toolbar .ql-color-picker span:hover .ql-stroke,
 .ql-snow.ql-toolbar .ql-active .ql-stroke {
-    stroke: var(--theme-accent-color);
+    stroke: var(--theme-accent-color) !important;
 }
 
 .ql-snow.ql-toolbar button:hover .ql-fill,
 .ql-snow.ql-toolbar .ql-color-picker span:hover .ql-fill,
 .ql-snow.ql-toolbar .ql-active .ql-fill {
-    fill: var(--theme-accent-color);
+    fill: var(--theme-accent-color) !important;
 }
 
 .note-content {
@@ -53,7 +53,7 @@
 }
 
 .note-content-floating-button-icon-action {
-    color: var(--theme-command-icon);
+    color: var(--theme-secondary-button-text);
     font-size: 22px;
 }
 
@@ -141,4 +141,18 @@
 }
 .ql-editor * {
     cursor: text;
+}
+
+.ql-toolbar .ql-stroke {
+    fill: none;
+    stroke: var(--theme-primary-text) !important;
+}
+
+.ql-toolbar .ql-fill {
+    fill: var(--theme-primary-text) !important;
+    stroke: none;
+}
+
+.ql-toolbar .ql-picker {
+    color: var(--theme-primary-text) !important;
 }
