@@ -13,7 +13,7 @@ import { TasksCount } from '../../core/tasks-count';
 import { Utils } from '../../core/utils';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
-import { AppearanceService } from '../appearance/appearance.service';
+import { BaseAppearanceService } from '../appearance/base-appearance.service';
 import { CryptographyService } from '../cryptography/cryptography.service';
 import { NoteDateFormatResult } from '../results/note-date-format-result';
 import { NoteDetailsResult } from '../results/note-details-result';
@@ -73,7 +73,7 @@ export class CollectionService {
     constructor(
         private translator: TranslatorService,
         private search: SearchService,
-        private appearance: AppearanceService,
+        private appearance: BaseAppearanceService,
         private cryptography: CryptographyService,
         private collectionFileAccess: CollectionFileAccess,
         private collectionDataStoreAccess: CollectionDataStoreAccess,

@@ -97,6 +97,7 @@ import { GlobalErrorHandler } from './globalErrorHandler';
 import { FixImagePathsPipe } from './pipes/fix-image-paths.pipe';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { AppearanceService } from './services/appearance/appearance.service';
+import { BaseAppearanceService } from './services/appearance/base-appearance.service';
 import { DefaultThemesCreator } from './services/appearance/default-themes-creator';
 import { CollectionDataStoreAccess } from './services/collection/collection-data-store.access';
 import { CollectionFileAccess } from './services/collection/collection-file-access';
@@ -270,7 +271,6 @@ export function MarkedOptionsFactory(): MarkedOptions {
         TrashService,
         PrintService,
         SpellCheckService,
-        AppearanceService,
         TranslatorService,
         SearchService,
         TemporaryStorageService,
@@ -308,6 +308,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
         },
         { provide: BaseSettings, useClass: Settings },
         { provide: BaseApplication, useClass: Application },
+        { provide: BaseAppearanceService, useClass: AppearanceService },
     ],
     bootstrap: [AppComponent],
     entryComponents: [

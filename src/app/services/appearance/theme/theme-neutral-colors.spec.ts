@@ -3,28 +3,28 @@ import { ThemeNeutralColors } from './theme-neutral-colors';
 describe('ThemeNeutralColors', () => {
     function createNeutralColors(): ThemeNeutralColors {
         return new ThemeNeutralColors(
-            'red',
-            'green',
-            'blue',
-            'black',
-            'white',
-            '#aaa',
-            '#ccc',
-            '#ddd',
-            '#eee',
-            '#fff',
-            '#111',
-            '#222',
-            '#333',
-            '#444',
-            '#555',
-            '#666',
-            '#777',
-            '#888',
-            'orange',
-            'grey',
-            'magenta',
-            'brown'
+            'red', // windowButtonIcon
+            'green', // hoveredItemBackground
+            'blue', // selectedItemBackground
+            'black', // tabText
+            'white', // selectedTabText
+            '#aaa', // mainBackground
+            '#ccc', // dragImageBackground
+            '#ddd', // dragImageBorder
+            '#eee', // primaryText
+            '#fff', // secondaryText
+            '#111', // sliderBackground
+            '#222', // sliderThumbBackground
+            '#333', // paneSeparators
+            '#444', // settingsSeparators
+            '#555', // contextMenuSeparators
+            '#666', // scrollBars
+            '#777', // dialogBackground
+            '#888', // commandIcon
+            'orange', // primaryButtonText
+            'grey', // secondaryButtonBackground
+            'magenta', // secondaryButtonText
+            'brown' // editorBackground
         );
     }
 
@@ -201,6 +201,16 @@ describe('ThemeNeutralColors', () => {
             expect(colors.scrollBars).toEqual('#666');
         });
 
+        it('should set dialogBackground', () => {
+            // Arrange
+
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
+
+            // Assert
+            expect(colors.dialogBackground).toEqual('#777');
+        });
+
         it('should set commandIcon', () => {
             // Arrange
 
@@ -208,7 +218,7 @@ describe('ThemeNeutralColors', () => {
             const colors: ThemeNeutralColors = createNeutralColors();
 
             // Assert
-            expect(colors.commandIcon).toEqual('#777');
+            expect(colors.commandIcon).toEqual('#888');
         });
 
         it('should set primaryButtonText', () => {

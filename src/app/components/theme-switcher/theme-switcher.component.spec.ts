@@ -1,5 +1,5 @@
 import { IMock, Mock, Times } from 'typemoq';
-import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
+import { AppearanceService } from '../../services/appearance/appearance.service';
 import { Theme } from '../../services/appearance/theme/theme';
 import { ThemeCoreColors } from '../../services/appearance/theme/theme-core-colors';
 import { ThemeCreator } from '../../services/appearance/theme/theme-creator';
@@ -7,12 +7,12 @@ import { ThemeNeutralColors } from '../../services/appearance/theme/theme-neutra
 import { ThemeSwitcherComponent } from './theme-switcher.component';
 
 describe('ColorSchemeSwitcherComponent', () => {
-    let appearanceServiceMock: IMock<BaseAppearanceService> = Mock.ofType<BaseAppearanceService>();
+    let appearanceServiceMock: IMock<AppearanceService> = Mock.ofType<AppearanceService>();
 
     let component: ThemeSwitcherComponent;
 
     beforeEach(() => {
-        appearanceServiceMock = Mock.ofType<BaseAppearanceService>();
+        appearanceServiceMock = Mock.ofType<AppearanceService>();
 
         component = new ThemeSwitcherComponent(appearanceServiceMock.object);
     });
@@ -46,8 +46,13 @@ describe('ColorSchemeSwitcherComponent', () => {
                 'red',
                 'green',
                 'blue',
+                'black',
+                'white',
+                '#aaa',
+                '#ccc',
+                '#ddd',
+                '#eee',
                 '#fff',
-                '#000',
                 '#111',
                 '#222',
                 '#333',
@@ -56,20 +61,22 @@ describe('ColorSchemeSwitcherComponent', () => {
                 '#666',
                 '#777',
                 '#888',
-                '#999',
-                '#aaa',
-                '#bbb',
-                '#ccc',
-                '#ddd',
-                '#eee',
-                '#fff'
+                'orange',
+                'grey',
+                'magenta',
+                'brown'
             );
             const lightColors: ThemeNeutralColors = new ThemeNeutralColors(
                 'red',
                 'green',
                 'blue',
+                'black',
+                'white',
+                '#aaa',
+                '#ccc',
+                '#ddd',
+                '#eee',
                 '#fff',
-                '#000',
                 '#111',
                 '#222',
                 '#333',
@@ -78,13 +85,10 @@ describe('ColorSchemeSwitcherComponent', () => {
                 '#666',
                 '#777',
                 '#888',
-                '#999',
-                '#aaa',
-                '#bbb',
-                '#ccc',
-                '#ddd',
-                '#eee',
-                '#fff'
+                'orange',
+                'grey',
+                'magenta',
+                'brown'
             );
 
             // Act

@@ -14,13 +14,14 @@ import { FileAccess } from '../../core/io/file-access';
 import { Logger } from '../../core/logger';
 import { Strings } from '../../core/strings';
 import { AppearanceEvents } from './appearance-events';
+import { BaseAppearanceService } from './base-appearance.service';
 import { DefaultThemesCreator } from './default-themes-creator';
 import { Palette } from './palette';
 import { Theme } from './theme/theme';
 import { ThemeNeutralColors } from './theme/theme-neutral-colors';
 
 @Injectable()
-export class AppearanceService {
+export class AppearanceService implements BaseAppearanceService {
     private globalEmitter: any = remote.getGlobal('globalEmitter');
     private themeChangedListener: any = this.applyThemeFromGlobalEvent.bind(this);
     private fontSizeChangedListener: any = this.applyFontSizeFromGlobalEvent.bind(this);
@@ -181,10 +182,9 @@ export class AppearanceService {
     private applyFontSize(): void {
         const element: HTMLElement = this.documentProxy.getDocumentElement();
         element.style.setProperty('--fontsize-normal', this._selectedFontSize.normalSize + 'px');
-        element.style.setProperty('--fontsize-medium', this._selectedFontSize.mediumSize + 'px');
+        element.style.setProperty('--fontsize-status-icon', this._selectedFontSize.normalSize + 2 + 'px');
         element.style.setProperty('--fontsize-large', this._selectedFontSize.largeSize + 'px');
-        element.style.setProperty('--fontsize-extra-large', this._selectedFontSize.extraLargeSize + 'px');
-        element.style.setProperty('--fontsize-mega', this._selectedFontSize.megaSize + 'px');
+        element.style.setProperty('--fontsize-larger', this._selectedFontSize.largerSize + 'px');
     }
 
     private addSubscriptions(): void {

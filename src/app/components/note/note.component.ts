@@ -15,7 +15,7 @@ import { Logger } from '../../core/logger';
 import { ProductInformation } from '../../core/product-information';
 import { Strings } from '../../core/strings';
 import { Utils } from '../../core/utils';
-import { AppearanceService } from '../../services/appearance/appearance.service';
+import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
 import { CollectionClient } from '../../services/collection/collection.client';
 import { CryptographyService } from '../../services/cryptography/cryptography.service';
 import { PersistanceService } from '../../services/persistance/persistance.service';
@@ -73,7 +73,7 @@ export class NoteComponent implements OnInit {
         private cryptography: CryptographyService,
         private persistance: PersistanceService,
         public settings: BaseSettings,
-        public appearance: AppearanceService,
+        public appearance: BaseAppearanceService,
         public spellCheckService: SpellCheckService,
         private clipboard: ClipboardManager,
         private noteContextMenuFactory: NoteContextMenuFactory,

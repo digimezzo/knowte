@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppearanceService } from '../../services/appearance/appearance.service';
+import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
 import { CollectionService } from '../../services/collection/collection.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { CollectionService } from '../../services/collection/collection.service'
     encapsulation: ViewEncapsulation.None,
 })
 export class LoadingComponent implements OnInit {
-    constructor(private collectionService: CollectionService, public appearance: AppearanceService, public router: Router) {}
+    constructor(private collectionService: CollectionService, public appearance: BaseAppearanceService, public router: Router) {}
 
     public ngOnInit(): void {
         this.showCollection();

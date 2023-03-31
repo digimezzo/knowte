@@ -4,7 +4,7 @@ import * as remote from '@electron/remote';
 import log from 'electron-log';
 import * as path from 'path';
 import { Subscription } from 'rxjs';
-import { AppearanceService } from './services/appearance/appearance.service';
+import { BaseAppearanceService } from './services/appearance/base-appearance.service';
 import { CollectionService } from './services/collection/collection.service';
 import { ElectronService } from './services/electron.service';
 import { SpellCheckService } from './services/spell-check/spell-check.service';
@@ -21,7 +21,7 @@ export class AppComponent implements OnInit, OnDestroy {
     constructor(
         public electron: ElectronService,
         public router: Router,
-        public appearance: AppearanceService,
+        public appearance: BaseAppearanceService,
         private collectionService: CollectionService,
         private spellCheckerService: SpellCheckService,
         private trash: TrashService

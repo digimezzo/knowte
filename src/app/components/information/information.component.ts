@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Constants } from '../../core/constants';
 import { ProductInformation } from '../../core/product-information';
-import { AppearanceService } from '../../services/appearance/appearance.service';
+import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
 import { LicenseDialogComponent } from '../dialogs/license-dialog/license-dialog.component';
 
 @Component({
@@ -13,7 +13,7 @@ import { LicenseDialogComponent } from '../dialogs/license-dialog/license-dialog
     encapsulation: ViewEncapsulation.None,
 })
 export class InformationComponent implements OnInit {
-    constructor(private dialog: MatDialog, public appearance: AppearanceService, private router: Router) {}
+    constructor(private dialog: MatDialog, public appearance: BaseAppearanceService, private router: Router) {}
 
     public selectedIndex: number;
 

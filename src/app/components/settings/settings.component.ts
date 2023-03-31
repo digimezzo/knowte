@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BaseSettings } from '../../core/base-settings';
 import { Desktop } from '../../core/io/desktop';
-import { AppearanceService } from '../../services/appearance/appearance.service';
+import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { SetSpellCheckerLanguagesDialogComponent } from '../dialogs/set-spell-checker-languages-dialog/set-spell-checker-languages-dialog.component';
 
@@ -18,7 +18,7 @@ export class SettingsComponent implements OnInit {
         private dialog: MatDialog,
         private desktop: Desktop,
         public translator: TranslatorService,
-        public appearance: AppearanceService,
+        public appearance: BaseAppearanceService,
         public settings: BaseSettings,
         private router: Router
     ) {}

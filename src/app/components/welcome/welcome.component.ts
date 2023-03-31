@@ -5,7 +5,7 @@ import * as remote from '@electron/remote';
 import { OpenDialogReturnValue } from 'electron';
 import { Logger } from '../../core/logger';
 import { ProductInformation } from '../../core/product-information';
-import { AppearanceService } from '../../services/appearance/appearance.service';
+import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
 import { CollectionService } from '../../services/collection/collection.service';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
@@ -19,7 +19,7 @@ export class WelcomeComponent implements OnInit {
     constructor(
         private translator: TranslatorService,
         private collectionService: CollectionService,
-        public appearance: AppearanceService,
+        public appearance: BaseAppearanceService,
         private dialog: MatDialog,
         private zone: NgZone,
         public router: Router,

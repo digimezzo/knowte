@@ -16,7 +16,7 @@ import { ProductInformation } from '../../core/product-information';
 import { SelectionWatcher } from '../../core/selection-watcher';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
-import { AppearanceService } from '../../services/appearance/appearance.service';
+import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
 import { CollectionService } from '../../services/collection/collection.service';
 import { FileService } from '../../services/file/file.service';
 import { NoteMarkResult } from '../../services/results/note-mark-result';
@@ -60,7 +60,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
 
     constructor(
-        public appearance: AppearanceService,
+        public appearance: BaseAppearanceService,
         private collection: CollectionService,
         private translator: TranslatorService,
         private snackBar: SnackBarService,
