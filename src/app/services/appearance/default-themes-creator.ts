@@ -34,12 +34,12 @@ export class DefaultThemesCreator {
             '#363636', // settingsSeparators
             '#363636', // contextMenuSeparators
             '#4883e0', // scrollBars
-            '#111', // dialogBackground
+            '#151515', // dialogBackground
             '#5e5e5e', // commandIcon
             '#fff', // primaryButtonText
             '#5e5e5e', // secondaryButtonBackground
             '#fff', // secondaryButtonText,
-            '#111' // editorBackground
+            '#151515' // editorBackground
         );
 
         const lightColors: ThemeNeutralColors = new ThemeNeutralColors(
@@ -88,12 +88,12 @@ export class DefaultThemesCreator {
             '#363636', // settingsSeparators
             '#363636', // contextMenuSeparators
             '#4883e0', // scrollBars
-            '#111', // dialogBackground
+            '#151515', // dialogBackground
             '#5e5e5e', // commandIcon
             '#fff', // primaryButtonText
             '#5e5e5e', // secondaryButtonBackground
             '#fff', // secondaryButtonText,
-            '#111' // editorBackground
+            '#151515' // editorBackground
         );
 
         const lightColors: ThemeNeutralColors = new ThemeNeutralColors(
