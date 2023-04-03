@@ -81,12 +81,12 @@
                                         (dragleave)="notebookDragLeave($event)"
                                         (click)="setSelectedNotebooks(notebook, $event)"
                                     >
-                                        <div
+                                        <span
                                             class="notebook__name no-select mx-1"
                                             [ngStyle]="{ 'font-weight': notebook.isDefault ? 'bold' : 'normal' }"
                                         >
                                             {{ notebook.name }}
-                                        </div>
+                                        </span>
                                     </li>
                                 </ul>
                             </div>

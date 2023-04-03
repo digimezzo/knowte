@@ -34,7 +34,7 @@
                         <i class="note-status-icon lar la-edit" *ngIf="!note.isMarkdownNote"></i>
                         <i class="note-status-icon las la-lock ml-1" *ngIf="note.isEncrypted"></i>
                         <i class="note-status-icon las la-thumbtack rotate-45-ccw ml-1" *ngIf="note.isPinned"></i>
-                        <span class="note-status-text ml-1">{{ note.displayModificationDate }}</span>
+                        <div class="note-status-text ml-1">{{ note.displayModificationDate }}</div>
                         <app-tasks-progress
                             class="ml-1"
                             *ngIf="note.totalTasksCount > 0"

@@ -1,0 +1,41 @@
+.note-editor * {
+    color: var(--theme-editor-primary-text) !important;
+}
+
+.note-editor h1 {
+    color: var(--theme-accent-color) !important;
+    font-size: var(--fontsize-larger) !important;
+}
+
+.note-editor h2,
+.note-editor h3 {
+    color: var(--theme-editor-secondary-text) !important;
+    font-size: var(--fontsize-large) !important;
+}
+
+.note-editor * {
+    font-size: var(--editor-p-font-size) !important;
+}
+
+.note-editor h1 {
+    font-size: var(--editor-h1-font-size) !important;
+}
+
+.note-editor h2 {
+    font-size: var(--editor-h2-font-size) !important;
+}
+
+.note-editor h3 {
+    font-size: var(--editor-h3-font-size) !important;
+}
+
+.note-editor input {
+    width: var(--editor-input-size) !important;
+    height: var(--editor-input-size) !important;
+}
+
+.note-editor h1,
+.note-editor h2,
+.note-editor h3 {
+    margin: 0.67em 0 !important;
+}

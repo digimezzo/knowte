@@ -33,19 +33,6 @@ body {
     overflow-y: hidden;
 }
 
-/* Used in notes */
-h1 {
-    color: var(--theme-accent-color);
-    font-size: var(--fontsize-larger) !important;
-}
-
-/* Used in notes */
-h2,
-h3 {
-    color: var(--theme-secondary-text);
-    font-size: var(--fontsize-large) !important;
-}
-
 a {
     color: var(--theme-accent-color) !important;
     outline: none; // Removes yellow outline on links

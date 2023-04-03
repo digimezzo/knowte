@@ -19,7 +19,7 @@
         <button class="menu-button" mat-menu-item>
             <span class="collection-switcher-item" (click)="activateCollectionAsync(collection)">
                 <i class="collection-switcher-icon las la-box" [ngClass]="{ isActive: collection === activeCollection }"> </i>
-                <span>{{ collection }}</span>
+                {{ collection }}
             </span>
             <span class="menu-command-item mr-1">
                 <i

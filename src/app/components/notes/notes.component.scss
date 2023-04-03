@@ -11,11 +11,11 @@
     top: -500px;
     left: 0;
     z-index: 0; // z-index is required. Otherwise the image isn't displayed while dragging. The value of z-index doesn't seem to matter.
-    border: 1px solid var(--theme-drag-image-border);
+    border: 1px solid var(--theme-separator);
     height: 38px;
     display: flex;
     flex-direction: row;
-    background: var(--theme-drag-image-background);
+    background: var(--theme-background);
     align-items: center;
     justify-content: center;
 }
@@ -59,7 +59,7 @@
 }
 
 .note-item:hover {
-    background-color: var(--theme-hovered-item-background);
+    background-color: var(--theme-hover-background);
 }
 
 .note-item-icon {

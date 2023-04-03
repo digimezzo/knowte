@@ -1,7 +1,7 @@
 @import 'variables';
 
 .dialog-header {
-    border-bottom: 1px solid var(--theme-pane-separators);
+    border-bottom: 1px solid var(--theme-separator);
     margin: -24px -24px 24px -24px !important;
     height: 64px;
     display: flex;

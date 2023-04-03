@@ -27,14 +27,14 @@ mat-tab-group {
 }
 
 .mat-tab-label-content {
-    color: var(--theme-tab-text) !important;
+    color: var(--theme-secondary-text) !important;
     font-size: var(--fontsize-larger) !important;
     font-weight: lighter !important;
     text-transform: uppercase;
 }
 
 .mat-tab-label-active .mat-tab-label-content {
-    color: var(--theme-selected-tab-text) !important;
+    color: var(--theme-primary-text) !important;
 }
 
 .mat-tab-group.mat-primary .mat-ink-bar,
@@ -43,6 +43,6 @@ mat-tab-group {
 }
 
 .mat-tab-header {
-    border-bottom: 1px solid var(--theme-pane-separators) !important;
+    border-bottom: 1px solid var(--theme-separator) !important;
     padding-left: 110px;
 }

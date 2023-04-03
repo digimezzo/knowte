@@ -18,53 +18,51 @@ export class DefaultThemesCreator {
 
     private createKnowteTheme(): Theme {
         const darkColors: ThemeNeutralColors = new ThemeNeutralColors(
-            '#5e5e5e', // windowButtonIcon
-            'rgba(255, 255, 255, 0.05)', // hoveredItemBackground
-            'rgba(255, 255, 255, 0.1)', // selectedItemBackground
-            '#666', // tabText
-            '#fff', // selectedTabText
-            '#1a1a1a', // mainBackground
-            '#171717', // dragImageBackground
-            '#363636', // dragImageBorder
+            '#242424', // background
             '#fff', // primaryText
             '#5e5e5e', // secondaryText
+            '#404040', // separator
+            '#383838', // contextMenuBackground
+            '#fff', // contextMenuPrimaryText
+            '#6e6e6e', // contextMenuSecondaryText
+            '#565656', // contextMenuSeparator
+            'rgba(255, 255, 255, 0.03)', // hoverBackground
+            'rgba(255, 255, 255, 0.06)', // selectionBackground
             '#999', // sliderBackground
-            '#fff', // sliderThumbBackground
-            '#363636', // paneSeparators
-            '#363636', // settingsSeparators
-            '#363636', // contextMenuSeparators
-            '#4883e0', // scrollBars
-            '#151515', // dialogBackground
-            '#5e5e5e', // commandIcon
+            '#fff', // sliderThumb
             '#fff', // primaryButtonText
-            '#5e5e5e', // secondaryButtonBackground
-            '#fff', // secondaryButtonText,
-            '#151515' // editorBackground
+            '#454545', // secondaryButtonBackground
+            '#fff', // secondaryButtonText
+            '#242424', // editorDefaultBackground
+            '#2a2a2a', // editorSubtleBackground
+            '#444', // editorDefaultBorder
+            '#333', // editorSubtleBorder
+            '#fff', // editorPrimaryText
+            '#5e5e5e' // editorSecondaryText
         );
 
         const lightColors: ThemeNeutralColors = new ThemeNeutralColors(
-            '#838383', // windowButtonIcon
-            'rgba(0, 0, 0, 0.05)', // hoveredItemBackground
-            'rgba(0, 0, 0, 0.1)', // selectedItemBackground
-            '#909090', // tabText
-            '#000', // selectedTabText
-            '#f5f5f5', // mainBackground
-            '#efefef', // dragImageBackground
-            '#d7d7d7', // dragImageBorder
-            '#000', // primaryText
-            '#838383', // secondaryText
-            '#666', // sliderBackground
-            '#000', // sliderThumbBackground
-            '#d7d7d7', // paneSeparators
-            '#d7d7d7', // settingsSeparators
-            '#d7d7d7', // contextMenuSeparators
-            '#4883e0', // scrollBars
-            '#fdfdfd', // dialogBackground
-            '#838383', // commandIcon
+            '#242424', // background
+            '#fff', // primaryText
+            '#5e5e5e', // secondaryText
+            '#404040', // separator
+            '#383838', // contextMenuBackground
+            '#fff', // contextMenuPrimaryText
+            '#6e6e6e', // contextMenuSecondaryText
+            '#565656', // contextMenuSeparator
+            'rgba(255, 255, 255, 0.03)', // hoverBackground
+            'rgba(255, 255, 255, 0.06)', // selectionBackground
+            '#999', // sliderBackground
+            '#fff', // sliderThumb
             '#fff', // primaryButtonText
-            '#fff', // secondaryButtonBackground
-            '#838383', // secondaryButtonText
-            '#fdfdfd' // editorBackground
+            '#454545', // secondaryButtonBackground
+            '#fff', // secondaryButtonText
+            '#242424', // editorDefaultBackground
+            '#2a2a2a', // editorSubtleBackground
+            '#444', // editorDefaultBorder
+            '#333', // editorSubtleBorder
+            '#fff', // editorPrimaryText
+            '#5e5e5e' // editorSecondaryText
         );
 
         return new Theme('Knowte', this.creator, new ThemeCoreColors('#6260e3', '#429beb', '#4872e5'), darkColors, lightColors);
@@ -72,55 +70,53 @@ export class DefaultThemesCreator {
 
     private createLimerenceTheme(): Theme {
         const darkColors: ThemeNeutralColors = new ThemeNeutralColors(
-            '#5e5e5e', // windowButtonIcon
-            'rgba(255, 255, 255, 0.05)', // hoveredItemBackground
-            'rgba(255, 255, 255, 0.1)', // selectedItemBackground
-            '#666', // tabText
-            '#fff', // selectedTabText
-            '#1a1a1a', // mainBackground
-            '#171717', // dragImageBackground
-            '#363636', // dragImageBorder
+            '#242424', // background
             '#fff', // primaryText
             '#5e5e5e', // secondaryText
+            '#404040', // separator
+            '#383838', // contextMenuBackground
+            '#fff', // contextMenuPrimaryText
+            '#6e6e6e', // contextMenuSecondaryText
+            '#565656', // contextMenuSeparator
+            'rgba(255, 255, 255, 0.03)', // hoverBackground
+            'rgba(255, 255, 255, 0.06)', // selectionBackground
             '#999', // sliderBackground
-            '#fff', // sliderThumbBackground
-            '#363636', // paneSeparators
-            '#363636', // settingsSeparators
-            '#363636', // contextMenuSeparators
-            '#4883e0', // scrollBars
-            '#151515', // dialogBackground
-            '#5e5e5e', // commandIcon
+            '#fff', // sliderThumb
             '#fff', // primaryButtonText
-            '#5e5e5e', // secondaryButtonBackground
-            '#fff', // secondaryButtonText,
-            '#151515' // editorBackground
+            '#454545', // secondaryButtonBackground
+            '#fff', // secondaryButtonText
+            '#242424', // editorDefaultBackground
+            '#2a2a2a', // editorSubtleBackground
+            '#444', // editorDefaultBorder
+            '#333', // editorSubtleBorder
+            '#fff', // editorPrimaryText
+            '#5e5e5e' // editorSecondaryText
         );
 
         const lightColors: ThemeNeutralColors = new ThemeNeutralColors(
-            '#838383', // windowButtonIcon
-            'rgba(0, 0, 0, 0.05)', // hoveredItemBackground
-            'rgba(0, 0, 0, 0.1)', // selectedItemBackground
-            '#909090', // tabText
-            '#000', // selectedTabText
-            '#f5f5f5', // mainBackground
-            '#efefef', // dragImageBackground
-            '#d7d7d7', // dragImageBorder
-            '#000', // primaryText
-            '#838383', // secondaryText
-            '#666', // sliderBackground
-            '#000', // sliderThumbBackground
-            '#d7d7d7', // paneSeparators
-            '#d7d7d7', // settingsSeparators
-            '#d7d7d7', // contextMenuSeparators
-            '#4883e0', // scrollBars
-            '#fdfdfd', // dialogBackground
-            '#838383', // commandIcon
+            '#242424', // background
+            '#fff', // primaryText
+            '#5e5e5e', // secondaryText
+            '#404040', // separator
+            '#383838', // contextMenuBackground
+            '#fff', // contextMenuPrimaryText
+            '#6e6e6e', // contextMenuSecondaryText
+            '#565656', // contextMenuSeparator
+            'rgba(255, 255, 255, 0.03)', // hoverBackground
+            'rgba(255, 255, 255, 0.06)', // selectionBackground
+            '#999', // sliderBackground
+            '#fff', // sliderThumb
             '#fff', // primaryButtonText
-            '#fff', // secondaryButtonBackground
-            '#838383', // secondaryButtonText
-            '#fdfdfd' // editorBackground
+            '#454545', // secondaryButtonBackground
+            '#fff', // secondaryButtonText
+            '#242424', // editorDefaultBackground
+            '#2a2a2a', // editorSubtleBackground
+            '#444', // editorDefaultBorder
+            '#333', // editorSubtleBorder
+            '#fff', // editorPrimaryText
+            '#5e5e5e' // editorSecondaryText
         );
 
-        return new Theme('Limerence', this.creator, new ThemeCoreColors('#fd297b', '#ff655b ', '#ff5864'), darkColors, lightColors);
+        return new Theme('Limerence', this.creator, new ThemeCoreColors('#fd297b', '#ff655b ', '#ff3c62'), darkColors, lightColors);
     }
 }

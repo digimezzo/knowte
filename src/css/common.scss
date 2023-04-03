@@ -5,12 +5,11 @@
 }
 
 .selected-item {
-    color: var(--theme-accent-color);
-    background-color: var(--theme-selected-item-background);
+    background-color: var(--theme-selection-background);
 }
 
-.selected-icon {
-    color: var(--theme-accent-color);
+.selected-item span {
+    color: var(--theme-accent-color) !important;
 }
 
 .viewport-height {

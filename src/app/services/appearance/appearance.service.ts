@@ -244,11 +244,6 @@ export class AppearanceService implements BaseAppearanceService {
         let primaryColorToApply: string = this.selectedTheme.coreColors.primaryColor;
         let secondaryColorToApply: string = this.selectedTheme.coreColors.secondaryColor;
         let accentColorToApply: string = this.selectedTheme.coreColors.accentColor;
-        let scrollBarColorToApply: string = this.selectedTheme.darkColors.scrollBars;
-
-        if (this.isUsingLightTheme) {
-            scrollBarColorToApply = this.selectedTheme.lightColors.scrollBars;
-        }
 
         if (this.settings.followSystemColor) {
             const systemAccentColor: string = this.getSystemAccentColor();
@@ -257,7 +252,6 @@ export class AppearanceService implements BaseAppearanceService {
                 primaryColorToApply = systemAccentColor;
                 secondaryColorToApply = systemAccentColor;
                 accentColorToApply = systemAccentColor;
-                scrollBarColorToApply = systemAccentColor;
             }
         }
 
@@ -288,12 +282,12 @@ export class AppearanceService implements BaseAppearanceService {
 
         // Neutral & markdown colors
         let themeName: string = 'default-theme-dark';
-        this.applyNeutralColors(element, this.selectedTheme.darkColors, scrollBarColorToApply);
+        this.applyNeutralColors(element, this.selectedTheme.darkColors);
         this.applyMarkdownColors(element, this.selectedTheme.darkColors, this.isUsingLightTheme);
 
         if (this.isUsingLightTheme) {
             themeName = 'default-theme-light';
-            this.applyNeutralColors(element, this.selectedTheme.lightColors, scrollBarColorToApply);
+            this.applyNeutralColors(element, this.selectedTheme.lightColors);
             this.applyMarkdownColors(element, this.selectedTheme.lightColors, this.isUsingLightTheme);
         }
 
@@ -319,32 +313,29 @@ export class AppearanceService implements BaseAppearanceService {
         );
     }
 
-    private applyNeutralColors(element: HTMLElement, neutralColors: ThemeNeutralColors, scrollBarColor: string): void {
+    private applyNeutralColors(element: HTMLElement, neutralColors: ThemeNeutralColors): void {
         const primaryTextRgbArray: number[] = ColorConverter.stringToRgb(neutralColors.primaryText);
 
         element.style.setProperty('--theme-rgb-base', primaryTextRgbArray.join(','));
-        element.style.setProperty('--theme-window-button-icon', neutralColors.windowButtonIcon);
-        element.style.setProperty('--theme-hovered-item-background', neutralColors.hoveredItemBackground);
-        element.style.setProperty('--theme-selected-item-background', neutralColors.selectedItemBackground);
-        element.style.setProperty('--theme-tab-text', neutralColors.tabText);
-        element.style.setProperty('--theme-selected-tab-text', neutralColors.selectedTabText);
-        element.style.setProperty('--theme-main-background', neutralColors.mainBackground);
-        element.style.setProperty('--theme-drag-image-background', neutralColors.dragImageBackground);
-        element.style.setProperty('--theme-drag-image-border', neutralColors.dragImageBorder);
+
+        element.style.setProperty('--theme-background', neutralColors.background);
         element.style.setProperty('--theme-primary-text', neutralColors.primaryText);
         element.style.setProperty('--theme-secondary-text', neutralColors.secondaryText);
+        element.style.setProperty('--theme-separator', neutralColors.separator);
+        element.style.setProperty('--theme-context-menu-background', neutralColors.contextMenuBackground);
+        element.style.setProperty('--theme-context-menu-primary-text', neutralColors.contextMenuPrimaryText);
+        element.style.setProperty('--theme-context-menu-secondary-text', neutralColors.contextMenuSecondaryText);
+        element.style.setProperty('--theme-context-menu-separator', neutralColors.contextMenuSeparator);
+        element.style.setProperty('--theme-hover-background', neutralColors.hoverBackground);
+        element.style.setProperty('--theme-selection-background', neutralColors.selectionBackground);
         element.style.setProperty('--theme-slider-background', neutralColors.sliderBackground);
-        element.style.setProperty('--theme-slider-thumb-background', neutralColors.sliderThumbBackground);
-        element.style.setProperty('--theme-pane-separators', neutralColors.paneSeparators);
-        element.style.setProperty('--theme-settings-separators', neutralColors.settingsSeparators);
-        element.style.setProperty('--theme-context-menu-separators', neutralColors.contextMenuSeparators);
-        element.style.setProperty('--theme-scroll-bars', scrollBarColor);
-        element.style.setProperty('--theme-dialog-background', neutralColors.dialogBackground);
-        element.style.setProperty('--theme-command-icon', neutralColors.commandIcon);
+        element.style.setProperty('--theme-slider-thumb', neutralColors.sliderThumb);
         element.style.setProperty('--theme-primary-button-text', neutralColors.primaryButtonText);
         element.style.setProperty('--theme-secondary-button-background', neutralColors.secondaryButtonBackground);
         element.style.setProperty('--theme-secondary-button-text', neutralColors.secondaryButtonText);
-        element.style.setProperty('--theme-editor-background', neutralColors.editorBackground);
+        element.style.setProperty('--theme-editor-background', neutralColors.editorDefaultBackground);
+        element.style.setProperty('--theme-editor-primary-text', neutralColors.editorPrimaryText);
+        element.style.setProperty('--theme-editor-secondary-text', neutralColors.editorSecondaryText);
     }
 
     private setSelectedThemeFromSettings(): void {
@@ -485,10 +476,10 @@ export class AppearanceService implements BaseAppearanceService {
             element.style.setProperty('--color-fg-default', '#24292f');
             element.style.setProperty('--color-fg-muted', '#57606a');
             element.style.setProperty('--color-fg-subtle', '#6e7781');
-            element.style.setProperty('--color-canvas-default', neutralColors.editorBackground);
-            element.style.setProperty('--color-canvas-subtle', '#f6f8fa');
-            element.style.setProperty('--color-border-default', '#d0d7de');
-            element.style.setProperty('--color-border-muted', 'hsla(210, 18%, 87%, 1)');
+            element.style.setProperty('--color-canvas-default', neutralColors.editorDefaultBackground);
+            element.style.setProperty('--color-canvas-subtle', neutralColors.editorSubtleBackground);
+            element.style.setProperty('--color-border-default', neutralColors.editorDefaultBorder);
+            element.style.setProperty('--color-border-muted', neutralColors.editorSubtleBorder);
             element.style.setProperty('--color-neutral-muted', 'rgba(175, 184, 193, 0.2)');
             element.style.setProperty('--color-accent-fg', '#0969da');
             element.style.setProperty('--color-accent-emphasis', '#0969da');
@@ -528,10 +519,10 @@ export class AppearanceService implements BaseAppearanceService {
             element.style.setProperty('--color-fg-default', '#c9d1d9');
             element.style.setProperty('--color-fg-muted', '#8b949e');
             element.style.setProperty('--color-fg-subtle', '#6e7681');
-            element.style.setProperty('--color-canvas-default', neutralColors.editorBackground);
-            element.style.setProperty('--color-canvas-subtle', '#161b22');
-            element.style.setProperty('--color-border-default', '#30363d');
-            element.style.setProperty('--color-border-muted', '#21262d');
+            element.style.setProperty('--color-canvas-default', neutralColors.editorDefaultBackground);
+            element.style.setProperty('--color-canvas-subtle', neutralColors.editorSubtleBackground);
+            element.style.setProperty('--color-border-default', neutralColors.editorDefaultBorder);
+            element.style.setProperty('--color-border-muted', neutralColors.editorSubtleBorder);
             element.style.setProperty('--color-neutral-muted', ' rgba(110, 118, 129, 0.4)');
             element.style.setProperty('--color-accent-fg', '#58a6ff');
             element.style.setProperty('--color-accent-emphasis', '#1f6feb');

@@ -49,7 +49,7 @@
 .notebooks-pane {
     position: relative;
     height: 100%;
-    border-right: 1px solid var(--theme-pane-separators);
+    border-right: 1px solid var(--theme-separator);
 }
 
 .notebooks-pane-content {
@@ -82,7 +82,7 @@
 }
 
 .notebook:hover {
-    background-color: var(--theme-hovered-item-background);
+    background-color: var(--theme-hover-background);
 }
 
 .notebook__name {

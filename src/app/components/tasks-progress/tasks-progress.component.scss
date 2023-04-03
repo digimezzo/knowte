@@ -29,7 +29,7 @@
     top: 0;
     left: 0;
     height: 6px;
-    background-color: var(--theme-secondary-text);
+    background-color: rgba(var(--theme-rgb-base), 0.7) !important;
     z-index: 1;
 }
 
@@ -39,6 +39,6 @@
     left: 0;
     height: 6px;
     width: 100px;
-    background-color: 1px solid var(--theme-pane-separators);
+    background-color: rgba(var(--theme-rgb-base), 0.2) !important;
     z-index: 0;
 }

@@ -278,9 +278,6 @@ export class MarkdownNoteEditor implements INoteEditor {
         element.style.setProperty('--editor-h1-font-size', h1FontSize + 'px');
         element.style.setProperty('--editor-h2-font-size', h2FontSize + 'px');
         element.style.setProperty('--editor-h3-font-size', h3FontSize + 'px');
-        element.style.setProperty('--editor-h4-font-size', h4FontSize + 'px');
-        element.style.setProperty('--editor-h5-font-size', h5FontSize + 'px');
-        element.style.setProperty('--editor-h6-font-size', h6FontSize + 'px');
     }
 
     private saveImageFile(file: any): void {
