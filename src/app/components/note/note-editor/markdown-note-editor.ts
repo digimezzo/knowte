@@ -260,9 +260,6 @@ export class MarkdownNoteEditor implements INoteEditor {
         const h1FontSize: number = pFontSize * 2;
         const h2FontSize: number = pFontSize * 1.5;
         const h3FontSize: number = pFontSize * 1.25;
-        const h4FontSize: number = pFontSize * 1;
-        const h5FontSize: number = pFontSize * 0.875;
-        const h6FontSize: number = pFontSize * 0.85;
 
         const markdownInputElement: any = this.getMarkdownInputElement();
 

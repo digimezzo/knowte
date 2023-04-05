@@ -39,3 +39,32 @@
 .note-editor h3 {
     margin: 0.67em 0 !important;
 }
+
+.note-editor input[type='checkbox'] {
+    appearance: none;
+    background-color: var(--color-border-default);
+    margin: 0;
+    width: 1.15em;
+    height: 1.15em;
+    border: 0px;
+    border-radius: 0.15em;
+    transform: translateY(-0.075em);
+    display: inline-grid;
+    place-content: center;
+}
+
+.note-editor input[type='checkbox']::before {
+    content: '';
+    width: 0.65em;
+    height: 0.65em;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em var(--theme-primary-text);
+    transform-origin: bottom left;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.note-editor input[type='checkbox']:checked::before {
+    transform: scale(1);
+    background-color: var(--theme-primary-text);
+}
