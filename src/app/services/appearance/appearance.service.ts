@@ -283,11 +283,13 @@ export class AppearanceService implements BaseAppearanceService {
         // Neutral & markdown colors
         let themeName: string = 'default-theme-dark';
         this.applyNeutralColors(element, this.selectedTheme.darkColors);
+        this.applyClassicColors(element, this.selectedTheme.darkColors);
         this.applyMarkdownColors(element, this.selectedTheme.darkColors, this.isUsingLightTheme);
 
         if (this.isUsingLightTheme) {
             themeName = 'default-theme-light';
             this.applyNeutralColors(element, this.selectedTheme.lightColors);
+            this.applyClassicColors(element, this.selectedTheme.lightColors);
             this.applyMarkdownColors(element, this.selectedTheme.lightColors, this.isUsingLightTheme);
         }
 
@@ -328,12 +330,10 @@ export class AppearanceService implements BaseAppearanceService {
         element.style.setProperty('--theme-context-menu-separator', neutralColors.contextMenuSeparator);
         element.style.setProperty('--theme-hover-background', neutralColors.hoverBackground);
         element.style.setProperty('--theme-selection-background', neutralColors.selectionBackground);
-        element.style.setProperty('--theme-slider-background', neutralColors.sliderBackground);
-        element.style.setProperty('--theme-slider-thumb', neutralColors.sliderThumb);
         element.style.setProperty('--theme-primary-button-text', neutralColors.primaryButtonText);
         element.style.setProperty('--theme-secondary-button-background', neutralColors.secondaryButtonBackground);
         element.style.setProperty('--theme-secondary-button-text', neutralColors.secondaryButtonText);
-        element.style.setProperty('--theme-editor-background', neutralColors.editorDefaultBackground);
+        element.style.setProperty('--theme-editor-background', neutralColors.editorBackground);
         element.style.setProperty('--theme-editor-primary-text', neutralColors.editorPrimaryText);
         element.style.setProperty('--theme-editor-secondary-text', neutralColors.editorSecondaryText);
     }
@@ -441,6 +441,11 @@ export class AppearanceService implements BaseAppearanceService {
         return themesDirectoryPath;
     }
 
+    private applyClassicColors(element: HTMLElement, neutralColors: ThemeNeutralColors) {
+        element.style.setProperty('--theme-classic-note-code-background', neutralColors.editorCodeBackground);
+        element.style.setProperty('--theme-classic-note-quote-border', neutralColors.editorBorder);
+    }
+
     private applyMarkdownColors(element: HTMLElement, neutralColors: ThemeNeutralColors, isUsingLightTheme: boolean): void {
         if (isUsingLightTheme) {
             element.style.setProperty('--color-prettylights-syntax-comment', '#6e7781');
@@ -476,10 +481,10 @@ export class AppearanceService implements BaseAppearanceService {
             element.style.setProperty('--color-fg-default', '#24292f');
             element.style.setProperty('--color-fg-muted', '#57606a');
             element.style.setProperty('--color-fg-subtle', '#6e7781');
-            element.style.setProperty('--color-canvas-default', neutralColors.editorDefaultBackground);
-            element.style.setProperty('--color-canvas-subtle', neutralColors.editorSubtleBackground);
-            element.style.setProperty('--color-border-default', neutralColors.editorDefaultBorder);
-            element.style.setProperty('--color-border-muted', neutralColors.editorSubtleBorder);
+            element.style.setProperty('--color-canvas-default', neutralColors.editorBackground);
+            element.style.setProperty('--color-canvas-subtle', neutralColors.editorCodeBackground);
+            element.style.setProperty('--color-border-default', neutralColors.editorBorder);
+            element.style.setProperty('--color-border-muted', neutralColors.editorBorder);
             element.style.setProperty('--color-neutral-muted', 'rgba(175, 184, 193, 0.2)');
             element.style.setProperty('--color-accent-fg', '#0969da');
             element.style.setProperty('--color-accent-emphasis', '#0969da');
@@ -519,10 +524,10 @@ export class AppearanceService implements BaseAppearanceService {
             element.style.setProperty('--color-fg-default', '#c9d1d9');
             element.style.setProperty('--color-fg-muted', '#8b949e');
             element.style.setProperty('--color-fg-subtle', '#6e7681');
-            element.style.setProperty('--color-canvas-default', neutralColors.editorDefaultBackground);
-            element.style.setProperty('--color-canvas-subtle', neutralColors.editorSubtleBackground);
-            element.style.setProperty('--color-border-default', neutralColors.editorDefaultBorder);
-            element.style.setProperty('--color-border-muted', neutralColors.editorSubtleBorder);
+            element.style.setProperty('--color-canvas-default', neutralColors.editorBackground);
+            element.style.setProperty('--color-canvas-subtle', neutralColors.editorCodeBackground);
+            element.style.setProperty('--color-border-default', neutralColors.editorBorder);
+            element.style.setProperty('--color-border-muted', neutralColors.editorBorder);
             element.style.setProperty('--color-neutral-muted', ' rgba(110, 118, 129, 0.4)');
             element.style.setProperty('--color-accent-fg', '#58a6ff');
             element.style.setProperty('--color-accent-emphasis', '#1f6feb');

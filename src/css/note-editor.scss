@@ -68,3 +68,11 @@
     transform: scale(1);
     background-color: var(--theme-primary-text);
 }
+
+.note-editor .ql-editor pre {
+    background: var(--theme-classic-note-code-background) !important;
+}
+
+.note-editor .ql-editor blockquote {
+    border-left: 4px solid var(--theme-classic-note-quote-border) !important;
+}

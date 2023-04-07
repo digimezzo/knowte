@@ -10,15 +10,12 @@ export class ThemeNeutralColors {
         public contextMenuSeparator: string,
         public hoverBackground: string,
         public selectionBackground: string,
-        public sliderBackground: string,
-        public sliderThumb: string,
         public primaryButtonText: string,
         public secondaryButtonBackground: string,
         public secondaryButtonText: string,
-        public editorDefaultBackground: string,
-        public editorSubtleBackground: string,
-        public editorDefaultBorder: string,
-        public editorSubtleBorder: string,
+        public editorBackground: string,
+        public editorCodeBackground: string,
+        public editorBorder: string,
         public editorPrimaryText: string,
         public editorSecondaryText: string
     ) {}
