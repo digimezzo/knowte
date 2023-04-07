@@ -1,242 +1,220 @@
-// import { ThemeNeutralColors } from './theme-neutral-colors';
-
-// describe('ThemeNeutralColors', () => {
-//     function createNeutralColors(): ThemeNeutralColors {
-//         return new ThemeNeutralColors(
-//             'green', // hoveredItemBackground
-//             'blue', // selectedItemBackground
-//             'black', // tabText
-//             'white', // selectedTabText
-//             '#aaa', // mainBackground
-//             '#ccc', // dragImageBackground
-//             '#ddd', // dragImageBorder
-//             '#eee', // primaryText
-//             '#fff', // secondaryText
-//             '#111', // sliderBackground
-//             '#222', // sliderThumbBackground
-//             '#333', // separators
-//             '#555', // contextMenuSeparators
-//             '#666', // scrollBars
-//             '#777', // contextMenuBackground
-//             '#888', // commandIcon
-//             'orange', // primaryButtonText
-//             'grey', // secondaryButtonBackground
-//             'magenta', // secondaryButtonText
-//             'brown' // editorBackground
-//         );
-//     }
+import { ThemeNeutralColors } from './theme-neutral-colors';
+
+describe('ThemeNeutralColors', () => {
+    function createNeutralColors(): ThemeNeutralColors {
+        return new ThemeNeutralColors(
+            '#242424', // background
+            '#fff', // primaryText
+            '#5e5e5e', // secondaryText
+            '#454545', // separator
+            '#383838', // contextMenuBackground
+            '#fff', // contextMenuPrimaryText
+            '#6e6e6e', // contextMenuSecondaryText
+            '#565656', // contextMenuSeparator
+            'rgba(255, 255, 255, 0.03)', // hoverBackground
+            'rgba(255, 255, 255, 0.06)', // selectionBackground
+            '#fff', // primaryButtonText
+            '#454545', // secondaryButtonBackground
+            '#fff', // secondaryButtonText
+            '#242424', // editorBackground
+            '#2a2a2a', // editorCodeBackground
+            '#454545', // editorBorder
+            '#fff', // editorPrimaryText
+            '#5e5e5e' // editorSecondaryText
+        );
+    }
 
-//     beforeEach(() => {});
-
-//     describe('constructor', () => {
-//         it('should create', () => {
-//             // Arrange
-
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+    beforeEach(() => {});
 
-//             // Assert
-//             expect(colors).toBeDefined();
-//         });
+    describe('constructor', () => {
+        it('should create', () => {
+            // Arrange
 
-//         it('should set hoveredItemBackground', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors).toBeDefined();
+        });
 
-//             // Assert
-//             expect(colors.hoveredItemBackground).toEqual('green');
-//         });
+        it('should set background', () => {
+            // Arrange
 
-//         it('should set selectedItemBackground', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.background).toEqual('#242424');
+        });
 
-//             // Assert
-//             expect(colors.selectedItemBackground).toEqual('blue');
-//         });
+        it('should set primaryText', () => {
+            // Arrange
 
-//         it('should set tabText', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.primaryText).toEqual('#fff');
+        });
 
-//             // Assert
-//             expect(colors.tabText).toEqual('black');
-//         });
+        it('should set secondaryText', () => {
+            // Arrange
 
-//         it('should set selectedTabText', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.secondaryText).toEqual('#5e5e5e');
+        });
 
-//             // Assert
-//             expect(colors.selectedTabText).toEqual('white');
-//         });
+        it('should set separator', () => {
+            // Arrange
 
-//         it('should set mainBackground', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.separator).toEqual('#454545');
+        });
 
-//             // Assert
-//             expect(colors.mainBackground).toEqual('#aaa');
-//         });
+        it('should set contextMenuBackground', () => {
+            // Arrange
 
-//         it('should set dragImageBackground', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.contextMenuBackground).toEqual('#383838');
+        });
 
-//             // Assert
-//             expect(colors.dragImageBackground).toEqual('#ccc');
-//         });
+        it('should set contextMenuPrimaryText', () => {
+            // Arrange
 
-//         it('should set dragImageBorder', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.contextMenuPrimaryText).toEqual('#fff');
+        });
 
-//             // Assert
-//             expect(colors.dragImageBorder).toEqual('#ddd');
-//         });
+        it('should set contextMenuSecondaryText', () => {
+            // Arrange
 
-//         it('should set primaryText', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.contextMenuSecondaryText).toEqual('#6e6e6e');
+        });
 
-//             // Assert
-//             expect(colors.primaryText).toEqual('#eee');
-//         });
+        it('should set contextMenuSeparator', () => {
+            // Arrange
 
-//         it('should set secondaryText', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.contextMenuSeparator).toEqual('#565656');
+        });
 
-//             // Assert
-//             expect(colors.secondaryText).toEqual('#fff');
-//         });
+        it('should set hoverBackground', () => {
+            // Arrange
 
-//         it('should set sliderBackground', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.hoverBackground).toEqual('rgba(255, 255, 255, 0.03)');
+        });
 
-//             // Assert
-//             expect(colors.sliderBackground).toEqual('#111');
-//         });
+        it('should set selectionBackground', () => {
+            // Arrange
 
-//         it('should set sliderThumbBackground', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.selectionBackground).toEqual('rgba(255, 255, 255, 0.06)');
+        });
 
-//             // Assert
-//             expect(colors.sliderThumbBackground).toEqual('#222');
-//         });
+        it('should set primaryButtonText', () => {
+            // Arrange
 
-//         it('should set paneSeparators', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.primaryButtonText).toEqual('#fff');
+        });
 
-//             // Assert
-//             expect(colors.separators).toEqual('#333');
-//         });
+        it('should set secondaryButtonBackground', () => {
+            // Arrange
 
-//         it('should set contextMenuSeparators', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.secondaryButtonBackground).toEqual('#454545');
+        });
 
-//             // Assert
-//             expect(colors.contextMenuSeparators).toEqual('#555');
-//         });
+        it('should set secondaryButtonText', () => {
+            // Arrange
 
-//         it('should set scrollBars', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.secondaryButtonText).toEqual('#fff');
+        });
 
-//             // Assert
-//             expect(colors.scrollBars).toEqual('#666');
-//         });
+        it('should set editorBackground', () => {
+            // Arrange
 
-//         it('should set contextMenuBackground', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.editorBackground).toEqual('#242424');
+        });
 
-//             // Assert
-//             expect(colors.contextMenuBackground).toEqual('#777');
-//         });
+        it('should set editorCodeBackground', () => {
+            // Arrange
 
-//         it('should set commandIcon', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.editorCodeBackground).toEqual('#2a2a2a');
+        });
 
-//             // Assert
-//             expect(colors.commandIcon).toEqual('#888');
-//         });
+        it('should set editorBorder', () => {
+            // Arrange
 
-//         it('should set primaryButtonText', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.editorBorder).toEqual('#454545');
+        });
 
-//             // Assert
-//             expect(colors.primaryButtonText).toEqual('orange');
-//         });
+        it('should set editorPrimaryText', () => {
+            // Arrange
 
-//         it('should set secondaryButtonBackground', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
+            // Assert
+            expect(colors.editorPrimaryText).toEqual('#fff');
+        });
 
-//             // Assert
-//             expect(colors.secondaryButtonBackground).toEqual('grey');
-//         });
+        it('should set editorSecondaryText', () => {
+            // Arrange
 
-//         it('should set secondaryButtonText', () => {
-//             // Arrange
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
 
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
-
-//             // Assert
-//             expect(colors.secondaryButtonText).toEqual('magenta');
-//         });
-
-//         it('should set editorBackground', () => {
-//             // Arrange
-
-//             // Act
-//             const colors: ThemeNeutralColors = createNeutralColors();
-
-//             // Assert
-//             expect(colors.editorBackground).toEqual('brown');
-//         });
-//     });
-// });
+            // Assert
+            expect(colors.editorSecondaryText).toEqual('#5e5e5e');
+        });
+    });
+});
