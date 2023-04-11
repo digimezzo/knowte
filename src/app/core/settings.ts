@@ -261,7 +261,7 @@ export class Settings implements BaseSettings {
         }
 
         if (!this.settings.has('followSystemTheme')) {
-            this.settings.set('followSystemTheme', false);
+            this.settings.set('followSystemTheme', true);
         }
 
         if (!this.settings.has('useLightBackgroundTheme')) {

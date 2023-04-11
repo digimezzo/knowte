@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.0.0] - 2023-02-08
+## [3.0.0] - 2023-04-11
 
 ### Added
 
@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Added Russian translation
 -   Added option to move notes from one collection to another
 -   Added possibility to search inside notes
+-   Added Markdown notes
+-   Added improved theming and dark theme
 
 ### Changed
 
