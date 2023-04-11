@@ -2,6 +2,10 @@
     color: var(--theme-editor-primary-text) !important;
 }
 
+.note-editor a {
+    color: var(--theme-accent-color) !important;
+}
+
 .note-editor h1 {
     color: var(--theme-accent-color) !important;
     font-size: var(--fontsize-larger) !important;
