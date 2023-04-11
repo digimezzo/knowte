@@ -105,6 +105,6 @@ export class DefaultThemesCreator {
             '#888' // editorSecondaryText
         );
 
-        return new Theme('Limerence', this.creator, new ThemeCoreColors('#fd297b', '#ff655b ', '#ff3c62'), darkColors, lightColors);
+        return new Theme('Limerence', this.creator, new ThemeCoreColors('#fd297b', '#ff655b ', '#ff5864'), darkColors, lightColors);
     }
 }
