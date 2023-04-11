@@ -204,6 +204,11 @@ export class CollectionFileAccess {
 
     public async deleteUnusedNoteAttachmentsAsync(noteId: string, collection: string, noteText: string): Promise<void> {
         const noteAttachmentsDirectoryPath: string = this.getNoteAttachmentsDirectoryPath(noteId, collection);
+
+        if (!this.fileAccess.pathExists(noteAttachmentsDirectoryPath)) {
+            return;
+        }
+
         const noteAttachmentFilePaths: string[] = await this.fileAccess.getFilesInDirectoryAsync(noteAttachmentsDirectoryPath);
 
         for (const noteAttachmentFilePath of noteAttachmentFilePaths) {
