@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FileAccess } from '../../common/io/file-access';
 import { Logger } from '../../common/logging/logger';
+import { Scheduler } from '../../common/scheduling/scheduler';
 import { DataStore } from '../../data/data-store';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
@@ -8,9 +9,16 @@ import { CollectionPathConverter } from './collection-path-converter';
 
 @Injectable()
 export class CollectionDataStoreAccess {
-    private dataStore: DataStore = new DataStore();
+    private dataStore: DataStore;
 
-    public constructor(private collectionPathConverter: CollectionPathConverter, private fileAccess: FileAccess, private logger: Logger) {}
+    public constructor(
+        private collectionPathConverter: CollectionPathConverter,
+        private fileAccess: FileAccess,
+        private scheduler: Scheduler,
+        private logger: Logger
+    ) {
+        this.dataStore = new DataStore(scheduler);
+    }
 
     public async initializeAsync(collection: string): Promise<void> {
         const databaseFilePath: string = this.getCollectionDatabasePath(collection);

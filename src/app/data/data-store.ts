@@ -1,13 +1,11 @@
-import { Injectable } from '@angular/core';
 import * as loki from 'lokijs';
 import * as moment from 'moment';
-import { Utils } from '../common/utils/utils';
+import { Scheduler } from '../common/scheduling/scheduler';
 import { Note } from './entities/note';
 import { Notebook } from './entities/notebook';
 
-@Injectable()
 export class DataStore {
-    constructor() {}
+    constructor(private scheduler: Scheduler) {}
 
     private db: loki;
     private notebooks: any;
@@ -48,16 +46,20 @@ export class DataStore {
         });
     }
 
+    public caseInsensitiveNameSort(object1: any, object2: any): any {
+        return object1.name.toLowerCase().localeCompare(object2.name.toLowerCase());
+    }
+
     public async initializeAsync(databaseFile: string): Promise<void> {
         this.loadDatabase(databaseFile);
 
         while (!this.isLoaded) {
-            await Utils.sleep(100);
+            await this.scheduler.sleepAsync(100);
         }
     }
 
     public getNotebooks(): Notebook[] {
-        const notebooks: Notebook[] = this.notebooks.chain().sort(Utils.caseInsensitiveNameSort).data();
+        const notebooks: Notebook[] = this.notebooks.chain().sort(this.caseInsensitiveNameSort).data();
 
         return notebooks;
     }

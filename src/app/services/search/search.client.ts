@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
 import { Observable, Subject } from 'rxjs';
-import { Utils } from '../../common/utils/utils';
+import { Scheduler } from '../../common/scheduling/scheduler';
 import { SearchEvents } from './search-events';
 
 /**
@@ -15,7 +15,7 @@ export class SearchClient {
     private globalEmitter: any = remote.getGlobal('globalEmitter');
     private searchTextChanged: Subject<string> = new Subject();
 
-    public constructor() {}
+    public constructor(private scheduler: Scheduler) {}
 
     public searchTextChanged$: Observable<string> = this.searchTextChanged.asObservable();
 
@@ -29,7 +29,7 @@ export class SearchClient {
         this.globalEmitter.emit(SearchEvents.getSearchTextEvent, (receivedSearchText: string) => searchTexts.push(receivedSearchText));
 
         while (searchTexts.length === 0) {
-            await Utils.sleep(50);
+            await this.scheduler.sleepAsync(50);
         }
 
         return searchTexts[0];

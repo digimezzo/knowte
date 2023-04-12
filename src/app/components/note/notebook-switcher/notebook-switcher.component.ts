@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Utils } from '../../../common/utils/utils';
+import { Scheduler } from '../../../common/scheduling/scheduler';
 import { Notebook } from '../../../data/entities/notebook';
 import { CollectionClient } from '../../../services/collection/collection.client';
 import { NoteDetailsResult } from '../../../services/results/note-details-result';
@@ -16,7 +16,7 @@ import { TranslatorService } from '../../../services/translator/translator.servi
 export class NotebookSwitcherComponent implements OnInit, OnDestroy {
     private subscription: Subscription = new Subscription();
 
-    constructor(private collectionClient: CollectionClient, private translatorService: TranslatorService) {}
+    constructor(private collectionClient: CollectionClient, private translatorService: TranslatorService, private scheduler: Scheduler) {}
 
     public selectedNotebookName: string;
 
@@ -33,7 +33,7 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
 
         // TODO: there must be a better way to know when noteId is set
         while (!this.noteId) {
-            await Utils.sleep(50);
+            await this.scheduler.sleepAsync(50);
         }
 
         await this.getNotebookNameAsync();

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
 import { Observable, Subject } from 'rxjs';
 import { Operation } from '../../common/enums/operation';
+import { Scheduler } from '../../common/scheduling/scheduler';
 import { TasksCount } from '../../common/ui/tasks-count';
-import { Utils } from '../../common/utils/utils';
 import { Notebook } from '../../data/entities/notebook';
 import { NoteDetailsResult } from '../results/note-details-result';
 import { NoteMarkResult } from '../results/note-mark-result';
@@ -22,7 +22,7 @@ import { CollectionEvents } from './collection-events';
 export class CollectionClient {
     private globalEmitter: any = remote.getGlobal('globalEmitter');
 
-    public constructor() {
+    public constructor(private scheduler: Scheduler) {
         this.globalEmitter.on(CollectionEvents.closeNoteEvent, (noteId: string) => this.closeNote.next(noteId));
         this.globalEmitter.on(CollectionEvents.focusNoteEvent, (noteId: string) => this.focusNote.next(noteId));
         this.globalEmitter.on(CollectionEvents.noteMarkChangedEvent, (result: NoteMarkResult) => this.noteMarkChanged.next(result));
@@ -65,7 +65,7 @@ export class CollectionClient {
         );
 
         while (noteDetailsResult === null || noteDetailsResult === undefined) {
-            await Utils.sleep(50);
+            await this.scheduler.sleepAsync(50);
         }
 
         return noteDetailsResult;
@@ -83,7 +83,7 @@ export class CollectionClient {
         );
 
         while (noteOperationResult === null || noteOperationResult === undefined) {
-            await Utils.sleep(50);
+            await this.scheduler.sleepAsync(50);
         }
 
         return noteOperationResult;
@@ -109,7 +109,7 @@ export class CollectionClient {
         );
 
         while (operation === null || operation === undefined) {
-            await Utils.sleep(50);
+            await this.scheduler.sleepAsync(50);
         }
 
         return operation;
@@ -149,7 +149,7 @@ export class CollectionClient {
         this.globalEmitter.emit(CollectionEvents.getNotebooksEvent, (receivedNotebooks: Notebook[]) => (notebooks = receivedNotebooks));
 
         while (notebooks === undefined) {
-            await Utils.sleep(50);
+            await this.scheduler.sleepAsync(50);
         }
 
         return notebooks;
@@ -173,7 +173,7 @@ export class CollectionClient {
                 (receivedIsInitialized: boolean) => (isInitialized = receivedIsInitialized)
             );
 
-            await Utils.sleep(50);
+            await this.scheduler.sleepAsync(50);
         }
     }
 }

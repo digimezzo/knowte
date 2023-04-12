@@ -3,8 +3,8 @@ import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bott
 import { MatDialog } from '@angular/material/dialog';
 import * as remote from '@electron/remote';
 import { SaveDialogOptions, SaveDialogReturnValue } from 'electron';
+import { ApplicationPaths } from '../../../../common/application/applicationPaths';
 import { Logger } from '../../../../common/logging/logger';
-import { Utils } from '../../../../common/utils/utils';
 import { PersistanceService } from '../../../../services/persistance/persistance.service';
 import { PrintService } from '../../../../services/print/print.service';
 import { SnackBarService } from '../../../../services/snack-bar/snack-bar.service';
@@ -30,7 +30,9 @@ export class ShareBottomSheetComponent {
 
     public async exportNoteToPdfAsync(): Promise<void> {
         this.bottomSheetRef.dismiss();
-        const options: SaveDialogOptions = { defaultPath: Utils.getPdfExportPath(remote.app.getPath('documents'), this.data.noteTitle) };
+        const options: SaveDialogOptions = {
+            defaultPath: ApplicationPaths.getPdfExportPath(remote.app.getPath('documents'), this.data.noteTitle),
+        };
         const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
 
         if (saveDialogReturnValue.filePath != undefined) {
@@ -51,7 +53,7 @@ export class ShareBottomSheetComponent {
     public async exportNoteAsync(): Promise<void> {
         this.bottomSheetRef.dismiss();
         const options: SaveDialogOptions = {
-            defaultPath: Utils.getNoteExportPath(remote.app.getPath('documents'), this.data.noteTitle, this.data.isMarkdownNote),
+            defaultPath: ApplicationPaths.getNoteExportPath(remote.app.getPath('documents'), this.data.noteTitle, this.data.isMarkdownNote),
         };
         const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
 

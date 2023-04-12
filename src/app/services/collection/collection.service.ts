@@ -7,10 +7,11 @@ import { Constants } from '../../common/application/constants';
 import { Operation } from '../../common/enums/operation';
 import { FileAccess } from '../../common/io/file-access';
 import { Logger } from '../../common/logging/logger';
+import { Scheduler } from '../../common/scheduling/scheduler';
 import { BaseSettings } from '../../common/settings/base-settings';
 import { TasksCount } from '../../common/ui/tasks-count';
+import { CollectionUtils } from '../../common/utils/collection-utils';
 import { DateUtils } from '../../common/utils/date-utils';
-import { Utils } from '../../common/utils/utils';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
 import { BaseAppearanceService } from '../appearance/base-appearance.service';
@@ -81,6 +82,7 @@ export class CollectionService {
         private noteModelFactory: NoteModelFactory,
         private noteDateFormatter: NoteDateFormatter,
         private fileAccess: FileAccess,
+        private scheduler: Scheduler,
         private settings: BaseSettings,
         private logger: Logger
     ) {}
@@ -174,7 +176,7 @@ export class CollectionService {
 
         if (this.isInitializing) {
             while (this.isInitializing) {
-                await Utils.sleep(100);
+                await this.scheduler.sleepAsync(100);
             }
 
             return;
@@ -1170,7 +1172,7 @@ export class CollectionService {
 
         const searchTextPieces: string[] = filter.trim().split(' ');
 
-        return unfilteredNotes.filter((x) => Utils.containsAll(`${x.title} ${x.text}`, searchTextPieces));
+        return unfilteredNotes.filter((x) => CollectionUtils.containsAll(`${x.title} ${x.text}`, searchTextPieces));
     }
 
     public encryptNoteEventHandler(noteId: string, secretKey: string): void {

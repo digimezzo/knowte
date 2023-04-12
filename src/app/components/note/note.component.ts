@@ -12,9 +12,9 @@ import { ProductInformation } from '../../common/application/product-information
 import { Operation } from '../../common/enums/operation';
 import { ClipboardManager } from '../../common/io/clipboard-manager';
 import { Logger } from '../../common/logging/logger';
+import { Scheduler } from '../../common/scheduling/scheduler';
 import { BaseSettings } from '../../common/settings/base-settings';
 import { StringUtils } from '../../common/utils/strings-utils';
-import { Utils } from '../../common/utils/utils';
 import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
 import { CollectionClient } from '../../services/collection/collection.client';
 import { CryptographyService } from '../../services/cryptography/cryptography.service';
@@ -80,7 +80,8 @@ export class NoteComponent implements OnInit {
         private collectionClient: CollectionClient,
         private searchClient: SearchClient,
         private bottomSheet: MatBottomSheet,
-        private noteEditorFactory: NoteEditorFactory
+        private noteEditorFactory: NoteEditorFactory,
+        private scheduler: Scheduler
     ) {}
 
     public isEncrypted: boolean = false;
@@ -622,7 +623,7 @@ export class NoteComponent implements OnInit {
     }
 
     private async hideActionButtonsDelayedAsync(): Promise<void> {
-        await Utils.sleep(500);
+        await this.scheduler.sleepAsync(500);
         this.canPerformActions = false;
         this.rotateActionsButton();
     }

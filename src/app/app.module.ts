@@ -89,7 +89,6 @@ import { ThemeSwitcherComponent } from './components/theme-switcher/theme-switch
 import { TrashComponent } from './components/trash/trash.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { WindowControlsComponent } from './components/window-controls/window-controls.component';
-import { DataStore } from './data/data-store';
 import { CdkVirtualScrollViewportPatchDirective } from './directives/cdk-virtual-scroll-viewport-patch-directive';
 import { WebviewDirective } from './directives/webview.directive';
 import { GlobalErrorHandler } from './globalErrorHandler';
@@ -298,7 +297,6 @@ export function MarkedOptionsFactory(): MarkedOptions {
         DocumentProxy,
         DefaultThemesCreator,
         { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: CustomTooltipDefaults },
-        DataStore,
         {
             provide: ErrorHandler,
             useClass: GlobalErrorHandler,
