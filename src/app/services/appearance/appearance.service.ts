@@ -2,19 +2,19 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
 import { Subscription } from 'rxjs';
-import { ApplicationPaths } from '../../core/applicationPaths';
-import { BaseSettings } from '../../core/base-settings';
-import { ColorConverter } from '../../core/color-converter';
-import { Constants } from '../../core/constants';
-import { FontSize } from '../../core/font-size';
-import { BaseApplication } from '../../core/io/base-application';
-import { Desktop } from '../../core/io/desktop';
-import { DocumentProxy } from '../../core/io/document-proxy';
-import { FileAccess } from '../../core/io/file-access';
-import { Logger } from '../../core/logger';
-import { Strings } from '../../core/strings';
+import { ApplicationPaths } from '../../common/application/applicationPaths';
+import { Constants } from '../../common/application/constants';
+import { FontSize } from '../../common/application/font-size';
+import { BaseApplication } from '../../common/io/base-application';
+import { Desktop } from '../../common/io/desktop';
+import { DocumentProxy } from '../../common/io/document-proxy';
+import { FileAccess } from '../../common/io/file-access';
+import { Logger } from '../../common/logging/logger';
+import { BaseSettings } from '../../common/settings/base-settings';
+import { StringUtils } from '../../common/utils/strings-utils';
 import { AppearanceEvents } from './appearance-events';
 import { BaseAppearanceService } from './base-appearance.service';
+import { ColorConverter } from './color-converter';
 import { DefaultThemesCreator } from './default-themes-creator';
 import { Palette } from './palette';
 import { Theme } from './theme/theme';
@@ -248,7 +248,7 @@ export class AppearanceService implements BaseAppearanceService {
         if (this.settings.followSystemColor) {
             const systemAccentColor: string = this.getSystemAccentColor();
 
-            if (!Strings.isNullOrWhiteSpace(systemAccentColor)) {
+            if (!StringUtils.isNullOrWhiteSpace(systemAccentColor)) {
                 primaryColorToApply = systemAccentColor;
                 secondaryColorToApply = systemAccentColor;
                 accentColorToApply = systemAccentColor;

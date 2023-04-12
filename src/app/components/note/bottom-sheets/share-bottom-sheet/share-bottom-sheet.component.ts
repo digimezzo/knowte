@@ -3,8 +3,8 @@ import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bott
 import { MatDialog } from '@angular/material/dialog';
 import * as remote from '@electron/remote';
 import { SaveDialogOptions, SaveDialogReturnValue } from 'electron';
-import { Logger } from '../../../../core/logger';
-import { Utils } from '../../../../core/utils';
+import { Logger } from '../../../../common/logging/logger';
+import { Utils } from '../../../../common/utils/utils';
 import { PersistanceService } from '../../../../services/persistance/persistance.service';
 import { PrintService } from '../../../../services/print/print.service';
 import { SnackBarService } from '../../../../services/snack-bar/snack-bar.service';

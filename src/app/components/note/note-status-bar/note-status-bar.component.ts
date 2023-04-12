@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { MatBottomSheet, MatBottomSheetConfig } from '@angular/material/bottom-sheet';
-import { BaseSettings } from '../../../core/base-settings';
+import { BaseSettings } from '../../../common/settings/base-settings';
 import { CollectionClient } from '../../../services/collection/collection.client';
 import { SpellCheckService } from '../../../services/spell-check/spell-check.service';
 import { SpellCheckBottomSheetComponent } from '../bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';

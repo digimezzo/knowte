@@ -2,18 +2,18 @@ import * as remote from '@electron/remote';
 import { OpenDialogReturnValue } from 'electron';
 import { nanoid } from 'nanoid';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { BaseSettings } from '../../../core/base-settings';
-import { ClipboardManager } from '../../../core/clipboard-manager';
-import { ImageProcessor } from '../../../core/image-processor';
-import { Desktop } from '../../../core/io/desktop';
-import { Logger } from '../../../core/logger';
-import { PathConverter } from '../../../core/path-converter';
-import { Strings } from '../../../core/strings';
-import { TasksCount } from '../../../core/tasks-count';
+import { ClipboardManager } from '../../../common/io/clipboard-manager';
+import { Desktop } from '../../../common/io/desktop';
+import { PathConverter } from '../../../common/io/path-converter';
+import { Logger } from '../../../common/logging/logger';
+import { BaseSettings } from '../../../common/settings/base-settings';
+import { TasksCount } from '../../../common/ui/tasks-count';
+import { StringUtils } from '../../../common/utils/strings-utils';
 import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../../services/translator/translator.service';
 import { BoundaryGetter } from './boundary-getter';
 import { INoteEditor } from './i-note-editor';
+import { ImageProcessor } from './image-processor';
 import { LineBoundary } from './line-boundary';
 import { NoteImageSaver } from './note-image-saver';
 import { WordBoundary } from './word-boundary';
@@ -139,7 +139,7 @@ export class MarkdownNoteEditor implements INoteEditor {
         const markdownInputElement: any = this.getMarkdownInputElement();
         const selectedText: string = this.getSelectedText(markdownInputElement);
 
-        return !Strings.isNullOrWhiteSpace(selectedText);
+        return !StringUtils.isNullOrWhiteSpace(selectedText);
     }
 
     public performCut(): void {
@@ -470,7 +470,7 @@ export class MarkdownNoteEditor implements INoteEditor {
         let start: number = markdownInputElement.selectionStart;
         let end: number = markdownInputElement.selectionEnd;
 
-        if (Strings.isNullOrWhiteSpace(selectedText)) {
+        if (StringUtils.isNullOrWhiteSpace(selectedText)) {
             const wordBoundary: WordBoundary = this.boundaryGetter.getWordBoundary(markdownInputElement);
             start = wordBoundary.start;
             end = wordBoundary.end;
@@ -571,31 +571,31 @@ export class MarkdownNoteEditor implements INoteEditor {
         let textWithoutOldFormatting: string = text;
 
         if (newFormatting !== '- [ ] ') {
-            textWithoutOldFormatting = Strings.replaceAll(textWithoutOldFormatting, '- [ ] ', '');
+            textWithoutOldFormatting = StringUtils.replaceAll(textWithoutOldFormatting, '- [ ] ', '');
         }
 
         if (newFormatting !== '- [x] ') {
-            textWithoutOldFormatting = Strings.replaceAll(textWithoutOldFormatting, '- [x] ', '');
+            textWithoutOldFormatting = StringUtils.replaceAll(textWithoutOldFormatting, '- [x] ', '');
         }
 
         if (newFormatting !== '- ' && !text.includes('- [ ] ') && !text.includes('- [x] ')) {
-            textWithoutOldFormatting = Strings.replaceAll(textWithoutOldFormatting, '- ', '');
+            textWithoutOldFormatting = StringUtils.replaceAll(textWithoutOldFormatting, '- ', '');
         }
 
         if (newFormatting !== '1. ') {
-            textWithoutOldFormatting = Strings.replaceAll(textWithoutOldFormatting, '1. ', '');
+            textWithoutOldFormatting = StringUtils.replaceAll(textWithoutOldFormatting, '1. ', '');
         }
 
         return textWithoutOldFormatting;
     }
 
     private addListFormattingForMultipleLines(text: string, formatting: string): void {
-        const textWithFormattingAdded: string = Strings.replaceAll(text, '\n', `\n${formatting}`);
+        const textWithFormattingAdded: string = StringUtils.replaceAll(text, '\n', `\n${formatting}`);
         this.insertText(`${formatting}${textWithFormattingAdded}`);
     }
 
     private removeListFormattingForMultipleLines(text: string, formatting: string): void {
-        const textWithFormattingRemoved: string = Strings.replaceAll(text, formatting, '');
+        const textWithFormattingRemoved: string = StringUtils.replaceAll(text, formatting, '');
         this.insertText(textWithFormattingRemoved);
     }
 
@@ -635,7 +635,7 @@ export class MarkdownNoteEditor implements INoteEditor {
     private ensureTextIsSelected(element: any): void {
         const selectedText: string = this.getSelectedText(element);
 
-        if (Strings.isNullOrWhiteSpace(selectedText)) {
+        if (StringUtils.isNullOrWhiteSpace(selectedText)) {
             const wordBoundary: WordBoundary = this.boundaryGetter.getWordBoundary(element);
 
             element.focus();

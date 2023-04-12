@@ -3,14 +3,14 @@ import * as remote from '@electron/remote';
 import { ipcRenderer } from 'electron';
 import { Observable, Subject } from 'rxjs';
 import sanitize from 'sanitize-filename';
-import { BaseSettings } from '../../core/base-settings';
-import { Constants } from '../../core/constants';
-import { DateFormatter } from '../../core/date-formatter';
-import { Operation } from '../../core/enums';
-import { FileAccess } from '../../core/io/file-access';
-import { Logger } from '../../core/logger';
-import { TasksCount } from '../../core/tasks-count';
-import { Utils } from '../../core/utils';
+import { Constants } from '../../common/application/constants';
+import { Operation } from '../../common/enums/operation';
+import { FileAccess } from '../../common/io/file-access';
+import { Logger } from '../../common/logging/logger';
+import { BaseSettings } from '../../common/settings/base-settings';
+import { TasksCount } from '../../common/ui/tasks-count';
+import { DateUtils } from '../../common/utils/date-utils';
+import { Utils } from '../../common/utils/utils';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
 import { BaseAppearanceService } from '../appearance/base-appearance.service';
@@ -80,7 +80,6 @@ export class CollectionService {
         private temporaryStorageService: TemporaryStorageService,
         private noteModelFactory: NoteModelFactory,
         private noteDateFormatter: NoteDateFormatter,
-        private dateFormatter: DateFormatter,
         private fileAccess: FileAccess,
         private settings: BaseSettings,
         private logger: Logger
@@ -640,7 +639,7 @@ export class CollectionService {
 
                 // Date text
                 note.displayModificationDate = result.dateText;
-                note.displayExactModificationDate = this.dateFormatter.getFormattedDate(note.modificationDate);
+                note.displayExactModificationDate = DateUtils.getFormattedDate(note.modificationDate);
             }
 
             this.notesCountChanged.next(notesCountResult);
@@ -1038,7 +1037,7 @@ export class CollectionService {
 
         for (const trashedNote of trashedNotes) {
             trashedNote.isSelected = false;
-            trashedNote.displayTrashedDate = this.dateFormatter.getFormattedDate(trashedNote.trashedDate);
+            trashedNote.displayTrashedDate = DateUtils.getFormattedDate(trashedNote.trashedDate);
         }
 
         return trashedNotes;

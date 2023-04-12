@@ -6,7 +6,7 @@ import { ThemeCreator } from '../../services/appearance/theme/theme-creator';
 import { ThemeNeutralColors } from '../../services/appearance/theme/theme-neutral-colors';
 import { ThemeSwitcherComponent } from './theme-switcher.component';
 
-describe('ColorSchemeSwitcherComponent', () => {
+describe('ThemeSwitcherComponent', () => {
     let appearanceServiceMock: IMock<AppearanceService> = Mock.ofType<AppearanceService>();
 
     let component: ThemeSwitcherComponent;
@@ -84,11 +84,11 @@ describe('ColorSchemeSwitcherComponent', () => {
             );
 
             // Act
-            const defaultColorScheme: Theme = new Theme('My theme', themeCreator, coreColors, darkColors, lightColors);
-            component.setTheme(defaultColorScheme);
+            const defaultTheme: Theme = new Theme('My theme', themeCreator, coreColors, darkColors, lightColors);
+            component.setTheme(defaultTheme);
 
             // Assert
-            appearanceServiceMock.verify((x) => (x.selectedTheme = defaultColorScheme), Times.once());
+            appearanceServiceMock.verify((x) => (x.selectedTheme = defaultTheme), Times.once());
         });
     });
 });

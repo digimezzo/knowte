@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Strings } from './strings';
+import { StringUtils } from '../utils/strings-utils';
 
 @Injectable()
 export class GitHubApi {
@@ -19,7 +19,7 @@ export class GitHubApi {
         }
 
         if (latestRelease != undefined && latestRelease.tag_name != undefined) {
-            return Strings.replaceFirst(latestRelease.tag_name, 'v', '');
+            return StringUtils.replaceFirst(latestRelease.tag_name, 'v', '');
         }
 
         return '';

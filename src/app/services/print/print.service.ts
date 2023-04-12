@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ipcRenderer } from 'electron';
-import { Logger } from '../../core/logger';
+import { Logger } from '../../common/logging/logger';
 import { TemporaryStorageService } from '../temporary-storage/temporary-storage.service';
 
 @Injectable()

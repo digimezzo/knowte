@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Utils } from '../../../core/utils';
+import { Utils } from '../../../common/utils/utils';
 import { Notebook } from '../../../data/entities/notebook';
 import { CollectionClient } from '../../../services/collection/collection.client';
 import { NoteDetailsResult } from '../../../services/results/note-details-result';

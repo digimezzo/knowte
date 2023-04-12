@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { BaseSettings } from '../core/base-settings';
-import { PathConverter } from '../core/path-converter';
-import { Strings } from '../core/strings';
+import { PathConverter } from '../common/io/path-converter';
+import { BaseSettings } from '../common/settings/base-settings';
+import { StringUtils } from '../common/utils/strings-utils';
 import { CollectionFileAccess } from '../services/collection/collection-file-access';
 
 @Pipe({
@@ -22,7 +22,7 @@ export class FixImagePathsPipe implements PipeTransform {
         let collectionDirectoryPath: string = this.collectionFileAccess.getCollectionDirectoryPath(this.settings.activeCollection);
         const collectionDirectoryFileUri: string = this.pathConverter.operatingSystemPathToFileUri(collectionDirectoryPath);
 
-        const replacedText: string = Strings.replaceAll(value, './attachments/', `${collectionDirectoryFileUri}/${noteId}/`);
+        const replacedText: string = StringUtils.replaceAll(value, './attachments/', `${collectionDirectoryFileUri}/${noteId}/`);
 
         return replacedText;
     }

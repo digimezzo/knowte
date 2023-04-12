@@ -1,6 +1,6 @@
 import * as path from 'path';
 import sanitize from 'sanitize-filename';
-import { Constants } from './constants';
+import { Constants } from '../application/constants';
 
 export class Utils {
     public static async sleep(milliseconds: number): Promise<void> {

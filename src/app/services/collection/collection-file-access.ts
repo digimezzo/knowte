@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import archiver from 'archiver';
-import { BaseSettings } from '../../core/base-settings';
-import { Constants } from '../../core/constants';
-import { FileAccess } from '../../core/io/file-access';
-import { Strings } from '../../core/strings';
+import { Constants } from '../../common/application/constants';
+import { FileAccess } from '../../common/io/file-access';
+import { BaseSettings } from '../../common/settings/base-settings';
+import { StringUtils } from '../../common/utils/strings-utils';
 import { ClassicNoteExport } from './classic-note-export';
 import { MarkdownNoteExportMetadata } from './markdown-note-export-metadata';
 
@@ -225,7 +225,7 @@ export class CollectionFileAccess {
     }
 
     public async copyAttachmentsAsync(noteId: string, collection: string, noteAttachmentsSourceDirectoryPath: string): Promise<void> {
-        if (Strings.isNullOrWhiteSpace(noteAttachmentsSourceDirectoryPath)) {
+        if (StringUtils.isNullOrWhiteSpace(noteAttachmentsSourceDirectoryPath)) {
             return;
         }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { FileAccess } from '../../core/io/file-access';
-import { Logger } from '../../core/logger';
+import { FileAccess } from '../../common/io/file-access';
+import { Logger } from '../../common/logging/logger';
 import { DataStore } from '../../data/data-store';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';

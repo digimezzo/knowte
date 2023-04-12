@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
 import { BrowserWindow } from 'electron';
-import { BaseSettings } from '../../core/base-settings';
-import { Constants } from '../../core/constants';
-import { Logger } from '../../core/logger';
-import { SpellCheckLanguage } from '../../core/spell-check-language';
+import { Constants } from '../../common/application/constants';
+import { SpellCheckLanguage } from '../../common/application/spell-check-language';
+import { Logger } from '../../common/logging/logger';
+import { BaseSettings } from '../../common/settings/base-settings';
 
 @Injectable()
 export class SpellCheckService {

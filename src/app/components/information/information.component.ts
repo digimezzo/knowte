@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Constants } from '../../core/constants';
-import { ProductInformation } from '../../core/product-information';
+import { Constants } from '../../common/application/constants';
+import { ProductInformation } from '../../common/application/product-information';
 import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
 import { LicenseDialogComponent } from '../dialogs/license-dialog/license-dialog.component';
 

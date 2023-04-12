@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { Duration, Moment } from 'moment';
-import { DateFormatter } from '../../core/date-formatter';
+import { DateUtils } from '../../common/utils/date-utils';
 import { NoteDateFormatResult } from '../results/note-date-format-result';
 import { TranslatorService } from '../translator/translator.service';
 
 @Injectable()
 export class NoteDateFormatter {
-    public constructor(private translator: TranslatorService, private dateFormatter: DateFormatter) {}
+    public constructor(private translator: TranslatorService) {}
 
     public async getNoteDateFormatAsync(millisecondsSinceEpoch: number, useExactDates: boolean): Promise<NoteDateFormatResult> {
         const result: NoteDateFormatResult = new NoteDateFormatResult();
@@ -74,7 +74,7 @@ export class NoteDateFormatter {
         }
 
         if (useExactDates) {
-            result.dateText = this.dateFormatter.getFormattedDate(millisecondsSinceEpoch);
+            result.dateText = DateUtils.getFormattedDate(millisecondsSinceEpoch);
         }
 
         return result;

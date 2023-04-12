@@ -31,6 +31,18 @@ import 'zone.js/mix';
 import '../polyfills';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { GitHubApi } from './common/api/github-api';
+import { Application } from './common/io/application';
+import { BaseApplication } from './common/io/base-application';
+import { ClipboardManager } from './common/io/clipboard-manager';
+import { Desktop } from './common/io/desktop';
+import { DocumentProxy } from './common/io/document-proxy';
+import { FileAccess } from './common/io/file-access';
+import { PathConverter } from './common/io/path-converter';
+import { Logger } from './common/logging/logger';
+import { Scheduler } from './common/scheduling/scheduler';
+import { BaseSettings } from './common/settings/base-settings';
+import { Settings } from './common/settings/settings';
 import { ActiveNotebookAndSearchComponent } from './components/active-notebook-and-search/active-notebook-and-search.component';
 import { CollectionSwitcherComponent } from './components/collection-switcher/collection-switcher.component';
 import { MoveNotesBottomSheetComponent } from './components/collection/bottom-sheets/move-notes-bottom-sheet/move-notes-bottom-sheet.component';
@@ -60,6 +72,7 @@ import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/te
 import { MarkdownNoteComponent } from './components/note/markdown-note/markdown-note.component';
 import { NoteContextMenuFactory } from './components/note/note-context-menu-factory';
 import { BoundaryGetter } from './components/note/note-editor/boundary-getter';
+import { ImageProcessor } from './components/note/note-editor/image-processor';
 import { NoteEditorFactory } from './components/note/note-editor/note-editor-factory';
 import { NoteImageSaver } from './components/note/note-editor/note-image-saver';
 import { QuillFactory } from './components/note/note-editor/quill-factory';
@@ -76,20 +89,6 @@ import { ThemeSwitcherComponent } from './components/theme-switcher/theme-switch
 import { TrashComponent } from './components/trash/trash.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { WindowControlsComponent } from './components/window-controls/window-controls.component';
-import { BaseSettings } from './core/base-settings';
-import { ClipboardManager } from './core/clipboard-manager';
-import { DateFormatter } from './core/date-formatter';
-import { GitHubApi } from './core/github-api';
-import { ImageProcessor } from './core/image-processor';
-import { Application } from './core/io/application';
-import { BaseApplication } from './core/io/base-application';
-import { Desktop } from './core/io/desktop';
-import { DocumentProxy } from './core/io/document-proxy';
-import { FileAccess } from './core/io/file-access';
-import { Logger } from './core/logger';
-import { PathConverter } from './core/path-converter';
-import { Scheduler } from './core/scheduler';
-import { Settings } from './core/settings';
 import { DataStore } from './data/data-store';
 import { CdkVirtualScrollViewportPatchDirective } from './directives/cdk-virtual-scroll-viewport-patch-directive';
 import { WebviewDirective } from './directives/webview.directive';
@@ -264,7 +263,6 @@ export function MarkedOptionsFactory(): MarkedOptions {
         ElectronService,
         CollectionService,
         CollectionClient,
-        Settings,
         FileService,
         ClipboardManager,
         UpdateService,
@@ -284,7 +282,6 @@ export function MarkedOptionsFactory(): MarkedOptions {
         NoteDateFormatter,
         QuillTweaker,
         GitHubApi,
-        DateFormatter,
         Scheduler,
         Desktop,
         Logger,

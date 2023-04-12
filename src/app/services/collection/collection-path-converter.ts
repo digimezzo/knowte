@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BaseSettings } from '../../core/base-settings';
-import { FileAccess } from '../../core/io/file-access';
+import { FileAccess } from '../../common/io/file-access';
+import { BaseSettings } from '../../common/settings/base-settings';
 
 @Injectable()
 export class CollectionPathConverter {

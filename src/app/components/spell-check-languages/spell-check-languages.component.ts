@@ -1,5 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { SpellCheckLanguage } from '../../core/spell-check-language';
+import { SpellCheckLanguage } from '../../common/application/spell-check-language';
 import { SpellCheckService } from '../../services/spell-check/spell-check.service';
 
 @Component({

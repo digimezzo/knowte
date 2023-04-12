@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BaseSettings } from '../../core/base-settings';
-import { GitHubApi } from '../../core/github-api';
-import { Desktop } from '../../core/io/desktop';
-import { Logger } from '../../core/logger';
-import { ProductInformation } from '../../core/product-information';
+import { GitHubApi } from '../../common/api/github-api';
+import { ProductInformation } from '../../common/application/product-information';
+import { Desktop } from '../../common/io/desktop';
+import { Logger } from '../../common/logging/logger';
+import { BaseSettings } from '../../common/settings/base-settings';
 import { VersionComparer } from './version-comparer';
 @Injectable()
 export class UpdateService {

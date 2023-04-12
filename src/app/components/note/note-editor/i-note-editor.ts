@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { TasksCount } from '../../../core/tasks-count';
+import { TasksCount } from '../../../common/ui/tasks-count';
 
 export interface INoteEditor {
     noteId: string;

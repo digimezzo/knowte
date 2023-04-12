@@ -1,4 +1,4 @@
-import { Constants } from '../../core/constants';
+import { Constants } from '../../common/application/constants';
 
 export class VersionComparer {
     public static isNewerVersion(oldVersion: string, newVersion: string): boolean {

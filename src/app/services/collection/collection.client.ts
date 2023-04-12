@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
 import { Observable, Subject } from 'rxjs';
-import { Operation } from '../../core/enums';
-import { TasksCount } from '../../core/tasks-count';
-import { Utils } from '../../core/utils';
+import { Operation } from '../../common/enums/operation';
+import { TasksCount } from '../../common/ui/tasks-count';
+import { Utils } from '../../common/utils/utils';
 import { Notebook } from '../../data/entities/notebook';
 import { NoteDetailsResult } from '../results/note-details-result';
 import { NoteMarkResult } from '../results/note-mark-result';

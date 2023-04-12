@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject } from 'rxjs';
-import { BaseSettings } from '../../core/base-settings';
-import { Constants } from '../../core/constants';
-import { Language } from '../../core/language';
+import { Constants } from '../../common/application/constants';
+import { Language } from '../../common/application/language';
+import { BaseSettings } from '../../common/settings/base-settings';
 import { TranslatorEvents } from './translator-events';
 
 @Injectable()

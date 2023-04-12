@@ -1,9 +1,9 @@
 import * as Quill from 'quill';
 import { Observable, Subject } from 'rxjs';
-import { BaseSettings } from '../../../core/base-settings';
-import { ClipboardManager } from '../../../core/clipboard-manager';
-import { Logger } from '../../../core/logger';
-import { TasksCount } from '../../../core/tasks-count';
+import { ClipboardManager } from '../../../common/io/clipboard-manager';
+import { Logger } from '../../../common/logging/logger';
+import { BaseSettings } from '../../../common/settings/base-settings';
+import { TasksCount } from '../../../common/ui/tasks-count';
 import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { INoteEditor } from './i-note-editor';
 import { QuillFactory } from './quill-factory';

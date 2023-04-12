@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { BaseSettings } from '../../../core/base-settings';
-import { Constants } from '../../../core/constants';
+import { Constants } from '../../../common/application/constants';
+import { BaseSettings } from '../../../common/settings/base-settings';
 import { CollectionService } from '../../../services/collection/collection.service';
 
 @Component({

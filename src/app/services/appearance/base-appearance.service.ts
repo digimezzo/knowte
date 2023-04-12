@@ -1,4 +1,4 @@
-import { FontSize } from '../../core/font-size';
+import { FontSize } from '../../common/application/font-size';
 import { Theme } from './theme/theme';
 
 export abstract class BaseAppearanceService {
@@ -10,7 +10,7 @@ export abstract class BaseAppearanceService {
     public abstract themes: Theme[];
     public abstract selectedTheme: Theme;
     public abstract fontSizes: FontSize[];
-    public abstract selectedFontSize: FontSize ;
+    public abstract selectedFontSize: FontSize;
     public abstract themesDirectoryPath: string;
     public abstract refreshThemes(): void;
     public abstract applyAppearance(): void;

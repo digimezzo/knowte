@@ -1,4 +1,4 @@
-import { BaseSettings } from '../../core/base-settings';
+import { BaseSettings } from '../../common/settings/base-settings';
 import { Note } from '../../data/entities/note';
 import { CollectionFileAccess } from './collection-file-access';
 

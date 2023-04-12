@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
 import { Observable, Subject } from 'rxjs';
-import { Utils } from '../../core/utils';
+import { Utils } from '../../common/utils/utils';
 import { SearchEvents } from './search-events';
 
 /**

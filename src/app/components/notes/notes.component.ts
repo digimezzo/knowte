@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
-import { BaseSettings } from '../../core/base-settings';
-import { Constants } from '../../core/constants';
-import { Logger } from '../../core/logger';
-import { SelectionWatcher } from '../../core/selection-watcher';
+import { Constants } from '../../common/application/constants';
+import { Logger } from '../../common/logging/logger';
+import { BaseSettings } from '../../common/settings/base-settings';
+import { SelectionWatcher } from '../../common/ui/selection-watcher';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
 import { CollectionService } from '../../services/collection/collection.service';

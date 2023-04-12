@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as path from 'path';
-import { Constants } from '../../core/constants';
+import { Constants } from '../../common/application/constants';
 
 @Injectable()
 export class FileService {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BaseSettings } from '../../core/base-settings';
-import { Strings } from '../../core/strings';
+import { BaseSettings } from '../../common/settings/base-settings';
+import { StringUtils } from '../../common/utils/strings-utils';
 import { CollectionFileAccess } from '../collection/collection-file-access';
 import { CryptographyService } from '../cryptography/cryptography.service';
 
@@ -19,7 +19,7 @@ export class PersistanceService {
             isMarkdownNote
         );
 
-        if (isEncrypted && !Strings.isNullOrWhiteSpace(secretKey)) {
+        if (isEncrypted && !StringUtils.isNullOrWhiteSpace(secretKey)) {
             return this.cryptography.decrypt(noteContent, secretKey);
         }
 
@@ -35,7 +35,7 @@ export class PersistanceService {
     ): Promise<void> {
         let contentToWrite: string = noteJsonContent;
 
-        if (isEncrypted && !Strings.isNullOrWhiteSpace(secretKey)) {
+        if (isEncrypted && !StringUtils.isNullOrWhiteSpace(secretKey)) {
             contentToWrite = this.cryptography.encrypt(noteJsonContent, secretKey);
         }
 

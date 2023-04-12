@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Operation } from '../../core/enums';
+import { Operation } from '../../common/enums/operation';
 import { CollectionService } from '../../services/collection/collection.service';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
 

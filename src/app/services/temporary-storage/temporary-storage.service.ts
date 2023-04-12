@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import * as extract from 'extract-zip';
 import { nanoid } from 'nanoid';
-import { Desktop } from '../../core/io/desktop';
-import { FileAccess } from '../../core/io/file-access';
-import { Logger } from '../../core/logger';
+import { Desktop } from '../../common/io/desktop';
+import { FileAccess } from '../../common/io/file-access';
+import { Logger } from '../../common/logging/logger';
 
 @Injectable()
 export class TemporaryStorageService {

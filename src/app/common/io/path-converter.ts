@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Strings } from './strings';
+import { StringUtils } from '../utils/strings-utils';
 
 @Injectable()
 export class PathConverter {
@@ -8,11 +8,11 @@ export class PathConverter {
     public fileUriToOperatingSystemPath(fileUri: string): string {
         let operatingSystemPath: string = fileUri;
 
-        operatingSystemPath = Strings.replaceAll(operatingSystemPath, 'file:///', '');
-        operatingSystemPath = Strings.replaceAll(operatingSystemPath, '%20', ' ');
+        operatingSystemPath = StringUtils.replaceAll(operatingSystemPath, 'file:///', '');
+        operatingSystemPath = StringUtils.replaceAll(operatingSystemPath, '%20', ' ');
 
         if (operatingSystemPath.includes(':/')) {
-            operatingSystemPath = Strings.replaceAll(operatingSystemPath, '/', '\\');
+            operatingSystemPath = StringUtils.replaceAll(operatingSystemPath, '/', '\\');
         } else {
             operatingSystemPath = `/${operatingSystemPath}`;
         }
@@ -23,8 +23,8 @@ export class PathConverter {
     public operatingSystemPathToFileUri(operatingSystemPath: string): string {
         let fileUri: string = operatingSystemPath;
 
-        fileUri = Strings.replaceAll(fileUri, '\\', '/');
-        fileUri = Strings.replaceAll(fileUri, ' ', '%20');
+        fileUri = StringUtils.replaceAll(fileUri, '\\', '/');
+        fileUri = StringUtils.replaceAll(fileUri, ' ', '%20');
         fileUri = `file:///${fileUri}`;
 
         return fileUri;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as loki from 'lokijs';
 import * as moment from 'moment';
-import { Utils } from '../core/utils';
+import { Utils } from '../common/utils/utils';
 import { Note } from './entities/note';
 import { Notebook } from './entities/notebook';
 

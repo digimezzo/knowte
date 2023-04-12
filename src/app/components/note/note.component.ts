@@ -7,14 +7,14 @@ import * as remote from '@electron/remote';
 import { BrowserWindow } from 'electron';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/internal/operators';
-import { BaseSettings } from '../../core/base-settings';
-import { ClipboardManager } from '../../core/clipboard-manager';
-import { Constants } from '../../core/constants';
-import { Operation } from '../../core/enums';
-import { Logger } from '../../core/logger';
-import { ProductInformation } from '../../core/product-information';
-import { Strings } from '../../core/strings';
-import { Utils } from '../../core/utils';
+import { Constants } from '../../common/application/constants';
+import { ProductInformation } from '../../common/application/product-information';
+import { Operation } from '../../common/enums/operation';
+import { ClipboardManager } from '../../common/io/clipboard-manager';
+import { Logger } from '../../common/logging/logger';
+import { BaseSettings } from '../../common/settings/base-settings';
+import { StringUtils } from '../../common/utils/strings-utils';
+import { Utils } from '../../common/utils/utils';
 import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
 import { CollectionClient } from '../../services/collection/collection.client';
 import { CryptographyService } from '../../services/cryptography/cryptography.service';
@@ -464,7 +464,7 @@ export class NoteComponent implements OnInit {
     }
 
     private applySearch(): void {
-        if (!Strings.isNullOrWhiteSpace(this.searchText)) {
+        if (!StringUtils.isNullOrWhiteSpace(this.searchText)) {
             const searchTextPieces: string[] = this.searchText.trim().split(' ');
 
             // For now, we can only search for 1 word.

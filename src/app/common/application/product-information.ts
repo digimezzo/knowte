@@ -1,4 +1,4 @@
-const { getName, getFullVersion, getCopyright } = require('../../../get-package-information.js');
+const { getName, getFullVersion, getCopyright } = require('../../../../get-package-information.js');
 
 export class ProductInformation {
     public static readonly applicationName: string = getName();

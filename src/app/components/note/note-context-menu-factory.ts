@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ContextMenuParams, WebContents } from 'electron';
-import { BaseSettings } from '../../core/base-settings';
-import { TranslatorService } from '../../services/translator/translator.service';
 import * as remote from '@electron/remote';
+import { ContextMenuParams, WebContents } from 'electron';
+import { BaseSettings } from '../../common/settings/base-settings';
+import { TranslatorService } from '../../services/translator/translator.service';
 import { ContextMenuItemsEnabledState } from './context-menu-items-enabled-state';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class NoteContextMenuFactory {
         cutAction: () => void,
         copyAction: () => void,
         pasteAction: () => void,
-        deleteAction: () => void,
+        deleteAction: () => void
     ): Promise<void> {
         const contextMenu = new remote.Menu();
 
