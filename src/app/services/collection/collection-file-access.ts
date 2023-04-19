@@ -159,11 +159,13 @@ export class CollectionFileAccess {
         archive.pipe(stream);
         archive.append(this.fileAccess.createReadStream(noteContentFilePath), { name: noteContentFileName });
 
-        const noteAttachmentFilePaths: string[] = await this.fileAccess.getFilesInDirectoryAsync(noteAttachmentsDirectoryPath);
+        if (this.fileAccess.pathExists(noteAttachmentsDirectoryPath)) {
+            const noteAttachmentFilePaths: string[] = await this.fileAccess.getFilesInDirectoryAsync(noteAttachmentsDirectoryPath);
 
-        for (const noteAttachmentFilePath of noteAttachmentFilePaths) {
-            const noteAttachmentFileName: string = this.fileAccess.getFileName(noteAttachmentFilePath);
-            archive.append(this.fileAccess.createReadStream(noteAttachmentFilePath), { name: 'attachments/' + noteAttachmentFileName });
+            for (const noteAttachmentFilePath of noteAttachmentFilePaths) {
+                const noteAttachmentFileName: string = this.fileAccess.getFileName(noteAttachmentFilePath);
+                archive.append(this.fileAccess.createReadStream(noteAttachmentFilePath), { name: 'attachments/' + noteAttachmentFileName });
+            }
         }
 
         const markdownNoteExportMetadataBuffer = Buffer.from(JSON.stringify(markdownNoteExportMetadata));
