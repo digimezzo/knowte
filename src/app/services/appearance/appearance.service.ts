@@ -485,7 +485,7 @@ export class AppearanceService implements BaseAppearanceService {
             element.style.setProperty('--color-canvas-subtle', neutralColors.editorCodeBackground);
             element.style.setProperty('--color-border-default', neutralColors.editorBorder);
             element.style.setProperty('--color-border-muted', neutralColors.editorBorder);
-            element.style.setProperty('--color-neutral-muted', 'rgba(175, 184, 193, 0.2)');
+            element.style.setProperty('--color-neutral-muted', neutralColors.editorCodeBackground);
             element.style.setProperty('--color-accent-fg', '#0969da');
             element.style.setProperty('--color-accent-emphasis', '#0969da');
             element.style.setProperty('--color-attention-subtle', '#fff8c5');
@@ -528,7 +528,7 @@ export class AppearanceService implements BaseAppearanceService {
             element.style.setProperty('--color-canvas-subtle', neutralColors.editorCodeBackground);
             element.style.setProperty('--color-border-default', neutralColors.editorBorder);
             element.style.setProperty('--color-border-muted', neutralColors.editorBorder);
-            element.style.setProperty('--color-neutral-muted', ' rgba(110, 118, 129, 0.4)');
+            element.style.setProperty('--color-neutral-muted', neutralColors.editorCodeBackground);
             element.style.setProperty('--color-accent-fg', '#58a6ff');
             element.style.setProperty('--color-accent-emphasis', '#1f6feb');
             element.style.setProperty('--color-attention-subtle', ' rgba(187, 128, 9, 0.15)');
