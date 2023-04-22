@@ -21,7 +21,7 @@
 }
 
 .drag-image-icon {
-    background: linear-gradient(45deg, var(--theme-primary-color) 30%, var(--theme-secondary-color) 100%);
+    background: linear-gradient(-45deg, var(--theme-primary-color) 0%, var(--theme-secondary-color) 100%);
     margin: 4px;
     width: 28px;
     min-width: 28px;
@@ -63,7 +63,7 @@
 }
 
 .note-item-icon {
-    background: linear-gradient(45deg, var(--theme-primary-color) 30%, var(--theme-secondary-color) 100%);
+    background: linear-gradient(45deg, var(--theme-primary-color) 0%, var(--theme-secondary-color) 100%);
     margin-left: 4px;
     width: 40px;
     height: 40px;

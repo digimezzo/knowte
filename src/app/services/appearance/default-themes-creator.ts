@@ -53,7 +53,10 @@ export class DefaultThemesCreator {
     public createAllThemes(): Theme[] {
         const themes: Theme[] = [];
         themes.push(this.createKnowteTheme());
-        themes.push(this.createLimerenceTheme());
+        themes.push(this.createSanguineTheme());
+        themes.push(this.createPurpleLakeTheme());
+        themes.push(this.createBloodyMaryTheme());
+        themes.push(this.createQuepalTheme());
 
         return themes;
     }
@@ -62,13 +65,31 @@ export class DefaultThemesCreator {
         return new Theme('Knowte', this.creator, new ThemeCoreColors('#6260e3', '#429beb', '#4872e5'), this.darkColors, this.lightColors);
     }
 
-    private createLimerenceTheme(): Theme {
+    private createSanguineTheme(): Theme {
+        return new Theme('Sanguine', this.creator, new ThemeCoreColors('#dd3455', '#f28e42', '#e9604b'), this.darkColors, this.lightColors);
+    }
+
+    private createPurpleLakeTheme(): Theme {
         return new Theme(
-            'Limerence',
+            'Purple Lake',
             this.creator,
-            new ThemeCoreColors('#fd297b', '#ff655b ', '#ff5864'),
+            new ThemeCoreColors('#8f3b92', '#ed4784', '#b33b8c'),
             this.darkColors,
             this.lightColors
         );
+    }
+
+    private createBloodyMaryTheme(): Theme {
+        return new Theme(
+            'Bloody Mary',
+            this.creator,
+            new ThemeCoreColors('#df3b7c', '#f05537', '#ef425a'),
+            this.darkColors,
+            this.lightColors
+        );
+    }
+
+    private createQuepalTheme(): Theme {
+        return new Theme('Quepal', this.creator, new ThemeCoreColors('#00998c', '#38EF7D', '#4ec486'), this.darkColors, this.lightColors);
     }
 }

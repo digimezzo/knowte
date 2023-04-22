@@ -1,7 +1,7 @@
 @import 'theming';
 
 .app-logo-main {
-    background: linear-gradient(45deg, var(--theme-primary-color) 30%, var(--theme-secondary-color) 100%);
+    background: linear-gradient(45deg, var(--theme-primary-color) 0%, var(--theme-secondary-color) 100%);
     width: 80px;
     min-width: 80px;
     height: 80px;
