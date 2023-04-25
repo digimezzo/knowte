@@ -28,9 +28,9 @@ describe('DefaultThemesCreator', () => {
             expect(defaultThemes.length).toEqual(5);
             expect(defaultThemes[0].name).toEqual('Knowte');
             expect(defaultThemes[1].name).toEqual('Sanguine');
-            expect(defaultThemes[3].name).toEqual('Purple Lake');
-            expect(defaultThemes[4].name).toEqual('Bloody Mary');
-            expect(defaultThemes[5].name).toEqual('Quepal');
+            expect(defaultThemes[2].name).toEqual('Purple Lake');
+            expect(defaultThemes[3].name).toEqual('Bloody Mary');
+            expect(defaultThemes[4].name).toEqual('Quepal');
         });
     });
 });
