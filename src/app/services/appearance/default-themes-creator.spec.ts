@@ -25,7 +25,7 @@ describe('DefaultThemesCreator', () => {
             const defaultThemes: Theme[] = defaultThemesCreator.createAllThemes();
 
             // Assert
-            expect(defaultThemes.length).toEqual(2);
+            expect(defaultThemes.length).toEqual(5);
             expect(defaultThemes[0].name).toEqual('Knowte');
             expect(defaultThemes[1].name).toEqual('Limerence');
         });
