@@ -26,7 +26,7 @@ Knowte is a note taking application that allows you to quickly and easily organi
 
 sudo apt install wine rpm libarchive-tools
 
-**To install the prerequisites on Manjaro:**
+**To install the prerequisites on Arch Linux and Manjaro:**
 
 sudo pacman -S wine rpm-tools
 
