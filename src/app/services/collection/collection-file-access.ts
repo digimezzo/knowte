@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import archiver from 'archiver';
 import { Constants } from '../../common/application/constants';
 import { FileAccess } from '../../common/io/file-access';
+import { Logger } from '../../common/logging/logger';
 import { BaseSettings } from '../../common/settings/base-settings';
 import { StringUtils } from '../../common/utils/strings-utils';
 import { ClassicNoteExport } from './classic-note-export';
@@ -9,7 +10,7 @@ import { MarkdownNoteExportMetadata } from './markdown-note-export-metadata';
 
 @Injectable()
 export class CollectionFileAccess {
-    public constructor(private fileAccess: FileAccess, private settings: BaseSettings) {}
+    public constructor(private fileAccess: FileAccess, private settings: BaseSettings, private logger: Logger) {}
 
     public async saveNoteContentAsync(noteId: string, noteContent: string, collection: string, isMarkdownNote: boolean): Promise<void> {
         const noteContentFilePath: string = this.getNoteContentFilePath(noteId, collection, isMarkdownNote);
@@ -190,6 +191,17 @@ export class CollectionFileAccess {
     }
 
     public createStorageDirectory(parentDirectory: string): string {
+        // Check if the user selected the collection directory itself and correct the mistake
+        if (this.fileAccess.getDirectoryOrFileName(parentDirectory) === Constants.collectionsDirectory) {
+            parentDirectory = this.fileAccess.getDirectoryPath(parentDirectory);
+
+            this.logger.info(
+                `User selected collections directory. Corrected to parent directory '${parentDirectory}'`,
+                'CollectionFileAccess',
+                'createStorageDirectory'
+            );
+        }
+
         const storageDirectory: string = this.fileAccess.combinePath(parentDirectory, Constants.collectionsDirectory);
         this.fileAccess.createFullDirectoryPathIfDoesNotExist(storageDirectory);
 

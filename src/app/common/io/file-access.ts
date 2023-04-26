@@ -200,4 +200,8 @@ export class FileAccess {
     public writeToFile(filePath: string, textToWrite: string): void {
         fs.writeFileSync(filePath, textToWrite);
     }
+
+    public getDirectoryPath(directoryOrFilePath: string): string {
+        return path.dirname(directoryOrFilePath);
+    }
 }
