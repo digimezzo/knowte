@@ -14,7 +14,9 @@ Knowte is a note taking application that allows you to quickly and easily organi
 
 ## Screenshot
 
-![Knowte2screenshot](Knowte.showcase.png)
+![Knowte2screenshot](Knowte.showcase.dark.png)
+
+![Knowte2screenshot](Knowte.showcase.light.png)
 
 ## Build prerequisites
 
