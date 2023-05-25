@@ -80,3 +80,7 @@
 .note-editor .ql-editor blockquote {
     border-left: 4px solid var(--theme-classic-note-quote-border) !important;
 }
+
+.note-editor > * {
+    font-family: opensans;
+}
