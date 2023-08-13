@@ -36,8 +36,10 @@ export class ClassicNoteEditor implements INoteEditor {
     }
 
     public set content(v: string) {
-        this.quill.setContents(JSON.parse(v), 'silent');
-        this.quill.history.clear();
+        if (v) {
+            this.quill.setContents(JSON.parse(v), 'silent');
+            this.quill.history.clear();
+        }
     }
 
     public get html(): string {

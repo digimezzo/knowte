@@ -590,17 +590,8 @@ export class NoteComponent implements OnInit {
                 this.isMarkdownNote
             );
 
-            if (noteContent) {
-                // We can only parse to json if there is content
-                this.logger.info(`Setting the content for the note with id='${this.noteId}'`, 'NoteComponent', 'getNoteContentAsync');
-                this.noteEditor.content = noteContent;
-            } else {
-                this.logger.error(
-                    `Could not get the content for the note with id='${this.noteId}'`,
-                    'NoteComponent',
-                    'getNoteContentAsync'
-                );
-            }
+            this.logger.info(`Setting the content for the note with id='${this.noteId}'`, 'NoteComponent', 'getNoteContentAsync');
+            this.noteEditor.content = noteContent;
         } catch (error) {
             this.logger.error(
                 `Could not get the content for the note with id='${this.noteId}'. Cause: ${error}`,

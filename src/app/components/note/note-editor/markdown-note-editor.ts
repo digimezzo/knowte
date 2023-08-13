@@ -19,7 +19,7 @@ import { NoteImageSaver } from './note-image-saver';
 import { WordBoundary } from './word-boundary';
 
 export class MarkdownNoteEditor implements INoteEditor {
-    private _previousContent: string = '';
+    private isFirstTimeSettingContent: boolean = true;
     private _content: string = '';
     private noteContentChanged: Subject<void> = new Subject<void>();
     private subscription: Subscription = new Subscription();
@@ -57,11 +57,11 @@ export class MarkdownNoteEditor implements INoteEditor {
     public set content(v: string) {
         this._content = v;
 
-        if (this._content !== this._previousContent) {
+        if (!this.isFirstTimeSettingContent) {
             this.noteContentChanged.next();
         }
 
-        this._previousContent = this._content;
+        this.isFirstTimeSettingContent = false;
     }
 
     public get text(): string {
