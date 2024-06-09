@@ -305,18 +305,6 @@ export function MarkedOptionsFactory(): MarkedOptions {
         { provide: BaseApplication, useClass: Application },
         { provide: BaseAppearanceService, useClass: AppearanceService },
     ],
-    bootstrap: [AppComponent],
-    entryComponents: [
-        LicenseDialogComponent,
-        InputDialogComponent,
-        PasswordInputDialogComponent,
-        ErrorDialogComponent,
-        RenameCollectionDialogComponent,
-        RenameNotebookDialogComponent,
-        ConfirmationDialogComponent,
-        SetSpellCheckerLanguagesDialogComponent,
-        NotificationDialogComponent,
-        TrashComponent,
-    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule {}
