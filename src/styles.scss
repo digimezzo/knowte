@@ -1,4 +1,3 @@
-@import 'theming';
 @import 'variables';
 @import 'loader';
 @import 'font-faces';
@@ -20,6 +19,7 @@
 @import 'common';
 @import 'window-frame';
 @import 'window-buttons';
+@import 'angular-material-theming';
 @import 'scrollbar';
 @import 'cdk-virtual-scroll';
 @import 'as-split';
