@@ -7,7 +7,7 @@ on:
 
 jobs:
     merge_build_on_linux:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-22.04
         if: github.event.pull_request.merged == true
         steps:
             - uses: actions/checkout@v2
@@ -55,7 +55,7 @@ jobs:
                   path: release/Knowte-*.pacman
 
     merge_build_on_mac:
-        runs-on: macos-11
+        runs-on: macos-13
         if: github.event.pull_request.merged == true
         steps:
             - uses: actions/checkout@v2
