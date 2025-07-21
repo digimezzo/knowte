@@ -20,7 +20,9 @@ describe('ThemeNeutralColors', () => {
             '#2a2a2a', // editorCodeBackground
             '#454545', // editorBorder
             '#fff', // editorPrimaryText
-            '#5e5e5e' // editorSecondaryText
+            '#5e5e5e', // editorSecondaryText
+            '#fff', // buttonBorder
+            '#fff' // highlightForeground
         );
     }
 
@@ -215,6 +217,26 @@ describe('ThemeNeutralColors', () => {
 
             // Assert
             expect(colors.editorSecondaryText).toEqual('#5e5e5e');
+        });
+
+        it('should set buttonBorder', () => {
+            // Arrange
+
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
+
+            // Assert
+            expect(colors.buttonBorder).toEqual('#fff');
+        });
+        
+        it('should set highlightForeground', () => {
+            // Arrange
+
+            // Act
+            const colors: ThemeNeutralColors = createNeutralColors();
+
+            // Assert
+            expect(colors.highlightForeground).toEqual('#fff');
         });
     });
 });

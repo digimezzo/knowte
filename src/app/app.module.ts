@@ -117,6 +117,8 @@ import { TemporaryStorageService } from './services/temporary-storage/temporary-
 import { TranslatorService } from './services/translator/translator.service';
 import { TrashService } from './services/trash/trash.service';
 import { UpdateService } from './services/update/update.service';
+import {AccentButtonComponent} from "./components/controls/accent-button/accent-button.component";
+import {TransparentButtonComponent} from "./components/controls/transparent-button/transparent-button.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -216,6 +218,8 @@ export function MarkedOptionsFactory(): MarkedOptions {
         CdkVirtualScrollViewportPatchDirective,
         TruncatePipe,
         FixImagePathsPipe,
+        AccentButtonComponent,
+        TransparentButtonComponent
     ],
     imports: [
         MarkdownModule.forRoot({

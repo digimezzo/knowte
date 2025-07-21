@@ -60,7 +60,9 @@ describe('ThemeSwitcherComponent', () => {
                 '#555',
                 '#666',
                 '#777',
-                '#888'
+                '#888',
+                'black',
+                '#fff'
             );
             const lightColors: ThemeNeutralColors = new ThemeNeutralColors(
                 'red',
@@ -80,7 +82,9 @@ describe('ThemeSwitcherComponent', () => {
                 '#555',
                 '#666',
                 '#777',
-                '#888'
+                '#888',
+                'black',
+                '#fff'
             );
 
             // Act

@@ -23,7 +23,9 @@ describe('Theme', () => {
             '#2a2a2a', // editorCodeBackground
             '#454545', // editorBorder
             '#fff', // editorPrimaryText
-            '#5e5e5e' // editorSecondaryText
+            '#5e5e5e', // editorSecondaryText
+            '#fff', // buttonBorder
+            '#fff' // highlightForeground
         );
     }
 

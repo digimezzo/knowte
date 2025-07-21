@@ -17,6 +17,8 @@ export class ThemeNeutralColors {
         public editorCodeBackground: string,
         public editorBorder: string,
         public editorPrimaryText: string,
-        public editorSecondaryText: string
+        public editorSecondaryText: string,
+        public buttonBorder: string,
+        public highlightForeground: string
     ) {}
 }

@@ -38,17 +38,17 @@
                             <strong> {{ applicationVersion }}</strong>
                             <br />{{ applicationCopyright }}
                         </div>
-                        <button class="mt-2" mat-raised-button color="primary" (click)="openLicenseDialog()">
+                        <app-transparent-button class="mt-2"  (click)="openLicenseDialog()">
                             {{ 'Buttons.License' | translate }}
-                        </button>
+                        </app-transparent-button>
                     </div>
                     <mat-divider></mat-divider>
                     <div class="m-3">
                         <div class="title1">{{ 'AboutPage.Donate' | translate }}</div>
                         <div>{{ 'AboutPage.IsKnowteUseful' | translate }}</div>
-                        <button class="mt-2" mat-raised-button color="primary" (click)="openDonateLink()">
+                        <app-accent-button class="mt-2" (click)="openDonateLink()">
                             {{ 'Buttons.Donate' | translate }}
-                        </button>
+                        </app-accent-button>
                     </div>
                     <mat-divider></mat-divider>
                     <div class="m-3">
