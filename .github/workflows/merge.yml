@@ -29,27 +29,27 @@ jobs:
                   path: 'package.json'
                   prop_path: 'version'
             - name: uploading rpm artifact
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: knowte-merge-rpm
                   path: release/Knowte-*.rpm
             - name: upload deb artifact
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: knowte-merge-deb
                   path: release/Knowte-*.deb
             - name: upload appimage artifact
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: knowte-merge-appimage
                   path: release/Knowte-*.AppImage
             - name: upload snap artifact
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: knowte-merge-snap
                   path: release/Knowte-*.snap
             - name: upload pacman artifact
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: knowte-merge-pacman
                   path: release/Knowte-*.pacman
@@ -75,7 +75,7 @@ jobs:
                   path: 'package.json'
                   prop_path: 'version'
             - name: upload build artifacts
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: knowte-merge-macos
                   path: release/Knowte-*.dmg
