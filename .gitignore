@@ -1,6 +1,7 @@
 /.angular/cache
 .vscode/
 .VSCodeCounter/
+.idea/
 node_modules/
 dist/
 release/
