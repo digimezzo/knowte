@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Theme } from './theme/theme';
-import { ThemeCoreColors } from './theme/theme-core-colors';
-import { ThemeCreator } from './theme/theme-creator';
-import { ThemeNeutralColors } from './theme/theme-neutral-colors';
+import {Injectable} from '@angular/core';
+import {Theme} from './theme/theme';
+import {ThemeCoreColors} from './theme/theme-core-colors';
+import {ThemeCreator} from './theme/theme-creator';
+import {ThemeNeutralColors} from './theme/theme-neutral-colors';
 
 @Injectable()
 export class DefaultThemesCreator {
@@ -28,7 +28,8 @@ export class DefaultThemesCreator {
         '#fff', // editorPrimaryText
         '#6e6e6e', // editorSecondaryText
         '#454545', // buttonBorder
-        '#fff' // highlightForeground
+        '#fff', // highlightForeground
+        '#fff' // tooltipText
     );
 
     private lightColors: ThemeNeutralColors = new ThemeNeutralColors(
@@ -51,7 +52,8 @@ export class DefaultThemesCreator {
         '#000', // editorPrimaryText
         '#888', // editorSecondaryText
         '#ccc', // buttonBorder
-        '#fff' // highlightForeground
+        '#fff', // highlightForeground
+        '#fff' // tooltipText
     );
 
     public createAllThemes(): Theme[] {

@@ -8,8 +8,7 @@
     </div>
     <!-- Search -->
     <mat-form-field class="notes-content-search">
-        <mat-label>{{ 'MainPage.Search' | translate }}</mat-label>
-        <input matInput type="text" #searchInput [(ngModel)]="this.searchService.searchText" />
+        <input matInput type="text" #searchInput [(ngModel)]="this.searchService.searchText" placeholder="{{ 'MainPage.Search' | translate }}"/>
         <button
             class="notes-content-search-clearbutton"
             mat-button

@@ -19,6 +19,7 @@ export class ThemeNeutralColors {
         public editorPrimaryText: string,
         public editorSecondaryText: string,
         public buttonBorder: string,
-        public highlightForeground: string
+        public highlightForeground: string,
+        public tooltipText: string,
     ) {}
 }
