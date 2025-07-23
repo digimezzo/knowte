@@ -119,6 +119,8 @@ import { TrashService } from './services/trash/trash.service';
 import { UpdateService } from './services/update/update.service';
 import {AccentButtonComponent} from "./components/controls/accent-button/accent-button.component";
 import {TransparentButtonComponent} from "./components/controls/transparent-button/transparent-button.component";
+import {SubMenuItemComponent} from "./components/sub-menu/sub-menu-item/sub-menu-item.component";
+import {SubMenuComponent} from "./components/sub-menu/sub-menu.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -219,7 +221,9 @@ export function MarkedOptionsFactory(): MarkedOptions {
         TruncatePipe,
         FixImagePathsPipe,
         AccentButtonComponent,
-        TransparentButtonComponent
+        TransparentButtonComponent,
+        SubMenuComponent,
+        SubMenuItemComponent
     ],
     imports: [
         MarkdownModule.forRoot({

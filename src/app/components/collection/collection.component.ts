@@ -1,65 +1,48 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import {Component, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import * as remote from '@electron/remote';
-import { SplitAreaDirective, SplitComponent } from 'angular-split';
-import { OpenDialogReturnValue } from 'electron';
-import { Subject, Subscription } from 'rxjs';
-import { debounceTime } from 'rxjs/internal/operators';
-import { Constants } from '../../common/application/constants';
-import { ProductInformation } from '../../common/application/product-information';
-import { Operation } from '../../common/enums/operation';
-import { Logger } from '../../common/logging/logger';
-import { BaseSettings } from '../../common/settings/base-settings';
-import { SelectionWatcher } from '../../common/ui/selection-watcher';
-import { Note } from '../../data/entities/note';
-import { Notebook } from '../../data/entities/notebook';
-import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
-import { CollectionService } from '../../services/collection/collection.service';
-import { FileService } from '../../services/file/file.service';
-import { NoteMarkResult } from '../../services/results/note-mark-result';
-import { NotesCountResult } from '../../services/results/notes-count-result';
-import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
-import { TranslatorService } from '../../services/translator/translator.service';
-import { UpdateService } from '../../services/update/update.service';
-import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
-import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
-import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
-import { RenameNotebookDialogComponent } from '../dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
-import { MoveNotesBottomSheetComponent } from './bottom-sheets/move-notes-bottom-sheet/move-notes-bottom-sheet.component';
-import { NoteCreator } from './note-creator';
-import { NoteTypeChooserBottomSheetComponent } from './note-type-chooser-bottom-sheet/note-type-chooser-bottom-sheet.component';
+import {SplitAreaDirective, SplitComponent} from 'angular-split';
+import {OpenDialogReturnValue} from 'electron';
+import {Subscription} from 'rxjs';
+import {Constants} from '../../common/application/constants';
+import {ProductInformation} from '../../common/application/product-information';
+import {Operation} from '../../common/enums/operation';
+import {Logger} from '../../common/logging/logger';
+import {BaseSettings} from '../../common/settings/base-settings';
+import {SelectionWatcher} from '../../common/ui/selection-watcher';
+import {Note} from '../../data/entities/note';
+import {Notebook} from '../../data/entities/notebook';
+import {BaseAppearanceService} from '../../services/appearance/base-appearance.service';
+import {CollectionService} from '../../services/collection/collection.service';
+import {FileService} from '../../services/file/file.service';
+import {NoteMarkResult} from '../../services/results/note-mark-result';
+import {NotesCountResult} from '../../services/results/notes-count-result';
+import {SnackBarService} from '../../services/snack-bar/snack-bar.service';
+import {TranslatorService} from '../../services/translator/translator.service';
+import {UpdateService} from '../../services/update/update.service';
+import {ConfirmationDialogComponent} from '../dialogs/confirmation-dialog/confirmation-dialog.component';
+import {ErrorDialogComponent} from '../dialogs/error-dialog/error-dialog.component';
+import {InputDialogComponent} from '../dialogs/input-dialog/input-dialog.component';
+import {RenameNotebookDialogComponent} from '../dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
+import {MoveNotesBottomSheetComponent} from './bottom-sheets/move-notes-bottom-sheet/move-notes-bottom-sheet.component';
+import {NoteCreator} from './note-creator';
+import {
+    NoteTypeChooserBottomSheetComponent
+} from './note-type-chooser-bottom-sheet/note-type-chooser-bottom-sheet.component';
+import {AnimatedPage} from "../animated-page";
 
 @Component({
     selector: 'app-collection',
     templateUrl: './collection.component.html',
     styleUrls: ['./collection.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    animations: [
-        trigger('noteButtonsVisibility', [
-            state(
-                'visible',
-                style({
-                    opacity: 1,
-                })
-            ),
-            state(
-                'hidden',
-                style({
-                    opacity: 0,
-                })
-            ),
-            transition('hidden => visible', animate('.25s')),
-            transition('visible => hidden', animate('.05s')),
-        ]),
-    ],
+    encapsulation: ViewEncapsulation.None
 })
-export class CollectionComponent implements OnInit, OnDestroy {
+export class CollectionComponent extends AnimatedPage implements OnInit, OnDestroy {
     private subscription: Subscription;
 
-    constructor(
+    public constructor(
         public appearance: BaseAppearanceService,
         private collection: CollectionService,
         private translator: TranslatorService,
@@ -72,34 +55,16 @@ export class CollectionComponent implements OnInit, OnDestroy {
         private dialog: MatDialog,
         private logger: Logger,
         private zone: NgZone
-    ) {}
-
-    public get allCategory(): string {
-        return Constants.allCategory;
+    ) {
+        super();
     }
+    
+    public category: string = Constants.allCategory;
 
-    public get todayCategory(): string {
-        return Constants.todayCategory;
-    }
-
-    public get yesterdayCategory(): string {
-        return Constants.yesterdayCategory;
-    }
-
-    public get thisWeekCategory(): string {
-        return Constants.thisWeekCategory;
-    }
-
-    public get markedCategory(): string {
-        return Constants.markedCategory;
-    }
-
-    @ViewChild('split', { static: false }) public split: SplitComponent;
-    @ViewChild('area1', { static: false }) public area1: SplitAreaDirective;
+    @ViewChild('split', {static: false}) public split: SplitComponent;
+    @ViewChild('area1', {static: false}) public area1: SplitAreaDirective;
 
     public area1Size: number = this.settings.notebooksPaneWidth;
-
-    public selectedIndex: number;
 
     public applicationName: string = ProductInformation.applicationName;
     public notebooksCount: number = 0;
@@ -111,12 +76,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
     public notebooks: Notebook[];
     public activeNotebook: Notebook;
     public hoveredNotebook: Notebook;
-    public noteButtonsVisibility: string = 'visible';
     public selectedNoteIds: string[];
     public notesCount: number = 0;
     public hasSelectedNotes: boolean = false;
-    public tabChangedSubject: Subject<any> = new Subject();
-    public showNoteButtonSubject: Subject<any> = new Subject();
     public isBusy: boolean = false;
     public canRenameNotebook: boolean = false;
     public canDeleteNotebooks: boolean = false;
@@ -157,10 +119,6 @@ export class CollectionComponent implements OnInit, OnDestroy {
                 });
             })
         );
-
-        this.showNoteButtonSubject.pipe(debounceTime(700)).subscribe((_) => {
-            this.showNoteButtons();
-        });
     }
 
     public setSelectedNotebooks(notebook: Notebook, event: MouseEvent = null): void {
@@ -192,7 +150,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
         const titleText: string = await this.translator.getAsync('DialogTitles.AddNotebook');
         const placeholderText: string = await this.translator.getAsync('Input.NotebookName');
 
-        const data: any = { titleText: titleText, inputText: '', placeholderText: placeholderText };
+        const data: any = {titleText: titleText, inputText: '', placeholderText: placeholderText};
 
         const dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
             width: '450px',
@@ -216,7 +174,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
                     });
                     this.dialog.open(ErrorDialogComponent, {
                         width: '450px',
-                        data: { errorText: errorText },
+                        data: {errorText: errorText},
                     });
                     break;
                 }
@@ -231,7 +189,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     public renameNotebook(): void {
         const dialogRef: MatDialogRef<RenameNotebookDialogComponent> = this.dialog.open(RenameNotebookDialogComponent, {
             width: '450px',
-            data: { notebookId: this.activeNotebook.id },
+            data: {notebookId: this.activeNotebook.id},
         });
     }
 
@@ -249,7 +207,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
-            data: { dialogTitle: title, dialogText: text },
+            data: {dialogTitle: title, dialogText: text},
         });
 
         const result: any = await dialogRef.afterClosed().toPromise();
@@ -261,7 +219,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
                 const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteNotebooksError');
                 this.dialog.open(ErrorDialogComponent, {
                     width: '450px',
-                    data: { errorText: errorText },
+                    data: {errorText: errorText},
                 });
             }
         }
@@ -293,16 +251,16 @@ export class CollectionComponent implements OnInit, OnDestroy {
         if (this.selectedNoteIds.length === 1) {
             const note: Note = await this.collection.getNote(this.selectedNoteIds[0]);
             title = await this.translator.getAsync('DialogTitles.ConfirmDeleteNote');
-            text = await this.translator.getAsync('DialogTexts.ConfirmDeleteNote', { noteTitle: note.title });
+            text = await this.translator.getAsync('DialogTexts.ConfirmDeleteNote', {noteTitle: note.title});
 
             if (!this.settings.moveDeletedNotesToTrash) {
-                text = await this.translator.getAsync('DialogTexts.ConfirmPermanentlyDeleteNote', { noteTitle: note.title });
+                text = await this.translator.getAsync('DialogTexts.ConfirmPermanentlyDeleteNote', {noteTitle: note.title});
             }
         }
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
-            data: { dialogTitle: title, dialogText: text },
+            data: {dialogTitle: title, dialogText: text},
         });
 
         const result: any = await dialogRef.afterClosed().toPromise();
@@ -322,7 +280,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
                 const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteNotesError');
                 this.dialog.open(ErrorDialogComponent, {
                     width: '450px',
-                    data: { errorText: errorText },
+                    data: {errorText: errorText},
                 });
             }
         }
@@ -343,7 +301,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
                         Constants.markdownNoteExportExtension.replace('.', ''),
                     ],
                 },
-                { name: await this.translator.getAsync('DialogTexts.AllFiles'), extensions: ['*'] },
+                {name: await this.translator.getAsync('DialogTexts.AllFiles'), extensions: ['*']},
             ],
             properties: ['openFile', 'multiSelections'],
         });
@@ -356,41 +314,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
             await this.importNoteFilesAsync(openDialogReturnValue.filePaths, this.activeNotebook);
         }
     }
-
-    public onSelectedTabChange(event: MatTabChangeEvent): void {
-        // Manually trigger a window resize event. Together with CdkVirtualScrollViewportPatchDirective,
-        // this will ensure that CdkVirtualScrollViewport triggers a viewport size check when the
-        // selected tab is changed.
-        window.dispatchEvent(new Event('resize'));
-
-        this.hideNoteButtons();
-        const tabIndex: number = event.index;
-        let category: string = '';
-
-        if (tabIndex === 0) {
-            category = Constants.allCategory;
-        } else if (tabIndex === 1) {
-            category = Constants.todayCategory;
-        } else if (tabIndex === 2) {
-            category = Constants.yesterdayCategory;
-        } else if (tabIndex === 3) {
-            category = Constants.thisWeekCategory;
-        } else if (tabIndex === 4) {
-            category = Constants.markedCategory;
-        }
-
-        this.tabChangedSubject.next(category);
-        this.showNoteButtonSubject.next('');
-    }
-
-    private hideNoteButtons(): void {
-        this.noteButtonsVisibility = 'hidden';
-    }
-
-    private showNoteButtons(): void {
-        this.noteButtonsVisibility = 'visible';
-    }
-
+    
     private async getNotebooksAsync(): Promise<void> {
         this.notebooks = await this.collection.getNotebooksAsync(true);
         this.selectionWatcher.reset(this.notebooks, true);
@@ -437,7 +361,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
                 this.dialog.open(ErrorDialogComponent, {
                     width: '450px',
-                    data: { errorText: errorText },
+                    data: {errorText: errorText},
                 });
             }
         }
@@ -475,7 +399,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px',
-                data: { errorText: errorText },
+                data: {errorText: errorText},
             });
         }
     }
@@ -486,19 +410,36 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
     public openMoveNotesBottomSheet(): void {
         this.bottomSheet.open(MoveNotesBottomSheetComponent, {
-            data: { selectedNoteIds: this.selectedNoteIds },
+            data: {selectedNoteIds: this.selectedNoteIds},
         });
     }
 
     public async addNoteAsync(): Promise<void> {
         if (this.settings.canCreateClassicNotes && this.settings.canCreateMarkdownNotes) {
             this.bottomSheet.open(NoteTypeChooserBottomSheetComponent, {
-                data: { activeNotebookId: this.activeNotebook.id },
+                data: {activeNotebookId: this.activeNotebook.id},
             });
         } else if (this.settings.canCreateClassicNotes) {
             await this.noteCreator.createClassicNoteAsync(this.activeNotebook.id);
         } else if (this.settings.canCreateMarkdownNotes) {
             await this.noteCreator.createMarkdownNoteAsync(this.activeNotebook.id);
+        }
+    }
+
+    public override setPage(page: number): void {
+        this.previousPage = this.page;
+        this.page = page;
+
+        if (page === 0) {
+            this.category = Constants.allCategory;
+        } else if (page === 1) {
+            this.category = Constants.todayCategory;
+        } else if (page === 2) {
+            this.category = Constants.yesterdayCategory;
+        } else if (page === 3) {
+            this.category = Constants.thisWeekCategory;
+        } else if (page === 4) {
+            this.category = Constants.markedCategory;
         }
     }
 }

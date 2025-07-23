@@ -1,0 +1,16 @@
+@import 'variables';
+
+.sub-menu__item {
+    display: flex;
+    height: 48px;
+    font-size: 24px;
+    align-items: center;
+    padding: 0 24px;
+    cursor: pointer;
+    color: var(--theme-secondary-text);
+    text-transform: uppercase;
+}
+
+.sub-menu__selected-item {
+    color: var(--theme-primary-text);
+}
