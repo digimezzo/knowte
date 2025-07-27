@@ -83,7 +83,6 @@
                                 <button
                                         class="list-button"
                                         mat-mini-fab
-                                        color=""
                                         (click)="renameNotebook()"
                                         matTooltip="{{ 'Tooltips.RenameNotebook' | translate }}"
                                         *ngIf="canRenameNotebook"
@@ -93,7 +92,6 @@
                                 <button
                                         class="list-button"
                                         mat-mini-fab
-                                        color=""
                                         (click)="deleteNotebooksAsync()"
                                         matTooltip="{{
                                         (selectionWatcher.selectedItemsCount > 1 ? 'Tooltips.DeleteNotebooks' : 'Tooltips.DeleteNotebook')

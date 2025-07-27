@@ -30,8 +30,17 @@
 
 // Snack bar
 // -----------------------------------------------------------------------------------------------------------------------------------------
+.mdc-snackbar__surface {
+    background-color: var(--theme-accent-color) !important;
+    color: var(--theme-primary-button-text) !important;
+}
+
+.mdc-snackbar__label {
+  color: var(--theme-primary-button-text) !important;
+}
+
 .mat-mdc-snack-bar-action > * {
-    color: var(--theme-accent-color) !important;
+    color: var(--theme-primary-button-text) !important;
 }
 
 // Dialog
@@ -114,7 +123,6 @@
 
 // Form Field, Input, Select, Autocomplete
 // -----------------------------------------------------------------------------------------------------------------------------------------
-
 .mdc-text-field {
   border-top-left-radius: 0px !important;
   border-top-right-radius: 0px !important;
@@ -149,6 +157,22 @@
 
 .mat-mdc-form-field-focus-overlay {
   background-color: unset !important;
+}
+
+.mdc-checkbox__ripple {
+  display: none !important;
+}
+
+// Fabs
+// -----------------------------------------------------------------------------------------------------------------------------------------
+.mat-mdc-fab {
+  background: var(--theme-accent-color) !important;
+  color: var(--theme-primary-button-text) !important;
+}
+
+.mat-mdc-mini-fab {
+  background: var(--theme-secondary-button-background) !important;
+  color: var(--theme-secondary-button-text) !important;
 }
 
 // TODO: hacks due to stupid bugs
