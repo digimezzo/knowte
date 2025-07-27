@@ -1,5 +1,7 @@
 <app-dialog-header titleText="{{ 'DialogTitles.Languages' | translate }}"></app-dialog-header>
-<mat-dialog-content><app-spell-check-languages></app-spell-check-languages></mat-dialog-content>
-<mat-dialog-actions
-    ><button mat-raised-button color="primary" [mat-dialog-close]>{{ 'Buttons.Ok' | translate }}</button></mat-dialog-actions
->
+<mat-dialog-content>
+    <app-spell-check-languages></app-spell-check-languages>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <app-accent-button [mat-dialog-close]="true">{{ 'Buttons.Ok' | translate }}</app-accent-button>
+</mat-dialog-actions>

@@ -13,7 +13,7 @@
     </div>
     <!-- Notes list -->
     <cdk-virtual-scroll-viewport class="notes-list" itemSize="48">
-        <div [ngClass]="{ 'selected-item': note.isSelected }" *cdkVirtualFor="let note of notes" matRipple>
+        <div class="note-item-container" [ngClass]="{ 'selected-item': note.isSelected }" *cdkVirtualFor="let note of notes" matRipple>
             <div
                 class="note-item no-select"
                 (dblclick)="openNoteAsync(note)"

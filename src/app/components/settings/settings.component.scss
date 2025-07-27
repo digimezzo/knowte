@@ -1,20 +1,21 @@
 @import 'variables';
 
 .app-settings {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-settings__submenu {
+  padding-left: 110px;
 }
 
 .app-settings__menu {
-    margin-left: 106px;
-    margin-top: 11px;
-    margin-bottom: 11px;
+  margin-left: 106px;
+  margin-top: 11px;
+  margin-bottom: 11px;
 }
 
-.app-settings__headers {
-    height: 48px;
-}
-
-.app-settings__content .mat-tab-header {
-    display: none;
+.app-settings__content {
+  overflow-y: auto;
+  overflow-x: hidden;
 }

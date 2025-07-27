@@ -1,0 +1,37 @@
+<div class="p-3">
+    <div class="title1">{{ 'AboutPage.About' | translate }}</div>
+    <app-logo-full class="mt-3"></app-logo-full>
+    <div class="mt-3">
+        {{ 'AboutPage.Version' | translate }}:
+        <strong> {{ applicationVersion }}</strong>
+        <br/>{{ applicationCopyright }}
+    </div>
+    <app-transparent-button class="mt-2" (click)="openLicenseDialog()">
+        {{ 'Buttons.License' | translate }}
+    </app-transparent-button>
+    <mat-divider class="my-3"></mat-divider>
+    <div class="title1">{{ 'AboutPage.Donate' | translate }}</div>
+    <div>{{ 'AboutPage.IsKnowteUseful' | translate }}</div>
+    <app-accent-button class="mt-2" (click)="openDonateLink()">
+        {{ 'Buttons.Donate' | translate }}
+    </app-accent-button>
+    <mat-divider class="my-3"></mat-divider>
+    <div class="title1">{{ 'AboutPage.GetInTouch' | translate }}</div>
+
+    <div class="contact-item mb-1">
+        <i class="contact-item-icon mr-1 las la-globe"></i>
+        <a href="{{ websiteUrl }}" matTooltip="{{ websiteUrl }}">{{ 'AboutPage.Website' | translate }}</a>
+    </div>
+    <div class="contact-item mb-1">
+        <i class="contact-item-icon mr-1 lab la-twitter"></i>
+        <a href="{{ twitterUrl }}" matTooltip="{{ twitterUrl }}">Twitter</a>
+    </div>
+    <div class="contact-item mb-1">
+        <i class="contact-item-icon mr-1 lab la-mastodon"></i>
+        <a href="{{ mastodonUrl }}" matTooltip="{{ mastodonUrl }}">Mastodon</a>
+    </div>
+    <div class="contact-item">
+        <i class="contact-item-icon mr-1 lab la-github"></i>
+        <a href="{{ githubUrl }}" matTooltip="{{ githubUrl }}">GitHub</a>
+    </div>
+</div>

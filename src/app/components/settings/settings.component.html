@@ -1,8 +1,8 @@
 <app-logo-main
-    class="main-logo pointer"
-    (click)="goBackToCollection()"
-    matTooltip="{{ 'Tooltips.BackToNotes' | translate }}"
-    [showBackArrow]="true"
+        class="main-logo pointer"
+        (click)="goBackToCollection()"
+        matTooltip="{{ 'Tooltips.BackToNotes' | translate }}"
+        [showBackArrow]="true"
 ></app-logo-main>
 <div class="window-frame">
     <div class="window-frame-titlebar">
@@ -15,153 +15,30 @@
     </div>
     <div class="window-frame-content" [ngStyle]="{ top: appearance.windowHasNativeTitleBar ? '10px' : '32px' }">
         <div class="app-settings">
-            <mat-tab-group class="app-settings__headers" [(selectedIndex)]="selectedIndex">
-                <mat-tab>
-                    <ng-template mat-tab-label>
-                        {{ 'SettingsTabs.Appearance' | translate }}
-                    </ng-template>
-                </mat-tab>
-                <mat-tab>
-                    <ng-template mat-tab-label>
-                        {{ 'SettingsTabs.Notes' | translate }}
-                    </ng-template>
-                </mat-tab>
-                <mat-tab>
-                    <ng-template mat-tab-label>
-                        {{ 'SettingsTabs.Advanced' | translate }}
-                    </ng-template>
-                </mat-tab>
-            </mat-tab-group>
+            <app-sub-menu class="app-settings__submenu">
+                <app-sub-menu-item [page]="0" [selectedPage]="this.page" (click)="this.setPage(0)">
+                    {{ 'SettingsTabs.Appearance' | translate }}
+                </app-sub-menu-item>
+                <app-sub-menu-item [page]="1" [selectedPage]="this.page" (click)="this.setPage(1)">
+                    {{ 'SettingsTabs.Notes' | translate }}
+                </app-sub-menu-item>
+                <app-sub-menu-item [page]="2" [selectedPage]="this.page" (click)="this.setPage(2)">
+                    {{ 'SettingsTabs.Advanced' | translate }}
+                </app-sub-menu-item>
+            </app-sub-menu>
+            <mat-divider></mat-divider>
             <app-main-menu class="app-settings__menu" [selectedMenuItem]="2"></app-main-menu>
-            <mat-tab-group class="app-settings__content viewport-height" [(selectedIndex)]="selectedIndex">
-                <mat-tab>
-                    <div class="m-3">
-                        <div class="title1">{{ 'SettingsPage.Theme' | translate }}</div>
-                        <div>
-                            <mat-slide-toggle [(ngModel)]="appearance.followSystemTheme">
-                                {{ 'SettingsPage.FollowSystemTheme' | translate }}</mat-slide-toggle
-                            >
-                        </div>
-                        <div>
-                            <mat-slide-toggle
-                                class="mt-3"
-                                [ngClass]="{ inactive: appearance.followSystemTheme }"
-                                [(ngModel)]="appearance.useLightBackgroundTheme"
-                            >
-                                {{ 'SettingsPage.UseLightTheme' | translate }}</mat-slide-toggle
-                            >
-                        </div>
-                    </div>
-                    <mat-divider></mat-divider>
-                    <div class="m-3">
-                        <div class="title1">{{ 'SettingsPage.Color' | translate }}</div>
-                        <div>
-                            <mat-slide-toggle [(ngModel)]="appearance.followSystemColor">
-                                {{ 'SettingsPage.FollowSystemColor' | translate }}</mat-slide-toggle
-                            >
-                        </div>
-                        <app-theme-switcher class="mt-2"></app-theme-switcher>
-                        <div class="mt-3">
-                            <a (click)="this.appearance.refreshThemes()"
-                                ><i class="las la-sync mr-1"></i>{{ 'SettingsPage.RefreshThemes' | translate }}</a
-                            >
-                        </div>
-                        <div class="mt-1">
-                            <a (click)="this.openThemesDirectory()"
-                                ><i class="las la-plus mr-1"></i>{{ 'SettingsPage.AddMoreThemes' | translate }}</a
-                            >
-                        </div>
-                    </div>
-                    <mat-divider></mat-divider>
-                    <div class="m-3">
-                        <div class="title1">{{ 'SettingsPage.FontSize' | translate }}</div>
-                        <app-font-size-switcher class="mt-2"></app-font-size-switcher>
-                    </div>
-                    <mat-divider></mat-divider>
-                    <div class="m-3">
-                        <div class="title1 mt-2">{{ 'SettingsPage.Language' | translate }}</div>
-                        <mat-form-field>
-                            <mat-select [(ngModel)]="translator.selectedLanguage">
-                                <mat-option *ngFor="let language of translator.languages" [value]="language">
-                                    {{ language.localizedName }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                    <mat-divider></mat-divider>
-                    <div class="m-3">
-                        <div class="title1 mt-2">{{ 'SettingsPage.TitleBar' | translate }}</div>
-                        <mat-slide-toggle class="mt-2" [(ngModel)]="useCustomTitleBarChecked">
-                            {{ 'SettingsPage.UseCustomTitleBar' | translate }}</mat-slide-toggle
-                        >
-                    </div>
-                </mat-tab>
-                <mat-tab>
-                    <div class="m-3">
-                        <div class="title1">{{ 'SettingsPage.TextSize' | translate }}</div>
-                        <app-settings-text-size-in-notes></app-settings-text-size-in-notes>
-                    </div>
-                    <mat-divider></mat-divider>
-                    <div class="m-3">
-                        <div class="title1 mt-2">{{ 'SettingsPage.FormatsForNewNotes' | translate }}</div>
-                        <div class="d-flex flex-column">
-                            <mat-slide-toggle class="mt-2" [(ngModel)]="classicNoteChecked">
-                                {{ 'SettingsPage.ClassicNote' | translate }}</mat-slide-toggle
-                            >
-                            <mat-slide-toggle class="mt-2" [(ngModel)]="markdownNoteChecked">
-                                {{ 'SettingsPage.MarkdownNote' | translate }}</mat-slide-toggle
-                            >
-                        </div>
-                    </div>
-                    <mat-divider></mat-divider>
-                    <div class="m-3">
-                        <div class="title1 mt-2">{{ 'SettingsPage.Closing' | translate }}</div>
-                        <mat-slide-toggle class="mt-2" [(ngModel)]="closeNotesWithEscapeChecked">
-                            {{ 'SettingsPage.CloseNotesWithEscape' | translate }}</mat-slide-toggle
-                        >
-                    </div>
-                    <mat-divider></mat-divider>
-                    <div class="m-3">
-                        <div class="title1 mt-2">{{ 'SettingsPage.Dates' | translate }}</div>
-                        <mat-slide-toggle class="mt-2" [(ngModel)]="showExactDatesInTheNotesListChecked">
-                            {{ 'SettingsPage.ShowExactDatesInTheNotesList' | translate }}</mat-slide-toggle
-                        >
-                    </div>
-                    <mat-divider></mat-divider>
-                    <div class="m-3">
-                        <div class="title1 mt-2">{{ 'SettingsPage.SpellChecker' | translate }}</div>
-                        <div>
-                            <mat-slide-toggle class="mt-2" [(ngModel)]="enableSpellCheckerChecked">
-                                {{ 'SettingsPage.EnableSpellChecker' | translate }}</mat-slide-toggle
-                            >
-                        </div>
-                        <button
-                            class="mt-2"
-                            [ngClass]="{ inactive: !this.settings.enableSpellChecker }"
-                            mat-raised-button
-                            color="primary"
-                            (click)="setSpellCheckerLanguages()"
-                        >
-                            {{ 'Buttons.Languages' | translate }}
-                        </button>
-                    </div>
-                </mat-tab>
-                <mat-tab>
-                    <div class="m-3">
-                        <div class="title1 mt-2">{{ 'SettingsPage.Updates' | translate }}</div>
-                        <mat-slide-toggle class="mt-2" [(ngModel)]="checkForUpdatesChecked">
-                            {{ 'SettingsPage.CheckForUpdates' | translate }}</mat-slide-toggle
-                        >
-                    </div>
-                    <mat-divider></mat-divider>
-                    <div class="m-3">
-                        <div class="title1 mt-2">{{ 'SettingsPage.Trash' | translate }}</div>
-                        <mat-slide-toggle class="mt-2" [(ngModel)]="moveDeletedNotesToTrashChecked">
-                            {{ 'SettingsPage.MoveDeletedNotesToTrash' | translate }}</mat-slide-toggle
-                        >
-                    </div>
-                </mat-tab>
-            </mat-tab-group>
+            <div class="app-settings__content viewport-height">
+                <!-- Appearance -->
+                <app-appearance-settings *ngIf="this.leftToRight(0)" [@enterLeftToRight]></app-appearance-settings>
+                <app-appearance-settings *ngIf="this.rightToLeft(0)" [@enterRightToLeft]></app-appearance-settings>
+                <!-- Notes -->
+                <app-notes-settings *ngIf="this.leftToRight(1)" [@enterLeftToRight]></app-notes-settings>
+                <app-notes-settings *ngIf="this.rightToLeft(1)" [@enterRightToLeft]></app-notes-settings>
+                <!-- Advanced -->
+                <app-advanced-settings *ngIf="this.leftToRight(2)" [@enterLeftToRight]></app-advanced-settings>
+                <app-advanced-settings *ngIf="this.rightToLeft(2)" [@enterRightToLeft]></app-advanced-settings>
+            </div>
         </div>
     </div>
 </div>

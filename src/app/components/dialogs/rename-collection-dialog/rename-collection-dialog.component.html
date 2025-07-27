@@ -6,7 +6,8 @@
     </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button [disabled]="!newCollection" mat-raised-button color="primary" [mat-dialog-close]
-    (click)="renameCollectionAsync()">{{ 'Buttons.Ok' | translate }}</button>
-    <button mat-raised-button [mat-dialog-close]>{{ 'Buttons.Cancel' | translate }}</button>
+    <app-accent-button class="mr-2" [disabled]="!newCollection"
+                       [mat-dialog-close]="true" (click)="renameCollectionAsync()">{{ 'Buttons.Ok' | translate }}
+    </app-accent-button>
+    <app-transparent-button [mat-dialog-close]="true">{{ 'Buttons.Cancel' | translate }}</app-transparent-button>
 </mat-dialog-actions>

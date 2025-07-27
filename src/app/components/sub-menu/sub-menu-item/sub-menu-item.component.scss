@@ -1,0 +1,17 @@
+@import 'variables';
+
+.sub-menu__item {
+    display: flex;
+    height: 48px;
+    align-items: center;
+    padding: 0 12px;
+    cursor: pointer;
+    color: var(--theme-secondary-text);
+    text-transform: uppercase;
+    font-size: var(--fontsize-larger) !important;
+    font-weight: lighter !important;
+}
+
+.sub-menu__selected-item {
+    color: var(--theme-primary-text);
+}

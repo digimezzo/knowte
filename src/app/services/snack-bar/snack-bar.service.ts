@@ -9,7 +9,7 @@ export class SnackBarService {
     public async duplicateCollectionAsync(collection: string): Promise<void> {
         const message: string = await this.translator.getAsync('SnackBarMessages.DuplicateCollection', { collection: collection });
         const action: string = await this.translator.getAsync('SnackBarActions.Ok');
-        this.showActionSnackBar(message, action, false);
+        this.showActionSnackBar(message, action, true);
     }
 
     public async duplicateNotebookAsync(notebookName: string): Promise<void> {

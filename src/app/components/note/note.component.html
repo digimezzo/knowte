@@ -25,7 +25,6 @@
                     *ngIf="canPerformActions"
                     class="note-content-floating-button"
                     mat-mini-fab
-                    color=""
                     (click)="openSearchBottomSheet()"
                     matTooltip="{{ 'Tooltips.Search' | translate }}"
                 >
@@ -35,7 +34,6 @@
                     *ngIf="canPerformActions && isPinned"
                     class="note-content-floating-button"
                     mat-mini-fab
-                    color=""
                     (click)="toggleNotePin()"
                     matTooltip="{{ 'Tooltips.UnpinNote' | translate }}"
                 >
@@ -45,7 +43,6 @@
                     *ngIf="canPerformActions && !isPinned"
                     class="note-content-floating-button"
                     mat-mini-fab
-                    color=""
                     (click)="toggleNotePin()"
                     matTooltip="{{ 'Tooltips.PinNote' | translate }}"
                 >
@@ -55,7 +52,6 @@
                     *ngIf="canPerformActions && isMarked"
                     class="note-content-floating-button"
                     mat-mini-fab
-                    color=""
                     (click)="toggleNoteMark()"
                     matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}"
                 >
@@ -65,7 +61,6 @@
                     *ngIf="canPerformActions && !isMarked"
                     class="note-content-floating-button"
                     mat-mini-fab
-                    color=""
                     (click)="toggleNoteMark()"
                     matTooltip="{{ 'Tooltips.MarkNote' | translate }}"
                 >
@@ -75,7 +70,6 @@
                     *ngIf="canPerformActions"
                     class="note-content-floating-button"
                     mat-mini-fab
-                    color=""
                     (click)="openShareBottomSheet()"
                     matTooltip="{{ 'Tooltips.Share' | translate }}"
                 >
@@ -85,7 +79,6 @@
                     *ngIf="canPerformActions && !this.isEncrypted"
                     class="note-content-floating-button"
                     mat-mini-fab
-                    color=""
                     (click)="encryptNoteAsync()"
                     matTooltip="{{ 'Tooltips.EncryptNote' | translate }}"
                 >
@@ -95,7 +88,6 @@
                     *ngIf="canPerformActions && this.isEncrypted"
                     class="note-content-floating-button"
                     mat-mini-fab
-                    color=""
                     (click)="decryptNoteAsync()"
                     matTooltip="{{ 'Tooltips.DecryptNote' | translate }}"
                 >
@@ -105,7 +97,6 @@
                     *ngIf="canPerformActions && !this.isTrashed"
                     class="note-content-floating-button"
                     mat-mini-fab
-                    color=""
                     (click)="deleteNoteAsync()"
                     matTooltip="{{ 'Tooltips.DeleteNote' | translate }}"
                 >

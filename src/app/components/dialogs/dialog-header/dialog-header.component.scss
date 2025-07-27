@@ -2,8 +2,14 @@
 
 .dialog-header {
     border-bottom: 1px solid var(--theme-separator);
-    margin: -24px -24px 24px -24px !important;
     height: 64px;
     display: flex;
     align-items: center;
+    margin-bottom: 16px;
+}
+
+.dialog-header__text {
+    text-transform: uppercase;
+    font-size: var(--fontsize-larger) !important;
+    font-weight: lighter !important;
 }

@@ -1,28 +1,29 @@
 .app-information {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .app-information__menu {
-    margin-left: 106px;
-    margin-top: 11px;
-    margin-bottom: 11px;
+  margin-left: 106px;
+  margin-top: 11px;
+  margin-bottom: 11px;
 }
 
-.app-information__content .mat-tab-header {
-    display: none;
-}
-
-.app-information__headers {
-    height: 48px;
+.app-information__submenu {
+  padding-left: 110px;
 }
 
 .contact-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .contact-item-icon {
-    font-size: 28px;
+  font-size: 28px;
+}
+
+.app-information__content {
+  overflow-y: auto;
+  overflow-x: hidden;
 }

@@ -1,151 +1,156 @@
 @import 'variables';
 
+.app-collection__submenu {
+  padding-left: 110px;
+}
+
 .collection-collection-switcher {
-    position: absolute;
-    right: 0;
-    top: 59px;
-    z-index: 2;
+  position: absolute;
+  right: 0;
+  top: 59px;
+  z-index: 2;
 }
 
 .app-collection {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .app-collection__menu {
-    margin-left: 106px;
-    margin-top: 11px;
-    margin-bottom: 11px;
+  margin-left: 106px;
+  margin-top: 11px;
+  margin-bottom: 11px;
 }
 
 .app-collection__headers {
-    height: 48px;
+  height: 48px;
 }
 
 .app-collection__content {
 }
 
 .app-collection__content .mat-tab-header {
-    display: none;
+  display: none;
 }
 
 .count-label {
-    background-color: var(--theme-accent-color);
-    margin: 0 0 10px 10px;
-    min-width: 22px;
-    height: 22px;
-    border-radius: 11px;
-    padding-left: 7px;
-    padding-right: 7px;
-    color: #fff;
-    font-size: 12px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background-color: var(--theme-accent-color);
+  margin: 0 0 10px 10px;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 11px;
+  padding-left: 7px;
+  padding-right: 7px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .notebooks-pane {
-    position: relative;
-    height: 100%;
-    border-right: 1px solid var(--theme-separator);
+  position: relative;
+  height: 100%;
+  border-right: 1px solid var(--theme-separator);
 }
 
 .notebooks-pane-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    z-index: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 0;
 }
 
 .notebooks-pane-content__title {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .notebooks-pane-content__list {
-    flex: 1;
-    overflow: auto;
-    margin-top: 25px;
+  flex: 1;
+  overflow: auto;
+  margin-top: 25px;
 }
 
 .notebook {
-    display: flex;
-    align-items: center;
-    cursor: default !important;
-    height: 40px;
+  display: flex;
+  align-items: center;
+  cursor: default !important;
+  height: 40px;
+  border-radius: 6px;
 }
 
 .notebook:hover {
-    background-color: var(--theme-hover-background);
+  background-color: var(--theme-hover-background);
 }
 
 .notebook__name {
-    height: 40px;
-    line-height: 40px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  height: 40px;
+  line-height: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .notebooks-pane-buttons {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    z-index: 1;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
 }
 
 .notes-pane {
-    height: 100%;
+  height: 100%;
 }
 
 .add-item-icon {
-    font-size: 28px;
-    color: var(--theme-primary-button-text) !important;
+  font-size: 28px;
+  color: var(--theme-primary-button-text) !important;
 }
 
 .right-pane {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
 }
 
 .notes-pane {
-    position: relative;
-    width: 100%;
-    height: 100%;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .notes-pane-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
 .notes-pane-buttons {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    z-index: 1;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
 }
 
 .active-notebook-and-search {
-    width: 100%;
+  width: 100%;
 }
 
 .drop-notebook {
-    background-color: var(--theme-accent-color);
-    opacity: 0.2;
+  background-color: var(--theme-accent-color);
+  opacity: 0.2;
 }

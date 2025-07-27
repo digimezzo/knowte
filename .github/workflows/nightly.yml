@@ -8,7 +8,7 @@ on:
 
 jobs:
     nightly_build_on_linux:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-22.04
         steps:
             - uses: actions/checkout@v2
             - uses: actions/setup-node@master
@@ -29,33 +29,33 @@ jobs:
                   path: 'package.json'
                   prop_path: 'version'
             - name: uploading rpm artifact
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-rpm
                   path: release/Knowte-*.rpm
             - name: upload deb artifact
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-deb
                   path: release/Knowte-*.deb
             - name: upload appimage artifact
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-appimage
                   path: release/Knowte-*.AppImage
             - name: upload snap artifact
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-snap
                   path: release/Knowte-*.snap
             - name: upload pacman artifact
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-pacman
                   path: release/Knowte-*.pacman
 
     nightly_build_on_mac:
-        runs-on: macos-11
+        runs-on: macos-13
         steps:
             - uses: actions/checkout@v2
             - uses: actions/setup-node@master
@@ -74,13 +74,13 @@ jobs:
                   path: 'package.json'
                   prop_path: 'version'
             - name: upload build artifacts
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-macos
                   path: release/Knowte-*.dmg
 
     nightly_build_on_win:
-        runs-on: windows-2019
+        runs-on: windows-2022
         steps:
             - uses: actions/checkout@v2
             - uses: actions/setup-node@master
@@ -99,7 +99,7 @@ jobs:
                   path: 'package.json'
                   prop_path: 'version'
             - name: upload build artifacts
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-win
                   path: release\Knowte-*.exe

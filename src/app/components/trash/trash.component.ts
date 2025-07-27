@@ -20,7 +20,7 @@ import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.compo
 export class TrashComponent implements OnInit, OnDestroy {
     private subscription: Subscription = new Subscription();
 
-    constructor(
+    public constructor(
         private dialog: MatDialog,
         private translator: TranslatorService,
         public collectionService: CollectionService,

@@ -18,7 +18,8 @@ export class Constants {
     public static readonly defaultCollection: string = 'Default';
     public static readonly allNotesNotebookId: string = '0';
     public static readonly unfiledNotesNotebookId: string = '1';
-
+    public static readonly screenEaseSpeedMilliseconds: number = 350;
+    
     public static readonly allCategory: string = 'all';
     public static readonly todayCategory: string = 'today';
     public static readonly yesterdayCategory: string = 'yesterday';

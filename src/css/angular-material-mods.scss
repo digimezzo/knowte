@@ -1,0 +1,203 @@
+// Letter spacing
+// -----------------------------------------------------------------------------------------------------------------------------------------
+* {
+  letter-spacing: unset !important;
+}
+
+// Background color
+// -----------------------------------------------------------------------------------------------------------------------------------------
+.mat-app-background {
+  background-color: var(--theme-background) !important;
+}
+
+.mat-drawer-container {
+  background-color: var(--theme-background) !important;
+}
+
+.mat-drawer {
+  background-color: var(--theme-background) !important;
+}
+
+.mat-bottom-sheet-container {
+  background-color: var(--theme-background) !important;
+}
+
+// Text color
+// -----------------------------------------------------------------------------------------------------------------------------------------
+.mat-mdc-menu-item {
+  color: var(--theme-primary-text) !important;
+}
+
+// Snack bar
+// -----------------------------------------------------------------------------------------------------------------------------------------
+.mdc-snackbar__surface {
+    background-color: var(--theme-accent-color) !important;
+    color: var(--theme-primary-button-text) !important;
+}
+
+.mdc-snackbar__label {
+  color: var(--theme-primary-button-text) !important;
+}
+
+.mat-mdc-snack-bar-action > * {
+    color: var(--theme-primary-button-text) !important;
+}
+
+// Dialog
+// -----------------------------------------------------------------------------------------------------------------------------------------
+.mat-mdc-dialog-surface {
+  background-color: var(--theme-background) !important;
+}
+
+.mat-mdc-dialog-content {
+  color: var(--theme-primary-text) !important;
+  font-size: var(--fontsize) !important;
+}
+
+.mat-mdc-dialog-actions {
+  padding: 24px !important;
+}
+
+// Divider
+// -----------------------------------------------------------------------------------------------------------------------------------------
+.mat-divider {
+  border-top-color: var(--theme-separator) !important;
+}
+
+.mdc-dialog .mdc-dialog__content {
+  padding: 0 24px 0 24px !important;
+}
+
+// Drawer
+// -----------------------------------------------------------------------------------------------------------------------------------------
+.mat-drawer-content {
+  overflow: unset !important;
+}
+
+.mat-drawer-backdrop.mat-drawer-shown {
+  background: rgba(var(--theme-rgb-base), 1) !important;
+}
+
+.mat-drawer-transition .mat-drawer-backdrop {
+  opacity: 0.2 !important;
+}
+
+// Menu
+// -----------------------------------------------------------------------------------------------------------------------------------------
+.mat-mdc-menu-item > * {
+  font-size: var(--fontsize) !important;
+}
+
+.mat-mdc-menu-item {
+  min-height: 32px !important;
+}
+
+.mat-mdc-menu-panel {
+  background-color: var(--theme-background) !important;
+}
+
+.mat-mdc-menu-content .mat-divider {
+  border-top-color: var(--theme-separator) !important;
+  margin: 4px 0 4px 0;
+}
+
+.mat-mdc-menu-content {
+  padding: 4px !important;
+}
+
+.mat-mdc-menu-item {
+  border-radius: 6px;
+}
+
+.mat-mdc-menu-item:hover {
+  background-color: rgba(var(--theme-rgb-base), 0.06) !important;
+}
+
+// Tooltip
+// -----------------------------------------------------------------------------------------------------------------------------------------
+.mdc-tooltip__surface {
+  font-size: var(--fontsize) !important;
+  background-color: var(--theme-accent-color) !important;
+  color: var(--theme-tooltip-text) !important;
+}
+
+// Form Field, Input, Select, Autocomplete
+// -----------------------------------------------------------------------------------------------------------------------------------------
+.mdc-text-field {
+  border-top-left-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+  padding: 0 4px !important;
+}
+
+.mdc-form-field {
+  font-size: var(--fontsize) !important;
+}
+
+.mat-mdc-option {
+  font-size: var(--fontsize) !important;
+  min-height: unset !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+}
+
+.mat-mdc-form-field-infix {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  min-height: unset !important;
+}
+
+.mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after {
+  width: 12px !important;
+  height: 5px !important;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: unset !important;
+}
+
+.mat-mdc-form-field-focus-overlay {
+  background-color: unset !important;
+}
+
+.mdc-checkbox__ripple {
+  display: none !important;
+}
+
+// Fabs
+// -----------------------------------------------------------------------------------------------------------------------------------------
+.mat-mdc-fab {
+  background: var(--theme-accent-color) !important;
+  color: var(--theme-primary-button-text) !important;
+}
+
+.mat-mdc-mini-fab {
+  background: var(--theme-secondary-button-background) !important;
+  color: var(--theme-secondary-button-text) !important;
+}
+
+// TODO: hacks due to stupid bugs
+// -----------------------------------------------------------------------------------------------------------------------------------------
+// Workaround for bug #26348: https://github.com/angular/components/issues/26348
+// Based on code from (this change broke it): https://github.com/angular/components/commit/176213d705f25def682644e29824b340ca1637b6
+// So much time of my life wasted, once again. I shouldn't have to do such things.
+.cdk-virtual-scroll-spacer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1px;
+  width: 1px;
+  transform-origin: 0 0;
+
+  // Note: We can't put `will-change: transform;` here because it causes Safari to not update the
+  // viewport's `scrollHeight` when the spacer's transform changes.
+
+  [dir='rtl'] & {
+    right: 0;
+    left: auto;
+    transform-origin: 100% 0;
+  }
+}
+
+mat-ink-bar {
+  display: none !important;
+}
