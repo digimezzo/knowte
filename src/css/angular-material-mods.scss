@@ -94,6 +94,14 @@
   background-color: rgba(var(--theme-rgb-base), 0.06) !important;
 }
 
+// Tooltip
+// -----------------------------------------------------------------------------------------------------------------------------------------
+.mdc-tooltip__surface {
+  font-size: var(--fontsize) !important;
+  background-color: var(--theme-accent-color) !important;
+  color: var(--theme-tooltip-text) !important;
+}
+
 // Form Field, Input, Select, Autocomplete
 // -----------------------------------------------------------------------------------------------------------------------------------------
 
