@@ -126,6 +126,10 @@ import {IconTextButtonComponent} from "./components/controls/icon-text-button/ic
 import {AppearanceSettingsComponent} from "./components/settings/appearance-settings/appearance-settings.component";
 import {AdvancedSettingsComponent} from "./components/settings/advanced-settings/advanced-settings.component";
 import {NotesSettingsComponent} from "./components/settings/notes-settings/notes-settings.component";
+import {
+    InformationComponentsComponent
+} from "./components/information/information-components/information-components.component";
+import {InformationAboutComponent} from "./components/information/information-about/information-about.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -233,7 +237,9 @@ export function MarkedOptionsFactory(): MarkedOptions {
         IconTextButtonComponent,
         AppearanceSettingsComponent,
         AdvancedSettingsComponent,
-        NotesSettingsComponent
+        NotesSettingsComponent,
+        InformationAboutComponent,
+        InformationComponentsComponent
     ],
     imports: [
         MarkdownModule.forRoot({
