@@ -12,7 +12,7 @@
     </div>
     <div class="window-frame-content" [ngStyle]="{ top: this.appearance.windowHasNativeTitleBar ? '10px' : '32px' }">
         <div class="app-collection">
-            <app-sub-menu class="collection-sub-menu">
+            <app-sub-menu class="app-collection__submenu">
                 <app-sub-menu-item [page]="0" [selectedPage]="this.page" (click)="this.setPage(0)">
                     {{ 'NotesTabs.All' | translate }}
                     <div class="count-label">
