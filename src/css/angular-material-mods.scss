@@ -18,10 +18,20 @@
   background-color: var(--theme-background) !important;
 }
 
+.mat-bottom-sheet-container {
+  background-color: var(--theme-background) !important;
+}
+
 // Text color
 // -----------------------------------------------------------------------------------------------------------------------------------------
 .mat-mdc-menu-item {
   color: var(--theme-primary-text) !important;
+}
+
+// Snack bar
+// -----------------------------------------------------------------------------------------------------------------------------------------
+.mat-mdc-snack-bar-action > * {
+    color: var(--theme-accent-color) !important;
 }
 
 // Dialog
