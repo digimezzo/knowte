@@ -1,6 +1,5 @@
 @import 'font-faces';
 @import 'variables';
-@import 'theming';
 
 .collection-switcher {
     height: $titlebar-height;
@@ -66,6 +65,7 @@
 
 .menu-command-item {
     position: absolute;
+    top: 4px;
     right: 8px;
 }
 

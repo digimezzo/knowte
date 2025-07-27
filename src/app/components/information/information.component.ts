@@ -1,42 +1,22 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { Constants } from '../../common/application/constants';
-import { ProductInformation } from '../../common/application/product-information';
 import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
-import { LicenseDialogComponent } from '../dialogs/license-dialog/license-dialog.component';
+import {AnimatedPage} from "../animated-page";
+import {enterLeftToRight, enterRightToLeft} from "../../animations/animations";
 
 @Component({
     selector: 'app-information',
     templateUrl: './information.component.html',
     styleUrls: ['./information.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    animations: [enterLeftToRight, enterRightToLeft],
 })
-export class InformationComponent implements OnInit {
-    constructor(private dialog: MatDialog, public appearance: BaseAppearanceService, private router: Router) {}
-
-    public selectedIndex: number;
-
-    public applicationVersion: string = ProductInformation.applicationVersion;
-    public applicationCopyright: string = ProductInformation.applicationCopyright;
-    public websiteUrl: string = Constants.websiteUrl;
-    public twitterUrl: string = Constants.twitterUrl;
-    public mastodonUrl: string = Constants.mastodonUrl;
-    public githubUrl: string = Constants.githubUrl;
-    public externalComponents: any[] = Constants.externalComponents;
+export class InformationComponent extends AnimatedPage {
+    public constructor(public appearance: BaseAppearanceService, private router: Router) {
+        super();
+    }
+    
     public isBusy: boolean = false;
-
-    public ngOnInit(): void {}
-
-    public openLicenseDialog(): void {
-        const dialogRef: MatDialogRef<LicenseDialogComponent> = this.dialog.open(LicenseDialogComponent, {
-            width: '450px',
-        });
-    }
-
-    public openDonateLink(): void {
-        require('electron').shell.openExternal(Constants.donateUrl);
-    }
 
     public goBackToCollection(): void {
         this.router.navigate(['/collection']);

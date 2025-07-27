@@ -1,15 +1,15 @@
-import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
-import { Constants } from '../../common/application/constants';
-import { Logger } from '../../common/logging/logger';
-import { BaseSettings } from '../../common/settings/base-settings';
-import { SelectionWatcher } from '../../common/ui/selection-watcher';
-import { Note } from '../../data/entities/note';
-import { Notebook } from '../../data/entities/notebook';
-import { CollectionService } from '../../services/collection/collection.service';
-import { NoteMarkResult } from '../../services/results/note-mark-result';
-import { NotePinResult } from '../../services/results/note-pin-result';
-import { SearchService } from '../../services/search/search.service';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {Constants} from '../../common/application/constants';
+import {Logger} from '../../common/logging/logger';
+import {BaseSettings} from '../../common/settings/base-settings';
+import {SelectionWatcher} from '../../common/ui/selection-watcher';
+import {Note} from '../../data/entities/note';
+import {Notebook} from '../../data/entities/notebook';
+import {CollectionService} from '../../services/collection/collection.service';
+import {NoteMarkResult} from '../../services/results/note-mark-result';
+import {NotePinResult} from '../../services/results/note-pin-result';
+import {SearchService} from '../../services/search/search.service';
 
 @Component({
     selector: 'app-notes',
@@ -18,25 +18,31 @@ import { SearchService } from '../../services/search/search.service';
     encapsulation: ViewEncapsulation.None,
 })
 export class NotesComponent implements OnInit, OnDestroy {
+    private _category: string;
+    
+    
     private subscription: Subscription;
     private _activeNotebook: Notebook;
     private selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
-    constructor(
+    public constructor(
         public searchService: SearchService,
         private collectionService: CollectionService,
         private settings: BaseSettings,
         private logger: Logger,
-        private zone: NgZone
-    ) {}
+    ) {
+    }
+
+    
+    public get category(): string {
+        return this._category;
+    }
 
     @Input()
-    public categoryChangedSubject: Subject<string>;
-
-    @Input()
-    public componentCategory: string;
-
-    public selectedCategory: string = Constants.allCategory;
+    public set category(value: string) {
+        this._category = value;
+        this.getNotesAsync();
+    }
 
     public get activeNotebook(): Notebook {
         return this._activeNotebook;
@@ -45,7 +51,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     @Input()
     public set activeNotebook(val: Notebook) {
         this._activeNotebook = val;
-        this.getNotes();
+        this.getNotesAsync();
     }
 
     @Output()
@@ -66,15 +72,15 @@ export class NotesComponent implements OnInit, OnDestroy {
         // Workaround for auto reload
         await this.collectionService.initializeAsync();
 
-        this.subscription = this.collectionService.noteEdited$.subscribe(() => this.getNotes());
-        this.subscription.add(this.collectionService.notesChanged$.subscribe(() => this.getNotes()));
-        this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(() => this.getNotes()));
-        this.subscription.add(this.searchService.searchTextChanged$.subscribe((_) => this.getNotes()));
+        this.subscription = this.collectionService.noteEdited$.subscribe(async () => await this.getNotesAsync());
+        this.subscription.add(this.collectionService.notesChanged$.subscribe(async () => await this.getNotesAsync()));
+        this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(async () => await this.getNotesAsync()));
+        this.subscription.add(this.searchService.searchTextChanged$.subscribe(async (_) => await this.getNotesAsync()));
 
         this.subscription.add(
-            this.collectionService.noteMarkChanged$.subscribe((result: NoteMarkResult) => {
-                if (this.componentCategory === Constants.markedCategory) {
-                    this.getNotes();
+            this.collectionService.noteMarkChanged$.subscribe(async (result: NoteMarkResult) => {
+                if (this._category === Constants.markedCategory) {
+                    await this.getNotesAsync();
                 } else {
                     this.markNote(result);
                 }
@@ -82,17 +88,12 @@ export class NotesComponent implements OnInit, OnDestroy {
         );
 
         this.subscription.add(
-            this.collectionService.notePinChanged$.subscribe((result: NotePinResult) => {
-                this.getNotes();
+            this.collectionService.notePinChanged$.subscribe(async (result: NotePinResult) => {
+                await this.getNotesAsync();
             })
         );
 
-        this.subscription.add(
-            this.categoryChangedSubject.subscribe(async (selectedCategory: string) => {
-                this.selectedCategory = selectedCategory;
-                this.getNotes();
-            })
-        );
+        await this.getNotesAsync();
     }
 
     public setSelectedNotes(note: Note, event: MouseEvent = null): void {
@@ -134,24 +135,18 @@ export class NotesComponent implements OnInit, OnDestroy {
         }
     }
 
-    private getNotes(): void {
-        // Only fetch notes list for selected category
-        if (this.componentCategory !== this.selectedCategory) {
-            return;
-        }
-
+    private async getNotesAsync(): Promise<void> {
         if (this.activeNotebook) {
-            this.zone.run(async () => {
+            // setTimeout avoids ExpressionChangedAfterItHasBeenCheckedError
+            setTimeout(async () => {
                 this.notes = await this.collectionService.getNotesAsync(
                     this.activeNotebook.id,
-                    this.componentCategory,
+                    this._category,
                     this.settings.showExactDatesInTheNotesList
                 );
                 this.selectionWatcher.reset(this.notes);
                 this.notesCount.emit(this.notes.length);
-
-                this.selectedNoteIds.next(this.getSelectedNoteIds());
-            });
+            }, 0);
         }
     }
 

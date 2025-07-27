@@ -1,0 +1,33 @@
+<div class="p-3">
+    <div class="title1">{{ 'SettingsPage.TextSize' | translate }}</div>
+    <app-settings-text-size-in-notes></app-settings-text-size-in-notes>
+    <mat-divider class="my-3"></mat-divider>
+    <div class="title1 mt-2">{{ 'SettingsPage.FormatsForNewNotes' | translate }}</div>
+    <app-toggle-switch class="mt-2" [(isChecked)]="classicNoteChecked">
+        {{ 'SettingsPage.ClassicNote' | translate }}
+    </app-toggle-switch>
+    <app-toggle-switch class="mt-2" [(isChecked)]="markdownNoteChecked">
+        {{ 'SettingsPage.MarkdownNote' | translate }}
+    </app-toggle-switch>
+    <mat-divider class="my-3"></mat-divider>
+    <div class="title1 mt-2">{{ 'SettingsPage.Closing' | translate }}</div>
+    <app-toggle-switch class="mt-2" [(isChecked)]="closeNotesWithEscapeChecked">
+        {{ 'SettingsPage.CloseNotesWithEscape' | translate }}
+    </app-toggle-switch>
+    <mat-divider class="my-3"></mat-divider>
+    <div class="title1 mt-2">{{ 'SettingsPage.Dates' | translate }}</div>
+    <app-toggle-switch class="mt-2" [(isChecked)]="showExactDatesInTheNotesListChecked">
+        {{ 'SettingsPage.ShowExactDatesInTheNotesList' | translate }}
+    </app-toggle-switch>
+    <mat-divider class="my-3"></mat-divider>
+    <div class="title1 mt-2">{{ 'SettingsPage.SpellChecker' | translate }}</div>
+    <div>
+        <app-toggle-switch class="mt-2" [(isChecked)]="enableSpellCheckerChecked">
+            {{ 'SettingsPage.EnableSpellChecker' | translate }}
+        </app-toggle-switch>
+    </div>
+    <app-accent-button class="mt-2" [ngClass]="{ inactive: !this.settings.enableSpellChecker }"
+                       (click)="setSpellCheckerLanguages()"
+    >{{ 'Buttons.Languages' | translate }}
+    </app-accent-button>
+</div>

@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Theme } from './theme/theme';
-import { ThemeCoreColors } from './theme/theme-core-colors';
-import { ThemeCreator } from './theme/theme-creator';
-import { ThemeNeutralColors } from './theme/theme-neutral-colors';
+import {Injectable} from '@angular/core';
+import {Theme} from './theme/theme';
+import {ThemeCoreColors} from './theme/theme-core-colors';
+import {ThemeCreator} from './theme/theme-creator';
+import {ThemeNeutralColors} from './theme/theme-neutral-colors';
 
 @Injectable()
 export class DefaultThemesCreator {
@@ -26,7 +26,12 @@ export class DefaultThemesCreator {
         '#2d2d2d', // editorCodeBackground
         '#454545', // editorBorder
         '#fff', // editorPrimaryText
-        '#6e6e6e' // editorSecondaryText
+        '#6e6e6e', // editorSecondaryText
+        '#454545', // buttonBorder
+        '#fff', // highlightForeground
+        '#fff', // tooltipText
+        '#2e2e2e', // sliderBackground
+        '#fff' // sliderThumbBackground
     );
 
     private lightColors: ThemeNeutralColors = new ThemeNeutralColors(
@@ -47,7 +52,12 @@ export class DefaultThemesCreator {
         '#eee', // editorCodeBackground
         '#ccc', // editorBorder
         '#000', // editorPrimaryText
-        '#888' // editorSecondaryText
+        '#888', // editorSecondaryText
+        '#ccc', // buttonBorder
+        '#fff', // highlightForeground
+        '#fff', // tooltipText,
+        '#dedede', // sliderBackground
+        '#000' // sliderThumbBackground
     );
 
     public createAllThemes(): Theme[] {

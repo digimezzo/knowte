@@ -1,5 +1,4 @@
 @import 'variables';
-@import 'theming';
 
 .notes {
     height: 100%;
@@ -50,12 +49,17 @@
     overflow: auto;
 }
 
+.note-item-container {
+    border-radius: 6px;
+}
+
 .note-item {
     height: 48px;
     display: flex;
     flex-direction: row;
     align-items: center;
     cursor: default !important;
+    border-radius: 6px;
 }
 
 .note-item:hover {

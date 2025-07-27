@@ -1,0 +1,51 @@
+<div class="p-3">
+    <div class="title1">{{ 'SettingsPage.Theme' | translate }}</div>
+    <div>
+        <app-toggle-switch [(isChecked)]="appearance.followSystemTheme">
+            {{ 'SettingsPage.FollowSystemTheme' | translate }}
+        </app-toggle-switch>
+    </div>
+    <div>
+        <app-toggle-switch class="mt-3" [ngClass]="{ inactive: appearance.followSystemTheme }"
+                           [(isChecked)]="appearance.useLightBackgroundTheme">
+            {{ 'SettingsPage.UseLightTheme' | translate }}
+        </app-toggle-switch>
+    </div>
+    <mat-divider class="my-3"></mat-divider>
+    <div class="title1">{{ 'SettingsPage.Color' | translate }}</div>
+    <div>
+        <app-toggle-switch [(isChecked)]="appearance.followSystemColor">
+            {{ 'SettingsPage.FollowSystemColor' | translate }}
+        </app-toggle-switch>
+    </div>
+    <app-theme-switcher class="mt-2"></app-theme-switcher>
+    <div class="d-flex flex-row mt-3">
+        <app-icon-text-button class="mr-2" (click)="this.appearance.refreshThemes()" icon="las la-sync">{{
+                'SettingsPage.RefreshThemes' | translate
+            }}
+        </app-icon-text-button>
+        <app-icon-text-button (click)="this.openThemesDirectory()" icon="las la-plus">{{
+                'SettingsPage.AddMoreThemes' | translate
+            }}
+        </app-icon-text-button>
+    </div>
+    <mat-divider class="my-3"></mat-divider>
+    <div class="title1">{{ 'SettingsPage.FontSize' | translate }}</div>
+    <app-font-size-switcher class="mt-2"></app-font-size-switcher>
+    <mat-divider class="my-3"></mat-divider>
+    <div class="title1">{{ 'SettingsPage.Language' | translate }}</div>
+    <div>
+        <mat-form-field>
+            <mat-select [(ngModel)]="translator.selectedLanguage">
+                <mat-option *ngFor="let language of translator.languages" [value]="language">
+                    {{ language.localizedName }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <mat-divider class="my-3"></mat-divider>
+    <div class="title1 mt-2">{{ 'SettingsPage.TitleBar' | translate }}</div>
+    <app-toggle-switch class="mt-2" [(isChecked)]="useCustomTitleBarChecked">
+        {{ 'SettingsPage.UseCustomTitleBar' | translate }}
+    </app-toggle-switch>
+</div>

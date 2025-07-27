@@ -1,0 +1,11 @@
+<div class="p-3">
+    <div class="title1 mt-2">{{ 'SettingsPage.Updates' | translate }}</div>
+    <app-toggle-switch class="mt-2" [(isChecked)]="checkForUpdatesChecked">
+        {{ 'SettingsPage.CheckForUpdates' | translate }}
+    </app-toggle-switch>
+    <mat-divider class="my-3"></mat-divider>
+    <div class="title1 mt-2">{{ 'SettingsPage.Trash' | translate }}</div>
+    <app-toggle-switch class="mt-2" [(isChecked)]="moveDeletedNotesToTrashChecked">
+        {{ 'SettingsPage.MoveDeletedNotesToTrash' | translate }}
+    </app-toggle-switch>
+</div>
