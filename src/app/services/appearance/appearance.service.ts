@@ -339,6 +339,8 @@ export class AppearanceService implements BaseAppearanceService {
         element.style.setProperty('--theme-button-border', neutralColors.buttonBorder);
         element.style.setProperty('--theme-highlight-foreground', neutralColors.highlightForeground);
         element.style.setProperty('--theme-tooltip-text', neutralColors.tooltipText);
+        element.style.setProperty('--theme-slider-background', neutralColors.sliderBackground);
+        element.style.setProperty('--theme-slider-thumb-background', neutralColors.sliderThumbBackground);
     }
 
     private setSelectedThemeFromSettings(): void {

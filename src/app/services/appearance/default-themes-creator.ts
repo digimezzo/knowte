@@ -29,7 +29,9 @@ export class DefaultThemesCreator {
         '#6e6e6e', // editorSecondaryText
         '#454545', // buttonBorder
         '#fff', // highlightForeground
-        '#fff' // tooltipText
+        '#fff', // tooltipText
+        '#2e2e2e', // sliderBackground
+        '#fff' // sliderThumbBackground
     );
 
     private lightColors: ThemeNeutralColors = new ThemeNeutralColors(
@@ -53,7 +55,9 @@ export class DefaultThemesCreator {
         '#888', // editorSecondaryText
         '#ccc', // buttonBorder
         '#fff', // highlightForeground
-        '#fff' // tooltipText
+        '#fff', // tooltipText,
+        '#dedede', // sliderBackground
+        '#000' // sliderThumbBackground
     );
 
     public createAllThemes(): Theme[] {

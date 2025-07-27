@@ -1,8 +1,8 @@
 <app-logo-main
-    class="main-logo pointer"
-    (click)="goBackToCollection()"
-    matTooltip="{{ 'Tooltips.BackToNotes' | translate }}"
-    [showBackArrow]="true"
+        class="main-logo pointer"
+        (click)="goBackToCollection()"
+        matTooltip="{{ 'Tooltips.BackToNotes' | translate }}"
+        [showBackArrow]="true"
 ></app-logo-main>
 <div class="window-frame">
     <div class="window-frame-titlebar">
@@ -38,38 +38,32 @@
                     <div class="m-3">
                         <div class="title1">{{ 'SettingsPage.Theme' | translate }}</div>
                         <div>
-                            <mat-slide-toggle [(ngModel)]="appearance.followSystemTheme">
-                                {{ 'SettingsPage.FollowSystemTheme' | translate }}</mat-slide-toggle
-                            >
+                            <app-toggle-switch [(isChecked)]="appearance.followSystemTheme">
+                                {{ 'SettingsPage.FollowSystemTheme' | translate }}
+                            </app-toggle-switch>
                         </div>
                         <div>
-                            <mat-slide-toggle
-                                class="mt-3"
-                                [ngClass]="{ inactive: appearance.followSystemTheme }"
-                                [(ngModel)]="appearance.useLightBackgroundTheme"
-                            >
-                                {{ 'SettingsPage.UseLightTheme' | translate }}</mat-slide-toggle
-                            >
+                            <app-toggle-switch class="mt-3" [ngClass]="{ inactive: appearance.followSystemTheme }" [(isChecked)]="appearance.useLightBackgroundTheme">
+                                {{ 'SettingsPage.UseLightTheme' | translate }}
+                            </app-toggle-switch>
                         </div>
                     </div>
                     <mat-divider></mat-divider>
                     <div class="m-3">
                         <div class="title1">{{ 'SettingsPage.Color' | translate }}</div>
                         <div>
-                            <mat-slide-toggle [(ngModel)]="appearance.followSystemColor">
-                                {{ 'SettingsPage.FollowSystemColor' | translate }}</mat-slide-toggle
-                            >
+                            <app-toggle-switch [(isChecked)]="appearance.followSystemColor">
+                                {{ 'SettingsPage.FollowSystemColor' | translate }}
+                            </app-toggle-switch>
                         </div>
                         <app-theme-switcher class="mt-2"></app-theme-switcher>
-                        <div class="mt-3">
-                            <a (click)="this.appearance.refreshThemes()"
-                                ><i class="las la-sync mr-1"></i>{{ 'SettingsPage.RefreshThemes' | translate }}</a
-                            >
-                        </div>
-                        <div class="mt-1">
-                            <a (click)="this.openThemesDirectory()"
-                                ><i class="las la-plus mr-1"></i>{{ 'SettingsPage.AddMoreThemes' | translate }}</a
-                            >
+                        <div class="d-flex flex-row mt-3">
+                            <app-icon-text-button class="mr-2" (click)="this.appearance.refreshThemes()" icon="las la-sync">{{
+                                    'SettingsPage.RefreshThemes' | translate
+                                }}</app-icon-text-button>
+                            <app-icon-text-button (click)="this.openThemesDirectory()" icon="las la-plus">{{
+                                    'SettingsPage.AddMoreThemes' | translate
+                                }}</app-icon-text-button>
                         </div>
                     </div>
                     <mat-divider></mat-divider>
@@ -91,9 +85,9 @@
                     <mat-divider></mat-divider>
                     <div class="m-3">
                         <div class="title1 mt-2">{{ 'SettingsPage.TitleBar' | translate }}</div>
-                        <mat-slide-toggle class="mt-2" [(ngModel)]="useCustomTitleBarChecked">
-                            {{ 'SettingsPage.UseCustomTitleBar' | translate }}</mat-slide-toggle
-                        >
+                        <app-toggle-switch class="mt-2" [(isChecked)]="useCustomTitleBarChecked">
+                            {{ 'SettingsPage.UseCustomTitleBar' | translate }}
+                        </app-toggle-switch>
                     </div>
                 </mat-tab>
                 <mat-tab>
@@ -104,61 +98,54 @@
                     <mat-divider></mat-divider>
                     <div class="m-3">
                         <div class="title1 mt-2">{{ 'SettingsPage.FormatsForNewNotes' | translate }}</div>
-                        <div class="d-flex flex-column">
-                            <mat-slide-toggle class="mt-2" [(ngModel)]="classicNoteChecked">
-                                {{ 'SettingsPage.ClassicNote' | translate }}</mat-slide-toggle
-                            >
-                            <mat-slide-toggle class="mt-2" [(ngModel)]="markdownNoteChecked">
-                                {{ 'SettingsPage.MarkdownNote' | translate }}</mat-slide-toggle
-                            >
-                        </div>
+                            <app-toggle-switch class="mt-2" [(isChecked)]="classicNoteChecked">
+                                {{ 'SettingsPage.ClassicNote' | translate }}
+                            </app-toggle-switch>
+                            <app-toggle-switch class="mt-2" [(isChecked)]="markdownNoteChecked">
+                                {{ 'SettingsPage.MarkdownNote' | translate }}
+                            </app-toggle-switch>
                     </div>
                     <mat-divider></mat-divider>
                     <div class="m-3">
                         <div class="title1 mt-2">{{ 'SettingsPage.Closing' | translate }}</div>
-                        <mat-slide-toggle class="mt-2" [(ngModel)]="closeNotesWithEscapeChecked">
-                            {{ 'SettingsPage.CloseNotesWithEscape' | translate }}</mat-slide-toggle
-                        >
+                        <app-toggle-switch class="mt-2" [(isChecked)]="closeNotesWithEscapeChecked">
+                            {{ 'SettingsPage.CloseNotesWithEscape' | translate }}
+                        </app-toggle-switch>
                     </div>
                     <mat-divider></mat-divider>
                     <div class="m-3">
                         <div class="title1 mt-2">{{ 'SettingsPage.Dates' | translate }}</div>
-                        <mat-slide-toggle class="mt-2" [(ngModel)]="showExactDatesInTheNotesListChecked">
-                            {{ 'SettingsPage.ShowExactDatesInTheNotesList' | translate }}</mat-slide-toggle
-                        >
+                        <app-toggle-switch class="mt-2" [(isChecked)]="showExactDatesInTheNotesListChecked">
+                            {{ 'SettingsPage.ShowExactDatesInTheNotesList' | translate }}
+                        </app-toggle-switch>
                     </div>
                     <mat-divider></mat-divider>
                     <div class="m-3">
                         <div class="title1 mt-2">{{ 'SettingsPage.SpellChecker' | translate }}</div>
                         <div>
-                            <mat-slide-toggle class="mt-2" [(ngModel)]="enableSpellCheckerChecked">
-                                {{ 'SettingsPage.EnableSpellChecker' | translate }}</mat-slide-toggle
-                            >
+                            <app-toggle-switch class="mt-2" [(isChecked)]="enableSpellCheckerChecked">
+                                {{ 'SettingsPage.EnableSpellChecker' | translate }}
+                            </app-toggle-switch>
                         </div>
-                        <button
-                            class="mt-2"
-                            [ngClass]="{ inactive: !this.settings.enableSpellChecker }"
-                            mat-raised-button
-                            color="primary"
-                            (click)="setSpellCheckerLanguages()"
-                        >
-                            {{ 'Buttons.Languages' | translate }}
-                        </button>
+                        <app-accent-button class="mt-2" [ngClass]="{ inactive: !this.settings.enableSpellChecker }"
+                                           (click)="setSpellCheckerLanguages()"
+                        >{{ 'Buttons.Languages' | translate }}
+                        </app-accent-button>
                     </div>
                 </mat-tab>
                 <mat-tab>
                     <div class="m-3">
                         <div class="title1 mt-2">{{ 'SettingsPage.Updates' | translate }}</div>
-                        <mat-slide-toggle class="mt-2" [(ngModel)]="checkForUpdatesChecked">
-                            {{ 'SettingsPage.CheckForUpdates' | translate }}</mat-slide-toggle
-                        >
+                        <app-toggle-switch class="mt-2" [(isChecked)]="checkForUpdatesChecked">
+                            {{ 'SettingsPage.CheckForUpdates' | translate }}
+                        </app-toggle-switch>
                     </div>
                     <mat-divider></mat-divider>
                     <div class="m-3">
                         <div class="title1 mt-2">{{ 'SettingsPage.Trash' | translate }}</div>
-                        <mat-slide-toggle class="mt-2" [(ngModel)]="moveDeletedNotesToTrashChecked">
-                            {{ 'SettingsPage.MoveDeletedNotesToTrash' | translate }}</mat-slide-toggle
-                        >
+                        <app-toggle-switch class="mt-2" [(isChecked)]="moveDeletedNotesToTrashChecked">
+                            {{ 'SettingsPage.MoveDeletedNotesToTrash' | translate }}
+                        </app-toggle-switch>
                     </div>
                 </mat-tab>
             </mat-tab-group>

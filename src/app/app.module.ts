@@ -121,6 +121,8 @@ import {AccentButtonComponent} from "./components/controls/accent-button/accent-
 import {TransparentButtonComponent} from "./components/controls/transparent-button/transparent-button.component";
 import {SubMenuItemComponent} from "./components/sub-menu/sub-menu-item/sub-menu-item.component";
 import {SubMenuComponent} from "./components/sub-menu/sub-menu.component";
+import {ToggleSwitchComponent} from "./components/controls/toggle-switch/toggle-switch.component";
+import {IconTextButtonComponent} from "./components/controls/icon-text-button/icon-text-button.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -223,7 +225,9 @@ export function MarkedOptionsFactory(): MarkedOptions {
         AccentButtonComponent,
         TransparentButtonComponent,
         SubMenuComponent,
-        SubMenuItemComponent
+        SubMenuItemComponent,
+        ToggleSwitchComponent,
+        IconTextButtonComponent
     ],
     imports: [
         MarkdownModule.forRoot({
