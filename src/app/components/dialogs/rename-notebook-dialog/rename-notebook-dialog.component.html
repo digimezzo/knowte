@@ -6,7 +6,7 @@
     </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <app-accent-button class="mr-2" [disabled]="!notebookName"
+    <app-accent-button class="mr-2" [ngClass]="{ inactive: !this.notebookName }"
                        [mat-dialog-close]="true" (click)="renameNotebookAsync()">{{ 'Buttons.Ok' | translate }}
     </app-accent-button>
     <app-transparent-button [mat-dialog-close]="true">{{ 'Buttons.Cancel' | translate }}</app-transparent-button>

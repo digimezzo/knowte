@@ -6,7 +6,7 @@
     </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <app-accent-button class="mr-2" [disabled]="!newCollection"
+    <app-accent-button class="mr-2" [ngClass]="{ inactive: !this.newCollection }"
                        [mat-dialog-close]="true" (click)="renameCollectionAsync()">{{ 'Buttons.Ok' | translate }}
     </app-accent-button>
     <app-transparent-button [mat-dialog-close]="true">{{ 'Buttons.Cancel' | translate }}</app-transparent-button>
