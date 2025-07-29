@@ -1,8 +1,3 @@
-$editor-font: 'Courier New', Courier, monospace;
-$editor-font-size: 14px;
-$editor-line-height: 1.5;
-$editor-letter-spacing: normal;
-
 .editor-wrapper {
     position: relative;
     width: 50%;
@@ -17,39 +12,35 @@ $editor-letter-spacing: normal;
     visibility: collapse;
 }
 
-.markdown-input {
+.markdown-input, .highlighted-content {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    padding: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: normal;
+    white-space: pre-wrap;
+}
+
+.markdown-input {
+    z-index: 2;
     background: transparent;
     color: transparent !important;
     caret-color: black;
     border: none;
     resize: none;
-    z-index: 2;
-    font: inherit;
-    white-space: pre-wrap;
     overflow: hidden;
-    padding: 16px;
-    font-family: $editor-font;
-    font-size: $editor-font-size;
-    line-height: $editor-line-height;
-    letter-spacing: $editor-letter-spacing;
 }
 
 .highlighted-content {
-    white-space: pre-wrap;
+    z-index: 1;
     word-wrap: break-word;
     color: black;
-    z-index: 1;
     pointer-events: none;
-    padding: 16px;
-    font-family: $editor-font;
-    font-size: $editor-font-size;
-    line-height: $editor-line-height;
-    letter-spacing: $editor-letter-spacing;
 }
 
 .md-title-1 { color: var(--theme-accent-color) !important; text-decoration: underline; font-weight: bold; }
