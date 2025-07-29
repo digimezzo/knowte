@@ -90,12 +90,14 @@
         </div>
     </div>
     <div class="d-flex flex-row fill overflow-hidden pt-1 pb-2 note-editor">
-        <div class="editor-wrapper" [ngClass]="{ 'editor-wrapper-hidden': !this.noteEditor.isEditing }">
-            <pre class="highlighted-content" [innerHTML]="highlightMarkdown(this.noteEditor.content)"></pre>
+        <div #editorWrapper class="editor-wrapper" [ngClass]="{ 'editor-wrapper-hidden': !this.noteEditor.isEditing }">
+            <pre #highlightedContent class="highlighted-content" [innerHTML]="highlightMarkdown(this.noteEditor.content)"></pre>
             <textarea
-                    class="markdown-input"
-                    id="markdown-input"
-                    [(ngModel)]="this.noteEditor.content"
+                #markdownInput
+                class="markdown-input"
+                id="markdown-input"
+                [(ngModel)]="this.noteEditor.content"
+                (ngModelChange)="onContentChange()"
             ></textarea>
         </div>
         <markdown
