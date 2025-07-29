@@ -1,10 +1,10 @@
-import { IMock, Mock, Times } from 'typemoq';
-import { AppearanceService } from '../../services/appearance/appearance.service';
-import { Theme } from '../../services/appearance/theme/theme';
-import { ThemeCoreColors } from '../../services/appearance/theme/theme-core-colors';
-import { ThemeCreator } from '../../services/appearance/theme/theme-creator';
-import { ThemeNeutralColors } from '../../services/appearance/theme/theme-neutral-colors';
-import { ThemeSwitcherComponent } from './theme-switcher.component';
+import {IMock, Mock, Times} from 'typemoq';
+import {AppearanceService} from '../../services/appearance/appearance.service';
+import {Theme} from '../../services/appearance/theme/theme';
+import {ThemeCoreColors} from '../../services/appearance/theme/theme-core-colors';
+import {ThemeCreator} from '../../services/appearance/theme/theme-creator';
+import {ThemeNeutralColors} from '../../services/appearance/theme/theme-neutral-colors';
+import {ThemeSwitcherComponent} from './theme-switcher.component';
 
 describe('ThemeSwitcherComponent', () => {
     let appearanceServiceMock: IMock<AppearanceService> = Mock.ofType<AppearanceService>();
@@ -62,6 +62,9 @@ describe('ThemeSwitcherComponent', () => {
                 '#777',
                 '#888',
                 'black',
+                '#fff',
+                '#fff',
+                '#fff',
                 '#fff'
             );
             const lightColors: ThemeNeutralColors = new ThemeNeutralColors(
@@ -84,6 +87,9 @@ describe('ThemeSwitcherComponent', () => {
                 '#777',
                 '#888',
                 'black',
+                '#fff',
+                '#fff',
+                '#fff',
                 '#fff'
             );
 

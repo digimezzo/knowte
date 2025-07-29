@@ -23,7 +23,9 @@ describe('ThemeNeutralColors', () => {
             '#5e5e5e', // editorSecondaryText
             '#fff', // buttonBorder
             '#fff', // highlightForeground
-            '#fff' // tooltipText
+            '#fff', // tooltipText
+            '#fff', // sliderBackground
+            '#fff' // sliderThumbBackground
         );
     }
 

@@ -1,7 +1,7 @@
-import { Theme } from './theme';
-import { ThemeCoreColors } from './theme-core-colors';
-import { ThemeCreator } from './theme-creator';
-import { ThemeNeutralColors } from './theme-neutral-colors';
+import {Theme} from './theme';
+import {ThemeCoreColors} from './theme-core-colors';
+import {ThemeCreator} from './theme-creator';
+import {ThemeNeutralColors} from './theme-neutral-colors';
 
 describe('Theme', () => {
     function createNeutralColors(): ThemeNeutralColors {
@@ -25,11 +25,16 @@ describe('Theme', () => {
             '#fff', // editorPrimaryText
             '#5e5e5e', // editorSecondaryText
             '#fff', // buttonBorder
-            '#fff' // highlightForeground
-        );
+            '#fff', // highlightForeground
+            '#fff', // tooltipText
+            '#fff', // sliderBackground
+            '#fff' // sliderThumbBackground
+    )
+        ;
     }
 
-    beforeEach(() => {});
+    beforeEach(() => {
+    });
 
     describe('constructor', () => {
         it('should create', () => {
