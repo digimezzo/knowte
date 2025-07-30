@@ -1,18 +1,53 @@
-.markdown-input {
+.editor-wrapper {
+    position: relative;
     width: 50%;
-    resize: none;
-    overflow: auto;
     border-right: 1px solid var(--theme-separator);
-    background: var(--theme-editor-background);
-    padding: 16px;
-    font-size: var(--editor-p-font-size);
+    overflow: hidden;
+    resize: none;
 }
 
-.markdown-input-hidden {
-    width: 0% !important;
-    padding: 0px !important;
+.editor-wrapper-hidden {
+    width: 0 !important;
+    padding: 0 !important;
     visibility: collapse;
 }
+
+.markdown-input, .highlighted-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    box-sizing: border-box;
+    overflow: auto;
+    padding: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    letter-spacing: normal;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.markdown-input {
+    z-index: 2;
+    background: transparent;
+    color: transparent !important;
+    caret-color: var(--theme-editor-primary-text);
+    border: none;
+    resize: none;
+}
+
+.highlighted-content {
+    z-index: 1;
+    color: transparent;
+    pointer-events: none;
+}
+
+.md-title-1 { color: var(--theme-accent-color) !important; font-weight: bold; }
+.md-title-2 { color: var(--theme-editor-secondary-text) !important; font-weight: bold; }
+.md-title-3 { color: var(--theme-editor-secondary-text) !important; font-weight: bold; }
 
 .markdown-output {
     width: 50%;
