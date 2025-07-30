@@ -31,8 +31,8 @@
 // Snack bar
 // -----------------------------------------------------------------------------------------------------------------------------------------
 .mdc-snackbar__surface {
-    background-color: var(--theme-accent-color) !important;
-    color: var(--theme-primary-button-text) !important;
+  background: linear-gradient(45deg, var(--theme-primary-color) 30%, var(--theme-secondary-color) 100%);
+  color: var(--theme-primary-button-text) !important;
 }
 
 .mdc-snackbar__label {
@@ -40,7 +40,7 @@
 }
 
 .mat-mdc-snack-bar-action > * {
-    color: var(--theme-primary-button-text) !important;
+  color: var(--theme-primary-button-text) !important;
 }
 
 // Dialog
