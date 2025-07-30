@@ -151,6 +151,5 @@
 }
 
 .drop-notebook {
-  background-color: var(--theme-accent-color);
-  opacity: 0.2;
+  background-color: rgba(var(--theme-rgb-accent), 0.2);
 }
