@@ -9,15 +9,14 @@
     <!-- Search -->
     <mat-form-field class="notes-content-search">
         <input matInput type="text" #searchInput [(ngModel)]="this.searchService.searchText" placeholder="{{ 'MainPage.Search' | translate }}"/>
-        <button
+        <div
             class="notes-content-search-clearbutton"
             *ngIf="this.searchService.searchText"
             matSuffix
-            mat-icon-button
             matTooltip="{{ 'MainPage.ClearSearch' | translate }}"
             (click)="this.searchService.searchText = ''"
         >
             <i class="las la-times"></i>
-        </button>
+        </div>
     </mat-form-field>
 </div>
