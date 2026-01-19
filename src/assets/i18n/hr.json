@@ -34,8 +34,8 @@
     },
     "SettingsPage": {
         "FontSize": "Veličina fonta",
-        "TextSize": "Text size",
-        "TextSizeInNotes": "Text size in notes",
+        "TextSize": "Veličina teksta",
+        "TextSizeInNotes": "Veličina teksta u bilješkama",
         "Closing": "Zatvaranje",
         "CloseNotesWithEscape": "Zatvori bilješke pritiskom na [Esc]",
         "Dates": "Datumi",
@@ -46,22 +46,22 @@
         "UseCustomTitleBar": "Koristi prilagođenu alatnu traku (zahtijeva ponovno pokretanje)",
         "Updates": "Ažuriranja",
         "CheckForUpdates": "Provjeri ima li nova ažuriranja",
-        "Trash": "Trash",
-        "MoveDeletedNotesToTrash": "Move deleted notes to the trash instead of deleting them permanently",
-        "SpellChecker": "Spell checker",
-        "EnableSpellChecker": "Enable spell checker",
-        "FormatsForNewNotes": "Formats for new notes",
-        "ClassicNote": "Classic note",
-        "MarkdownNote": "Markdown note",
-        "Theme": "Theme",
-        "FollowSystemTheme": "Follow the system theme",
-        "UseLightTheme": "Use light theme",
-        "FollowSystemColor": "Follow the system color",
-        "RefreshThemes": "Refresh themes",
-        "AddMoreThemes": "Add more themes",
-        "CollectionsDirectory": "Collections directory",
-        "SelectOtherCollectionsDirectory": "Select another collections directory",
-        "SelectButton": "SELECT..."
+        "Trash": "Otpad",
+        "MoveDeletedNotesToTrash": "Premjesti izbrisane bilješke u otpad umjesto da se trajno izbrišu",
+        "SpellChecker": "Provjera pravopisa",
+        "EnableSpellChecker": "Omogući provjeru pravopisa",
+        "FormatsForNewNotes": "Format novih bilješki",
+        "ClassicNote": "Klasična bilješka",
+        "MarkdownNote": "Markdown bilješka",
+        "Theme": "Tema",
+        "FollowSystemTheme": "Slijedi temu sustava",
+        "UseLightTheme": "Koristi svijetlu temu",
+        "FollowSystemColor": "Koristi boju sustava",
+        "RefreshThemes": "Osvježi teme",
+        "AddMoreThemes": "Dodaj više tema",
+        "CollectionsDirectory": "Mapa kolekcija",
+        "SelectOtherCollectionsDirectory": "Odaberi drugu mapu kolekcija",
+        "SelectButton": "ODABERI..."
     },
     "ComponentsPage": {
         "Components": "Komponente"
@@ -73,8 +73,8 @@
     },
     "CollectionSwitcher": {
         "AddCollection": "Dodaj kolekciju...",
-        "OpenTrash": "Open trash...",
-        "Download": "Download"
+        "OpenTrash": "Otvori otpad...",
+        "Download": "Preuzmi"
     },
     "Tooltips": {
         "Rename": "Preimenuj",
@@ -94,8 +94,8 @@
         "DeleteNotes": "Izbriši bilješke...",
         "LastChanged": "Zadnja izmjena",
         "Highlight": "Istakni",
-        "Undo": "Undo (Ctrl+Z)",
-        "Redo": "Redo (Ctrl+Y)",
+        "Undo": "Poništi (Ctrl+Z)",
+        "Redo": "Ponovi (Ctrl+Y)",
         "Bold": "Podebljaj (Ctrl+B)",
         "Italic": "Ukosi (Ctrl+I)",
         "Underline": "Podcrtaj (Ctrl+U)",
@@ -112,17 +112,17 @@
         "ClearFormatting": "Očisti formatiranje",
         "Close": "Zatvori",
         "Search": "Pretraživanje",
-        "BackToNotes": "Back to notes",
-        "ChangeTextSize": "Change text size",
-        "ChangeSpellCheckerLanguages": "Change spell checker languages",
-        "EncryptNote": "Encrypt note...",
-        "DecryptNote": "Decrypt note...",
-        "ThisNoteIsEncrypted": "This note is encrypted",
-        "MoveNote": "Move note to another collection",
-        "MoveNotes": "Move notes to another collection",
-        "Share": "Share...",
-        "PinNote": "Pin note",
-        "UnpinNote": "Unpin note"
+        "BackToNotes": "Natrag na bilješke",
+        "ChangeTextSize": "Promijeni veličinu teksta",
+        "ChangeSpellCheckerLanguages": "Promijeni jezike provjere pravopisa",
+        "EncryptNote": "Šifriraj bilješku...",
+        "DecryptNote": "Dešifriraj bilješku...",
+        "ThisNoteIsEncrypted": "Ova bilješka je šifrirana",
+        "MoveNote": "Premjesti bilješku u drugu kolekciju",
+        "MoveNotes": "Premjesti bilješke u drugu kolekciju",
+        "Share": "Podijeli...",
+        "PinNote": "Prikvači bilješku",
+        "UnpinNote": "Odkvači bilješku"
     },
     "LicenseDialog": {
         "License": "Licencija"
@@ -139,8 +139,8 @@
         "Select": "ODABERI",
         "SelectAgain": "ODABERI PONOVNO",
         "Close": "ZATVORI",
-        "Languages": "LANGUAGES",
-        "Search": "CHERCHER"
+        "Languages": "JEZICI",
+        "Search": "TRAŽI"
     },
     "DialogTitles": {
         "AddCollection": "Dodavanje kolekcije",
@@ -154,40 +154,40 @@
         "ConfirmDeleteNotebooks": "Izbrisati bilježnice?",
         "ConfirmDeleteNote": "Izbrisati bilješku?",
         "ConfirmDeleteNotes": "Izbrisati bilješke?",
-        "Languages": "Languages",
-        "EncryptNote": "Encrypt note",
-        "ConfirmDecryptNote": "Decrypt note?",
-        "NoteIsEncrypted": "Note is encrypted",
-        "ConfirmCloseAllNotes": "Close all notes?",
-        "ConfirmMoveNote": "Move note?",
-        "ConfirmMoveNotes": "Move notes?"
+        "Languages": "Jezici",
+        "EncryptNote": "Šifriranje bilješke",
+        "ConfirmDecryptNote": "Dešifrirati bilješku?",
+        "NoteIsEncrypted": "Bilješka je šifrirana",
+        "ConfirmCloseAllNotes": "Zatvoriti sve bilješke?",
+        "ConfirmMoveNote": "Premjestiti bilješku?",
+        "ConfirmMoveNotes": "Premjestiti bilješke?"
     },
     "DialogTexts": {
         "ConfirmDeleteCollection": "Jeste li sigurni da želite izbrisati kolekciju '{{collection}}'? Ako nastavite, njene bilježnice i bilješke bit će izgubljene.",
         "ConfirmDeleteNote": "Jeste li sigurni da želite izbrisati bilješku '{{noteTitle}}'?",
         "ConfirmDeleteNotes": "Jeste li sigurni da želite izbrisati ove bilješke?",
-        "ConfirmPermanentlyDeleteNote": "Are you sure you want to permanently delete the note '{{noteTitle}}'? It will be lost forever.",
-        "ConfirmPermanentlyDeleteNotes": "Are you sure you want to permanently delete these notes? They will be lost forever.",
+        "ConfirmPermanentlyDeleteNote": "Jeste li sigurni da želite trajno izbrisati bilješku '{{noteTitle}}'? Bit će zauvijek izgubljena.",
+        "ConfirmPermanentlyDeleteNotes": "Jeste li sigurni da želite trajno izbrisati ove bilješke? Bit će zauvijek izgubljene.",
         "ConfirmDeleteNotebook": "Jeste li sigurni da želite izbrisati bilježnicu '{{notebookName}}'? Njene bilješke neće biti izbrisane. Samo će biti neraspoređene.",
         "ConfirmDeleteNotebooks": "Jeste li sigurni da želite izbrisati ove bilježnice? Njihove bilješke neće biti izbrisane. Samo će biti neraspoređene.",
-        "SelectDirectoryContainingOldVersionExports": "Pdaberite mapu koja sadrži datoteke koje su izvezene iz Knowtea 1.x.",
+        "SelectDirectoryContainingOldVersionExports": "Odaberite mapu koja sadrži datoteke koje su izvezene iz Knowtea 1.x.",
         "YouHaveSelectedDirectory": "Odabrali ste mapu:",
         "Importing": "Uvoz",
         "ImportSuccessful": "Uspješno uvezeno!",
         "ImportFailed": "Uvoz nije bio uspješan!",
         "AllFiles": "Sve datoteke",
         "ChooseNotebook": "Odaberite bilježnicu",
-        "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
-        "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?",
-        "ConfirmMoveNote": "Are you sure you want to move this note to collection '{{collection}}'?",
-        "ConfirmMoveNotes": "Are you sure you want to move these notes to collection '{{collection}}'?"
+        "ConfirmDecryptNote": "Jeste li sigurni da želite dešifrirati ovu bilješku?",
+        "ConfirmCloseAllNotes": "Ovo će zatvoriti sve otvorene bilješke. Jeste li sigurni da želite nastaviti?",
+        "ConfirmMoveNote": "Jeste li sigurni da želite premjestiti ovu bilješku u kolekciju '{{collection}}'?",
+        "ConfirmMoveNotes": "Jeste li sigurni da želite premjestiti ove bilješke u kolekciju '{{collection}}'?"
     },
     "Input": {
         "Collection": "Kolekcija",
         "NotebookName": "Naziv bilježnice",
-        "SecretKey": "Secret key",
-        "ConfirmSecretKey": "Confirm secret key",
-        "SecretKeysDoNotMatch": "Secret keys do not match"
+        "SecretKey": "Tajni ključ",
+        "ConfirmSecretKey": "Potvrdite tajni ključ",
+        "SecretKeysDoNotMatch": "Tajni ključ se ne podudara"
     },
     "ErrorTexts": {
         "StorageDirectoryCreationError": "Mapu '{{storageDirectory}}' nije moguće koristiti za spremanje Vaših bilješki. Možda nemate dozvolu za stvaranje stavki u njoj. Provjerite zapisnik, ako trebate više informacija.",
@@ -200,14 +200,14 @@
         "DeleteCollectionError": "Dogodila se greška tijekom brisanja kolekcije '{{collection}}'. Provjerite zapisnik, ako trebate više informacija.",
         "DeleteNotebooksError": "Dogodila se greška tijekom brisanja bilježnica. Provjerite zapisnik, ako trebate više informacija.",
         "DeleteNotesError": "Dogodila se greška tijekom brisanja bilješki. Provjerite zapisnik, ako trebate više informacija.",
-        "RestoreNotesError": "An error occurred while restoring the notes. Please verify the log if you need more information.",
+        "RestoreNotesError": "Dogodila se greška tijekom vraćanja bilješki. Provjerite zapisnik, ako trebate više informacija.",
         "SaveNoteError": "Dogodila se greška tijekom spremanja bilješke '{{noteTitle}}'. Provjerite zapisnik, ako trebate više informacija.",
         "UpdateNoteContentError": "Dogodila se greška tijekom spremanja sadržaja bilješke. Provjerite zapisnik, ako trebate više informacija.",
         "GetNoteContentError": "Dogodila se greška tijekom dohvaćanja sadržaja bilješke. Provjerite zapisnik, ako trebate više informacija.",
         "ExportNoteError": "Dogodila se greška tijekom izvoza bilješke '{{noteTitle}}'. Provjerite zapisnik, ako trebate više informacija.",
         "ImportNotesError": "Dogodila se greška tijekom uvoza bilješki. Provjerite zapisnik, ako trebate više informacija.",
         "ChangeNotebookError": "Dogodila se greška tijekom izmjene bilježnice. Provjerite zapisnik, ako trebate više informacija.",
-        "MoveNotesError": "An error occurred while moving notes to the collection '{{collection}}'. Please verify the log if you need more information."
+        "MoveNotesError": "Dogodila se greška tijekom premještanja bilješki u kolekciju '{{collection}}'. Provjerite zapisnik, ako trebate više informacija."
     },
     "SnackBarMessages": {
         "DuplicateCollection": "Već postoji kolekcija s nazivom '{{collection}}'",
@@ -220,9 +220,9 @@
         "NotesImported": "Bilješke su uvezene",
         "NoNoteFilesToImport": "Nije bilo datoteka bilješki za uvoz",
         "NewVersionAvailable": "Dostupna je nova verzija: {{version}}",
-        "NoteMoved": "{{number}} note moved to '{{collection}}'",
-        "NotesMoved": "{{number}} notes moved to '{{collection}}'",
-        "OopsAnErrorOccurred": "Oops! An error occurred."
+        "NoteMoved": "{{number}} bilješka premještena u '{{collection}}'",
+        "NotesMoved": "Broj bilješki premještenih u '{{collection}}': {{number}}",
+        "OopsAnErrorOccurred": "Ups! Dogodila se greška."
     },
     "SnackBarActions": {
         "Ok": "U redu"
@@ -244,34 +244,34 @@
         "NotePlaceholder": "Ovdje upišite bilješku...",
         "Imported": "Uvezeno",
         "Search": "Pretraživanje",
-        "Languages": "languages",
-        "Disabled": "Disabled",
-        "Moved": "Moved",
-        "AddClassicNote": "Add classic note",
-        "AddMarkdownNote": "Add Markdown note",
-        "Edit": "Edit",
-        "Bold": "Bold",
-        "Italic": "Italic",
-        "Strikethrough": "Strikethrough",
-        "Heading1": "Heading 1",
-        "Heading2": "Heading 2",
-        "Heading3": "Heading 3",
-        "Link": "Link",
-        "Quote": "Quote",
-        "Code": "Code",
-        "Table": "Table",
-        "UnorderedList": "Unordered list",
-        "OrderedList": "Ordered list",
-        "TaskList": "Task list",
-        "Image": "Image..."
+        "Languages": "jezici",
+        "Disabled": "Onemogućeno",
+        "Moved": "Premješteno",
+        "AddClassicNote": "Dodaj klasičnu bilješku",
+        "AddMarkdownNote": "Dodaj Markdown bilješku",
+        "Edit": "Uredi",
+        "Bold": "Podebljano",
+        "Italic": "Ukošeno",
+        "Strikethrough": "Precrtano",
+        "Heading1": "Naslov 1",
+        "Heading2": "Naslov 2",
+        "Heading3": "Naslov 3",
+        "Link": "Poveznica",
+        "Quote": "Citat",
+        "Code": "Kôd",
+        "Table": "Tablica",
+        "UnorderedList": "Grafički popis",
+        "OrderedList": "Numerirani popis",
+        "TaskList": "Popis zadataka",
+        "Image": "Slika..."
     },
     "NoteDates": {
         "Today": "Danas",
         "Yesterday": "Jučer",
-        "DaysAgo": "Prije {{count}} dana",
+        "DaysAgo": "Prije {{count}} dan(a)",
         "LastWeek": "Prošli tjedan",
-        "WeeksAgo": "Prije {{count}} tjedna",
-        "MonthsAgo": "Prije {{count}} mjeseca",
+        "WeeksAgo": "Prije {{count}} tjed(a)na",
+        "MonthsAgo": "Prije {{count}} mjeseca/i",
         "LongAgo": "Davno"
     },
     "ContextMenu": {
@@ -281,16 +281,16 @@
         "Delete": "Izbriši"
     },
     "Trash": {
-        "Trash": "Trash",
-        "MovedToTrash": "Moved to trash",
-        "SelectAllNotes": "Select all notes",
-        "Restore": "Restore",
-        "DeletePermanently": "Delete permanently"
+        "Trash": "Otpad",
+        "MovedToTrash": "Premješteno u otpad",
+        "SelectAllNotes": "Odaberi sve bilješke",
+        "Restore": "Vrati",
+        "DeletePermanently": "Trajno izbriši"
     },
     "NotificationTitles": {
-        "IncorrectKey": "Incorrect key"
+        "IncorrectKey": "Pogrešan ključ"
     },
     "NotificationTexts": {
-        "SecretKeyIncorrect": "The secret key is incorrect."
+        "SecretKeyIncorrect": "Tajni ključ nije točan."
     }
 }
