@@ -124,7 +124,10 @@ function createMainWindow() {
             }
         };
         mainWindow.webContents.on('will-navigate', handleRedirect);
-        mainWindow.webContents.on('new-window', handleRedirect);
+        mainWindow.webContents.setWindowOpenHandler(({ url: openUrl }) => {
+            require('electron').shell.openExternal(openUrl);
+            return { action: 'deny' };
+        });
         mainWindow.webContents.on('before-input-event', (event, input) => {
             if (input.key.toLowerCase() === 'f12') {
                 if (serve) {
@@ -206,7 +209,10 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
         }
     };
     noteWindow.webContents.on('will-navigate', handleRedirect);
-    noteWindow.webContents.on('new-window', handleRedirect);
+    noteWindow.webContents.setWindowOpenHandler(({ url: openUrl }) => {
+        require('electron').shell.openExternal(openUrl);
+        return { action: 'deny' };
+    });
     noteWindow.webContents.on('before-input-event', (event, input) => {
         if (input.key.toLowerCase() === 'f12') {
             if (serve) {

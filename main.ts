@@ -102,7 +102,7 @@ function createMainWindow(): void {
                     pathname: path.join(__dirname, 'dist/index.html'),
                     protocol: 'file:',
                     slashes: true,
-                })
+                }),
             );
         }
 
@@ -136,7 +136,10 @@ function createMainWindow(): void {
         };
 
         mainWindow.webContents.on('will-navigate', handleRedirect);
-        mainWindow.webContents.on('new-window', handleRedirect);
+        mainWindow.webContents.setWindowOpenHandler(({ url: openUrl }) => {
+            require('electron').shell.openExternal(openUrl);
+            return { action: 'deny' };
+        });
 
         mainWindow.webContents.on('before-input-event', (event, input) => {
             if (input.key.toLowerCase() === 'f12') {
@@ -233,7 +236,10 @@ function createNoteWindow(notePath: string, noteId: string, windowHasFrame: bool
     };
 
     noteWindow.webContents.on('will-navigate', handleRedirect);
-    noteWindow.webContents.on('new-window', handleRedirect);
+    noteWindow.webContents.setWindowOpenHandler(({ url: openUrl }) => {
+        require('electron').shell.openExternal(openUrl);
+        return { action: 'deny' };
+    });
 
     noteWindow.webContents.on('before-input-event', (event, input) => {
         if (input.key.toLowerCase() === 'f12') {
