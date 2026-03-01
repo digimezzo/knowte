@@ -1,8 +1,9 @@
 {
-  "name": "Knowte",
-  "version": "3.0.1",
+  "name": "knowte",
+  "desktopName": "dopamine",
+  "version": "3.0.2",
   "versionSuffix": "",
-  "copyright": "Copyright Digimezzo Ⓒ 2013 - 2025",
+  "copyright": "Copyright Digimezzo Ⓒ 2013 - 2026",
   "description": "A note taking application that allows you to quickly and easily organize and find your notes",
   "homepage": "https://github.com/digimezzo/knowte",
   "author": {
