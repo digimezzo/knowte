@@ -139,6 +139,11 @@
     font-size: var(--fontsize-status-icon);
 }
 
+.note-status-icon-accent {
+    color: var(--theme-accent-color);
+    font-size: var(--fontsize-status-icon);
+}
+
 .note-status-text {
     color: var(--theme-secondary-text);
 }
