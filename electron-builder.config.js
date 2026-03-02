@@ -49,8 +49,10 @@ const config = {
         category: 'Utility',
         artifactName: `\${productName}-${getFullVersion()}.\${ext}`,
         synopsis: 'Cross platform note taking application.',
-        description:
-            'Knowte is a note taking application that allows you to quickly and easily organize and find your notes.',
+        description: 'Knowte is a note taking application that allows you to quickly and easily organize and find your notes.',
+        desktop: {
+            StartupWMClass: 'knowte',
+        },
     },
 };
 
