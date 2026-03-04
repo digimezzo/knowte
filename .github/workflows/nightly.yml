@@ -32,27 +32,27 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-rpm
-                  path: release/knowte-*.rpm
+                  path: release/Knowte-*.rpm
             - name: upload deb artifact
               uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-deb
-                  path: release/knowte-*.deb
+                  path: release/Knowte-*.deb
             - name: upload appimage artifact
               uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-appimage
-                  path: release/knowte-*.AppImage
+                  path: release/Knowte-*.AppImage
             - name: upload snap artifact
               uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-snap
-                  path: release/knowte-*.snap
+                  path: release/Knowte-*.snap
             - name: upload pacman artifact
               uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-pacman
-                  path: release/knowte-*.pacman
+                  path: release/Knowte-*.pacman
 
     nightly_build_on_mac_arm:
         runs-on: macos-15
@@ -77,7 +77,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-macos-arm
-                  path: release/knowte-*.dmg
+                  path: release/Knowte-*.dmg
 
     nightly_build_on_mac_intel:
         runs-on: macos-15-intel
@@ -102,7 +102,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-macos-intel
-                  path: release/knowte-*.dmg
+                  path: release/Knowte-*.dmg
 
     nightly_build_on_win:
         runs-on: windows-2022
@@ -127,4 +127,4 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: knowte-nightly-win
-                  path: release\knowte-*.exe
+                  path: release\Knowte-*.exe
