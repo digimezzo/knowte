@@ -67,16 +67,26 @@
     height: 48px;
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-width: 0;
 }
 
 .trashed-note__title {
     margin-top: 4px;
     height: 24px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .trashed-note__trasheddate {
     margin-bottom: 4px;
     height: 24px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: var(--theme-secondary-text);
 }
 

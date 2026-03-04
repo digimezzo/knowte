@@ -18,8 +18,11 @@
                     <mat-checkbox (change)="changeNoteSelection(trashedNote, $event)" [(ngModel)]="trashedNote.isSelected"></mat-checkbox>
                 </div>
                 <div class="trashed-note__info">
-                    <div class="trashed-note__title">{{ trashedNote.title }}</div>
-                    <div class="trashed-note__trasheddate">
+                    <div class="trashed-note__title" matTooltip="{{ trashedNote.title }}">{{ trashedNote.title }}</div>
+                    <div
+                        class="trashed-note__trasheddate"
+                        matTooltip="{{ ('Trash.MovedToTrash' | translate) + ': ' + trashedNote.displayTrashedDate }}"
+                    >
                         {{ 'Trash.MovedToTrash' | translate }}: {{ trashedNote.displayTrashedDate }}
                     </div>
                 </div>
