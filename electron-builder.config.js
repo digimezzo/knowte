@@ -1,7 +1,7 @@
 const { getFullVersion } = require('./get-package-information.js');
 
 const config = {
-    appId: 'com.digimezzo.Knowte',
+    appId: 'com.digimezzo.knowte',
     productName: 'Knowte',
     snap: {
         base: 'core22', // Must match build server (currently Ubuntu 22.04)
