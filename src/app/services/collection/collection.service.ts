@@ -587,6 +587,10 @@ export class CollectionService {
             let pinnedUncategorizedNotes: Note[] = uncategorizedNotes.filter((x) => x.isPinned);
             let unpinnedUncategorizedNotes: Note[] = uncategorizedNotes.filter((x) => !x.isPinned);
 
+            for (const note of pinnedUncategorizedNotes) {
+                note.isLastPinned = false;
+            }
+
             if (pinnedUncategorizedNotes.length > 0) {
                 pinnedUncategorizedNotes[pinnedUncategorizedNotes.length - 1].isLastPinned = true;
             }
