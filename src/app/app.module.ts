@@ -117,19 +117,17 @@ import { TemporaryStorageService } from './services/temporary-storage/temporary-
 import { TranslatorService } from './services/translator/translator.service';
 import { TrashService } from './services/trash/trash.service';
 import { UpdateService } from './services/update/update.service';
-import {AccentButtonComponent} from "./components/controls/accent-button/accent-button.component";
-import {TransparentButtonComponent} from "./components/controls/transparent-button/transparent-button.component";
-import {SubMenuItemComponent} from "./components/sub-menu/sub-menu-item/sub-menu-item.component";
-import {SubMenuComponent} from "./components/sub-menu/sub-menu.component";
-import {ToggleSwitchComponent} from "./components/controls/toggle-switch/toggle-switch.component";
-import {IconTextButtonComponent} from "./components/controls/icon-text-button/icon-text-button.component";
-import {AppearanceSettingsComponent} from "./components/settings/appearance-settings/appearance-settings.component";
-import {AdvancedSettingsComponent} from "./components/settings/advanced-settings/advanced-settings.component";
-import {NotesSettingsComponent} from "./components/settings/notes-settings/notes-settings.component";
-import {
-    InformationComponentsComponent
-} from "./components/information/information-components/information-components.component";
-import {InformationAboutComponent} from "./components/information/information-about/information-about.component";
+import { AccentButtonComponent } from './components/controls/accent-button/accent-button.component';
+import { TransparentButtonComponent } from './components/controls/transparent-button/transparent-button.component';
+import { SubMenuItemComponent } from './components/sub-menu/sub-menu-item/sub-menu-item.component';
+import { SubMenuComponent } from './components/sub-menu/sub-menu.component';
+import { ToggleSwitchComponent } from './components/controls/toggle-switch/toggle-switch.component';
+import { IconTextButtonComponent } from './components/controls/icon-text-button/icon-text-button.component';
+import { AppearanceSettingsComponent } from './components/settings/appearance-settings/appearance-settings.component';
+import { AdvancedSettingsComponent } from './components/settings/advanced-settings/advanced-settings.component';
+import { NotesSettingsComponent } from './components/settings/notes-settings/notes-settings.component';
+import { InformationComponentsComponent } from './components/information/information-components/information-components.component';
+import { InformationAboutComponent } from './components/information/information-about/information-about.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -239,7 +237,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
         AdvancedSettingsComponent,
         NotesSettingsComponent,
         InformationAboutComponent,
-        InformationComponentsComponent
+        InformationComponentsComponent,
     ],
     imports: [
         MarkdownModule.forRoot({
@@ -247,7 +245,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
                 provide: MarkedOptions,
                 useFactory: MarkedOptionsFactory,
             },
-            sanitize: SecurityContext.NONE, // disable sanitization
+            sanitize: SecurityContext.HTML,
         }),
         MatListModule,
         MatDialogModule,
@@ -329,6 +327,6 @@ export function MarkedOptionsFactory(): MarkedOptions {
         { provide: BaseApplication, useClass: Application },
         { provide: BaseAppearanceService, useClass: AppearanceService },
     ],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
 })
 export class AppModule {}
