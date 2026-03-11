@@ -50,16 +50,26 @@
 }
 
 .note-item-container {
+    height: 48px;
+    margin-bottom: 2px;
     border-radius: 6px;
 }
 
 .note-item {
-    height: 48px;
+    height: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
     cursor: default !important;
     border-radius: 6px;
+}
+
+.note-item.pinned-note {
+    background-color: color-mix(in srgb, var(--theme-accent-color) 10%, transparent);
+}
+
+.note-item.pinned-note:hover {
+    background-color: color-mix(in srgb, var(--theme-accent-color) 16%, transparent);
 }
 
 .note-item:hover {
@@ -151,14 +161,4 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.pinned-border {
-    margin-top: 2px;
-    margin-bottom: 2px;
-    border-bottom: 1px solid transparent;
-}
-
-.pinned-border-active {
-    border-bottom: 1px solid var(--theme-separator);
 }

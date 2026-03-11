@@ -12,46 +12,44 @@
         </div>
     </div>
     <!-- Notes list -->
-    <cdk-virtual-scroll-viewport class="notes-list" itemSize="48">
-        <div class="d-flex flex-column" *cdkVirtualFor="let note of notes">
-            <div class="note-item-container" [ngClass]="{ 'selected-item': note.isSelected }" matRipple>
-                <div
-                    class="note-item no-select"
-                    (dblclick)="openNoteAsync(note)"
-                    matTooltip="{{ 'Tooltips.LastChanged' | translate }}: {{ note.displayExactModificationDate }}"
-                    (click)="setSelectedNotes(note, $event)"
-                    draggable="true"
-                    (dragstart)="dragStart($event, note)"
-                >
-                    <div class="note-item-icon">
-                        <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg" />
+    <cdk-virtual-scroll-viewport class="notes-list" itemSize="50">
+        <div class="note-item-container" [ngClass]="{ 'selected-item': note.isSelected }" *cdkVirtualFor="let note of notes" matRipple>
+            <div
+                class="note-item no-select"
+                [ngClass]="{ 'pinned-note': note.isPinned }"
+                (dblclick)="openNoteAsync(note)"
+                matTooltip="{{ 'Tooltips.LastChanged' | translate }}: {{ note.displayExactModificationDate }}"
+                (click)="setSelectedNotes(note, $event)"
+                draggable="true"
+                (dragstart)="dragStart($event, note)"
+            >
+                <div class="note-item-icon">
+                    <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg" />
+                </div>
+                <div class="note-item-info px-1">
+                    <div class="note-item-info-title">
+                        <span>{{ note.title }}</span>
                     </div>
-                    <div class="note-item-info px-1">
-                        <div class="note-item-info-title">
-                            <span>{{ note.title }}</span>
-                        </div>
-                        <div class="note-item-info-date-and-tasks">
-                            <i class="note-status-icon lab la-markdown" *ngIf="note.isMarkdownNote"></i>
-                            <i class="note-status-icon lar la-edit" *ngIf="!note.isMarkdownNote"></i>
-                            <i class="note-status-icon las la-lock ml-1" *ngIf="note.isEncrypted"></i>
-                            <i class="note-status-icon-accent las la-thumbtack rotate-45-ccw ml-1" *ngIf="note.isPinned"></i>
-                            <div class="note-status-text ml-1">{{ note.displayModificationDate }}</div>
-                            <app-tasks-progress
-                                class="ml-1"
-                                *ngIf="note.totalTasksCount > 0"
-                                [closedTasksCount]="note.closedTasksCount"
-                                [totalTasksCount]="note.totalTasksCount"
-                            >
-                            </app-tasks-progress>
-                        </div>
-                    </div>
-                    <div class="note-item-actions" (click)="toggleNoteMark(note)">
-                        <i class="note-item-actions-heart-marked las la-heart" *ngIf="note.isMarked"></i>
-                        <i class="note-item-actions-heart-unmarked lar la-heart" *ngIf="!note.isMarked"></i>
+                    <div class="note-item-info-date-and-tasks">
+                        <i class="note-status-icon lab la-markdown" *ngIf="note.isMarkdownNote"></i>
+                        <i class="note-status-icon lar la-edit" *ngIf="!note.isMarkdownNote"></i>
+                        <i class="note-status-icon las la-lock ml-1" *ngIf="note.isEncrypted"></i>
+                        <i class="note-status-icon-accent las la-thumbtack rotate-45-ccw ml-1" *ngIf="note.isPinned"></i>
+                        <div class="note-status-text ml-1">{{ note.displayModificationDate }}</div>
+                        <app-tasks-progress
+                            class="ml-1"
+                            *ngIf="note.totalTasksCount > 0"
+                            [closedTasksCount]="note.closedTasksCount"
+                            [totalTasksCount]="note.totalTasksCount"
+                        >
+                        </app-tasks-progress>
                     </div>
                 </div>
+                <div class="note-item-actions" (click)="toggleNoteMark(note)">
+                    <i class="note-item-actions-heart-marked las la-heart" *ngIf="note.isMarked"></i>
+                    <i class="note-item-actions-heart-unmarked lar la-heart" *ngIf="!note.isMarked"></i>
+                </div>
             </div>
-            <div class="pinned-border" [ngClass]="{ 'pinned-border-active': note.isLastPinned }"></div>
         </div>
     </cdk-virtual-scroll-viewport>
 </div>
