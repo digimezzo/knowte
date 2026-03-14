@@ -14,6 +14,9 @@ export class MarkdownNoteComponent implements AfterViewInit {
     @Input()
     public noteEditor: INoteEditor;
 
+    @Input()
+    public attachmentsDirectoryPath: string;
+
     public ngAfterViewInit() {
         const input = this.markdownInput.nativeElement;
         const pre = this.highlightedContent.nativeElement;

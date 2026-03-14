@@ -118,6 +118,7 @@
                     *ngIf="this.isMarkdownNote"
                     class="fill w-100 h-100 overflow-hidden"
                     [noteEditor]="this.noteEditor"
+                    [attachmentsDirectoryPath]="this.noteAttachmentsDirectoryPathForPreview"
                 ></app-markdown-note>
                 <app-note-status-bar
                     [noteId]="this.noteId"

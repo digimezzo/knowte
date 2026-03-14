@@ -10,7 +10,13 @@ import { MarkdownNoteExportMetadata } from './markdown-note-export-metadata';
 
 @Injectable()
 export class CollectionFileAccess {
-    public constructor(private fileAccess: FileAccess, private settings: BaseSettings, private logger: Logger) {}
+    private static readonly encryptedAttachmentExtension: string = '.enc';
+
+    public constructor(
+        private fileAccess: FileAccess,
+        private settings: BaseSettings,
+        private logger: Logger,
+    ) {}
 
     public async saveNoteContentAsync(noteId: string, noteContent: string, collection: string, isMarkdownNote: boolean): Promise<void> {
         const noteContentFilePath: string = this.getNoteContentFilePath(noteId, collection, isMarkdownNote);
@@ -105,7 +111,7 @@ export class CollectionFileAccess {
         // 1. First, rename the database file.
         this.fileAccess.renameFileOrDirectory(
             this.fileAccess.combinePath(oldCollectionDirectoryPath, `${oldCollection}.db`),
-            this.fileAccess.combinePath(oldCollectionDirectoryPath, `${newCollection}.db`)
+            this.fileAccess.combinePath(oldCollectionDirectoryPath, `${newCollection}.db`),
         );
 
         // 2. Then, rename the directory.
@@ -135,7 +141,7 @@ export class CollectionFileAccess {
         noteTitle: string,
         noteText: string,
         noteContent: string,
-        isMarkdownNote: boolean
+        isMarkdownNote: boolean,
     ): Promise<void> {
         if (isMarkdownNote) {
             await this.exportMarkdownNoteAsync(exportFilePath, noteTitle, noteId);
@@ -148,7 +154,7 @@ export class CollectionFileAccess {
         markdownNoteExportMetadata: MarkdownNoteExportMetadata,
         noteContentFilePath: string,
         noteAttachmentsDirectoryPath: string,
-        zipFilePath: string
+        zipFilePath: string,
     ): Promise<void> {
         const archive = archiver('zip', { zlib: { level: 9 } });
         const stream = this.fileAccess.createWriteStream(zipFilePath);
@@ -198,7 +204,7 @@ export class CollectionFileAccess {
             this.logger.info(
                 `User selected collections directory. Corrected to parent directory '${parentDirectory}'`,
                 'CollectionFileAccess',
-                'createStorageDirectory'
+                'createStorageDirectory',
             );
         }
 
@@ -227,11 +233,20 @@ export class CollectionFileAccess {
 
         for (const noteAttachmentFilePath of noteAttachmentFilePaths) {
             const noteAttachmentFileName: string = this.fileAccess.getFileName(noteAttachmentFilePath);
+            const noteAttachmentReferenceFileName: string = this.getAttachmentReferenceFileName(noteAttachmentFileName);
 
-            if (!noteText.includes(noteAttachmentFileName)) {
+            if (!noteText.includes(noteAttachmentReferenceFileName)) {
                 await this.fileAccess.deleteFileIfExistsAsync(noteAttachmentFilePath);
             }
         }
+    }
+
+    private getAttachmentReferenceFileName(noteAttachmentFileName: string): string {
+        if (noteAttachmentFileName.endsWith(CollectionFileAccess.encryptedAttachmentExtension)) {
+            return noteAttachmentFileName.slice(0, -CollectionFileAccess.encryptedAttachmentExtension.length);
+        }
+
+        return noteAttachmentFileName;
     }
 
     public getNoteAttachmentsDirectoryPath(noteId: string, collection: string): string {

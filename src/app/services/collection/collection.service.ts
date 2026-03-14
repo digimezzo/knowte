@@ -1127,7 +1127,9 @@ export class CollectionService {
 
             // TODO: we'd better split up setNoteOpenAsync into 2 functions.
             try {
-                await this.collectionFileAccess.deleteUnusedNoteAttachmentsAsync(noteId, this.settings.activeCollection, note.text);
+                if (!note.isEncrypted) {
+                    await this.collectionFileAccess.deleteUnusedNoteAttachmentsAsync(noteId, this.settings.activeCollection, note.text);
+                }
             } catch (error) {
                 this.logger.error(
                     `Could not delete unused note attachments of note with id='${noteId}'. Cause: ${error}`,

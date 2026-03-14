@@ -99,6 +99,7 @@ export class NoteComponent implements OnInit {
     public isBusy: boolean = false;
     public actionIconRotation: string = 'default';
     public canSearch: boolean = false;
+    public noteAttachmentsDirectoryPathForPreview: string = '';
     private searchText: string = '';
     public noteEditor: INoteEditor;
 
@@ -112,6 +113,7 @@ export class NoteComponent implements OnInit {
             await this.noteEditor.initializeAsync();
 
             await this.requestSecretKeyOrCloseNoteAsync();
+            await this.refreshMarkdownAttachmentPreviewDirectoryAsync();
             this.addSubscriptions();
             this.addDocumentListeners();
 
@@ -368,9 +370,9 @@ export class NoteComponent implements OnInit {
         dialogRef.afterClosed().subscribe(async (result: any) => {
             if (result) {
                 this.isEncrypted = false;
-                this.secretKey = '';
                 this.collectionClient.decryptNote(this.noteId);
                 await this.saveNoteContentAsync();
+                this.secretKey = '';
             }
         });
     }
@@ -380,6 +382,10 @@ export class NoteComponent implements OnInit {
     }
 
     private cleanup(): void {
+        if (this.isMarkdownNote) {
+            this.persistance.clearNoteAttachmentsPreviewDirectory(this.noteId);
+        }
+
         this.collectionClient.setNoteOpen(this.noteId, false);
         this.removeSubscriptions();
     }
@@ -532,6 +538,8 @@ export class NoteComponent implements OnInit {
                     this.secretKey,
                     this.isMarkdownNote,
                 );
+
+                await this.refreshMarkdownAttachmentPreviewDirectoryAsync();
             } catch (error) {
                 this.logger.error(
                     `Could not save content for the note with id='${this.noteId}'. Cause: ${error}`,
@@ -606,6 +614,19 @@ export class NoteComponent implements OnInit {
                 data: { errorText: errorText },
             });
         }
+    }
+
+    private async refreshMarkdownAttachmentPreviewDirectoryAsync(): Promise<void> {
+        if (!this.isMarkdownNote) {
+            return;
+        }
+
+        this.noteAttachmentsDirectoryPathForPreview = await this.persistance.getNoteAttachmentsDirectoryPathForPreviewAsync(
+            this.noteId,
+            this.isEncrypted,
+            this.secretKey,
+            this.isMarkdownNote,
+        );
     }
 
     private hideActionButtons(): void {

@@ -8,6 +8,7 @@ import { BaseAppearanceService } from './services/appearance/base-appearance.ser
 import { CollectionService } from './services/collection/collection.service';
 import { ElectronService } from './services/electron.service';
 import { SpellCheckService } from './services/spell-check/spell-check.service';
+import { TemporaryStorageService } from './services/temporary-storage/temporary-storage.service';
 import { TrashService } from './services/trash/trash.service';
 
 @Component({
@@ -24,7 +25,8 @@ export class AppComponent implements OnInit, OnDestroy {
         public appearance: BaseAppearanceService,
         private collectionService: CollectionService,
         private spellCheckerService: SpellCheckService,
-        private trash: TrashService
+        private temporaryStorageService: TemporaryStorageService,
+        private trash: TrashService,
     ) {
         log.create('renderer');
         log.transports.file.resolvePath = () => path.join(remote.app.getPath('userData'), 'logs', 'Knowte.log');
@@ -37,6 +39,10 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
+        if (!this.isNoteWindow()) {
+            this.temporaryStorageService.clearDecryptedMarkdownAttachmentsCache();
+        }
+
         this.appearance.applyAppearance();
         this.spellCheckerService.applyActiveSpellCheckLanguagesIfEnabled();
 
@@ -45,7 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 if (this.drawer != undefined) {
                     this.drawer.toggle();
                 }
-            })
+            }),
         );
 
         const showWelcome: boolean = !this.collectionService.hasCollections();
@@ -53,5 +59,10 @@ export class AppComponent implements OnInit, OnDestroy {
         if (showWelcome) {
             this.router.navigate(['/welcome']);
         }
+    }
+
+    private isNoteWindow(): boolean {
+        const currentHashRoute: string = window.location.hash || '';
+        return currentHashRoute.includes('/note');
     }
 }

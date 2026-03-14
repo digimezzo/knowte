@@ -9,13 +9,35 @@ import { Logger } from '../../common/logging/logger';
 export class TemporaryStorageService {
     private temporaryStorageDirectoryPath: string = this.fileAccess.combinePath(
         this.desktop.applicationDataDirectoryPath(),
-        'TemporaryStorage'
+        'TemporaryStorage',
     );
 
-    public constructor(private fileAccess: FileAccess, private desktop: Desktop, private logger: Logger) {}
+    public constructor(
+        private fileAccess: FileAccess,
+        private desktop: Desktop,
+        private logger: Logger,
+    ) {}
 
     private ensureTemporaryStorageDirectory(): void {
         this.fileAccess.createFullDirectoryPathIfDoesNotExist(this.temporaryStorageDirectoryPath);
+    }
+
+    public getTemporaryStorageDirectoryPath(): string {
+        this.ensureTemporaryStorageDirectory();
+        return this.temporaryStorageDirectoryPath;
+    }
+
+    public clearDecryptedMarkdownAttachmentsCache(): void {
+        this.ensureTemporaryStorageDirectory();
+
+        const decryptedMarkdownAttachmentsDirectoryPath: string = this.fileAccess.combinePath(
+            this.temporaryStorageDirectoryPath,
+            'decrypted-markdown-attachments',
+        );
+
+        if (this.fileAccess.pathExists(decryptedMarkdownAttachmentsDirectoryPath)) {
+            this.fileAccess.deleteDirectoryRecursively(decryptedMarkdownAttachmentsDirectoryPath);
+        }
     }
 
     public async createPrintHtmlFileAsync(printHtmlFileContent: string): Promise<string> {
@@ -39,7 +61,7 @@ export class TemporaryStorageService {
             this.logger.error(
                 `Could not extract archive '${archivePath}' to '${extractionPath}'. Error: ${error.message}`,
                 'TemporaryStorageService',
-                'extractArchiveAsync'
+                'extractArchiveAsync',
             );
 
             throw error;
