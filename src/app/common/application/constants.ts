@@ -19,7 +19,7 @@ export class Constants {
     public static readonly allNotesNotebookId: string = '0';
     public static readonly unfiledNotesNotebookId: string = '1';
     public static readonly screenEaseSpeedMilliseconds: number = 350;
-    
+
     public static readonly allCategory: string = 'all';
     public static readonly todayCategory: string = 'today';
     public static readonly yesterdayCategory: string = 'yesterday';
@@ -126,6 +126,12 @@ export class Constants {
             description: 'JavaScript library of crypto standards..',
             url: 'https://github.com/brix/crypto-js',
             licenseUrl: 'https://github.com/brix/crypto-js/blob/develop/LICENSE',
+        },
+        {
+            name: 'DOMPurify',
+            description: 'DOMPurify is a DOM-only, super-fast, uber-tolerant XSS sanitizer for HTML, MathML and SVG.',
+            url: 'https://github.com/cure53/DOMPurify',
+            licenseUrl: 'https://github.com/cure53/DOMPurify/blob/main/LICENSE',
         },
         {
             name: 'Electron',
