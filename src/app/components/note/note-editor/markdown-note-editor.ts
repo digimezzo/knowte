@@ -35,12 +35,12 @@ export class MarkdownNoteEditor implements INoteEditor {
         private pathConverter: PathConverter,
         private desktop: Desktop,
         private settings: BaseSettings,
-        private logger: Logger
+        private logger: Logger,
     ) {
         this.subscription.add(
             this.noteImageSaver.imageSaved$.subscribe((imageId) => {
                 this.insertImage(imageId);
-            })
+            }),
         );
 
         document.addEventListener('dblclick', (event: any) => this.openIfImage(event));
@@ -62,6 +62,10 @@ export class MarkdownNoteEditor implements INoteEditor {
         }
 
         this.isFirstTimeSettingContent = false;
+
+        if (StringUtils.isNullOrWhiteSpace(v)) {
+            this.isEditing = true;
+        }
     }
 
     public get text(): string {
@@ -208,7 +212,7 @@ export class MarkdownNoteEditor implements INoteEditor {
             this.logger.error(
                 `Could not paste image from clipboard. Error: ${error.message}`,
                 'MarkdownNoteEditor',
-                'pasteImageFromClipboard'
+                'pasteImageFromClipboard',
             );
             throw error;
         }
@@ -221,7 +225,7 @@ export class MarkdownNoteEditor implements INoteEditor {
             this.logger.error(
                 `Could not paste text from clipboard. Error: ${error.message}`,
                 'MarkdownNoteEditor',
-                'pasteTextFromClipboard'
+                'pasteTextFromClipboard',
             );
             throw error;
         }
@@ -499,7 +503,7 @@ export class MarkdownNoteEditor implements INoteEditor {
 
         const possibleStartFormatting: string = markdownInputElement.value.substring(
             lineBoundary.start,
-            lineBoundary.start + formatting.length
+            lineBoundary.start + formatting.length,
         );
 
         startContainsFormatting = possibleStartFormatting === formatting;
