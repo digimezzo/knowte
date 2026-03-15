@@ -128,6 +128,7 @@ import { AdvancedSettingsComponent } from './components/settings/advanced-settin
 import { NotesSettingsComponent } from './components/settings/notes-settings/notes-settings.component';
 import { InformationComponentsComponent } from './components/information/information-components/information-components.component';
 import { InformationAboutComponent } from './components/information/information-about/information-about.component';
+import { SanitizeMarkdownPipe } from './pipes/sanitize-markdown.pipe';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -227,6 +228,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
         CdkVirtualScrollViewportPatchDirective,
         TruncatePipe,
         FixImagePathsPipe,
+        SanitizeMarkdownPipe,
         AccentButtonComponent,
         TransparentButtonComponent,
         SubMenuComponent,
@@ -245,7 +247,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
                 provide: MarkedOptions,
                 useFactory: MarkedOptionsFactory,
             },
-            sanitize: SecurityContext.HTML,
+            sanitize: SecurityContext.NONE,
         }),
         MatListModule,
         MatDialogModule,

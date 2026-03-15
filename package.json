@@ -46,6 +46,7 @@
     "angular-split": "14.1.0",
     "archiver": "^5.3.1",
     "crypto-js": "^4.1.1",
+    "dompurify": "^3.3.3",
     "electron-localshortcut": "^3.2.1",
     "electron-log": "4.4.8",
     "electron-store": "8.1.0",
