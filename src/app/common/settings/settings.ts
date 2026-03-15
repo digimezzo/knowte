@@ -253,7 +253,7 @@ export class Settings implements BaseSettings {
         }
 
         if (!this.settings.has('canCreateClassicNotes')) {
-            this.settings.set('canCreateClassicNotes', true);
+            this.settings.set('canCreateClassicNotes', false);
         }
 
         if (!this.settings.has('canCreateMarkdownNotes')) {
