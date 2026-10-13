@@ -126,7 +126,6 @@ export class PrintService {
         const printHtmlFileContent: string = this.createPrintHtmlFileContent(pageTitle, pageContent, isMarkdownNote);
 
         try {
-            alert(printHtmlFileContent);
             const printHtmlFilePath: string = await this.temporaryStorageService.createPrintHtmlFileAsync(printHtmlFileContent);
 
             return printHtmlFilePath;
