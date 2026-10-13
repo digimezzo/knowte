@@ -138,6 +138,48 @@ function createMainWindow() {
         });
     }
 }
+function recoverOffScreenWindows() {
+    const displays = electron_1.screen.getAllDisplays();
+    if (displays.length === 0) {
+        return;
+    }
+    for (const window of electron_1.BrowserWindow.getAllWindows()) {
+        if (window.isDestroyed() || (!window.isVisible() && !window.isMinimized())) {
+            continue;
+        }
+        const isMaximized = window.isMaximized();
+        const isFullScreen = window.isFullScreen();
+        const bounds = window.isMinimized() || isMaximized || isFullScreen ? window.getNormalBounds() : window.getBounds();
+        const isOnScreen = displays.some(({ workArea }) => bounds.x < workArea.x + workArea.width &&
+            bounds.x + bounds.width > workArea.x &&
+            bounds.y < workArea.y + workArea.height &&
+            bounds.y + bounds.height > workArea.y);
+        if (isOnScreen) {
+            continue;
+        }
+        const workArea = electron_1.screen.getDisplayMatching(bounds).workArea;
+        const width = Math.min(bounds.width, workArea.width);
+        const height = Math.min(bounds.height, workArea.height);
+        if (isFullScreen) {
+            window.setFullScreen(false);
+        }
+        if (isMaximized) {
+            window.unmaximize();
+        }
+        window.setBounds({
+            x: Math.max(workArea.x, Math.min(bounds.x, workArea.x + workArea.width - width)),
+            y: Math.max(workArea.y, Math.min(bounds.y, workArea.y + workArea.height - height)),
+            width,
+            height,
+        });
+        if (isMaximized) {
+            window.maximize();
+        }
+        if (isFullScreen) {
+            window.setFullScreen(true);
+        }
+    }
+}
 function windowhasFrame() {
     const settings = new Store();
     if (!settings.has('useCustomTitleBar')) {
@@ -268,6 +310,10 @@ try {
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     electron_1.app.on('ready', createMainWindow);
+    electron_1.app.on('ready', () => {
+        electron_1.screen.on('display-removed', recoverOffScreenWindows);
+        electron_1.screen.on('display-metrics-changed', recoverOffScreenWindows);
+    });
     // Quit when all windows are closed.
     electron_1.app.on('window-all-closed', () => {
         electron_log_1.default.info('[App] [window-all-closed] +++ Stopping +++');

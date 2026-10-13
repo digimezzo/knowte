@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Menu, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, screen, shell } from 'electron';
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
@@ -150,6 +150,61 @@ function createMainWindow(): void {
                 event.preventDefault();
             }
         });
+    }
+}
+
+function recoverOffScreenWindows(): void {
+    const displays = screen.getAllDisplays();
+
+    if (displays.length === 0) {
+        return;
+    }
+
+    for (const window of BrowserWindow.getAllWindows()) {
+        if (window.isDestroyed() || (!window.isVisible() && !window.isMinimized())) {
+            continue;
+        }
+
+        const isMaximized = window.isMaximized();
+        const isFullScreen = window.isFullScreen();
+        const bounds = window.isMinimized() || isMaximized || isFullScreen ? window.getNormalBounds() : window.getBounds();
+        const isOnScreen = displays.some(({ workArea }) =>
+            bounds.x < workArea.x + workArea.width &&
+            bounds.x + bounds.width > workArea.x &&
+            bounds.y < workArea.y + workArea.height &&
+            bounds.y + bounds.height > workArea.y,
+        );
+
+        if (isOnScreen) {
+            continue;
+        }
+
+        const workArea = screen.getDisplayMatching(bounds).workArea;
+        const width = Math.min(bounds.width, workArea.width);
+        const height = Math.min(bounds.height, workArea.height);
+
+        if (isFullScreen) {
+            window.setFullScreen(false);
+        }
+
+        if (isMaximized) {
+            window.unmaximize();
+        }
+
+        window.setBounds({
+            x: Math.max(workArea.x, Math.min(bounds.x, workArea.x + workArea.width - width)),
+            y: Math.max(workArea.y, Math.min(bounds.y, workArea.y + workArea.height - height)),
+            width,
+            height,
+        });
+
+        if (isMaximized) {
+            window.maximize();
+        }
+
+        if (isFullScreen) {
+            window.setFullScreen(true);
+        }
     }
 }
 
@@ -307,6 +362,11 @@ try {
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     app.on('ready', createMainWindow);
+
+    app.on('ready', () => {
+        screen.on('display-removed', recoverOffScreenWindows);
+        screen.on('display-metrics-changed', recoverOffScreenWindows);
+    });
 
     // Quit when all windows are closed.
     app.on('window-all-closed', () => {
