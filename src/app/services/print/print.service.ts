@@ -94,6 +94,39 @@ export class PrintService {
                         color: #575757;
                     }
 
+                    .task-list-item {
+                        margin-left: -1.5em;
+                        list-style-type: none;
+                    }
+
+                    .task-list-checkbox {
+                        position: relative;
+                        display: inline-block;
+                        box-sizing: border-box;
+                        width: 1em;
+                        height: 1em;
+                        margin: 0 0.4em 0 0;
+                        border: 1px solid #8c959f;
+                        border-radius: 3px;
+                        background-color: #f6f8fa;
+                        vertical-align: -0.15em;
+                    }
+
+                    .task-list-checkbox-checked {
+                        background-color: #eaeef2;
+                    }
+
+                    .task-list-checkbox-checked::after {
+                        position: absolute;
+                        top: 0.17em;
+                        left: 0.15em;
+                        width: 0.66em;
+                        height: 0.58em;
+                        background-color: #24292f;
+                        clip-path: polygon(0 48%, 14% 34%, 37% 57%, 83% 5%, 100% 19%, 37% 100%);
+                        content: '';
+                    }
+
                     .page-title{
                         font-size: 30px;
                     }
