@@ -247,7 +247,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
                 provide: MarkedOptions,
                 useFactory: MarkedOptionsFactory,
             },
-            sanitize: SecurityContext.NONE,
+            sanitize: SecurityContext.HTML,
         }),
         MatListModule,
         MatDialogModule,
