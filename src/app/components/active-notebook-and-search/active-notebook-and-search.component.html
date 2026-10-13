@@ -8,23 +8,23 @@
     </div>
     <!-- Search -->
     <div class="notes-content-search-container">
-        <mat-form-field class="notes-content-search">
+        <div class="notes-content-search" [class.notes-content-search-highlight]="this.searchService.searchText">
             <input
-                matInput
+                class="notes-content-search-input"
                 type="text"
                 #searchInput
                 [(ngModel)]="this.searchService.searchText"
                 placeholder="{{ 'MainPage.Search' | translate }}"
             />
-            <div
-                class="notes-content-search-clearbutton"
-                *ngIf="this.searchService.searchText"
-                matSuffix
-                matTooltip="{{ 'MainPage.ClearSearch' | translate }}"
-                (click)="this.searchService.searchText = ''"
-            >
-                <i class="las la-times"></i>
+            <div class="notes-content-search-icons">
+                <i class="las la-search notes-content-search-icon" *ngIf="!this.searchService.searchText"></i>
+                <i
+                    class="las la-times notes-content-search-icon pointer"
+                    *ngIf="this.searchService.searchText"
+                    matTooltip="{{ 'MainPage.ClearSearch' | translate }}"
+                    (click)="clearSearchText()"
+                ></i>
             </div>
-        </mat-form-field>
+        </div>
     </div>
 </div>

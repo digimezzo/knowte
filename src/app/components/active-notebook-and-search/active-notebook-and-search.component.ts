@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import * as remote from '@electron/remote';
 import { BrowserWindow } from 'electron';
 import * as electronLocalShortcut from 'electron-localshortcut';
@@ -25,12 +25,30 @@ export class ActiveNotebookAndSearchComponent implements OnInit {
     public ngOnInit(): void {
         const window: BrowserWindow = remote.getCurrentWindow();
 
-        electronLocalShortcut.register(window, 'Ctrl+F', () => {
+        electronLocalShortcut.register(window, 'CommandOrControl+F', () => {
             this.focusSearch();
         });
     }
 
+    @HostListener('document:keydown', ['$event'])
+    public handleKeyboardEvent(event: KeyboardEvent): void {
+        const input = this.searchInputElement.nativeElement;
+        if (event.key !== 'Escape' || document.activeElement !== input) {
+            return;
+        }
+
+        this.clearSearchText();
+        event.preventDefault();
+        input.blur();
+    }
+
+    public clearSearchText(): void {
+        this.searchService.searchText = '';
+    }
+
     private focusSearch(): void {
-        this.searchInputElement.nativeElement.focus();
+        const input: HTMLInputElement = this.searchInputElement.nativeElement;
+        input.focus();
+        input.select();
     }
 }
