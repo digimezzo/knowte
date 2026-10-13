@@ -157,12 +157,13 @@ export function MarkedOptionsFactory(): MarkedOptions {
         divElement.querySelectorAll('li').forEach((li) => {
             li.childNodes.forEach((child) => {
                 if (child instanceof HTMLInputElement && child.type === 'checkbox') {
-                    // list item
-                    li.style.marginLeft = '-1.5em';
-                    li.style.listStyleType = 'none';
-                    // checkbox
-                    child.style.margin = '0 0.2em 0.15em 0em';
-                    child.style.verticalAlign = 'middle';
+                    li.classList.add('task-list-item');
+                    const checkbox = document.createElement('span');
+                    checkbox.classList.add('task-list-checkbox');
+                    if (child.checked) {
+                        checkbox.classList.add('task-list-checkbox-checked');
+                    }
+                    child.replaceWith(checkbox);
                 }
             });
         });
