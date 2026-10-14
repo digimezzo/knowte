@@ -65,6 +65,7 @@ describe('NoteComponent preparing deletion', () => {
         closeWindow = jest.fn();
         window.setup((x) => x.close()).callback(closeWindow);
         component['noteWindow'] = window.object;
+        jest.spyOn(component, 'clearSearch').mockImplementation(() => undefined);
         component['addSubscriptions']();
     });
 
@@ -146,5 +147,100 @@ describe('NoteComponent preparing deletion', () => {
         } finally {
             jest.useRealTimers();
         }
+    });
+
+    it('keeps edits dirty when the user types during a slow save', async () => {
+        let finishWrite: () => void;
+        const started = new Promise<void>((resolve) => {
+            writeContent.mockImplementationOnce(() => {
+                resolve();
+                return new Promise<void>((finish) => { finishWrite = finish; });
+            });
+        });
+        component['isTextDirty'] = true;
+        const save = component['saveNoteContentAsync']();
+        await started;
+        component['onNoteContentChange']();
+        finishWrite();
+
+        expect(await save).toBe(Operation.Success);
+        expect(component['isTextDirty']).toBe(true);
+        expect(component['pendingContentSave']).toBeUndefined();
+        expect(await component['saveNoteContentAsync']()).toBe(Operation.Success);
+        expect(component['isTextDirty']).toBe(false);
+        component['removeSubscriptions']();
+    });
+
+    it('prevents closing during a pending save even if there are no dirty flags', async () => {
+        let finishWrite: () => void;
+        const started = new Promise<void>((resolve) => {
+            writeContent.mockImplementationOnce(() => {
+                resolve();
+                return new Promise<void>((finish) => { finishWrite = finish; });
+            });
+        });
+        const save = component['saveNoteContentAsync']();
+        await started;
+        const event = { preventDefault: jest.fn(), returnValue: undefined };
+        component.beforeunloadHandler(event);
+        expect(event.preventDefault).toHaveBeenCalled();
+        component['removeSubscriptions']();
+        finishWrite();
+        await save;
+    });
+
+    it('retains dirty flags when closing to save and the write fails', async () => {
+        component['isTextDirty'] = true;
+        const event = { preventDefault: jest.fn(), returnValue: undefined };
+        component.beforeunloadHandler(event);
+        component['removeSubscriptions']();
+        expect(component['isTextDirty']).toBe(true);
+        writeContent.mockRejectedValue(new Error('Cannot write'));
+
+        expect(await component['saveNoteContentAsync']()).toBe(Operation.Error);
+        expect(component['isTextDirty']).toBe(true);
+        expect(component['pendingContentSave']).toBeUndefined();
+    });
+
+    it('saves a consistent content snapshot while metadata is being saved', async () => {
+        let finishMetadata: (operation: Operation) => void;
+        saveText.mockImplementationOnce(() => new Promise<Operation>((resolve) => { finishMetadata = resolve; }));
+        const editor = Mock.ofType<INoteEditor>();
+        let content = 'original content';
+        editor.setup((x) => x.content).returns(() => content);
+        editor.setup((x) => x.text).returns(() => 'original text');
+        editor.setup((x) => x.getTasksCount()).returns(() => new TasksCount(0, 0));
+        component.noteEditor = editor.object;
+
+        const save = component['saveNoteContentAsync']();
+        content = 'new content';
+        component['onNoteContentChange']();
+        finishMetadata(Operation.Success);
+
+        expect(await save).toBe(Operation.Success);
+        expect(writeContent.mock.calls[0][1]).toBe('original content');
+        expect(component['isTextDirty']).toBe(true);
+        component['removeSubscriptions']();
+    });
+
+    it('keeps the window open if further edits arrive during the close-time save', async () => {
+        component['saveNoteTitleAsync'] = jest.fn().mockResolvedValue(Operation.Success);
+        let finishWrite: () => void;
+        const started = new Promise<void>((resolve) => {
+            writeContent.mockImplementationOnce(() => {
+                resolve();
+                return new Promise<void>((finish) => { finishWrite = finish; });
+            });
+        });
+        const close = component['saveAndCloseAsync']();
+        await started;
+        component['onNoteContentChange']();
+        finishWrite();
+        await close;
+
+        expect(component['isTextDirty']).toBe(true);
+        expect(closeWindow).not.toHaveBeenCalled();
+        expect(component.isBusy).toBe(false);
+        component['removeSubscriptions']();
     });
 });

@@ -218,16 +218,16 @@ export class CollectionFileAccess {
 
     public async createNoteImageFileAsync(noteId: string, collection: string, imageBuffer: Buffer, imageId: string): Promise<void> {
         const noteAttachmentsDirectoryPath: string = this.getNoteAttachmentsDirectoryPath(noteId, collection);
-        this.fileAccess.createFullDirectoryPathIfDoesNotExist(noteAttachmentsDirectoryPath);
+        await this.fileAccess.createFullDirectoryPathIfDoesNotExistAsync(noteAttachmentsDirectoryPath);
 
         const noteImageFullPath: string = this.fileAccess.combinePath(noteAttachmentsDirectoryPath, `${imageId}.png`);
-        this.fileAccess.writeBufferToFileAsync(noteImageFullPath, imageBuffer);
+        await this.fileAccess.writeBufferToFileAsync(noteImageFullPath, imageBuffer);
     }
 
     public async deleteUnusedNoteAttachmentsAsync(noteId: string, collection: string, noteText: string): Promise<void> {
         const noteAttachmentsDirectoryPath: string = this.getNoteAttachmentsDirectoryPath(noteId, collection);
 
-        if (!this.fileAccess.pathExists(noteAttachmentsDirectoryPath)) {
+        if (!(await this.fileAccess.pathExistsAsync(noteAttachmentsDirectoryPath))) {
             return;
         }
 

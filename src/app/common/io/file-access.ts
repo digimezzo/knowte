@@ -35,9 +35,25 @@ export class FileAccess {
         return fs.existsSync(pathToCheck);
     }
 
+    public async pathExistsAsync(pathToCheck: string): Promise<boolean> {
+        try {
+            await fs.stat(pathToCheck);
+            return true;
+        } catch (error) {
+            if (error.code === 'ENOENT') {
+                return false;
+            }
+            throw error;
+        }
+    }
+
     public async deleteFileIfExistsAsync(filePath: string): Promise<void> {
-        if (fs.existsSync(filePath)) {
+        try {
             await fs.unlink(filePath);
+        } catch (error) {
+            if (error.code !== 'ENOENT') {
+                throw error;
+            }
         }
     }
 
@@ -78,7 +94,7 @@ export class FileAccess {
             const possibleFilePath: string = this.combinePath(directoryPath, possibleFileName);
 
             try {
-                if (fs.lstatSync(possibleFilePath).isFile()) {
+                if ((await fs.lstat(possibleFilePath)).isFile()) {
                     confirmedFilePaths.push(possibleFilePath);
                 }
             } catch (e) {
@@ -142,6 +158,14 @@ export class FileAccess {
 
     public deleteDirectoryRecursively(directoryPath: string): void {
         fs.rmdirSync(directoryPath, { recursive: true });
+    }
+
+    public async deleteDirectoryRecursivelyAsync(directoryPath: string): Promise<void> {
+        await fs.remove(directoryPath);
+    }
+
+    public async createFullDirectoryPathIfDoesNotExistAsync(directoryPath: string): Promise<void> {
+        await fs.mkdir(directoryPath, { recursive: true });
     }
 
     public async writeTextToFileAsync(filePath: string, textToWrite: string): Promise<void> {

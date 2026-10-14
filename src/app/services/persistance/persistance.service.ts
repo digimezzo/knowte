@@ -64,19 +64,16 @@ export class PersistanceService {
         );
 
         if (!isMarkdownNote || !isEncrypted || StringUtils.isNullOrWhiteSpace(secretKey)) {
-            this.clearNoteAttachmentsPreviewDirectory(noteId);
+            await this.fileAccess.deleteDirectoryRecursivelyAsync(this.getDecryptedAttachmentsDirectoryPath(noteId));
             return noteAttachmentsDirectoryPath;
         }
 
         const decryptedAttachmentsDirectoryPath: string = this.getDecryptedAttachmentsDirectoryPath(noteId);
 
-        if (this.fileAccess.pathExists(decryptedAttachmentsDirectoryPath)) {
-            this.fileAccess.deleteDirectoryRecursively(decryptedAttachmentsDirectoryPath);
-        }
+        await this.fileAccess.deleteDirectoryRecursivelyAsync(decryptedAttachmentsDirectoryPath);
+        await this.fileAccess.createFullDirectoryPathIfDoesNotExistAsync(decryptedAttachmentsDirectoryPath);
 
-        this.fileAccess.createFullDirectoryPathIfDoesNotExist(decryptedAttachmentsDirectoryPath);
-
-        if (!this.fileAccess.pathExists(noteAttachmentsDirectoryPath)) {
+        if (!(await this.fileAccess.pathExistsAsync(noteAttachmentsDirectoryPath))) {
             return decryptedAttachmentsDirectoryPath;
         }
 
@@ -127,7 +124,7 @@ export class PersistanceService {
             this.settings.activeCollection,
         );
 
-        if (!this.fileAccess.pathExists(noteAttachmentsDirectoryPath)) {
+        if (!(await this.fileAccess.pathExistsAsync(noteAttachmentsDirectoryPath))) {
             return;
         }
 

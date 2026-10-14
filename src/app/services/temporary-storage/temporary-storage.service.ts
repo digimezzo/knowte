@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as extract from 'extract-zip';
+import extract from 'extract-zip';
 import { nanoid } from 'nanoid';
 import { Desktop } from '../../common/io/desktop';
 import { FileAccess } from '../../common/io/file-access';
@@ -23,7 +23,6 @@ export class TemporaryStorageService {
     }
 
     public getTemporaryStorageDirectoryPath(): string {
-        this.ensureTemporaryStorageDirectory();
         return this.temporaryStorageDirectoryPath;
     }
 

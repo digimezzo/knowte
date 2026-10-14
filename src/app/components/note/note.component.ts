@@ -57,6 +57,7 @@ export class NoteComponent implements OnInit {
 
     private isTitleDirty: boolean = false;
     private isTextDirty: boolean = false;
+    private contentRevision: number = 0;
     private pendingContentSave: Promise<Operation>;
     private hasLoadedNoteContent: boolean = false;
 
@@ -195,14 +196,17 @@ export class NoteComponent implements OnInit {
                 }
 
                 const operation: Operation = await this.saveNoteContentAsync();
-                if (operation === Operation.Success) {
+                if (operation === Operation.Success && !this.isTextDirty) {
                     this.cleanup();
                     // Closing can destroy this renderer before it acknowledges the save.
                     callback(operation);
                     this.noteWindow.close();
                 } else {
                     this.zone.run(() => (this.isBusy = false));
-                    callback(operation);
+                    if (operation === Operation.Success) {
+                        this.logger.warn('Note changed while preparing deletion.', 'NoteComponent', 'prepareNoteDeletion');
+                    }
+                    callback(Operation.Error);
                 }
             }),
         );
@@ -247,6 +251,7 @@ export class NoteComponent implements OnInit {
     }
 
     private onNoteContentChange(): void {
+        this.contentRevision++;
         this.isTextDirty = true;
         this.clearSearch();
         this.noteContentChanged.next();
@@ -257,10 +262,7 @@ export class NoteComponent implements OnInit {
     public beforeunloadHandler(event: any): void {
         this.logger.info(`Detected closing of note with id=${this.noteId}`, 'NoteComponent', 'beforeunloadHandler');
 
-        if (this.isTitleDirty || this.isTextDirty) {
-            this.isTitleDirty = false;
-            this.isTextDirty = false;
-
+        if (this.isTitleDirty || this.isTextDirty || this.pendingContentSave) {
             this.logger.info(
                 `Note with id=${this.noteId} is dirty. Preventing close to save changes first.`,
                 'NoteComponent',
@@ -429,13 +431,16 @@ export class NoteComponent implements OnInit {
     }
 
     private async saveAndCloseAsync(): Promise<void> {
+        this.zone.run(() => (this.isBusy = true));
         const setNoteTitleOperation: Operation = await this.saveNoteTitleAsync(this.noteTitle);
         const setNoteTextOperation: Operation = await this.saveNoteContentAsync();
 
         // Close is only allowed when saving both title and text is successful
-        if (setNoteTitleOperation === Operation.Success && setNoteTextOperation === Operation.Success) {
+        if (setNoteTitleOperation === Operation.Success && setNoteTextOperation === Operation.Success && !this.isTextDirty) {
             this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, 'NoteComponent', 'saveAndCloseAsync');
             this.close();
+        } else {
+            this.zone.run(() => (this.isBusy = false));
         }
     }
 
@@ -558,16 +563,26 @@ export class NoteComponent implements OnInit {
 
     private saveNoteContentAsync(): Promise<Operation> {
         const previousSave: Promise<Operation> = this.pendingContentSave;
-        this.pendingContentSave = (async () => {
-            if (previousSave) {
-                await previousSave;
+        let save: Promise<Operation>;
+        save = (async () => {
+            try {
+                if (previousSave) {
+                    await previousSave;
+                }
+                return await this.saveNoteContentNowAsync();
+            } finally {
+                if (this.pendingContentSave === save) {
+                    this.pendingContentSave = undefined;
+                }
             }
-            return this.saveNoteContentNowAsync();
         })();
-        return this.pendingContentSave;
+        this.pendingContentSave = save;
+        return save;
     }
 
     private async saveNoteContentNowAsync(): Promise<Operation> {
+        const revision: number = this.contentRevision;
+        const content: string = this.noteEditor.content;
         const operation: Operation = await this.collectionClient.saveNoteTextAsync(
             this.noteId,
             this.noteEditor.text,
@@ -582,7 +597,7 @@ export class NoteComponent implements OnInit {
             try {
                 await this.persistance.updateNoteContentAsync(
                     this.noteId,
-                    this.noteEditor.content,
+                    content,
                     this.isEncrypted,
                     this.secretKey,
                     this.isMarkdownNote,
@@ -616,7 +631,9 @@ export class NoteComponent implements OnInit {
             return Operation.Error;
         }
 
-        this.isTextDirty = false;
+        if (this.contentRevision === revision) {
+            this.isTextDirty = false;
+        }
 
         return operation;
     }
