@@ -61,7 +61,8 @@
         "AddMoreThemes": "Meer thema's toevoegen",
         "CollectionsDirectory": "Collections directory",
         "SelectOtherCollectionsDirectory": "Select another collections directory",
-        "SelectButton": "SELECT..."
+        "SelectButton": "SELECT...",
+        "SkipTrashForEmptyNotes": "Verwijder lege notities (zonder tekst, afbeeldingen of bijlagen) permanent in plaats van ze naar de prullenbak te verplaatsen"
     },
     "ComponentsPage": {
         "Components": "Componenten"

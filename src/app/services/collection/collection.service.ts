@@ -477,17 +477,8 @@ export class CollectionService {
 
     private async deleteNotePermanentlyAsync(noteId: string): Promise<void> {
         const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
+        await this.collectionFileAccess.deleteNoteFilesAsync(noteId, this.settings.activeCollection, note.isMarkdownNote);
         this.collectionDataStoreAccess.deleteNote(noteId);
-
-        try {
-            await this.collectionFileAccess.deleteNoteFilesAsync(noteId, this.settings.activeCollection, note.isMarkdownNote);
-        } catch (error) {
-            this.logger.error(
-                `Could not delete the files of note id='${noteId}'. Cause: ${error}`,
-                'CollectionService',
-                'deleteNotePermanentlyAsync',
-            );
-        }
     }
 
     public async deleteNotesPermanentlyAsync(noteIds: string[]): Promise<Operation> {
@@ -516,36 +507,92 @@ export class CollectionService {
         let operation: Operation = Operation.Success;
 
         for (const noteId of noteIds) {
-            if (this.settings.moveDeletedNotesToTrash) {
-                try {
+            try {
+                await this.prepareNoteDeletionAsync(noteId);
+                const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
+                const skipTrash: boolean =
+                    this.settings.moveDeletedNotesToTrash &&
+                    this.settings.skipTrashForEmptyNotes &&
+                    (await this.isNoteEmptyAsync(note));
+
+                if (this.settings.moveDeletedNotesToTrash && !skipTrash) {
                     this.collectionDataStoreAccess.trashNote(noteId);
-                } catch (error) {
-                    this.logger.error(
-                        `Could not move the the note with id='${noteId}' to the trash. Cause: ${error}`,
-                        'CollectionService',
-                        'deleteNotes',
-                    );
-
-                    operation = Operation.Error;
-                }
-            } else {
-                try {
+                } else {
                     await this.deleteNotePermanentlyAsync(noteId);
-                } catch (error) {
-                    this.logger.error(
-                        `Could not delete the note with id='${noteId}'. Cause: ${error}`,
-                        'CollectionService',
-                        'deleteNotesAsync',
-                    );
-
-                    operation = Operation.Error;
                 }
+            } catch (error) {
+                this.logger.error(
+                    `Could not delete the note with id='${noteId}'. Cause: ${error}`,
+                    'CollectionService',
+                    'deleteNotesAsync',
+                );
+                operation = Operation.Error;
             }
         }
 
         this.notesChanged.next();
 
         return operation;
+    }
+
+    private async prepareNoteDeletionAsync(noteId: string): Promise<void> {
+        if (!this.noteIsOpen(noteId)) {
+            return;
+        }
+
+        let operation: Operation;
+        this.globalEmitter.emit(CollectionEvents.prepareNoteDeletionEvent, noteId, (result: Operation) => (operation = result));
+
+        for (let attempt = 0; operation === undefined && attempt < 200; attempt++) {
+            await this.scheduler.sleepAsync(50);
+        }
+
+        if (operation !== Operation.Success) {
+            throw new Error(`Could not save and close note '${noteId}' before deletion.`);
+        }
+    }
+
+    private async isNoteEmptyAsync(note: Note): Promise<boolean> {
+        // Encrypted content cannot be classified safely without its secret key.
+        if (note.isEncrypted || note.text.trim().length > 0) {
+            return false;
+        }
+
+        const content: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(
+            note.id,
+            this.settings.activeCollection,
+            note.isMarkdownNote,
+        );
+
+        if (content.trim().length > 0) {
+            if (note.isMarkdownNote) {
+                return false;
+            }
+
+            const delta: unknown = JSON.parse(content);
+            if (typeof delta !== 'object' || delta === null || !('ops' in delta) || !Array.isArray(delta.ops)) {
+                throw new Error(`Invalid classic note content for note '${note.id}'.`);
+            }
+
+            const ops: unknown[] = delta.ops;
+            for (const op of ops) {
+                if (typeof op !== 'object' || op === null || !('insert' in op)) {
+                    throw new Error(`Invalid classic note operation for note '${note.id}'.`);
+                }
+                if (typeof op.insert !== 'string' || op.insert.trim().length > 0) {
+                    return false;
+                }
+            }
+        }
+
+        const attachmentsDirectory: string = this.collectionFileAccess.getNoteAttachmentsDirectoryPath(
+            note.id,
+            this.settings.activeCollection,
+        );
+        return (
+            !this.fileAccess.pathExists(attachmentsDirectory) ||
+            (await this.fileAccess.getFilesInDirectoryAsync(attachmentsDirectory)).length === 0
+        );
     }
 
     public restoreNotes(noteIds: string[]): Operation {

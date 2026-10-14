@@ -24,6 +24,9 @@ export class CollectionClient {
 
     public constructor(private scheduler: Scheduler) {
         this.globalEmitter.on(CollectionEvents.closeNoteEvent, (noteId: string) => this.closeNote.next(noteId));
+        this.globalEmitter.on(CollectionEvents.prepareNoteDeletionEvent, (noteId: string, callback: (operation: Operation) => void) =>
+            this.prepareNoteDeletion.next({ noteId, callback }),
+        );
         this.globalEmitter.on(CollectionEvents.focusNoteEvent, (noteId: string) => this.focusNote.next(noteId));
         this.globalEmitter.on(CollectionEvents.noteMarkChangedEvent, (result: NoteMarkResult) => this.noteMarkChanged.next(result));
         this.globalEmitter.on(CollectionEvents.notePinChangedEvent, (result: NotePinResult) => this.notePinChanged.next(result));
@@ -37,6 +40,10 @@ export class CollectionClient {
 
     private closeNote: Subject<string> = new Subject();
     public closeNote$: Observable<string> = this.closeNote.asObservable();
+
+    private prepareNoteDeletion: Subject<{ noteId: string; callback: (operation: Operation) => void }> = new Subject();
+    public prepareNoteDeletion$: Observable<{ noteId: string; callback: (operation: Operation) => void }> =
+        this.prepareNoteDeletion.asObservable();
 
     private focusNote: Subject<string> = new Subject();
     public focusNote$: Observable<string> = this.focusNote.asObservable();

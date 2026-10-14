@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as Store from 'electron-store';
+import Store from 'electron-store';
 import * as os from 'os';
 import { BaseSettings } from './base-settings';
 
@@ -124,6 +124,14 @@ export class Settings implements BaseSettings {
         this.settings.set('moveDeletedNotesToTrash', v);
     }
 
+    public get skipTrashForEmptyNotes(): boolean {
+        return this.settings.get('skipTrashForEmptyNotes');
+    }
+
+    public set skipTrashForEmptyNotes(v: boolean) {
+        this.settings.set('skipTrashForEmptyNotes', v);
+    }
+
     // useLightHeaderBar
     public get useLightHeaderBar(): boolean {
         return this.settings.get('useLightHeaderBar');
@@ -242,6 +250,10 @@ export class Settings implements BaseSettings {
 
         if (!this.settings.has('moveDeletedNotesToTrash')) {
             this.settings.set('moveDeletedNotesToTrash', true);
+        }
+
+        if (!this.settings.has('skipTrashForEmptyNotes')) {
+            this.settings.set('skipTrashForEmptyNotes', true);
         }
 
         if (!this.settings.has('useLightHeaderBar')) {

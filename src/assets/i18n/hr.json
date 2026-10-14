@@ -61,7 +61,8 @@
         "AddMoreThemes": "Dodaj više tema",
         "CollectionsDirectory": "Mapa kolekcija",
         "SelectOtherCollectionsDirectory": "Odaberi drugu mapu kolekcija",
-        "SelectButton": "ODABERI..."
+        "SelectButton": "ODABERI...",
+        "SkipTrashForEmptyNotes": "Permanently delete empty notes (no text, images or attachments) instead of moving them to the trash"
     },
     "ComponentsPage": {
         "Components": "Komponente"

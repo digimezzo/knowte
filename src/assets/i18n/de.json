@@ -61,7 +61,8 @@
         "AddMoreThemes": "Add more themes",
         "CollectionsDirectory": "Collections directory",
         "SelectOtherCollectionsDirectory": "Select another collections directory",
-        "SelectButton": "SELECT..."
+        "SelectButton": "SELECT...",
+        "SkipTrashForEmptyNotes": "Permanently delete empty notes (no text, images or attachments) instead of moving them to the trash"
     },
     "ComponentsPage": {
         "Components": "Komponenten"

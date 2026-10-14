@@ -61,7 +61,8 @@
         "AddMoreThemes": "Ajouter plus de thèmes",
         "CollectionsDirectory": "Collections directory",
         "SelectOtherCollectionsDirectory": "Select another collections directory",
-        "SelectButton": "SELECT..."
+        "SelectButton": "SELECT...",
+        "SkipTrashForEmptyNotes": "Supprimer définitivement les notes vides (sans texte, images ni pièces jointes) au lieu de les déplacer dans la corbeille"
     },
     "ComponentsPage": {
         "Components": "Composants"

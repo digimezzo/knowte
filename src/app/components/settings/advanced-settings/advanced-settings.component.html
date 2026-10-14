@@ -8,6 +8,9 @@
     <app-toggle-switch class="mt-2" [(isChecked)]="moveDeletedNotesToTrashChecked">
         {{ 'SettingsPage.MoveDeletedNotesToTrash' | translate }}
     </app-toggle-switch>
+    <app-toggle-switch class="mt-2" [(isChecked)]="skipTrashForEmptyNotesChecked">
+        {{ 'SettingsPage.SkipTrashForEmptyNotes' | translate }}
+    </app-toggle-switch>
     <mat-divider class="my-3"></mat-divider>
     <div class="title1 mt-2">{{ 'SettingsPage.CollectionsDirectory' | translate }}</div>
     <div>{{ 'SettingsPage.SelectOtherCollectionsDirectory' | translate }}</div>

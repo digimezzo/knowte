@@ -266,13 +266,6 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
         const result: any = await dialogRef.afterClosed().toPromise();
 
         if (result) {
-            for (const selectedNoteId of this.selectedNoteIds) {
-                // Close the note window
-                if (this.collection.noteIsOpen(selectedNoteId)) {
-                    this.collection.onCloseNote(selectedNoteId);
-                }
-            }
-
             // Delete the notes
             const operation: Operation = await this.collection.deleteNotesAsync(this.selectedNoteIds);
 

@@ -45,6 +45,14 @@ export class AdvancedSettingsComponent {
         this.settings.moveDeletedNotesToTrash = v;
     }
 
+    public get skipTrashForEmptyNotesChecked(): boolean {
+        return this.settings.skipTrashForEmptyNotes;
+    }
+
+    public set skipTrashForEmptyNotesChecked(v: boolean) {
+        this.settings.skipTrashForEmptyNotes = v;
+    }
+
     public async openDirectoryChooserAsync(): Promise<void> {
         this.logger.info('Opening directory chooser', 'AdvancedSettingsComponent', 'openDirectoryChooserAsync');
 

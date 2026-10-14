@@ -57,6 +57,8 @@ export class NoteComponent implements OnInit {
 
     private isTitleDirty: boolean = false;
     private isTextDirty: boolean = false;
+    private pendingContentSave: Promise<Operation>;
+    private hasLoadedNoteContent: boolean = false;
 
     private secretKey: string = '';
     private secretKeyHash: string = '';
@@ -148,17 +150,23 @@ export class NoteComponent implements OnInit {
     }
 
     private addSubscriptions(): void {
-        this.noteTitleChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async (finalNoteTitle) => {
-            await this.saveNoteTitleAsync(finalNoteTitle);
-        });
+        this.subscription.add(
+            this.noteTitleChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async (finalNoteTitle) => {
+                await this.saveNoteTitleAsync(finalNoteTitle);
+            }),
+        );
 
-        this.noteContentChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async () => {
-            await this.saveNoteContentAsync();
-        });
+        this.subscription.add(
+            this.noteContentChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async () => {
+                await this.saveNoteContentAsync();
+            }),
+        );
 
-        this.saveChangesAndCloseNoteWindow.pipe(debounceTime(Constants.noteWindowCloseTimeoutMilliseconds)).subscribe(async () => {
-            await this.saveAndCloseAsync();
-        });
+        this.subscription.add(
+            this.saveChangesAndCloseNoteWindow.pipe(debounceTime(Constants.noteWindowCloseTimeoutMilliseconds)).subscribe(async () => {
+                await this.saveAndCloseAsync();
+            }),
+        );
 
         this.subscription.add(
             this.searchClient.searchTextChanged$.subscribe((searchText: string) => {
@@ -167,6 +175,37 @@ export class NoteComponent implements OnInit {
             }),
         );
         this.subscription.add(this.collectionClient.closeNote$.subscribe((noteId: string) => this.closeNoteIfMatching(noteId)));
+        this.subscription.add(
+            this.collectionClient.prepareNoteDeletion$.subscribe(async ({ noteId, callback }) => {
+                if (this.noteId !== noteId) {
+                    return;
+                }
+
+                if (!this.hasLoadedNoteContent || this.isBusy) {
+                    this.logger.warn('Note is not ready for deletion.', 'NoteComponent', 'prepareNoteDeletion');
+                    callback(Operation.Error);
+                    return;
+                }
+
+                this.zone.run(() => (this.isBusy = true));
+                if (this.isTitleDirty && (await this.saveNoteTitleAsync(this.noteTitle)) !== Operation.Success) {
+                    this.zone.run(() => (this.isBusy = false));
+                    callback(Operation.Error);
+                    return;
+                }
+
+                const operation: Operation = await this.saveNoteContentAsync();
+                if (operation === Operation.Success) {
+                    this.cleanup();
+                    // Closing can destroy this renderer before it acknowledges the save.
+                    callback(operation);
+                    this.noteWindow.close();
+                } else {
+                    this.zone.run(() => (this.isBusy = false));
+                    callback(operation);
+                }
+            }),
+        );
         this.subscription.add(this.collectionClient.closeAllNotes$.subscribe(() => this.closeNote()));
         this.subscription.add(this.collectionClient.focusNote$.subscribe((noteId: string) => this.focusNote(noteId)));
         this.subscription.add(
@@ -277,7 +316,6 @@ export class NoteComponent implements OnInit {
         dialogRef.afterClosed().subscribe(async (result) => {
             if (result) {
                 this.collectionClient.deleteNote(this.noteId);
-                this.noteWindow.close();
             }
         });
     }
@@ -518,7 +556,18 @@ export class NoteComponent implements OnInit {
         return result.operation;
     }
 
-    private async saveNoteContentAsync(): Promise<Operation> {
+    private saveNoteContentAsync(): Promise<Operation> {
+        const previousSave: Promise<Operation> = this.pendingContentSave;
+        this.pendingContentSave = (async () => {
+            if (previousSave) {
+                await previousSave;
+            }
+            return this.saveNoteContentNowAsync();
+        })();
+        return this.pendingContentSave;
+    }
+
+    private async saveNoteContentNowAsync(): Promise<Operation> {
         const operation: Operation = await this.collectionClient.saveNoteTextAsync(
             this.noteId,
             this.noteEditor.text,
@@ -563,6 +612,8 @@ export class NoteComponent implements OnInit {
                     data: { errorText: errorText },
                 });
             });
+
+            return Operation.Error;
         }
 
         this.isTextDirty = false;
@@ -600,6 +651,7 @@ export class NoteComponent implements OnInit {
 
             this.logger.info(`Setting the content for the note with id='${this.noteId}'`, 'NoteComponent', 'getNoteContentAsync');
             this.noteEditor.content = noteContent;
+            this.hasLoadedNoteContent = true;
         } catch (error) {
             this.logger.error(
                 `Could not get the content for the note with id='${this.noteId}'. Cause: ${error}`,

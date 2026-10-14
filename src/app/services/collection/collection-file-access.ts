@@ -50,7 +50,9 @@ export class CollectionFileAccess {
         }
 
         const noteAttachmentsDirectory: string = this.fileAccess.combinePath(this.getCollectionDirectoryPath(collection), noteId);
-        this.fileAccess.deleteDirectoryRecursively(noteAttachmentsDirectory);
+        if (this.fileAccess.pathExists(noteAttachmentsDirectory)) {
+            this.fileAccess.deleteDirectoryRecursively(noteAttachmentsDirectory);
+        }
     }
 
     public async createCollectionDirectoryAsync(collectionDirectory: string): Promise<void> {

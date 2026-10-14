@@ -12,6 +12,7 @@ export abstract class BaseSettings {
     public abstract activeCollection: string;
     public abstract notebooksPaneWidth: number;
     public abstract moveDeletedNotesToTrash: boolean;
+    public abstract skipTrashForEmptyNotes: boolean;
     public abstract useLightHeaderBar: boolean;
     public abstract enableSpellChecker: boolean;
     public abstract activeSpellCheckLanguages: string;
