@@ -1,4 +1,5 @@
-import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { Subscription } from 'rxjs';
 import { Scheduler } from '../../../common/scheduling/scheduler';
 import { Notebook } from '../../../data/entities/notebook';
@@ -15,8 +16,15 @@ import { TranslatorService } from '../../../services/translator/translator.servi
 })
 export class NotebookSwitcherComponent implements OnInit, OnDestroy {
     private subscription: Subscription = new Subscription();
+    private isLoadingNotebooks: boolean = false;
+    private isDestroyed: boolean = false;
 
-    constructor(private collectionClient: CollectionClient, private translatorService: TranslatorService, private scheduler: Scheduler) {}
+    constructor(
+        private collectionClient: CollectionClient,
+        private translatorService: TranslatorService,
+        private scheduler: Scheduler,
+        private changeDetectorRef: ChangeDetectorRef
+    ) {}
 
     public selectedNotebookName: string;
 
@@ -25,6 +33,7 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
     public notebooks: Notebook[];
 
     public ngOnDestroy(): void {
+        this.isDestroyed = true;
         this.removeSubscriptions();
     }
 
@@ -53,8 +62,26 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
         this.subscription.add(this.translatorService.languageChanged$.subscribe(async (_) => await this.getNotebookNameAsync()));
     }
 
-    public async getNotebooksAsync(): Promise<void> {
-        this.notebooks = await this.collectionClient.getNotebooksAsync();
+    public async openNotebooksMenuAsync(menuTrigger: MatMenuTrigger): Promise<void> {
+        if (this.isLoadingNotebooks || this.isDestroyed) {
+            return;
+        }
+
+        this.isLoadingNotebooks = true;
+
+        try {
+            const notebooks: Notebook[] = await this.collectionClient.getNotebooksAsync();
+
+            if (this.isDestroyed) {
+                return;
+            }
+
+            this.notebooks = notebooks;
+            this.changeDetectorRef.detectChanges();
+            menuTrigger.openMenu();
+        } finally {
+            this.isLoadingNotebooks = false;
+        }
     }
 
     public changeNotebook(notebook: Notebook): void {

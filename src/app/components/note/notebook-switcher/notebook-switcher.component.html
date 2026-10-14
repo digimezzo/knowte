@@ -2,14 +2,15 @@
     <div class="notebook-switcher-selected-notebook no-select mr-1">
         {{ selectedNotebookName }}
     </div>
-    <div
-        class="window-button"
-        mat-icon-button
-        [matMenuTriggerFor]="menu"
-        matTooltip="{{ 'Tooltips.ChangeNotebook' | translate }}"
-        (click)="getNotebooksAsync()"
-    >
-        <i class="notebook-switcher-button las la-bars"></i>
+    <div [matMenuTriggerFor]="menu" #menuTrigger="matMenuTrigger">
+        <div
+            class="window-button"
+            mat-icon-button
+            matTooltip="{{ 'Tooltips.ChangeNotebook' | translate }}"
+            (click)="$event.stopPropagation(); openNotebooksMenuAsync(menuTrigger)"
+        >
+            <i class="notebook-switcher-button las la-bars"></i>
+        </div>
     </div>
 </div>
 <mat-menu #menu="matMenu">
