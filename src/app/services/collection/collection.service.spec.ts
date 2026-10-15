@@ -223,6 +223,25 @@ describe('CollectionService note deletion', () => {
             expect(service['getFilteredNotes'](notes, 't:"" meeting')).toEqual([]);
         });
 
+        it('requires every tag filter and all title/content terms', () => {
+            const matching = addNote(false, 'Content', 'budget');
+            matching.title = 'Meeting';
+            matching.tags = ['Work', 'urgent', 'project alpha'];
+            const firstOnly = addNote(false, 'Content', 'meeting budget urgent');
+            firstOnly.tags = ['work'];
+            const secondOnly = addNote(false, 'Content', 'meeting budget work');
+            secondOnly.tags = ['urgent'];
+            const tagsOnly = addNote(false, 'Content');
+            tagsOnly.tags = ['work', 'urgent'];
+
+            expect(service['getFilteredNotes'](notes, 't:work t:urgent')).toEqual([matching, tagsOnly]);
+            expect(service['getFilteredNotes'](notes, 't:work t:urgent meeting budget')).toEqual([matching]);
+            expect(service['getFilteredNotes'](notes, 'T:URGENT t:"Project Alpha" meeting')).toEqual([matching]);
+            expect(service['getFilteredNotes'](notes, 't:work t:work')).toEqual([matching, firstOnly, tagsOnly]);
+            expect(service['getFilteredNotes'](notes, 't:work t:missing')).toEqual([]);
+            expect(service['getFilteredNotes'](notes, 't:work t:')).toEqual([]);
+        });
+
         it('keeps ordinary title/body searches unchanged and does not search tag metadata', () => {
             const tagged = addNote(false, 'Content');
             tagged.tags = ['work'];

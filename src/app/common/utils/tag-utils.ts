@@ -15,21 +15,20 @@ export class TagUtils {
         });
     }
 
-    public static parseSearch(query: string): { tag?: string; text: string } {
-        const trimmedQuery: string = (query || '').trim();
-        if (!/^t:/i.test(trimmedQuery)) {
-            return { text: trimmedQuery };
+    public static parseSearch(query: string): { tags: string[]; text: string } {
+        let text: string = (query || '').trim();
+        const tags: string[] = [];
+        while (/^t:/i.test(text)) {
+            const value: string = text.substring(2).trim();
+            const match = value.startsWith('"')
+                ? /^"([^"]*)"(?:\s+([\s\S]*))?$/.exec(value)
+                : /^(\S+)(?:\s+([\s\S]*))?$/.exec(value);
+            if (!match || !match[1].trim()) {
+                return { tags: [''], text: '' };
+            }
+            tags.push(match[1].trim().toLowerCase());
+            text = (match[2] || '').trim();
         }
-
-        const value: string = trimmedQuery.substring(2).trim();
-        const match = value.startsWith('"')
-            ? /^"([^"]*)"(?:\s+([\s\S]*))?$/.exec(value)
-            : /^(\S+)(?:\s+([\s\S]*))?$/.exec(value);
-
-        if (!match) {
-            return { tag: '', text: '' };
-        }
-
-        return { tag: match[1].trim().toLowerCase(), text: (match[2] || '').trim() };
+        return { tags, text };
     }
 }

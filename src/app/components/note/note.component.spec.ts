@@ -245,7 +245,7 @@ describe('NoteComponent preparing deletion', () => {
         expect(component.isBusy).toBe(false);
     });
 
-    it.each(['t:work', ' T:"project alpha" ', 't:'])('does not highlight tag queries in note contents: %s', (query) => {
+    it.each(['t:work', ' T:"project alpha" ', 't:', 't:work t:urgent'])('does not highlight tag queries in note contents: %s', (query) => {
         jest.useFakeTimers();
         try {
             component['searchText'] = query;
@@ -270,7 +270,7 @@ describe('NoteComponent preparing deletion', () => {
         }
     });
 
-    it.each(['t:work meeting budget', 't:"project alpha" meeting budget'])(
+    it.each(['t:work meeting budget', 't:"project alpha" meeting budget', 't:work t:urgent meeting budget'])(
         'highlights only the text portion of a combined query: %s', (query) => {
             jest.useFakeTimers();
             try {
@@ -285,7 +285,7 @@ describe('NoteComponent preparing deletion', () => {
     );
 
     it('prefills in-note search with only the title/content query', () => {
-        component['searchText'] = 't:"project alpha" meeting budget';
+        component['searchText'] = 't:"project alpha" t:urgent meeting budget';
         component.openSearchBottomSheet();
         expect(openSheet).toHaveBeenCalledWith(expect.anything(), {
             data: { searchText: 'meeting budget' },

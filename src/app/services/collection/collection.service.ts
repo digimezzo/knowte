@@ -1353,8 +1353,8 @@ export class CollectionService {
         const searchTextPieces: string[] = search.text.split(/\s+/);
 
         return unfilteredNotes.filter((note) => {
-            const matchesTag: boolean = search.tag === undefined ||
-                (search.tag.length > 0 && (note.tags || []).some((tag) => tag.toLowerCase() === search.tag));
+            const matchesTag: boolean = search.tags.every((searchTag) =>
+                searchTag.length > 0 && (note.tags || []).some((tag) => tag.toLowerCase() === searchTag));
             return matchesTag && CollectionUtils.containsAll(`${note.title} ${note.text}`, searchTextPieces);
         });
     }
