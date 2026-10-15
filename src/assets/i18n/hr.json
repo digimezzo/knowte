@@ -194,6 +194,7 @@
         "StorageDirectoryCreationError": "Mapu '{{storageDirectory}}' nije moguće koristiti za spremanje Vaših bilješki. Možda nemate dozvolu za stvaranje stavki u njoj. Provjerite zapisnik, ako trebate više informacija.",
         "GlobalError": "Dogodila se greška zbog koje će se aplikacija zatvoriti. Provjerite zapisnik, ako trebate više informacija.",
         "AddCollectionError": "Dogodila se greška tijekom dodavanja kolekcije '{{collection}}'. Provjerite zapisnik, ako trebate više informacija.",
+        "ActivateCollectionError": "Could not switch to collection '{{collection}}'. Make sure open notes can be saved and no other collection operation is in progress. Please verify the log if you need more information.",
         "AddNotebookError": "Dogodila se greška tijekom dodavanja bilježnice '{{notebookName}}'. Provjerite zapisnik, ako trebate više informacija.",
         "RenameNoteError": "Dogodila se greška tijekom preimenovanja bilješke '{{noteTitle}}'. Provjerite zapisnik, ako trebate više informacija.",
         "RenameNotebookError": "Dogodila se greška tijekom preimenovanja bilježnice '{{notebookName}}'. Provjerite zapisnik, ako trebate više informacija.",

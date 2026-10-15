@@ -194,6 +194,7 @@
         "StorageDirectoryCreationError": "文件夹'{{storageDirectory}}'不能用来保存你的笔记。您可能没有足够的权限在其中创建项目。如果您需要更多信息，请验证日志。",
         "GlobalError": "发生错误，将导致应用程序关闭。如果您需要更多信息，请验证日志。",
         "AddCollectionError": "添加收藏'{{collection}}'时发生错误。如果您需要更多信息，请验证日志。",
+        "ActivateCollectionError": "Could not switch to collection '{{collection}}'. Make sure open notes can be saved and no other collection operation is in progress. Please verify the log if you need more information.",
         "AddNotebookError": "添加笔记本'{{notebookName}}'时发生错误。如果您需要更多信息，请验证日志。",
         "RenameNoteError": "重命名笔记'{{noteTitle}}'时发生错误。如果您需要更多信息，请验证日志。",
         "RenameNotebookError": "重命名笔记本'{{notebookName}}'时发生错误。如果您需要更多信息，请验证日志。",

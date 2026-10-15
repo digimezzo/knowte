@@ -1,49 +1,32 @@
-import * as loki from 'lokijs';
-import * as moment from 'moment';
-import { Scheduler } from '../common/scheduling/scheduler';
+import { Injectable } from '@angular/core';
+import loki from 'lokijs';
+import moment from 'moment';
 import { Note } from './entities/note';
 import { Notebook } from './entities/notebook';
 
+@Injectable()
 export class DataStore {
-    constructor(private scheduler: Scheduler) {}
-
     private db: loki;
-    private notebooks: any;
-    private notes: any;
-
+    private loadedNotebooks: any;
+    private loadedNotes: any;
     private isLoaded: boolean = false;
+    private initialization: Promise<void> | undefined;
+    private initializingDatabaseFile: string;
 
-    private databaseLoaded(): void {
-        let mustSaveDatabase: boolean = false;
-
-        this.notebooks = this.db.getCollection('notebooks');
-
-        if (!this.notebooks) {
-            this.notebooks = this.db.addCollection('notebooks');
-            mustSaveDatabase = true;
-        }
-
-        this.notes = this.db.getCollection('notes');
-
-        if (!this.notes) {
-            this.notes = this.db.addCollection('notes');
-            mustSaveDatabase = true;
-        }
-
-        if (mustSaveDatabase) {
-            this.db.saveDatabase();
-        }
-
-        this.isLoaded = true;
+    private get notebooks(): any {
+        this.ensureLoaded();
+        return this.loadedNotebooks;
     }
 
-    private loadDatabase(databaseFile: string): void {
-        this.isLoaded = false;
+    private get notes(): any {
+        this.ensureLoaded();
+        return this.loadedNotes;
+    }
 
-        this.db = new loki(databaseFile, {
-            autoload: true,
-            autoloadCallback: this.databaseLoaded.bind(this),
-        });
+    private ensureLoaded(): void {
+        if (!this.isLoaded) {
+            throw new Error('Data store is not initialized. Await initializeAsync before accessing it.');
+        }
     }
 
     public caseInsensitiveNameSort(object1: any, object2: any): any {
@@ -51,11 +34,69 @@ export class DataStore {
     }
 
     public async initializeAsync(databaseFile: string): Promise<void> {
-        this.loadDatabase(databaseFile);
-
-        while (!this.isLoaded) {
-            await this.scheduler.sleepAsync(100);
+        if (this.initialization) {
+            if (this.initializingDatabaseFile !== databaseFile) {
+                throw new Error('Cannot switch databases while data store initialization is in progress.');
+            }
+            return this.initialization;
         }
+
+        this.isLoaded = false;
+        this.initializingDatabaseFile = databaseFile;
+        this.initialization = this.loadDatabaseAsync(databaseFile);
+        try {
+            await this.initialization;
+        } finally {
+            this.initialization = undefined;
+        }
+    }
+
+    private async loadDatabaseAsync(databaseFile: string): Promise<void> {
+        const database = new loki(databaseFile);
+        await new Promise<void>((resolve, reject) => {
+            database.loadDatabase({}, (error) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            });
+        });
+
+        const existingNotebooks = database.getCollection('notebooks');
+        const existingNotes = database.getCollection('notes');
+        const notebooks = existingNotebooks || database.addCollection('notebooks');
+        const notes = existingNotes || database.addCollection('notes');
+
+        if (!existingNotebooks || !existingNotes) {
+            await new Promise<void>((resolve, reject) => {
+                database.saveDatabase((error) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve();
+                    }
+                });
+            });
+        }
+
+        this.db = database;
+        this.loadedNotebooks = notebooks;
+        this.loadedNotes = notes;
+        this.isLoaded = true;
+    }
+
+    public async saveAsync(): Promise<void> {
+        this.ensureLoaded();
+        await new Promise<void>((resolve, reject) => {
+            this.db.saveDatabase((error) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            });
+        });
     }
 
     public getNotebooks(): Notebook[] {

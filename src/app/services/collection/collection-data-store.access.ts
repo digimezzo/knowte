@@ -1,29 +1,41 @@
 import { Injectable } from '@angular/core';
 import { FileAccess } from '../../common/io/file-access';
 import { Logger } from '../../common/logging/logger';
-import { Scheduler } from '../../common/scheduling/scheduler';
 import { DataStore } from '../../data/data-store';
+import { DataStoreFactory } from '../../data/data-store-factory';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
 import { CollectionPathConverter } from './collection-path-converter';
 
 @Injectable()
 export class CollectionDataStoreAccess {
-    private dataStore: DataStore;
-
     public constructor(
         private collectionPathConverter: CollectionPathConverter,
         private fileAccess: FileAccess,
-        private scheduler: Scheduler,
-        private logger: Logger
-    ) {
-        this.dataStore = new DataStore(scheduler);
-    }
+        private dataStore: DataStore,
+        private logger: Logger,
+        private dataStoreFactory: DataStoreFactory
+    ) {}
 
     public async initializeAsync(collection: string): Promise<void> {
         const databaseFilePath: string = this.getCollectionDatabasePath(collection);
         await this.dataStore.initializeAsync(databaseFilePath);
         this.logger.info(`Initialized data store: ${databaseFilePath}`, 'CollectionDataStoreAccess', 'initializeAsync');
+    }
+
+    public async openCollectionAsync(collection: string): Promise<CollectionDataStoreAccess> {
+        const store = await this.dataStoreFactory.openAsync(this.getCollectionDatabasePath(collection));
+        return new CollectionDataStoreAccess(
+            this.collectionPathConverter,
+            this.fileAccess,
+            store,
+            this.logger,
+            this.dataStoreFactory
+        );
+    }
+
+    public async saveAsync(): Promise<void> {
+        await this.dataStore.saveAsync();
     }
 
     private getCollectionDatabasePath(collection: string): string {

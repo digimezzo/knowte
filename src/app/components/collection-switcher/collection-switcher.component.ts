@@ -105,11 +105,12 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
             if (!(await this.hasConfirmedToCloseAllNotesAsync())) {
                 return;
             }
-
-            this.collectionService.onCloseAllNotes();
         }
 
-        this.collectionService.activateCollection(collection);
+        if (await this.collectionService.activateCollection(collection) === Operation.Error) {
+            const errorText: string = await this.translatorService.getAsync('ErrorTexts.ActivateCollectionError', { collection });
+            this.dialog.open(ErrorDialogComponent, { width: '450px', data: { errorText } });
+        }
     }
 
     private async hasConfirmedToCloseAllNotesAsync(): Promise<boolean> {

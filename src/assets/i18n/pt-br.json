@@ -194,6 +194,7 @@
         "StorageDirectoryCreationError": "A pasta '{{storageDirectory}}' não pode ser usado para salvar suas notas. Você talvez não tenha permissões o suficiente para criar arquivos nela. Por favor verique o log se precisar de mais informações.",
         "GlobalError": "Um erro ocorreu que fará a aplicação ser fechada. Por favor verique o log se precisar de mais informações.",
         "AddCollectionError": "Um erro ocorreu enquanto a coleção '{{collection}}' estava sendo adicionada. Por favor verique o log se precisar de mais informações.",
+        "ActivateCollectionError": "Could not switch to collection '{{collection}}'. Make sure open notes can be saved and no other collection operation is in progress. Please verify the log if you need more information.",
         "AddNotebookError": "Um erro ocorreu enquanto a caderneta '{{notebookName}}' estava sendo adiconada. Por favor verique o log se precisar de mais informações.",
         "RenameNoteError": "Um erro ocorreu enquanto a nota '{{noteTitle}}' estava sendo adicionada. Por favor verique o log se precisar de mais informações.",
         "RenameNotebookError": "Um erro ocorreu ao renomear a caderneta '{{notebookName}}'. Por favor verique o log se precisar de mais informações.",

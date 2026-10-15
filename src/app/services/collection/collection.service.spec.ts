@@ -1,10 +1,12 @@
 import * as remote from '@electron/remote';
+import { EventEmitter } from 'events';
 import { IMock, It, Mock } from 'typemoq';
 import { Operation } from '../../common/enums/operation';
 import { FileAccess } from '../../common/io/file-access';
 import { Logger } from '../../common/logging/logger';
 import { Scheduler } from '../../common/scheduling/scheduler';
 import { BaseSettings } from '../../common/settings/base-settings';
+import { TasksCount } from '../../common/ui/tasks-count';
 import { Note } from '../../data/entities/note';
 import { BaseAppearanceService } from '../appearance/base-appearance.service';
 import { CryptographyService } from '../cryptography/cryptography.service';
@@ -12,11 +14,13 @@ import { SearchService } from '../search/search.service';
 import { TemporaryStorageService } from '../temporary-storage/temporary-storage.service';
 import { TranslatorService } from '../translator/translator.service';
 import { CollectionDataStoreAccess } from './collection-data-store.access';
+import { CollectionClient } from './collection.client';
 import { CollectionEvents } from './collection-events';
 import { CollectionFileAccess } from './collection-file-access';
 import { CollectionService } from './collection.service';
 import { NoteDateFormatter } from './note-date-formatter';
 import { NoteModelFactory } from './note-model-factory';
+import { NoteModel } from './note-model';
 
 jest.mock('@electron/remote', () => ({ getGlobal: jest.fn() }));
 jest.mock('electron', () => ({ ipcRenderer: { send: jest.fn() } }));
@@ -28,7 +32,6 @@ jest.mock('../../data/entities/note', () => ({
         public constructor(public title: string, public notebookId: string, public isMarkdownNote: boolean) {}
     },
 }));
-jest.mock('../../data/data-store', () => ({ DataStore: class {} }));
 jest.mock('../../common/utils/date-utils', () => ({ DateUtils: class {} }));
 jest.mock('./note-date-formatter', () => ({ NoteDateFormatter: class {} }));
 jest.mock('../temporary-storage/temporary-storage.service', () => ({ TemporaryStorageService: class {} }));
@@ -40,6 +43,8 @@ describe('CollectionService note deletion', () => {
     let fileAccess: IMock<FileAccess>;
     let data: IMock<CollectionDataStoreAccess>;
     let scheduler: IMock<Scheduler>;
+    let translator: IMock<TranslatorService>;
+    let modelFactory: IMock<NoteModelFactory>;
     let notes: Note[];
     let contents: Map<string, string>;
     let trashNote: jest.Mock;
@@ -47,6 +52,7 @@ describe('CollectionService note deletion', () => {
     let deleteFiles: jest.Mock;
     let logError: jest.Mock;
     let emit: jest.Mock;
+    let globalEmitter: { emit: jest.Mock; on: jest.Mock; removeListener: jest.Mock };
     let notesChanged: jest.Mock;
     let useTrash: boolean;
     let skipEmpty: boolean;
@@ -58,14 +64,21 @@ describe('CollectionService note deletion', () => {
         skipEmpty = true;
         attachments = undefined;
         readError = undefined;
-        settings = Mock.ofType<BaseSettings>();
+        settings = Mock.ofInstance<BaseSettings>({
+            ...Mock.ofType<BaseSettings>().object,
+            activeCollection: 'collection',
+            moveDeletedNotesToTrash: true,
+            skipTrashForEmptyNotes: true,
+        });
         settings.setup((x) => x.moveDeletedNotesToTrash).returns(() => useTrash);
         settings.setup((x) => x.skipTrashForEmptyNotes).returns(() => skipEmpty);
-        settings.setup((x) => x.activeCollection).returns(() => 'collection');
+        settings.setup((x) => x.activeCollection).returns(() => service.activeCollection || 'collection');
         files = Mock.ofType<CollectionFileAccess>();
         fileAccess = Mock.ofType<FileAccess>();
         data = Mock.ofType<CollectionDataStoreAccess>();
         scheduler = Mock.ofType<Scheduler>();
+        translator = Mock.ofType<TranslatorService>();
+        modelFactory = Mock.ofType<NoteModelFactory>();
         notes = [];
         contents = new Map();
         trashNote = jest.fn();
@@ -73,7 +86,8 @@ describe('CollectionService note deletion', () => {
         deleteFiles = jest.fn().mockResolvedValue(undefined);
         logError = jest.fn();
         emit = jest.fn();
-        (remote.getGlobal as jest.Mock).mockReturnValue({ emit });
+        globalEmitter = { emit, on: jest.fn(), removeListener: jest.fn() };
+        (remote.getGlobal as jest.Mock).mockReturnValue(globalEmitter);
         data.setup((x) => x.getNoteById(It.isAnyString())).returns((id: string) => notes.find((note) => note.id === id));
         data.setup((x) => x.trashNote(It.isAnyString())).callback(trashNote);
         data.setup((x) => x.deleteNote(It.isAnyString())).callback(deleteNote);
@@ -92,14 +106,14 @@ describe('CollectionService note deletion', () => {
         logger.setup((x) => x.error(It.isAnyString(), It.isAnyString(), It.isAnyString())).callback(logError);
 
         service = new CollectionService(
-            Mock.ofType<TranslatorService>().object,
+            translator.object,
             Mock.ofType<SearchService>().object,
             Mock.ofType<BaseAppearanceService>().object,
             Mock.ofType<CryptographyService>().object,
             files.object,
             data.object,
             Mock.ofType<TemporaryStorageService>().object,
-            Mock.ofType<NoteModelFactory>().object,
+            modelFactory.object,
             Mock.ofType<NoteDateFormatter>().object,
             fileAccess.object,
             scheduler.object,
@@ -291,5 +305,316 @@ describe('CollectionService note deletion', () => {
         expect(deleteNote).not.toHaveBeenCalled();
         expect(trashNote).not.toHaveBeenCalled();
         expect(logError).toHaveBeenCalled();
+    });
+
+    describe('initialization', () => {
+        let initializeStore: jest.Mock;
+        let on: jest.Mock;
+
+        beforeEach(() => {
+            initializeStore = jest.fn().mockResolvedValue(undefined);
+            on = globalEmitter.on;
+            files.setup((x) => x.collectionAndItsDirectoryExistAsync('collection')).returns(async () => true);
+            files.setup((x) => x.getCollectionDirectoryPath('collection')).returns(() => '/collection');
+            data.setup((x) => x.initializeAsync('collection')).returns(() => initializeStore());
+        });
+
+        it('waits for data loading and initializes only once for concurrent callers', async () => {
+            let resolveLoading: () => void;
+            initializeStore.mockReturnValue(new Promise<void>((resolve) => (resolveLoading = resolve)));
+            const completed = jest.fn();
+
+            const first = service.initializeAsync().then(completed);
+            const second = service.initializeAsync().then(completed);
+            // Allow the two asynchronous file checks to complete.
+            await Promise.resolve();
+            await Promise.resolve();
+            await Promise.resolve();
+
+            expect(initializeStore).toHaveBeenCalledTimes(1);
+            expect(completed).not.toHaveBeenCalled();
+            expect(on).not.toHaveBeenCalled();
+
+            resolveLoading();
+            await Promise.all([first, second]);
+            await service.initializeAsync();
+
+            expect(completed).toHaveBeenCalledTimes(2);
+            expect(initializeStore).toHaveBeenCalledTimes(1);
+            expect(on).toHaveBeenCalled();
+        });
+
+        it('rejects concurrent callers on failure and allows a retry', async () => {
+            const error = new Error('Cannot load database');
+            initializeStore.mockRejectedValueOnce(error);
+            const first = service.initializeAsync();
+            const second = service.initializeAsync();
+
+            await expect(first).rejects.toBe(error);
+            await expect(second).rejects.toBe(error);
+            expect(on).not.toHaveBeenCalled();
+            expect(logError).toHaveBeenCalled();
+
+            await service.initializeAsync();
+
+            expect(initializeStore).toHaveBeenCalledTimes(2);
+            expect(on).toHaveBeenCalled();
+        });
+    });
+
+    describe('multi-window collection operations', () => {
+        let destination: IMock<CollectionDataStoreAccess>;
+        let openDestination: jest.Mock;
+        let saveDestination: jest.Mock;
+        let saveSource: jest.Mock;
+        let saveContent: jest.Mock;
+        let updateSource: jest.Mock;
+        let destinationNotes: Note[];
+        let clients: CollectionClient[];
+
+        beforeEach(async () => {
+            const bus = new EventEmitter();
+            globalEmitter.on.mockImplementation((event, listener) => bus.on(event, listener));
+            globalEmitter.removeListener.mockImplementation((event, listener) => bus.removeListener(event, listener));
+            emit.mockImplementation((event, ...args) => bus.emit(event, ...args));
+            scheduler.setup((x) => x.sleepAsync(It.isAnyNumber())).returns(async () =>
+                new Promise<void>((resolve) => setTimeout(resolve, 0)));
+            files.setup((x) => x.collectionAndItsDirectoryExistAsync('collection')).returns(async () => true);
+            files.setup((x) => x.getCollectionDirectoryPath('collection')).returns(() => '/collection');
+            data.setup((x) => x.initializeAsync(It.isAnyString())).returns(async () => undefined);
+            data.setup((x) => x.getNotebooks()).returns(() => []);
+            data.setup((x) => x.getNotesWithIdenticalBaseTitle(It.isAnyString())).returns(() => notes);
+            translator.setup((x) => x.getAsync(It.isAnyString())).returns(async (key) =>
+                key === 'Notes.Moved' ? 'Moved' : 'Unfiled');
+            files.setup((x) => x.getNoteContentByNoteId(It.isAnyString(), 'collection', It.isAny()))
+                .returns((id: string) => contents.get(id));
+            modelFactory.setup((x) => x.create(It.isAny())).returns((note: Note) =>
+                new NoteModel(note, settings.object, files.object));
+            updateSource = jest.fn();
+            data.setup((x) => x.updateNote(It.isAny())).callback(updateSource);
+            destination = Mock.ofType<CollectionDataStoreAccess>();
+            destination.setup((x) => x['then']).returns(() => undefined);
+            destinationNotes = [];
+            destination.setup((x) => x.getNotesWithIdenticalBaseTitle(It.isAnyString())).returns(() => destinationNotes);
+            destination.setup((x) => x.addNote(It.isAnyString(), '', It.isAny())).returns((title, _notebookId, markdown) => {
+                const note = new Note(title, '', markdown);
+                note.id = `destination-${destinationNotes.length}`;
+                destinationNotes.push(note);
+                return note.id;
+            });
+            destination.setup((x) => x.getNoteById(It.isAnyString())).returns((id) =>
+                destinationNotes.find((note) => note.id === id));
+            openDestination = jest.fn().mockResolvedValue(destination.object);
+            data.setup((x) => x.openCollectionAsync('destination')).returns(openDestination);
+            saveDestination = jest.fn().mockResolvedValue(undefined);
+            saveSource = jest.fn().mockResolvedValue(undefined);
+            destination.setup((x) => x.saveAsync()).returns(saveDestination);
+            data.setup((x) => x.saveAsync()).returns(saveSource);
+            saveContent = jest.fn().mockResolvedValue(undefined);
+            files.setup((x) => x.saveNoteContentAsync(It.isAnyString(), It.isAnyString(), 'destination', It.isAny()))
+                .returns(saveContent);
+            await service.initializeAsync();
+            clients = [new CollectionClient(scheduler.object), new CollectionClient(scheduler.object)];
+        });
+
+        async function saveFromBothWindows(first: Note, second: Note): Promise<void> {
+            expect(await Promise.all([
+                clients[0].saveNoteTextAsync(first.id, 'Window one', false, '', new TasksCount(1, 2)),
+                clients[1].saveNoteTextAsync(second.id, 'Window two', false, '', new TasksCount(3, 4)),
+            ])).toEqual([Operation.Success, Operation.Success]);
+            expect(first.text).toBe('Window one');
+            expect(second.text).toBe('Window two');
+            expect(updateSource).toHaveBeenCalledWith(first);
+            expect(updateSource).toHaveBeenCalledWith(second);
+            expect((await clients[0].getNoteDetailsAsync(first.id)).noteTitle).toBe(first.title);
+            expect((await clients[1].getNoteDetailsAsync(second.id)).noteTitle).toBe(second.title);
+        }
+
+        it('keeps two clients on the source during destination loading and copying', async () => {
+            const moved = addNote(true, 'Moved content');
+            const first = addNote(false, 'First');
+            const second = addNote(false, 'Second');
+            let loaded: (store: CollectionDataStoreAccess) => void;
+            openDestination.mockReturnValue(new Promise<CollectionDataStoreAccess>((resolve) => (loaded = resolve)));
+            const copyingStarted = new Promise<void>((resolve) => {
+                saveContent.mockImplementation(() => {
+                    resolve();
+                    return new Promise<void>((finish) => (finishCopy = finish));
+                });
+            });
+            let finishCopy: () => void;
+            const moving = service.moveNotesToCollectionAsync([moved.id], 'destination');
+            await Promise.resolve();
+            await saveFromBothWindows(first, second);
+            expect(deleteNote).not.toHaveBeenCalled();
+
+            loaded(destination.object);
+            await copyingStarted;
+            await saveFromBothWindows(first, second);
+            expect(saveContent).toHaveBeenCalledWith('destination-0', 'Moved content', 'destination', true);
+            expect(destinationNotes[0].title).toBe('New note (Moved)');
+            expect(deleteNote).not.toHaveBeenCalled();
+            finishCopy();
+
+            expect(await moving).toBe(1);
+            expect(deleteNote).toHaveBeenCalledWith(moved.id);
+            expect(saveDestination.mock.invocationCallOrder[0]).toBeLessThan(deleteNote.mock.invocationCallOrder[0]);
+            expect(saveSource).toHaveBeenCalled();
+            expect(service.activeCollection).toBe('collection');
+        });
+
+        it.each(['load', 'content', 'save'])('preserves source access and notes after a destination %s failure', async (stage) => {
+            const moved = addNote(false, 'Content');
+            const first = addNote(false, 'First');
+            const second = addNote(false, 'Second');
+            const failing = stage === 'load' ? openDestination : stage === 'content' ? saveContent : saveDestination;
+            failing.mockRejectedValueOnce(new Error('Destination failure'));
+
+            expect(await service.moveNotesToCollectionAsync([moved.id], 'destination')).toBe(0);
+
+            expect(deleteNote).not.toHaveBeenCalled();
+            expect(deleteFiles).not.toHaveBeenCalled();
+            expect(logError).toHaveBeenCalled();
+            await saveFromBothWindows(first, second);
+            expect(await service.moveNotesToCollectionAsync([moved.id], 'destination')).toBe(1);
+        });
+
+        it('rejects overlapping moves and collection changes', async () => {
+            const moved = addNote(false, 'Content');
+            let loaded: (store: CollectionDataStoreAccess) => void;
+            openDestination.mockReturnValue(new Promise<CollectionDataStoreAccess>((resolve) => (loaded = resolve)));
+            const moving = service.moveNotesToCollectionAsync([moved.id], 'destination');
+            await Promise.resolve();
+
+            expect(await service.moveNotesToCollectionAsync([moved.id], 'destination')).toBe(0);
+            expect(await service.activateCollection('another')).toBe(Operation.Error);
+            expect(await service.addCollectionAsync('another')).toBe(Operation.Error);
+            expect(await service.renameCollectionAsync('collection', 'another')).toBe(Operation.Error);
+            expect(await service.deleteCollectionAsync('collection')).toBe(Operation.Error);
+            await service.setNoteOpenAsync(moved.id, true);
+            expect(service.noteIsOpen(moved.id)).toBe(false);
+            expect(service.activeCollection).toBe('collection');
+            expect(openDestination).toHaveBeenCalledTimes(1);
+
+            loaded(destination.object);
+            expect(await moving).toBe(1);
+        });
+
+        it('saves and closes a moved note before snapshotting its content', async () => {
+            const moved = addNote(true, 'Old content');
+            await service.setNoteOpenAsync(moved.id, true);
+            clients[0].prepareNoteDeletion$.subscribe(({ noteId, callback }) => {
+                if (noteId === moved.id) {
+                    contents.set(noteId, 'Latest content');
+                    clients[0].setNoteOpen(noteId, false);
+                    callback(Operation.Success);
+                }
+            });
+
+            expect(await service.moveNotesToCollectionAsync([moved.id], 'destination')).toBe(1);
+            expect(saveContent).toHaveBeenCalledWith('destination-0', 'Latest content', 'destination', true);
+        });
+
+        it('waits for both windows to save and close before changing the active collection', async () => {
+            const first = addNote(false, 'First');
+            const second = addNote(false, 'Second');
+            await service.setNoteOpenAsync(first.id, true);
+            await service.setNoteOpenAsync(second.id, true);
+            let acknowledge: () => void;
+            const secondRequested = new Promise<void>((resolve) => {
+                clients[1].prepareNoteDeletion$.subscribe(({ noteId, callback }) => {
+                    if (noteId === second.id) {
+                        acknowledge = () => {
+                            clients[1].setNoteOpen(noteId, false);
+                            callback(Operation.Success);
+                        };
+                        resolve();
+                    }
+                });
+            });
+            clients[0].prepareNoteDeletion$.subscribe(({ noteId, callback }) => {
+                if (noteId === first.id) {
+                    clients[0].setNoteOpen(noteId, false);
+                    callback(Operation.Success);
+                }
+            });
+            const changing = service.activateCollection('another');
+            await secondRequested;
+            await saveFromBothWindows(first, second);
+            expect(service.activeCollection).toBe('collection');
+            expect(saveSource).not.toHaveBeenCalled();
+            await service.setNoteOpenAsync('another-note', true);
+            expect(service.noteIsOpen('another-note')).toBe(false);
+
+            acknowledge();
+            expect(await changing).toBe(Operation.Success);
+            expect(service.activeCollection).toBe('another');
+            expect(saveSource).toHaveBeenCalledTimes(1);
+            expect(service.hasOpenNotes()).toBe(false);
+        });
+
+        it('keeps the active collection when a window cannot save before switching', async () => {
+            const note = addNote(false, 'Content');
+            await service.setNoteOpenAsync(note.id, true);
+            clients[0].prepareNoteDeletion$.subscribe(({ callback }) => callback(Operation.Error));
+
+            expect(await service.activateCollection('another')).toBe(Operation.Error);
+            expect(service.activeCollection).toBe('collection');
+            expect(saveSource).not.toHaveBeenCalled();
+            expect(logError).toHaveBeenCalled();
+        });
+
+        it('keeps the active collection when flushing its database fails', async () => {
+            saveSource.mockRejectedValueOnce(new Error('Cannot persist source'));
+
+            expect(await service.activateCollection('another')).toBe(Operation.Error);
+            expect(service.activeCollection).toBe('collection');
+            expect(logError).toHaveBeenCalled();
+            expect(await service.activateCollection('another')).toBe(Operation.Success);
+        });
+
+        it('flushes partial destination writes before releasing a failed move', async () => {
+            const moved = addNote(false, 'Content');
+            saveContent.mockRejectedValueOnce(new Error('Cannot copy'));
+            let flushed: () => void;
+            const flushingStarted = new Promise<void>((resolve) => {
+                saveDestination.mockImplementationOnce(() => {
+                    resolve();
+                    return new Promise<void>((finish) => (flushed = finish));
+                });
+            });
+            const moving = service.moveNotesToCollectionAsync([moved.id], 'destination');
+            await flushingStarted;
+
+            expect(await service.activateCollection('destination')).toBe(Operation.Error);
+            expect(deleteNote).not.toHaveBeenCalled();
+            flushed();
+            expect(await moving).toBe(0);
+            expect(await service.activateCollection('destination')).toBe(Operation.Success);
+        });
+
+        it('does not close windows for an invalid or duplicate collection change', async () => {
+            const note = addNote(false, 'Content');
+            await service.setNoteOpenAsync(note.id, true);
+            const close = jest.fn();
+            clients[0].prepareNoteDeletion$.subscribe(close);
+            files.setup((x) => x.getCollectionsAsync()).returns(async () => ['existing']);
+
+            expect(await service.addCollectionAsync('')).toBe(Operation.Error);
+            expect(await service.addCollectionAsync('existing')).toBe(Operation.Duplicate);
+            expect(await service.renameCollectionAsync('collection', 'collection')).toBe(Operation.Aborted);
+            expect(close).not.toHaveBeenCalled();
+            expect(saveSource).not.toHaveBeenCalled();
+            expect(service.noteIsOpen(note.id)).toBe(true);
+        });
+
+        it('does not report success when source deletion fails', async () => {
+            const moved = addNote(false, 'Content');
+            deleteFiles.mockRejectedValue(new Error('Cannot delete source'));
+
+            expect(await service.moveNotesToCollectionAsync([moved.id], 'destination')).toBe(0);
+            expect(deleteNote).not.toHaveBeenCalled();
+            expect(logError).toHaveBeenCalled();
+        });
     });
 });
