@@ -44,6 +44,15 @@ export class MarkdownNoteComponent implements AfterViewInit {
         document.execCommand('insertText', false, '    ');
     }
 
+    public onHighlightShortcut(event: Event): void {
+        if (!this.noteEditor.isEditing) {
+            return;
+        }
+
+        event.preventDefault();
+        this.noteEditor.applyHighlight();
+    }
+
     public toggleIsEditing(): void {
         this.noteEditor.isEditing = !this.noteEditor.isEditing;
     }

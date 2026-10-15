@@ -22,6 +22,7 @@ export interface INoteEditor {
     applyBold(): void;
     applyItalic(): void;
     applyStrikeThrough(): void;
+    applyHighlight(): void;
     insertLink(): void;
     insertTable(): void;
     applyQuote(): void;

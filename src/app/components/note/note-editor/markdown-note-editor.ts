@@ -335,6 +335,27 @@ export class MarkdownNoteEditor implements INoteEditor {
         }
     }
 
+    public applyHighlight(): void {
+        try {
+            const input: HTMLTextAreaElement = this.getMarkdownInputElement();
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+
+            if (input.value.slice(start - 2, start) === '==' && input.value.slice(end, end + 2) === '==') {
+                input.setSelectionRange(start - 2, end + 2);
+            }
+
+            if (!this.selectionContainsFormatting('==')) {
+                this.applyFormatting('==', false);
+            } else {
+                this.removeFormatting('==');
+            }
+        } catch (error) {
+            this.logger.error(`Could not apply highlight. Error: ${error.message}`, 'MarkdownNoteEditor', 'applyHighlight');
+            this.snackBarService.oopsAnErrorOccurredAsync();
+        }
+    }
+
     public insertLink(): void {
         this.insertText('[](https://)');
     }

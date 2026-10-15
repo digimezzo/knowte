@@ -25,6 +25,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AngularSplitModule } from 'angular-split';
+import { marked } from 'marked';
 import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
 import 'reflect-metadata';
 import 'zone.js/mix';
@@ -73,6 +74,7 @@ import { ShareBottomSheetComponent } from './components/note/bottom-sheets/share
 import { SpellCheckBottomSheetComponent } from './components/note/bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';
 import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { MarkdownNoteComponent } from './components/note/markdown-note/markdown-note.component';
+import { markdownHighlightExtension } from './components/note/markdown-note/markdown-highlight';
 import { NoteContextMenuFactory } from './components/note/note-context-menu-factory';
 import { BoundaryGetter } from './components/note/note-editor/boundary-getter';
 import { ImageProcessor } from './components/note/note-editor/image-processor';
@@ -144,6 +146,8 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
     hideDelay: 0,
     touchendHideDelay: 0,
 };
+
+marked.use(markdownHighlightExtension);
 
 /**
  * Function that returns `MarkedOptions` with renderer override

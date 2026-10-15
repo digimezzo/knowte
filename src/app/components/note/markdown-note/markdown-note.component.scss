@@ -82,6 +82,13 @@
     font-size: 10px;
 }
 
+button.markdown-action-button {
+    background: transparent;
+    color: inherit;
+    border: none;
+    padding: 0;
+}
+
 .markdown-action-separator {
     border-right: 1px solid var(--theme-separator);
     padding: 4px;

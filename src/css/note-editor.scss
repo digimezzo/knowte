@@ -6,6 +6,11 @@
     color: var(--theme-accent-color) !important;
 }
 
+.note-editor mark,
+.note-editor mark * {
+    color: #24292f !important;
+}
+
 .note-editor h1 {
     color: var(--theme-accent-color) !important;
     font-size: var(--fontsize-larger) !important;

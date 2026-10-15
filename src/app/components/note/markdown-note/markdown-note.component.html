@@ -19,6 +19,17 @@
             >
                 <i class="fa-solid fa-strikethrough"></i>
             </div>
+            <button
+                type="button"
+                class="markdown-action-button no-select"
+                (mousedown)="$event.preventDefault()"
+                (click)="this.noteEditor.applyHighlight()"
+                title="{{ 'Tooltips.Highlight' | translate }} (Ctrl+H)"
+                [attr.aria-label]="'Tooltips.Highlight' | translate"
+                aria-keyshortcuts="Control+h"
+            >
+                <i class="fa-solid fa-highlighter"></i>
+            </button>
             <div class="markdown-action-separator no-select"></div>
             <div
                 class="markdown-action-button no-select"
@@ -99,6 +110,7 @@
                 [(ngModel)]="this.noteEditor.content"
                 (ngModelChange)="onContentChange()"
                 (keydown.tab)="onTabKey($event)"
+                (keydown.control.h)="onHighlightShortcut($event)"
             ></textarea>
         </div>
         <markdown

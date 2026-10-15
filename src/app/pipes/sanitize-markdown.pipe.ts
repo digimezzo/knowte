@@ -16,6 +16,7 @@ export class SanitizeMarkdownPipe implements PipeTransform {
                 'li',
                 'strong',
                 'em',
+                'mark',
                 'code',
                 'pre',
                 'blockquote',

@@ -273,6 +273,10 @@ export class ClassicNoteEditor implements INoteEditor {
         this.quill.formatText(range.index, range.length, 'strike', applyStrikeThrough);
     }
 
+    public applyHighlight(): void {
+        // Highlighting in classic notes is handled by the Quill toolbar.
+    }
+
     public insertLink(): void {
         // Not used in ClassicNoteEditor
     }
