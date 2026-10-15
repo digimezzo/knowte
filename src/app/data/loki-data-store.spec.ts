@@ -1,11 +1,13 @@
+import { TestBed } from '@angular/core/testing';
 import loki from 'lokijs';
 import { DataStore } from './data-store';
 import { DataStoreFactory } from './data-store-factory';
+import { LokiDataStore } from './loki-data-store';
 
 jest.mock('lokijs', () => jest.fn());
 jest.mock('nanoid', () => ({ nanoid: () => 'entity-id' }));
 
-describe('DataStore initialization', () => {
+describe('LokiDataStore initialization', () => {
     let store: DataStore;
     let database: {
         loadDatabase: jest.Mock;
@@ -30,7 +32,19 @@ describe('DataStore initialization', () => {
             }),
         };
         (loki as jest.Mock).mockReset().mockImplementation(() => database);
-        store = new DataStore();
+        store = new LokiDataStore();
+    });
+
+    it('resolves the store contract to one lazy Loki implementation per injector', () => {
+        TestBed.configureTestingModule({
+            providers: [{ provide: DataStore, useClass: LokiDataStore }],
+        });
+
+        const injected = TestBed.inject(DataStore);
+
+        expect(injected).toBeInstanceOf(LokiDataStore);
+        expect(injected).toBe(TestBed.inject(DataStore));
+        expect(loki).not.toHaveBeenCalled();
     });
 
     it('rejects synchronous commands before initialization', () => {
@@ -121,6 +135,8 @@ describe('DataStore initialization', () => {
         expect(completed).not.toHaveBeenCalled();
         save();
         const opened = await opening;
+        expect(opened).toBeInstanceOf(DataStore);
+        expect(opened).toBeInstanceOf(LokiDataStore);
         Object.assign(collections.get('notes'), { findOne: () => ({ id: 'note' }) });
         expect(opened.getNoteById('note')).toEqual({ id: 'note' });
     });

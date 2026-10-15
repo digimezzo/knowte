@@ -50,6 +50,11 @@ $ npm run electron:mac       # Build for Mac
 receives an injected `DataStore`. Tests can replace either dependency without
 constructing a LokiJS database.
 
+`DataStore` is an abstract storage contract containing no LokiJS dependencies.
+Angular binds it to `LokiDataStore`, which owns loading, queries, and persistence.
+`DataStoreFactory` creates independent `LokiDataStore` instances and returns them
+as `DataStore` contracts only after initialization completes.
+
 Await `CollectionService.initializeAsync()` before using the collection. Concurrent
 callers share initialization, and failures reject the promise and allow a retry.
 `DataStore.initializeAsync(databaseFile)` resolves only after loading and any

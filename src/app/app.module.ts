@@ -33,6 +33,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DataStore } from './data/data-store';
 import { DataStoreFactory } from './data/data-store-factory';
+import { LokiDataStore } from './data/loki-data-store';
 import { GitHubApi } from './common/api/github-api';
 import { Application } from './common/io/application';
 import { BaseApplication } from './common/io/base-application';
@@ -316,7 +317,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
         CollectionPathConverter,
         CollectionFileAccess,
         CollectionDataStoreAccess,
-        DataStore,
+        { provide: DataStore, useClass: LokiDataStore },
         DataStoreFactory,
         NoteEditorFactory,
         NoteImageSaver,
