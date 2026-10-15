@@ -1,3 +1,3 @@
 export class MarkdownNoteExportMetadata {
-    constructor(public title: string) {}
+    constructor(public title: string, public tags: string[] = []) {}
 }

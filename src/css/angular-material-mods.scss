@@ -22,6 +22,10 @@
     background-color: var(--theme-background) !important;
 }
 
+.note-actions-sheet .mat-bottom-sheet-container {
+    padding: 16px;
+}
+
 // Text color
 // -----------------------------------------------------------------------------------------------------------------------------------------
 .mat-mdc-menu-item {

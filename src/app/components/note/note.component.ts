@@ -1,4 +1,3 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, HostListener, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatBottomSheet, MatBottomSheetConfig } from '@angular/material/bottom-sheet';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -12,9 +11,9 @@ import { ProductInformation } from '../../common/application/product-information
 import { Operation } from '../../common/enums/operation';
 import { ClipboardManager } from '../../common/io/clipboard-manager';
 import { Logger } from '../../common/logging/logger';
-import { Scheduler } from '../../common/scheduling/scheduler';
 import { BaseSettings } from '../../common/settings/base-settings';
 import { StringUtils } from '../../common/utils/strings-utils';
+import { TagUtils } from '../../common/utils/tag-utils';
 import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
 import { CollectionClient } from '../../services/collection/collection.client';
 import { CryptographyService } from '../../services/cryptography/cryptography.service';
@@ -29,9 +28,11 @@ import { SpellCheckService } from '../../services/spell-check/spell-check.servic
 import { TranslatorService } from '../../services/translator/translator.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
+import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
 import { NotificationDialogComponent } from '../dialogs/notification-dialog/notification-dialog.component';
 import { PasswordInputDialogComponent } from '../dialogs/password-input-dialog/password-input-dialog.component';
 import { SearchBottomSheetComponent } from './bottom-sheets/search-bottom-sheet/search-bottom-sheet.component';
+import { ActionsBottomSheetComponent, NoteAction, NoteActionsData } from './bottom-sheets/actions-bottom-sheet/actions-bottom-sheet.component';
 import { ShareBottomSheetComponent } from './bottom-sheets/share-bottom-sheet/share-bottom-sheet.component';
 import { ContextMenuItemsEnabledState } from './context-menu-items-enabled-state';
 import { NoteContextMenuFactory } from './note-context-menu-factory';
@@ -43,14 +44,6 @@ import { NoteEditorFactory } from './note-editor/note-editor-factory';
     templateUrl: './note.component.html',
     styleUrls: ['./note.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    animations: [
-        trigger('actionIconRotation', [
-            state('default', style({ transform: 'rotate(0)' })),
-            state('rotated', style({ transform: 'rotate(90deg)' })),
-            transition('rotated => default', animate('250ms ease-out')),
-            transition('default => rotated', animate('250ms ease-in')),
-        ]),
-    ],
 })
 export class NoteComponent implements OnInit {
     private subscription: Subscription = new Subscription();
@@ -60,6 +53,7 @@ export class NoteComponent implements OnInit {
     private contentRevision: number = 0;
     private pendingContentSave: Promise<Operation>;
     private hasLoadedNoteContent: boolean = false;
+    private isEditingTags: boolean = false;
 
     private secretKey: string = '';
     private secretKeyHash: string = '';
@@ -84,7 +78,6 @@ export class NoteComponent implements OnInit {
         private searchClient: SearchClient,
         private bottomSheet: MatBottomSheet,
         private noteEditorFactory: NoteEditorFactory,
-        private scheduler: Scheduler,
     ) {}
 
     public isEncrypted: boolean = false;
@@ -92,15 +85,15 @@ export class NoteComponent implements OnInit {
     public noteId: string;
     public initialNoteTitle: string;
     public noteTitle: string;
+    public tags: string[] = [];
     public isMarked: boolean;
     public isPinned: boolean;
     public isTrashed: boolean;
     public noteTitleChanged: Subject<string> = new Subject<string>();
     public noteContentChanged: Subject<void> = new Subject<void>();
     public saveChangesAndCloseNoteWindow: Subject<void> = new Subject<void>();
-    public canPerformActions: boolean = false;
+    public isActionsSheetOpen: boolean = false;
     public isBusy: boolean = false;
-    public actionIconRotation: string = 'default';
     public canSearch: boolean = false;
     public noteAttachmentsDirectoryPathForPreview: string = '';
     private searchText: string = '';
@@ -145,7 +138,7 @@ export class NoteComponent implements OnInit {
 
     @HostListener('document:keydown.escape')
     private handleEscape(): void {
-        if (this.settings.closeNotesWithEscape) {
+        if (this.settings.closeNotesWithEscape && !this.isEditingTags && !this.isActionsSheetOpen) {
             this.noteWindow.close();
         }
     }
@@ -260,6 +253,12 @@ export class NoteComponent implements OnInit {
     // ngOnDestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     public beforeunloadHandler(event: any): void {
+        if (this.isEditingTags) {
+            event.preventDefault();
+            event.returnValue = '';
+            return;
+        }
+
         this.logger.info(`Detected closing of note with id=${this.noteId}`, 'NoteComponent', 'beforeunloadHandler');
 
         if (this.isTitleDirty || this.isTextDirty || this.pendingContentSave) {
@@ -295,18 +294,47 @@ export class NoteComponent implements OnInit {
     }
 
     public toggleNoteMark(): void {
-        this.hideActionButtonsDelayedAsync();
         this.collectionClient.setNoteMark(this.noteId, !this.isMarked);
     }
 
+    public async editTagsAsync(): Promise<void> {
+        if (this.isEditingTags || this.isBusy) {
+            return;
+        }
+        this.isEditingTags = true;
+        this.isBusy = true;
+        try {
+            const data = {
+                titleText: await this.translator.getAsync('Tags.Edit'),
+                placeholderText: await this.translator.getAsync('Tags.Input'),
+                descriptionText: await this.translator.getAsync('Tags.Description'),
+                inputText: this.tags.join(', '),
+                allowEmpty: true,
+            };
+            const dialogRef = this.dialog.open(InputDialogComponent, { width: '450px', data });
+            if (!(await dialogRef.afterClosed().toPromise())) {
+                return;
+            }
+            const tags: string[] = TagUtils.normalize(data.inputText.split(','));
+            if (await this.collectionClient.saveNoteTagsAsync(this.noteId, tags) !== Operation.Success) {
+                throw new Error('Saving note tags failed.');
+            }
+            this.zone.run(() => (this.tags = tags));
+        } catch (error) {
+            this.logger.error(`Could not edit tags for note with id=${this.noteId}. Cause: ${error}`, 'NoteComponent', 'editTagsAsync');
+            const errorText: string = await this.translator.getAsync('Tags.SaveError');
+            this.zone.run(() => this.dialog.open(ErrorDialogComponent, { width: '450px', data: { errorText } }));
+        } finally {
+            this.isEditingTags = false;
+            this.zone.run(() => (this.isBusy = false));
+        }
+    }
+
     public toggleNotePin(): void {
-        this.hideActionButtonsDelayedAsync();
         this.collectionClient.setNotePin(this.noteId, !this.isPinned);
     }
 
     public async deleteNoteAsync(): Promise<void> {
-        this.hideActionButtons();
-
         const title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteNote');
         const text: string = await this.translator.getAsync('DialogTexts.ConfirmDeleteNote', { noteTitle: this.noteTitle });
 
@@ -322,17 +350,49 @@ export class NoteComponent implements OnInit {
         });
     }
 
-    public onFixedContentClick(): void {
-        this.hideActionButtons();
-    }
+    public async openActionsBottomSheet(): Promise<void> {
+        if (this.isBusy || this.isActionsSheetOpen) {
+            return;
+        }
+        const ariaLabel: string = await this.translator.getAsync('Tooltips.Actions');
+        if (this.isBusy || this.isActionsSheetOpen) {
+            return;
+        }
+        this.isActionsSheetOpen = true;
+        let action: NoteAction | undefined;
+        try {
+            const ref = this.bottomSheet.open<ActionsBottomSheetComponent, NoteActionsData, NoteAction>(
+                ActionsBottomSheetComponent,
+                {
+                    ariaLabel,
+                    panelClass: 'note-actions-sheet',
+                    data: {
+                        isPinned: this.isPinned,
+                        isMarked: this.isMarked,
+                        isEncrypted: this.isEncrypted,
+                        isTrashed: this.isTrashed,
+                    },
+                },
+            );
+            action = await ref.afterDismissed().toPromise();
+        } finally {
+            this.isActionsSheetOpen = false;
+        }
 
-    public toggleShowActions(): void {
-        this.canPerformActions = !this.canPerformActions;
-        this.rotateActionsButton();
-    }
-
-    public rotateActionsButton(): void {
-        this.actionIconRotation = this.canPerformActions ? 'rotated' : 'default';
+        switch (action) {
+            case 'search': this.openSearchBottomSheet(); break;
+            case 'tags': await this.editTagsAsync(); break;
+            case 'share': this.openShareBottomSheet(); break;
+            case 'pin': this.toggleNotePin(); break;
+            case 'mark': this.toggleNoteMark(); break;
+            case 'encrypt': await this.encryptNoteAsync(); break;
+            case 'decrypt': await this.decryptNoteAsync(); break;
+            case 'delete':
+                if (!this.isTrashed) {
+                    await this.deleteNoteAsync();
+                }
+                break;
+        }
     }
 
     private async requestSecretKeyAsync(): Promise<boolean> {
@@ -365,8 +425,6 @@ export class NoteComponent implements OnInit {
     }
 
     public async encryptNoteAsync(): Promise<void> {
-        this.hideActionButtons();
-
         const titleText: string = await this.translator.getAsync('DialogTitles.EncryptNote');
         const placeholderText: string = await this.translator.getAsync('Input.SecretKey');
         const confirmationPlaceholderText: string = await this.translator.getAsync('Input.ConfirmSecretKey');
@@ -397,8 +455,6 @@ export class NoteComponent implements OnInit {
     }
 
     public async decryptNoteAsync(): Promise<void> {
-        this.hideActionButtons();
-
         const title: string = await this.translator.getAsync('DialogTitles.ConfirmDecryptNote');
         const text: string = await this.translator.getAsync('DialogTexts.ConfirmDecryptNote');
 
@@ -514,8 +570,9 @@ export class NoteComponent implements OnInit {
     }
 
     private applySearch(): void {
-        if (!StringUtils.isNullOrWhiteSpace(this.searchText)) {
-            const searchTextPieces: string[] = this.searchText.trim().split(' ');
+        const searchText: string = TagUtils.parseSearch(this.searchText).text;
+        if (!StringUtils.isNullOrWhiteSpace(searchText)) {
+            const searchTextPieces: string[] = searchText.split(/\s+/);
 
             // For now, we can only search for 1 word.
             setTimeout(() => {
@@ -653,6 +710,7 @@ export class NoteComponent implements OnInit {
         this.isEncrypted = result.isEncrypted;
         this.secretKeyHash = result.secretKeyHash;
         this.isMarkdownNote = result.isMarkdownNote;
+        this.tags = TagUtils.normalize(result.tags);
 
         this.setWindowTitle(result.noteTitle);
     }
@@ -698,17 +756,6 @@ export class NoteComponent implements OnInit {
         );
     }
 
-    private hideActionButtons(): void {
-        this.canPerformActions = false;
-        this.rotateActionsButton();
-    }
-
-    private async hideActionButtonsDelayedAsync(): Promise<void> {
-        await this.scheduler.sleepAsync(500);
-        this.canPerformActions = false;
-        this.rotateActionsButton();
-    }
-
     public heading1(event: any): void {
         this.noteEditor.applyHeading(1);
     }
@@ -745,10 +792,8 @@ export class NoteComponent implements OnInit {
 
     @HostListener('document:keydown.control.f')
     public openSearchBottomSheet(): void {
-        this.hideActionButtonsDelayedAsync();
-
         const config: MatBottomSheetConfig = {
-            data: { searchText: this.searchText },
+            data: { searchText: TagUtils.parseSearch(this.searchText).text },
         };
 
         this.bottomSheet.open(SearchBottomSheetComponent, config);
@@ -800,8 +845,6 @@ export class NoteComponent implements OnInit {
     }
 
     public openShareBottomSheet(): void {
-        this.hideActionButtonsDelayedAsync();
-
         const config: MatBottomSheetConfig = {
             data: {
                 noteId: this.noteId,
@@ -810,6 +853,7 @@ export class NoteComponent implements OnInit {
                 noteContent: this.noteEditor.content,
                 noteHtml: this.noteEditor.html,
                 isMarkdownNote: this.isMarkdownNote,
+                tags: this.tags,
             },
         };
 

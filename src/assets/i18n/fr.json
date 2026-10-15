@@ -7,6 +7,13 @@
     "LoadingPage": {
         "Text": "Chargement..."
     },
+    "Tags": {
+        "Edit": "Modifier les étiquettes",
+        "Input": "Étiquettes (séparées par des virgules)",
+        "Description": "Séparez les étiquettes par des virgules. Videz le champ pour supprimer toutes les étiquettes. Les étiquettes ne sont pas chiffrées, même pour les notes chiffrées.",
+        "SaveError": "Impossible d'enregistrer les étiquettes de la note. Consultez le journal si vous avez besoin de plus d'informations.",
+        "SearchHint": "Recherchez dans les titres et le texte. Utilisez t:travail réunion pour l'étiquette travail et le texte réunion, ou t:\"projet alpha\" pour une étiquette contenant des espaces."
+    },
     "NotesTabs": {
         "All": "Toutes",
         "Today": "Aujourd'hui",

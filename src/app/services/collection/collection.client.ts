@@ -126,6 +126,13 @@ export class CollectionClient {
         this.globalEmitter.emit(CollectionEvents.deleteNoteEvent, noteId);
     }
 
+    public async saveNoteTagsAsync(noteId: string, tags: string[]): Promise<Operation> {
+        await this.waitForInitializedAsync();
+        return new Promise<Operation>((resolve) => {
+            this.globalEmitter.emit(CollectionEvents.saveNoteTagsEvent, noteId, tags, resolve);
+        });
+    }
+
     public encryptNote(noteId: string, secretKey: string): void {
         this.globalEmitter.emit(CollectionEvents.encryptNoteEvent, noteId, secretKey);
     }

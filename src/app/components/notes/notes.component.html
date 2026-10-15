@@ -43,6 +43,9 @@
                             [totalTasksCount]="note.totalTasksCount"
                         >
                         </app-tasks-progress>
+                        <div class="note-item-tags ml-1" *ngIf="note.tags?.length" [matTooltip]="note.tags.join(', ')">
+                            <span class="note-item-tag" *ngFor="let tag of note.tags">{{ tag }}</span>
+                        </div>
                     </div>
                 </div>
                 <div class="note-item-actions" (click)="toggleNoteMark(note)">

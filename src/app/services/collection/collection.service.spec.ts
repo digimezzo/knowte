@@ -45,6 +45,7 @@ describe('CollectionService note deletion', () => {
     let scheduler: IMock<Scheduler>;
     let translator: IMock<TranslatorService>;
     let modelFactory: IMock<NoteModelFactory>;
+    let temporaryStorage: IMock<TemporaryStorageService>;
     let notes: Note[];
     let contents: Map<string, string>;
     let trashNote: jest.Mock;
@@ -79,6 +80,7 @@ describe('CollectionService note deletion', () => {
         scheduler = Mock.ofType<Scheduler>();
         translator = Mock.ofType<TranslatorService>();
         modelFactory = Mock.ofType<NoteModelFactory>();
+        temporaryStorage = Mock.ofType<TemporaryStorageService>();
         notes = [];
         contents = new Map();
         trashNote = jest.fn();
@@ -112,7 +114,7 @@ describe('CollectionService note deletion', () => {
             Mock.ofType<CryptographyService>().object,
             files.object,
             data.object,
-            Mock.ofType<TemporaryStorageService>().object,
+            temporaryStorage.object,
             modelFactory.object,
             Mock.ofType<NoteDateFormatter>().object,
             fileAccess.object,
@@ -132,6 +134,147 @@ describe('CollectionService note deletion', () => {
         contents.set(note.id, content);
         return note;
     }
+
+    describe('tags', () => {
+        it('persists normalized tags before acknowledging success and refreshing notes', async () => {
+            const note = addNote(false, 'Content');
+            let finishSave: () => void;
+            const saving = new Promise<void>((resolve) => { finishSave = resolve; });
+            data.setup((x) => x.saveAsync()).returns(() => saving);
+            const updated = jest.fn();
+            service.noteEdited$.subscribe(updated);
+            const callback = jest.fn();
+
+            const save = service.saveNoteTagsEventHandler(note.id, [' Work ', 'work', 'project alpha', ''], callback);
+            expect(callback).not.toHaveBeenCalled();
+            expect(updated).not.toHaveBeenCalled();
+            expect(note.tags).toEqual(['Work', 'project alpha']);
+
+            finishSave();
+            await save;
+            expect(callback).toHaveBeenCalledWith(Operation.Success);
+            expect(updated).toHaveBeenCalledTimes(1);
+        });
+
+        it('allows removing all tags', async () => {
+            const note = addNote(false, 'Content');
+            note.tags = ['work'];
+            const callback = jest.fn();
+
+            await service.saveNoteTagsEventHandler(note.id, [], callback);
+
+            expect(note.tags).toEqual([]);
+            expect(callback).toHaveBeenCalledWith(Operation.Success);
+        });
+
+        it('reports persistence failures and restores the previous tags', async () => {
+            const note = addNote(false, 'Content');
+            note.tags = ['original'];
+            data.setup((x) => x.saveAsync()).returns(() => Promise.reject(new Error('Cannot persist tags')));
+            const callback = jest.fn();
+            const updated = jest.fn();
+            service.noteEdited$.subscribe(updated);
+
+            await service.saveNoteTagsEventHandler(note.id, ['new'], callback);
+
+            expect(note.tags).toEqual(['original']);
+            expect(callback).toHaveBeenCalledWith(Operation.Error);
+            expect(updated).not.toHaveBeenCalled();
+            expect(logError).toHaveBeenCalled();
+        });
+
+        it('reports a missing note instead of acknowledging success', async () => {
+            const callback = jest.fn();
+            await service.saveNoteTagsEventHandler('missing', ['work'], callback);
+            expect(callback).toHaveBeenCalledWith(Operation.Error);
+            expect(logError).toHaveBeenCalled();
+        });
+
+        it('matches exact tags only, independently of titles and body text', () => {
+            const tagged = addNote(false, 'Content');
+            tagged.tags = ['Work', 'project alpha'];
+            const textOnly = addNote(false, 'Content', 'work');
+            textOnly.title = 'Work';
+            const partial = addNote(false, 'Content');
+            partial.tags = ['homework'];
+
+            expect(service['getFilteredNotes'](notes, 't:work')).toEqual([tagged]);
+            expect(service['getFilteredNotes'](notes, ' T:WORK ')).toEqual([tagged]);
+            expect(service['getFilteredNotes'](notes, 't:"project alpha"')).toEqual([tagged]);
+            expect(service['getFilteredNotes'](notes, 't:project')).toEqual([]);
+            expect(service['getFilteredNotes'](notes, 't:')).toEqual([]);
+        });
+
+        it('requires both an exact tag and all text terms across title and content', () => {
+            const matching = addNote(false, 'Content', 'budget');
+            matching.title = 'Meeting';
+            matching.tags = ['Work', 'project alpha'];
+            const tagOnly = addNote(false, 'Content');
+            tagOnly.tags = ['work'];
+            const textOnly = addNote(false, 'Content', 'meeting budget work');
+            const partialTag = addNote(false, 'Content', 'meeting budget');
+            partialTag.tags = ['homework'];
+
+            expect(service['getFilteredNotes'](notes, 't:work meeting budget')).toEqual([matching]);
+            expect(service['getFilteredNotes'](notes, ' T:WORK BUDGET meeting ')).toEqual([matching]);
+            expect(service['getFilteredNotes'](notes, 't:"project alpha" meeting budget')).toEqual([matching]);
+            expect(service['getFilteredNotes'](notes, 't:work meeting missing')).toEqual([]);
+            expect(service['getFilteredNotes'](notes, 't:"work meeting')).toEqual([]);
+            expect(service['getFilteredNotes'](notes, 't:"" meeting')).toEqual([]);
+        });
+
+        it('keeps ordinary title/body searches unchanged and does not search tag metadata', () => {
+            const tagged = addNote(false, 'Content');
+            tagged.tags = ['work'];
+            const textOnly = addNote(false, 'Content', 'work meeting');
+            const literalPrefix = addNote(false, 'Content', 'tag:work');
+
+            expect(service['getFilteredNotes'](notes, 'work meeting')).toEqual([textOnly]);
+            expect(service['getFilteredNotes'](notes, 'work')).toEqual([textOnly, literalPrefix]);
+            expect(service['getFilteredNotes'](notes, 'tag:work')).toEqual([literalPrefix]);
+            expect(service['getFilteredNotes'](notes, '')).toBe(notes);
+        });
+
+        describe('native imports', () => {
+            beforeEach(() => {
+                translator.setup((x) => x.getAsync(It.isAnyString())).returns(async () => 'Imported');
+                data.setup((x) => x.getNotesWithIdenticalBaseTitle(It.isAnyString())).returns(() => notes);
+                data.setup((x) => x.addNote(It.isAnyString(), '', It.isAny())).returns((title, _notebookId, markdown) =>
+                    addNote(markdown, '').id);
+                data.setup((x) => x.getNoteByTitle(It.isAnyString())).returns(() => notes[notes.length - 1]);
+                fileAccess.setup((x) => x.combinePath(It.isAnyString(), It.isAnyString()))
+                    .returns((parent, child) => `${parent}/${child}`);
+                temporaryStorage.setup((x) => x.extractArchiveAsync('/export')).returns(async () => '/extracted');
+                fileAccess.setup((x) => x.getFilesInDirectoryAsync('/extracted')).returns(async () => ['/extracted/note.md']);
+                fileAccess.setup((x) => x.getFileExtension('/extracted/note.md')).returns(() => '.md');
+                fileAccess.setup((x) => x.getFileContentAsString('/extracted/note.md')).returns(() => 'Markdown content');
+            });
+
+            it.each([
+                [false, [' Work ', 'work', 'project alpha']],
+                [true, [' Work ', 'work', 'project alpha']],
+                [false, undefined],
+                [true, undefined],
+            ])('imports tags and supports older exports (markdown=%s, tags=%p)', async (markdown, tags) => {
+                files.setup((x) => x.isMarkdownNoteExport('/export')).returns(() => markdown);
+                const metadata = JSON.stringify({ title: 'Title', text: 'Text', content: 'Content', tags });
+                files.setup((x) => x.getNoteContentAsync(markdown ? '/extracted/metadata.json' : '/export'))
+                    .returns(async () => metadata);
+
+                expect(await service.importNoteFilesAsync(['/export'])).toBe(Operation.Success);
+                expect(notes[0].tags).toEqual(tags ? ['Work', 'project alpha'] : []);
+            });
+
+            it('rejects invalid imported tag metadata before creating a note', async () => {
+                files.setup((x) => x.getNoteContentAsync('/export'))
+                    .returns(async () => JSON.stringify({ title: 'Title', text: 'Text', content: 'Content', tags: 'work' }));
+
+                expect(await service.importNoteFilesAsync(['/export'])).toBe(Operation.Error);
+                expect(notes).toEqual([]);
+                expect(logError).toHaveBeenCalled();
+            });
+        });
+    });
 
     it.each([
         [true, ''],
@@ -429,6 +572,25 @@ describe('CollectionService note deletion', () => {
             expect((await clients[0].getNoteDetailsAsync(first.id)).noteTitle).toBe(first.title);
             expect((await clients[1].getNoteDetailsAsync(second.id)).noteTitle).toBe(second.title);
         }
+
+        it('routes tag saves through the main window and exposes tags in note details', async () => {
+            const note = addNote(false, 'Content');
+            expect((await clients[0].getNoteDetailsAsync(note.id)).tags).toEqual([]);
+
+            expect(await clients[0].saveNoteTagsAsync(note.id, [' Work ', 'work'])).toBe(Operation.Success);
+            expect((await clients[0].getNoteDetailsAsync(note.id)).tags).toEqual(['Work']);
+            expect((await clients[1].getNoteDetailsAsync(note.id)).tags).toEqual(['Work']);
+            expect(saveSource).toHaveBeenCalled();
+        });
+
+        it('preserves tags when moving a note to another collection', async () => {
+            const note = addNote(true, 'Content');
+            note.tags = ['work', 'project alpha'];
+
+            expect(await service.moveNotesToCollectionAsync([note.id], 'destination')).toBe(1);
+            expect(destinationNotes[0].tags).toEqual(note.tags);
+            expect(destinationNotes[0].tags).not.toBe(note.tags);
+        });
 
         it('keeps two clients on the source during destination loading and copying', async () => {
             const moved = addNote(true, 'Moved content');

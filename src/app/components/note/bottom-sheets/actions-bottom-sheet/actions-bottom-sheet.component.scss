@@ -1,0 +1,55 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+.note-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.mat-mdc-button {
+    color: var(--theme-primary-text);
+    --mat-mdc-button-persistent-ripple-color: var(--theme-primary-text);
+}
+
+.note-action.mat-mdc-button {
+    height: auto;
+    min-height: 72px;
+    min-width: 0;
+    padding: 8px;
+    white-space: normal;
+    line-height: 1.4;
+}
+
+.note-action i,
+.note-delete-action i {
+    font-size: 22px;
+    color: var(--theme-secondary-text);
+}
+
+.note-action i {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.note-delete-action {
+    width: 100%;
+}
+
+.note-delete-action-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.note-delete-action i {
+    line-height: 1;
+}
+
+@media (max-width: 360px) {
+    .note-actions-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

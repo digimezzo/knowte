@@ -114,8 +114,9 @@ export class PersistanceService {
         noteText: string,
         noteContent: string,
         isMarkdownNote: boolean,
+        tags: string[] = [],
     ): Promise<void> {
-        await this.collectionFileAccess.exportNoteAsync(exportFilePath, noteId, noteTitle, noteText, noteContent, isMarkdownNote);
+        await this.collectionFileAccess.exportNoteAsync(exportFilePath, noteId, noteTitle, noteText, noteContent, isMarkdownNote, tags);
     }
 
     private async syncMarkdownAttachmentEncryptionStateAsync(noteId: string, isEncrypted: boolean, secretKey: string): Promise<void> {

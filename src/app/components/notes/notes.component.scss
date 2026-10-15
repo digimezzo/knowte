@@ -144,6 +144,35 @@
     text-overflow: ellipsis;
 }
 
+.note-item-tags {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    overflow: hidden;
+    transform: translateY(2px);
+}
+
+.note-item-tag {
+    flex-shrink: 0;
+    max-width: 100%;
+    height: 18px;
+    border-radius: 9px;
+    padding: 0 7px;
+    background-color: var(--theme-accent-color);
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.selected-item .note-item-tag {
+    color: #fff !important;
+}
+
 .note-status-icon {
     color: var(--theme-secondary-text);
     font-size: var(--fontsize-status-icon);

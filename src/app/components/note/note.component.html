@@ -13,97 +13,17 @@
                 <button
                     class="note-content-floating-button"
                     mat-fab
-                    (click)="toggleShowActions()"
+                    (click)="openActionsBottomSheet()"
+                    [disabled]="isBusy"
+                    [attr.aria-label]="'Tooltips.Actions' | translate"
+                    [attr.aria-expanded]="isActionsSheetOpen"
+                    aria-haspopup="dialog"
                     matTooltip="{{ 'Tooltips.Actions' | translate }}"
                 >
-                    <div [@actionIconRotation]="actionIconRotation">
-                        <i class="note-content-floating-button-icon las la-edit" *ngIf="!canPerformActions"></i>
-                        <i class="note-content-floating-button-icon las la-times" *ngIf="canPerformActions"></i>
-                    </div>
-                </button>
-                <button
-                    *ngIf="canPerformActions"
-                    class="note-content-floating-button"
-                    mat-mini-fab
-                    (click)="openSearchBottomSheet()"
-                    matTooltip="{{ 'Tooltips.Search' | translate }}"
-                >
-                    <i class="note-content-floating-button-icon-action las la-search"></i>
-                </button>
-                <button
-                    *ngIf="canPerformActions && isPinned"
-                    class="note-content-floating-button"
-                    mat-mini-fab
-                    (click)="toggleNotePin()"
-                    matTooltip="{{ 'Tooltips.UnpinNote' | translate }}"
-                >
-                    <i class="note-content-floating-button-icon-action rotate-45-ccw las la-thumbtack"></i>
-                </button>
-                <button
-                    *ngIf="canPerformActions && !isPinned"
-                    class="note-content-floating-button"
-                    mat-mini-fab
-                    (click)="toggleNotePin()"
-                    matTooltip="{{ 'Tooltips.PinNote' | translate }}"
-                >
-                    <i class="note-content-floating-button-icon-action rotate-45-cw las la-thumbtack"></i>
-                </button>
-                <button
-                    *ngIf="canPerformActions && isMarked"
-                    class="note-content-floating-button"
-                    mat-mini-fab
-                    (click)="toggleNoteMark()"
-                    matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}"
-                >
-                    <i class="note-content-floating-button-icon-action las la-heart"></i>
-                </button>
-                <button
-                    *ngIf="canPerformActions && !isMarked"
-                    class="note-content-floating-button"
-                    mat-mini-fab
-                    (click)="toggleNoteMark()"
-                    matTooltip="{{ 'Tooltips.MarkNote' | translate }}"
-                >
-                    <i class="note-content-floating-button-icon-action lar la-heart"></i>
-                </button>
-                <button
-                    *ngIf="canPerformActions"
-                    class="note-content-floating-button"
-                    mat-mini-fab
-                    (click)="openShareBottomSheet()"
-                    matTooltip="{{ 'Tooltips.Share' | translate }}"
-                >
-                    <i class="note-content-floating-button-icon-action las la-share-alt"></i>
-                </button>
-                <button
-                    *ngIf="canPerformActions && !this.isEncrypted"
-                    class="note-content-floating-button"
-                    mat-mini-fab
-                    (click)="encryptNoteAsync()"
-                    matTooltip="{{ 'Tooltips.EncryptNote' | translate }}"
-                >
-                    <i class="note-content-floating-button-icon-action las la-lock"></i>
-                </button>
-                <button
-                    *ngIf="canPerformActions && this.isEncrypted"
-                    class="note-content-floating-button"
-                    mat-mini-fab
-                    (click)="decryptNoteAsync()"
-                    matTooltip="{{ 'Tooltips.DecryptNote' | translate }}"
-                >
-                    <i class="note-content-floating-button-icon-action las la-lock-open"></i>
-                </button>
-                <button
-                    *ngIf="canPerformActions && !this.isTrashed"
-                    class="note-content-floating-button"
-                    mat-mini-fab
-                    (click)="deleteNoteAsync()"
-                    matTooltip="{{ 'Tooltips.DeleteNote' | translate }}"
-                >
-                    <i class="note-content-floating-button-icon-action las la-trash-alt"></i>
+                    <i class="note-content-floating-button-icon las la-edit" aria-hidden="true"></i>
                 </button>
             </div>
-            <div class="note-content-fixed" (click)="onFixedContentClick()">
+            <div class="note-content-fixed">
                 <div class="note-content-fixed-title">
                     <input
                         class="note-content-fixed-title-text"
@@ -112,6 +32,9 @@
                         (ngModelChange)="onNoteTitleChange($event)"
                         (keydown)="onTitleKeydown($event)"
                     />
+                </div>
+                <div class="note-tags px-2" *ngIf="tags.length > 0">
+                    <span class="note-tag" *ngFor="let tag of tags" [matTooltip]="tag">{{ tag }}</span>
                 </div>
                 <div *ngIf="!this.isMarkdownNote" class="fill w-100 h-100 overflow-hidden markdown-body note-editor" id="editor"></div>
                 <app-markdown-note

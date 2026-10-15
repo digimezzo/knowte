@@ -1,7 +1,9 @@
 import { NgZone } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { BrowserWindow } from 'electron';
-import { Subject } from 'rxjs';
+import { TestBed } from '@angular/core/testing';
+import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { BrowserWindow, WebContents } from 'electron';
+import { of, Subject } from 'rxjs';
 import { It, Mock } from 'typemoq';
 import { Operation } from '../../common/enums/operation';
 import { Scheduler } from '../../common/scheduling/scheduler';
@@ -11,6 +13,9 @@ import { CollectionClient } from '../../services/collection/collection.client';
 import { PersistanceService } from '../../services/persistance/persistance.service';
 import { SearchClient } from '../../services/search/search.client';
 import { TranslatorService } from '../../services/translator/translator.service';
+import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
+import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
+import { ActionsBottomSheetComponent, NoteAction } from './bottom-sheets/actions-bottom-sheet/actions-bottom-sheet.component';
 import { INoteEditor } from './note-editor/i-note-editor';
 import { NoteComponent } from './note.component';
 
@@ -27,6 +32,12 @@ describe('NoteComponent preparing deletion', () => {
     let writeContent: jest.Mock;
     let closeWindow: jest.Mock;
     let showDialog: jest.Mock;
+    let saveTags: jest.SpyInstance;
+    let dialogConfirmed: boolean;
+    let inputDialogRef: MatDialogRef<InputDialogComponent>;
+    let findInPage: jest.Mock;
+    let openSheet: jest.Mock;
+    let sheetDismissed: Subject<NoteAction | undefined>;
 
     function mock<T>(): T {
         return Mock.ofType<T>().object;
@@ -35,6 +46,7 @@ describe('NoteComponent preparing deletion', () => {
     beforeEach(() => {
         client = new CollectionClient(mock<Scheduler>());
         saveText = jest.spyOn(client, 'saveNoteTextAsync').mockResolvedValue(Operation.Success);
+        saveTags = jest.spyOn(client, 'saveNoteTagsAsync').mockResolvedValue(Operation.Success);
         jest.spyOn(client, 'setNoteOpen').mockImplementation(() => undefined);
         const persistance = Mock.ofType<PersistanceService>();
         writeContent = jest.fn().mockResolvedValue(undefined);
@@ -46,12 +58,27 @@ describe('NoteComponent preparing deletion', () => {
         zone.setup((x) => x.run(It.isAny())).returns((callback: () => void) => callback());
         const search = Mock.ofType<SearchClient>();
         search.setup((x) => x.searchTextChanged$).returns(() => new Subject<string>());
-        const dialog = Mock.ofType<MatDialog>();
         showDialog = jest.fn();
-        dialog.setup((x) => x.open(It.isAny(), It.isAny())).callback(showDialog);
+        dialogConfirmed = true;
+        const dialogRef = Mock.ofType<MatDialogRef<InputDialogComponent>>();
+        dialogRef.setup((x) => x.afterClosed()).returns(() => of(dialogConfirmed));
+        inputDialogRef = dialogRef.object;
+        showDialog.mockReturnValue(inputDialogRef);
+        sheetDismissed = new Subject<NoteAction | undefined>();
+        const sheetRef = Mock.ofType<MatBottomSheetRef<ActionsBottomSheetComponent, NoteAction>>();
+        sheetRef.setup((x) => x.afterDismissed()).returns(() => sheetDismissed);
+        openSheet = jest.fn().mockReturnValue(sheetRef.object);
+        const dialog = TestBed.configureTestingModule({
+            providers: [
+                { provide: MatDialog, useValue: { open: showDialog } },
+                { provide: MatBottomSheet, useValue: { open: openSheet } },
+            ],
+        }).inject(MatDialog);
+        const settings = Mock.ofType<BaseSettings>();
+        settings.setup((x) => x.closeNotesWithEscape).returns(() => true);
         component = new NoteComponent(
-            mock(), zone.object, dialog.object, mock(), mock(), translator.object, mock(), persistance.object,
-            mock<BaseSettings>(), mock(), mock(), mock(), mock(), client, search.object, mock(), mock(), mock(),
+            mock(), zone.object, dialog, mock(), mock(), translator.object, mock(), persistance.object,
+            settings.object, mock(), mock(), mock(), mock(), client, search.object, TestBed.inject(MatBottomSheet), mock(),
         );
         component.noteId = 'note-id';
         component['hasLoadedNoteContent'] = true;
@@ -64,9 +91,205 @@ describe('NoteComponent preparing deletion', () => {
         const window = Mock.ofType<BrowserWindow>();
         closeWindow = jest.fn();
         window.setup((x) => x.close()).callback(closeWindow);
+        const webContents = Mock.ofType<WebContents>();
+        findInPage = jest.fn();
+        webContents.setup((x) => x.findInPage(It.isAnyString())).returns(findInPage);
+        window.setup((x) => x.webContents).returns(() => webContents.object);
         component['noteWindow'] = window.object;
         jest.spyOn(component, 'clearSearch').mockImplementation(() => undefined);
         component['addSubscriptions']();
+    });
+
+    it.each([
+        ['search', 'openSearchBottomSheet'],
+        ['tags', 'editTagsAsync'],
+        ['share', 'openShareBottomSheet'],
+        ['pin', 'toggleNotePin'],
+        ['mark', 'toggleNoteMark'],
+        ['encrypt', 'encryptNoteAsync'],
+        ['decrypt', 'decryptNoteAsync'],
+        ['delete', 'deleteNoteAsync'],
+    ] as const)('runs %s only after the action sheet has finished dismissing', async (action, method) => {
+        const handler = jest.spyOn(component, method).mockImplementation(() => undefined);
+        const opening = component.openActionsBottomSheet();
+        await Promise.resolve();
+
+        expect(openSheet).toHaveBeenCalledWith(ActionsBottomSheetComponent, expect.objectContaining({
+            panelClass: 'note-actions-sheet',
+            data: {
+                isPinned: component.isPinned, isMarked: component.isMarked,
+                isEncrypted: component.isEncrypted, isTrashed: component.isTrashed,
+            },
+        }));
+        expect(handler).not.toHaveBeenCalled();
+        expect(component.isActionsSheetOpen).toBe(true);
+        sheetDismissed.next(action);
+        expect(handler).not.toHaveBeenCalled();
+        sheetDismissed.complete();
+        await opening;
+
+        expect(component.isActionsSheetOpen).toBe(false);
+        expect(handler).toHaveBeenCalledTimes(1);
+    });
+
+    it('dismisses with Escape without closing the note when close-with-Escape is enabled', async () => {
+        const opening = component.openActionsBottomSheet();
+        await Promise.resolve();
+        component['handleEscape']();
+        expect(closeWindow).not.toHaveBeenCalled();
+
+        sheetDismissed.next(undefined);
+        sheetDismissed.complete();
+        await opening;
+        expect(component.isActionsSheetOpen).toBe(false);
+        component['handleEscape']();
+        expect(closeWindow).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not open duplicate action sheets or open them while busy', async () => {
+        component.isBusy = true;
+        await component.openActionsBottomSheet();
+        expect(openSheet).not.toHaveBeenCalled();
+        component.isBusy = false;
+        const first = component.openActionsBottomSheet();
+        const second = component.openActionsBottomSheet();
+        await second;
+        expect(openSheet).toHaveBeenCalledTimes(1);
+        sheetDismissed.complete();
+        await first;
+    });
+
+    it('does not delete a trashed note', async () => {
+        component.isTrashed = true;
+        const remove = jest.spyOn(component, 'deleteNoteAsync').mockResolvedValue(undefined);
+        const opening = component.openActionsBottomSheet();
+        await Promise.resolve();
+        sheetDismissed.next('delete');
+        sheetDismissed.complete();
+        await opening;
+        expect(remove).not.toHaveBeenCalled();
+    });
+
+    it('edits comma-separated tags using the existing input dialog', async () => {
+        component.tags = ['original'];
+        showDialog.mockImplementation((type, config) => {
+            expect(type).toBe(InputDialogComponent);
+            expect(config.data.inputText).toBe('original');
+            expect(config.data.allowEmpty).toBe(true);
+            config.data.inputText = ' Work, work, project alpha, ';
+            return inputDialogRef;
+        });
+
+        await component.editTagsAsync();
+
+        expect(saveTags).toHaveBeenCalledWith('note-id', ['Work', 'project alpha']);
+        expect(component.tags).toEqual(['Work', 'project alpha']);
+        expect(component.isBusy).toBe(false);
+    });
+
+    it('can clear all tags', async () => {
+        component.tags = ['work'];
+        showDialog.mockImplementation((_type, config) => {
+            config.data.inputText = '';
+            return inputDialogRef;
+        });
+
+        await component.editTagsAsync();
+
+        expect(saveTags).toHaveBeenCalledWith('note-id', []);
+        expect(component.tags).toEqual([]);
+    });
+
+    it('does not change tags when the dialog is cancelled', async () => {
+        component.tags = ['original'];
+        dialogConfirmed = false;
+
+        await component.editTagsAsync();
+
+        expect(saveTags).not.toHaveBeenCalled();
+        expect(component.tags).toEqual(['original']);
+        expect(component.isBusy).toBe(false);
+    });
+
+    it('keeps the previous tags and displays an error if saving fails', async () => {
+        component.tags = ['original'];
+        saveTags.mockResolvedValue(Operation.Error);
+
+        await component.editTagsAsync();
+
+        expect(component.tags).toEqual(['original']);
+        expect(showDialog).toHaveBeenLastCalledWith(ErrorDialogComponent, expect.anything());
+        expect(component.isBusy).toBe(false);
+    });
+
+    it('blocks closing and collection moves until tag saving finishes', async () => {
+        let finishSave: (operation: Operation) => void;
+        const saveStarted = new Promise<void>((resolve) => {
+            saveTags.mockImplementationOnce(() => {
+                resolve();
+                return new Promise<Operation>((finish) => { finishSave = finish; });
+            });
+        });
+        const editing = component.editTagsAsync();
+        await saveStarted;
+        const event = { preventDefault: jest.fn(), returnValue: undefined };
+        component.beforeunloadHandler(event);
+        expect(event.preventDefault).toHaveBeenCalled();
+        const callback = jest.fn();
+        client['prepareNoteDeletion'].next({ noteId: 'note-id', callback });
+        expect(callback).toHaveBeenCalledWith(Operation.Error);
+        expect(closeWindow).not.toHaveBeenCalled();
+
+        finishSave(Operation.Success);
+        await editing;
+        expect(component.isBusy).toBe(false);
+    });
+
+    it.each(['t:work', ' T:"project alpha" ', 't:'])('does not highlight tag queries in note contents: %s', (query) => {
+        jest.useFakeTimers();
+        try {
+            component['searchText'] = query;
+            component['applySearch']();
+            jest.runAllTimers();
+            expect(findInPage).not.toHaveBeenCalled();
+            expect(component.clearSearch).toHaveBeenCalled();
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it('keeps ordinary in-note search highlighting', () => {
+        jest.useFakeTimers();
+        try {
+            component['searchText'] = 'work meeting';
+            component['applySearch']();
+            jest.runAllTimers();
+            expect(findInPage).toHaveBeenCalledWith('work');
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it.each(['t:work meeting budget', 't:"project alpha" meeting budget'])(
+        'highlights only the text portion of a combined query: %s', (query) => {
+            jest.useFakeTimers();
+            try {
+                component['searchText'] = query;
+                component['applySearch']();
+                jest.runAllTimers();
+                expect(findInPage).toHaveBeenCalledWith('meeting');
+            } finally {
+                jest.useRealTimers();
+            }
+        },
+    );
+
+    it('prefills in-note search with only the title/content query', () => {
+        component['searchText'] = 't:"project alpha" meeting budget';
+        component.openSearchBottomSheet();
+        expect(openSheet).toHaveBeenCalledWith(expect.anything(), {
+            data: { searchText: 'meeting budget' },
+        });
     });
 
     it('saves content and acknowledges success before closing the window', async () => {

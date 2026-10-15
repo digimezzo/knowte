@@ -12,6 +12,7 @@ import { BaseSettings } from '../../common/settings/base-settings';
 import { TasksCount } from '../../common/ui/tasks-count';
 import { CollectionUtils } from '../../common/utils/collection-utils';
 import { DateUtils } from '../../common/utils/date-utils';
+import { TagUtils } from '../../common/utils/tag-utils';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
 import { BaseAppearanceService } from '../appearance/base-appearance.service';
@@ -67,6 +68,7 @@ export class CollectionService {
     private getNotebooksEventListener: any = this.getNotebooksEventHandler.bind(this);
     private saveNoteTitleEventListener: any = this.saveNoteTitleEventHandler.bind(this);
     private saveNoteTextEventListener: any = this.saveNoteTextEventHandler.bind(this);
+    private saveNoteTagsEventListener = this.saveNoteTagsEventHandler.bind(this);
     private deleteNoteEventListener: any = this.deleteNoteEventHandlerAsync.bind(this);
     private encryptNoteEventListener: any = this.encryptNoteEventHandler.bind(this);
     private decryptNoteEventListener: any = this.decryptNoteEventHandler.bind(this);
@@ -117,6 +119,7 @@ export class CollectionService {
         this.globalEmitter.removeListener(CollectionEvents.getNotebooksEvent, this.getNotebooksEventListener);
         this.globalEmitter.removeListener(CollectionEvents.saveNoteTitleEvent, this.saveNoteTitleEventListener);
         this.globalEmitter.removeListener(CollectionEvents.saveNoteTextEvent, this.saveNoteTextEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.saveNoteTagsEvent, this.saveNoteTagsEventListener);
         this.globalEmitter.removeListener(CollectionEvents.deleteNoteEvent, this.deleteNoteEventListener);
         this.globalEmitter.removeListener(CollectionEvents.encryptNoteEvent, this.encryptNoteEventListener);
         this.globalEmitter.removeListener(CollectionEvents.decryptNoteEvent, this.decryptNoteEventListener);
@@ -131,6 +134,7 @@ export class CollectionService {
         this.globalEmitter.on(CollectionEvents.getNotebooksEvent, this.getNotebooksEventListener);
         this.globalEmitter.on(CollectionEvents.saveNoteTitleEvent, this.saveNoteTitleEventListener);
         this.globalEmitter.on(CollectionEvents.saveNoteTextEvent, this.saveNoteTextEventListener);
+        this.globalEmitter.on(CollectionEvents.saveNoteTagsEvent, this.saveNoteTagsEventListener);
         this.globalEmitter.on(CollectionEvents.deleteNoteEvent, this.deleteNoteEventListener);
         this.globalEmitter.on(CollectionEvents.encryptNoteEvent, this.encryptNoteEventListener);
         this.globalEmitter.on(CollectionEvents.decryptNoteEvent, this.decryptNoteEventListener);
@@ -960,6 +964,40 @@ export class CollectionService {
         await this.deleteNotesAsync([noteId]);
     }
 
+    public async saveNoteTagsEventHandler(
+        noteId: string,
+        tags: string[],
+        callback: (operation: Operation) => void,
+    ): Promise<void> {
+        let note: Note;
+        let previousTags: string[];
+        try {
+            const normalizedTags: string[] = TagUtils.normalize(tags);
+            if (this.collectionChangeInProgress || this.movingNoteIds.has(noteId)) {
+                throw new Error('Cannot edit tags while the note is moving or the collection is changing.');
+            }
+            note = this.collectionDataStoreAccess.getNoteById(noteId);
+            if (!note) {
+                throw new Error(`Note with id=${noteId} could not be found.`);
+            }
+            previousTags = note.tags;
+            note.tags = normalizedTags;
+            this.collectionDataStoreAccess.updateNoteWithoutDate(note);
+            await this.collectionDataStoreAccess.saveAsync();
+        } catch (error) {
+            if (note) {
+                note.tags = previousTags;
+            }
+            this.logger.error(`Could not save tags for note with id=${noteId}. Cause: ${error}`,
+                'CollectionService', 'saveNoteTagsEventHandler');
+            callback(Operation.Error);
+            return;
+        }
+
+        this.noteEdited.next();
+        callback(Operation.Success);
+    }
+
     public async moveNotesToCollectionAsync(noteIds: string[], newCollection: string): Promise<number> {
         if (this.collectionOperationInProgress || newCollection === this.settings.activeCollection) {
             this.logger.error('Cannot move notes while another collection operation is in progress or to the active collection.',
@@ -1046,13 +1084,16 @@ export class CollectionService {
         noteText: string,
         notebookId: string,
         isMarkdownNote: boolean,
+        tags: string[] = [],
     ): Promise<string> {
+        const normalizedTags: string[] = TagUtils.normalize(tags);
         const uniqueNoteTitle: string = await this.getUniqueImportedNoteTitleAsync(noteTitle);
 
         this.collectionDataStoreAccess.addNote(uniqueNoteTitle, '', isMarkdownNote);
 
         const note: Note = this.collectionDataStoreAccess.getNoteByTitle(uniqueNoteTitle);
         note.text = noteText;
+        note.tags = normalizedTags;
 
         if (notebookId && notebookId !== Constants.allNotesNotebookId && notebookId !== Constants.unfiledNotesNotebookId) {
             note.notebookId = notebookId;
@@ -1099,7 +1140,7 @@ export class CollectionService {
 
         const noteContent: string = this.fileAccess.getFileContentAsString(noteContentPath);
 
-        const noteId: string = await this.importNoteToDatastoreAsync(metadata.title, noteContent, notebookId, true);
+        const noteId: string = await this.importNoteToDatastoreAsync(metadata.title, noteContent, notebookId, true, metadata.tags);
 
         await this.collectionFileAccess.saveNoteContentAsync(noteId, noteContent, this.settings.activeCollection, true);
 
@@ -1111,7 +1152,9 @@ export class CollectionService {
         const noteFileContent: string = await this.collectionFileAccess.getNoteContentAsync(noteFilePath);
         const classicNoteExport: ClassicNoteExport = JSON.parse(noteFileContent);
 
-        const noteId: string = await this.importNoteToDatastoreAsync(classicNoteExport.title, classicNoteExport.text, notebookId, false);
+        const noteId: string = await this.importNoteToDatastoreAsync(
+            classicNoteExport.title, classicNoteExport.text, notebookId, false, classicNoteExport.tags,
+        );
 
         await this.collectionFileAccess.saveNoteContentAsync(noteId, classicNoteExport.content, this.settings.activeCollection, false);
     }
@@ -1143,6 +1186,7 @@ export class CollectionService {
         const note: Note = destination.getNoteById(noteId);
         note.text = noteModel.text;
         note.isMarkdownNote = noteModel.isMarkdownNote;
+        note.tags = noteModel.tags;
 
         destination.updateNoteWithoutDate(note);
 
@@ -1197,6 +1241,7 @@ export class CollectionService {
                 note.isEncrypted,
                 note.secretKeyHash,
                 note.isMarkdownNote,
+                TagUtils.normalize(note.tags),
             ),
         );
     }
@@ -1304,9 +1349,14 @@ export class CollectionService {
             return unfilteredNotes;
         }
 
-        const searchTextPieces: string[] = filter.trim().split(' ');
+        const search = TagUtils.parseSearch(filter);
+        const searchTextPieces: string[] = search.text.split(/\s+/);
 
-        return unfilteredNotes.filter((x) => CollectionUtils.containsAll(`${x.title} ${x.text}`, searchTextPieces));
+        return unfilteredNotes.filter((note) => {
+            const matchesTag: boolean = search.tag === undefined ||
+                (search.tag.length > 0 && (note.tags || []).some((tag) => tag.toLowerCase() === search.tag));
+            return matchesTag && CollectionUtils.containsAll(`${note.title} ${note.text}`, searchTextPieces);
+        });
     }
 
     public encryptNoteEventHandler(noteId: string, secretKey: string): void {

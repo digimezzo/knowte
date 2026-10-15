@@ -16,6 +16,7 @@ export class Note {
     public creationDate: number = moment().valueOf();
     public modificationDate: number = moment().valueOf();
     public text: string = '';
+    public tags: string[] = [];
     public displayModificationDate: string;
     public displayExactModificationDate: string;
     public isSelected: boolean = false;

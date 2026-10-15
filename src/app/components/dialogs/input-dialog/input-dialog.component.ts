@@ -15,7 +15,7 @@ export class InputDialogComponent implements OnInit {
     public ngOnInit(): void {}
 
     public closeDialog(): void {
-        if (this.data.inputText) {
+        if (this.data.inputText || this.data.allowEmpty) {
             this.dialogRef.close(true); // Force return "true"
         }
     }

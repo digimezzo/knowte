@@ -5,6 +5,40 @@ import { BaseSettings } from '../../common/settings/base-settings';
 import { CollectionFileAccess } from './collection-file-access';
 
 describe('CollectionFileAccess deleteNoteFilesAsync', () => {
+    it('includes tags in classic note exports', async () => {
+        const files = Mock.ofType<FileAccess>();
+        let exported: string;
+        files.setup((x) => x.writeTextToFileAsync('/export', It.isAnyString()))
+            .returns(async (_path, content) => { exported = content; });
+        const service = new CollectionFileAccess(files.object, Mock.ofType<BaseSettings>().object, Mock.ofType<Logger>().object);
+
+        await service.exportNoteAsync('/export', 'note', 'Title', 'Text', 'Content', false, ['work', 'project alpha']);
+
+        expect(JSON.parse(exported)).toEqual({
+            title: 'Title', text: 'Text', content: 'Content', tags: ['work', 'project alpha'],
+        });
+    });
+
+    it('includes tags in Markdown export metadata', async () => {
+        const files = Mock.ofType<FileAccess>();
+        const settings = Mock.ofType<BaseSettings>();
+        settings.setup((x) => x.storageDirectory).returns(() => '/storage');
+        settings.setup((x) => x.activeCollection).returns(() => 'collection');
+        files.setup((x) => x.combinePath(It.isAny(), It.isAny())).returns((parent, child) => `${parent}/${child}`);
+        const service = new CollectionFileAccess(files.object, settings.object, Mock.ofType<Logger>().object);
+        const createZip = jest.fn().mockResolvedValue(undefined);
+        service['createZipAsync'] = createZip;
+
+        await service.exportNoteAsync('/export', 'note', 'Title', 'Text', 'Content', true, ['work']);
+
+        expect(createZip).toHaveBeenCalledWith(
+            expect.objectContaining({ title: 'Title', tags: ['work'] }),
+            service.getNoteContentFilePath('note', 'collection', true),
+            service.getNoteAttachmentsDirectoryPath('note', 'collection'),
+            '/export',
+        );
+    });
+
     it.each([true, false])('deletes content and state without an attachments directory (markdown=%s)', async (markdown) => {
         const files = Mock.ofType<FileAccess>();
         const settings = Mock.ofType<BaseSettings>();

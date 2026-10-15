@@ -7,6 +7,7 @@ export class NoteDetailsResult {
         public isTrashed: boolean,
         public isEncrypted: boolean,
         public secretKeyHash: string,
-        public isMarkdownNote: boolean
+        public isMarkdownNote: boolean,
+        public tags: string[] = [],
     ) {}
 }

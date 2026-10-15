@@ -7,6 +7,13 @@
     "LoadingPage": {
         "Text": "Laden..."
     },
+    "Tags": {
+        "Edit": "Edit tags",
+        "Input": "Tags (comma-separated)",
+        "Description": "Separate tags with commas. Clear the field to remove all tags. Tags are not encrypted, even for encrypted notes.",
+        "SaveError": "Could not save the note tags. Please verify the log if you need more information.",
+        "SearchHint": "Search titles and text. Use t:work meeting for tag work and text meeting, or t:\"project alpha\" for a tag with spaces."
+    },
     "NotesTabs": {
         "All": "Alle",
         "Today": "Heute",

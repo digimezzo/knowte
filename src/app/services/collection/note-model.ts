@@ -1,4 +1,5 @@
 import { BaseSettings } from '../../common/settings/base-settings';
+import { TagUtils } from '../../common/utils/tag-utils';
 import { Note } from '../../data/entities/note';
 import { CollectionFileAccess } from './collection-file-access';
 
@@ -21,6 +22,10 @@ export class NoteModel {
 
     public get text(): string {
         return this.note.text;
+    }
+
+    public get tags(): string[] {
+        return TagUtils.normalize(this.note.tags);
     }
 
     public get isMarkdownNote(): boolean {

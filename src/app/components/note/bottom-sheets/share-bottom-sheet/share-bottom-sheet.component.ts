@@ -65,7 +65,8 @@ export class ShareBottomSheetComponent {
                     this.data.noteTitle,
                     this.data.noteText,
                     this.data.noteContent,
-                    this.data.isMarkdownNote
+                    this.data.isMarkdownNote,
+                    this.data.tags
                 );
                 this.snackBar.noteExportedAsync(this.data.noteTitle);
             }

@@ -144,11 +144,12 @@ export class CollectionFileAccess {
         noteText: string,
         noteContent: string,
         isMarkdownNote: boolean,
+        tags: string[] = [],
     ): Promise<void> {
         if (isMarkdownNote) {
-            await this.exportMarkdownNoteAsync(exportFilePath, noteTitle, noteId);
+            await this.exportMarkdownNoteAsync(exportFilePath, noteTitle, noteId, tags);
         } else {
-            await this.exportClassicNote(exportFilePath, noteTitle, noteText, noteContent);
+            await this.exportClassicNote(exportFilePath, noteTitle, noteText, noteContent, tags);
         }
     }
 
@@ -183,8 +184,8 @@ export class CollectionFileAccess {
         archive.finalize();
     }
 
-    private async exportMarkdownNoteAsync(exportFilePath: string, noteTitle: string, noteId: string): Promise<void> {
-        const markdownNoteExportMetadata: MarkdownNoteExportMetadata = new MarkdownNoteExportMetadata(noteTitle);
+    private async exportMarkdownNoteAsync(exportFilePath: string, noteTitle: string, noteId: string, tags: string[]): Promise<void> {
+        const markdownNoteExportMetadata: MarkdownNoteExportMetadata = new MarkdownNoteExportMetadata(noteTitle, tags);
 
         const noteContentFilePath: string = this.getNoteContentFilePath(noteId, this.settings.activeCollection, true);
         const noteAttachmentsDirectory: string = this.getNoteAttachmentsDirectoryPath(noteId, this.settings.activeCollection);
@@ -192,8 +193,10 @@ export class CollectionFileAccess {
         await this.createZipAsync(markdownNoteExportMetadata, noteContentFilePath, noteAttachmentsDirectory, exportFilePath);
     }
 
-    private async exportClassicNote(exportFilePath: string, noteTitle: string, noteText: string, noteContent: string): Promise<void> {
-        const classicExport: ClassicNoteExport = new ClassicNoteExport(noteTitle, noteText, noteContent);
+    private async exportClassicNote(
+        exportFilePath: string, noteTitle: string, noteText: string, noteContent: string, tags: string[],
+    ): Promise<void> {
+        const classicExport: ClassicNoteExport = new ClassicNoteExport(noteTitle, noteText, noteContent, tags);
 
         await this.fileAccess.writeTextToFileAsync(exportFilePath, JSON.stringify(classicExport));
     }

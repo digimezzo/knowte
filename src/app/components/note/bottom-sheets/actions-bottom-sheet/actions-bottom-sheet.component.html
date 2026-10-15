@@ -1,0 +1,35 @@
+<div class="note-actions-grid">
+    <button mat-button class="note-action" (click)="choose('search')">
+        <i class="las la-search" aria-hidden="true"></i>
+        <span>{{ 'Tooltips.Search' | translate }}</span>
+    </button>
+    <button mat-button class="note-action" (click)="choose('tags')">
+        <i class="las la-tags" aria-hidden="true"></i>
+        <span>{{ 'Tags.Edit' | translate }}</span>
+    </button>
+    <button mat-button class="note-action" (click)="choose('share')">
+        <i class="las la-share-alt" aria-hidden="true"></i>
+        <span>{{ 'Tooltips.Share' | translate }}</span>
+    </button>
+    <button mat-button class="note-action" (click)="choose('pin')">
+        <i class="las la-thumbtack" aria-hidden="true"></i>
+        <span>{{ (data.isPinned ? 'Tooltips.UnpinNote' : 'Tooltips.PinNote') | translate }}</span>
+    </button>
+    <button mat-button class="note-action" (click)="choose('mark')">
+        <i [ngClass]="data.isMarked ? 'las la-heart' : 'lar la-heart'" aria-hidden="true"></i>
+        <span>{{ (data.isMarked ? 'Tooltips.UnmarkNote' : 'Tooltips.MarkNote') | translate }}</span>
+    </button>
+    <button mat-button class="note-action" (click)="choose(data.isEncrypted ? 'decrypt' : 'encrypt')">
+        <i [ngClass]="data.isEncrypted ? 'las la-lock-open' : 'las la-lock'" aria-hidden="true"></i>
+        <span>{{ (data.isEncrypted ? 'Tooltips.DecryptNote' : 'Tooltips.EncryptNote') | translate }}</span>
+    </button>
+</div>
+<ng-container *ngIf="!data.isTrashed">
+    <mat-divider class="my-2"></mat-divider>
+    <button mat-button class="note-delete-action" (click)="choose('delete')">
+        <span class="note-delete-action-content">
+            <i class="las la-trash-alt" aria-hidden="true"></i>
+            <span>{{ 'Tooltips.DeleteNote' | translate }}</span>
+        </span>
+    </button>
+</ng-container>
