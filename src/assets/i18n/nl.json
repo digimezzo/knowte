@@ -194,6 +194,7 @@
         "StorageDirectoryCreationError": "De map '{{storageDirectory}}' kan niet worden gebruikt om uw notities op te slaan. Mogelijk hebt u onvoldoende rechten om er items in te maken. Controleer het log bestand als u meer informatie nodig hebt.",
         "GlobalError": "Er is een fout opgetreden waardoor de toepassing wordt gesloten. Controleer het log bestand als u meer informatie nodig hebt.",
         "AddCollectionError": "Er is een fout opgetreden bij het toevoegen van de collectie '{{collection}}'. Controleer het log bestand als u meer informatie nodig hebt.",
+        "ActivateCollectionError": "Er kon niet worden overgeschakeld naar de collectie '{{collection}}'. Zorg ervoor dat geopende notities kunnen worden opgeslagen en dat er geen andere collectiebewerking bezig is. Controleer het log bestand als u meer informatie nodig hebt.",
         "AddNotebookError": "Er is een fout opgetreden bij het toevoegen van het notitieboek '{{notebookName}}'. Controleer het log bestand als u meer informatie nodig hebt.",
         "RenameNoteError": "Er is een fout opgetreden bij het hernoemen van de notitie '{{noteTitle}}'. Controleer het log bestand als u meer informatie nodig hebt.",
         "RenameNotebookError": "Er is een fout opgetreden bij het hernoemen van het notitieboek '{{notebookName}}'. Controleer het log bestand als u meer informatie nodig hebt.",

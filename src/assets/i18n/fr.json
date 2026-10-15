@@ -194,6 +194,7 @@
         "StorageDirectoryCreationError": "Le répertoire '{{storageDirectory}}' ne peut pas être utilisé pour enregistrer vos notes. Vous n'avez peut-être pas les autorisations nécessaires pour y créer des éléments. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "GlobalError": "Une erreur s'est produite qui entraînera la fermeture de l'application. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "AddCollectionError": "Une erreur s'est produite lors de l'ajout de la collection '{{collection}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
+        "ActivateCollectionError": "Impossible de passer à la collection '{{collection}}'. Assurez-vous que les notes ouvertes peuvent être enregistrées et qu'aucune autre opération sur les collections n'est en cours. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "AddNotebookError": "Une erreur s'est produite lors de l'ajout du bloc-notes '{{notebookName}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "RenameNoteError": "Une erreur s'est produite lors du changement de nom de la note '{{noteTitle}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",
         "RenameNotebookError": "Une erreur s'est produite lors du changement de nom du bloc-notes '{{notebookName}}'. Veuillez vérifier le log si vous avez besoin de plus d'informations.",

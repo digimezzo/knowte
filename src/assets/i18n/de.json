@@ -194,6 +194,7 @@
         "StorageDirectoryCreationError": "Das Verzeichnis '{{storageDirectory}}' kann nicht zum speichern Deiner Notizen verwendet werden. Möglicherweise verfügst Du nicht über ausreichende Berechtigungen um darin Elemente zu erstellen. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
         "GlobalError": "An error has occurred which will cause the application to close. Please verify the log if you need more information.\nEin Fehler ist ist aufgetreten, der ein schließen der Applikation verursacht. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
         "AddCollectionError": "Ein Fehler ist während dem hinzufügen der Kollektion '{{collection}}' aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
+        "ActivateCollectionError": "Could not switch to collection '{{collection}}'. Make sure open notes can be saved and no other collection operation is in progress. Please verify the log if you need more information.",
         "AddNotebookError": "Ein Fehler ist während dem hinzufügen des Notizbuch '{{notebookName}}' aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
         "RenameNoteError": "Ein Fehler ist während dem umbennen der Notiz '{{noteTitle}}' aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",
         "RenameNotebookError": "Ein Fehler ist während dem umbennen des Notizbuch '{{notebookName}}' aufgetreten. Bitte überprüfe das Log, wenn Du mehr Informationen benötigst.",

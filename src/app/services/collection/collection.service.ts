@@ -36,12 +36,15 @@ import { NoteModel } from './note-model';
 import { NoteModelFactory } from './note-model-factory';
 
 /**
- * There can only be 1 LokiJS Data Store in the whole application. So this class must only be initialized
- * and used from the main window. Note windows must communicate with this class only via the main process.
+ * Database access is owned by the main window. Note windows must communicate with
+ * this class via the main process, never open another store for the same database.
  */
 @Injectable()
 export class CollectionService {
-    private isInitializing: boolean = false;
+    private initialization: Promise<void> | undefined;
+    private collectionOperationInProgress: boolean = false;
+    private collectionChangeInProgress: boolean = false;
+    private movingNoteIds: Set<string> = new Set();
     private isInitialized: boolean = false;
     private globalEmitter: any = remote.getGlobal('globalEmitter');
     private openNoteIds: string[] = [];
@@ -168,22 +171,26 @@ export class CollectionService {
     }
 
     public async initializeAsync(): Promise<void> {
-        // Prevents initializing multiple times. To prevent calling
-        // functions before initialization is complete, force a wait.
         if (this.isInitialized) {
             return;
         }
 
-        if (this.isInitializing) {
-            while (this.isInitializing) {
-                await this.scheduler.sleepAsync(100);
-            }
-
-            return;
+        if (this.initialization) {
+            return this.initialization;
         }
 
-        this.isInitializing = true;
+        this.initialization = this.initializeCollectionAsync();
+        try {
+            await this.initialization;
+        } catch (error) {
+            this.logger.error(`Could not initialize collection. Cause: ${error}`, 'CollectionService', 'initializeAsync');
+            throw error;
+        } finally {
+            this.initialization = undefined;
+        }
+    }
 
+    private async initializeCollectionAsync(): Promise<void> {
         // Get the active collection from the settings
         let activeCollection: string = this.settings.activeCollection;
         let activeCollectionDirectory: string = '';
@@ -218,7 +225,6 @@ export class CollectionService {
         // Only an initialized collectionService can process global requests
         this.listenToNoteEvents();
 
-        this.isInitializing = false;
         this.isInitialized = true;
     }
 
@@ -228,6 +234,10 @@ export class CollectionService {
     }
 
     public async addCollectionAsync(possiblyDirtyCollection: string): Promise<Operation> {
+        return this.changeCollectionAsync('addCollectionAsync', () => this.addCollectionCoreAsync(possiblyDirtyCollection));
+    }
+
+    private async addCollectionCoreAsync(possiblyDirtyCollection: string): Promise<Operation> {
         // Check if a collection was provided
         if (!possiblyDirtyCollection) {
             this.logger.error('possiblyDirtyCollection is null', 'CollectionService', 'addCollectionAsync');
@@ -247,6 +257,7 @@ export class CollectionService {
                 return Operation.Duplicate;
             }
 
+            await this.prepareCollectionChangeAsync();
             // Add the collection
             await this.collectionFileAccess.createCollectionDirectoryAsync(sanitizedCollection);
 
@@ -271,6 +282,10 @@ export class CollectionService {
     }
 
     public async renameCollectionAsync(oldCollection: string, newCollection: string): Promise<Operation> {
+        return this.changeCollectionAsync('renameCollectionAsync', () => this.renameCollectionCoreAsync(oldCollection, newCollection));
+    }
+
+    private async renameCollectionCoreAsync(oldCollection: string, newCollection: string): Promise<Operation> {
         if (!newCollection) {
             this.logger.error('newCollection is null', 'CollectionService', 'renameCollectionAsync');
             return Operation.Error;
@@ -286,6 +301,7 @@ export class CollectionService {
                 return Operation.Duplicate;
             }
 
+            await this.prepareCollectionChangeAsync();
             this.collectionFileAccess.renameCollectionFiles(oldCollection, newCollection);
             this.settings.activeCollection = newCollection;
         } catch (error) {
@@ -305,7 +321,12 @@ export class CollectionService {
     }
 
     public async deleteCollectionAsync(collection: string): Promise<Operation> {
+        return this.changeCollectionAsync('deleteCollectionAsync', () => this.deleteCollectionCoreAsync(collection));
+    }
+
+    private async deleteCollectionCoreAsync(collection: string): Promise<Operation> {
         try {
+            await this.prepareCollectionChangeAsync();
             await this.collectionFileAccess.deleteCollectionDirectoryAsync(collection);
             const collections: string[] = await this.collectionFileAccess.getCollectionsAsync();
 
@@ -320,6 +341,7 @@ export class CollectionService {
                 'CollectionService',
                 'deleteCollectionAsync',
             );
+            return Operation.Error;
         }
 
         this.isInitialized = false;
@@ -328,10 +350,45 @@ export class CollectionService {
         return Operation.Success;
     }
 
-    public activateCollection(collection: string): void {
-        this.setActiveCollection(collection);
-        this.isInitialized = false;
-        this.collectionsChanged.next();
+    public async activateCollection(collection: string): Promise<Operation> {
+        return this.changeCollectionAsync('activateCollection', async () => {
+            await this.prepareCollectionChangeAsync();
+            this.setActiveCollection(collection);
+            this.isInitialized = false;
+            this.collectionsChanged.next();
+            return Operation.Success;
+        });
+    }
+
+    private async changeCollectionAsync(action: string, change: () => Promise<Operation>): Promise<Operation> {
+        if (this.collectionOperationInProgress) {
+            this.logger.error('Another collection operation is in progress.', 'CollectionService', action);
+            return Operation.Error;
+        }
+
+        this.collectionOperationInProgress = true;
+        this.collectionChangeInProgress = true;
+        try {
+            if (this.initialization) {
+                await this.initialization;
+            }
+            return await change();
+        } catch (error) {
+            this.logger.error(`Could not change collection. Cause: ${error}`, 'CollectionService', action);
+            return Operation.Error;
+        } finally {
+            this.collectionChangeInProgress = false;
+            this.collectionOperationInProgress = false;
+        }
+    }
+
+    private async prepareCollectionChangeAsync(): Promise<void> {
+        for (const noteId of [...this.openNoteIds]) {
+            await this.prepareNoteDeletionAsync(noteId);
+        }
+        if (this.isInitialized) {
+            await this.collectionDataStoreAccess.saveAsync();
+        }
     }
 
     public getActiveCollection(): string {
@@ -904,28 +961,40 @@ export class CollectionService {
     }
 
     public async moveNotesToCollectionAsync(noteIds: string[], newCollection: string): Promise<number> {
+        if (this.collectionOperationInProgress || newCollection === this.settings.activeCollection) {
+            this.logger.error('Cannot move notes while another collection operation is in progress or to the active collection.',
+                'CollectionService', 'moveNotesToCollectionAsync');
+            return 0;
+        }
+
+        this.collectionOperationInProgress = true;
+        this.movingNoteIds = new Set(noteIds);
         try {
-            // 1. Get notes from old collection
+            if (this.initialization) {
+                await this.initialization;
+            }
             const noteModels: NoteModel[] = [];
 
             for (const noteId of noteIds) {
+                await this.prepareNoteDeletionAsync(noteId);
                 const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
                 noteModels.push(this.noteModelFactory.create(note));
             }
 
-            // 2. Switch data store to new collection
-            await this.collectionDataStoreAccess.initializeAsync(newCollection);
+            const destination = await this.collectionDataStoreAccess.openCollectionAsync(newCollection);
 
-            // 3. Copy all notes into new collection
-            for (const noteModel of noteModels) {
-                await this.copyNoteToCollectionAsync(noteModel, newCollection);
+            try {
+                for (const noteModel of noteModels) {
+                    await this.copyNoteToCollectionAsync(noteModel, newCollection, destination);
+                }
+            } finally {
+                await destination.saveAsync();
             }
 
-            // 4. Switch data store back to old collection
-            await this.collectionDataStoreAccess.initializeAsync(this.settings.activeCollection);
-
-            // 5. Delete notes from old collection
-            await this.deleteNotesPermanentlyAsync(noteIds);
+            if (await this.deleteNotesPermanentlyAsync(noteIds) !== Operation.Success) {
+                return 0;
+            }
+            await this.collectionDataStoreAccess.saveAsync();
 
             return noteIds.length;
         } catch (error) {
@@ -936,6 +1005,9 @@ export class CollectionService {
             );
 
             return 0;
+        } finally {
+            this.movingNoteIds.clear();
+            this.collectionOperationInProgress = false;
         }
     }
 
@@ -1044,7 +1116,7 @@ export class CollectionService {
         await this.collectionFileAccess.saveNoteContentAsync(noteId, classicNoteExport.content, this.settings.activeCollection, false);
     }
 
-    private async getUniqueTitleForMovedNoteAsync(title: string): Promise<string> {
+    private async getUniqueTitleForMovedNoteAsync(title: string, destination: CollectionDataStoreAccess): Promise<string> {
         const titleSuffix: string = await this.translator.getAsync('Notes.Moved');
         const titleSuffixWithBrackets: string = `(${titleSuffix})`;
 
@@ -1054,21 +1126,25 @@ export class CollectionService {
             noteTitle = `${title} ${titleSuffixWithBrackets}`;
         }
 
-        const uniqueNoteTitle: string = this.getUniqueNoteTitle(noteTitle, false);
+        const uniqueNoteTitle: string = this.getUniqueNoteTitle(noteTitle, false, destination);
 
         return uniqueNoteTitle;
     }
 
-    private async copyNoteToCollectionAsync(noteModel: NoteModel, newCollection: string): Promise<void> {
-        const uniqueNoteTitle: string = await this.getUniqueTitleForMovedNoteAsync(noteModel.title);
+    private async copyNoteToCollectionAsync(
+        noteModel: NoteModel,
+        newCollection: string,
+        destination: CollectionDataStoreAccess,
+    ): Promise<void> {
+        const uniqueNoteTitle: string = await this.getUniqueTitleForMovedNoteAsync(noteModel.title, destination);
 
-        this.collectionDataStoreAccess.addNote(uniqueNoteTitle, '', false);
+        const noteId = destination.addNote(uniqueNoteTitle, '', noteModel.isMarkdownNote);
 
-        const note: Note = this.collectionDataStoreAccess.getNoteByTitle(uniqueNoteTitle);
+        const note: Note = destination.getNoteById(noteId);
         note.text = noteModel.text;
         note.isMarkdownNote = noteModel.isMarkdownNote;
 
-        this.collectionDataStoreAccess.updateNoteWithoutDate(note);
+        destination.updateNoteWithoutDate(note);
 
         await this.collectionFileAccess.saveNoteContentAsync(note.id, noteModel.content, newCollection, note.isMarkdownNote);
 
@@ -1147,6 +1223,11 @@ export class CollectionService {
 
     public async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
         if (isOpen) {
+            if (this.initialization || this.collectionChangeInProgress || this.movingNoteIds.has(noteId)) {
+                this.logger.warn('Cannot open a note while its collection is changing or the note is being moved.',
+                    'CollectionService', 'setNoteOpenAsync');
+                return;
+            }
             if (!this.openNoteIds.includes(noteId)) {
                 this.openNoteIds.push(noteId);
 
@@ -1187,7 +1268,11 @@ export class CollectionService {
         }
     }
 
-    private getUniqueNoteTitle(baseTitle: string, isNewNote: boolean): string {
+    private getUniqueNoteTitle(
+        baseTitle: string,
+        isNewNote: boolean,
+        dataStore: CollectionDataStoreAccess = this.collectionDataStoreAccess,
+    ): string {
         let counter: number = 0;
         let uniqueTitle: string = baseTitle;
 
@@ -1196,7 +1281,7 @@ export class CollectionService {
             uniqueTitle = `${baseTitle} ${counter}`;
         }
 
-        const notesWithIdenticalBaseTitle: Note[] = this.collectionDataStoreAccess.getNotesWithIdenticalBaseTitle(baseTitle);
+        const notesWithIdenticalBaseTitle: Note[] = dataStore.getNotesWithIdenticalBaseTitle(baseTitle);
         const similarTitles: string[] = notesWithIdenticalBaseTitle.map((x) => x.title);
 
         while (similarTitles.includes(uniqueTitle)) {
