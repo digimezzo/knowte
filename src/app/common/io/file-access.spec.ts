@@ -1,4 +1,5 @@
 import * as fs from 'fs-extra';
+import * as path from 'path';
 import { Mock } from 'typemoq';
 import { Desktop } from './desktop';
 import { FileAccess } from './file-access';
@@ -38,7 +39,7 @@ describe('FileAccess asynchronous disk operations', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
         expect(completed).toBe(false);
         finishStat({ isFile: () => true });
-        expect(await result).toEqual(['/storage/note.png']);
+        expect(await result).toEqual([`/storage${path.sep}note.png`]);
         expect(fs.lstatSync).not.toHaveBeenCalled();
     });
 
@@ -51,7 +52,7 @@ describe('FileAccess asynchronous disk operations', () => {
             .mockResolvedValueOnce({ isFile: () => true });
         const errors: Error[] = [];
 
-        expect(await files.getFilesInDirectoryAsync('/storage', true, errors)).toEqual(['/storage/image.png']);
+        expect(await files.getFilesInDirectoryAsync('/storage', true, errors)).toEqual([`/storage${path.sep}image.png`]);
         expect(errors).toEqual([error]);
     });
 
