@@ -44,36 +44,6 @@ $ npm run electron:linux     # Build for Linux
 $ npm run electron:mac       # Build for Mac
 ```
 
-## Data store lifecycle
-
-`CollectionService` uses an injected `CollectionDataStoreAccess`, which in turn
-receives an injected `DataStore`. Tests can replace either dependency without
-constructing a LokiJS database.
-
-`DataStore` is an abstract storage contract containing no LokiJS dependencies.
-Angular binds it to `LokiDataStore`, which owns loading, queries, and persistence.
-`DataStoreFactory` creates independent `LokiDataStore` instances and returns them
-as `DataStore` contracts only after initialization completes.
-
-Await `CollectionService.initializeAsync()` before using the collection. Concurrent
-callers share initialization, and failures reject the promise and allow a retry.
-`DataStore.initializeAsync(databaseFile)` resolves only after loading and any
-required initial save complete; synchronous data operations throw until the store
-is ready. Database switches must be awaited and cannot overlap initialization of
-another database.
-
-Only the main window opens collection databases. Note windows use
-`CollectionClient` to send requests to the main window's `CollectionService`;
-Angular dependency injection does not share instances between windows.
-Cross-collection moves open a separate destination store through
-`DataStoreFactory`, leaving the active store available to other note windows.
-The destination is saved before source notes are deleted. Failed copies retain
-the source notes, but may leave partial copies in the destination.
-
-Moves and collection changes cannot overlap. Before switching, adding, renaming,
-or deleting collections, open note windows must acknowledge saving and closing,
-and pending database writes are flushed. A failed save prevents the change.
-
 ## Pacman installation notes
 
 The pacman package can be installed using this command (replace x.y.z with the correct version number):
