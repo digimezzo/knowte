@@ -2,6 +2,10 @@
     color: var(--theme-editor-primary-text) !important;
 }
 
+.note-editor .ql-editor.ql-blank::before {
+    color: var(--theme-editor-secondary-text);
+}
+
 .note-editor a {
     color: var(--theme-accent-color) !important;
 }
