@@ -81,6 +81,16 @@
             <div class="markdown-action-button no-select" (click)="this.noteEditor.insertLink()" title="{{ 'Notes.Link' | translate }}">
                 <i class="fa-solid fa-link"></i>
             </div>
+            <button
+                type="button"
+                class="markdown-action-button no-select"
+                (mousedown)="$event.preventDefault()"
+                (click)="insertNoteLinkAsync()"
+                title="{{ 'NoteLinks.LinkToNote' | translate }}"
+                [attr.aria-label]="'NoteLinks.LinkToNote' | translate"
+            >
+                <i class="fa-solid fa-file-circle-plus"></i>
+            </button>
             <div class="markdown-action-button no-select" (click)="this.noteEditor.applyQuote()" title="{{ 'Notes.Quote' | translate }}">
                 <i class="fa-solid fa-quote-right"></i>
             </div>
@@ -116,6 +126,8 @@
         <markdown
             class="markdown-output markdown-body"
             id="markdown-output"
+            (click)="onPreviewClickAsync($event)"
+            (auxclick)="onPreviewClickAsync($event)"
             [ngClass]="{ 'markdown-output-maximized': !this.noteEditor.isEditing }"
             [data]="this.noteEditor.content | fixImagePaths: this.noteEditor.noteId : this.attachmentsDirectoryPath"
         ></markdown>

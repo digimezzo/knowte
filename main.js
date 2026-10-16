@@ -120,12 +120,12 @@ function createMainWindow() {
             // Check that the requested url is not the current page
             if (localUrl !== mainWindow.webContents.getURL()) {
                 e.preventDefault();
-                require('electron').shell.openExternal(localUrl);
+                openExternalLink(localUrl);
             }
         };
         mainWindow.webContents.on('will-navigate', handleRedirect);
         mainWindow.webContents.setWindowOpenHandler(({ url: openUrl }) => {
-            require('electron').shell.openExternal(openUrl);
+            openExternalLink(openUrl);
             return { action: 'deny' };
         });
         mainWindow.webContents.on('before-input-event', (event, input) => {
@@ -179,6 +179,13 @@ function recoverOffScreenWindows() {
             window.setFullScreen(true);
         }
     }
+}
+function openExternalLink(url) {
+    if (/^knowte:/i.test(url)) {
+        electron_log_1.default.warn('[App] Blocked internal note URL from opening outside Knowte.');
+        return;
+    }
+    electron_1.shell.openExternal(url);
 }
 function windowhasFrame() {
     const settings = new Store();
@@ -247,12 +254,12 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
         // Check that the requested url is not the current page
         if (localUrl !== noteWindow.webContents.getURL()) {
             e.preventDefault();
-            require('electron').shell.openExternal(localUrl);
+            openExternalLink(localUrl);
         }
     };
     noteWindow.webContents.on('will-navigate', handleRedirect);
     noteWindow.webContents.setWindowOpenHandler(({ url: openUrl }) => {
-        require('electron').shell.openExternal(openUrl);
+        openExternalLink(openUrl);
         return { action: 'deny' };
     });
     noteWindow.webContents.on('before-input-event', (event, input) => {

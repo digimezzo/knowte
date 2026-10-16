@@ -9,6 +9,7 @@ import { NoteDetailsResult } from '../results/note-details-result';
 import { NoteMarkResult } from '../results/note-mark-result';
 import { NoteOperationResult } from '../results/note-operation-result';
 import { NotePinResult } from '../results/note-pin-result';
+import { NoteLinkTargetsResult } from '../results/note-link-targets-result';
 import { NotebookChangedResult } from '../results/notebook-changed-result';
 import { CollectionEvents } from './collection-events';
 
@@ -143,6 +144,27 @@ export class CollectionClient {
 
     public setNoteOpen(noteId: string, isOpen: boolean): void {
         this.globalEmitter.emit(CollectionEvents.setNoteOpenEvent, noteId, isOpen);
+    }
+
+    public async getNoteLinkTargetsAsync(): Promise<NoteLinkTargetsResult> {
+        await this.waitForInitializedAsync();
+        return new Promise<NoteLinkTargetsResult>((resolve, reject) => {
+            this.globalEmitter.emit(CollectionEvents.getNoteLinkTargetsEvent, (serializedResult: string) => {
+                try {
+                    const result: NoteLinkTargetsResult = JSON.parse(serializedResult);
+                    resolve(result);
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        });
+    }
+
+    public async openLinkedNoteAsync(noteId: string): Promise<Operation> {
+        await this.waitForInitializedAsync();
+        return new Promise<Operation>((resolve) => {
+            this.globalEmitter.emit(CollectionEvents.openLinkedNoteEvent, noteId, resolve);
+        });
     }
 
     public setNoteMark(noteId: string, isMarked: boolean): void {

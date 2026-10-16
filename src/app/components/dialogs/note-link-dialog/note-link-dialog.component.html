@@ -1,0 +1,44 @@
+<app-dialog-header titleText="{{ 'NoteLinks.LinkToNote' | translate }}"></app-dialog-header>
+<mat-dialog-content>
+    <div class="notes-content-search" [class.notes-content-search-highlight]="searchText">
+        <input
+            #searchInput
+            class="notes-content-search-input"
+            type="text"
+            [(ngModel)]="searchText"
+            placeholder="{{ 'MainPage.Search' | translate }}"
+            [attr.aria-label]="'NoteLinks.Search' | translate"
+            cdkFocusInitial
+        />
+        <div class="notes-content-search-icons" *ngIf="!searchText">
+            <i class="las la-search notes-content-search-icon" aria-hidden="true"></i>
+        </div>
+        <button
+            type="button"
+            class="notes-content-search-icons"
+            *ngIf="searchText"
+            title="{{ 'MainPage.ClearSearch' | translate }}"
+            [attr.aria-label]="'MainPage.ClearSearch' | translate"
+            (click)="searchText = ''; searchInput.focus()"
+        >
+            <i class="las la-times notes-content-search-icon" aria-hidden="true"></i>
+        </button>
+    </div>
+    <mat-action-list>
+        <cdk-virtual-scroll-viewport [itemSize]="48" *ngIf="filteredNotes.length > 0">
+            <button
+                mat-list-item
+                *cdkVirtualFor="let note of filteredNotes; trackBy: trackNote"
+                [mat-dialog-close]="note"
+                style="height: 48px"
+            >
+                <span matListItemTitle>{{ note.title }}</span>
+                <span matListItemLine>{{ note.notebookName }}</span>
+            </button>
+        </cdk-virtual-scroll-viewport>
+    </mat-action-list>
+    <p *ngIf="filteredNotes.length === 0">{{ 'NoteLinks.NoNotes' | translate }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <app-transparent-button mat-dialog-close>{{ 'Buttons.Cancel' | translate }}</app-transparent-button>
+</mat-dialog-actions>

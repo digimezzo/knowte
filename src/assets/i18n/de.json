@@ -7,6 +7,12 @@
     "LoadingPage": {
         "Text": "Laden..."
     },
+    "NoteLinks": {
+        "LinkToNote": "Link to note",
+        "Search": "Search notes by title or notebook",
+        "NoNotes": "No matching notes.",
+        "Unavailable": "This linked note is missing or in the trash. Links work only within the active collection."
+    },
     "Tags": {
         "Edit": "Edit tags",
         "Input": "Tags (comma-separated)",

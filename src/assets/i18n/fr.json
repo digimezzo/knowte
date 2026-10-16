@@ -7,6 +7,12 @@
     "LoadingPage": {
         "Text": "Chargement..."
     },
+    "NoteLinks": {
+        "LinkToNote": "Lien vers une note",
+        "Search": "Rechercher des notes par titre ou carnet",
+        "NoNotes": "Aucune note correspondante.",
+        "Unavailable": "La note liée est introuvable ou se trouve dans la corbeille. Les liens fonctionnent uniquement au sein de la collection active."
+    },
     "Tags": {
         "Edit": "Modifier les étiquettes",
         "Input": "Étiquettes (séparées par des virgules)",

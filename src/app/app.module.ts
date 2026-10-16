@@ -75,6 +75,8 @@ import { ShareBottomSheetComponent } from './components/note/bottom-sheets/share
 import { SpellCheckBottomSheetComponent } from './components/note/bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';
 import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { MarkdownNoteComponent } from './components/note/markdown-note/markdown-note.component';
+import { NoteLinkDialogComponent } from './components/dialogs/note-link-dialog/note-link-dialog.component';
+import { getNoteLinkPreviewHref } from './common/utils/note-link';
 import { markdownHighlightExtension } from './components/note/markdown-note/markdown-highlight';
 import { NoteContextMenuFactory } from './components/note/note-context-menu-factory';
 import { BoundaryGetter } from './components/note/note-editor/boundary-getter';
@@ -157,6 +159,11 @@ marked.use(markdownHighlightExtension);
 export function MarkedOptionsFactory(): MarkedOptions {
     const renderer = new MarkedRenderer();
 
+    renderer.link = (href: string, title: string, text: string) => {
+        // Keep Angular's HTML sanitization enabled; render internal URLs as safe local anchors.
+        return MarkedRenderer.prototype.link.call(renderer, href ? getNoteLinkPreviewHref(href) : href, title, text) as string;
+    };
+
     // remove task list bullets
     renderer.list = (body: string, ordered: boolean, start: number) => {
         const divElement = document.createElement('div');
@@ -234,6 +241,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
         NoteTypeChooserBottomSheetComponent,
         NoteStatusBarComponent,
         MarkdownNoteComponent,
+        NoteLinkDialogComponent,
         WebviewDirective,
         CdkVirtualScrollViewportPatchDirective,
         TruncatePipe,

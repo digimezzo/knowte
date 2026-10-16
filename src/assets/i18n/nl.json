@@ -7,6 +7,12 @@
     "LoadingPage": {
         "Text": "Laden..."
     },
+    "NoteLinks": {
+        "LinkToNote": "Koppeling naar notitie",
+        "Search": "Zoek notities op titel of notitieboek",
+        "NoNotes": "Geen overeenkomende notities.",
+        "Unavailable": "De gekoppelde notitie ontbreekt of staat in de prullenbak. Koppelingen werken alleen binnen de actieve verzameling."
+    },
     "Tags": {
         "Edit": "Tags bewerken",
         "Input": "Tags (gescheiden door komma's)",

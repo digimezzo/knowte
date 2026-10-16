@@ -131,13 +131,13 @@ function createMainWindow(): void {
             // Check that the requested url is not the current page
             if (localUrl !== mainWindow.webContents.getURL()) {
                 e.preventDefault();
-                require('electron').shell.openExternal(localUrl);
+                openExternalLink(localUrl);
             }
         };
 
         mainWindow.webContents.on('will-navigate', handleRedirect);
         mainWindow.webContents.setWindowOpenHandler(({ url: openUrl }) => {
-            require('electron').shell.openExternal(openUrl);
+            openExternalLink(openUrl);
             return { action: 'deny' };
         });
 
@@ -206,6 +206,14 @@ function recoverOffScreenWindows(): void {
             window.setFullScreen(true);
         }
     }
+}
+
+function openExternalLink(url: string): void {
+    if (/^knowte:/i.test(url)) {
+        log.warn('[App] Blocked internal note URL from opening outside Knowte.');
+        return;
+    }
+    shell.openExternal(url);
 }
 
 function windowhasFrame(): boolean {
@@ -286,13 +294,13 @@ function createNoteWindow(notePath: string, noteId: string, windowHasFrame: bool
         // Check that the requested url is not the current page
         if (localUrl !== noteWindow.webContents.getURL()) {
             e.preventDefault();
-            require('electron').shell.openExternal(localUrl);
+            openExternalLink(localUrl);
         }
     };
 
     noteWindow.webContents.on('will-navigate', handleRedirect);
     noteWindow.webContents.setWindowOpenHandler(({ url: openUrl }) => {
-        require('electron').shell.openExternal(openUrl);
+        openExternalLink(openUrl);
         return { action: 'deny' };
     });
 

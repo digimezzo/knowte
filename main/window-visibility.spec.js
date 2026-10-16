@@ -6,6 +6,9 @@ const typescript = require('typescript');
 describe('Window recovery after display changes', () => {
     let screen;
     let windows;
+    let openExternalLink;
+    let openExternal;
+    let warn;
 
     function createWindow(bounds, options = {}) {
         return {
@@ -36,9 +39,11 @@ describe('Window recovery after display changes', () => {
             getPath: () => '/tmp/knowte-test',
             on: jest.fn(),
         };
-        const logger = { create: jest.fn(), info: jest.fn(), transports: { file: {} } };
+        openExternal = jest.fn();
+        warn = jest.fn();
+        const logger = { create: jest.fn(), info: jest.fn(), warn, transports: { file: {} } };
         const mocks = {
-            electron: { app, screen, BrowserWindow: { getAllWindows: () => windows }, ipcMain: { on: jest.fn() } },
+            electron: { app, screen, shell: { openExternal }, BrowserWindow: { getAllWindows: () => windows }, ipcMain: { on: jest.fn() } },
             'electron-log': { default: logger },
             '@electron/remote/main': { initialize: jest.fn() },
             'electron-store': {},
@@ -49,7 +54,7 @@ describe('Window recovery after display changes', () => {
         const compiled = typescript.transpileModule(source, {
             compilerOptions: { module: typescript.ModuleKind.CommonJS, target: typescript.ScriptTarget.ES2017 },
         });
-        vm.runInNewContext(compiled.outputText, {
+        openExternalLink = vm.runInNewContext(compiled.outputText + '\nopenExternalLink;', {
             require: (name) => Object.prototype.hasOwnProperty.call(mocks, name) ? mocks[name] : require(name),
             exports: {},
             process: { argv: [], env: {} },
@@ -59,6 +64,18 @@ describe('Window recovery after display changes', () => {
         });
         const readyHandlers = app.on.mock.calls.filter(([event]) => event === 'ready');
         readyHandlers[1][1]();
+    });
+
+    test('never forwards internal note protocols to an external application', () => {
+        openExternalLink('knowte://note/AbC123');
+        openExternalLink('KNOWTE://note/AbC123');
+        expect(openExternal).not.toHaveBeenCalled();
+        expect(warn).toHaveBeenCalledTimes(2);
+    });
+
+    test('preserves opening normal external web links', () => {
+        openExternalLink('https://example.org');
+        expect(openExternal).toHaveBeenCalledWith('https://example.org');
     });
 
     function emitDisplayChange(event = 'display-removed') {

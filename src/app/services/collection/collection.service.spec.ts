@@ -1,5 +1,6 @@
 import * as remote from '@electron/remote';
 import { EventEmitter } from 'events';
+import { ipcRenderer } from 'electron';
 import { IMock, It, Mock } from 'typemoq';
 import { Constants } from '../../common/application/constants';
 import { Operation } from '../../common/enums/operation';
@@ -660,6 +661,126 @@ describe('CollectionService note deletion', () => {
 
             expect(initializeStore).toHaveBeenCalledTimes(2);
             expect(on).toHaveBeenCalled();
+        });
+    });
+
+    describe('note links across windows', () => {
+        let client: CollectionClient;
+
+        beforeEach(async () => {
+            const bus = new EventEmitter();
+            globalEmitter.on.mockImplementation((event, listener) => bus.on(event, listener));
+            globalEmitter.removeListener.mockImplementation((event, listener) => bus.removeListener(event, listener));
+            emit.mockImplementation((event, ...args) => bus.emit(event, ...args));
+            scheduler.setup((x) => x.sleepAsync(It.isAnyNumber())).returns(async () => undefined);
+            files.setup((x) => x.collectionAndItsDirectoryExistAsync('collection')).returns(async () => true);
+            files.setup((x) => x.getCollectionDirectoryPath('collection')).returns(() => '/collection');
+            data.setup((x) => x.initializeAsync('collection')).returns(async () => undefined);
+            translator.setup((x) => x.getAsync('MainPage.UnfiledNotes')).returns(async () => 'Unfiled');
+            await service.initializeAsync();
+            client = new CollectionClient(scheduler.object);
+            (ipcRenderer.send as jest.Mock).mockClear();
+        });
+
+        it('lists only title, ID and notebook, including classic and encrypted notes but not trash', async () => {
+            const markdown = addNote(true, 'Private content');
+            markdown.title = 'Same title';
+            markdown.notebookId = 'book';
+            const classic = addNote(false, 'Private content');
+            classic.title = 'Same title';
+            classic.isEncrypted = true;
+            const trashed = addNote(true, 'Trash');
+            trashed.isTrashed = true;
+            notebooks.push({ id: 'book', name: 'Notebook', isDefault: false, isSelected: false });
+
+            const result = await client.getNoteLinkTargetsAsync();
+
+            expect(result.operation).toBe(Operation.Success);
+            expect(result.notes).toEqual([
+                { id: markdown.id, title: 'Same title', notebookName: 'Notebook' },
+                { id: classic.id, title: 'Same title', notebookName: 'Unfiled' },
+            ]);
+        });
+
+        it('transfers a serialized snapshot instead of remote object references', async () => {
+            const note = addNote(true, '');
+            const received = jest.fn();
+            emit(CollectionEvents.getNoteLinkTargetsEvent, received);
+            await Promise.resolve();
+            expect(received).toHaveBeenCalledWith(expect.any(String));
+
+            const result = await client.getNoteLinkTargetsAsync();
+            const originalTitle = note.title;
+            note.title = 'Changed after transfer';
+            expect(result.notes[0].title).toBe(originalTitle);
+            result.notes[0].title = 'Local change';
+            expect(note.title).toBe('Changed after transfer');
+        });
+
+        it('rejects malformed transfer data so the picker can report the error', async () => {
+            globalEmitter.emit.mockImplementation((event, ...args) => {
+                if (event === CollectionEvents.getNoteLinkTargetsEvent) {
+                    args[0]('invalid JSON');
+                    return true;
+                }
+                if (event === CollectionEvents.getIsInitializedEvent) {
+                    args[0](true);
+                    return true;
+                }
+                return false;
+            });
+            await expect(client.getNoteLinkTargetsAsync()).rejects.toThrow();
+        });
+
+        it('opens a linked note, then focuses the existing window instead of duplicating it', async () => {
+            const note = addNote(true, '');
+            expect(await client.openLinkedNoteAsync(note.id)).toBe(Operation.Success);
+            expect(ipcRenderer.send).toHaveBeenCalledTimes(1);
+            expect(ipcRenderer.send).toHaveBeenCalledWith('open-note-window', expect.objectContaining({ noteId: note.id }));
+
+            expect(await client.openLinkedNoteAsync(note.id)).toBe(Operation.Success);
+            expect(ipcRenderer.send).toHaveBeenCalledTimes(1);
+            expect(emit).toHaveBeenCalledWith(CollectionEvents.focusNoteEvent, note.id);
+        });
+
+        it('keeps a link valid after renaming and moving between notebooks', async () => {
+            const note = addNote(true, '');
+            note.title = 'Renamed';
+            note.notebookId = 'another-notebook';
+            expect(await client.openLinkedNoteAsync(note.id)).toBe(Operation.Success);
+            expect(ipcRenderer.send).toHaveBeenCalledWith('open-note-window', expect.objectContaining({ noteId: note.id }));
+        });
+
+        it.each([true, false])('uses normal note windows for markdown=%s, preserving the unlock flow', async (markdown) => {
+            const note = addNote(markdown, '');
+            note.isEncrypted = true;
+            expect(await client.openLinkedNoteAsync(note.id)).toBe(Operation.Success);
+            expect(ipcRenderer.send).toHaveBeenCalledWith('open-note-window', expect.objectContaining({ noteId: note.id }));
+        });
+
+        it('rejects missing, trashed and malformed destinations without creating windows', async () => {
+            const trashed = addNote(true, '');
+            trashed.isTrashed = true;
+            for (const id of ['missing', trashed.id, '../bad']) {
+                expect(await client.openLinkedNoteAsync(id)).toBe(Operation.Blank);
+            }
+            expect(ipcRenderer.send).not.toHaveBeenCalled();
+        });
+
+        it('reports listing errors rather than returning a successful empty list', async () => {
+            data.reset();
+            data.setup((x) => x.getNotes()).throws(new Error('Cannot read notes'));
+            expect(await client.getNoteLinkTargetsAsync()).toEqual({ operation: Operation.Error, notes: [] });
+            expect(logError).toHaveBeenCalled();
+        });
+
+        it('reports opening errors and permits retrying the same link', async () => {
+            const note = addNote(true, '');
+            (ipcRenderer.send as jest.Mock).mockImplementationOnce(() => { throw new Error('Cannot open window'); });
+            expect(await client.openLinkedNoteAsync(note.id)).toBe(Operation.Error);
+            expect(service.noteIsOpen(note.id)).toBe(false);
+            expect(logError).toHaveBeenCalled();
+            expect(await client.openLinkedNoteAsync(note.id)).toBe(Operation.Success);
         });
     });
 

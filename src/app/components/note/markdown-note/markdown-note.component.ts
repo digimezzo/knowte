@@ -1,5 +1,13 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { INoteEditor } from '../note-editor/i-note-editor';
+import { MatDialog } from '@angular/material/dialog';
+import { Operation } from '../../../common/enums/operation';
+import { createNoteLink, getLinkedNoteId, isNoteLink } from '../../../common/utils/note-link';
+import { Logger } from '../../../common/logging/logger';
+import { CollectionClient } from '../../../services/collection/collection.client';
+import { NoteLinkTarget } from '../../../services/results/note-link-targets-result';
+import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
+import { NoteLinkDialogComponent } from '../../dialogs/note-link-dialog/note-link-dialog.component';
 
 @Component({
     selector: 'app-markdown-note',
@@ -8,6 +16,15 @@ import { INoteEditor } from '../note-editor/i-note-editor';
     encapsulation: ViewEncapsulation.None,
 })
 export class MarkdownNoteComponent implements AfterViewInit {
+    private isPickingNote: boolean = false;
+
+    constructor(
+        private collectionClient: CollectionClient,
+        private dialog: MatDialog,
+        private snackBar: SnackBarService,
+        private logger: Logger,
+    ) {}
+
     @ViewChild('highlightedContent') highlightedContent: ElementRef<HTMLPreElement>;
     @ViewChild('markdownInput') markdownInput: ElementRef<HTMLTextAreaElement>;
 
@@ -55,6 +72,67 @@ export class MarkdownNoteComponent implements AfterViewInit {
 
     public toggleIsEditing(): void {
         this.noteEditor.isEditing = !this.noteEditor.isEditing;
+    }
+
+    public async insertNoteLinkAsync(): Promise<void> {
+        if (!this.noteEditor.isEditing || this.isPickingNote) {
+            return;
+        }
+        const input = this.markdownInput.nativeElement;
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        this.isPickingNote = true;
+        try {
+            const result = await this.collectionClient.getNoteLinkTargetsAsync();
+            if (result.operation !== Operation.Success) {
+                await this.snackBar.oopsAnErrorOccurredAsync();
+                return;
+            }
+            const dialogRef = this.dialog.open<NoteLinkDialogComponent, NoteLinkTarget[], NoteLinkTarget>(NoteLinkDialogComponent, {
+                width: '550px',
+                data: result.notes,
+            });
+            const target = await dialogRef.afterClosed().toPromise();
+            if (target && this.noteEditor.isEditing) {
+                input.focus();
+                input.setSelectionRange(start, end);
+                document.execCommand('insertText', false, createNoteLink(target.id, target.title));
+            }
+        } catch (error) {
+            this.logger.error(`Could not insert note link. Cause: ${error}`, 'MarkdownNoteComponent', 'insertNoteLinkAsync');
+            await this.snackBar.oopsAnErrorOccurredAsync();
+        } finally {
+            this.isPickingNote = false;
+        }
+    }
+
+    public async onPreviewClickAsync(event: MouseEvent): Promise<void> {
+        if (event.button > 1) {
+            return;
+        }
+        const anchor = event.target instanceof Element ? event.target.closest('a') : null;
+        const href = anchor?.getAttribute('href') || '';
+        if (!isNoteLink(href)) {
+            return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        const noteId = getLinkedNoteId(href);
+        if (!noteId) {
+            await this.snackBar.linkedNoteUnavailableAsync();
+            return;
+        }
+        try {
+            const operation = await this.collectionClient.openLinkedNoteAsync(noteId);
+            if (operation === Operation.Blank) {
+                await this.snackBar.linkedNoteUnavailableAsync();
+            } else if (operation !== Operation.Success) {
+                await this.snackBar.oopsAnErrorOccurredAsync();
+            }
+        } catch (error) {
+            this.logger.error(`Could not follow note link. Cause: ${error}`, 'MarkdownNoteComponent', 'onPreviewClickAsync');
+            await this.snackBar.oopsAnErrorOccurredAsync();
+        }
     }
 
     public highlightMarkdown(text: string): string {

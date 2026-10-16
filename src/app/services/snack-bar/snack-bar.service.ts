@@ -85,6 +85,12 @@ export class SnackBarService {
         this.showActionSnackBar(message, action, false);
     }
 
+    public async linkedNoteUnavailableAsync(): Promise<void> {
+        const message = await this.translator.getAsync('NoteLinks.Unavailable');
+        const action = await this.translator.getAsync('SnackBarActions.Ok');
+        this.showActionSnackBar(message, action, false);
+    }
+
     private showActionLessSnackBar(message: string): void {
         this.zone.run(() => {
             this.matSnackBar.open(message, '', { duration: this.calculateDuration(message) });

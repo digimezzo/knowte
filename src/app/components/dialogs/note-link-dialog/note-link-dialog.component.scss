@@ -1,0 +1,49 @@
+@import 'search-field';
+
+mat-dialog-content {
+    overflow: hidden;
+}
+
+cdk-virtual-scroll-viewport {
+    height: clamp(64px, calc(65vh - 90px), 320px);
+}
+
+.notes-content-search {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+    margin: 6px 0;
+}
+
+button.notes-content-search-icons {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+button[mat-list-item] [matListItemTitle],
+button[mat-list-item] [matListItemLine] {
+    font-size: var(--fontsize-normal);
+    letter-spacing: normal;
+    line-height: 20px;
+    margin: 0;
+}
+
+// Material's baseline spacers assume taller two-line rows.
+button[mat-list-item] [matListItemTitle]::before,
+button[mat-list-item] [matListItemTitle]::after,
+button[mat-list-item] [matListItemLine]::before {
+    display: none;
+}
+
+[matListItemLine] {
+    color: var(--theme-secondary-text);
+}
+
+button[mat-list-item] {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-radius: 6px;
+    overflow: hidden;
+}

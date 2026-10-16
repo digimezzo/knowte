@@ -18,6 +18,30 @@ Knowte is a note taking application that allows you to quickly and easily organi
 
 ![Knowte2screenshot](Knowte.showcase.light.png)
 
+## Linking notes
+
+In a Markdown note, choose **Link to note** in the editing toolbar, search by
+title or notebook, and select a destination. Knowte inserts a standard Markdown
+link such as `[Installation guide](knowte://note/AbC123)`.
+
+Click the link in the preview to open the destination's note window, or focus it
+if it is already open. Links can target Markdown or classic notes, including
+encrypted notes (which still require unlocking). The picker excludes trashed
+notes and shows the notebook name beneath each note title.
+The picker supports searching the full collection and uses a scrolling list that
+renders only nearby results to stay responsive with large collections.
+Search is case-insensitive and matches each word anywhere in the title or
+notebook name, in any order, like the main window's text search.
+
+Links use stable note IDs, so renaming a note or moving it between notebooks does
+not break navigation. Link labels are saved text and are not automatically renamed.
+Links resolve only in the active collection; moving notes to another collection,
+exporting them, or permanently deleting a target does not repair incoming links.
+A missing or trashed target displays a message instead of opening a window.
+
+These are in-app links, not operating-system protocol registrations. Backlinks
+and `[[Wiki links]]` are not yet supported.
+
 ## Build prerequisites
 
 -   wine: required to build Windows package

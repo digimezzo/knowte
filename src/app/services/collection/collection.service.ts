@@ -22,6 +22,7 @@ import { NoteDetailsResult } from '../results/note-details-result';
 import { NoteMarkResult } from '../results/note-mark-result';
 import { NoteOperationResult } from '../results/note-operation-result';
 import { NotePinResult } from '../results/note-pin-result';
+import { NoteLinkTargetsResult } from '../results/note-link-targets-result';
 import { NotebookChangedResult } from '../results/notebook-changed-result';
 import { NotesCountResult } from '../results/notes-count-result';
 import { SearchService } from '../search/search.service';
@@ -61,6 +62,8 @@ export class CollectionService {
     private noteNotebookChanged: Subject<void> = new Subject();
 
     private setNoteOpenEventListener: any = this.setNoteOpenAsync.bind(this);
+    private getNoteLinkTargetsEventListener = this.getNoteLinkTargetsEventHandler.bind(this);
+    private openLinkedNoteEventListener = this.openLinkedNoteEventHandler.bind(this);
     private setNoteMarkEventListener: any = this.setNoteMark.bind(this);
     private setNotePinEventListener: any = this.setNotePin.bind(this);
     private setNotebookEventListener: any = this.setNotebook.bind(this);
@@ -111,6 +114,8 @@ export class CollectionService {
 
     private listenToNoteEvents(): void {
         // Remove listeners
+        this.globalEmitter.removeListener(CollectionEvents.getNoteLinkTargetsEvent, this.getNoteLinkTargetsEventListener);
+        this.globalEmitter.removeListener(CollectionEvents.openLinkedNoteEvent, this.openLinkedNoteEventListener);
         this.globalEmitter.removeListener(CollectionEvents.setNoteOpenEvent, this.setNoteOpenEventListener);
         this.globalEmitter.removeListener(CollectionEvents.setNoteMarkEvent, this.setNoteMarkEventListener);
         this.globalEmitter.removeListener(CollectionEvents.setNotePinEvent, this.setNotePinEventListener);
@@ -126,6 +131,8 @@ export class CollectionService {
         this.globalEmitter.removeListener(CollectionEvents.getIsInitializedEvent, this.getIsInitializedEventEventListener);
 
         // Add listeners
+        this.globalEmitter.on(CollectionEvents.getNoteLinkTargetsEvent, this.getNoteLinkTargetsEventListener);
+        this.globalEmitter.on(CollectionEvents.openLinkedNoteEvent, this.openLinkedNoteEventListener);
         this.globalEmitter.on(CollectionEvents.setNoteOpenEvent, this.setNoteOpenEventListener);
         this.globalEmitter.on(CollectionEvents.setNoteMarkEvent, this.setNoteMarkEventListener);
         this.globalEmitter.on(CollectionEvents.setNotePinEvent, this.setNotePinEventListener);
@@ -1305,6 +1312,53 @@ export class CollectionService {
         callback(notebooks);
     }
 
+    private async getNoteLinkTargetsEventHandler(callback: (serializedResult: string) => void): Promise<void> {
+        try {
+            const unfiledName = await this.translator.getAsync('MainPage.UnfiledNotes');
+            const notes = this.collectionDataStoreAccess.getNotes()
+                .filter((note) => !note.isTrashed)
+                .map((note) => ({
+                    id: note.id,
+                    title: note.title,
+                    notebookName: this.collectionDataStoreAccess.getNotebookById(note.notebookId)?.name || unfiledName,
+                }))
+                .sort((a, b) => a.title.localeCompare(b.title));
+            const result: NoteLinkTargetsResult = { operation: Operation.Success, notes };
+            // Remote object properties require synchronous IPC. Transfer the picker data by value.
+            callback(JSON.stringify(result));
+        } catch (error) {
+            this.logger.error(`Could not list note link targets. Cause: ${error}`, 'CollectionService', 'getNoteLinkTargetsEventHandler');
+            const result: NoteLinkTargetsResult = { operation: Operation.Error, notes: [] };
+            callback(JSON.stringify(result));
+        }
+    }
+
+    private async openLinkedNoteEventHandler(noteId: string, callback: (operation: Operation) => void): Promise<void> {
+        try {
+            if (this.initialization || this.collectionChangeInProgress || this.movingNoteIds.has(noteId)) {
+                this.logger.warn('Cannot follow a note link while its collection or note is changing.',
+                    'CollectionService', 'openLinkedNoteEventHandler');
+                callback(Operation.Aborted);
+                return;
+            }
+            const note = /^[A-Za-z0-9_-]+$/.test(noteId) ? this.collectionDataStoreAccess.getNoteById(noteId) : undefined;
+            if (!note || note.isTrashed) {
+                this.logger.warn(`Linked note is unavailable: ${noteId}`, 'CollectionService', 'openLinkedNoteEventHandler');
+                callback(Operation.Blank);
+                return;
+            }
+            if (this.noteIsOpen(noteId)) {
+                this.onFocusNote(noteId);
+            } else {
+                await this.setNoteOpenAsync(noteId, true);
+            }
+            callback(Operation.Success);
+        } catch (error) {
+            this.logger.error(`Could not open linked note. Cause: ${error}`, 'CollectionService', 'openLinkedNoteEventHandler');
+            callback(Operation.Error);
+        }
+    }
+
     public async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
         if (isOpen) {
             if (this.initialization || this.collectionChangeInProgress || this.movingNoteIds.has(noteId)) {
@@ -1315,20 +1369,25 @@ export class CollectionService {
             if (!this.openNoteIds.includes(noteId)) {
                 this.openNoteIds.push(noteId);
 
-                const activeCollectionDirectoryPath: string = await this.collectionFileAccess.getCollectionDirectoryPath(
-                    this.settings.activeCollection,
-                );
-                this.logger.info(
-                    `Active collection directory=${activeCollectionDirectoryPath}`,
-                    'CollectionService',
-                    'importNoteFilesAsync',
-                );
-                const arg: any = {
-                    notePath: activeCollectionDirectoryPath,
-                    noteId: noteId,
-                    windowHasFrame: this.appearance.windowHasNativeTitleBar,
-                };
-                ipcRenderer.send('open-note-window', arg);
+                try {
+                    const activeCollectionDirectoryPath: string = await this.collectionFileAccess.getCollectionDirectoryPath(
+                        this.settings.activeCollection,
+                    );
+                    this.logger.info(
+                        `Active collection directory=${activeCollectionDirectoryPath}`,
+                        'CollectionService',
+                        'importNoteFilesAsync',
+                    );
+                    const arg = {
+                        notePath: activeCollectionDirectoryPath,
+                        noteId: noteId,
+                        windowHasFrame: this.appearance.windowHasNativeTitleBar,
+                    };
+                    ipcRenderer.send('open-note-window', arg);
+                } catch (error) {
+                    this.openNoteIds = this.openNoteIds.filter((id) => id !== noteId);
+                    throw error;
+                }
             }
         } else {
             if (this.openNoteIds.includes(noteId)) {
