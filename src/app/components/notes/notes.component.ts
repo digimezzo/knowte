@@ -145,6 +145,7 @@ export class NotesComponent implements OnInit, OnDestroy {
                     this.settings.showExactDatesInTheNotesList
                 );
                 this.selectionWatcher.reset(this.notes);
+                this.selectedNoteIds.emit([]);
                 this.notesCount.emit(this.notes.length);
             }, 0);
         }

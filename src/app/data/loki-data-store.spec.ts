@@ -212,4 +212,30 @@ describe('LokiDataStore initialization', () => {
         expect(store.getNotes()).toEqual([]);
         await store.saveAsync();
     });
+
+    it('persists archiving and unarchiving without moving or deleting notebook notes', async () => {
+        const Loki = jest.requireActual('lokijs');
+        const adapter = new Loki.LokiMemoryAdapter();
+        (loki as jest.Mock).mockImplementation((filename) => new Loki(filename, { adapter }));
+        await store.initializeAsync('archive.db');
+        const notebookId = store.addNotebook('Work');
+        const noteId = store.addNote('Keep me', notebookId, true);
+        const notebook = store.getNotebookById(notebookId);
+        notebook.isArchived = true;
+        store.updateNotebook(notebook, false);
+        await store.saveAsync();
+
+        await store.initializeAsync('archive.db');
+        expect(store.getNotebookById(notebookId).isArchived).toBe(true);
+        expect(store.getNotebookNotes(notebookId).map((note) => note.id)).toEqual([noteId]);
+        expect(store.getUnfiledNotes()).toEqual([]);
+        const reloaded = store.getNotebookById(notebookId);
+        reloaded.isArchived = false;
+        store.updateNotebook(reloaded, false);
+        await store.saveAsync();
+
+        await store.initializeAsync('archive.db');
+        expect(store.getNotebookById(notebookId).isArchived).toBe(false);
+        expect(store.getNotebookNotes(notebookId).map((note) => note.id)).toEqual([noteId]);
+    });
 });

@@ -4,6 +4,12 @@
     user-select: none;
 }
 
+.notebook-archive-icon {
+    color: var(--theme-secondary-text);
+    font-size: var(--fontsize-status-icon);
+    flex-shrink: 0;
+}
+
 .selected-item {
     background-color: var(--theme-selection-background);
 }

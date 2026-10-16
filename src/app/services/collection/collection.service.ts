@@ -432,7 +432,7 @@ export class CollectionService {
             const userNotebooks: Notebook[] = this.collectionDataStoreAccess.getNotebooks();
 
             // 5. Add the user defined notebooks to the notebooks
-            notebooks.push.apply(notebooks, userNotebooks);
+            notebooks.push(...userNotebooks.filter((notebook) => this.settings.showArchivedNotebooks || !notebook.isArchived));
         } catch (error) {
             this.logger.error(`Could not get notebooks. Cause: ${error}`, 'CollectionService', 'getNotebooksAsync');
         }
@@ -513,6 +513,42 @@ export class CollectionService {
 
     public getNotebookName(notebookId: string): string {
         return this.collectionDataStoreAccess.getNotebookById(notebookId).name;
+    }
+
+    public async setNotebooksArchivedAsync(notebookIds: string[], isArchived: boolean): Promise<Operation> {
+        const previousStates: { notebook: Notebook; isArchived: boolean | undefined }[] = [];
+
+        try {
+            if (this.collectionChangeInProgress || notebookIds.length === 0) {
+                throw new Error('Cannot archive notebooks while the collection is changing or without a selection.');
+            }
+
+            for (const notebookId of new Set(notebookIds)) {
+                const notebook = this.collectionDataStoreAccess.getNotebookById(notebookId);
+                if (!notebook || notebook.isDefault ||
+                    notebookId === Constants.allNotesNotebookId || notebookId === Constants.unfiledNotesNotebookId) {
+                    throw new Error(`Notebook with id=${notebookId} cannot be archived.`);
+                }
+                previousStates.push({ notebook, isArchived: notebook.isArchived });
+            }
+
+            for (const state of previousStates) {
+                state.notebook.isArchived = isArchived;
+                this.collectionDataStoreAccess.updateNotebook(state.notebook, false);
+            }
+            await this.collectionDataStoreAccess.saveAsync();
+        } catch (error) {
+            for (const state of previousStates) {
+                state.notebook.isArchived = state.isArchived;
+            }
+            this.logger.error(`Could not change notebook archive state. Cause: ${error}`,
+                'CollectionService', 'setNotebooksArchivedAsync');
+            return Operation.Error;
+        }
+
+        this.notebookEdited.next();
+        this.notesChanged.next();
+        return Operation.Success;
     }
 
     public async deleteNotebooksAsync(notebookIds: string[]): Promise<Operation> {
@@ -691,6 +727,8 @@ export class CollectionService {
                 uncategorizedNotes = this.collectionDataStoreAccess.getNotebookNotes(notebookId);
             }
 
+            uncategorizedNotes = this.getVisibleNotes(uncategorizedNotes);
+
             // Set pinned notes at the top
             let pinnedUncategorizedNotes: Note[] = uncategorizedNotes.filter((x) => x.isPinned);
             let unpinnedUncategorizedNotes: Note[] = uncategorizedNotes.filter((x) => !x.isPinned);
@@ -806,7 +844,7 @@ export class CollectionService {
         note.isMarked = isMarked;
         this.collectionDataStoreAccess.updateNote(note);
 
-        const markedNotes: Note[] = this.collectionDataStoreAccess.getMarkedNotes();
+        const markedNotes: Note[] = this.getVisibleNotes(this.collectionDataStoreAccess.getMarkedNotes());
         const result: NoteMarkResult = new NoteMarkResult(noteId, note.isMarked, markedNotes.length);
 
         this.noteMarkChanged.next(result);
@@ -1204,12 +1242,13 @@ export class CollectionService {
             return [];
         }
 
-        for (const trashedNote of trashedNotes) {
+        const visibleNotes = this.getVisibleNotes(trashedNotes);
+        for (const trashedNote of visibleNotes) {
             trashedNote.isSelected = false;
             trashedNote.displayTrashedDate = DateUtils.getFormattedDate(trashedNote.trashedDate);
         }
 
-        return trashedNotes;
+        return visibleNotes;
     }
 
     private async collectionExistsAsync(collection: string): Promise<boolean> {
@@ -1341,6 +1380,17 @@ export class CollectionService {
         const notebook: Notebook = this.collectionDataStoreAccess.getNotebookByName(notebookName);
 
         return notebook != undefined;
+    }
+
+    private getVisibleNotes(notes: Note[]): Note[] {
+        if (this.settings.showArchivedNotebooks) {
+            return notes;
+        }
+
+        const archivedNotebookIds = new Set(
+            this.collectionDataStoreAccess.getNotebooks().filter((notebook) => notebook.isArchived).map((notebook) => notebook.id),
+        );
+        return notes.filter((note) => !archivedNotebookIds.has(note.notebookId));
     }
 
     private getFilteredNotes(unfilteredNotes: Note[], filter: string): Note[] {

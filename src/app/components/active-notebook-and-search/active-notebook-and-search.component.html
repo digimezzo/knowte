@@ -1,7 +1,16 @@
 <div class="notes-content-title-and-search no-select">
     <!-- Notes title -->
     <div class="notes-content-title">
-        <div class="title2 notes-content-title-text">{{ activeNotebook?.name }}</div>
+        <div class="title2 notes-content-title-text">
+            {{ activeNotebook?.name }}
+            <i
+                class="notebook-archive-icon las la-archive ml-1"
+                *ngIf="activeNotebook?.isArchived"
+                [matTooltip]="'NotebookArchive.Archived' | translate"
+                [attr.aria-label]="'NotebookArchive.Archived' | translate"
+                role="img"
+            ></i>
+        </div>
         <div class="count-label">
             {{ notesCount }}
         </div>

@@ -67,6 +67,21 @@
                                     <div class="count-label">
                                         {{ notebooksCount }}
                                     </div>
+                                    <button
+                                        type="button"
+                                        class="notebooks-archive-toggle"
+                                        [class.notebooks-archive-toggle--active]="showArchivedNotebooks"
+                                        [attr.aria-pressed]="showArchivedNotebooks"
+                                        [matTooltip]="
+                                            (showArchivedNotebooks ? 'NotebookArchive.HideArchived' : 'NotebookArchive.ShowArchived') | translate
+                                        "
+                                        [attr.aria-label]="
+                                            (showArchivedNotebooks ? 'NotebookArchive.HideArchived' : 'NotebookArchive.ShowArchived') | translate
+                                        "
+                                        (click)="toggleArchivedNotebooksAsync()"
+                                    >
+                                        <i class="las la-archive" aria-hidden="true"></i>
+                                    </button>
                                 </div>
                                 <ul class="notebooks-pane-content__list">
                                     <li
@@ -85,10 +100,49 @@
                                         >
                                             {{ notebook.name }}
                                         </span>
+                                        <i
+                                            class="notebook-archive-icon las la-archive mr-1"
+                                            *ngIf="notebook.isArchived"
+                                            [matTooltip]="'NotebookArchive.Archived' | translate"
+                                            [attr.aria-label]="'NotebookArchive.Archived' | translate"
+                                            role="img"
+                                        ></i>
                                     </li>
                                 </ul>
                             </div>
                             <div class="notebooks-pane-buttons mr-4">
+                                <button
+                                    class="list-button"
+                                    mat-mini-fab
+                                    (click)="setNotebooksArchivedAsync(false)"
+                                    [matTooltip]="
+                                        (selectionWatcher.selectedItemsCount > 1 ? 'NotebookArchive.UnarchiveNotebooks' : 'NotebookArchive.Unarchive')
+                                            | translate
+                                    "
+                                    [attr.aria-label]="
+                                        (selectionWatcher.selectedItemsCount > 1 ? 'NotebookArchive.UnarchiveNotebooks' : 'NotebookArchive.Unarchive')
+                                            | translate
+                                    "
+                                    *ngIf="canUnarchiveNotebooks"
+                                >
+                                    <i class="edit-item-icon las la-box-open"></i>
+                                </button>
+                                <button
+                                    class="list-button"
+                                    mat-mini-fab
+                                    (click)="setNotebooksArchivedAsync(true)"
+                                    [matTooltip]="
+                                        (selectionWatcher.selectedItemsCount > 1 ? 'NotebookArchive.ArchiveNotebooks' : 'NotebookArchive.Archive')
+                                            | translate
+                                    "
+                                    [attr.aria-label]="
+                                        (selectionWatcher.selectedItemsCount > 1 ? 'NotebookArchive.ArchiveNotebooks' : 'NotebookArchive.Archive')
+                                            | translate
+                                    "
+                                    *ngIf="canArchiveNotebooks"
+                                >
+                                    <i class="edit-item-icon las la-archive"></i>
+                                </button>
                                 <button
                                     class="list-button"
                                     mat-mini-fab

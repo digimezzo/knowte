@@ -23,6 +23,23 @@ describe('Settings skipTrashForEmptyNotes', () => {
         expect(new Settings().skipTrashForEmptyNotes).toBe(true);
     });
 
+    describe('Settings showArchivedNotebooks', () => {
+        beforeEach(() => storedSettings.clear());
+
+        it('hides archived notebooks by default, including with existing settings', () => {
+            storedSettings.set('language', 'en');
+            expect(new Settings().showArchivedNotebooks).toBe(false);
+        });
+
+        it('remembers visibility across settings instances', () => {
+            const settings = new Settings();
+            settings.showArchivedNotebooks = true;
+            expect(new Settings().showArchivedNotebooks).toBe(true);
+            settings.showArchivedNotebooks = false;
+            expect(new Settings().showArchivedNotebooks).toBe(false);
+        });
+    });
+
     it('adds the default to existing settings', () => {
         storedSettings.set('moveDeletedNotesToTrash', true);
 

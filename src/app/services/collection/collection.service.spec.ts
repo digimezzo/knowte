@@ -1,6 +1,7 @@
 import * as remote from '@electron/remote';
 import { EventEmitter } from 'events';
 import { IMock, It, Mock } from 'typemoq';
+import { Constants } from '../../common/application/constants';
 import { Operation } from '../../common/enums/operation';
 import { FileAccess } from '../../common/io/file-access';
 import { Logger } from '../../common/logging/logger';
@@ -8,6 +9,7 @@ import { Scheduler } from '../../common/scheduling/scheduler';
 import { BaseSettings } from '../../common/settings/base-settings';
 import { TasksCount } from '../../common/ui/tasks-count';
 import { Note } from '../../data/entities/note';
+import { Notebook } from '../../data/entities/notebook';
 import { BaseAppearanceService } from '../appearance/base-appearance.service';
 import { CryptographyService } from '../cryptography/cryptography.service';
 import { SearchService } from '../search/search.service';
@@ -32,7 +34,11 @@ jest.mock('../../data/entities/note', () => ({
         public constructor(public title: string, public notebookId: string, public isMarkdownNote: boolean) {}
     },
 }));
-jest.mock('../../common/utils/date-utils', () => ({ DateUtils: class {} }));
+jest.mock('../../common/utils/date-utils', () => ({
+    DateUtils: class {
+        public static getFormattedDate(): string { return 'Formatted date'; }
+    },
+}));
 jest.mock('./note-date-formatter', () => ({ NoteDateFormatter: class {} }));
 jest.mock('../temporary-storage/temporary-storage.service', () => ({ TemporaryStorageService: class {} }));
 
@@ -59,6 +65,9 @@ describe('CollectionService note deletion', () => {
     let skipEmpty: boolean;
     let attachments: string[] | undefined;
     let readError: Error | undefined;
+    let notebooks: Notebook[];
+    let search: IMock<SearchService>;
+    let dateFormatter: IMock<NoteDateFormatter>;
 
     beforeEach(() => {
         useTrash = true;
@@ -70,6 +79,7 @@ describe('CollectionService note deletion', () => {
             activeCollection: 'collection',
             moveDeletedNotesToTrash: true,
             skipTrashForEmptyNotes: true,
+            showArchivedNotebooks: false,
         });
         settings.setup((x) => x.moveDeletedNotesToTrash).returns(() => useTrash);
         settings.setup((x) => x.skipTrashForEmptyNotes).returns(() => skipEmpty);
@@ -82,6 +92,15 @@ describe('CollectionService note deletion', () => {
         modelFactory = Mock.ofType<NoteModelFactory>();
         temporaryStorage = Mock.ofType<TemporaryStorageService>();
         notes = [];
+        notebooks = [];
+        search = Mock.ofType<SearchService>();
+        dateFormatter = Mock.ofType<NoteDateFormatter>();
+        dateFormatter.setup((x) => x.getNoteDateFormatAsync(It.isAny(), It.isAny())).returns(async () => ({
+            dateText: 'Today',
+            isTodayNote: true,
+            isYesterdayNote: false,
+            isThisWeekNote: true,
+        }));
         contents = new Map();
         trashNote = jest.fn();
         deleteNote = jest.fn();
@@ -91,6 +110,10 @@ describe('CollectionService note deletion', () => {
         globalEmitter = { emit, on: jest.fn(), removeListener: jest.fn() };
         (remote.getGlobal as jest.Mock).mockReturnValue(globalEmitter);
         data.setup((x) => x.getNoteById(It.isAnyString())).returns((id: string) => notes.find((note) => note.id === id));
+        data.setup((x) => x.getNotebooks()).returns(() => notebooks);
+        data.setup((x) => x.getNotebookById(It.isAnyString())).returns((id: string) => notebooks.find((notebook) => notebook.id === id));
+        data.setup((x) => x.getNotes()).returns(() => notes);
+        data.setup((x) => x.getNotebookNotes(It.isAnyString())).returns((id: string) => notes.filter((note) => note.notebookId === id));
         data.setup((x) => x.trashNote(It.isAnyString())).callback(trashNote);
         data.setup((x) => x.deleteNote(It.isAnyString())).callback(deleteNote);
         files.setup((x) => x.getNoteContentByNoteIdAsync(It.isAnyString(), 'collection', It.isAny()))
@@ -109,14 +132,14 @@ describe('CollectionService note deletion', () => {
 
         service = new CollectionService(
             translator.object,
-            Mock.ofType<SearchService>().object,
+            search.object,
             Mock.ofType<BaseAppearanceService>().object,
             Mock.ofType<CryptographyService>().object,
             files.object,
             data.object,
             temporaryStorage.object,
             modelFactory.object,
-            Mock.ofType<NoteDateFormatter>().object,
+            dateFormatter.object,
             fileAccess.object,
             scheduler.object,
             settings.object,
@@ -134,6 +157,122 @@ describe('CollectionService note deletion', () => {
         contents.set(note.id, content);
         return note;
     }
+
+    describe('notebook archiving', () => {
+        let active: Notebook;
+        let archived: Notebook;
+        let legacy: Notebook;
+
+        beforeEach(() => {
+            active = new Notebook('Active');
+            active.id = 'active';
+            archived = new Notebook('Archived');
+            archived.id = 'archived';
+            archived.isArchived = true;
+            legacy = new Notebook('Legacy');
+            legacy.id = 'legacy';
+            delete legacy.isArchived;
+            notebooks.push(active, archived, legacy);
+        });
+
+        it('hides archived notebooks in both the main list and note-window picker', async () => {
+            expect((await service.getNotebooksAsync(true)).map((notebook) => notebook.id))
+                .toEqual([Constants.allNotesNotebookId, Constants.unfiledNotesNotebookId, 'active', 'legacy']);
+            expect((await service.getNotebooksAsync(false)).map((notebook) => notebook.id))
+                .toEqual([Constants.unfiledNotesNotebookId, 'active', 'legacy']);
+        });
+
+        it('shows archived notebooks without removing their archived status', async () => {
+            settings.setup((x) => x.showArchivedNotebooks).returns(() => true);
+            expect(await service.getNotebooksAsync(false)).toContain(archived);
+            expect(archived.isArchived).toBe(true);
+        });
+
+        it.each(['', 'meeting', 't:work'])('excludes hidden archived notes from lists, search "%s", and counts', async (query) => {
+            search.setup((x) => x.searchText).returns(() => query);
+            for (const notebook of notebooks) {
+                const note = addNote(true, '', 'meeting');
+                note.notebookId = notebook.id;
+                note.tags = ['work'];
+                note.isMarked = true;
+                note.isPinned = true;
+            }
+            const counts = jest.fn();
+            service.notesCountChanged$.subscribe(counts);
+
+            for (const category of [Constants.allCategory, Constants.todayCategory, Constants.thisWeekCategory, Constants.markedCategory]) {
+                expect(await service.getNotesAsync(Constants.allNotesNotebookId, category, false)).toEqual([notes[0], notes[2]]);
+                expect(counts).toHaveBeenLastCalledWith(expect.objectContaining({
+                    allNotesCount: 2, todayNotesCount: 2, thisWeekNotesCount: 2, markedNotesCount: 2,
+                }));
+            }
+            expect(await service.getNotesAsync('archived', Constants.allCategory, false)).toEqual([]);
+
+            settings.setup((x) => x.showArchivedNotebooks).returns(() => true);
+            expect(await service.getNotesAsync(Constants.allNotesNotebookId, Constants.allCategory, false)).toEqual(notes);
+            expect(await service.getNotesAsync('archived', Constants.allCategory, false)).toEqual([notes[1]]);
+        });
+
+        it('waits for persistence before announcing archiving, and can unarchive', async () => {
+            let finishSave: () => void;
+            data.setup((x) => x.saveAsync()).returns(() => new Promise<void>((resolve) => { finishSave = resolve; }));
+            const edited = jest.fn();
+            service.notebookEdited$.subscribe(edited);
+            const archiving = service.setNotebooksArchivedAsync(['active', 'legacy'], true);
+            expect(edited).not.toHaveBeenCalled();
+            expect(notesChanged).not.toHaveBeenCalled();
+            finishSave();
+            expect(await archiving).toBe(Operation.Success);
+            expect(active.isArchived).toBe(true);
+            expect(legacy.isArchived).toBe(true);
+            expect(edited).toHaveBeenCalledTimes(1);
+            expect(notesChanged).toHaveBeenCalledTimes(1);
+
+            const unarchiving = service.setNotebooksArchivedAsync(['active'], false);
+            finishSave();
+            expect(await unarchiving).toBe(Operation.Success);
+            expect(active.isArchived).toBe(false);
+        });
+
+        it('rolls back the archive state and reports save errors', async () => {
+            data.setup((x) => x.saveAsync()).returns(() => Promise.reject(new Error('Disk full')));
+            expect(await service.setNotebooksArchivedAsync(['active', 'legacy'], true)).toBe(Operation.Error);
+            expect(active.isArchived).toBe(false);
+            expect(legacy.isArchived).toBeUndefined();
+            expect(logError).toHaveBeenCalled();
+            expect(notesChanged).not.toHaveBeenCalled();
+        });
+
+        it.each([[[]], [[Constants.allNotesNotebookId]], [[Constants.unfiledNotesNotebookId]], [['missing']], [['active', 'missing']]])(
+            'rejects invalid archive selections %j without changing notebooks',
+            async (ids: string[]) => {
+                expect(await service.setNotebooksArchivedAsync(ids, true)).toBe(Operation.Error);
+                expect(active.isArchived).toBe(false);
+                expect(logError).toHaveBeenCalled();
+                expect(notesChanged).not.toHaveBeenCalled();
+            },
+        );
+
+        it('also excludes hidden archived notes from trash and marked totals', () => {
+            const visible = addNote(true, '');
+            visible.notebookId = active.id;
+            const hidden = addNote(true, '');
+            hidden.notebookId = archived.id;
+            data.setup((x) => x.getTrashedNotes()).returns(() => notes);
+            data.setup((x) => x.getMarkedNotes()).returns(() => notes);
+            const marked = jest.fn();
+            service.noteMarkChanged$.subscribe(marked);
+
+            expect(service.getTrashedNotes()).toEqual([visible]);
+            service.setNoteMark(visible.id, true);
+            expect(marked).toHaveBeenLastCalledWith(expect.objectContaining({ markedNotesCount: 1 }));
+
+            settings.setup((x) => x.showArchivedNotebooks).returns(() => true);
+            expect(service.getTrashedNotes()).toEqual(notes);
+            service.setNoteMark(visible.id, true);
+            expect(marked).toHaveBeenLastCalledWith(expect.objectContaining({ markedNotesCount: 2 }));
+        });
+    });
 
     describe('tags', () => {
         it('persists normalized tags before acknowledging success and refreshing notes', async () => {

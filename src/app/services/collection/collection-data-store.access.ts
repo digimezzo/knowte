@@ -81,8 +81,8 @@ export class CollectionDataStoreAccess {
         return this.dataStore.getNotebookById(notebookId);
     }
 
-    public updateNotebook(notebook: Notebook): void {
-        this.dataStore.updateNotebook(notebook);
+    public updateNotebook(notebook: Notebook, save: boolean = true): void {
+        this.dataStore.updateNotebook(notebook, save);
     }
 
     public deleteNotebook(notebookId: string): void {

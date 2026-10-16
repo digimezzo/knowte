@@ -5,5 +5,6 @@ export class Notebook {
 
     public id: string = nanoid();
     public isDefault: boolean = false;
+    public isArchived?: boolean = false;
     public isSelected: boolean;
 }

@@ -115,6 +115,14 @@ export class Settings implements BaseSettings {
         this.settings.set('notebooksPaneWidth', v);
     }
 
+    public get showArchivedNotebooks(): boolean {
+        return this.settings.get('showArchivedNotebooks');
+    }
+
+    public set showArchivedNotebooks(v: boolean) {
+        this.settings.set('showArchivedNotebooks', v);
+    }
+
     // moveDeletedNotesToTrash
     public get moveDeletedNotesToTrash(): boolean {
         return this.settings.get('moveDeletedNotesToTrash');
@@ -246,6 +254,10 @@ export class Settings implements BaseSettings {
 
         if (!this.settings.has('notebooksPaneWidth')) {
             this.settings.set('notebooksPaneWidth', 300);
+        }
+
+        if (!this.settings.has('showArchivedNotebooks')) {
+            this.settings.set('showArchivedNotebooks', false);
         }
 
         if (!this.settings.has('moveDeletedNotesToTrash')) {

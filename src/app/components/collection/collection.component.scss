@@ -71,6 +71,38 @@
     flex-direction: row;
 }
 
+.notebooks-archive-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    margin: -5px 0 0 auto;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--theme-secondary-text);
+    font-size: var(--fontsize-status-icon);
+    cursor: pointer;
+}
+
+.notebooks-archive-toggle:hover {
+    background-color: var(--theme-hover-background);
+}
+
+.notebooks-archive-toggle--active,
+.notebooks-archive-toggle--active:hover {
+    color: var(--theme-accent-color);
+    background-color: rgba(var(--theme-rgb-accent), 0.1);
+}
+
+.notebooks-archive-toggle:focus-visible {
+    outline: 2px solid var(--theme-accent-color);
+    outline-offset: 2px;
+}
+
 .notebooks-pane-content__list {
     flex: 1;
     overflow: auto;

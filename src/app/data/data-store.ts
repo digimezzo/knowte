@@ -12,7 +12,7 @@ export abstract class DataStore {
     public abstract getNotebookByName(name: string): Notebook;
     public abstract addNotebook(name: string): string;
     public abstract deleteNotebook(id: string): void;
-    public abstract updateNotebook(notebook: Notebook): void;
+    public abstract updateNotebook(notebook: Notebook, save?: boolean): void;
 
     public abstract getNotes(): Note[];
     public abstract getTrashedNotes(): Note[];

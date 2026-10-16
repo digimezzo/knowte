@@ -271,8 +271,10 @@ export class LokiDataStore extends DataStore {
         this.db.saveDatabase();
     }
 
-    public updateNotebook(notebook: Notebook): void {
+    public updateNotebook(notebook: Notebook, save: boolean = true): void {
         this.notebooks.update(notebook);
-        this.db.saveDatabase();
+        if (save) {
+            this.db.saveDatabase();
+        }
     }
 }

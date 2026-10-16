@@ -22,7 +22,16 @@
                 [ngStyle]="{ 'font-weight': notebook.id === '1' ? 'bold' : 'normal' }"
             >
                 <i class="menu-icon las la-folder" [ngClass]="{ isActive: notebook.name === selectedNotebookName }"></i>
-                <span>{{ notebook.name }}</span>
+                <span>
+                    {{ notebook.name }}
+                    <i
+                        class="notebook-archive-icon las la-archive ml-1"
+                        *ngIf="notebook.isArchived"
+                        [matTooltip]="'NotebookArchive.Archived' | translate"
+                        [attr.aria-label]="'NotebookArchive.Archived' | translate"
+                        role="img"
+                    ></i>
+                </span>
             </span>
         </button>
     </div>

@@ -32,7 +32,7 @@ describe('CollectionDataStoreAccess', () => {
         const notebook = new Notebook('Work');
         const update = jest.fn();
         dataStore.setup((x) => x.getNotebooks()).returns(() => [notebook]);
-        dataStore.setup((x) => x.updateNotebook(notebook)).callback(update);
+        dataStore.setup((x) => x.updateNotebook(notebook, It.isAny())).callback(update);
         const access = new CollectionDataStoreAccess(
             Mock.ofType<CollectionPathConverter>().object,
             Mock.ofType<FileAccess>().object,
@@ -43,7 +43,9 @@ describe('CollectionDataStoreAccess', () => {
 
         expect(access.getNotebooks()).toEqual([notebook]);
         access.updateNotebook(notebook);
-        expect(update).toHaveBeenCalledWith(notebook);
+        expect(update).toHaveBeenCalledWith(notebook, true);
+        access.updateNotebook(notebook, false);
+        expect(update).toHaveBeenLastCalledWith(notebook, false);
     });
 
     it('opens a destination through the factory without replacing the active store', async () => {

@@ -11,6 +11,7 @@ export abstract class BaseSettings {
     public abstract storageDirectory: string;
     public abstract activeCollection: string;
     public abstract notebooksPaneWidth: number;
+    public abstract showArchivedNotebooks: boolean;
     public abstract moveDeletedNotesToTrash: boolean;
     public abstract skipTrashForEmptyNotes: boolean;
     public abstract useLightHeaderBar: boolean;

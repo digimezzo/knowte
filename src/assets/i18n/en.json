@@ -14,6 +14,16 @@
         "SaveError": "Could not save the note tags. Please verify the log if you need more information.",
         "SearchHint": "Search titles and text. Use t:work t:urgent meeting to require both tags and text meeting. Put tags with spaces in quotes, e.g. t:\"project alpha\". Place tag filters before text."
     },
+    "NotebookArchive": {
+        "ShowArchived": "Show archived notebooks",
+        "HideArchived": "Hide archived notebooks",
+        "Archived": "Archived",
+        "Archive": "Archive notebook",
+        "ArchiveNotebooks": "Archive notebooks",
+        "Unarchive": "Unarchive notebook",
+        "UnarchiveNotebooks": "Unarchive notebooks",
+        "SaveError": "Could not change the notebook archive state. Please verify the log if you need more information."
+    },
     "NotesTabs": {
         "All": "All",
         "Today": "Today",

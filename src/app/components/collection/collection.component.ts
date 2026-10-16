@@ -84,6 +84,37 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
     public canDeleteNotebooks: boolean = false;
     public selectionWatcher: SelectionWatcher = new SelectionWatcher();
 
+    public get showArchivedNotebooks(): boolean {
+        return this.settings.showArchivedNotebooks;
+    }
+
+    public get canArchiveNotebooks(): boolean {
+        return this.selectionWatcher.selectedItems.some((notebook: Notebook) => !notebook.isDefault && !notebook.isArchived);
+    }
+
+    public get canUnarchiveNotebooks(): boolean {
+        return this.selectionWatcher.selectedItems.some((notebook: Notebook) => !notebook.isDefault && notebook.isArchived);
+    }
+
+    public async toggleArchivedNotebooksAsync(): Promise<void> {
+        this.settings.showArchivedNotebooks = !this.settings.showArchivedNotebooks;
+        await this.getNotebooksAsync();
+    }
+
+    public async setNotebooksArchivedAsync(isArchived: boolean): Promise<void> {
+        const notebookIds = this.selectionWatcher.selectedItems
+            .filter((notebook: Notebook) => !notebook.isDefault && !!notebook.isArchived !== isArchived)
+            .map((notebook: Notebook) => notebook.id);
+        const operation = await this.collection.setNotebooksArchivedAsync(notebookIds, isArchived);
+        if (operation === Operation.Error) {
+            const errorText = await this.translator.getAsync('NotebookArchive.SaveError');
+            this.dialog.open(ErrorDialogComponent, {
+                width: '450px',
+                data: {errorText: errorText},
+            });
+        }
+    }
+
     public ngOnDestroy(): void {
         this.subscription.unsubscribe();
     }
@@ -315,6 +346,8 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
         // Set 1st notebook active by default
         this.activeNotebook = this.selectionWatcher.selectedItems[0];
         this.notebooksCount = this.notebooks.length - 2;
+        this.canRenameNotebook = false;
+        this.canDeleteNotebooks = false;
     }
 
     private async getNotebooksAndResetSelectionAsync(): Promise<void> {
