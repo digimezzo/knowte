@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Constants } from '../../common/application/constants';
 import { ProductInformation } from '../../common/application/product-information';
 import { Operation } from '../../common/enums/operation';
 import { CollectionService } from '../../services/collection/collection.service';
@@ -183,6 +184,10 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
 
     public openTrash(): void {
         this.trashService.openTrash();
+    }
+
+    public openDonateLink(): void {
+        require('electron').shell.openExternal(Constants.donateUrl);
     }
 
     public downloadLatestRelease(): void {

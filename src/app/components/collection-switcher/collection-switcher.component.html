@@ -47,7 +47,7 @@
         </span>
     </button>
     <mat-divider></mat-divider>
-    <button class="menu-button" mat-menu-item (click)="openTrash()">
+    <button class="menu-button" mat-menu-item (click)="openDonateLink()">
         <span class="d-flex align-items-center"> <i class="donate-icon las la-heart mr-1"></i> {{ 'AboutPage.Donate' | translate }} </span>
     </button>
     <div *ngIf="this.updateService.isUpdateAvailable">
