@@ -10,6 +10,7 @@ import { ElectronService } from './services/electron.service';
 import { SpellCheckService } from './services/spell-check/spell-check.service';
 import { TemporaryStorageService } from './services/temporary-storage/temporary-storage.service';
 import { TrashService } from './services/trash/trash.service';
+import { BackupService } from './services/backup/backup.service';
 
 @Component({
     selector: 'app-root',
@@ -27,6 +28,7 @@ export class AppComponent implements OnInit, OnDestroy {
         private spellCheckerService: SpellCheckService,
         private temporaryStorageService: TemporaryStorageService,
         private trash: TrashService,
+        private backup: BackupService,
     ) {
         log.create('renderer');
         log.transports.file.resolvePath = () => path.join(remote.app.getPath('userData'), 'logs', 'Knowte.log');
@@ -41,6 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         if (!this.isNoteWindow()) {
             this.temporaryStorageService.clearDecryptedMarkdownAttachmentsCache();
+            this.backup.start();
         }
 
         this.appearance.applyAppearance();

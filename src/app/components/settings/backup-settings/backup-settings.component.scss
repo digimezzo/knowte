@@ -1,0 +1,63 @@
+.backup-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.backup-settings p {
+    // Angular Material's global typography styles (`.mat-typography p`) inject an
+    // unwanted bottom margin on every paragraph, which stacks on top of the gaps
+    // already defined below and makes the spacing between sections look inconsistent
+    // and too large. Rely solely on flex `gap` for spacing in this component instead.
+    margin: 0;
+}
+
+.backup-settings__group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.backup-settings__fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 100px;
+    align-items: center;
+    gap: 8px 16px;
+    max-width: 100%;
+}
+
+.backup-settings__fields mat-form-field {
+    width: 100px;
+}
+
+.backup-settings__path {
+    overflow-wrap: anywhere;
+    max-width: 100%;
+    min-width: 0;
+    color: var(--theme-accent-color);
+    font-weight: bold;
+    line-height: 30px;
+}
+
+.backup-settings__action {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.backup-settings__spinner {
+    flex: 0 0 auto;
+}
+
+.backup-settings__clear-icon {
+    flex: 0 0 auto;
+    font-size: 18px;
+    color: var(--theme-secondary-text);
+}
+
+.backup-settings__clear-icon:hover {
+    color: var(--theme-primary-text);
+}

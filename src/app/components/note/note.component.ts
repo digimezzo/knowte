@@ -145,6 +145,32 @@ export class NoteComponent implements OnInit {
 
     private addSubscriptions(): void {
         this.subscription.add(
+            this.collectionClient.prepareNoteBackup$.subscribe(async ({ noteId, callback }) => {
+                if (this.noteId !== noteId) {
+                    return;
+                }
+                try {
+                    if (this.isBusy || this.isEditingTags || !this.hasLoadedNoteContent) {
+                        throw new Error('The note is not ready for backup.');
+                    }
+                    if (this.isTitleDirty) {
+                        throw new Error('A note title is still being edited. Retry after it has been saved.');
+                    }
+                    if ((this.isTextDirty || this.pendingContentSave) &&
+                        await this.saveNoteContentAsync() !== Operation.Success) {
+                        throw new Error('Could not save note content for backup.');
+                    }
+                    if (this.isTextDirty || this.isTitleDirty) {
+                        throw new Error('The note changed while saving for backup.');
+                    }
+                    callback(JSON.stringify({ revision: this.contentRevision, title: this.noteTitle }));
+                } catch (error) {
+                    this.logger.warn(`Could not prepare note for backup: ${error.message}`, 'NoteComponent', 'prepareNoteBackup');
+                    callback(JSON.stringify({ error: error.message }));
+                }
+            }),
+        );
+        this.subscription.add(
             this.noteTitleChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async (finalNoteTitle) => {
                 await this.saveNoteTitleAsync(finalNoteTitle);
             }),

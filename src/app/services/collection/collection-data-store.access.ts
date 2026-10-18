@@ -6,9 +6,17 @@ import { DataStoreFactory } from '../../data/data-store-factory';
 import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
 import { CollectionPathConverter } from './collection-path-converter';
+import { markCollectionChangedAsync } from './collection-revision-marker';
 
 @Injectable()
 export class CollectionDataStoreAccess {
+    private collectionName: string = '';
+    // Tracks whether a data-store mutation is pending since the last save, so that saveAsync()
+    // only bumps the collection's revision marker for genuine changes, not for the repeated
+    // flush-only saves the backup checkpoint mechanism performs while checking directory
+    // stability (which would otherwise make the collection look like it never stops changing).
+    private hasPendingChanges: boolean = false;
+
     public constructor(
         private collectionPathConverter: CollectionPathConverter,
         private fileAccess: FileAccess,
@@ -20,21 +28,37 @@ export class CollectionDataStoreAccess {
     public async initializeAsync(collection: string): Promise<void> {
         const databaseFilePath: string = this.getCollectionDatabasePath(collection);
         await this.dataStore.initializeAsync(databaseFilePath);
+        this.collectionName = collection;
         this.logger.info(`Initialized data store: ${databaseFilePath}`, 'CollectionDataStoreAccess', 'initializeAsync');
     }
 
     public async openCollectionAsync(collection: string): Promise<CollectionDataStoreAccess> {
         const store = await this.dataStoreFactory.openAsync(this.getCollectionDatabasePath(collection));
-        return new CollectionDataStoreAccess(
+        const collectionDataStoreAccess = new CollectionDataStoreAccess(
             this.collectionPathConverter,
             this.fileAccess,
             store,
             this.logger,
             this.dataStoreFactory
         );
+        collectionDataStoreAccess.collectionName = collection;
+        return collectionDataStoreAccess;
     }
 
     public async saveAsync(): Promise<void> {
+        // Mark the collection as changed before persisting the database, so that automatic
+        // backups never miss a genuine mutation even if the app is interrupted part-way through.
+        // Only do this when a mutation is actually pending: saveAsync() is also invoked as a
+        // plain flush (for example during backup checkpoints), and marking unconditionally would
+        // make the collection appear to change on every checkpoint.
+        if (this.collectionName && this.hasPendingChanges) {
+            await markCollectionChangedAsync(
+                this.fileAccess,
+                this.collectionPathConverter.getCollectionDirectoryPathFromCollectionName(this.collectionName)
+            );
+            this.hasPendingChanges = false;
+        }
+
         await this.dataStore.saveAsync();
     }
 
@@ -61,6 +85,7 @@ export class CollectionDataStoreAccess {
         }
 
         // Add the notebook to the data store
+        this.hasPendingChanges = true;
         this.dataStore.addNotebook(notebookName);
         this.logger.info(`Added notebook '${notebookName}' to the data store`, 'CollectionDataStoreAccess', 'addNotebookIfDoesNotExist');
 
@@ -74,6 +99,7 @@ export class CollectionDataStoreAccess {
     }
 
     public addNotebook(notebookName: string): string {
+        this.hasPendingChanges = true;
         return this.dataStore.addNotebook(notebookName);
     }
 
@@ -82,10 +108,12 @@ export class CollectionDataStoreAccess {
     }
 
     public updateNotebook(notebook: Notebook, save: boolean = true): void {
+        this.hasPendingChanges = true;
         this.dataStore.updateNotebook(notebook, save);
     }
 
     public deleteNotebook(notebookId: string): void {
+        this.hasPendingChanges = true;
         this.dataStore.deleteNotebook(notebookId);
     }
 
@@ -94,14 +122,17 @@ export class CollectionDataStoreAccess {
     }
 
     public deleteNote(noteId: string): void {
+        this.hasPendingChanges = true;
         this.dataStore.deleteNote(noteId);
     }
 
     public trashNote(noteId: string): void {
+        this.hasPendingChanges = true;
         this.dataStore.trashNote(noteId);
     }
 
     public restoreNote(noteId: string): void {
+        this.hasPendingChanges = true;
         this.dataStore.restoreNote(noteId);
     }
 
@@ -118,6 +149,7 @@ export class CollectionDataStoreAccess {
     }
 
     public updateNote(note: Note): void {
+        this.hasPendingChanges = true;
         this.dataStore.updateNote(note);
     }
 
@@ -126,6 +158,7 @@ export class CollectionDataStoreAccess {
     }
 
     public updateNoteWithoutDate(note: Note): void {
+        this.hasPendingChanges = true;
         this.dataStore.updateNoteWithoutDate(note);
     }
 
@@ -142,6 +175,7 @@ export class CollectionDataStoreAccess {
     }
 
     public addNote(uniqueNoteTitle: string, notebookId: string, isMarkdownNote: boolean): string {
+        this.hasPendingChanges = true;
         return this.dataStore.addNote(uniqueNoteTitle, notebookId, isMarkdownNote);
     }
 
@@ -150,10 +184,12 @@ export class CollectionDataStoreAccess {
     }
 
     public encryptNote(noteId: string, secretKeyHash: string): void {
+        this.hasPendingChanges = true;
         this.dataStore.encryptNote(noteId, secretKeyHash);
     }
 
     public decryptNote(noteId: string): void {
+        this.hasPendingChanges = true;
         this.dataStore.decryptNote(noteId);
     }
 }

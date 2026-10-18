@@ -5,6 +5,21 @@ import { BaseSettings } from '../../common/settings/base-settings';
 import { CollectionFileAccess } from './collection-file-access';
 
 describe('CollectionFileAccess deleteNoteFilesAsync', () => {
+    it('does not expose incomplete restore staging directories as collections', async () => {
+        const files = Mock.ofType<FileAccess>();
+        const settings = Mock.ofType<BaseSettings>();
+        settings.setup((value) => value.storageDirectory).returns(() => '/storage');
+        files.setup((value) => value.getDirectoriesInDirectoryAsync('/storage'))
+            .returns(async () => ['/storage/Work', '/storage/.knowte-restore-staging', '/storage/.knowte-restore-personal']);
+        files.setup((value) => value.getDirectoryOrFileName(It.isAnyString()))
+            .returns((value: string) => value.split('/').pop());
+        files.setup((value) => value.combinePath(It.isAnyString(), It.isAnyString(), It.isAnyString()))
+            .returns((parent: string, name: string, file: string) => `${parent}/${name}/${file}`);
+        files.setup((value) => value.pathExists('/storage/.knowte-restore-personal/.knowte-restore-personal.db'))
+            .returns(() => true);
+        const service = new CollectionFileAccess(files.object, settings.object, Mock.ofType<Logger>().object);
+        expect(await service.getCollectionsAsync()).toEqual(['Work', '.knowte-restore-personal']);
+    });
     it('includes tags in classic note exports', async () => {
         const files = Mock.ofType<FileAccess>();
         let exported: string;
@@ -61,6 +76,8 @@ describe('CollectionFileAccess deleteNoteFilesAsync', () => {
             const settings = Mock.ofType<BaseSettings>();
             settings.setup((x) => x.storageDirectory).returns(() => '/storage');
             files.setup((x) => x.combinePath(It.isAny(), It.isAny())).returns((parent: string, child: string) => `${parent}/${child}`);
+            files.setup((x) => x.writeTextToFileAsync(It.isAnyString(), It.isAnyString())).returns(async () => undefined);
+            files.setup((x) => x.renameFileOrDirectory(It.isAnyString(), It.isAnyString())).returns(() => undefined);
             let createDirectory: () => void;
             files.setup((x) => x.createFullDirectoryPathIfDoesNotExistAsync('/storage/collection/note'))
                 .returns(() => new Promise<void>((resolve) => { createDirectory = resolve; }));
@@ -77,6 +94,12 @@ describe('CollectionFileAccess deleteNoteFilesAsync', () => {
             const save = service.createNoteImageFileAsync('note', 'collection', Buffer.from('image'), 'image').then(() => {
                 completed = true;
             });
+
+            // Flush the microtasks used by the (mocked) collection-changed marker write before the
+            // directory-creation promise resolver is captured.
+            await Promise.resolve();
+            await Promise.resolve();
+            await Promise.resolve();
 
             files.verify((x) => x.writeBufferToFileAsync(It.isAnyString(), It.isAny()), Times.never());
             createDirectory();
@@ -112,4 +135,84 @@ describe('CollectionFileAccess deleteNoteFilesAsync', () => {
 
         files.verify((x) => x.deleteDirectoryRecursively('/storage/collection/note-id'), Times.once());
     });
+
+    describe('marking the collection as changed before mutating backed-up data', () => {
+        function setupFiles(): ReturnType<typeof Mock.ofType<FileAccess>> {
+            const files = Mock.ofType<FileAccess>();
+            files.setup((x) => x.combinePath(It.isAny(), It.isAny())).returns((parent: string, child: string) => `${parent}/${child}`);
+            files.setup((x) => x.writeTextToFileAsync(It.isAnyString(), It.isAnyString())).returns(async () => undefined);
+            files.setup((x) => x.renameFileOrDirectory(It.isAnyString(), It.isAnyString())).returns(() => undefined);
+            files.setup((x) => x.writeBufferToFileAsync(It.isAnyString(), It.isAny())).returns(async () => undefined);
+            files.setup((x) => x.createFullDirectoryPathIfDoesNotExistAsync(It.isAnyString())).returns(async () => undefined);
+            files.setup((x) => x.createFullDirectoryPathIfDoesNotExist(It.isAnyString())).returns(() => undefined);
+            files.setup((x) => x.pathExists(It.isAnyString())).returns(() => false);
+            files.setup((x) => x.pathExistsAsync(It.isAnyString())).returns(async () => false);
+            files.setup((x) => x.deleteFileIfExistsAsync(It.isAnyString())).returns(async () => undefined);
+            files.setup((x) => x.copyFileOrDirectoryAsync(It.isAnyString(), It.isAnyString())).returns(async () => undefined);
+            return files;
+        }
+
+        it('writes a fresh revision token before saving note content', async () => {
+            const files = setupFiles();
+            const settings = Mock.ofType<BaseSettings>();
+            settings.setup((x) => x.storageDirectory).returns(() => '/storage');
+            const service = new CollectionFileAccess(files.object, settings.object, Mock.ofType<Logger>().object);
+
+            await service.saveNoteContentAsync('note', 'content', 'collection', false);
+
+            files.verify(
+                (x) => x.writeTextToFileAsync('/storage/collection/.knowte-revision.json.tmp', It.isAnyString()),
+                Times.once(),
+            );
+            files.verify(
+                (x) =>
+                    x.renameFileOrDirectory(
+                        '/storage/collection/.knowte-revision.json.tmp',
+                        '/storage/collection/.knowte-revision.json',
+                    ),
+                Times.once(),
+            );
+        });
+
+        it('writes a fresh revision token before creating an attachment directory', async () => {
+            const files = setupFiles();
+            const settings = Mock.ofType<BaseSettings>();
+            settings.setup((x) => x.storageDirectory).returns(() => '/storage');
+            const service = new CollectionFileAccess(files.object, settings.object, Mock.ofType<Logger>().object);
+
+            await service.createNoteImageFileAsync('note', 'collection', Buffer.from('image'), 'image');
+
+            files.verify(
+                (x) => x.writeTextToFileAsync('/storage/collection/.knowte-revision.json.tmp', It.isAnyString()),
+                Times.once(),
+            );
+        });
+
+        it('does not write a revision token when there are no attachments to clean up', async () => {
+            const files = setupFiles();
+            const settings = Mock.ofType<BaseSettings>();
+            settings.setup((x) => x.storageDirectory).returns(() => '/storage');
+            const service = new CollectionFileAccess(files.object, settings.object, Mock.ofType<Logger>().object);
+
+            await service.deleteUnusedNoteAttachmentsAsync('note', 'collection', 'text');
+
+            files.verify((x) => x.writeTextToFileAsync(It.isAnyString(), It.isAnyString()), Times.never());
+        });
+
+        it('writes a fresh revision token before renaming collection files', async () => {
+            const files = setupFiles();
+            const settings = Mock.ofType<BaseSettings>();
+            settings.setup((x) => x.storageDirectory).returns(() => '/storage');
+            const service = new CollectionFileAccess(files.object, settings.object, Mock.ofType<Logger>().object);
+
+            await service.renameCollectionFiles('old', 'new');
+
+            files.verify(
+                (x) => x.writeTextToFileAsync('/storage/old/.knowte-revision.json.tmp', It.isAnyString()),
+                Times.once(),
+            );
+            files.verify((x) => x.renameFileOrDirectory('/storage/old', '/storage/new'), Times.once());
+        });
+    });
 });
+

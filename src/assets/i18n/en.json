@@ -4,6 +4,28 @@
         "Text": "To begin using Knowte, please select a directory in which you want your notes to be saved. If you would like to import notes which you already have, just select the directory that has them and Knowte will import them for you.",
         "SelectButton": "SELECT..."
     },
+    "Backup": {
+        "Title": "Backup",
+        "Description": "Back up all collections to a separate folder while Knowte is running. Each backup is a standalone archive.",
+        "Automatic": "Enable automatic backups",
+        "NoFolder": "No backup folder selected",
+        "SelectFolder": "Select backup folder...",
+        "ClearFolder": "Clear selected folder",
+        "SelectLocalFolder": "Select a local folder for your restored collection",
+        "Interval": "Interval (minutes)",
+        "Retention": "Backups to keep per collection",
+        "Now": "Back up now",
+        "LastSuccess": "Last successful backup check:",
+        "NextAttempt": "Next backup attempt:",
+        "CloudNotice": "A successful backup means the archive was verified in the selected folder. If you use a cloud-synced folder, your sync application controls when it is uploaded. Unavailable destinations are retried after five minutes.",
+        "Privacy": "Backups are not password-protected. Already encrypted notes and attachments remain encrypted.",
+        "Restore": "Restore a backup",
+        "RestoreButton": "Restore a backup...",
+        "RestoreDescription": "Restore into a new collection without changing your existing notes. Afterwards, select the restored collection in the collection switcher.",
+        "Busy": "Working in the background. You can continue using Knowte.",
+        "Restored": "Restored collection: {{collection}}",
+        "StorageError": "Could not create the local collections folder."
+    },
     "LoadingPage": {
         "Text": "Loading..."
     },

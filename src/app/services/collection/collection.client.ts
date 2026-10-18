@@ -24,6 +24,8 @@ export class CollectionClient {
     private globalEmitter: any = remote.getGlobal('globalEmitter');
 
     public constructor(private scheduler: Scheduler) {
+        this.globalEmitter.on(CollectionEvents.prepareNoteBackupEvent,
+            (noteId: string, callback: (result: string) => void) => this.prepareNoteBackup.next({ noteId, callback }));
         this.globalEmitter.on(CollectionEvents.closeNoteEvent, (noteId: string) => this.closeNote.next(noteId));
         this.globalEmitter.on(CollectionEvents.prepareNoteDeletionEvent, (noteId: string, callback: (operation: Operation) => void) =>
             this.prepareNoteDeletion.next({ noteId, callback }),
@@ -38,6 +40,10 @@ export class CollectionClient {
 
     private closeAllNotes: Subject<void> = new Subject();
     public closeAllNotes$: Observable<void> = this.closeAllNotes.asObservable();
+
+    private prepareNoteBackup: Subject<{ noteId: string; callback: (result: string) => void }> = new Subject();
+    public prepareNoteBackup$: Observable<{ noteId: string; callback: (result: string) => void }> =
+        this.prepareNoteBackup.asObservable();
 
     private closeNote: Subject<string> = new Subject();
     public closeNote$: Observable<string> = this.closeNote.asObservable();

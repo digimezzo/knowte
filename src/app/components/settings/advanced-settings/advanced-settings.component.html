@@ -14,7 +14,12 @@
     <mat-divider class="my-3"></mat-divider>
     <div class="title1 mt-2">{{ 'SettingsPage.CollectionsDirectory' | translate }}</div>
     <div>{{ 'SettingsPage.SelectOtherCollectionsDirectory' | translate }}</div>
-    <app-accent-button class="mt-2" (click)="openDirectoryChooserAsync()">
-        {{ 'SettingsPage.SelectButton' | translate }}
-    </app-accent-button>
+    <div class="collections-directory__action mt-2">
+        <app-accent-button (click)="openDirectoryChooserAsync()">
+            {{ 'SettingsPage.SelectButton' | translate }}
+        </app-accent-button>
+        <p class="collections-directory__path">{{ settings.storageDirectory }}</p>
+    </div>
+    <mat-divider class="my-3"></mat-divider>
+    <app-backup-settings></app-backup-settings>
 </div>

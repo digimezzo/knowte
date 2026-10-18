@@ -42,6 +42,12 @@ globalAny.globalEmitter = new GlobalEventEmitter();
 electron_log_1.default.transports.file.level = 'info';
 const remoteMain = require('@electron/remote/main');
 remoteMain.initialize();
+require('./main/backup-controller').registerBackups({
+    app: electron_1.app,
+    ipcMain: electron_1.ipcMain,
+    getMainWindow: () => mainWindow,
+    log: electron_log_1.default,
+});
 function createMainWindow() {
     const gotTheLock = electron_1.app.requestSingleInstanceLock();
     if (!gotTheLock) {

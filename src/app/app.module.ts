@@ -32,6 +32,7 @@ import 'zone.js/mix';
 import '../polyfills';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { BackupSettingsComponent } from './components/settings/backup-settings/backup-settings.component';
 import { DataStore } from './data/data-store';
 import { DataStoreFactory } from './data/data-store-factory';
 import { LokiDataStore } from './data/loki-data-store';
@@ -202,6 +203,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
 @NgModule({
     declarations: [
         AppComponent,
+        BackupSettingsComponent,
         WindowControlsComponent,
         CollectionSwitcherComponent,
         NotebookSwitcherComponent,

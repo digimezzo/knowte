@@ -78,6 +78,7 @@ describe('CollectionService note deletion', () => {
         settings = Mock.ofInstance<BaseSettings>({
             ...Mock.ofType<BaseSettings>().object,
             activeCollection: 'collection',
+            storageDirectory: '/local',
             moveDeletedNotesToTrash: true,
             skipTrashForEmptyNotes: true,
             showArchivedNotebooks: false,
@@ -158,6 +159,46 @@ describe('CollectionService note deletion', () => {
         contents.set(note.id, content);
         return note;
     }
+
+    describe('backup checkpoints', () => {
+        beforeEach(() => {
+            service['isInitialized'] = true;
+            service.activeCollection = 'collection';
+        });
+
+        it('waits for open notes and database saves without closing note windows', async () => {
+            service['openNoteIds'] = ['note-1'];
+            emit.mockImplementation((event, _noteId, callback) => {
+                if (event === CollectionEvents.prepareNoteBackupEvent) {
+                    callback(JSON.stringify({ revision: 4, title: 'Saved' }));
+                }
+            });
+            let saved = false;
+            data.setup((value) => value.saveAsync()).returns(async () => { saved = true; });
+            const result = await service.prepareBackupAsync('collection', '/local');
+            expect(result).toContain('note-1');
+            expect(result).toContain('revision');
+            expect(saved).toBe(true);
+            expect(service['openNoteIds']).toEqual(['note-1']);
+            expect(emit).not.toHaveBeenCalledWith(CollectionEvents.closeNoteEvent, 'note-1');
+        });
+
+        it('rejects checkpoints during collection moves or storage changes', async () => {
+            await expect(service.prepareBackupAsync('collection', '/elsewhere')).rejects.toThrow('changing');
+            service['movingNoteIds'].add('moving');
+            await expect(service.prepareBackupAsync('collection', '/local')).rejects.toThrow('changing');
+        });
+
+        it('propagates note-save errors instead of confirming an unsafe snapshot', async () => {
+            service['openNoteIds'] = ['note-1'];
+            emit.mockImplementation((event, _noteId, callback) => {
+                if (event === CollectionEvents.prepareNoteBackupEvent) {
+                    callback(JSON.stringify({ error: 'Could not save note' }));
+                }
+            });
+            await expect(service.prepareBackupAsync('collection', '/local')).rejects.toThrow('Could not save note');
+        });
+    });
 
     describe('notebook archiving', () => {
         let active: Notebook;

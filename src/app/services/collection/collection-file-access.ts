@@ -6,6 +6,7 @@ import { Logger } from '../../common/logging/logger';
 import { BaseSettings } from '../../common/settings/base-settings';
 import { StringUtils } from '../../common/utils/strings-utils';
 import { ClassicNoteExport } from './classic-note-export';
+import { markCollectionChangedAsync } from './collection-revision-marker';
 import { MarkdownNoteExportMetadata } from './markdown-note-export-metadata';
 
 @Injectable()
@@ -18,7 +19,20 @@ export class CollectionFileAccess {
         private logger: Logger,
     ) {}
 
+    /**
+     * Marks the given collection's backed-up data as changed, by persisting a fresh revision
+     * token to its revision marker file. This must be called conservatively, before performing
+     * the actual write, so that automatic backups never miss an in-flight mutation even if the
+     * app is interrupted part-way through. See collection-revision-marker.ts for details, and the
+     * README for the documented limitation this mechanism accepts (it trusts the token and does
+     * not detect changes made to the collection while Knowte is closed).
+     */
+    public async markCollectionChangedAsync(collection: string): Promise<void> {
+        await markCollectionChangedAsync(this.fileAccess, this.getCollectionDirectoryPath(collection));
+    }
+
     public async saveNoteContentAsync(noteId: string, noteContent: string, collection: string, isMarkdownNote: boolean): Promise<void> {
+        await this.markCollectionChangedAsync(collection);
         const noteContentFilePath: string = this.getNoteContentFilePath(noteId, collection, isMarkdownNote);
         await this.fileAccess.writeTextToFileAsync(noteContentFilePath, noteContent);
     }
@@ -40,6 +54,7 @@ export class CollectionFileAccess {
     }
 
     public async deleteNoteFilesAsync(noteId: string, collection: string, isMarkdownNote: boolean): Promise<void> {
+        await this.markCollectionChangedAsync(collection);
         const noteContentFilePath: string = this.getNoteContentFilePath(noteId, collection, isMarkdownNote);
         const noteStateFilePath: string = this.getNoteStateFilePath(noteId, collection);
 
@@ -57,6 +72,7 @@ export class CollectionFileAccess {
 
     public async createCollectionDirectoryAsync(collectionDirectory: string): Promise<void> {
         await this.fileAccess.createFullDirectoryPathIfDoesNotExist(this.getCollectionDirectoryPath(collectionDirectory));
+        await this.markCollectionChangedAsync(collectionDirectory);
     }
 
     public async createCollectionDirectoryIfNotExistsAsync(collectionDirectory: string): Promise<void> {
@@ -64,6 +80,7 @@ export class CollectionFileAccess {
 
         if (!this.fileAccess.pathExists(collectionDirectoryPath)) {
             await this.fileAccess.createFullDirectoryPathIfDoesNotExist(collectionDirectoryPath);
+            await this.markCollectionChangedAsync(collectionDirectory);
         }
     }
 
@@ -106,9 +123,13 @@ export class CollectionFileAccess {
         );
     }
 
-    public renameCollectionFiles(oldCollection: string, newCollection: string): void {
+    public async renameCollectionFiles(oldCollection: string, newCollection: string): Promise<void> {
         const oldCollectionDirectoryPath: string = this.getCollectionDirectoryPath(oldCollection);
         const newCollectionDirectoryPath: string = this.getCollectionDirectoryPath(newCollection);
+
+        // Mark the collection as changed before renaming, so that an interruption still leaves
+        // behind a revision that differs from the last backed-up one.
+        await this.markCollectionChangedAsync(oldCollection);
 
         // 1. First, rename the database file.
         this.fileAccess.renameFileOrDirectory(
@@ -124,7 +145,10 @@ export class CollectionFileAccess {
         const storageDirectory: string = this.settings.storageDirectory;
         const directoryPaths: string[] = await this.fileAccess.getDirectoriesInDirectoryAsync(storageDirectory);
 
-        return directoryPaths.map((x) => this.fileAccess.getDirectoryOrFileName(x));
+        return directoryPaths.map((x) => this.fileAccess.getDirectoryOrFileName(x))
+            .filter((name) => !name.startsWith('.knowte-restore-') || this.fileAccess.pathExists(
+                this.fileAccess.combinePath(storageDirectory, name, `${name}.db`),
+            ));
     }
 
     public hasStorageDirectory(): boolean {
@@ -220,6 +244,7 @@ export class CollectionFileAccess {
     }
 
     public async createNoteImageFileAsync(noteId: string, collection: string, imageBuffer: Buffer, imageId: string): Promise<void> {
+        await this.markCollectionChangedAsync(collection);
         const noteAttachmentsDirectoryPath: string = this.getNoteAttachmentsDirectoryPath(noteId, collection);
         await this.fileAccess.createFullDirectoryPathIfDoesNotExistAsync(noteAttachmentsDirectoryPath);
 
@@ -233,6 +258,8 @@ export class CollectionFileAccess {
         if (!(await this.fileAccess.pathExistsAsync(noteAttachmentsDirectoryPath))) {
             return;
         }
+
+        await this.markCollectionChangedAsync(collection);
 
         const noteAttachmentFilePaths: string[] = await this.fileAccess.getFilesInDirectoryAsync(noteAttachmentsDirectoryPath);
 
@@ -268,6 +295,7 @@ export class CollectionFileAccess {
         }
 
         const noteAttachmentsDestinationDirectoryPath: string = this.getNoteAttachmentsDirectoryPath(noteId, collection);
+        await this.markCollectionChangedAsync(collection);
         this.fileAccess.createFullDirectoryPathIfDoesNotExist(noteAttachmentsDestinationDirectoryPath);
         await this.fileAccess.copyFileOrDirectoryAsync(noteAttachmentsSourceDirectoryPath, noteAttachmentsDestinationDirectoryPath);
     }

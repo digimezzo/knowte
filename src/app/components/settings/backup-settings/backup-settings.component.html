@@ -1,0 +1,69 @@
+<div class="backup-settings">
+    <div class="backup-settings__group">
+        <div class="title1">{{ 'Backup.Title' | translate }}</div>
+        <p *ngIf="!restoreOnly">{{ 'Backup.Description' | translate }}</p>
+    </div>
+    <ng-container *ngIf="!restoreOnly">
+        <div class="backup-settings__group">
+            <div class="backup-settings__action">
+                <app-accent-button [ngClass]="{ inactive: backup.busy }" (click)="chooseDestinationAsync()">
+                    {{ 'Backup.SelectFolder' | translate }}
+                </app-accent-button>
+                <p class="backup-settings__path">{{ settings.backupDirectory || ('Backup.NoFolder' | translate) }}</p>
+                <i
+                    class="las la-times backup-settings__clear-icon pointer"
+                    *ngIf="settings.backupDirectory"
+                    [ngClass]="{ inactive: backup.busy }"
+                    matTooltip="{{ 'Backup.ClearFolder' | translate }}"
+                    (click)="clearDestination()"
+                ></i>
+            </div>
+        </div>
+        <fieldset class="backup-settings__group" [disabled]="!settings.backupDirectory"
+            [ngClass]="{ inactive: !settings.backupDirectory }">
+            <app-toggle-switch [(isChecked)]="settings.backupEnabled" (isCheckedChange)="backup.configurationChanged()">
+                {{ 'Backup.Automatic' | translate }}
+            </app-toggle-switch>
+            <div class="backup-settings__fields" [ngClass]="{ inactive: !settings.backupEnabled && settings.backupDirectory }">
+                <label for="backup-interval">{{ 'Backup.Interval' | translate }}</label>
+                <mat-form-field subscriptSizing="dynamic">
+                    <input id="backup-interval" matInput type="number" min="15" max="180" step="1" [(ngModel)]="settings.backupIntervalMinutes"
+                        (ngModelChange)="backup.configurationChanged()" [disabled]="backup.busy || !settings.backupDirectory || !settings.backupEnabled">
+                </mat-form-field>
+                <label for="backup-retention">{{ 'Backup.Retention' | translate }}</label>
+                <mat-form-field subscriptSizing="dynamic">
+                    <input id="backup-retention" matInput type="number" min="1" max="20" step="1" [(ngModel)]="settings.backupRetentionCount"
+                        (ngModelChange)="backup.configurationChanged()" [disabled]="backup.busy || !settings.backupDirectory || !settings.backupEnabled">
+                </mat-form-field>
+            </div>
+        </fieldset>
+        <div class="backup-settings__group">
+            <div class="backup-settings__action">
+                <app-accent-button [ngClass]="{ inactive: backup.busy || !settings.backupDirectory }" (click)="backUpAsync()">
+                    {{ 'Backup.Now' | translate }}
+                </app-accent-button>
+                <mat-spinner *ngIf="backup.activeAction === 'backup'" [diameter]="16" class="backup-settings__spinner"></mat-spinner>
+            </div>
+        </div>
+        <mat-divider class="mt-1"></mat-divider>
+    </ng-container>
+    <div class="backup-settings__group">
+        <div class="title1" *ngIf="!restoreOnly">{{ 'Backup.Restore' | translate }}</div>
+        <p>{{ 'Backup.RestoreDescription' | translate }}</p>
+    </div>
+    <div class="backup-settings__group">
+        <div class="backup-settings__action">
+            <app-accent-button [ngClass]="{ inactive: backup.busy }" (click)="restoreAsync()">
+                {{ 'Backup.RestoreButton' | translate }}
+            </app-accent-button>
+            <mat-spinner *ngIf="backup.activeAction === 'restore'" [diameter]="16" class="backup-settings__spinner"></mat-spinner>
+            <p role="status" class="backup-settings__path" *ngIf="backup.restoredCollection">
+                {{ 'Backup.Restored' | translate: { collection: backup.restoredCollection } }}
+            </p>
+        </div>
+    </div>
+    <div class="backup-settings__group" *ngIf="(backup.busy && backup.activeAction !== 'restore') || settings.backupLastError">
+        <p role="status" *ngIf="backup.busy && backup.activeAction !== 'restore'">{{ 'Backup.Busy' | translate }}</p>
+        <p role="alert" *ngIf="settings.backupLastError">{{ settings.backupLastError }}</p>
+    </div>
+</div>

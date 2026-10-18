@@ -100,6 +100,46 @@ describe('NoteComponent preparing deletion', () => {
         component['addSubscriptions']();
     });
 
+    it('saves dirty content for backup without closing or blocking the note window', async () => {
+        component['isTextDirty'] = true;
+        component.noteTitle = 'Saved note';
+        const result = await new Promise<string>((resolve) => {
+            client['prepareNoteBackup'].next({ noteId: 'note-id', callback: resolve });
+        });
+        expect(JSON.parse(result)).toEqual({ revision: 0, title: 'Saved note' });
+        expect(writeContent).toHaveBeenCalledTimes(1);
+        expect(component.isBusy).toBe(false);
+        expect(closeWindow).not.toHaveBeenCalled();
+    });
+
+    it('does not rewrite a clean note during backup checkpoints', async () => {
+        const result = await new Promise<string>((resolve) => {
+            client['prepareNoteBackup'].next({ noteId: 'note-id', callback: resolve });
+        });
+        expect(JSON.parse(result).error).toBeUndefined();
+        expect(writeContent).not.toHaveBeenCalled();
+    });
+
+    it('waits for normal title autosave instead of competing with title edits', async () => {
+        component['isTitleDirty'] = true;
+        const result = await new Promise<string>((resolve) => {
+            client['prepareNoteBackup'].next({ noteId: 'note-id', callback: resolve });
+        });
+        expect(JSON.parse(result).error).toContain('title');
+        expect(writeContent).not.toHaveBeenCalled();
+        expect(component['isTitleDirty']).toBe(true);
+    });
+
+    it('rejects a backup checkpoint when note content changes during saving', async () => {
+        component['isTextDirty'] = true;
+        writeContent.mockImplementation(async () => component['onNoteContentChange']());
+        const result = await new Promise<string>((resolve) => {
+            client['prepareNoteBackup'].next({ noteId: 'note-id', callback: resolve });
+        });
+        expect(JSON.parse(result).error).toContain('changed');
+        expect(closeWindow).not.toHaveBeenCalled();
+    });
+
     it.each([
         ['search', 'openSearchBottomSheet'],
         ['tags', 'editTagsAsync'],

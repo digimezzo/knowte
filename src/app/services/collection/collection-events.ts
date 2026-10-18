@@ -1,4 +1,5 @@
 export class CollectionEvents {
+    public static readonly prepareNoteBackupEvent: string = 'prepare-note-backup';
     public static readonly getNoteLinkTargetsEvent: string = 'get-note-link-targets';
     public static readonly openLinkedNoteEvent: string = 'open-linked-note';
     public static readonly getIsInitializedEvent: string = '227ff3f1-ce6e-466e-84f2-8764ce7ef747';

@@ -313,7 +313,7 @@ export class CollectionService {
             }
 
             await this.prepareCollectionChangeAsync();
-            this.collectionFileAccess.renameCollectionFiles(oldCollection, newCollection);
+            await this.collectionFileAccess.renameCollectionFiles(oldCollection, newCollection);
             this.settings.activeCollection = newCollection;
         } catch (error) {
             this.logger.error(
@@ -416,6 +416,43 @@ export class CollectionService {
 
     public hasOpenNotes(): boolean {
         return this.openNoteIds.length > 0;
+    }
+
+    public async prepareBackupAsync(collection: string, storage: string): Promise<string> {
+        if (storage !== this.settings.storageDirectory || this.collectionOperationInProgress ||
+            this.initialization || this.movingNoteIds.size > 0) {
+            throw new Error('The collection is changing. Backup will be retried later.');
+        }
+        if (collection !== this.settings.activeCollection) {
+            return collection;
+        }
+        await this.initializeAsync();
+        const noteIds = [...this.openNoteIds].sort();
+        const revisions: string[] = [];
+        for (const noteId of noteIds) {
+            const result = await new Promise<string>((resolve, reject) => {
+                const timeout = setTimeout(() => reject(new Error('Timed out saving an open note for backup.')), 15000);
+                this.globalEmitter.emit(CollectionEvents.prepareNoteBackupEvent, noteId, (response: string) => {
+                    clearTimeout(timeout);
+                    resolve(response);
+                });
+            });
+            const response = JSON.parse(result);
+            if (response.error) {
+                throw new Error(response.error);
+            }
+            revisions.push(`${noteId}:${result}`);
+        }
+        if (this.collectionOperationInProgress || collection !== this.settings.activeCollection ||
+            JSON.stringify(noteIds) !== JSON.stringify([...this.openNoteIds].sort())) {
+            throw new Error('The collection changed while preparing backup.');
+        }
+        await this.collectionDataStoreAccess.saveAsync();
+        return JSON.stringify(revisions);
+    }
+
+    public restoredCollectionAvailable(): void {
+        this.collectionsChanged.next();
     }
 
     public async getNotebooksAsync(includeAllNotes: boolean): Promise<Notebook[]> {

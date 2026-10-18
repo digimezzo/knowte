@@ -43,12 +43,14 @@ describe('Window recovery after display changes', () => {
         warn = jest.fn();
         const logger = { create: jest.fn(), info: jest.fn(), warn, transports: { file: {} } };
         const mocks = {
-            electron: { app, screen, shell: { openExternal }, BrowserWindow: { getAllWindows: () => windows }, ipcMain: { on: jest.fn() } },
+            electron: { app, screen, shell: { openExternal }, BrowserWindow: { getAllWindows: () => windows },
+                ipcMain: { on: jest.fn(), handle: jest.fn() } },
             'electron-log': { default: logger },
             '@electron/remote/main': { initialize: jest.fn() },
             'electron-store': {},
             'electron-window-state': {},
             'fs-extra': {},
+            './main/backup-controller': { registerBackups: jest.fn() },
         };
         const source = fs.readFileSync(path.join(__dirname, '../main.ts'), 'utf8');
         const compiled = typescript.transpileModule(source, {

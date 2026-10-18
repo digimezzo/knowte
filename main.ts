@@ -39,6 +39,13 @@ log.transports.file.level = 'info';
 const remoteMain = require('@electron/remote/main');
 remoteMain.initialize();
 
+require('./main/backup-controller').registerBackups({
+    app,
+    ipcMain,
+    getMainWindow: () => mainWindow,
+    log,
+});
+
 function createMainWindow(): void {
     const gotTheLock: boolean = app.requestSingleInstanceLock();
 

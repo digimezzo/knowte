@@ -22,4 +22,10 @@ export abstract class BaseSettings {
     public abstract followSystemTheme: boolean;
     public abstract useLightBackgroundTheme: boolean;
     public abstract followSystemColor: boolean;
+    public abstract backupEnabled: boolean;
+    public abstract backupDirectory: string;
+    public abstract backupIntervalMinutes: number;
+    public abstract backupRetentionCount: number;
+    public abstract backupLastSuccess: string;
+    public abstract backupLastError: string;
 }

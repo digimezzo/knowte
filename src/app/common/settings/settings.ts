@@ -212,6 +212,43 @@ export class Settings implements BaseSettings {
         this.settings.set('followSystemColor', v);
     }
 
+    public get backupEnabled(): boolean {
+        return this.settings.get('backupEnabled', false);
+    }
+    public set backupEnabled(value: boolean) {
+        this.settings.set('backupEnabled', value);
+    }
+    public get backupDirectory(): string {
+        return this.settings.get('backupDirectory', '');
+    }
+    public set backupDirectory(value: string) {
+        this.settings.set('backupDirectory', value);
+    }
+    public get backupIntervalMinutes(): number {
+        return this.settings.get('backupIntervalMinutes', 60);
+    }
+    public set backupIntervalMinutes(value: number) {
+        this.settings.set('backupIntervalMinutes', value);
+    }
+    public get backupRetentionCount(): number {
+        return this.settings.get('backupRetentionCount', 5);
+    }
+    public set backupRetentionCount(value: number) {
+        this.settings.set('backupRetentionCount', value);
+    }
+    public get backupLastSuccess(): string {
+        return this.settings.get('backupLastSuccess', '');
+    }
+    public set backupLastSuccess(value: string) {
+        this.settings.set('backupLastSuccess', value);
+    }
+    public get backupLastError(): string {
+        return this.settings.get('backupLastError', '');
+    }
+    public set backupLastError(value: string) {
+        this.settings.set('backupLastError', value);
+    }
+
     private initialize(): void {
         // storageDirectory and activeCollection cannot be initialized here.
         // Their value is set later, depending on user action.

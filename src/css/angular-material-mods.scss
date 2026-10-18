@@ -145,9 +145,31 @@
 }
 
 .mat-mdc-form-field-infix {
-    padding-top: 4px !important;
-    padding-bottom: 4px !important;
-    min-height: unset !important;
+    padding-top: 20px !important;
+    padding-bottom: 6px !important;
+    min-height: 48px !important;
+}
+
+app-backup-settings .backup-settings__fields .mat-mdc-form-field-infix {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+}
+
+app-backup-settings .mdc-text-field--filled.mdc-text-field--disabled {
+    background-color: transparent !important;
+}
+
+.default-theme-dark input[type='number'] {
+    color-scheme: dark;
+}
+
+.default-theme-light input[type='number'] {
+    color-scheme: light;
+}
+
+input.mat-mdc-input-element[type='number']::-webkit-inner-spin-button {
+    height: 24px;
+    opacity: 1;
 }
 
 .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after {

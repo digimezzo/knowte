@@ -76,6 +76,7 @@ describe('PersistanceService asynchronous attachment access', () => {
     it.each([true, false])('saves attachment encryption changes asynchronously (encrypted=%s)', async (encrypted) => {
         const source = encrypted ? '/storage/note/image.png' : '/storage/note/image.png.enc';
         files.setup((x) => x.getFilesInDirectoryAsync('/storage/note')).returns(async () => [source]);
+        collectionFiles.setup((x) => x.markCollectionChangedAsync('collection')).returns(async () => undefined);
 
         await service.updateNoteContentAsync('note', 'content', encrypted, 'key', true);
 
@@ -84,6 +85,7 @@ describe('PersistanceService asynchronous attachment access', () => {
             Buffer.from(encrypted ? 'encrypted' : 'decrypted'),
         );
         files.verify((x) => x.deleteFileIfExistsAsync(source), Times.once());
+        collectionFiles.verify((x) => x.markCollectionChangedAsync('collection'), Times.once());
     });
 
     it('propagates attachment access failures instead of reporting a successful save', async () => {
