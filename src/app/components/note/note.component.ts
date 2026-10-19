@@ -151,22 +151,23 @@ export class NoteComponent implements OnInit {
                 }
                 try {
                     if (this.isBusy || this.isEditingTags || !this.hasLoadedNoteContent) {
-                        throw new Error('The note is not ready for backup.');
+                        throw Object.assign(new Error('The note is not ready for backup.'), { code: 'BACKUP_POSTPONED' });
                     }
                     if (this.isTitleDirty) {
-                        throw new Error('A note title is still being edited. Retry after it has been saved.');
+                        throw Object.assign(new Error('A note title is still being edited. Retry after it has been saved.'),
+                            { code: 'BACKUP_POSTPONED' });
                     }
                     if ((this.isTextDirty || this.pendingContentSave) &&
                         await this.saveNoteContentAsync() !== Operation.Success) {
                         throw new Error('Could not save note content for backup.');
                     }
                     if (this.isTextDirty || this.isTitleDirty) {
-                        throw new Error('The note changed while saving for backup.');
+                        throw Object.assign(new Error('The note changed while saving for backup.'), { code: 'BACKUP_POSTPONED' });
                     }
                     callback(JSON.stringify({ revision: this.contentRevision, title: this.noteTitle }));
                 } catch (error) {
                     this.logger.warn(`Could not prepare note for backup: ${error.message}`, 'NoteComponent', 'prepareNoteBackup');
-                    callback(JSON.stringify({ error: error.message }));
+                    callback(JSON.stringify({ error: error.message, code: error.code }));
                 }
             }),
         );

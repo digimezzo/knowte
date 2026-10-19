@@ -421,7 +421,7 @@ export class CollectionService {
     public async prepareBackupAsync(collection: string, storage: string): Promise<string> {
         if (storage !== this.settings.storageDirectory || this.collectionOperationInProgress ||
             this.initialization || this.movingNoteIds.size > 0) {
-            throw new Error('The collection is changing. Backup will be retried later.');
+            throw Object.assign(new Error('The collection is changing. Backup will be retried later.'), { code: 'BACKUP_POSTPONED' });
         }
         if (collection !== this.settings.activeCollection) {
             return collection;
@@ -439,13 +439,13 @@ export class CollectionService {
             });
             const response = JSON.parse(result);
             if (response.error) {
-                throw new Error(response.error);
+                throw Object.assign(new Error(response.error), { code: response.code });
             }
             revisions.push(`${noteId}:${result}`);
         }
         if (this.collectionOperationInProgress || collection !== this.settings.activeCollection ||
             JSON.stringify(noteIds) !== JSON.stringify([...this.openNoteIds].sort())) {
-            throw new Error('The collection changed while preparing backup.');
+            throw Object.assign(new Error('The collection changed while preparing backup.'), { code: 'BACKUP_POSTPONED' });
         }
         await this.collectionDataStoreAccess.saveAsync();
         return JSON.stringify(revisions);

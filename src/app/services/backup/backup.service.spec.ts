@@ -81,6 +81,16 @@ describe('BackupService', () => {
         expect(ipcRenderer.invoke).toHaveBeenCalledTimes(2);
     });
 
+    it.each([true, false])('quietly postpones a changing collection (manual=%s) without recording success', async (manual) => {
+        (ipcRenderer.invoke as jest.Mock).mockResolvedValue({ postponed: true });
+        settings.backupLastSuccess = '2026-10-18T12:00:00Z';
+        await expect(service.backUpAsync(manual)).resolves.toBeUndefined();
+        expect(settings.backupLastSuccess).toBe('2026-10-18T12:00:00Z');
+        expect(settings.backupLastError).toBe('');
+        expect(service.nextAttempt).toBe(Date.now() + 5 * 60000);
+        expect(service.busy).toBe(false);
+    });
+
     it('reports failed automatic backups and retries after five minutes', async () => {
         settings.backupEnabled = true;
         (ipcRenderer.invoke as jest.Mock).mockRejectedValue(new Error('Destination offline'));

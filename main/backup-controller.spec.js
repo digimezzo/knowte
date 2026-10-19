@@ -46,6 +46,34 @@ describe('Backup main-process bridge', () => {
         expect(await fs.pathExists(path.join(options.destination, result[0].file))).toBe(true);
     });
 
+    test('logs changing-collection postponements without rejecting the backup request', async () => {
+        window.webContents.send.mockImplementation((name, request) => {
+            if (name === 'backup-checkpoint') {
+                ipcMain.emit('backup-checkpoint-result', { sender: window.webContents }, {
+                    id: request.id, error: 'The collection is changing.', code: 'BACKUP_POSTPONED',
+                });
+            }
+        });
+        const result = await handlers.get('backup-run')({ sender: window.webContents }, { action: 'backup', options });
+        expect(result).toEqual({ postponed: true });
+        expect(log.warn).toHaveBeenCalledWith('[Backup] Backup postponed: The collection is changing.');
+        expect(log.error).not.toHaveBeenCalled();
+        expect(await fs.readdir(options.destination)).toEqual([]);
+    });
+
+    test('still rejects genuine checkpoint failures', async () => {
+        window.webContents.send.mockImplementation((name, request) => {
+            if (name === 'backup-checkpoint') {
+                ipcMain.emit('backup-checkpoint-result', { sender: window.webContents }, {
+                    id: request.id, error: 'Disk write failed',
+                });
+            }
+        });
+        await expect(handlers.get('backup-run')({ sender: window.webContents }, { action: 'backup', options }))
+            .rejects.toThrow('Disk write failed');
+        expect(log.error).toHaveBeenCalled();
+    });
+
     test('refuses overlapping jobs until the first result is returned', async () => {
         const run = handlers.get('backup-run');
         const first = run({ sender: window.webContents }, { action: 'backup', options });

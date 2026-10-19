@@ -3,12 +3,12 @@ const { backupCollections, restoreCollection } = require('./backup-engine');
 
 let sequence = 0;
 const pending = new Map();
-parentPort.on('message', ({ id, error, token }) => {
+parentPort.on('message', ({ id, error, code, token }) => {
     const request = pending.get(id);
     if (request) {
         pending.delete(id);
         clearTimeout(request.timeout);
-        error ? request.reject(new Error(error)) : request.resolve(token);
+        error ? request.reject(Object.assign(new Error(error), { code })) : request.resolve(token);
     }
 });
 
@@ -32,7 +32,11 @@ function checkpoint(collection) {
             : await restoreCollection(workerData.options, warn);
         parentPort.postMessage({ result });
     } catch (error) {
-        parentPort.postMessage({ error: error.message });
+        if (workerData.action === 'backup' && error.code === 'BACKUP_POSTPONED') {
+            parentPort.postMessage({ postponed: true, reason: error.message });
+        } else {
+            parentPort.postMessage({ error: error.message });
+        }
     } finally {
         parentPort.close();
     }

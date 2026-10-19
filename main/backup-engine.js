@@ -239,7 +239,8 @@ async function backupCollections(options, checkpoint = async () => {}, warn = co
                 await delay(1000);
             }
             if (!stable) {
-                throw new Error(`Collection "${collection}" kept changing. Backup will be retried later.`);
+                throw Object.assign(new Error(`Collection "${collection}" kept changing. Backup will be retried later.`),
+                    { code: 'BACKUP_POSTPONED' });
             }
             // Capture the revision token from the stable snapshot itself, not by re-reading the
             // live collection: only this exact, already-copied state is what gets archived below,

@@ -40,14 +40,19 @@ function registerBackups({ app, ipcMain, getMainWindow, log }) {
                         const requestId = ++sequence;
                         checkpoints.set(requestId, (response) => {
                             checkpoints.delete(requestId);
-                            worker.postMessage({ id: message.id, error: response.error, token: response.token });
+                            worker.postMessage({ id: message.id, error: response.error, code: response.code, token: response.token });
                         });
                         window.webContents.send('backup-checkpoint', {
                             id: requestId, collection: message.collection, storage: options.storage,
                         });
                     } else {
                         finished = true;
-                        message.error ? reject(new Error(message.error)) : resolve(message.result);
+                        if (message.postponed) {
+                            log.warn(`[Backup] Backup postponed: ${message.reason}`);
+                            resolve({ postponed: true });
+                        } else {
+                            message.error ? reject(new Error(message.error)) : resolve(message.result);
+                        }
                     }
                 });
                 worker.once('error', reject);

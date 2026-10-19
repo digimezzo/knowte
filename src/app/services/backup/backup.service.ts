@@ -23,7 +23,7 @@ export class BackupService implements OnDestroy {
             const token = await this.collection.prepareBackupAsync(request.collection, request.storage);
             ipcRenderer.send('backup-checkpoint-result', { id: request.id, token });
         } catch (error) {
-            ipcRenderer.send('backup-checkpoint-result', { id: request.id, error: error.message });
+            ipcRenderer.send('backup-checkpoint-result', { id: request.id, error: error.message, code: error.code });
         }
     };
 
@@ -56,7 +56,7 @@ export class BackupService implements OnDestroy {
         this.nextAttempt = Date.now() + 15000;
     }
 
-    public async backUpAsync(force: boolean = true): Promise<BackupResult[]> {
+    public async backUpAsync(force: boolean = true): Promise<BackupResult[] | undefined> {
         if (!this.settings.backupDirectory) {
             throw new Error('Select a backup folder first.');
         }
@@ -68,12 +68,16 @@ export class BackupService implements OnDestroy {
             this.settings.backupRetentionCount > 20) {
             throw new Error('Keep between 1 and 20 backups per collection.');
         }
-        const result: BackupResult[] = await this.runAsync('backup', {
+        const result = await this.runAsync<BackupResult[] | { postponed: true }>('backup', {
             storage: this.settings.storageDirectory,
             destination: this.settings.backupDirectory,
             retention: this.settings.backupRetentionCount,
             force,
         });
+        if (!Array.isArray(result)) {
+            this.nextAttempt = Date.now() + 5 * 60000;
+            return;
+        }
         this.settings.backupLastSuccess = new Date().toISOString();
         this.nextAttempt = Date.now() + this.settings.backupIntervalMinutes * 60000;
         return result;
