@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
 import { ipcRenderer } from 'electron';
-import { Observable, Subject } from 'rxjs';
+import { merge, Observable, Subject } from 'rxjs';
 import sanitize from 'sanitize-filename';
 import { Constants } from '../../common/application/constants';
 import { Operation } from '../../common/enums/operation';
@@ -43,6 +43,7 @@ import { NoteModelFactory } from './note-model-factory';
  */
 @Injectable()
 export class CollectionService {
+    public changeVersion: number = 0;
     private initialization: Promise<void> | undefined;
     private collectionOperationInProgress: boolean = false;
     private collectionChangeInProgress: boolean = false;
@@ -93,7 +94,12 @@ export class CollectionService {
         private scheduler: Scheduler,
         private settings: BaseSettings,
         private logger: Logger,
-    ) {}
+    ) {
+        merge(
+            this.notebookEdited, this.notebookDeleted, this.noteEdited, this.notesChanged,
+            this.noteMarkChanged, this.notePinChanged, this.noteNotebookChanged,
+        ).subscribe(() => this.changeVersion++);
+    }
 
     public collectionsChanged$: Observable<void> = this.collectionsChanged.asObservable();
     public notebookEdited$: Observable<void> = this.notebookEdited.asObservable();
@@ -182,6 +188,7 @@ export class CollectionService {
                 throw error;
             }
             this.logger.info(`Changed storage directory to '${storageDirectory}'`, 'CollectionService', 'setStorageDirectoryAsync');
+            this.changeVersion++;
             this.collectionsChanged.next();
             return Operation.Success;
         });
@@ -278,6 +285,7 @@ export class CollectionService {
             await this.prepareCollectionChangeAsync();
             // Add the collection
             await this.collectionFileAccess.createCollectionDirectoryAsync(sanitizedCollection);
+            this.changeVersion++;
 
             this.logger.info(`Added collection '${sanitizedCollection}'`, 'CollectionService', 'addCollectionAsync');
 
@@ -321,6 +329,7 @@ export class CollectionService {
 
             await this.prepareCollectionChangeAsync();
             await this.collectionFileAccess.renameCollectionFiles(oldCollection, newCollection);
+            this.changeVersion++;
             this.settings.activeCollection = newCollection;
         } catch (error) {
             this.logger.error(
@@ -346,6 +355,7 @@ export class CollectionService {
         try {
             await this.prepareCollectionChangeAsync();
             await this.collectionFileAccess.deleteCollectionDirectoryAsync(collection);
+            this.changeVersion++;
             const collections: string[] = await this.collectionFileAccess.getCollectionsAsync();
 
             if (collections && collections.length > 0) {
@@ -459,6 +469,7 @@ export class CollectionService {
     }
 
     public restoredCollectionAvailable(): void {
+        this.changeVersion++;
         this.collectionsChanged.next();
     }
 
@@ -1515,10 +1526,12 @@ export class CollectionService {
     public encryptNoteEventHandler(noteId: string, secretKey: string): void {
         const secretKeyHash: string = this.cryptography.createHash(secretKey);
         this.collectionDataStoreAccess.encryptNote(noteId, secretKeyHash);
+        this.changeVersion++;
     }
 
     public decryptNoteEventHandler(noteId: string): void {
         this.collectionDataStoreAccess.decryptNote(noteId);
+        this.changeVersion++;
     }
 
     private async getIsInitializedEventHandler(callback: any): Promise<void> {

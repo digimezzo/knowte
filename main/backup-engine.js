@@ -7,12 +7,6 @@ const sanitize = require('sanitize-filename');
 const { pipeline } = require('stream/promises');
 
 const extension = '.knowtebackup';
-// Persistent, per-collection marker. Every surface that mutates backed-up data (note content,
-// attachments, database metadata, rename/import/move/delete, ...) writes a fresh random revision
-// here *before* performing its write, so an interruption still leaves behind a changed token.
-// Scheduled backups compare this token against the last backed-up revision before doing any
-// copying or hashing, and only skip cheaply (existence check) when both match.
-const revisionFileName = '.knowte-revision.json';
 const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 const digest = (value) => crypto.createHash('sha256').update(value).digest('hex');
 
@@ -139,38 +133,6 @@ async function separateDestination(storage, destination) {
     return { source, target };
 }
 
-async function writeNewRevisionToken(collectionPath) {
-    const revisionPath = path.join(collectionPath, revisionFileName);
-    const temporary = `${revisionPath}.tmp`;
-    const revision = crypto.randomUUID();
-    await fs.writeJson(temporary, { version: 1, revision });
-    await fs.rename(temporary, revisionPath);
-    return revision;
-}
-
-// Reads the collection's persistent revision token. A missing token is the normal case for a
-// collection that has never been backed up with this feature (or ever) and is silently created.
-// A token that exists but cannot be parsed or does not match the expected shape is explicitly
-// logged, never silently skipped, and is self-healed so future checks can trust it again.
-async function readOrInitRevisionToken(collectionPath, warn) {
-    const revisionPath = path.join(collectionPath, revisionFileName);
-    let token;
-    try {
-        token = await fs.readJson(revisionPath);
-    } catch (error) {
-        if (error.code !== 'ENOENT') {
-            warn(`Collection revision marker "${revisionFileName}" in "${collectionPath}" could not be read (${error.message}). Treating the collection as changed.`);
-            return { revision: await writeNewRevisionToken(collectionPath), trustworthy: false };
-        }
-        return { revision: await writeNewRevisionToken(collectionPath), trustworthy: false };
-    }
-    if (!token || token.version !== 1 || typeof token.revision !== 'string' || token.revision.length === 0) {
-        warn(`Collection revision marker "${revisionFileName}" in "${collectionPath}" is malformed. Treating the collection as changed.`);
-        return { revision: await writeNewRevisionToken(collectionPath), trustworthy: false };
-    }
-    return { revision: token.revision, trustworthy: true };
-}
-
 async function backupCollections(options, checkpoint = async () => {}, warn = console.warn) {
     const { storage, destination, retention, workspace } = options;
     if (!Number.isInteger(retention) || retention < 1 || retention > 20) {
@@ -178,8 +140,6 @@ async function backupCollections(options, checkpoint = async () => {}, warn = co
     }
     const { source, target } = await separateDestination(storage, destination);
     await fs.ensureDir(workspace);
-    const statePath = path.join(workspace, 'state.json');
-    const state = await fs.pathExists(statePath) ? await fs.readJson(statePath) : {};
     const results = [];
     for (const collection of (await fs.readdir(source)).sort()) {
         const collectionPath = path.join(source, collection);
@@ -191,21 +151,6 @@ async function backupCollections(options, checkpoint = async () => {}, warn = co
             continue;
         }
         const id = digest(collectionPath).slice(0, 16);
-        // Compare the persistent revision token with the last backed-up revision *before* doing
-        // any copying or hashing of the collection. A missing or malformed token always forces a
-        // full backup (and self-heals); only a confirmed match may take the cheap skip path.
-        // Note: this trusts the on-disk token and cannot detect changes made to collection files
-        // while Knowte was closed (for example by restoring an external copy out of band).
-        const revisionToken = await readOrInitRevisionToken(collectionPath, warn);
-        if (!options.force && revisionToken.trustworthy && state[id] && state[id].lastRevision === revisionToken.revision) {
-            await checkpoint(collection);
-            const confirmedToken = await readOrInitRevisionToken(collectionPath, warn);
-            if (confirmedToken.trustworthy && confirmedToken.revision === state[id].lastRevision &&
-                state[id].file && await fs.pathExists(path.join(target, state[id].file))) {
-                results.push({ collection, skipped: true });
-                continue;
-            }
-        }
         const temporary = await fs.mkdtemp(path.join(workspace, 'backup-'));
         let publishing;
         try {
@@ -242,17 +187,6 @@ async function backupCollections(options, checkpoint = async () => {}, warn = co
                 throw Object.assign(new Error(`Collection "${collection}" kept changing. Backup will be retried later.`),
                     { code: 'BACKUP_POSTPONED' });
             }
-            // Capture the revision token from the stable snapshot itself, not by re-reading the
-            // live collection: only this exact, already-copied state is what gets archived below,
-            // so any edit arriving after this point must remain pending for a future backup.
-            let capturedRevision;
-            try {
-                capturedRevision = (await fs.readJson(path.join(snapshot, revisionFileName))).revision;
-            } catch (error) {
-                if (error.code !== 'ENOENT') {
-                    throw error;
-                }
-            }
             const label = Array.from(sanitize(collection)).slice(0, 40).join('');
             const prefix = `Knowte-${label}-`;
             let createdAt;
@@ -287,10 +221,6 @@ async function backupCollections(options, checkpoint = async () => {}, warn = co
             }
             await fs.rename(publishing, path.join(target, file));
             publishing = undefined;
-            state[id] = { lastRevision: capturedRevision, file, createdAt, archiveSha256 };
-            const stateTemporary = `${statePath}.tmp`;
-            await fs.writeJson(stateTemporary, state);
-            await fs.rename(stateTemporary, statePath);
             const owned = (await fs.readdir(target))
                 .filter((name) => name !== file && name.startsWith(prefix) && name.endsWith(extension) &&
                     (/^(?:\d{8}T\d{6}Z|\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}Z)\.knowtebackup$/.test(name.slice(prefix.length)) ||

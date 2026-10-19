@@ -6,6 +6,7 @@ import { BrowserWindow, WebContents } from 'electron';
 import { of, Subject } from 'rxjs';
 import { It, Mock } from 'typemoq';
 import { Operation } from '../../common/enums/operation';
+import { Logger } from '../../common/logging/logger';
 import { Scheduler } from '../../common/scheduling/scheduler';
 import { BaseSettings } from '../../common/settings/base-settings';
 import { TasksCount } from '../../common/ui/tasks-count';
@@ -38,6 +39,7 @@ describe('NoteComponent preparing deletion', () => {
     let findInPage: jest.Mock;
     let openSheet: jest.Mock;
     let sheetDismissed: Subject<NoteAction | undefined>;
+    let logWarning: jest.Mock;
 
     function mock<T>(): T {
         return Mock.ofType<T>().object;
@@ -76,8 +78,11 @@ describe('NoteComponent preparing deletion', () => {
         }).inject(MatDialog);
         const settings = Mock.ofType<BaseSettings>();
         settings.setup((x) => x.closeNotesWithEscape).returns(() => true);
+        const logger = Mock.ofType<Logger>();
+        logWarning = jest.fn();
+        logger.setup((x) => x.warn(It.isAnyString(), It.isAnyString(), It.isAnyString())).callback(logWarning);
         component = new NoteComponent(
-            mock(), zone.object, dialog, mock(), mock(), translator.object, mock(), persistance.object,
+            mock(), zone.object, dialog, logger.object, mock(), translator.object, mock(), persistance.object,
             settings.object, mock(), mock(), mock(), mock(), client, search.object, TestBed.inject(MatBottomSheet), mock(),
         );
         component.noteId = 'note-id';
@@ -118,6 +123,42 @@ describe('NoteComponent preparing deletion', () => {
         });
         expect(JSON.parse(result).error).toBeUndefined();
         expect(writeContent).not.toHaveBeenCalled();
+    });
+
+    it.each(['metadata', 'content', 'exception'])('logs backup-triggered %s save failures without a popup and permits retry', async (failure) => {
+        component['isTextDirty'] = true;
+        if (failure === 'metadata') {
+            saveText.mockResolvedValueOnce(Operation.Error);
+        } else if (failure === 'exception') {
+            saveText.mockRejectedValueOnce(new Error('Metadata unavailable'));
+        } else {
+            writeContent.mockRejectedValueOnce(new Error('Cannot write'));
+        }
+        const prepare = () => new Promise<string>((resolve) => {
+            client['prepareNoteBackup'].next({ noteId: 'note-id', callback: resolve });
+        });
+
+        expect(JSON.parse(await prepare()).error).toBeDefined();
+        expect(logWarning).toHaveBeenCalledWith(
+            expect.stringContaining('Could not prepare note for backup'), 'NoteComponent', 'prepareNoteBackup',
+        );
+        expect(showDialog).not.toHaveBeenCalled();
+        expect(closeWindow).not.toHaveBeenCalled();
+        expect(component['isTextDirty']).toBe(true);
+        expect(component['pendingContentSave']).toBeUndefined();
+
+        expect(JSON.parse(await prepare()).error).toBeUndefined();
+        expect(component['isTextDirty']).toBe(false);
+        expect(showDialog).not.toHaveBeenCalled();
+    });
+
+    it('still displays save errors outside backup preparation', async () => {
+        component['isTextDirty'] = true;
+        writeContent.mockRejectedValueOnce(new Error('Cannot write'));
+
+        expect(await component['saveNoteContentAsync']()).toBe(Operation.Error);
+        expect(showDialog).toHaveBeenCalledWith(ErrorDialogComponent, expect.anything());
+        expect(component['isTextDirty']).toBe(true);
     });
 
     it('waits for normal title autosave instead of competing with title edits', async () => {

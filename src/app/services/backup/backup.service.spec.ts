@@ -25,6 +25,7 @@ describe('BackupService', () => {
     let settings: Settings;
     let prepare: jest.Mock;
     let restored: jest.Mock;
+    let changeVersion: number;
 
     async function advanceTime(milliseconds: number): Promise<void> {
         jest.advanceTimersByTime(milliseconds);
@@ -37,8 +38,12 @@ describe('BackupService', () => {
         storedSettings.clear();
         settings = new Settings();
         settings.storageDirectory = '/local/collections';
+        settings.activeCollection = 'Work';
         settings.backupDirectory = '/cloud/backups';
+        settings.backupIntervalMinutes = 15;
+        changeVersion = 1;
         const collection = Mock.ofType<CollectionService>();
+        collection.setup((value) => value.changeVersion).returns(() => changeVersion);
         prepare = jest.fn().mockResolvedValue('revision');
         restored = jest.fn();
         collection.setup((value) => value.prepareBackupAsync(It.isAnyString(), It.isAnyString())).returns(prepare);
@@ -61,20 +66,38 @@ describe('BackupService', () => {
         await advanceTime(15000);
         expect(ipcRenderer.invoke).not.toHaveBeenCalled();
         settings.backupEnabled = true;
-        await advanceTime(15000);
+        await advanceTime(885000);
         expect(ipcRenderer.invoke).toHaveBeenCalledWith('backup-run', {
             action: 'backup',
-            options: { storage: '/local/collections', destination: '/cloud/backups', retention: 5, force: false },
+            options: { storage: '/local/collections', destination: '/cloud/backups', retention: 5 },
         });
         expect(settings.backupLastSuccess).not.toBe('');
+    });
+
+    it('does not schedule backups or display an error without a destination', async () => {
+        settings.backupEnabled = true;
+        settings.backupDirectory = '';
+        service.start();
+        await advanceTime(900000);
+        await expect(service.backUpAsync()).resolves.toBeUndefined();
+        expect(ipcRenderer.invoke).not.toHaveBeenCalled();
+        expect(prepare).not.toHaveBeenCalled();
+        expect(settings.backupLastError).toBe('');
+    });
+
+    it('clears stale backup errors when starting a new session', () => {
+        settings.backupLastError = 'Previous session error';
+        service.start();
+        expect(settings.backupLastError).toBe('');
     });
 
     it('honors the configured interval after a successful check', async () => {
         settings.backupEnabled = true;
         settings.backupIntervalMinutes = 15;
         service.start();
-        await advanceTime(15000);
+        await advanceTime(900000);
         expect(ipcRenderer.invoke).toHaveBeenCalledTimes(1);
+        changeVersion++;
         await advanceTime(885000);
         expect(ipcRenderer.invoke).toHaveBeenCalledTimes(1);
         await advanceTime(15000);
@@ -95,7 +118,7 @@ describe('BackupService', () => {
         settings.backupEnabled = true;
         (ipcRenderer.invoke as jest.Mock).mockRejectedValue(new Error('Destination offline'));
         service.start();
-        await advanceTime(15000);
+        await advanceTime(900000);
         expect(settings.backupLastError).toContain('Destination offline');
         expect(settings.backupLastSuccess).toBe('');
         await advanceTime(285000);
@@ -119,6 +142,90 @@ describe('BackupService', () => {
         await backup;
         expect(service.busy).toBe(false);
         expect(service.activeAction).toBeUndefined();
+    });
+
+    it('starts a full interval at startup regardless of the previous backup time', async () => {
+        settings.backupEnabled = true;
+        settings.backupLastSuccess = '2000-01-01T00:00:00Z';
+        service.start();
+        expect(service.nextAttempt).toBe(Date.now() + 900000);
+        await advanceTime(885000);
+        expect(ipcRenderer.invoke).not.toHaveBeenCalled();
+        await advanceTime(15000);
+        expect(ipcRenderer.invoke).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not create scheduled backups without changes, including after a successful backup', async () => {
+        settings.backupEnabled = true;
+        changeVersion = 0;
+        service.start();
+        await advanceTime(900000);
+        expect(ipcRenderer.invoke).not.toHaveBeenCalled();
+        expect(settings.backupLastSuccess).toBe('');
+        changeVersion++;
+        await advanceTime(900000);
+        expect(ipcRenderer.invoke).toHaveBeenCalledTimes(1);
+        await advanceTime(900000);
+        expect(ipcRenderer.invoke).toHaveBeenCalledTimes(1);
+    });
+
+    it('flushes dirty open notes before checking for changes', async () => {
+        settings.backupEnabled = true;
+        changeVersion = 0;
+        prepare.mockImplementation(async () => { changeVersion++; return 'saved'; });
+        service.start();
+        await advanceTime(900000);
+        expect(prepare).toHaveBeenCalled();
+        expect(ipcRenderer.invoke).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps edits made during a backup pending', async () => {
+        let finish: (result: unknown[]) => void;
+        (ipcRenderer.invoke as jest.Mock).mockImplementationOnce(() => new Promise((resolve) => finish = resolve));
+        const backup = service.backUpAsync(false);
+        changeVersion++;
+        finish([{ collection: 'Work', skipped: false }]);
+        await backup;
+        await service.backUpAsync(false);
+        expect(ipcRenderer.invoke).toHaveBeenCalledTimes(2);
+        await service.backUpAsync(false);
+        expect(ipcRenderer.invoke).toHaveBeenCalledTimes(2);
+    });
+
+    it('keeps changes pending after failure or postponement', async () => {
+        (ipcRenderer.invoke as jest.Mock).mockRejectedValueOnce(new Error('Offline'))
+            .mockResolvedValueOnce({ postponed: true });
+        await expect(service.backUpAsync(false)).rejects.toThrow('Offline');
+        await expect(service.backUpAsync(false)).resolves.toBeUndefined();
+        await service.backUpAsync(false);
+        expect(ipcRenderer.invoke).toHaveBeenCalledTimes(3);
+    });
+
+    it('manual backups run even when nothing changed', async () => {
+        changeVersion = 0;
+        await service.backUpAsync();
+        expect(ipcRenderer.invoke).toHaveBeenCalledTimes(1);
+    });
+
+    it('restarts the configured interval when settings change without forgetting pending edits', async () => {
+        service.start();
+        settings.backupIntervalMinutes = 30;
+        service.configurationChanged();
+        expect(service.nextAttempt).toBe(Date.now() + 1800000);
+        await service.backUpAsync(false);
+        expect(ipcRenderer.invoke).toHaveBeenCalledTimes(1);
+    });
+
+    it('silently retries postponed preflight saves and keeps pending changes', async () => {
+        settings.backupEnabled = true;
+        prepare.mockRejectedValueOnce(Object.assign(new Error('Still editing'), { code: 'BACKUP_POSTPONED' }));
+        service.start();
+        await advanceTime(900000);
+        expect(ipcRenderer.invoke).not.toHaveBeenCalled();
+        expect(settings.backupLastError).toBe('');
+        expect(service.busy).toBe(false);
+        await advanceTime(300000);
+        expect(ipcRenderer.invoke).toHaveBeenCalledTimes(1);
     });
 
     it('tracks the restore action separately from the backup action', async () => {
@@ -150,7 +257,7 @@ describe('BackupService', () => {
         expect(service.restoredCollection).toBe('Work (restored)');
         expect(restored).toHaveBeenCalledTimes(1);
         expect(settings.backupLastSuccess).toBe('');
-        expect(settings.activeCollection).toBeUndefined();
+        expect(settings.activeCollection).toBe('Work');
     });
 
     it.each([0, 14, 181, 10081, 1.5, NaN])('rejects invalid interval %s before starting work', async (interval) => {

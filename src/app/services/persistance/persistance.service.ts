@@ -129,8 +129,6 @@ export class PersistanceService {
             return;
         }
 
-        await this.collectionFileAccess.markCollectionChangedAsync(this.settings.activeCollection);
-
         const noteAttachmentPaths: string[] = await this.fileAccess.getFilesInDirectoryAsync(noteAttachmentsDirectoryPath);
 
         if (isEncrypted && !StringUtils.isNullOrWhiteSpace(secretKey)) {

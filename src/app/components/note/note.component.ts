@@ -158,7 +158,7 @@ export class NoteComponent implements OnInit {
                             { code: 'BACKUP_POSTPONED' });
                     }
                     if ((this.isTextDirty || this.pendingContentSave) &&
-                        await this.saveNoteContentAsync() !== Operation.Success) {
+                        await this.saveNoteContentAsync(false) !== Operation.Success) {
                         throw new Error('Could not save note content for backup.');
                     }
                     if (this.isTextDirty || this.isTitleDirty) {
@@ -645,7 +645,7 @@ export class NoteComponent implements OnInit {
         return result.operation;
     }
 
-    private saveNoteContentAsync(): Promise<Operation> {
+    private saveNoteContentAsync(notifyOnError: boolean = true): Promise<Operation> {
         const previousSave: Promise<Operation> = this.pendingContentSave;
         let save: Promise<Operation>;
         save = (async () => {
@@ -653,7 +653,7 @@ export class NoteComponent implements OnInit {
                 if (previousSave) {
                     await previousSave;
                 }
-                return await this.saveNoteContentNowAsync();
+                return await this.saveNoteContentNowAsync(notifyOnError);
             } finally {
                 if (this.pendingContentSave === save) {
                     this.pendingContentSave = undefined;
@@ -664,7 +664,7 @@ export class NoteComponent implements OnInit {
         return save;
     }
 
-    private async saveNoteContentNowAsync(): Promise<Operation> {
+    private async saveNoteContentNowAsync(notifyOnError: boolean): Promise<Operation> {
         const revision: number = this.contentRevision;
         const content: string = this.noteEditor.content;
         const operation: Operation = await this.collectionClient.saveNoteTextAsync(
@@ -703,14 +703,16 @@ export class NoteComponent implements OnInit {
         }
 
         if (showErrorDialog) {
-            const errorText: string = await this.translator.getAsync('ErrorTexts.UpdateNoteContentError');
+            if (notifyOnError) {
+                const errorText: string = await this.translator.getAsync('ErrorTexts.UpdateNoteContentError');
 
-            this.zone.run(() => {
-                this.dialog.open(ErrorDialogComponent, {
-                    width: '450px',
-                    data: { errorText: errorText },
+                this.zone.run(() => {
+                    this.dialog.open(ErrorDialogComponent, {
+                        width: '450px',
+                        data: { errorText: errorText },
+                    });
                 });
-            });
+            }
 
             return Operation.Error;
         }

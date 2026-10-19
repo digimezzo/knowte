@@ -76,8 +76,6 @@ describe('CollectionFileAccess deleteNoteFilesAsync', () => {
             const settings = Mock.ofType<BaseSettings>();
             settings.setup((x) => x.storageDirectory).returns(() => '/storage');
             files.setup((x) => x.combinePath(It.isAny(), It.isAny())).returns((parent: string, child: string) => `${parent}/${child}`);
-            files.setup((x) => x.writeTextToFileAsync(It.isAnyString(), It.isAnyString())).returns(async () => undefined);
-            files.setup((x) => x.renameFileOrDirectory(It.isAnyString(), It.isAnyString())).returns(() => undefined);
             let createDirectory: () => void;
             files.setup((x) => x.createFullDirectoryPathIfDoesNotExistAsync('/storage/collection/note'))
                 .returns(() => new Promise<void>((resolve) => { createDirectory = resolve; }));
@@ -94,12 +92,6 @@ describe('CollectionFileAccess deleteNoteFilesAsync', () => {
             const save = service.createNoteImageFileAsync('note', 'collection', Buffer.from('image'), 'image').then(() => {
                 completed = true;
             });
-
-            // Flush the microtasks used by the (mocked) collection-changed marker write before the
-            // directory-creation promise resolver is captured.
-            await Promise.resolve();
-            await Promise.resolve();
-            await Promise.resolve();
 
             files.verify((x) => x.writeBufferToFileAsync(It.isAnyString(), It.isAny()), Times.never());
             createDirectory();
@@ -136,7 +128,7 @@ describe('CollectionFileAccess deleteNoteFilesAsync', () => {
         files.verify((x) => x.deleteDirectoryRecursively('/storage/collection/note-id'), Times.once());
     });
 
-    describe('marking the collection as changed before mutating backed-up data', () => {
+    describe('mutating collection files without backup markers', () => {
         function setupFiles(): ReturnType<typeof Mock.ofType<FileAccess>> {
             const files = Mock.ofType<FileAccess>();
             files.setup((x) => x.combinePath(It.isAny(), It.isAny())).returns((parent: string, child: string) => `${parent}/${child}`);
@@ -152,7 +144,7 @@ describe('CollectionFileAccess deleteNoteFilesAsync', () => {
             return files;
         }
 
-        it('writes a fresh revision token before saving note content', async () => {
+        it('only writes the note content when saving', async () => {
             const files = setupFiles();
             const settings = Mock.ofType<BaseSettings>();
             settings.setup((x) => x.storageDirectory).returns(() => '/storage');
@@ -160,21 +152,12 @@ describe('CollectionFileAccess deleteNoteFilesAsync', () => {
 
             await service.saveNoteContentAsync('note', 'content', 'collection', false);
 
-            files.verify(
-                (x) => x.writeTextToFileAsync('/storage/collection/.knowte-revision.json.tmp', It.isAnyString()),
-                Times.once(),
-            );
-            files.verify(
-                (x) =>
-                    x.renameFileOrDirectory(
-                        '/storage/collection/.knowte-revision.json.tmp',
-                        '/storage/collection/.knowte-revision.json',
-                    ),
-                Times.once(),
-            );
+            files.verify((x) => x.writeTextToFileAsync('/storage/collection/note.content', 'content'), Times.once());
+            files.verify((x) => x.writeTextToFileAsync(It.isAnyString(), It.isAnyString()), Times.once());
+            files.verify((x) => x.renameFileOrDirectory(It.isAnyString(), It.isAnyString()), Times.never());
         });
 
-        it('writes a fresh revision token before creating an attachment directory', async () => {
+        it('does not write extra files when creating an attachment', async () => {
             const files = setupFiles();
             const settings = Mock.ofType<BaseSettings>();
             settings.setup((x) => x.storageDirectory).returns(() => '/storage');
@@ -182,13 +165,10 @@ describe('CollectionFileAccess deleteNoteFilesAsync', () => {
 
             await service.createNoteImageFileAsync('note', 'collection', Buffer.from('image'), 'image');
 
-            files.verify(
-                (x) => x.writeTextToFileAsync('/storage/collection/.knowte-revision.json.tmp', It.isAnyString()),
-                Times.once(),
-            );
+            files.verify((x) => x.writeTextToFileAsync(It.isAnyString(), It.isAnyString()), Times.never());
         });
 
-        it('does not write a revision token when there are no attachments to clean up', async () => {
+        it('does not write files when there are no attachments to clean up', async () => {
             const files = setupFiles();
             const settings = Mock.ofType<BaseSettings>();
             settings.setup((x) => x.storageDirectory).returns(() => '/storage');
@@ -199,7 +179,7 @@ describe('CollectionFileAccess deleteNoteFilesAsync', () => {
             files.verify((x) => x.writeTextToFileAsync(It.isAnyString(), It.isAnyString()), Times.never());
         });
 
-        it('writes a fresh revision token before renaming collection files', async () => {
+        it('only renames the database and directory when renaming a collection', async () => {
             const files = setupFiles();
             const settings = Mock.ofType<BaseSettings>();
             settings.setup((x) => x.storageDirectory).returns(() => '/storage');
@@ -207,12 +187,9 @@ describe('CollectionFileAccess deleteNoteFilesAsync', () => {
 
             await service.renameCollectionFiles('old', 'new');
 
-            files.verify(
-                (x) => x.writeTextToFileAsync('/storage/old/.knowte-revision.json.tmp', It.isAnyString()),
-                Times.once(),
-            );
+            files.verify((x) => x.writeTextToFileAsync(It.isAnyString(), It.isAnyString()), Times.never());
+            files.verify((x) => x.renameFileOrDirectory('/storage/old/old.db', '/storage/old/new.db'), Times.once());
             files.verify((x) => x.renameFileOrDirectory('/storage/old', '/storage/new'), Times.once());
         });
     });
 });
-

@@ -166,6 +166,45 @@ describe('CollectionService note deletion', () => {
             service.activeCollection = 'collection';
         });
 
+        it('starts with no in-memory changes and does not mark read-only backup checkpoints', async () => {
+            expect(service.changeVersion).toBe(0);
+            await service.prepareBackupAsync('collection', '/local');
+            await service.prepareBackupAsync('collection', '/local');
+            expect(service.changeVersion).toBe(0);
+        });
+
+        it('tracks note saves in memory', () => {
+            const note = addNote(true, 'old');
+            service.saveNoteTextEventHandler(note.id, 'new', false, '', new TasksCount(0, 0), jest.fn());
+            expect(service.changeVersion).toBeGreaterThan(0);
+        });
+
+        it('tracks notebook, note and metadata notifications in the same counter', () => {
+            const notifications = [
+                'notebookEdited', 'notebookDeleted', 'noteEdited', 'notesChanged',
+                'noteMarkChanged', 'notePinChanged', 'noteNotebookChanged',
+            ] as const;
+            for (const notification of notifications) {
+                const before = service.changeVersion;
+                service[notification].next();
+                expect(service.changeVersion).toBe(before + 1);
+            }
+        });
+
+        it('tracks restores and encryption changes', () => {
+            service.restoredCollectionAvailable();
+            expect(service.changeVersion).toBe(1);
+            service.encryptNoteEventHandler('note', 'key');
+            expect(service.changeVersion).toBe(2);
+            service.decryptNoteEventHandler('note');
+            expect(service.changeVersion).toBe(3);
+        });
+
+        it('does not treat activating an existing collection as a data change', async () => {
+            await service.activateCollection('other');
+            expect(service.changeVersion).toBe(0);
+        });
+
         it('waits for open notes and database saves without closing note windows', async () => {
             service['openNoteIds'] = ['note-1'];
             emit.mockImplementation((event, _noteId, callback) => {

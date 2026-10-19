@@ -81,12 +81,13 @@ describe('Collection backups', () => {
         expect(await fs.readFile(path.join(options.storage, first.collection, 'sentinel'), 'utf8')).toBe('keep me');
     });
 
-    test('scheduled checks skip unchanged collections; manual backups do not', async () => {
+    test('creates an archive on each request without writing tracking files', async () => {
+        const originalFiles = (await fs.readdir(source)).sort();
         await createBackup();
-        const skipped = await backupCollections(options);
-        expect(skipped).toEqual([{ collection: 'Work', skipped: true }]);
-        await createBackup({ force: true });
+        await createBackup();
         expect((await fs.readdir(options.destination)).length).toBe(2);
+        expect((await fs.readdir(source)).sort()).toEqual(originalFiles);
+        expect(await fs.readdir(options.workspace)).toEqual([]);
     });
 
     test('uses timestamps to the second without identifiers and preserves same-second backups', async () => {
@@ -121,23 +122,17 @@ describe('Collection backups', () => {
         expect((await fs.readdir(options.destination)).sort()).toEqual([path.basename(archive), newer].sort());
     });
 
-    test('trusts the revision token and skips even a corrupted destination archive that still exists', async () => {
-        // Scheduled checks no longer hash the destination archive routinely; only the persistent
-        // per-collection revision token is compared, then the archive's existence is checked. This
-        // is an accepted limitation: run "Back up now" (force) to repair a corrupted archive.
+    test('can create a verified backup when an earlier archive is damaged', async () => {
         const archive = await createBackup();
         await fs.writeFile(archive, 'damaged cloud copy');
-        const [result] = await backupCollections(options);
-        expect(result.skipped).toBe(true);
         const repaired = await createBackup({ force: true });
         await extractAndVerify(repaired, path.join(root, 'checked'));
     });
 
-    test('performs a fresh backup when the archive is missing even though the token is unchanged', async () => {
+    test('can create a fresh backup when an earlier archive is missing', async () => {
         const timestamp = jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2026-10-19T03:00:00.000Z');
         try {
             const archive = await createBackup();
-            const token = await fs.readJson(path.join(source, '.knowte-revision.json'));
             await fs.unlink(archive);
             timestamp.mockReturnValue('2026-10-19T03:00:01.000Z');
             const [result] = await backupCollections(options);
@@ -146,44 +141,10 @@ describe('Collection backups', () => {
             expect(replacement).not.toBe(archive);
             expect(await fs.pathExists(archive)).toBe(false);
             expect(await fs.pathExists(replacement)).toBe(true);
-            expect(await fs.readJson(path.join(source, '.knowte-revision.json'))).toEqual(token);
             await extractAndVerify(replacement, path.join(root, 'replacement-verified'));
         } finally {
             timestamp.mockRestore();
         }
-    });
-
-    test('generates and persists a revision token for a collection that has none yet', async () => {
-        await createBackup();
-        const token = await fs.readJson(path.join(source, '.knowte-revision.json'));
-        expect(token.version).toBe(1);
-        expect(typeof token.revision).toBe('string');
-        expect(token.revision.length).toBeGreaterThan(0);
-    });
-
-    test('does not skip and logs a warning when the revision token is malformed', async () => {
-        await createBackup();
-        await fs.writeFile(path.join(source, '.knowte-revision.json'), '{ not json');
-        const warn = jest.fn();
-        const [result] = await backupCollections(options, async () => {}, warn);
-        expect(result.skipped).toBe(false);
-        expect(warn).toHaveBeenCalledWith(expect.stringContaining('revision marker'));
-        const token = await fs.readJson(path.join(source, '.knowte-revision.json'));
-        expect(token.version).toBe(1);
-    });
-
-    test('does not warn about a merely missing revision token', async () => {
-        const warn = jest.fn();
-        await backupCollections(options, async () => {}, warn);
-        expect(warn).not.toHaveBeenCalled();
-    });
-
-    test('performs a full backup again once the revision token changes', async () => {
-        await createBackup();
-        await fs.writeFile(path.join(source, '.knowte-revision.json'), JSON.stringify({ version: 1, revision: 'changed' }));
-        const [result] = await backupCollections(options);
-        expect(result.skipped).toBe(false);
-        expect((await fs.readdir(options.destination)).filter((name) => name.endsWith('.knowtebackup'))).toHaveLength(2);
     });
 
     test('supports long collection names without overflowing backup or restored filenames', async () => {
