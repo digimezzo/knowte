@@ -15,7 +15,7 @@ describe('Collection backups', () => {
     let source;
 
     beforeEach(async () => {
-        root = await fs.mkdtemp(path.join(os.tmpdir(), 'knowte-backup-test-'));
+        root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'knowte-backup-test-')));
         options = {
             storage: path.join(root, 'collections'),
             destination: path.join(root, 'cloud'),
@@ -99,7 +99,12 @@ describe('Collection backups', () => {
         expect(await fs.pathExists(second)).toBe(true);
     });
 
-    test('includes older identifier-based filenames in retention cleanup', async () => {
+    test.each([false, true])('includes older identifier-based filenames in retention cleanup (aliased storage=%s)', async (aliased) => {
+        if (aliased) {
+            const alias = path.join(root, 'collections-alias');
+            await fs.symlink(options.storage, alias, 'junction');
+            options.storage = alias;
+        }
         const id = require('crypto').createHash('sha256').update(source).digest('hex').slice(0, 16);
         const legacy = `Knowte-Work-${id}-2026-01-01T00-00-00-000Z-1234abcd.knowtebackup`;
         await fs.writeFile(path.join(options.destination, legacy), 'previous backup');
