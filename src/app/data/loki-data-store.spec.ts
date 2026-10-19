@@ -91,6 +91,27 @@ describe('LokiDataStore initialization', () => {
         expect(store.getNotebookById('notebook')).toEqual({ id: 'notebook' });
     });
 
+    it('saves to the new database instance after reopening the same collection in another directory', async () => {
+        collections.set('notebooks', {});
+        collections.set('notes', {});
+        const firstDatabase = database;
+        const first = store.initializeAsync('/old/Work/Work.db');
+        load();
+        await first;
+        const newSave = jest.fn((callback) => callback());
+        const newDatabase = {
+            loadDatabase: jest.fn((_options, callback) => callback()),
+            getCollection: jest.fn((name) => collections.get(name)),
+            saveDatabase: newSave,
+        };
+        (loki as jest.Mock).mockImplementationOnce(() => newDatabase);
+        await store.initializeAsync('/new/Work/Work.db');
+        await store.saveAsync();
+        expect(loki).toHaveBeenLastCalledWith('/new/Work/Work.db');
+        expect(newSave).toHaveBeenCalledTimes(1);
+        expect(firstDatabase.saveDatabase).not.toHaveBeenCalled();
+    });
+
     it('rejects load errors for concurrent callers and allows retrying', async () => {
         const error = new Error('Cannot load');
         const first = store.initializeAsync('collection.db');

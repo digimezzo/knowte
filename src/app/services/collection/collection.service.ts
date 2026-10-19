@@ -157,28 +157,35 @@ export class CollectionService {
     }
 
     public async setStorageDirectoryAsync(parentDirectory: string): Promise<boolean> {
-        try {
+        const operation = await this.changeCollectionAsync('setStorageDirectoryAsync', async () => {
             const storageDirectory: string = this.collectionFileAccess.createStorageDirectory(parentDirectory);
-            this.logger.info(
-                `Created storageDirectory '${storageDirectory}' on disk if it did not exist yet.`,
-                'CollectionService',
-                'setStorageDirectoryAsync',
-            );
-
-            // Save storage directory in the settings
-            this.settings.storageDirectory = storageDirectory;
-            this.logger.info(`Saved storage directory '${storageDirectory}' in settings`, 'CollectionService', 'setStorageDirectoryAsync');
-        } catch (error) {
-            this.logger.error(
-                `Could not create storage directory on disk. Cause: ${error}`,
-                'CollectionService',
-                'setStorageDirectoryAsync',
-            );
-
-            return false;
-        }
-
-        return true;
+            if (storageDirectory === this.settings.storageDirectory) {
+                return Operation.Success;
+            }
+            await this.prepareCollectionChangeAsync();
+            const previousDirectory = this.settings.storageDirectory;
+            const previousCollection = this.settings.activeCollection;
+            const wasInitialized = this.isInitialized;
+            try {
+                this.settings.storageDirectory = storageDirectory;
+                this.isInitialized = false;
+                if (wasInitialized) {
+                    await this.initializeAsync();
+                }
+            } catch (error) {
+                this.settings.storageDirectory = previousDirectory;
+                this.setActiveCollection(previousCollection);
+                this.isInitialized = false;
+                if (wasInitialized) {
+                    await this.initializeAsync();
+                }
+                throw error;
+            }
+            this.logger.info(`Changed storage directory to '${storageDirectory}'`, 'CollectionService', 'setStorageDirectoryAsync');
+            this.collectionsChanged.next();
+            return Operation.Success;
+        });
+        return operation === Operation.Success;
     }
 
     public async initializeAsync(): Promise<void> {

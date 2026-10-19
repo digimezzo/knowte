@@ -63,6 +63,8 @@ export class WelcomeComponent implements OnInit {
                     width: '450px',
                     data: { errorText: errorText },
                 });
+                this.isBusy = false;
+                return;
             }
 
             await this.collectionService.initializeAsync();

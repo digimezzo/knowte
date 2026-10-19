@@ -650,6 +650,96 @@ describe('CollectionService note deletion', () => {
         expect(logError).toHaveBeenCalled();
     });
 
+    describe('changing the collections directory', () => {
+        let currentSettings: BaseSettings;
+        let loadedDirectory: string;
+        let initializeStore: jest.Mock;
+        let saveStore: jest.Mock;
+        let changed: jest.Mock;
+
+        beforeEach(async () => {
+            currentSettings = { ...settings.object, storageDirectory: '/old', activeCollection: 'collection' };
+            service['settings'] = currentSettings;
+            files.setup((value) => value.createStorageDirectory('/parent')).returns(() => '/new');
+            files.setup((value) => value.collectionAndItsDirectoryExistAsync('collection')).returns(async () => true);
+            files.setup((value) => value.getCollectionDirectoryPath('collection'))
+                .returns(() => `${currentSettings.storageDirectory}/collection`);
+            initializeStore = jest.fn(async () => { loadedDirectory = currentSettings.storageDirectory; });
+            saveStore = jest.fn(async () => undefined);
+            data.setup((value) => value.initializeAsync('collection')).returns(initializeStore);
+            data.setup((value) => value.saveAsync()).returns(() => saveStore(loadedDirectory));
+            changed = jest.fn();
+            service.collectionsChanged$.subscribe(changed);
+            await service.initializeAsync();
+        });
+
+        it('reopens the same-named collection at the new path before archiving and backing up', async () => {
+            expect(await service.setStorageDirectoryAsync('/parent')).toBe(true);
+            expect(saveStore).toHaveBeenCalledWith('/old');
+            expect(loadedDirectory).toBe('/new');
+            expect(initializeStore).toHaveBeenCalledTimes(2);
+            await service.initializeAsync();
+            expect(initializeStore).toHaveBeenCalledTimes(2);
+            const notebook = new Notebook('Notebook');
+            notebook.id = 'book';
+            notebooks.push(notebook);
+            saveStore.mockClear();
+            expect(await service.setNotebooksArchivedAsync(['book'], true)).toBe(Operation.Success);
+            await service.prepareBackupAsync('collection', '/new');
+            expect(saveStore.mock.calls).toEqual([['/new'], ['/new']]);
+            expect(changed).toHaveBeenCalledTimes(1);
+        });
+
+        it('waits for open note saves before changing the storage path', async () => {
+            service['openNoteIds'] = ['open-note'];
+            let finishSaving: () => void;
+            const prepare = jest.fn(() => new Promise<void>((resolve) => {
+                finishSaving = () => {
+                    service['openNoteIds'] = [];
+                    resolve();
+                };
+            }));
+            service['prepareNoteDeletionAsync'] = prepare;
+            const switching = service.setStorageDirectoryAsync('/parent');
+            expect(prepare).toHaveBeenCalledWith('open-note');
+            expect(currentSettings.storageDirectory).toBe('/old');
+            expect(loadedDirectory).toBe('/old');
+            expect(await service.activateCollection('other')).toBe(Operation.Error);
+            finishSaving();
+            expect(await switching).toBe(true);
+            expect(loadedDirectory).toBe('/new');
+        });
+
+        it('keeps the old directory and database if saving fails', async () => {
+            saveStore.mockRejectedValueOnce(new Error('Cannot save old database'));
+            expect(await service.setStorageDirectoryAsync('/parent')).toBe(false);
+            expect(currentSettings.storageDirectory).toBe('/old');
+            expect(loadedDirectory).toBe('/old');
+            expect(initializeStore).toHaveBeenCalledTimes(1);
+            expect(changed).not.toHaveBeenCalled();
+        });
+
+        it('restores the old directory and reopens its database when the new database cannot load', async () => {
+            initializeStore.mockRejectedValueOnce(new Error('Cannot load new database'));
+            expect(await service.setStorageDirectoryAsync('/parent')).toBe(false);
+            expect(currentSettings.storageDirectory).toBe('/old');
+            expect(service.activeCollection).toBe('collection');
+            expect(loadedDirectory).toBe('/old');
+            expect(service['isInitialized']).toBe(true);
+            expect(initializeStore).toHaveBeenCalledTimes(3);
+            expect(changed).not.toHaveBeenCalled();
+            await service.prepareBackupAsync('collection', '/old');
+        });
+
+        it('keeps initial storage selection lazy for welcome-screen restoration', async () => {
+            service['isInitialized'] = false;
+            initializeStore.mockClear();
+            expect(await service.setStorageDirectoryAsync('/parent')).toBe(true);
+            expect(service['isInitialized']).toBe(false);
+            expect(initializeStore).not.toHaveBeenCalled();
+        });
+    });
+
     describe('initialization', () => {
         let initializeStore: jest.Mock;
         let on: jest.Mock;

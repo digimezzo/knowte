@@ -83,6 +83,7 @@ export class AdvancedSettingsComponent {
                 width: '450px',
                 data: {errorText: errorText},
             });
+            return;
         }
 
         await this.collectionService.initializeAsync();
