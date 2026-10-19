@@ -9,7 +9,9 @@
                 <app-accent-button [ngClass]="{ inactive: backup.busy }" (click)="chooseDestinationAsync()">
                     {{ 'Backup.SelectFolder' | translate }}
                 </app-accent-button>
-                <p class="backup-settings__path">{{ settings.backupDirectory || ('Backup.NoFolder' | translate) }}</p>
+                <p class="backup-settings__path" [class.backup-settings__path--empty]="!settings.backupDirectory">
+                    {{ settings.backupDirectory || ('Backup.NoFolder' | translate) }}
+                </p>
                 <i
                     class="las la-times backup-settings__clear-icon pointer"
                     *ngIf="settings.backupDirectory"

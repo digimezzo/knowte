@@ -40,6 +40,10 @@
     line-height: 30px;
 }
 
+.backup-settings__path--empty {
+    color: var(--theme-secondary-text);
+}
+
 .backup-settings__action {
     display: flex;
     flex-direction: row;
