@@ -134,11 +134,23 @@ describe('Collection backups', () => {
     });
 
     test('performs a fresh backup when the archive is missing even though the token is unchanged', async () => {
-        const archive = await createBackup();
-        await fs.unlink(archive);
-        const [result] = await backupCollections(options);
-        expect(result.skipped).toBe(false);
-        expect(await fs.pathExists(archive)).toBe(true);
+        const timestamp = jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2026-10-19T03:00:00.000Z');
+        try {
+            const archive = await createBackup();
+            const token = await fs.readJson(path.join(source, '.knowte-revision.json'));
+            await fs.unlink(archive);
+            timestamp.mockReturnValue('2026-10-19T03:00:01.000Z');
+            const [result] = await backupCollections(options);
+            expect(result.skipped).toBe(false);
+            const replacement = path.join(options.destination, result.file);
+            expect(replacement).not.toBe(archive);
+            expect(await fs.pathExists(archive)).toBe(false);
+            expect(await fs.pathExists(replacement)).toBe(true);
+            expect(await fs.readJson(path.join(source, '.knowte-revision.json'))).toEqual(token);
+            await extractAndVerify(replacement, path.join(root, 'replacement-verified'));
+        } finally {
+            timestamp.mockRestore();
+        }
     });
 
     test('generates and persists a revision token for a collection that has none yet', async () => {
