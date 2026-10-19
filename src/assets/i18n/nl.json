@@ -18,7 +18,7 @@
         "Input": "Tags (gescheiden door komma's)",
         "Description": "Scheid tags met komma's. Maak het veld leeg om alle tags te verwijderen. Tags worden niet versleuteld, ook niet bij versleutelde notities.",
         "SaveError": "De tags van de notitie konden niet worden opgeslagen. Bekijk het logboek als u meer informatie nodig hebt.",
-        "SearchHint": "Zoek in titels en tekst. Gebruik t:werk t:dringend vergadering om beide tags en de tekst vergadering te vereisen. Zet tags met spaties tussen aanhalingstekens, bijv. t:\"project alpha\". Plaats tagfilters voor de tekst."
+        "SearchHint": "Zoek in titels, tekst en tags (t:tag)."
     },
     "NotesTabs": {
         "All": "Alle",

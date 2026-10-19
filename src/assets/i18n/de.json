@@ -18,7 +18,7 @@
         "Input": "Tags (comma-separated)",
         "Description": "Separate tags with commas. Clear the field to remove all tags. Tags are not encrypted, even for encrypted notes.",
         "SaveError": "Could not save the note tags. Please verify the log if you need more information.",
-        "SearchHint": "Search titles and text. Use t:work t:urgent meeting to require both tags and text meeting. Put tags with spaces in quotes, e.g. t:\"project alpha\". Place tag filters before text."
+        "SearchHint": "Search titles, text, and tags (t:tag)."
     },
     "NotesTabs": {
         "All": "Alle",
