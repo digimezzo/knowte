@@ -462,6 +462,21 @@ describe('CollectionService note deletion', () => {
             expect(service['getFilteredNotes'](notes, 't:work t:')).toEqual([]);
         });
 
+        it('supports wildcard tag searches', () => {
+            const todo = addNote(false, 'Content');
+            todo.tags = ['todo', 'work'];
+            const undone = addNote(false, 'Content');
+            undone.tags = ['undone'];
+            const other = addNote(false, 'Content');
+            other.tags = ['workshop'];
+            addNote(false, 'Content');
+
+            expect(service['getFilteredNotes'](notes, 't:todo*')).toEqual([todo]);
+            expect(service['getFilteredNotes'](notes, 't:*do*')).toEqual([todo, undone]);
+            expect(service['getFilteredNotes'](notes, 't:*')).toEqual([todo, undone, other]);
+            expect(service['getFilteredNotes'](notes, 't:work')).toEqual([todo]);
+        });
+
         it('keeps ordinary title/body searches unchanged and does not search tag metadata', () => {
             const tagged = addNote(false, 'Content');
             tagged.tags = ['work'];

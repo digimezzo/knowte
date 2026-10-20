@@ -1515,10 +1515,17 @@ export class CollectionService {
 
         const search = TagUtils.parseSearch(filter);
         const searchTextPieces: string[] = search.text.split(/\s+/);
+        const tagPatterns: RegExp[] = search.tags.map((searchTag) => {
+            const pattern: string = searchTag
+                .split('*')
+                .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+                .join('.*');
+            return new RegExp(`^${pattern}$`, 'i');
+        });
 
         return unfilteredNotes.filter((note) => {
-            const matchesTag: boolean = search.tags.every((searchTag) =>
-                searchTag.length > 0 && (note.tags || []).some((tag) => tag.toLowerCase() === searchTag));
+            const matchesTag: boolean = tagPatterns.every((tagPattern) =>
+                (note.tags || []).some((tag) => tag.length > 0 && tagPattern.test(tag)));
             return matchesTag && CollectionUtils.containsAll(`${note.title} ${note.text}`, searchTextPieces);
         });
     }
