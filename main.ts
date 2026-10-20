@@ -3,12 +3,12 @@ import { app, BrowserWindow, ipcMain, Menu, screen, shell } from 'electron';
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
 import log from 'electron-log';
-import * as Store from 'electron-store';
 import * as windowStateKeeper from 'electron-window-state';
 import * as fs from 'fs-extra';
 import * as os from 'os';
 import * as path from 'path';
 import * as url from 'url';
+import { SettingsStore } from './src/app/common/settings/settings-store';
 
 app.commandLine.appendSwitch('disable-color-correct-rendering');
 
@@ -224,7 +224,7 @@ function openExternalLink(url: string): void {
 }
 
 function windowhasFrame(): boolean {
-    const settings: Store<any> = new Store();
+    const settings = new SettingsStore(app.getPath('userData'));
 
     if (!settings.has('useCustomTitleBar')) {
         if (os.platform() === 'win32') {
@@ -238,7 +238,7 @@ function windowhasFrame(): boolean {
 }
 
 function createNoteWindow(notePath: string, noteId: string, windowHasFrame: boolean): void {
-    const settings: Store<any> = new Store();
+    const settings = new SettingsStore(app.getPath('userData'));
 
     // Load the previous state with fallback to defaults
     const noteWindowState = windowStateKeeper({

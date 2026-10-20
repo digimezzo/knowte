@@ -14,12 +14,12 @@ const electron_1 = require("electron");
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
 // "You need to import electron-log in the main process. Without it, electron-log doesn't works in a renderer process."
 const electron_log_1 = require("electron-log");
-const Store = require("electron-store");
 const windowStateKeeper = require("electron-window-state");
 const fs = require("fs-extra");
 const os = require("os");
 const path = require("path");
 const url = require("url");
+const settings_store_1 = require("./src/app/common/settings/settings-store");
 electron_1.app.commandLine.appendSwitch('disable-color-correct-rendering');
 electron_log_1.default.create('main');
 electron_log_1.default.transports.file.resolvePath = () => path.join(electron_1.app.getPath('userData'), 'logs', 'Knowte.log');
@@ -194,7 +194,7 @@ function openExternalLink(url) {
     electron_1.shell.openExternal(url);
 }
 function windowhasFrame() {
-    const settings = new Store();
+    const settings = new settings_store_1.SettingsStore(electron_1.app.getPath('userData'));
     if (!settings.has('useCustomTitleBar')) {
         if (os.platform() === 'win32') {
             settings.set('useCustomTitleBar', true);
@@ -206,7 +206,7 @@ function windowhasFrame() {
     return !settings.get('useCustomTitleBar');
 }
 function createNoteWindow(notePath, noteId, windowHasFrame) {
-    const settings = new Store();
+    const settings = new settings_store_1.SettingsStore(electron_1.app.getPath('userData'));
     // Load the previous state with fallback to defaults
     const noteWindowState = windowStateKeeper({
         defaultWidth: 620,

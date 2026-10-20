@@ -8,13 +8,16 @@ import { CollectionService } from '../collection/collection.service';
 import { BackupService } from './backup.service';
 
 const storedSettings = new Map<string, unknown>();
-jest.mock('electron-store', () => class {
-    public has(key: string): boolean { return storedSettings.has(key); }
-    public get(key: string, fallback?: unknown): unknown {
-        return storedSettings.has(key) ? storedSettings.get(key) : fallback;
-    }
-    public set(key: string, value: unknown): void { storedSettings.set(key, value); }
-});
+jest.mock('@electron/remote', () => ({ app: { getPath: () => '/tmp/knowte-settings-test' } }));
+jest.mock('../../common/settings/settings-store', () => ({
+    SettingsStore: class {
+        public has(key: string): boolean { return storedSettings.has(key); }
+        public get(key: string, fallback?: unknown): unknown {
+            return storedSettings.has(key) ? storedSettings.get(key) : fallback;
+        }
+        public set(key: string, value: unknown): void { storedSettings.set(key, value); }
+    },
+}));
 jest.mock('electron', () => ({ ipcRenderer: {
     invoke: jest.fn(), on: jest.fn(), send: jest.fn(), removeListener: jest.fn(),
 } }));

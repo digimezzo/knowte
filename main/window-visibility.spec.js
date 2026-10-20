@@ -47,7 +47,13 @@ describe('Window recovery after display changes', () => {
                 ipcMain: { on: jest.fn(), handle: jest.fn() } },
             'electron-log': { default: logger },
             '@electron/remote/main': { initialize: jest.fn() },
-            'electron-store': {},
+            './src/app/common/settings/settings-store': {
+                SettingsStore: class {
+                    has() { return false; }
+                    get(key) { return key === 'useCustomTitleBar' ? false : undefined; }
+                    set() {}
+                },
+            },
             'electron-window-state': {},
             'fs-extra': {},
             './main/backup-controller': { registerBackups: jest.fn() },

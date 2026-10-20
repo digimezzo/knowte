@@ -154,12 +154,6 @@ export class Constants {
             licenseUrl: 'https://github.com/megahertz/electron-log/blob/master/LICENSE',
         },
         {
-            name: 'electron-store',
-            description: 'Simple data persistence for your Electron app or module. Save and load user preferences, app state, cache, etc.',
-            url: 'https://github.com/sindresorhus/electron-store',
-            licenseUrl: 'https://github.com/sindresorhus/electron-store/blob/master/license',
-        },
-        {
             name: 'electron-window-state',
             description: 'A library to store and restore window sizes and positions for your Electron app.',
             url: 'https://github.com/mawie81/electron-window-state',

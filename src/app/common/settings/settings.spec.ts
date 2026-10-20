@@ -2,17 +2,21 @@ import { Settings } from './settings';
 
 const storedSettings = new Map<string, unknown>();
 
-jest.mock('electron-store', () => {
-    return class {
-        public has(key: string): boolean {
-            return storedSettings.has(key);
-        }
-        public get(key: string, defaultValue?: unknown): unknown {
-            return storedSettings.has(key) ? storedSettings.get(key) : defaultValue;
-        }
-        public set(key: string, value: unknown): void {
-            storedSettings.set(key, value);
-        }
+jest.mock('@electron/remote', () => ({ app: { getPath: () => '/tmp/knowte-settings-test' } }));
+
+jest.mock('./settings-store', () => {
+    return {
+        SettingsStore: class {
+            public has(key: string): boolean {
+                return storedSettings.has(key);
+            }
+            public get(key: string, defaultValue?: unknown): unknown {
+                return storedSettings.has(key) ? storedSettings.get(key) : defaultValue;
+            }
+            public set(key: string, value: unknown): void {
+                storedSettings.set(key, value);
+            }
+        },
     };
 });
 

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import Store from 'electron-store';
+import * as remote from '@electron/remote';
 import * as os from 'os';
 import { BaseSettings } from './base-settings';
+import { SettingsStore } from './settings-store';
 
 @Injectable()
 export class Settings implements BaseSettings {
-    private settings: Store<any> = new Store();
+    private settings: SettingsStore = new SettingsStore(remote.app.getPath('userData'));
 
     constructor() {
         this.initialize();
