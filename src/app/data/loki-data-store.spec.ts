@@ -208,6 +208,13 @@ describe('LokiDataStore initialization', () => {
         note.isMarked = true;
         store.updateNote(note);
         expect(store.getMarkedNotes().map((marked) => marked.id)).toEqual([noteId]);
+        const modificationDate = note.modificationDate;
+        note.isPinned = true;
+        note.isMarked = false;
+        store.updateNoteWithoutDate(note);
+        expect(store.getNoteById(noteId).modificationDate).toBe(modificationDate);
+        expect(store.getNoteById(noteId).isPinned).toBe(true);
+        expect(store.getNoteById(noteId).isMarked).toBe(false);
         store.trashNote(noteId);
         expect(store.getNotes()).toEqual([]);
         expect(store.getTrashedNotes().map((trashed) => trashed.id)).toEqual([noteId]);

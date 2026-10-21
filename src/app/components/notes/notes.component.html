@@ -18,7 +18,6 @@
                 class="note-item no-select"
                 [ngClass]="{ 'pinned-note': note.isPinned }"
                 (dblclick)="openNoteAsync(note)"
-                matTooltip="{{ 'Tooltips.LastChanged' | translate }}: {{ note.displayExactModificationDate }}"
                 (click)="setSelectedNotes(note, $event)"
                 draggable="true"
                 (dragstart)="dragStart($event, note)"
@@ -26,7 +25,10 @@
                 <div class="note-item-icon">
                     <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg" />
                 </div>
-                <div class="note-item-info px-1">
+                <div
+                    class="note-item-info px-1"
+                    matTooltip="{{ 'Tooltips.LastChanged' | translate }}: {{ note.displayExactModificationDate }}"
+                >
                     <div class="note-item-info-title">
                         <span>{{ note.title }}</span>
                     </div>
@@ -34,7 +36,6 @@
                         <i class="note-status-icon lab la-markdown" *ngIf="note.isMarkdownNote"></i>
                         <i class="note-status-icon lar la-edit" *ngIf="!note.isMarkdownNote"></i>
                         <i class="note-status-icon las la-lock ml-1" *ngIf="note.isEncrypted"></i>
-                        <i class="note-status-icon-accent las la-thumbtack rotate-45-ccw ml-1" *ngIf="note.isPinned"></i>
                         <div class="note-status-text ml-1">{{ note.displayModificationDate }}</div>
                         <app-tasks-progress
                             class="ml-1"
@@ -48,9 +49,31 @@
                         </div>
                     </div>
                 </div>
-                <div class="note-item-actions" (click)="toggleNoteMark(note)">
-                    <i class="note-item-actions-heart-marked las la-heart" *ngIf="note.isMarked"></i>
-                    <i class="note-item-actions-heart-unmarked lar la-heart" *ngIf="!note.isMarked"></i>
+                <div class="note-item-actions">
+                    <button
+                        type="button"
+                        class="note-item-action"
+                        (click)="toggleNotePin(note)"
+                        [matTooltip]="(note.isPinned ? 'Tooltips.UnpinNote' : 'Tooltips.PinNote') | translate"
+                        [attr.aria-label]="(note.isPinned ? 'Tooltips.UnpinNote' : 'Tooltips.PinNote') | translate"
+                    >
+                        <i
+                            class="note-item-actions-pin las la-thumbtack"
+                            [class.note-item-actions-pin-marked]="note.isPinned"
+                            [class.rotate-45-ccw]="note.isPinned"
+                            [class.rotate-45-cw]="!note.isPinned"
+                        ></i>
+                    </button>
+                    <button
+                        type="button"
+                        class="note-item-action"
+                        (click)="toggleNoteMark(note)"
+                        [matTooltip]="(note.isMarked ? 'Tooltips.UnmarkNote' : 'Tooltips.MarkNote') | translate"
+                        [attr.aria-label]="(note.isMarked ? 'Tooltips.UnmarkNote' : 'Tooltips.MarkNote') | translate"
+                    >
+                        <i class="note-item-actions-heart-marked las la-heart" *ngIf="note.isMarked"></i>
+                        <i class="note-item-actions-heart-unmarked lar la-heart" *ngIf="!note.isMarked"></i>
+                    </button>
                 </div>
             </div>
         </div>

@@ -160,6 +160,32 @@ describe('CollectionService note deletion', () => {
         return note;
     }
 
+    describe('note metadata changes', () => {
+        it('persists marks and pins without refreshing modification dates', () => {
+            const note = addNote(true, '');
+            note.isMarked = false;
+            note.isPinned = false;
+            const savedMetadata: Array<{ isMarked: boolean; isPinned: boolean }> = [];
+            const pinChanged = jest.fn();
+            data.setup((x) => x.updateNoteWithoutDate(It.isAny())).callback((updatedNote) => {
+                savedMetadata.push({ isMarked: updatedNote.isMarked, isPinned: updatedNote.isPinned });
+            });
+            data.setup((x) => x.getMarkedNotes()).returns(() => []);
+            service.notePinChanged$.subscribe(pinChanged);
+
+            service.setNotePin(note.id, true);
+            service.setNoteMark(note.id, true);
+
+            expect(note.isPinned).toBe(true);
+            expect(note.isMarked).toBe(true);
+            expect(savedMetadata).toEqual([
+                { isMarked: false, isPinned: true },
+                { isMarked: true, isPinned: true },
+            ]);
+            expect(pinChanged).toHaveBeenCalledWith(expect.objectContaining({ noteId: note.id, isPinned: true }));
+        });
+    });
+
     describe('backup checkpoints', () => {
         beforeEach(() => {
             service['isInitialized'] = true;

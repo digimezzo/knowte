@@ -904,7 +904,7 @@ export class CollectionService {
     public setNoteMark(noteId: string, isMarked: boolean): void {
         const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
         note.isMarked = isMarked;
-        this.collectionDataStoreAccess.updateNote(note);
+        this.collectionDataStoreAccess.updateNoteWithoutDate(note);
 
         const markedNotes: Note[] = this.getVisibleNotes(this.collectionDataStoreAccess.getMarkedNotes());
         const result: NoteMarkResult = new NoteMarkResult(noteId, note.isMarked, markedNotes.length);
@@ -916,9 +916,9 @@ export class CollectionService {
     public setNotePin(noteId: string, isPinned: boolean): void {
         const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
         note.isPinned = isPinned;
-        this.collectionDataStoreAccess.updateNote(note);
+        this.collectionDataStoreAccess.updateNoteWithoutDate(note);
 
-        const result: NotePinResult = new NotePinResult(noteId, note.isMarked);
+        const result: NotePinResult = new NotePinResult(noteId, note.isPinned);
 
         this.notePinChanged.next(result);
         this.onNotePinChanged(note.id, note.isPinned);
