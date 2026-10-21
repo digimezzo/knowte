@@ -1,4 +1,4 @@
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import {animate, style, transition, trigger} from '@angular/animations';
 import {Component, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
@@ -38,6 +38,18 @@ import {AnimatedPage} from "../animated-page";
     selector: 'app-collection',
     templateUrl: './collection.component.html',
     styleUrls: ['./collection.component.scss'],
+    animations: [
+        trigger('selectionAction', [
+            transition(':enter', [
+                style({opacity: 0, transform: 'translateY(16px)'}),
+                animate('180ms {{enterDelay}} ease-out', style({opacity: 1, transform: 'translateY(0)'})),
+            ], {params: {enterDelay: '0ms'}}),
+            transition(':leave', [
+                style({opacity: 1, transform: 'translateY(0)'}),
+                animate('180ms {{leaveDelay}} ease-in', style({opacity: 0, transform: 'translateY(16px)'})),
+            ], {params: {leaveDelay: '0ms'}}),
+        ]),
+    ],
     encapsulation: ViewEncapsulation.None
 })
 export class CollectionComponent extends AnimatedPage implements OnInit, OnDestroy {
@@ -79,6 +91,10 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
     public hoveredNotebook: Notebook;
     public selectedNoteIds: string[];
     public selectedNote: Note | null = null;
+    public disableActionAnimations: boolean =
+        typeof window !== 'undefined' &&
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     public notesCount: number = 0;
     public hasSelectedNotes: boolean = false;
     public isBusy: boolean = false;

@@ -110,9 +110,10 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="notebooks-pane-buttons mr-4">
+                            <div class="notebooks-pane-buttons mr-4" [@.disabled]="disableActionAnimations">
                                 <button
-                                    class="list-button"
+                                    class="list-button notebook-selection-action notebook-selection-action-unarchive"
+                                    [@selectionAction]="{value: 'visible', params: {enterDelay: '105ms', leaveDelay: '0ms'}}"
                                     mat-mini-fab
                                     (click)="setNotebooksArchivedAsync(false)"
                                     [matTooltip]="
@@ -128,7 +129,8 @@
                                     <i class="edit-item-icon las la-box-open"></i>
                                 </button>
                                 <button
-                                    class="list-button"
+                                    class="list-button notebook-selection-action notebook-selection-action-archive"
+                                    [@selectionAction]="{value: 'visible', params: {enterDelay: '70ms', leaveDelay: '35ms'}}"
                                     mat-mini-fab
                                     (click)="setNotebooksArchivedAsync(true)"
                                     [matTooltip]="
@@ -144,7 +146,8 @@
                                     <i class="edit-item-icon las la-archive"></i>
                                 </button>
                                 <button
-                                    class="list-button"
+                                    class="list-button notebook-selection-action notebook-selection-action-rename"
+                                    [@selectionAction]="{value: 'visible', params: {enterDelay: '35ms', leaveDelay: '70ms'}}"
                                     mat-mini-fab
                                     (click)="renameNotebook()"
                                     matTooltip="{{ 'Tooltips.RenameNotebook' | translate }}"
@@ -153,7 +156,8 @@
                                     <i class="edit-item-icon lar la-edit"></i>
                                 </button>
                                 <button
-                                    class="list-button"
+                                    class="list-button notebook-selection-action notebook-selection-action-delete"
+                                    [@selectionAction]="{value: 'visible', params: {enterDelay: '0ms', leaveDelay: '105ms'}}"
                                     mat-mini-fab
                                     (click)="deleteNotebooksAsync()"
                                     matTooltip="{{
@@ -196,9 +200,10 @@
                                         (dragover)="notesDragOver($event)"
                                     ></app-notes>
                                 </div>
-                                <div class="notes-pane-buttons mr-2">
+                                <div class="notes-pane-buttons mr-2" [@.disabled]="disableActionAnimations">
                                     <button
-                                        class="list-button"
+                                        class="list-button note-selection-action note-selection-action-tags"
+                                        [@selectionAction]="{value: 'visible', params: {enterDelay: '105ms', leaveDelay: '0ms'}}"
                                         mat-mini-fab
                                         color=""
                                         (click)="editSelectedNoteTagsAsync()"
@@ -208,7 +213,8 @@
                                         <i class="edit-item-icon las la-tags"></i>
                                     </button>
                                     <button
-                                        class="list-button"
+                                        class="list-button note-selection-action note-selection-action-pin"
+                                        [@selectionAction]="{value: 'visible', params: {enterDelay: '70ms', leaveDelay: '35ms'}}"
                                         mat-mini-fab
                                         color=""
                                         (click)="toggleSelectedNotePin()"
@@ -222,7 +228,8 @@
                                         ></i>
                                     </button>
                                     <button
-                                        class="list-button"
+                                        class="list-button note-selection-action note-selection-action-move"
+                                        [@selectionAction]="{value: 'visible', params: {enterDelay: '35ms', leaveDelay: '70ms'}}"
                                         mat-mini-fab
                                         color=""
                                         (click)="openMoveNotesBottomSheet()"
@@ -234,16 +241,8 @@
                                         <i class="edit-item-icon las la-exchange-alt"></i>
                                     </button>
                                     <button
-                                        class="list-button"
-                                        mat-mini-fab
-                                        color=""
-                                        (click)="importNotesAsync()"
-                                        matTooltip="{{ 'Tooltips.ImportNotes' | translate }}"
-                                    >
-                                        <i class="edit-item-icon las la-file-import"></i>
-                                    </button>
-                                    <button
-                                        class="list-button"
+                                        class="list-button note-selection-action note-selection-action-delete"
+                                        [@selectionAction]="{value: 'visible', params: {enterDelay: '0ms', leaveDelay: '105ms'}}"
                                         mat-mini-fab
                                         color=""
                                         (click)="deleteNotesAsync()"
@@ -253,6 +252,15 @@
                                         *ngIf="hasSelectedNotes"
                                     >
                                         <i class="edit-item-icon lar la-trash-alt"></i>
+                                    </button>
+                                    <button
+                                        class="list-button"
+                                        mat-mini-fab
+                                        color=""
+                                        (click)="importNotesAsync()"
+                                        matTooltip="{{ 'Tooltips.ImportNotes' | translate }}"
+                                    >
+                                        <i class="edit-item-icon las la-file-import"></i>
                                     </button>
                                     <button
                                         class="list-button"
