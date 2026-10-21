@@ -94,9 +94,6 @@
 
 .note-item-actions {
     margin: 0 100px 0 0;
-    display: flex;
-    align-items: center;
-    gap: 16px;
 }
 
 .note-item-action {
@@ -114,15 +111,6 @@
 .note-item-actions-heart-unmarked {
     color: var(--theme-secondary-text);
     font-size: 22px;
-}
-
-.note-item-actions-pin {
-    color: var(--theme-secondary-text);
-    font-size: 22px;
-}
-
-.note-item-actions-pin-marked {
-    color: var(--theme-accent-color);
 }
 
 .note-item-info {

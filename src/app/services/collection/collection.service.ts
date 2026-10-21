@@ -1064,11 +1064,7 @@ export class CollectionService {
         await this.deleteNotesAsync([noteId]);
     }
 
-    public async saveNoteTagsEventHandler(
-        noteId: string,
-        tags: string[],
-        callback: (operation: Operation) => void,
-    ): Promise<void> {
+    public async saveNoteTagsAsync(noteId: string, tags: string[]): Promise<Operation> {
         let note: Note;
         let previousTags: string[];
         try {
@@ -1090,12 +1086,19 @@ export class CollectionService {
             }
             this.logger.error(`Could not save tags for note with id=${noteId}. Cause: ${error}`,
                 'CollectionService', 'saveNoteTagsEventHandler');
-            callback(Operation.Error);
-            return;
+            return Operation.Error;
         }
 
         this.noteEdited.next();
-        callback(Operation.Success);
+        return Operation.Success;
+    }
+
+    public async saveNoteTagsEventHandler(
+        noteId: string,
+        tags: string[],
+        callback: (operation: Operation) => void,
+    ): Promise<void> {
+        callback(await this.saveNoteTagsAsync(noteId, tags));
     }
 
     public async moveNotesToCollectionAsync(noteIds: string[], newCollection: string): Promise<number> {

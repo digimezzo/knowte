@@ -125,10 +125,6 @@ export class NotesComponent implements OnInit, OnDestroy {
         this.collectionService.setNoteMark(note.id, !note.isMarked);
     }
 
-    public toggleNotePin(note: Note): void {
-        this.collectionService.setNotePin(note.id, !note.isPinned);
-    }
-
     private markNote(result: NoteMarkResult): void {
         if (this.notes.length > 0) {
             const noteToMark: Note = this.notes.find((x) => x.id === result.noteId);

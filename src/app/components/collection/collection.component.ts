@@ -12,6 +12,7 @@ import {Operation} from '../../common/enums/operation';
 import {Logger} from '../../common/logging/logger';
 import {BaseSettings} from '../../common/settings/base-settings';
 import {SelectionWatcher} from '../../common/ui/selection-watcher';
+import {TagUtils} from '../../common/utils/tag-utils';
 import {Note} from '../../data/entities/note';
 import {Notebook} from '../../data/entities/notebook';
 import {BaseAppearanceService} from '../../services/appearance/base-appearance.service';
@@ -77,6 +78,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
     public activeNotebook: Notebook;
     public hoveredNotebook: Notebook;
     public selectedNoteIds: string[];
+    public selectedNote: Note | null = null;
     public notesCount: number = 0;
     public hasSelectedNotes: boolean = false;
     public isBusy: boolean = false;
@@ -313,6 +315,44 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
     public onSelectedNotesChanged(selectedNoteIds: string[]): void {
         this.selectedNoteIds = selectedNoteIds;
         this.hasSelectedNotes = this.selectedNoteIds != undefined && this.selectedNoteIds.length > 0;
+        this.selectedNote = selectedNoteIds?.length === 1 ? this.collection.getNote(selectedNoteIds[0]) : null;
+    }
+
+    public toggleSelectedNotePin(): void {
+        if (this.selectedNote) {
+            this.collection.setNotePin(this.selectedNote.id, !this.selectedNote.isPinned);
+        }
+    }
+
+    public async editSelectedNoteTagsAsync(): Promise<void> {
+        const note = this.selectedNote;
+        if (!note) {
+            return;
+        }
+
+        try {
+            const data = {
+                titleText: await this.translator.getAsync('Tags.Edit'),
+                placeholderText: await this.translator.getAsync('Tags.Input'),
+                descriptionText: await this.translator.getAsync('Tags.Description'),
+                inputText: (note.tags || []).join(', '),
+                allowEmpty: true,
+            };
+            const dialogRef = this.dialog.open(InputDialogComponent, {width: '450px', data});
+            if (!(await dialogRef.afterClosed().toPromise())) {
+                return;
+            }
+
+            const tags: string[] = TagUtils.normalize(data.inputText.split(','));
+            if (await this.collection.saveNoteTagsAsync(note.id, tags) !== Operation.Success) {
+                throw new Error('Saving note tags failed.');
+            }
+            note.tags = tags;
+        } catch (error) {
+            this.logger.error(`Could not edit tags for note with id=${note.id}. Cause: ${error}`, 'CollectionComponent', 'editSelectedNoteTagsAsync');
+            const errorText: string = await this.translator.getAsync('Tags.SaveError');
+            this.dialog.open(ErrorDialogComponent, {width: '450px', data: {errorText}});
+        }
     }
 
     public async importNotesAsync(): Promise<void> {
