@@ -6,16 +6,16 @@
         </div>
         <div class="d-flex flex-row" *ngIf="this.noteEditor.isEditing">
             <div class="markdown-action-separator no-select"></div>
-            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyBold()" title="{{ 'Notes.Bold' | translate }}">
+            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyBold()" title="{{ 'Notes.Bold' | translate }} (Ctrl+B)">
                 <i class="fa-solid fa-bold"></i>
             </div>
-            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyItalic()" title="{{ 'Notes.Italic' | translate }}">
+            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyItalic()" title="{{ 'Notes.Italic' | translate }} (Ctrl+I)">
                 <i class="fa-solid fa-italic"></i>
             </div>
             <div
                 class="markdown-action-button no-select"
                 (click)="this.noteEditor.applyStrikeThrough()"
-                title="{{ 'Notes.Strikethrough' | translate }}"
+                title="{{ 'Notes.Strikethrough' | translate }} (Ctrl+S)"
             >
                 <i class="fa-solid fa-strikethrough"></i>
             </div>
@@ -34,7 +34,7 @@
             <div
                 class="markdown-action-button no-select"
                 (click)="this.noteEditor.applyHeading(1)"
-                title="{{ 'Notes.Heading1' | translate }}"
+                title="{{ 'Notes.Heading1' | translate }} (Ctrl+1)"
             >
                 <i class="fa-solid fa-heading"></i>
                 <div class="markdown-action-button-subscript">1</div>
@@ -42,7 +42,7 @@
             <div
                 class="markdown-action-button no-select"
                 (click)="this.noteEditor.applyHeading(2)"
-                title="{{ 'Notes.Heading2' | translate }}"
+                title="{{ 'Notes.Heading2' | translate }} (Ctrl+2)"
             >
                 <i class="fa-solid fa-heading"></i>
                 <div class="markdown-action-button-subscript">2</div>
@@ -50,7 +50,7 @@
             <div
                 class="markdown-action-button no-select"
                 (click)="this.noteEditor.applyHeading(3)"
-                title="{{ 'Notes.Heading3' | translate }}"
+                title="{{ 'Notes.Heading3' | translate }} (Ctrl+3)"
             >
                 <i class="fa-solid fa-heading"></i>
                 <div class="markdown-action-button-subscript">3</div>
@@ -78,7 +78,7 @@
                 <i class="fa-solid fa-list-check"></i>
             </div>
             <div class="markdown-action-separator no-select"></div>
-            <div class="markdown-action-button no-select" (click)="this.noteEditor.insertLink()" title="{{ 'Notes.Link' | translate }}">
+            <div class="markdown-action-button no-select" (click)="this.noteEditor.insertLink()" title="{{ 'Notes.Link' | translate }} (Ctrl+K)">
                 <i class="fa-solid fa-link"></i>
             </div>
             <button
@@ -86,15 +86,15 @@
                 class="markdown-action-button no-select"
                 (mousedown)="$event.preventDefault()"
                 (click)="insertNoteLinkAsync()"
-                title="{{ 'NoteLinks.LinkToNote' | translate }}"
+                title="{{ 'NoteLinks.LinkToNote' | translate }}..."
                 [attr.aria-label]="'NoteLinks.LinkToNote' | translate"
             >
                 <i class="fa-solid fa-file-circle-plus"></i>
             </button>
-            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyQuote()" title="{{ 'Notes.Quote' | translate }}">
+            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyQuote()" title="{{ 'Notes.Quote' | translate }} (Ctrl+Q)">
                 <i class="fa-solid fa-quote-right"></i>
             </div>
-            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyCode()" title="{{ 'Notes.Code' | translate }}">
+            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyCode()" title="{{ 'Notes.Code' | translate }} (Ctrl+M)">
                 <i class="fa-solid fa-code"></i>
             </div>
             <div class="markdown-action-button no-select" (click)="this.noteEditor.insertTable()" title="{{ 'Notes.Table' | translate }}">
