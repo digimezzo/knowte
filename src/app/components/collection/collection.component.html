@@ -113,7 +113,7 @@
                             <div class="notebooks-pane-buttons mr-4" [@.disabled]="disableActionAnimations">
                                 <button
                                     class="list-button notebook-selection-action notebook-selection-action-unarchive"
-                                    [@selectionAction]="{value: 'visible', params: {enterDelay: '105ms', leaveDelay: '0ms'}}"
+                                    [@selectionAction]="{value: 'visible', params: {enterDelay: '75ms', leaveDelay: '0ms'}}"
                                     mat-mini-fab
                                     (click)="setNotebooksArchivedAsync(false)"
                                     [matTooltip]="
@@ -130,7 +130,7 @@
                                 </button>
                                 <button
                                     class="list-button notebook-selection-action notebook-selection-action-archive"
-                                    [@selectionAction]="{value: 'visible', params: {enterDelay: '70ms', leaveDelay: '35ms'}}"
+                                    [@selectionAction]="{value: 'visible', params: {enterDelay: '50ms', leaveDelay: '25ms'}}"
                                     mat-mini-fab
                                     (click)="setNotebooksArchivedAsync(true)"
                                     [matTooltip]="
@@ -147,7 +147,7 @@
                                 </button>
                                 <button
                                     class="list-button notebook-selection-action notebook-selection-action-rename"
-                                    [@selectionAction]="{value: 'visible', params: {enterDelay: '35ms', leaveDelay: '70ms'}}"
+                                    [@selectionAction]="{value: 'visible', params: {enterDelay: '25ms', leaveDelay: '50ms'}}"
                                     mat-mini-fab
                                     (click)="renameNotebook()"
                                     matTooltip="{{ 'Tooltips.RenameNotebook' | translate }}"
@@ -157,7 +157,7 @@
                                 </button>
                                 <button
                                     class="list-button notebook-selection-action notebook-selection-action-delete"
-                                    [@selectionAction]="{value: 'visible', params: {enterDelay: '0ms', leaveDelay: '105ms'}}"
+                                    [@selectionAction]="{value: 'visible', params: {enterDelay: '0ms', leaveDelay: '75ms'}}"
                                     mat-mini-fab
                                     (click)="deleteNotebooksAsync()"
                                     matTooltip="{{
@@ -203,7 +203,7 @@
                                 <div class="notes-pane-buttons mr-2" [@.disabled]="disableActionAnimations">
                                     <button
                                         class="list-button note-selection-action note-selection-action-tags"
-                                        [@selectionAction]="{value: 'visible', params: {enterDelay: '105ms', leaveDelay: '0ms'}}"
+                                        [@selectionAction]="{value: 'visible', params: {enterDelay: '75ms', leaveDelay: '0ms'}}"
                                         mat-mini-fab
                                         color=""
                                         (click)="editSelectedNoteTagsAsync()"
@@ -214,7 +214,7 @@
                                     </button>
                                     <button
                                         class="list-button note-selection-action note-selection-action-pin"
-                                        [@selectionAction]="{value: 'visible', params: {enterDelay: '70ms', leaveDelay: '35ms'}}"
+                                        [@selectionAction]="{value: 'visible', params: {enterDelay: '50ms', leaveDelay: '25ms'}}"
                                         mat-mini-fab
                                         color=""
                                         (click)="toggleSelectedNotePin()"
@@ -229,7 +229,7 @@
                                     </button>
                                     <button
                                         class="list-button note-selection-action note-selection-action-move"
-                                        [@selectionAction]="{value: 'visible', params: {enterDelay: '35ms', leaveDelay: '70ms'}}"
+                                        [@selectionAction]="{value: 'visible', params: {enterDelay: '25ms', leaveDelay: '50ms'}}"
                                         mat-mini-fab
                                         color=""
                                         (click)="openMoveNotesBottomSheet()"
@@ -242,7 +242,7 @@
                                     </button>
                                     <button
                                         class="list-button note-selection-action note-selection-action-delete"
-                                        [@selectionAction]="{value: 'visible', params: {enterDelay: '0ms', leaveDelay: '105ms'}}"
+                                        [@selectionAction]="{value: 'visible', params: {enterDelay: '0ms', leaveDelay: '75ms'}}"
                                         mat-mini-fab
                                         color=""
                                         (click)="deleteNotesAsync()"

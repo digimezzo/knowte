@@ -42,11 +42,11 @@ import {AnimatedPage} from "../animated-page";
         trigger('selectionAction', [
             transition(':enter', [
                 style({opacity: 0, transform: 'translateY(16px)'}),
-                animate('180ms {{enterDelay}} ease-out', style({opacity: 1, transform: 'translateY(0)'})),
+                animate('150ms {{enterDelay}} ease-out', style({opacity: 1, transform: 'translateY(0)'})),
             ], {params: {enterDelay: '0ms'}}),
             transition(':leave', [
                 style({opacity: 1, transform: 'translateY(0)'}),
-                animate('180ms {{leaveDelay}} ease-in', style({opacity: 0, transform: 'translateY(16px)'})),
+                animate('150ms {{leaveDelay}} ease-in', style({opacity: 0, transform: 'translateY(16px)'})),
             ], {params: {leaveDelay: '0ms'}}),
         ]),
     ],
