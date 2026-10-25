@@ -20,6 +20,8 @@ import { Palette } from './palette';
 import { Theme } from './theme/theme';
 import { ThemeNeutralColors } from './theme/theme-neutral-colors';
 
+type ThemeSettings = Pick<BaseSettings, 'followSystemTheme' | 'useLightBackgroundTheme' | 'followSystemColor'>;
+
 @Injectable()
 export class AppearanceService implements BaseAppearanceService {
     private globalEmitter: any = remote.getGlobal('globalEmitter');
@@ -150,7 +152,12 @@ export class AppearanceService implements BaseAppearanceService {
 
     private onThemeChanged(): void {
         // Global event because all windows need to be notified
-        this.globalEmitter.emit(AppearanceEvents.themeChangedEvent, this.settings.theme);
+        const themeSettings: ThemeSettings = {
+            followSystemTheme: this.settings.followSystemTheme,
+            useLightBackgroundTheme: this.settings.useLightBackgroundTheme,
+            followSystemColor: this.settings.followSystemColor,
+        };
+        this.globalEmitter.emit(AppearanceEvents.themeChangedEvent, this.settings.theme, themeSettings);
     }
 
     private onFontSizeChanged(): void {
@@ -203,7 +210,19 @@ export class AppearanceService implements BaseAppearanceService {
         this.globalEmitter.on(AppearanceEvents.fontSizeChangedEvent, this.fontSizeChangedListener);
     }
 
-    private applyThemeFromGlobalEvent(themeName: string): void {
+    private applyThemeFromGlobalEvent(themeName: string, themeSettings: ThemeSettings): void {
+        if (this.settings.theme !== themeName) {
+            this.settings.theme = themeName;
+        }
+        if (this.settings.followSystemTheme !== themeSettings.followSystemTheme) {
+            this.settings.followSystemTheme = themeSettings.followSystemTheme;
+        }
+        if (this.settings.useLightBackgroundTheme !== themeSettings.useLightBackgroundTheme) {
+            this.settings.useLightBackgroundTheme = themeSettings.useLightBackgroundTheme;
+        }
+        if (this.settings.followSystemColor !== themeSettings.followSystemColor) {
+            this.settings.followSystemColor = themeSettings.followSystemColor;
+        }
         this._selectedTheme = this.themes.find((x) => x.name === themeName);
         this.safeApplyTheme();
     }
