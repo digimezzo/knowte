@@ -23,7 +23,7 @@ export class DefaultThemesCreator {
         '#454545', // secondaryButtonBackground
         '#fff', // secondaryButtonText
         '#242424', // editorBackground
-        '#2d2d2d', // editorCodeBackground
+        '#3b3b3b', // editorCodeBackground
         '#454545', // editorBorder
         '#fff', // editorPrimaryText
         '#6e6e6e', // editorSecondaryText
@@ -49,7 +49,7 @@ export class DefaultThemesCreator {
         '#fff', // secondaryButtonBackground
         '#666', // secondaryButtonText
         '#fafafa', // editorBackground
-        '#eee', // editorCodeBackground
+        '#dedede', // editorCodeBackground
         '#ccc', // editorBorder
         '#000', // editorPrimaryText
         '#888', // editorSecondaryText

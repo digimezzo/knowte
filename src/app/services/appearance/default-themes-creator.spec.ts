@@ -1,3 +1,4 @@
+import tinycolor from 'tinycolor2';
 import { DefaultThemesCreator } from './default-themes-creator';
 import { Theme } from './theme/theme';
 
@@ -32,5 +33,17 @@ describe('DefaultThemesCreator', () => {
             expect(defaultThemes[3].name).toEqual('Bloody Mary');
             expect(defaultThemes[4].name).toEqual('Quepal');
         });
+
+        it.each(new DefaultThemesCreator().createAllThemes())(
+            'should give code a subtly distinct background and readable text in both modes of $name',
+            (theme) => {
+                for (const colors of [theme.lightColors, theme.darkColors]) {
+                    const backgroundContrast = tinycolor.readability(colors.editorBackground, colors.editorCodeBackground);
+                    expect(backgroundContrast).toBeGreaterThanOrEqual(1.25);
+                    expect(backgroundContrast).toBeLessThanOrEqual(1.45);
+                    expect(tinycolor.readability(colors.editorPrimaryText, colors.editorCodeBackground)).toBeGreaterThanOrEqual(4.5);
+                }
+            }
+        );
     });
 });

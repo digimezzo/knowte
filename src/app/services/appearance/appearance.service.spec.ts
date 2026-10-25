@@ -70,7 +70,23 @@ describe('AppearanceService window synchronization', () => {
         expect(noteWindow.element.style.getPropertyValue('--theme-editor-background')).toBe(
             mainWindow.element.style.getPropertyValue('--theme-editor-background')
         );
+        const colors = initialLightTheme ? themes[0].darkColors : themes[0].lightColors;
+        for (const property of ['--theme-classic-note-code-background', '--color-canvas-subtle', '--color-neutral-muted']) {
+            expect(mainWindow.element.style.getPropertyValue(property)).toBe(colors.editorCodeBackground);
+            expect(noteWindow.element.style.getPropertyValue(property)).toBe(colors.editorCodeBackground);
+        }
         expect(noteWindow.service.isUsingLightTheme).toBe(!initialLightTheme);
+    });
+
+    it.each([true, false])('applies the shared code background to Markdown and legacy notes with light=%s', (useLightTheme) => {
+        const window = createWindow(useLightTheme);
+        const colors = useLightTheme ? themes[0].lightColors : themes[0].darkColors;
+
+        for (const property of ['--theme-classic-note-code-background', '--color-canvas-subtle', '--color-neutral-muted']) {
+            expect(window.element.style.getPropertyValue(property)).toBe(colors.editorCodeBackground);
+        }
+        expect(window.element.style.getPropertyValue('--color-canvas-default')).toBe(colors.editorBackground);
+        expect(window.element.style.getPropertyValue('--theme-editor-primary-text')).toBe(colors.editorPrimaryText);
     });
 
     it('synchronizes following the system theme', () => {
