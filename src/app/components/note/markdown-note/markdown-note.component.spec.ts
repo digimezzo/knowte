@@ -2,7 +2,9 @@ import { Mock } from 'typemoq';
 import { ElementRef, NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
+import { MarkedOptions, MarkdownModule, MarkdownService } from 'ngx-markdown';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { Operation } from '../../../common/enums/operation';
@@ -11,6 +13,7 @@ import { CollectionClient } from '../../../services/collection/collection.client
 import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { INoteEditor } from '../note-editor/i-note-editor';
 import { MarkdownNoteComponent } from './markdown-note.component';
+import { MarkdownScrollMap } from './markdown-scroll-map';
 
 @Pipe({ name: 'fixImagePaths' })
 class FixImagePathsStubPipe implements PipeTransform {
@@ -26,26 +29,61 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     let preview: HTMLElement;
     let highlight: HTMLPreElement;
     let isEditing: boolean;
+    let layoutCallback: FrameRequestCallback | undefined;
+    let resizeCallback: ResizeObserverCallback;
+    let disconnect: jest.Mock;
+    let content: string;
+    let mappingPosition: jest.SpyInstance;
+    const originalResizeObserver = window.ResizeObserver;
+
+    beforeAll(() => {
+        window.ResizeObserver = class implements ResizeObserver {
+            public constructor(callback: ResizeObserverCallback) {
+                resizeCallback = callback;
+            }
+            public observe = jest.fn();
+            public unobserve = jest.fn();
+            public disconnect = () => disconnect();
+        };
+    });
+
+    afterAll(() => {
+        window.ResizeObserver = originalResizeObserver;
+    });
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [MarkdownNoteComponent, FixImagePathsStubPipe],
-            imports: [FormsModule, TranslateModule.forRoot()],
+            imports: [FormsModule, TranslateModule.forRoot(), MarkdownModule.forRoot({
+                markedOptions: { provide: MarkedOptions, useValue: { headerIds: false, mangle: false } },
+            })],
             providers: [
                 { provide: CollectionClient, useValue: Mock.ofType<CollectionClient>().object },
                 { provide: MatDialog, useValue: Mock.ofType<MatDialog>().object },
-                { provide: SnackBarService, useValue: Mock.ofType<SnackBarService>().object },
-                { provide: Logger, useValue: Mock.ofType<Logger>().object },
+                { provide: SnackBarService, useValue: { oopsAnErrorOccurredAsync: jest.fn().mockResolvedValue(undefined) } },
+                { provide: Logger, useValue: { error: jest.fn() } },
             ],
             schemas: [NO_ERRORS_SCHEMA],
         }).compileComponents();
 
         fixture = TestBed.createComponent(MarkdownNoteComponent);
+        disconnect = jest.fn();
+        layoutCallback = undefined;
+        jest.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {
+            layoutCallback = callback;
+            return 1;
+        });
+        jest.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => { layoutCallback = undefined; });
+        // Component tests exercise event routing; layout accuracy is tested separately with measured anchors.
+        mappingPosition = jest.spyOn(MarkdownScrollMap.prototype, 'position').mockImplementation(
+            (position, fromEditor) => fromEditor ? position * 2 : position / 2,
+        );
         component = fixture.componentInstance;
         const editor = Mock.ofType<INoteEditor>();
         isEditing = true;
         editor.setup((x) => x.isEditing).returns(() => isEditing);
-        editor.setup((x) => x.content).returns(() => '# Note');
+        content = '# Note';
+        editor.setup((x) => x.content).returns(() => content);
         component.noteEditor = editor.object;
         fixture.detectChanges();
         await fixture.whenStable();
@@ -54,9 +92,19 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         highlight = component.highlightedContent.nativeElement;
         setDimensions(input, 1100, 100);
         setDimensions(preview, 2100, 100);
+        flushLayout();
     });
 
-    afterEach(() => fixture.destroy());
+    afterEach(() => {
+        fixture.destroy();
+        jest.restoreAllMocks();
+    });
+
+    function flushLayout(): void {
+        const callback = layoutCallback;
+        layoutCallback = undefined;
+        callback?.(0);
+    }
 
     function setDimensions(element: HTMLElement, scrollHeight: number, clientHeight: number): void {
         Object.defineProperties(element, {
@@ -81,6 +129,7 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         input.scrollTop = 250;
 
         toggleButton().click();
+        flushLayout();
         fixture.detectChanges();
 
         expect(preview.scrollTop).toBe(500);
@@ -106,15 +155,17 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         expect(input.scrollTop).toBe(250);
     });
 
-    it.each([0, 250, 500, 1000])('synchronizes editor position %s proportionally', (position) => {
+    it.each([0, 250, 500, 1000])('routes editor position %s through the source map', (position) => {
         component.toggleScrollSync();
+        flushLayout();
         scroll(input, position);
         expect(preview.scrollTop).toBe(position * 2);
         expect(highlight.scrollTop).toBe(position);
     });
 
-    it.each([0, 500, 1000, 2000])('synchronizes preview position %s proportionally', (position) => {
+    it.each([0, 500, 1000, 2000])('routes preview position %s through the reverse source map', (position) => {
         component.toggleScrollSync();
+        flushLayout();
         scroll(preview, position);
         expect(input.scrollTop).toBe(position / 2);
         expect(highlight.scrollTop).toBe(position / 2);
@@ -122,6 +173,7 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
 
     it('does not synchronize horizontal scrolling between panes', () => {
         component.toggleScrollSync();
+        flushLayout();
         preview.scrollLeft = 12;
         input.scrollLeft = 40;
         scroll(input, 250);
@@ -133,6 +185,7 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
 
     it('ignores programmatic scroll feedback, including rounding, without blocking subsequent user scrolling', () => {
         component.toggleScrollSync();
+        flushLayout();
         scroll(input, 333.3);
         scroll(preview, preview.scrollTop + 0.2);
         expect(input.scrollTop).toBe(333.3);
@@ -145,6 +198,7 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     it.each([0, 100])('handles a non-scrollable editor with scrollHeight=%s', (height) => {
         setDimensions(input, height, 100);
         component.toggleScrollSync();
+        flushLayout();
         scroll(input, 0);
         expect(preview.scrollTop).toBe(0);
         scroll(preview, 1000);
@@ -154,6 +208,7 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     it.each([0, 100])('handles a non-scrollable preview with scrollHeight=%s', (height) => {
         setDimensions(preview, height, 100);
         component.toggleScrollSync();
+        flushLayout();
         scroll(input, 500);
         expect(preview.scrollTop).toBe(0);
         scroll(preview, 0);
@@ -162,6 +217,7 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
 
     it('hides the button and leaves the hidden editor alone in preview-only mode', () => {
         component.toggleScrollSync();
+        flushLayout();
         isEditing = false;
         fixture.detectChanges();
         expect(toggleButton()).toBeNull();
@@ -173,6 +229,78 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         scroll(preview, 1500);
         expect(input.scrollTop).toBe(750);
     });
+
+    it('rebuilds source blocks after editing and realigns after images load', () => {
+        const update = jest.spyOn(MarkdownScrollMap.prototype, 'update');
+        component.toggleScrollSync();
+        flushLayout();
+        content = '# Changed\n\nParagraph';
+        fixture.detectChanges();
+        component.onPreviewReady();
+        flushLayout();
+        expect(update).toHaveBeenLastCalledWith(content);
+        scroll(input, 250);
+        mappingPosition.mockClear();
+        preview.querySelector('p').dispatchEvent(new Event('load'));
+        flushLayout();
+        expect(mappingPosition).toHaveBeenCalledWith(250, true);
+    });
+
+    it('preserves the preview as the active pane when resizing or changing zoom', async () => {
+        component.toggleScrollSync();
+        flushLayout();
+        scroll(preview, 1000);
+        mappingPosition.mockClear();
+        resizeCallback([], Mock.ofType<ResizeObserver>().object);
+        flushLayout();
+        expect(mappingPosition).toHaveBeenLastCalledWith(1000, false);
+        mappingPosition.mockClear();
+        input.style.fontSize = '20px';
+        await Promise.resolve();
+        flushLayout();
+        expect(mappingPosition).toHaveBeenLastCalledWith(1000, false);
+    });
+
+    it('does not move either pane on layout changes while synchronization is disabled', () => {
+        scroll(input, 250);
+        resizeCallback([], Mock.ofType<ResizeObserver>().object);
+        flushLayout();
+        expect(preview.scrollTop).toBe(0);
+        expect(mappingPosition).not.toHaveBeenCalled();
+    });
+
+    it('disables synchronization and reports mapping failures instead of scrolling to unrelated text', () => {
+        jest.spyOn(MarkdownScrollMap.prototype, 'update').mockImplementation(() => {
+            throw new Error('Mismatched preview');
+        });
+        component.toggleScrollSync();
+        flushLayout();
+        expect(component.isScrollSyncEnabled).toBe(false);
+        expect(TestBed.inject(Logger).error).toHaveBeenCalledWith(
+            expect.stringContaining('Mismatched preview'), 'MarkdownNoteComponent', 'synchronizeScroll',
+        );
+        expect(TestBed.inject(SnackBarService).oopsAnErrorOccurredAsync).toHaveBeenCalled();
+        expect(mappingPosition).not.toHaveBeenCalled();
+    });
+
+    it('does not treat preview scroll adjustments during an edit as user-driven scrolling', () => {
+        component.toggleScrollSync();
+        flushLayout();
+        scroll(preview, 1000);
+        component.onEditorContentChange();
+        scroll(preview, 900);
+        mappingPosition.mockClear();
+        component.onPreviewReady();
+        flushLayout();
+        expect(mappingPosition).toHaveBeenCalledWith(500, true);
+    });
+
+    it('disconnects layout observers and removes the measurement mirror on destruction', () => {
+        expect(fixture.nativeElement.querySelector('.markdown-scroll-measurement')).not.toBeNull();
+        component.ngOnDestroy();
+        expect(disconnect).toHaveBeenCalled();
+        expect(fixture.nativeElement.querySelector('.markdown-scroll-measurement')).toBeNull();
+    });
 });
 
 describe('MarkdownNoteComponent highlight shortcut', () => {
@@ -182,6 +310,8 @@ describe('MarkdownNoteComponent highlight shortcut', () => {
             Mock.ofType<MatDialog>().object,
             Mock.ofType<SnackBarService>().object,
             Mock.ofType<Logger>().object,
+            Mock.ofType<MarkdownService>().object,
+            Mock.ofType<DomSanitizer>().object,
         );
         const editor = Mock.ofType<INoteEditor>();
         const applyHighlight = jest.fn();
@@ -222,7 +352,8 @@ describe('MarkdownNoteComponent highlight shortcut', () => {
             const snackBar = Mock.ofType<SnackBarService>();
             snackBar.setup((x) => x.linkedNoteUnavailableAsync()).returns(unavailable);
             snackBar.setup((x) => x.oopsAnErrorOccurredAsync()).returns(showError);
-            component = new MarkdownNoteComponent(client.object, dialog.object, snackBar.object, Mock.ofType<Logger>().object);
+            component = new MarkdownNoteComponent(client.object, dialog.object, snackBar.object, Mock.ofType<Logger>().object,
+                Mock.ofType<MarkdownService>().object, Mock.ofType<DomSanitizer>().object);
             const editor = Mock.ofType<INoteEditor>();
             editor.setup((x) => x.isEditing).returns(() => true);
             component.noteEditor = editor.object;

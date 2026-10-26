@@ -45,6 +45,19 @@
     pointer-events: none;
 }
 
+.markdown-input.markdown-scroll-measurement {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden;
+    pointer-events: none;
+
+    > span {
+        font: inherit;
+        letter-spacing: inherit;
+    }
+}
+
 .md-title-1 { color: var(--theme-accent-color) !important; font-weight: bold; text-decoration: underline; }
 .md-title-2 { color: var(--theme-editor-secondary-text) !important; font-weight: bold; text-decoration: underline; }
 .md-title-3 { color: var(--theme-editor-secondary-text) !important; font-weight: bold; text-decoration: underline; }

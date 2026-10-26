@@ -1,4 +1,6 @@
-import { Component, ElementRef, Input, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, SecurityContext, ViewChild, ViewEncapsulation } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MarkdownService } from 'ngx-markdown';
 import { INoteEditor } from '../note-editor/i-note-editor';
 import { MatDialog } from '@angular/material/dialog';
 import { Operation } from '../../../common/enums/operation';
@@ -8,6 +10,7 @@ import { CollectionClient } from '../../../services/collection/collection.client
 import { NoteLinkTarget } from '../../../services/results/note-link-targets-result';
 import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { NoteLinkDialogComponent } from '../../dialogs/note-link-dialog/note-link-dialog.component';
+import { MarkdownScrollMap } from './markdown-scroll-map';
 
 @Component({
     selector: 'app-markdown-note',
@@ -15,9 +18,17 @@ import { NoteLinkDialogComponent } from '../../dialogs/note-link-dialog/note-lin
     styleUrls: ['./markdown-note.component.scss'],
     encapsulation: ViewEncapsulation.None,
 })
-export class MarkdownNoteComponent {
+export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
     private isPickingNote: boolean = false;
     private synchronizedScrollPositions = new WeakMap<HTMLElement, number>();
+    private scrollMap: MarkdownScrollMap;
+    private resizeObserver: ResizeObserver;
+    private mutationObserver: MutationObserver;
+    private layoutFrame: number | undefined;
+    private previewNeedsMapping: boolean = true;
+    private lastScrollFromEditor: boolean = true;
+    private destroyed: boolean = false;
+    private onImageLayout = () => this.scheduleScrollLayout();
 
     public isScrollSyncEnabled: boolean = false;
 
@@ -26,6 +37,8 @@ export class MarkdownNoteComponent {
         private dialog: MatDialog,
         private snackBar: SnackBarService,
         private logger: Logger,
+        private markdownService: MarkdownService,
+        private sanitizer: DomSanitizer,
     ) {}
 
     @ViewChild('highlightedContent') highlightedContent: ElementRef<HTMLPreElement>;
@@ -38,10 +51,75 @@ export class MarkdownNoteComponent {
     @Input()
     public attachmentsDirectoryPath: string;
 
+    public ngAfterViewInit(): void {
+        const input = this.markdownInput.nativeElement;
+        const preview = this.markdownOutput.nativeElement;
+        this.scrollMap = new MarkdownScrollMap(input, preview, this.markdownService.options,
+            (html) => this.sanitizer.sanitize(SecurityContext.HTML, html) || '');
+        this.resizeObserver = new ResizeObserver(() => this.scheduleScrollLayout());
+        this.resizeObserver.observe(input);
+        this.resizeObserver.observe(preview);
+        this.mutationObserver = new MutationObserver(() => this.scheduleScrollLayout());
+        this.mutationObserver.observe(input, { attributes: true, attributeFilter: ['style', 'class'] });
+        this.mutationObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['style', 'class'] });
+        preview.addEventListener('load', this.onImageLayout, true);
+        preview.addEventListener('error', this.onImageLayout, true);
+        document.fonts?.addEventListener('loadingdone', this.onImageLayout);
+        this.scheduleScrollLayout();
+    }
+
+    public ngOnDestroy(): void {
+        this.destroyed = true;
+        this.resizeObserver?.disconnect();
+        this.mutationObserver?.disconnect();
+        this.markdownOutput?.nativeElement.removeEventListener('load', this.onImageLayout, true);
+        this.markdownOutput?.nativeElement.removeEventListener('error', this.onImageLayout, true);
+        document.fonts?.removeEventListener('loadingdone', this.onImageLayout);
+        if (this.layoutFrame !== undefined) {
+            cancelAnimationFrame(this.layoutFrame);
+        }
+        this.scrollMap?.destroy();
+    }
+
+    public onPreviewReady(): void {
+        this.previewNeedsMapping = true;
+        this.scheduleScrollLayout();
+    }
+
+    private scheduleScrollLayout(): void {
+        if (this.destroyed || this.layoutFrame !== undefined) {
+            return;
+        }
+        this.scrollMap?.invalidate();
+        this.layoutFrame = requestAnimationFrame(() => {
+            this.layoutFrame = undefined;
+            if (!this.scrollMap || !this.isScrollSyncEnabled || !this.noteEditor.isEditing) {
+                return;
+            }
+            if (this.previewNeedsMapping) {
+                try {
+                    this.scrollMap.update(this.noteEditor.content);
+                    this.previewNeedsMapping = false;
+                } catch (error) {
+                    this.reportScrollMappingError(error);
+                    return;
+                }
+            }
+            this.synchronizedScrollPositions = new WeakMap<HTMLElement, number>();
+            if (this.lastScrollFromEditor) {
+                this.onEditorScroll();
+            } else {
+                this.onPreviewScroll();
+            }
+        });
+    }
+
     public toggleScrollSync(): void {
         this.isScrollSyncEnabled = !this.isScrollSyncEnabled;
         this.synchronizedScrollPositions = new WeakMap<HTMLElement, number>();
         if (this.isScrollSyncEnabled) {
+            this.lastScrollFromEditor = true;
+            this.scheduleScrollLayout();
             this.onEditorScroll();
         }
     }
@@ -67,6 +145,11 @@ export class MarkdownNoteComponent {
         if (synchronizedPosition !== undefined && Math.abs(source.scrollTop - synchronizedPosition) < 1) {
             return;
         }
+        if (this.previewNeedsMapping) {
+            this.scheduleScrollLayout();
+            return;
+        }
+        this.lastScrollFromEditor = source === this.markdownInput.nativeElement;
 
         const sourceRange = source.scrollHeight - source.clientHeight;
         const targetRange = Math.max(0, target.scrollHeight - target.clientHeight);
@@ -74,9 +157,21 @@ export class MarkdownNoteComponent {
             return;
         }
 
-        const progress = Math.max(0, Math.min(1, source.scrollTop / sourceRange));
-        target.scrollTop = progress * targetRange;
+        let position: number;
+        try {
+            position = this.scrollMap.position(source.scrollTop, this.lastScrollFromEditor);
+        } catch (error) {
+            this.reportScrollMappingError(error);
+            return;
+        }
+        target.scrollTop = Math.max(0, Math.min(targetRange, position));
         this.synchronizedScrollPositions.set(target, target.scrollTop);
+    }
+
+    private reportScrollMappingError(error: unknown): void {
+        this.logger.error(`Could not map Markdown scrolling. Cause: ${error}`, 'MarkdownNoteComponent', 'synchronizeScroll');
+        this.isScrollSyncEnabled = false;
+        void this.snackBar.oopsAnErrorOccurredAsync();
     }
 
     public onContentChange() {
@@ -86,6 +181,13 @@ export class MarkdownNoteComponent {
         // Ensure pre scrolls to match textarea after content change
         pre.scrollTop = input.scrollTop;
         pre.scrollLeft = input.scrollLeft;
+    }
+
+    public onEditorContentChange(): void {
+        this.lastScrollFromEditor = true;
+        this.previewNeedsMapping = true;
+        this.onContentChange();
+        this.scheduleScrollLayout();
     }
 
     public onTabKey(event: Event): void {
@@ -107,6 +209,10 @@ export class MarkdownNoteComponent {
 
     public toggleIsEditing(): void {
         this.noteEditor.isEditing = !this.noteEditor.isEditing;
+        if (this.noteEditor.isEditing) {
+            this.lastScrollFromEditor = false;
+        }
+        this.scheduleScrollLayout();
     }
 
     public async insertNoteLinkAsync(): Promise<void> {
