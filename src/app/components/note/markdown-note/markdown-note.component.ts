@@ -289,11 +289,23 @@ export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
 
         const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-        const highlighted = escaped
-            .replace(/^### (.*)$/gm, '<span class="md-title-3">### $1</span>')
-            .replace(/^## (.*)$/gm, '<span class="md-title-2">## $1</span>')
-            .replace(/^# (.*)$/gm, '<span class="md-title-1"># $1</span>');
-
-        return highlighted;
+        let fenceCharacter: string | undefined;
+        let fenceLength = 0;
+        return escaped.split('\n').map((line) => {
+            const fence = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line);
+            if (fenceCharacter) {
+                if (fence && fence[1][0] === fenceCharacter && fence[1].length >= fenceLength && !fence[2].trim()) {
+                    fenceCharacter = undefined;
+                }
+                return line;
+            }
+            if (fence && (fence[1][0] === '~' || !fence[2].includes('`'))) {
+                fenceCharacter = fence[1][0];
+                fenceLength = fence[1].length;
+                return line;
+            }
+            const heading = /^(#{1,3}) (.*)$/.exec(line);
+            return heading ? `<span class="md-title-${heading[1].length}">${line}</span>` : line;
+        }).join('\n');
     }
 }

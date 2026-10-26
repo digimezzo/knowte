@@ -304,6 +304,64 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
 });
 
 describe('MarkdownNoteComponent highlight shortcut', () => {
+    describe('editor heading colors', () => {
+        let component: MarkdownNoteComponent;
+
+        beforeEach(() => {
+            component = new MarkdownNoteComponent(
+                Mock.ofType<CollectionClient>().object,
+                Mock.ofType<MatDialog>().object,
+                Mock.ofType<SnackBarService>().object,
+                Mock.ofType<Logger>().object,
+                Mock.ofType<MarkdownService>().object,
+                Mock.ofType<DomSanitizer>().object,
+            );
+        });
+
+        it.each([
+            '```\n# Code title\n## Code subtitle\n### Code section\n```',
+            '```markdown\n# Code title\n```',
+            '~~~markdown\n# Code title\n~~~',
+            '````\n```\n# Still code\n````',
+            '```\n~~~\n# Still code\n```',
+            '```\n``` not a closing fence\n# Still code\n```',
+            '   ```\n# Code title\n   ```',
+            '```\r\n# Code title\r\n```',
+            '```\n# Unclosed code block',
+            '    # Indented code\n\t## More indented code',
+        ])('leaves headings inside code uncolored: %s', (source) => {
+            expect(component.highlightMarkdown(source)).not.toContain('md-title-');
+        });
+
+        it('resumes heading colors after the closing fence and preserves all source text', () => {
+            const source = '# Before\n\n```md\n## Code\n```\n\n### After\n';
+            const highlighted = component.highlightMarkdown(source);
+            expect(highlighted).toContain('<span class="md-title-1"># Before</span>');
+            expect(highlighted).toContain('\n## Code\n');
+            expect(highlighted).toContain('<span class="md-title-3">### After</span>');
+            expect(highlighted.replace(/<\/?span[^>]*>/g, '')).toBe(source + ' ');
+        });
+
+        it('accepts longer closing fences', () => {
+            expect(component.highlightMarkdown('~~~\n# Code\n~~~~\n# Title')).toContain(
+                '<span class="md-title-1"># Title</span>',
+            );
+        });
+
+        it('keeps escaping HTML in and outside code blocks', () => {
+            const highlighted = component.highlightMarkdown('# <b>&</b>\n```\n<script>alert(1)</script>\n```');
+            expect(highlighted).toContain('<span class="md-title-1"># &lt;b&gt;&amp;&lt;/b&gt;</span>');
+            expect(highlighted).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
+            expect(highlighted).not.toContain('<script>');
+        });
+
+        it('does not treat backticks in a backtick fence info string as a code block', () => {
+            expect(component.highlightMarkdown('```invalid`info\n# Title')).toContain(
+                '<span class="md-title-1"># Title</span>',
+            );
+        });
+    });
+
     it.each([true, false])('handles the shortcut with editing=%s', (isEditing) => {
         const component = new MarkdownNoteComponent(
             Mock.ofType<CollectionClient>().object,
