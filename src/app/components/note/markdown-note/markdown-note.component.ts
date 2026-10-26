@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { INoteEditor } from '../note-editor/i-note-editor';
 import { MatDialog } from '@angular/material/dialog';
 import { Operation } from '../../../common/enums/operation';
@@ -15,8 +15,11 @@ import { NoteLinkDialogComponent } from '../../dialogs/note-link-dialog/note-lin
     styleUrls: ['./markdown-note.component.scss'],
     encapsulation: ViewEncapsulation.None,
 })
-export class MarkdownNoteComponent implements AfterViewInit {
+export class MarkdownNoteComponent {
     private isPickingNote: boolean = false;
+    private synchronizedScrollPositions = new WeakMap<HTMLElement, number>();
+
+    public isScrollSyncEnabled: boolean = false;
 
     constructor(
         private collectionClient: CollectionClient,
@@ -27,6 +30,7 @@ export class MarkdownNoteComponent implements AfterViewInit {
 
     @ViewChild('highlightedContent') highlightedContent: ElementRef<HTMLPreElement>;
     @ViewChild('markdownInput') markdownInput: ElementRef<HTMLTextAreaElement>;
+    @ViewChild('markdownOutput', { read: ElementRef }) markdownOutput: ElementRef<HTMLElement>;
 
     @Input()
     public noteEditor: INoteEditor;
@@ -34,14 +38,45 @@ export class MarkdownNoteComponent implements AfterViewInit {
     @Input()
     public attachmentsDirectoryPath: string;
 
-    public ngAfterViewInit() {
-        const input = this.markdownInput.nativeElement;
-        const pre = this.highlightedContent.nativeElement;
+    public toggleScrollSync(): void {
+        this.isScrollSyncEnabled = !this.isScrollSyncEnabled;
+        this.synchronizedScrollPositions = new WeakMap<HTMLElement, number>();
+        if (this.isScrollSyncEnabled) {
+            this.onEditorScroll();
+        }
+    }
 
-        input.addEventListener('scroll', () => {
-            pre.scrollTop = input.scrollTop;
-            pre.scrollLeft = input.scrollLeft;
-        });
+    public onEditorScroll(): void {
+        this.onContentChange();
+        this.synchronizeScroll(this.markdownInput.nativeElement, this.markdownOutput.nativeElement);
+    }
+
+    public onPreviewScroll(): void {
+        this.synchronizeScroll(this.markdownOutput.nativeElement, this.markdownInput.nativeElement);
+        this.onContentChange();
+    }
+
+    private synchronizeScroll(source: HTMLElement, target: HTMLElement): void {
+        if (!this.isScrollSyncEnabled || !this.noteEditor.isEditing) {
+            return;
+        }
+
+        const synchronizedPosition = this.synchronizedScrollPositions.get(source);
+        this.synchronizedScrollPositions.delete(source);
+        // Ignore scroll events caused by synchronizing the other pane, including pixel rounding.
+        if (synchronizedPosition !== undefined && Math.abs(source.scrollTop - synchronizedPosition) < 1) {
+            return;
+        }
+
+        const sourceRange = source.scrollHeight - source.clientHeight;
+        const targetRange = Math.max(0, target.scrollHeight - target.clientHeight);
+        if (sourceRange <= 0) {
+            return;
+        }
+
+        const progress = Math.max(0, Math.min(1, source.scrollTop / sourceRange));
+        target.scrollTop = progress * targetRange;
+        this.synchronizedScrollPositions.set(target, target.scrollTop);
     }
 
     public onContentChange() {

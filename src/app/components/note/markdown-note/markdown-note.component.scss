@@ -89,10 +89,38 @@ button.markdown-action-button {
     padding: 0;
 }
 
+button.markdown-scroll-sync-button {
+    margin: 4px 0;
+    border-radius: 4px;
+
+    &[aria-pressed='true'] {
+        > i {
+            color: var(--theme-accent-color);
+        }
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--theme-primary-text);
+        outline-offset: 2px;
+    }
+}
+
 .markdown-action-separator {
-    border-right: 1px solid var(--theme-separator);
-    padding: 4px;
+    position: relative;
+    width: 9px;
+    min-height: 8px;
+    flex-shrink: 0;
     margin: 4px;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 4px;
+        width: 1px;
+        background: var(--theme-separator);
+    }
 }
 
 .markdown-icon {

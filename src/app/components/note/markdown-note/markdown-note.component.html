@@ -6,6 +6,18 @@
         </div>
         <div class="d-flex flex-row" *ngIf="this.noteEditor.isEditing">
             <div class="markdown-action-separator no-select"></div>
+            <button
+                type="button"
+                class="markdown-action-button markdown-scroll-sync-button no-select"
+                (mousedown)="$event.preventDefault()"
+                (click)="toggleScrollSync()"
+                [title]="'Notes.SyncScrolling' | translate"
+                [attr.aria-label]="'Notes.SyncScrolling' | translate"
+                [attr.aria-pressed]="isScrollSyncEnabled"
+            >
+                <i class="fa-solid fa-arrows-up-down"></i>
+            </button>
+            <div class="markdown-action-separator no-select"></div>
             <div class="markdown-action-button no-select" (click)="this.noteEditor.applyBold()" title="{{ 'Notes.Bold' | translate }} (Ctrl+B)">
                 <i class="fa-solid fa-bold"></i>
             </div>
@@ -119,13 +131,16 @@
                 id="markdown-input"
                 [(ngModel)]="this.noteEditor.content"
                 (ngModelChange)="onContentChange()"
+                (scroll)="onEditorScroll()"
                 (keydown.tab)="onTabKey($event)"
                 (keydown.control.h)="onHighlightShortcut($event)"
             ></textarea>
         </div>
         <markdown
+            #markdownOutput
             class="markdown-output markdown-body"
             id="markdown-output"
+            (scroll)="onPreviewScroll()"
             (click)="onPreviewClickAsync($event)"
             (auxclick)="onPreviewClickAsync($event)"
             [ngClass]="{ 'markdown-output-maximized': !this.noteEditor.isEditing }"

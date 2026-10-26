@@ -1,6 +1,9 @@
 import { Mock } from 'typemoq';
-import { ElementRef } from '@angular/core';
+import { ElementRef, NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { Operation } from '../../../common/enums/operation';
 import { Logger } from '../../../common/logging/logger';
@@ -8,6 +11,169 @@ import { CollectionClient } from '../../../services/collection/collection.client
 import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { INoteEditor } from '../note-editor/i-note-editor';
 import { MarkdownNoteComponent } from './markdown-note.component';
+
+@Pipe({ name: 'fixImagePaths' })
+class FixImagePathsStubPipe implements PipeTransform {
+    public transform(value: string): string {
+        return value;
+    }
+}
+
+describe('MarkdownNoteComponent synchronized scrolling', () => {
+    let fixture: ComponentFixture<MarkdownNoteComponent>;
+    let component: MarkdownNoteComponent;
+    let input: HTMLTextAreaElement;
+    let preview: HTMLElement;
+    let highlight: HTMLPreElement;
+    let isEditing: boolean;
+
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [MarkdownNoteComponent, FixImagePathsStubPipe],
+            imports: [FormsModule, TranslateModule.forRoot()],
+            providers: [
+                { provide: CollectionClient, useValue: Mock.ofType<CollectionClient>().object },
+                { provide: MatDialog, useValue: Mock.ofType<MatDialog>().object },
+                { provide: SnackBarService, useValue: Mock.ofType<SnackBarService>().object },
+                { provide: Logger, useValue: Mock.ofType<Logger>().object },
+            ],
+            schemas: [NO_ERRORS_SCHEMA],
+        }).compileComponents();
+
+        fixture = TestBed.createComponent(MarkdownNoteComponent);
+        component = fixture.componentInstance;
+        const editor = Mock.ofType<INoteEditor>();
+        isEditing = true;
+        editor.setup((x) => x.isEditing).returns(() => isEditing);
+        editor.setup((x) => x.content).returns(() => '# Note');
+        component.noteEditor = editor.object;
+        fixture.detectChanges();
+        await fixture.whenStable();
+        input = component.markdownInput.nativeElement;
+        preview = component.markdownOutput.nativeElement;
+        highlight = component.highlightedContent.nativeElement;
+        setDimensions(input, 1100, 100);
+        setDimensions(preview, 2100, 100);
+    });
+
+    afterEach(() => fixture.destroy());
+
+    function setDimensions(element: HTMLElement, scrollHeight: number, clientHeight: number): void {
+        Object.defineProperties(element, {
+            scrollHeight: { configurable: true, value: scrollHeight },
+            clientHeight: { configurable: true, value: clientHeight },
+        });
+    }
+
+    function scroll(element: HTMLElement, top: number): void {
+        element.scrollTop = top;
+        element.dispatchEvent(new Event('scroll'));
+    }
+
+    function toggleButton(): HTMLButtonElement {
+        return fixture.nativeElement.querySelector('button[aria-pressed]');
+    }
+
+    it('starts disabled and toggles through an accessible button, aligning from the editor on enable', () => {
+        expect(toggleButton().getAttribute('aria-pressed')).toBe('false');
+        expect(toggleButton().getAttribute('aria-label')).toBe('Notes.SyncScrolling');
+        expect(toggleButton().classList.contains('markdown-scroll-sync-button')).toBe(true);
+        input.scrollTop = 250;
+
+        toggleButton().click();
+        fixture.detectChanges();
+
+        expect(preview.scrollTop).toBe(500);
+        expect(toggleButton().getAttribute('aria-pressed')).toBe('true');
+
+        toggleButton().click();
+        fixture.detectChanges();
+
+        expect(toggleButton().getAttribute('aria-pressed')).toBe('false');
+        scroll(input, 750);
+        expect(preview.scrollTop).toBe(500);
+        scroll(preview, 1200);
+        expect(input.scrollTop).toBe(750);
+    });
+
+    it('keeps panes independent by default while still synchronizing syntax highlighting', () => {
+        input.scrollLeft = 40;
+        scroll(input, 250);
+        expect(preview.scrollTop).toBe(0);
+        expect(highlight.scrollTop).toBe(250);
+        expect(highlight.scrollLeft).toBe(40);
+        scroll(preview, 1000);
+        expect(input.scrollTop).toBe(250);
+    });
+
+    it.each([0, 250, 500, 1000])('synchronizes editor position %s proportionally', (position) => {
+        component.toggleScrollSync();
+        scroll(input, position);
+        expect(preview.scrollTop).toBe(position * 2);
+        expect(highlight.scrollTop).toBe(position);
+    });
+
+    it.each([0, 500, 1000, 2000])('synchronizes preview position %s proportionally', (position) => {
+        component.toggleScrollSync();
+        scroll(preview, position);
+        expect(input.scrollTop).toBe(position / 2);
+        expect(highlight.scrollTop).toBe(position / 2);
+    });
+
+    it('does not synchronize horizontal scrolling between panes', () => {
+        component.toggleScrollSync();
+        preview.scrollLeft = 12;
+        input.scrollLeft = 40;
+        scroll(input, 250);
+        expect(preview.scrollLeft).toBe(12);
+        scroll(preview, 1000);
+        expect(input.scrollLeft).toBe(40);
+        expect(highlight.scrollLeft).toBe(40);
+    });
+
+    it('ignores programmatic scroll feedback, including rounding, without blocking subsequent user scrolling', () => {
+        component.toggleScrollSync();
+        scroll(input, 333.3);
+        scroll(preview, preview.scrollTop + 0.2);
+        expect(input.scrollTop).toBe(333.3);
+        scroll(preview, 1000);
+        expect(input.scrollTop).toBe(500);
+        input.dispatchEvent(new Event('scroll'));
+        expect(preview.scrollTop).toBe(1000);
+    });
+
+    it.each([0, 100])('handles a non-scrollable editor with scrollHeight=%s', (height) => {
+        setDimensions(input, height, 100);
+        component.toggleScrollSync();
+        scroll(input, 0);
+        expect(preview.scrollTop).toBe(0);
+        scroll(preview, 1000);
+        expect(input.scrollTop).toBe(0);
+    });
+
+    it.each([0, 100])('handles a non-scrollable preview with scrollHeight=%s', (height) => {
+        setDimensions(preview, height, 100);
+        component.toggleScrollSync();
+        scroll(input, 500);
+        expect(preview.scrollTop).toBe(0);
+        scroll(preview, 0);
+        expect(input.scrollTop).toBe(500);
+    });
+
+    it('hides the button and leaves the hidden editor alone in preview-only mode', () => {
+        component.toggleScrollSync();
+        isEditing = false;
+        fixture.detectChanges();
+        expect(toggleButton()).toBeNull();
+        scroll(preview, 1000);
+        expect(input.scrollTop).toBe(0);
+        isEditing = true;
+        fixture.detectChanges();
+        expect(toggleButton().getAttribute('aria-pressed')).toBe('true');
+        scroll(preview, 1500);
+        expect(input.scrollTop).toBe(750);
+    });
+});
 
 describe('MarkdownNoteComponent highlight shortcut', () => {
     it.each([true, false])('handles the shortcut with editing=%s', (isEditing) => {
