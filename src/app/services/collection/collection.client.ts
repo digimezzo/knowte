@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import * as remote from '@electron/remote';
 import { Observable, Subject } from 'rxjs';
 import { Operation } from '../../common/enums/operation';
@@ -20,22 +20,44 @@ import { CollectionEvents } from './collection-events';
  * instance that exists in the main window.
  */
 @Injectable()
-export class CollectionClient {
+export class CollectionClient implements OnDestroy {
     private globalEmitter: any = remote.getGlobal('globalEmitter');
+    private disposed: boolean = false;
+    private readonly unloadListener = () => this.dispose();
+    private readonly eventListeners = {
+        [CollectionEvents.prepareNoteBackupEvent]: (noteId: string, callback: (result: string) => void) =>
+            this.prepareNoteBackup.next({ noteId, callback }),
+        [CollectionEvents.closeNoteEvent]: (noteId: string) => this.closeNote.next(noteId),
+        [CollectionEvents.prepareNoteDeletionEvent]: (noteId: string, callback: (operation: Operation) => void) =>
+            this.prepareNoteDeletion.next({ noteId, callback }),
+        [CollectionEvents.focusNoteEvent]: (noteId: string) => this.focusNote.next(noteId),
+        [CollectionEvents.noteMarkChangedEvent]: (result: NoteMarkResult) => this.noteMarkChanged.next(result),
+        [CollectionEvents.notePinChangedEvent]: (result: NotePinResult) => this.notePinChanged.next(result),
+        [CollectionEvents.noteZoomPercentageChangedEvent]: () => this.noteZoomPercentageChanged.next(),
+        [CollectionEvents.notebookChangedEvent]: (result: NotebookChangedResult) => this.notebookChanged.next(result),
+        [CollectionEvents.closeAllNotesEvent]: () => this.closeAllNotes.next(),
+    };
 
     public constructor(private scheduler: Scheduler) {
-        this.globalEmitter.on(CollectionEvents.prepareNoteBackupEvent,
-            (noteId: string, callback: (result: string) => void) => this.prepareNoteBackup.next({ noteId, callback }));
-        this.globalEmitter.on(CollectionEvents.closeNoteEvent, (noteId: string) => this.closeNote.next(noteId));
-        this.globalEmitter.on(CollectionEvents.prepareNoteDeletionEvent, (noteId: string, callback: (operation: Operation) => void) =>
-            this.prepareNoteDeletion.next({ noteId, callback }),
-        );
-        this.globalEmitter.on(CollectionEvents.focusNoteEvent, (noteId: string) => this.focusNote.next(noteId));
-        this.globalEmitter.on(CollectionEvents.noteMarkChangedEvent, (result: NoteMarkResult) => this.noteMarkChanged.next(result));
-        this.globalEmitter.on(CollectionEvents.notePinChangedEvent, (result: NotePinResult) => this.notePinChanged.next(result));
-        this.globalEmitter.on(CollectionEvents.noteZoomPercentageChangedEvent, () => this.noteZoomPercentageChanged.next());
-        this.globalEmitter.on(CollectionEvents.notebookChangedEvent, (result: NotebookChangedResult) => this.notebookChanged.next(result));
-        this.globalEmitter.on(CollectionEvents.closeAllNotesEvent, () => this.closeAllNotes.next());
+        for (const [event, listener] of Object.entries(this.eventListeners)) {
+            this.globalEmitter.on(event, listener);
+        }
+        window.addEventListener('unload', this.unloadListener);
+    }
+
+    public ngOnDestroy(): void {
+        this.dispose();
+    }
+
+    public dispose(): void {
+        if (this.disposed) {
+            return;
+        }
+        this.disposed = true;
+        for (const [event, listener] of Object.entries(this.eventListeners)) {
+            this.globalEmitter.removeListener(event, listener);
+        }
+        window.removeEventListener('unload', this.unloadListener);
     }
 
     private closeAllNotes: Subject<void> = new Subject();

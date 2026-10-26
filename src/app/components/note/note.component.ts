@@ -511,9 +511,13 @@ export class NoteComponent implements OnInit {
 
         this.collectionClient.setNoteOpen(this.noteId, false);
         this.removeSubscriptions();
+        this.collectionClient.dispose();
     }
 
     private async saveAndCloseAsync(): Promise<void> {
+        if (this.isBusy) {
+            return;
+        }
         this.zone.run(() => (this.isBusy = true));
         const setNoteTitleOperation: Operation = await this.saveNoteTitleAsync(this.noteTitle);
         const setNoteTextOperation: Operation = await this.saveNoteContentAsync();

@@ -20,7 +20,7 @@ import { ActionsBottomSheetComponent, NoteAction } from './bottom-sheets/actions
 import { INoteEditor } from './note-editor/i-note-editor';
 import { NoteComponent } from './note.component';
 
-jest.mock('@electron/remote', () => ({ getGlobal: () => ({ on: jest.fn(), emit: jest.fn() }) }));
+jest.mock('@electron/remote', () => ({ getGlobal: () => ({ on: jest.fn(), emit: jest.fn(), removeListener: jest.fn() }) }));
 jest.mock('electron', () => ({ ipcRenderer: { on: jest.fn(), send: jest.fn() } }));
 jest.mock('./note-editor/note-editor-factory', () => ({ NoteEditorFactory: class {} }));
 jest.mock('../../services/temporary-storage/temporary-storage.service', () => ({ TemporaryStorageService: class {} }));
@@ -374,6 +374,7 @@ describe('NoteComponent preparing deletion', () => {
     });
 
     it('saves content and acknowledges success before closing the window', async () => {
+        const dispose = jest.spyOn(client, 'dispose');
         const callback = jest.fn();
         const acknowledged = new Promise<Operation>((resolve) => {
             client['prepareNoteDeletion'].next({
@@ -390,6 +391,31 @@ describe('NoteComponent preparing deletion', () => {
         expect(await acknowledged).toBe(Operation.Success);
         expect(callback).toHaveBeenCalledWith(Operation.Success);
         expect(closeWindow).toHaveBeenCalledTimes(1);
+        expect(dispose).toHaveBeenCalled();
+        expect(dispose.mock.invocationCallOrder[0]).toBeLessThan(closeWindow.mock.invocationCallOrder[0]);
+    });
+
+    it('ignores a delayed close while deletion is saving', async () => {
+        let finishWrite: () => void;
+        const started = new Promise<void>((resolve) => {
+            writeContent.mockImplementationOnce(() => {
+                resolve();
+                return new Promise<void>((finish) => { finishWrite = finish; });
+            });
+        });
+        const acknowledged = new Promise<Operation>((resolve) => {
+            client['prepareNoteDeletion'].next({ noteId: 'note-id', callback: resolve });
+        });
+        await started;
+
+        await component['saveAndCloseAsync']();
+        expect(closeWindow).not.toHaveBeenCalled();
+        expect(saveText).toHaveBeenCalledTimes(1);
+
+        finishWrite();
+        expect(await acknowledged).toBe(Operation.Success);
+        expect(closeWindow).toHaveBeenCalledTimes(1);
+        expect(writeContent).toHaveBeenCalledTimes(1);
     });
 
     it('keeps the window open and reports errors when writing content fails', async () => {
