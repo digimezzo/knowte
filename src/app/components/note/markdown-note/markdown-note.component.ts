@@ -30,7 +30,7 @@ export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
     private destroyed: boolean = false;
     private onImageLayout = () => this.scheduleScrollLayout();
 
-    public isScrollSyncEnabled: boolean = false;
+    public isScrollSyncEnabled: boolean = true;
 
     constructor(
         private collectionClient: CollectionClient,

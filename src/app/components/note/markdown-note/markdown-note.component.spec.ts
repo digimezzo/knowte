@@ -122,10 +122,16 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         return fixture.nativeElement.querySelector('button[aria-pressed]');
     }
 
-    it('starts disabled and toggles through an accessible button, aligning from the editor on enable', () => {
-        expect(toggleButton().getAttribute('aria-pressed')).toBe('false');
+    it('starts enabled and toggles through an accessible button, aligning from the editor on re-enable', () => {
+        fixture.detectChanges();
+        expect(toggleButton().getAttribute('aria-pressed')).toBe('true');
         expect(toggleButton().getAttribute('aria-label')).toBe('Notes.SyncScrolling');
         expect(toggleButton().classList.contains('markdown-scroll-sync-button')).toBe(true);
+        scroll(input, 100);
+        expect(preview.scrollTop).toBe(200);
+        toggleButton().click();
+        fixture.detectChanges();
+        expect(toggleButton().getAttribute('aria-pressed')).toBe('false');
         input.scrollTop = 250;
 
         toggleButton().click();
@@ -145,7 +151,8 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         expect(input.scrollTop).toBe(750);
     });
 
-    it('keeps panes independent by default while still synchronizing syntax highlighting', () => {
+    it('keeps panes independent when disabled while still synchronizing syntax highlighting', () => {
+        component.toggleScrollSync();
         input.scrollLeft = 40;
         scroll(input, 250);
         expect(preview.scrollTop).toBe(0);
@@ -156,7 +163,6 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     });
 
     it.each([0, 250, 500, 1000])('routes editor position %s through the source map', (position) => {
-        component.toggleScrollSync();
         flushLayout();
         scroll(input, position);
         expect(preview.scrollTop).toBe(position * 2);
@@ -164,7 +170,6 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     });
 
     it.each([0, 500, 1000, 2000])('routes preview position %s through the reverse source map', (position) => {
-        component.toggleScrollSync();
         flushLayout();
         scroll(preview, position);
         expect(input.scrollTop).toBe(position / 2);
@@ -172,7 +177,6 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     });
 
     it('does not synchronize horizontal scrolling between panes', () => {
-        component.toggleScrollSync();
         flushLayout();
         preview.scrollLeft = 12;
         input.scrollLeft = 40;
@@ -184,7 +188,6 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     });
 
     it('ignores programmatic scroll feedback, including rounding, without blocking subsequent user scrolling', () => {
-        component.toggleScrollSync();
         flushLayout();
         scroll(input, 333.3);
         scroll(preview, preview.scrollTop + 0.2);
@@ -197,7 +200,6 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
 
     it.each([0, 100])('handles a non-scrollable editor with scrollHeight=%s', (height) => {
         setDimensions(input, height, 100);
-        component.toggleScrollSync();
         flushLayout();
         scroll(input, 0);
         expect(preview.scrollTop).toBe(0);
@@ -207,7 +209,6 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
 
     it.each([0, 100])('handles a non-scrollable preview with scrollHeight=%s', (height) => {
         setDimensions(preview, height, 100);
-        component.toggleScrollSync();
         flushLayout();
         scroll(input, 500);
         expect(preview.scrollTop).toBe(0);
@@ -216,7 +217,6 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     });
 
     it('hides the button and leaves the hidden editor alone in preview-only mode', () => {
-        component.toggleScrollSync();
         flushLayout();
         isEditing = false;
         fixture.detectChanges();
@@ -232,7 +232,6 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
 
     it('rebuilds source blocks after editing and realigns after images load', () => {
         const update = jest.spyOn(MarkdownScrollMap.prototype, 'update');
-        component.toggleScrollSync();
         flushLayout();
         content = '# Changed\n\nParagraph';
         fixture.detectChanges();
@@ -247,7 +246,6 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     });
 
     it('preserves the preview as the active pane when resizing or changing zoom', async () => {
-        component.toggleScrollSync();
         flushLayout();
         scroll(preview, 1000);
         mappingPosition.mockClear();
@@ -262,6 +260,8 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     });
 
     it('does not move either pane on layout changes while synchronization is disabled', () => {
+        component.toggleScrollSync();
+        mappingPosition.mockClear();
         scroll(input, 250);
         resizeCallback([], Mock.ofType<ResizeObserver>().object);
         flushLayout();
@@ -270,10 +270,11 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     });
 
     it('disables synchronization and reports mapping failures instead of scrolling to unrelated text', () => {
+        mappingPosition.mockClear();
         jest.spyOn(MarkdownScrollMap.prototype, 'update').mockImplementation(() => {
             throw new Error('Mismatched preview');
         });
-        component.toggleScrollSync();
+        component.onPreviewReady();
         flushLayout();
         expect(component.isScrollSyncEnabled).toBe(false);
         expect(TestBed.inject(Logger).error).toHaveBeenCalledWith(
@@ -284,7 +285,6 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     });
 
     it('does not treat preview scroll adjustments during an edit as user-driven scrolling', () => {
-        component.toggleScrollSync();
         flushLayout();
         scroll(preview, 1000);
         component.onEditorContentChange();
