@@ -79,6 +79,7 @@ import { MarkdownNoteComponent } from './components/note/markdown-note/markdown-
 import { NoteLinkDialogComponent } from './components/dialogs/note-link-dialog/note-link-dialog.component';
 import { getNoteLinkPreviewHref } from './common/utils/note-link';
 import { markdownHighlightExtension } from './components/note/markdown-note/markdown-highlight';
+import { markdownUncPathExtension } from './components/note/markdown-note/markdown-unc-path';
 import { NoteContextMenuFactory } from './components/note/note-context-menu-factory';
 import { BoundaryGetter } from './components/note/note-editor/boundary-getter';
 import { ImageProcessor } from './components/note/note-editor/image-processor';
@@ -152,6 +153,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
 };
 
 marked.use(markdownHighlightExtension);
+marked.use(markdownUncPathExtension);
 
 /**
  * Function that returns `MarkedOptions` with renderer override

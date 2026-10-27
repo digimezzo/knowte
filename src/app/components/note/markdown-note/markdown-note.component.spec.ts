@@ -396,7 +396,7 @@ describe('MarkdownNoteComponent highlight shortcut', () => {
         beforeEach(() => {
             openLinkedNote = jest.fn().mockResolvedValue(Operation.Success);
             unavailable = jest.fn();
-            showError = jest.fn();
+            showError = jest.fn().mockResolvedValue(undefined);
             openDialog = jest.fn();
             getTargets = jest.fn().mockResolvedValue({
                 operation: Operation.Success,
