@@ -1,7 +1,10 @@
-import { NgZone } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
-import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { NgZone, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
 import { BrowserWindow, WebContents } from 'electron';
 import { of, Subject } from 'rxjs';
 import { It, Mock } from 'typemoq';
@@ -17,6 +20,7 @@ import { TranslatorService } from '../../services/translator/translator.service'
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
 import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
 import { ActionsBottomSheetComponent, NoteAction } from './bottom-sheets/actions-bottom-sheet/actions-bottom-sheet.component';
+import { SearchBottomSheetComponent } from './bottom-sheets/search-bottom-sheet/search-bottom-sheet.component';
 import { INoteEditor } from './note-editor/i-note-editor';
 import { NoteComponent } from './note.component';
 
@@ -37,6 +41,8 @@ describe('NoteComponent preparing deletion', () => {
     let dialogConfirmed: boolean;
     let inputDialogRef: MatDialogRef<InputDialogComponent>;
     let findInPage: jest.Mock;
+    let stopFindInPage: jest.Mock;
+    let searchTextChanged: Subject<string>;
     let openSheet: jest.Mock;
     let sheetDismissed: Subject<NoteAction | undefined>;
     let logWarning: jest.Mock;
@@ -59,7 +65,8 @@ describe('NoteComponent preparing deletion', () => {
         const zone = Mock.ofType<NgZone>();
         zone.setup((x) => x.run(It.isAny())).returns((callback: () => void) => callback());
         const search = Mock.ofType<SearchClient>();
-        search.setup((x) => x.searchTextChanged$).returns(() => new Subject<string>());
+        searchTextChanged = new Subject<string>();
+        search.setup((x) => x.searchTextChanged$).returns(() => searchTextChanged);
         showDialog = jest.fn();
         dialogConfirmed = true;
         const dialogRef = Mock.ofType<MatDialogRef<InputDialogComponent>>();
@@ -98,7 +105,9 @@ describe('NoteComponent preparing deletion', () => {
         window.setup((x) => x.close()).callback(closeWindow);
         const webContents = Mock.ofType<WebContents>();
         findInPage = jest.fn();
-        webContents.setup((x) => x.findInPage(It.isAnyString())).returns(findInPage);
+        stopFindInPage = jest.fn();
+        webContents.setup((x) => x.findInPage(It.isAnyString(), It.isAny())).returns(findInPage);
+        webContents.setup((x) => x.stopFindInPage(It.isAny())).callback(stopFindInPage);
         window.setup((x) => x.webContents).returns(() => webContents.object);
         component['noteWindow'] = window.object;
         jest.spyOn(component, 'clearSearch').mockImplementation(() => undefined);
@@ -345,7 +354,118 @@ describe('NoteComponent preparing deletion', () => {
             component['searchText'] = 'work meeting';
             component['applySearch']();
             jest.runAllTimers();
-            expect(findInPage).toHaveBeenCalledWith('work');
+            expect(findInPage).toHaveBeenCalledWith('work', { forward: true, findNext: false });
+            expect(window.getSelection().anchorNode).toBe(document.body);
+            expect(window.getSelection().anchorOffset).toBe(0);
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it.each(['initial', 'updated'])('starts an %s search before the existing caret position', (source) => {
+        jest.useFakeTimers();
+        const editor = document.createElement('div');
+        editor.contentEditable = 'true';
+        editor.tabIndex = 0;
+        editor.textContent = 'work first, work last';
+        document.body.appendChild(editor);
+        editor.focus();
+        window.getSelection().collapse(editor.firstChild, editor.textContent.length);
+        findInPage.mockImplementation(() => {
+            expect(window.getSelection().anchorNode).toBe(document.body);
+            expect(window.getSelection().anchorOffset).toBe(0);
+            expect(document.activeElement).not.toBe(editor);
+        });
+        try {
+            if (source === 'initial') {
+                component['searchText'] = 'work';
+                component['applySearch']();
+            } else {
+                searchTextChanged.next('work');
+            }
+            jest.runAllTimers();
+            expect(findInPage).toHaveBeenCalledWith('work', { forward: true, findNext: false });
+        } finally {
+            editor.remove();
+            window.getSelection().removeAllRanges();
+            jest.useRealTimers();
+        }
+    });
+
+    it('only scrolls for the latest pending search', () => {
+        jest.useFakeTimers();
+        try {
+            searchTextChanged.next('old');
+            searchTextChanged.next('latest');
+            jest.runAllTimers();
+            expect(findInPage).toHaveBeenCalledTimes(1);
+            expect(findInPage).toHaveBeenCalledWith('latest', { forward: true, findNext: false });
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it('replaces an already active search without stopping native find-in-page', () => {
+        jest.useFakeTimers();
+        try {
+            searchTextChanged.next('old');
+            jest.runAllTimers();
+            searchTextChanged.next('new');
+            jest.runAllTimers();
+
+            expect(findInPage.mock.calls).toEqual([
+                ['old', { forward: true, findNext: false }],
+                ['new', { forward: true, findNext: false }],
+            ]);
+            expect(stopFindInPage).not.toHaveBeenCalled();
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it('updates and clears renderer-owned highlights without using native find', () => {
+        jest.useFakeTimers();
+        const find = jest.spyOn(component['noteSearch'], 'find').mockReturnValue(true);
+        const clear = jest.spyOn(component['noteSearch'], 'clear');
+        (component.clearSearch as jest.Mock).mockRestore();
+        try {
+            searchTextChanged.next('old');
+            jest.runAllTimers();
+            searchTextChanged.next('new');
+            jest.runAllTimers();
+            expect(find.mock.calls).toEqual([['old'], ['new']]);
+            expect(findInPage).not.toHaveBeenCalled();
+
+            searchTextChanged.next('');
+            expect(clear).toHaveBeenCalledTimes(1);
+            expect(component['searchText']).toBe('');
+            expect(stopFindInPage).toHaveBeenCalledWith('clearSelection');
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it('does not scroll for a search that was cleared', () => {
+        jest.useFakeTimers();
+        (component.clearSearch as jest.Mock).mockRestore();
+        try {
+            searchTextChanged.next('work');
+            component.clearSearch();
+            jest.runAllTimers();
+            expect(findInPage).not.toHaveBeenCalled();
+            expect(stopFindInPage).toHaveBeenCalledWith('clearSelection');
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it('cancels pending search scrolling when the note closes', () => {
+        jest.useFakeTimers();
+        try {
+            searchTextChanged.next('work');
+            component['cleanup']();
+            jest.runAllTimers();
+            expect(findInPage).not.toHaveBeenCalled();
         } finally {
             jest.useRealTimers();
         }
@@ -358,7 +478,7 @@ describe('NoteComponent preparing deletion', () => {
                 component['searchText'] = query;
                 component['applySearch']();
                 jest.runAllTimers();
-                expect(findInPage).toHaveBeenCalledWith('meeting');
+                expect(findInPage).toHaveBeenCalledWith('meeting', { forward: true, findNext: false });
             } finally {
                 jest.useRealTimers();
             }
@@ -371,6 +491,48 @@ describe('NoteComponent preparing deletion', () => {
         expect(openSheet).toHaveBeenCalledWith(expect.anything(), {
             data: { searchText: 'meeting budget' },
         });
+    });
+
+    it('replaces the previous search with the query returned by the search sheet', () => {
+        jest.useFakeTimers();
+        const dismissed = new Subject<string | undefined>();
+        const sheet = Mock.ofType<MatBottomSheetRef<SearchBottomSheetComponent, string>>();
+        sheet.setup((x) => x.afterDismissed()).returns(() => dismissed);
+        openSheet.mockReturnValue(sheet.object);
+        component['searchText'] = 'old';
+        try {
+            component.openSearchBottomSheet();
+            expect(findInPage).not.toHaveBeenCalled();
+            dismissed.next('new');
+            dismissed.complete();
+            jest.runAllTimers();
+
+            expect(component['searchText']).toBe('new');
+            expect(findInPage).toHaveBeenCalledWith('new', { forward: true, findNext: false });
+            expect(window.getSelection().anchorNode).toBe(document.body);
+            component.openSearchBottomSheet();
+            expect(openSheet).toHaveBeenLastCalledWith(SearchBottomSheetComponent, { data: { searchText: 'new' } });
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it.each([undefined, ''])('handles a search sheet dismissed with %s', (query) => {
+        const dismissed = new Subject<string | undefined>();
+        const sheet = Mock.ofType<MatBottomSheetRef<SearchBottomSheetComponent, string>>();
+        sheet.setup((x) => x.afterDismissed()).returns(() => dismissed);
+        openSheet.mockReturnValue(sheet.object);
+        component['searchText'] = 'old';
+
+        component.openSearchBottomSheet();
+        dismissed.next(query);
+        dismissed.complete();
+
+        expect(component['searchText']).toBe(query === undefined ? 'old' : '');
+        expect(findInPage).not.toHaveBeenCalled();
+        if (query === '') {
+            expect(component.clearSearch).toHaveBeenCalled();
+        }
     });
 
     it('saves content and acknowledges success before closing the window', async () => {
@@ -572,5 +734,90 @@ describe('NoteComponent preparing deletion', () => {
         expect(closeWindow).not.toHaveBeenCalled();
         expect(component.isBusy).toBe(false);
         component['removeSubscriptions']();
+    });
+});
+
+describe('SearchBottomSheetComponent searching', () => {
+    it('returns the updated query to the note when submitting the search', () => {
+        const sheet = Mock.ofType<MatBottomSheetRef<SearchBottomSheetComponent>>();
+        const dismiss = jest.fn();
+        sheet.setup((x) => x.dismiss(It.isAnyString())).callback(dismiss);
+        const search = Mock.ofType<SearchClient>();
+        const searchChanged = jest.fn();
+        search.setup((x) => x.onSearchTextChanged(It.isAnyString())).callback(searchChanged);
+        const component = new SearchBottomSheetComponent({}, sheet.object, search.object);
+        component.searchText = 'work';
+
+        component.performSearch();
+
+        expect(dismiss).toHaveBeenCalledTimes(1);
+        expect(dismiss).toHaveBeenCalledWith('work');
+        expect(searchChanged).not.toHaveBeenCalled();
+    });
+});
+
+describe('SearchBottomSheetComponent input events', () => {
+    let fixture: ComponentFixture<SearchBottomSheetComponent>;
+    let dismiss: jest.Mock;
+
+    beforeEach(async () => {
+        dismiss = jest.fn();
+        await TestBed.configureTestingModule({
+            declarations: [SearchBottomSheetComponent],
+            imports: [FormsModule, NoopAnimationsModule, TranslateModule.forRoot()],
+            providers: [
+                { provide: MatBottomSheetRef, useValue: { dismiss } },
+                { provide: SearchClient, useValue: { onSearchTextChanged: jest.fn() } },
+                { provide: MAT_BOTTOM_SHEET_DATA, useValue: { searchText: 'old' } },
+            ],
+            schemas: [NO_ERRORS_SCHEMA],
+        }).compileComponents();
+        fixture = TestBed.createComponent(SearchBottomSheetComponent);
+        fixture.detectChanges();
+        await fixture.whenStable();
+    });
+
+    it('submits the edited input on Enter keydown without waiting for keyup', async () => {
+        const input: HTMLInputElement = fixture.nativeElement.querySelector('.notes-content-search-input');
+        expect(input.value).toBe('old');
+        input.value = 'new query';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        const enter = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+        input.dispatchEvent(enter);
+
+        expect(dismiss).toHaveBeenCalledTimes(1);
+        expect(dismiss).toHaveBeenCalledWith('new query');
+        expect(enter.defaultPrevented).toBe(true);
+    });
+
+    it('submits the edited input when the Search button is clicked', async () => {
+        const input: HTMLInputElement = fixture.nativeElement.querySelector('.notes-content-search-input');
+        input.value = 'replacement';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        fixture.nativeElement.querySelector('app-accent-button').click();
+
+        expect(dismiss).toHaveBeenCalledTimes(1);
+        expect(dismiss).toHaveBeenCalledWith('replacement');
+    });
+
+    it('clears an active query through the clear control without dismissing the sheet', async () => {
+        const search = TestBed.inject(SearchClient);
+        const input: HTMLInputElement = fixture.nativeElement.querySelector('.notes-content-search-input');
+
+        fixture.nativeElement.querySelector('button.notes-content-search-icons').click();
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        expect(input.value).toBe('');
+        expect(fixture.componentInstance.searchText).toBe('');
+        expect(search.onSearchTextChanged).toHaveBeenCalledWith('');
+        expect(dismiss).not.toHaveBeenCalled();
+        expect(document.activeElement).toBe(input);
     });
 });

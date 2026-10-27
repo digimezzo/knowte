@@ -38,6 +38,7 @@ import { ContextMenuItemsEnabledState } from './context-menu-items-enabled-state
 import { NoteContextMenuFactory } from './note-context-menu-factory';
 import { INoteEditor } from './note-editor/i-note-editor';
 import { NoteEditorFactory } from './note-editor/note-editor-factory';
+import { NoteSearch } from './note-search';
 
 @Component({
     selector: 'app-note',
@@ -97,6 +98,8 @@ export class NoteComponent implements OnInit {
     public canSearch: boolean = false;
     public noteAttachmentsDirectoryPathForPreview: string = '';
     private searchText: string = '';
+    private searchTimeout?: ReturnType<typeof setTimeout>;
+    private noteSearch = new NoteSearch();
     public noteEditor: INoteEditor;
 
     public async ngOnInit(): Promise<void> {
@@ -505,6 +508,8 @@ export class NoteComponent implements OnInit {
     }
 
     private cleanup(): void {
+        clearTimeout(this.searchTimeout);
+        this.noteSearch.clear();
         if (this.isMarkdownNote) {
             this.persistance.clearNoteAttachmentsPreviewDirectory(this.noteId);
         }
@@ -597,17 +602,30 @@ export class NoteComponent implements OnInit {
     }
 
     public clearSearch(): void {
-        this.noteWindow.webContents.stopFindInPage('keepSelection');
+        clearTimeout(this.searchTimeout);
+        this.noteSearch.clear();
+        this.noteWindow.webContents.stopFindInPage('clearSelection');
     }
 
     private applySearch(): void {
+        clearTimeout(this.searchTimeout);
         const searchText: string = TagUtils.parseSearch(this.searchText).text;
         if (!StringUtils.isNullOrWhiteSpace(searchText)) {
             const searchTextPieces: string[] = searchText.split(/\s+/);
 
             // For now, we can only search for 1 word.
-            setTimeout(() => {
-                this.noteWindow.webContents.findInPage(searchTextPieces[0]);
+            this.searchTimeout = setTimeout(() => {
+                if (this.noteSearch.find(searchTextPieces[0])) {
+                    return;
+                }
+                const activeElement = document.activeElement;
+                if (activeElement instanceof HTMLElement) {
+                    activeElement.blur();
+                }
+                const selection = window.getSelection();
+                selection?.removeAllRanges();
+                selection?.collapse(document.body, 0);
+                this.noteWindow.webContents.findInPage(searchTextPieces[0], { forward: true, findNext: false });
             }, 0);
         } else {
             this.clearSearch();
@@ -829,7 +847,13 @@ export class NoteComponent implements OnInit {
             data: { searchText: TagUtils.parseSearch(this.searchText).text },
         };
 
-        this.bottomSheet.open(SearchBottomSheetComponent, config);
+        const ref = this.bottomSheet.open<SearchBottomSheetComponent, any, string>(SearchBottomSheetComponent, config);
+        this.subscription.add(ref.afterDismissed().subscribe((searchText) => {
+            if (searchText !== undefined) {
+                this.searchText = searchText;
+                this.applySearch();
+            }
+        }));
     }
 
     @HostListener('document:keydown.control.b')

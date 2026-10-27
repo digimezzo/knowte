@@ -1,9 +1,15 @@
-.note-content-search {
-    width: 200px;
-}
+@import 'search-field';
 
-.note-content-search-clearbutton {
-    font-size: 16px;
+button.notes-content-search-icons {
+    align-self: center;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
     cursor: pointer;
-    display: block;
+    line-height: 1;
+
+    > i {
+        display: block;
+    }
 }

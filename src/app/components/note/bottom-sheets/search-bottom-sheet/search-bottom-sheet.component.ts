@@ -43,8 +43,7 @@ export class SearchBottomSheetComponent implements OnInit, AfterViewInit {
     }
 
     public performSearch(): void {
-        this.searchClient.onSearchTextChanged(this.searchText);
-        this.bottomSheetRef.dismiss();
+        this.bottomSheetRef.dismiss(this.searchText);
     }
 
     public clearSearch(): void {

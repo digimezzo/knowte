@@ -1,23 +1,27 @@
 <div class="d-flex flex-row align-items-center justify-content-center">
-    <mat-form-field class="note-content-search mt-2 mr-4">
+    <div class="notes-content-search mr-4" [class.notes-content-search-highlight]="this.searchText">
         <input
-            matInput
+            class="notes-content-search-input"
             type="text"
             #searchInput
             [(ngModel)]="this.searchText"
             placeholder="{{ 'MainPage.Search' | translate }}"
-            (keyup.enter)="performSearch()"
+            [attr.aria-label]="'MainPage.Search' | translate"
+            (keydown.enter)="$event.preventDefault(); $event.stopPropagation(); performSearch()"
         />
-        <div
-            class="note-content-search-clearbutton"
-            mat-button
-            *ngIf="this.searchText"
-            matSuffix
-            matTooltip="{{ 'MainPage.ClearSearch' | translate }}"
-            (click)="this.clearSearch()"
-        >
-            <i class="las la-times"></i>
+        <div class="notes-content-search-icons" *ngIf="!this.searchText">
+            <i class="las la-search notes-content-search-icon" aria-hidden="true"></i>
         </div>
-    </mat-form-field>
+        <button
+            type="button"
+            class="notes-content-search-icons"
+            *ngIf="this.searchText"
+            matTooltip="{{ 'MainPage.ClearSearch' | translate }}"
+            [attr.aria-label]="'MainPage.ClearSearch' | translate"
+            (click)="this.clearSearch(); searchInput.focus()"
+        >
+            <i class="las la-times notes-content-search-icon" aria-hidden="true"></i>
+        </button>
+    </div>
     <app-accent-button class="mr-1" color="primary" (click)="performSearch()">{{ 'Buttons.Search' | translate }}</app-accent-button>
 </div>
