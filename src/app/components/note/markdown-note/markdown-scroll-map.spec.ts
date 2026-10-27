@@ -58,6 +58,25 @@ describe('Markdown source blocks', () => {
         ]);
     });
 
+    it.each(['- ', '* ', '+ ', '2. ', '2) '])('maps an unfinished list item ending in a space (%s)', (item) => {
+        const first = item.startsWith('2') ? `1${item[1]} One` : `${item[0]} One`;
+        const source = `# Title\n\n${first}\n${item}`;
+        expect(blocks(source).map((block) => [block.startLine, block.endLine, block.first.nodeName])).toEqual([
+            [0, 1, 'H1'], [2, 4, item.startsWith('2') ? 'OL' : 'UL'], [2, 3, 'LI'], [3, 4, 'LI'],
+        ]);
+    });
+
+    it('preserves subsequent source positions after list trailing whitespace', () => {
+        const source = '- One\n- Two \n\n# After\n\n- Three\n- ';
+        expect(blocks(source).map((block) => [block.startLine, block.endLine, block.first.nodeName])).toEqual([
+            [0, 2, 'UL'], [0, 1, 'LI'], [1, 2, 'LI'], [3, 4, 'H1'],
+            [5, 7, 'UL'], [5, 6, 'LI'], [6, 7, 'LI'],
+        ]);
+        expect(blocks('- One\n# After').map((block) => [block.startLine, block.endLine, block.first.nodeName])).toEqual([
+            [0, 1, 'UL'], [0, 1, 'LI'], [1, 2, 'H1'],
+        ]);
+    });
+
     it('handles HTML with multiple root elements and sanitized content without altering the preview', () => {
         const source = '<div>One</div><div>Two</div>\n\nAfter';
         const mapped = blocks(source);

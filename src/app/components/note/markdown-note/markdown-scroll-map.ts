@@ -61,18 +61,20 @@ export function buildSourceBlocks(
     let nodeIndex = 0;
 
     for (const token of tokens) {
-        let start = normalized.indexOf(token.raw, offset);
+        // Marked can append a synthetic newline to a list ending with a single space.
+        const raw = token.type === 'list' ? token.raw.trimEnd() : token.raw;
+        let start = normalized.indexOf(raw, offset);
         // Reference definitions are omitted by the lexer. Do not match their URL/title text.
         while (start > offset && normalized[start - 1] !== '\n') {
-            start = normalized.indexOf(token.raw, start + 1);
+            start = normalized.indexOf(raw, start + 1);
         }
         if (start < 0) {
             throw new Error(`Could not locate Markdown ${token.type} source block.`);
         }
         sourceLine += normalized.substring(offset, start).split('\n').length - 1;
         const startLine = sourceLine;
-        sourceLine += token.raw.split('\n').length - 1;
-        offset = start + token.raw.length;
+        sourceLine += raw.split('\n').length - 1;
+        offset = start + raw.length;
         const template = document.createElement('template');
         template.innerHTML = sanitize(marked.parser([token], parsingOptions));
         const expected = contentNodes(template.content);
