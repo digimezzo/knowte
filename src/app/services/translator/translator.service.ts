@@ -51,5 +51,9 @@ export class TranslatorService {
         this.languageChangedHandler(this._selectedLanguage);
 
         this.globalEmitter.on(TranslatorEvents.languageChangedEvent, this.languageChangedListener);
+        // globalEmitter lives in the main process, so listeners would outlive this window otherwise.
+        window.addEventListener('unload', () =>
+            this.globalEmitter.removeListener(TranslatorEvents.languageChangedEvent, this.languageChangedListener),
+        );
     }
 }

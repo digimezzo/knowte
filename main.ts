@@ -131,6 +131,7 @@ function createMainWindow(): void {
         mainWindow.on('ready-to-show', () => {
             mainWindow.show();
             mainWindow.focus();
+            scheduleSpareNoteWindow(3000);
         });
 
         // Makes links open in external browser
@@ -237,23 +238,97 @@ function windowhasFrame(): boolean {
     return !settings.get('useCustomTitleBar');
 }
 
-function createNoteWindow(notePath: string, noteId: string, windowHasFrame: boolean): void {
+interface SpareNoteWindow {
+    window: BrowserWindow;
+    windowHasFrame: boolean;
+    settingsSnapshot: string | undefined;
+    isLoaded: boolean;
+}
+
+let spareNoteWindow: SpareNoteWindow | undefined;
+let spareNoteWindowTimer: ReturnType<typeof setTimeout> | undefined;
+
+function readNoteWindowSettingsSnapshot(): string | undefined {
+    try {
+        const settingsFile: string = path.join(app.getPath('userData'), 'config.json');
+        if (!fs.existsSync(settingsFile)) {
+            return '';
+        }
+        // Backup status changes frequently and does not affect note windows.
+        const { backupLastSuccess, backupLastError, ...relevantSettings } = JSON.parse(fs.readFileSync(settingsFile, 'utf-8'));
+        return JSON.stringify(relevantSettings);
+    } catch (error) {
+        return undefined;
+    }
+}
+
+function noteWindowUrl(noteId?: string): string {
+    const hash: string = noteId == undefined ? '#/note' : `#/note?id=${encodeURIComponent(noteId)}`;
+    return serve ? `http://localhost:4200${hash}` : `file://${__dirname}/dist/index.html${hash}`;
+}
+
+function scheduleSpareNoteWindow(delayMilliseconds: number): void {
+    if (spareNoteWindow != undefined || spareNoteWindowTimer != undefined) {
+        return;
+    }
+
+    spareNoteWindowTimer = setTimeout(() => {
+        spareNoteWindowTimer = undefined;
+        if (mainWindow == undefined || spareNoteWindow != undefined) {
+            return;
+        }
+
+        const settingsSnapshot: string | undefined = readNoteWindowSettingsSnapshot();
+        const windowHasFrame: boolean = windowhasFrame();
+        const window: BrowserWindow = buildNoteWindow(windowHasFrame, false, {});
+        const spare: SpareNoteWindow = { window, windowHasFrame, settingsSnapshot, isLoaded: false };
+        spareNoteWindow = spare;
+
+        window.webContents.once('did-finish-load', () => (spare.isLoaded = true));
+        window.on('closed', () => {
+            if (spareNoteWindow === spare) {
+                spareNoteWindow = undefined;
+            }
+        });
+        window.loadURL(noteWindowUrl());
+    }, delayMilliseconds);
+}
+
+function takeSpareNoteWindow(windowHasFrame: boolean): BrowserWindow | undefined {
+    const spare: SpareNoteWindow | undefined = spareNoteWindow;
+
+    if (spare == undefined || !spare.isLoaded || spare.window.isDestroyed()) {
+        return undefined;
+    }
+
+    if (spare.window.webContents.isCrashed()) {
+        spareNoteWindow = undefined;
+        spare.window.destroy();
+        return undefined;
+    }
+
+    spareNoteWindow = undefined;
+    const settingsSnapshot: string | undefined = readNoteWindowSettingsSnapshot();
+
+    // The spare window cached the settings at load time, so it can only be used if they did not change since.
+    if (spare.windowHasFrame !== windowHasFrame || settingsSnapshot == undefined || settingsSnapshot !== spare.settingsSnapshot) {
+        // close() instead of destroy() so the renderer's unload handlers unregister its globalEmitter listeners.
+        spare.window.close();
+        return undefined;
+    }
+
+    return spare.window;
+}
+
+function buildNoteWindow(
+    windowHasFrame: boolean,
+    show: boolean,
+    bounds: { x?: number; y?: number; width?: number; height?: number },
+): BrowserWindow {
     const settings = new SettingsStore(app.getPath('userData'));
 
-    // Load the previous state with fallback to defaults
-    const noteWindowState = windowStateKeeper({
-        defaultWidth: 620,
-        defaultHeight: 400,
-        path: notePath,
-        file: `${noteId}.state`,
-    });
-
-    // Create the window using the state information
     const noteWindow: BrowserWindow = new BrowserWindow({
-        x: noteWindowState.x,
-        y: noteWindowState.y,
-        width: noteWindowState.width,
-        height: noteWindowState.height,
+        ...bounds,
         backgroundColor: '#fff',
         frame: windowHasFrame,
         icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
@@ -263,37 +338,22 @@ function createNoteWindow(notePath: string, noteId: string, windowHasFrame: bool
             contextIsolation: false,
             spellcheck: settings.get('enableSpellChecker'),
         },
-        show: true,
+        show,
     });
 
     remoteMain.enable(noteWindow.webContents);
 
-    globalAny.windowHasFrame = windowHasFrame;
-
     // noteWindow.webContents.openDevTools();
-
-    // Let us register listeners on the window, so we can update the state
-    // automatically (the listeners will be removed when the window is closed)
-    // and restore the maximized or full screen state
-    noteWindowState.manage(noteWindow);
 
     if (serve) {
         require('electron-reload')(__dirname, {
             electron: require(`${__dirname}/node_modules/electron`),
         });
-        noteWindow.loadURL(`http://localhost:4200#/note?id=${noteId}`);
-    } else {
-        noteWindow.loadURL(`file://${__dirname}/dist/index.html#/note?id=${noteId}`);
     }
 
     noteWindow.on('page-title-updated', (e) => {
         // Prevents overwriting the window title by the title which is set in index.html
         e.preventDefault();
-    });
-
-    noteWindow.on('ready-to-show', () => {
-        noteWindow.show();
-        noteWindow.focus();
     });
 
     // Makes links open in external browser
@@ -320,6 +380,63 @@ function createNoteWindow(notePath: string, noteId: string, windowHasFrame: bool
             event.preventDefault();
         }
     });
+
+    return noteWindow;
+}
+
+function createNoteWindow(notePath: string, noteId: string, windowHasFrame: boolean): void {
+    // Load the previous state with fallback to defaults
+    const noteWindowState = windowStateKeeper({
+        defaultWidth: 620,
+        defaultHeight: 400,
+        path: notePath,
+        file: `${noteId}.state`,
+    });
+
+    let noteWindow: BrowserWindow | undefined = takeSpareNoteWindow(windowHasFrame);
+
+    if (noteWindow != undefined) {
+        if (noteWindowState.x != undefined && noteWindowState.y != undefined) {
+            noteWindow.setBounds({
+                x: noteWindowState.x,
+                y: noteWindowState.y,
+                width: noteWindowState.width,
+                height: noteWindowState.height,
+            });
+        } else {
+            noteWindow.setSize(noteWindowState.width, noteWindowState.height);
+            noteWindow.center();
+        }
+
+        // In-page hash navigation lets the already bootstrapped app show the note without reloading.
+        noteWindow.webContents.executeJavaScript(`window.location.hash = ${JSON.stringify(`#/note?id=${encodeURIComponent(noteId)}`)};`);
+        noteWindow.show();
+        noteWindow.focus();
+    } else {
+        // Create the window using the state information
+        const newNoteWindow: BrowserWindow = buildNoteWindow(windowHasFrame, true, {
+            x: noteWindowState.x,
+            y: noteWindowState.y,
+            width: noteWindowState.width,
+            height: noteWindowState.height,
+        });
+        newNoteWindow.on('ready-to-show', () => {
+            newNoteWindow.show();
+            newNoteWindow.focus();
+        });
+        newNoteWindow.loadURL(noteWindowUrl(noteId));
+        noteWindow = newNoteWindow;
+    }
+
+    globalAny.windowHasFrame = windowHasFrame;
+
+    // Let us register listeners on the window, so we can update the state
+    // automatically (the listeners will be removed when the window is closed)
+    // and restore the maximized or full screen state
+    noteWindowState.manage(noteWindow);
+
+    // Prepare the next note window in the background, after this one had time to render.
+    scheduleSpareNoteWindow(1000);
 }
 
 try {

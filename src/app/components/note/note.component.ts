@@ -109,6 +109,10 @@ export class NoteComponent implements OnInit {
 
     public async ngOnInit(): Promise<void> {
         this.activatedRoute.queryParams.subscribe(async (params) => {
+            // A pre-loaded spare note window waits without an id until the main process assigns a note to it.
+            if (!params['id'] || this.noteId) {
+                return;
+            }
             this.noteId = params['id'];
             this.noteWindow = remote.getCurrentWindow();
             await this.getNoteDetailsAsync();
@@ -340,6 +344,12 @@ export class NoteComponent implements OnInit {
     // ngOnDestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
     public beforeunloadHandler(event: any): void {
+        // A spare window that never received a note has nothing to save or mark as closed.
+        if (!this.noteId) {
+            this.collectionClient.dispose();
+            return;
+        }
+
         if (this.isEditingTags) {
             event.preventDefault();
             event.returnValue = '';

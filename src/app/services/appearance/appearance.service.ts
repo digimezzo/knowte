@@ -208,6 +208,11 @@ export class AppearanceService implements BaseAppearanceService {
 
         this.globalEmitter.on(AppearanceEvents.themeChangedEvent, this.themeChangedListener);
         this.globalEmitter.on(AppearanceEvents.fontSizeChangedEvent, this.fontSizeChangedListener);
+        // globalEmitter lives in the main process, so listeners would outlive this window otherwise.
+        window.addEventListener('unload', () => {
+            this.globalEmitter.removeListener(AppearanceEvents.themeChangedEvent, this.themeChangedListener);
+            this.globalEmitter.removeListener(AppearanceEvents.fontSizeChangedEvent, this.fontSizeChangedListener);
+        });
     }
 
     private applyThemeFromGlobalEvent(themeName: string, themeSettings: ThemeSettings): void {

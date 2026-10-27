@@ -15,6 +15,10 @@ export class SearchService {
 
     constructor() {
         this.globalEmitter.on(SearchEvents.getSearchTextEvent, this.getSearchTextEventListener);
+        // globalEmitter lives in the main process, so listeners would outlive this window otherwise.
+        window.addEventListener('unload', () =>
+            this.globalEmitter.removeListener(SearchEvents.getSearchTextEvent, this.getSearchTextEventListener),
+        );
 
         this.debouncingSearchTextChanged.pipe(debounceTime(this.timeoutMilliseconds), distinctUntilChanged()).subscribe((searchText) => {
             this.searchTextChanged.next(searchText);
