@@ -1,4 +1,14 @@
 <div class="note-status no-select">
+    <div class="d-flex flex-row align-items-center mr-2" [ngSwitch]="saveStatus">
+        <i *ngSwitchCase="'saved'" class="note-status-icon las la-check-circle" matTooltip="{{ 'Tooltips.AllChangesSaved' | translate }}"></i>
+        <i *ngSwitchCase="'unsaved'" class="note-status-icon las la-pen" matTooltip="{{ 'Tooltips.UnsavedChanges' | translate }}"></i>
+        <i
+            *ngSwitchCase="'failed'"
+            class="note-status-icon note-status-icon-error las la-exclamation-triangle pointer"
+            matTooltip="{{ 'Tooltips.SaveFailed' | translate }}"
+            (click)="retrySave.emit()"
+        ></i>
+    </div>
     <div class="d-flex flex-row align-items-center mr-2">
         <i class="note-status-icon las la-spell-check mr-05"></i>
         <div class="d-flex flex-row align-items-center" *ngIf="!this.settings.enableSpellChecker">

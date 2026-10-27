@@ -1,10 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatBottomSheet, MatBottomSheetConfig } from '@angular/material/bottom-sheet';
 import { BaseSettings } from '../../../common/settings/base-settings';
 import { CollectionClient } from '../../../services/collection/collection.client';
 import { SpellCheckService } from '../../../services/spell-check/spell-check.service';
 import { SpellCheckBottomSheetComponent } from '../bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';
 import { TextSizeBottomSheetComponent } from '../bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
+
+export type NoteSaveStatus = 'saved' | 'unsaved' | 'failed';
 
 @Component({
     selector: 'app-note-status-bar',
@@ -30,6 +32,12 @@ export class NoteStatusBarComponent {
 
     @Input()
     public isEncrypted: boolean;
+
+    @Input()
+    public saveStatus: NoteSaveStatus = 'saved';
+
+    @Output()
+    public retrySave: EventEmitter<void> = new EventEmitter<void>();
 
     public openSpellCheckBottomSheet(): void {
         this.bottomSheet.open(SpellCheckBottomSheetComponent);

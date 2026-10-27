@@ -4,8 +4,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as remote from '@electron/remote';
 import { BrowserWindow } from 'electron';
-import { Subject, Subscription } from 'rxjs';
-import { debounceTime } from 'rxjs/internal/operators';
+import { merge, Subject, Subscription } from 'rxjs';
+import { auditTime, debounceTime } from 'rxjs/internal/operators';
 import { Constants } from '../../common/application/constants';
 import { ProductInformation } from '../../common/application/product-information';
 import { Operation } from '../../common/enums/operation';
@@ -39,6 +39,7 @@ import { NoteContextMenuFactory } from './note-context-menu-factory';
 import { INoteEditor } from './note-editor/i-note-editor';
 import { NoteEditorFactory } from './note-editor/note-editor-factory';
 import { NoteSearch } from './note-search';
+import { NoteSaveStatus } from './note-status-bar/note-status-bar.component';
 
 @Component({
     selector: 'app-note',
@@ -53,6 +54,9 @@ export class NoteComponent implements OnInit {
     private isTextDirty: boolean = false;
     private contentRevision: number = 0;
     private pendingContentSave: Promise<Operation>;
+    private saveRetryTimeout?: ReturnType<typeof setTimeout>;
+    private isAutosaveErrorReported: boolean = false;
+    private hasSaveError: boolean = false;
     private hasLoadedNoteContent: boolean = false;
     private isEditingTags: boolean = false;
 
@@ -94,6 +98,7 @@ export class NoteComponent implements OnInit {
     public noteContentChanged: Subject<void> = new Subject<void>();
     public saveChangesAndCloseNoteWindow: Subject<void> = new Subject<void>();
     public isActionsSheetOpen: boolean = false;
+    public saveStatus: NoteSaveStatus = 'saved';
     public isBusy: boolean = false;
     public canSearch: boolean = false;
     public noteAttachmentsDirectoryPathForPreview: string = '';
@@ -181,9 +186,11 @@ export class NoteComponent implements OnInit {
         );
 
         this.subscription.add(
-            this.noteContentChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)).subscribe(async () => {
-                await this.saveNoteContentAsync();
-            }),
+            merge(
+                this.noteContentChanged.pipe(debounceTime(Constants.noteSaveTimeoutMilliseconds)),
+                // Also save periodically while typing continuously, so the debounce never postpones saving indefinitely.
+                this.noteContentChanged.pipe(auditTime(Constants.noteMaximumSaveDelayMilliseconds)),
+            ).subscribe(() => this.autosaveNoteContentAsync()),
         );
 
         this.subscription.add(
@@ -269,15 +276,65 @@ export class NoteComponent implements OnInit {
 
     public onNoteTitleChange(newNoteTitle: string): void {
         this.isTitleDirty = true;
+        this.refreshSaveStatus();
         this.clearSearch();
         this.noteTitleChanged.next(newNoteTitle);
     }
 
     private onNoteContentChange(): void {
+        // Mark dirty and schedule the save first: an exception here would permanently unsubscribe this handler.
         this.contentRevision++;
         this.isTextDirty = true;
-        this.clearSearch();
         this.noteContentChanged.next();
+        this.refreshSaveStatus();
+        try {
+            this.clearSearch();
+        } catch (error) {
+            this.logger.warn(`Could not clear search. Cause: ${error}`, 'NoteComponent', 'onNoteContentChange');
+        }
+    }
+
+    private async autosaveNoteContentAsync(): Promise<void> {
+        clearTimeout(this.saveRetryTimeout);
+        if (!this.isTextDirty || !this.hasLoadedNoteContent) {
+            return;
+        }
+
+        const operation: Operation = await this.saveNoteContentAsync(!this.isAutosaveErrorReported);
+        if (operation === Operation.Success) {
+            this.isAutosaveErrorReported = false;
+        } else {
+            this.isAutosaveErrorReported = true;
+        }
+
+        if (this.isTextDirty && !this.subscription.closed) {
+            clearTimeout(this.saveRetryTimeout);
+            this.saveRetryTimeout = setTimeout(() => this.noteContentChanged.next(), Constants.noteSaveRetryMilliseconds);
+        }
+    }
+
+    public retrySave(): void {
+        void this.autosaveNoteContentAsync();
+    }
+
+    private refreshSaveStatus(): void {
+        let status: NoteSaveStatus = 'saved';
+        if (this.hasSaveError) {
+            status = 'failed';
+        } else if (this.isTextDirty || this.isTitleDirty || this.pendingContentSave) {
+            status = 'unsaved';
+        }
+
+        if (status !== this.saveStatus) {
+            this.zone.run(() => (this.saveStatus = status));
+        }
+    }
+
+    @HostListener('window:blur')
+    public onWindowBlur(): void {
+        if (this.isTextDirty && !this.subscription.closed) {
+            void this.autosaveNoteContentAsync();
+        }
     }
 
     // ngOnDestroy doesn't tell us when a note window is closed, so we use this event instead.
@@ -291,7 +348,7 @@ export class NoteComponent implements OnInit {
 
         this.logger.info(`Detected closing of note with id=${this.noteId}`, 'NoteComponent', 'beforeunloadHandler');
 
-        if (this.isTitleDirty || this.isTextDirty || this.pendingContentSave) {
+        if (this.isTitleDirty || (this.isTextDirty && this.hasLoadedNoteContent) || this.pendingContentSave) {
             this.logger.info(
                 `Note with id=${this.noteId} is dirty. Preventing close to save changes first.`,
                 'NoteComponent',
@@ -509,6 +566,7 @@ export class NoteComponent implements OnInit {
 
     private cleanup(): void {
         clearTimeout(this.searchTimeout);
+        clearTimeout(this.saveRetryTimeout);
         this.noteSearch.clear();
         if (this.isMarkdownNote) {
             this.persistance.clearNoteAttachmentsPreviewDirectory(this.noteId);
@@ -663,6 +721,7 @@ export class NoteComponent implements OnInit {
         }
 
         this.isTitleDirty = false;
+        this.refreshSaveStatus();
 
         return result.operation;
     }
@@ -673,55 +732,65 @@ export class NoteComponent implements OnInit {
         save = (async () => {
             try {
                 if (previousSave) {
-                    await previousSave;
+                    await previousSave.catch(() => undefined);
                 }
-                return await this.saveNoteContentNowAsync(notifyOnError);
+                const operation: Operation = await this.saveNoteContentNowAsync(notifyOnError);
+                this.hasSaveError = operation === Operation.Error;
+                return operation;
             } finally {
                 if (this.pendingContentSave === save) {
                     this.pendingContentSave = undefined;
                 }
+                this.refreshSaveStatus();
             }
         })();
         this.pendingContentSave = save;
+        this.refreshSaveStatus();
         return save;
     }
 
     private async saveNoteContentNowAsync(notifyOnError: boolean): Promise<Operation> {
-        const revision: number = this.contentRevision;
-        const content: string = this.noteEditor.content;
-        const operation: Operation = await this.collectionClient.saveNoteTextAsync(
-            this.noteId,
-            this.noteEditor.text,
-            this.isEncrypted,
-            this.secretKey,
-            this.noteEditor.getTasksCount(),
-        );
+        if (!this.hasLoadedNoteContent) {
+            // Saving now would overwrite the note file with whatever partial content the editor holds.
+            this.logger.error(`Not saving note with id='${this.noteId}' because its content was not loaded.`,
+                'NoteComponent', 'saveNoteContentNowAsync');
+            return Operation.Error;
+        }
 
+        const revision: number = this.contentRevision;
+        let operation: Operation = Operation.Error;
         let showErrorDialog = false;
 
-        if (operation === Operation.Success) {
-            try {
-                await this.persistance.updateNoteContentAsync(
-                    this.noteId,
-                    content,
-                    this.isEncrypted,
-                    this.secretKey,
-                    this.isMarkdownNote,
-                );
+        try {
+            const content: string = this.noteEditor.content;
+            const text: string = this.noteEditor.text;
+            const tasksCount = this.noteEditor.getTasksCount();
 
+            // Write the note file first: it holds the actual content and does not depend on the main window.
+            await this.persistance.updateNoteContentAsync(
+                this.noteId,
+                content,
+                this.isEncrypted,
+                this.secretKey,
+                this.isMarkdownNote,
+            );
+
+            operation = await this.collectionClient.saveNoteTextAsync(this.noteId, text, this.isEncrypted, this.secretKey, tasksCount);
+
+            if (operation === Operation.Success) {
                 await this.refreshMarkdownAttachmentPreviewDirectoryAsync();
-            } catch (error) {
-                this.logger.error(
-                    `Could not save content for the note with id='${this.noteId}'. Cause: ${error}`,
-                    'NoteComponent',
-                    'setNoteTextCallbackAsync',
-                );
-                showErrorDialog = true;
+            } else {
+                this.logger.error(`Could not save metadata for the note with id='${this.noteId}'. Operation: ${operation}`,
+                    'NoteComponent', 'saveNoteContentNowAsync');
+                showErrorDialog = operation === Operation.Error;
             }
-        } else if (operation === Operation.Error) {
+        } catch (error) {
+            this.logger.error(
+                `Could not save content for the note with id='${this.noteId}'. Cause: ${error}`,
+                'NoteComponent',
+                'saveNoteContentNowAsync',
+            );
             showErrorDialog = true;
-        } else {
-            // Do nothing
         }
 
         if (showErrorDialog) {

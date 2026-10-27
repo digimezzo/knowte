@@ -29,7 +29,10 @@ export class Constants {
     public static readonly previewApplicationTag: string = 'preview';
     public static readonly releaseCandidateApplicationTag: string = 'rc';
 
-    public static readonly noteSaveTimeoutMilliseconds: number = 5000;
+    public static readonly noteSaveTimeoutMilliseconds: number = 2000;
+    public static readonly noteMaximumSaveDelayMilliseconds: number = 30000;
+    public static readonly noteSaveRetryMilliseconds: number = 10000;
+    public static readonly noteMetadataSaveTimeoutMilliseconds: number = 10000;
     public static readonly noteWindowCloseTimeoutMilliseconds: number = 500;
 
     public static noteZoomPercentages: number[] = [70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200];

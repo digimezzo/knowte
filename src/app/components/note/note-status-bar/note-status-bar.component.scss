@@ -12,6 +12,10 @@
     font-size: var(--fontsize-status-icon);
 }
 
+.note-status-icon-error {
+    color: var(--theme-accent-color);
+}
+
 .note-status-text {
     color: var(--theme-secondary-text);
 }

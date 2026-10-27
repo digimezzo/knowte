@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import * as remote from '@electron/remote';
 import { Observable, Subject } from 'rxjs';
+import { Constants } from '../../common/application/constants';
 import { Operation } from '../../common/enums/operation';
 import { Scheduler } from '../../common/scheduling/scheduler';
 import { TasksCount } from '../../common/ui/tasks-count';
@@ -144,11 +145,12 @@ export class CollectionClient implements OnDestroy {
             (receivedOperation: Operation) => (operation = receivedOperation)
         );
 
-        while (operation === null || operation === undefined) {
+        const deadline: number = Date.now() + Constants.noteMetadataSaveTimeoutMilliseconds;
+        while ((operation === null || operation === undefined) && Date.now() < deadline) {
             await this.scheduler.sleepAsync(50);
         }
 
-        return operation;
+        return operation ?? Operation.Error;
     }
 
     public deleteNote(noteId: string): void {

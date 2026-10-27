@@ -48,6 +48,8 @@
                     [isMarked]="this.isMarked"
                     [isPinned]="this.isPinned"
                     [isEncrypted]="this.isEncrypted"
+                    [saveStatus]="this.saveStatus"
+                    (retrySave)="retrySave()"
                 ></app-note-status-bar>
             </div>
         </div>

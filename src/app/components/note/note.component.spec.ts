@@ -6,8 +6,9 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 import { BrowserWindow, WebContents } from 'electron';
-import { of, Subject } from 'rxjs';
+import { of, Subject, Subscription } from 'rxjs';
 import { It, Mock } from 'typemoq';
+import { Constants } from '../../common/application/constants';
 import { Operation } from '../../common/enums/operation';
 import { Logger } from '../../common/logging/logger';
 import { Scheduler } from '../../common/scheduling/scheduler';
@@ -572,7 +573,7 @@ describe('NoteComponent preparing deletion', () => {
 
         await component['saveAndCloseAsync']();
         expect(closeWindow).not.toHaveBeenCalled();
-        expect(saveText).toHaveBeenCalledTimes(1);
+        expect(writeContent).toHaveBeenCalledTimes(1);
 
         finishWrite();
         expect(await acknowledged).toBe(Operation.Success);
@@ -616,7 +617,7 @@ describe('NoteComponent preparing deletion', () => {
         const finalSave = component['saveNoteContentAsync']();
         await Promise.resolve();
 
-        expect(saveText).toHaveBeenCalledTimes(1);
+        expect(writeContent).toHaveBeenCalledTimes(1);
         finishFirstWrite();
         expect(await firstSave).toBe(Operation.Success);
         expect(await finalSave).toBe(Operation.Success);
@@ -696,7 +697,12 @@ describe('NoteComponent preparing deletion', () => {
 
     it('saves a consistent content snapshot while metadata is being saved', async () => {
         let finishMetadata: (operation: Operation) => void;
-        saveText.mockImplementationOnce(() => new Promise<Operation>((resolve) => { finishMetadata = resolve; }));
+        const metadataStarted = new Promise<void>((started) => {
+            saveText.mockImplementationOnce(() => {
+                started();
+                return new Promise<Operation>((resolve) => { finishMetadata = resolve; });
+            });
+        });
         const editor = Mock.ofType<INoteEditor>();
         let content = 'original content';
         editor.setup((x) => x.content).returns(() => content);
@@ -707,6 +713,7 @@ describe('NoteComponent preparing deletion', () => {
         const save = component['saveNoteContentAsync']();
         content = 'new content';
         component['onNoteContentChange']();
+        await metadataStarted;
         finishMetadata(Operation.Success);
 
         expect(await save).toBe(Operation.Success);
@@ -734,6 +741,140 @@ describe('NoteComponent preparing deletion', () => {
         expect(closeWindow).not.toHaveBeenCalled();
         expect(component.isBusy).toBe(false);
         component['removeSubscriptions']();
+    });
+
+    describe('autosave', () => {
+        let editorChanged: Subject<void>;
+
+        beforeEach(() => {
+            component['removeSubscriptions']();
+            component['subscription'] = new Subscription();
+            editorChanged = new Subject<void>();
+            const editor = Mock.ofType<INoteEditor>();
+            editor.setup((x) => x.text).returns(() => 'Text');
+            editor.setup((x) => x.content).returns(() => 'Text');
+            editor.setup((x) => x.getTasksCount()).returns(() => new TasksCount(0, 0));
+            editor.setup((x) => x.noteContentChanged$).returns(() => editorChanged);
+            component.noteEditor = editor.object;
+            jest.useFakeTimers();
+            component['addSubscriptions']();
+        });
+
+        afterEach(() => {
+            component['cleanup']();
+            jest.useRealTimers();
+        });
+
+        async function flush(milliseconds: number): Promise<void> {
+            jest.advanceTimersByTime(milliseconds);
+            for (let i = 0; i < 10; i++) {
+                await Promise.resolve();
+            }
+        }
+
+        it('saves a few seconds after typing stops', async () => {
+            editorChanged.next();
+            await flush(Constants.noteSaveTimeoutMilliseconds - 1);
+            expect(writeContent).not.toHaveBeenCalled();
+
+            await flush(1);
+            expect(writeContent).toHaveBeenCalledTimes(1);
+            expect(component['isTextDirty']).toBe(false);
+        });
+
+        it('saves periodically while typing never pauses', async () => {
+            for (let elapsed = 0; elapsed < Constants.noteMaximumSaveDelayMilliseconds; elapsed += 1000) {
+                editorChanged.next();
+                await flush(1000);
+            }
+
+            expect(writeContent).toHaveBeenCalledTimes(1);
+        });
+
+        it('keeps saving later edits when clearing the search fails', async () => {
+            (component.clearSearch as unknown as jest.SpyInstance).mockImplementation(() => {
+                throw new Error('Remote object is gone');
+            });
+
+            editorChanged.next();
+            await flush(Constants.noteSaveTimeoutMilliseconds);
+            editorChanged.next();
+            await flush(Constants.noteSaveTimeoutMilliseconds);
+
+            expect(writeContent).toHaveBeenCalledTimes(2);
+            expect(component['isTextDirty']).toBe(false);
+        });
+
+        it('writes the note file even when the metadata save fails, and retries', async () => {
+            saveText.mockResolvedValueOnce(Operation.Error);
+
+            editorChanged.next();
+            await flush(Constants.noteSaveTimeoutMilliseconds);
+            expect(writeContent).toHaveBeenCalledTimes(1);
+            expect(component['isTextDirty']).toBe(true);
+            expect(showDialog).toHaveBeenCalledTimes(1);
+
+            await flush(Constants.noteSaveRetryMilliseconds + Constants.noteSaveTimeoutMilliseconds);
+            expect(writeContent).toHaveBeenCalledTimes(2);
+            expect(component['isTextDirty']).toBe(false);
+        });
+
+        it('retries a failed write without repeating the error popup', async () => {
+            writeContent.mockRejectedValueOnce(new Error('Cannot write')).mockRejectedValueOnce(new Error('Cannot write'));
+
+            editorChanged.next();
+            await flush(Constants.noteSaveTimeoutMilliseconds);
+            await flush(Constants.noteSaveRetryMilliseconds + Constants.noteSaveTimeoutMilliseconds);
+            expect(showDialog).toHaveBeenCalledTimes(1);
+            expect(component['isTextDirty']).toBe(true);
+
+            await flush(Constants.noteSaveRetryMilliseconds + Constants.noteSaveTimeoutMilliseconds);
+            expect(writeContent).toHaveBeenCalledTimes(3);
+            expect(component['isTextDirty']).toBe(false);
+        });
+
+        it('saves immediately when the window loses focus', async () => {
+            editorChanged.next();
+            component.onWindowBlur();
+            await flush(0);
+
+            expect(writeContent).toHaveBeenCalledTimes(1);
+        });
+
+        it('never overwrites a note whose content failed to load', async () => {
+            component['hasLoadedNoteContent'] = false;
+
+            editorChanged.next();
+            await flush(Constants.noteSaveTimeoutMilliseconds + Constants.noteSaveRetryMilliseconds);
+
+            expect(writeContent).not.toHaveBeenCalled();
+        });
+
+        it('reports unsaved changes until they are saved', async () => {
+            expect(component.saveStatus).toBe('saved');
+
+            editorChanged.next();
+            expect(component.saveStatus).toBe('unsaved');
+
+            await flush(Constants.noteSaveTimeoutMilliseconds);
+            expect(component.saveStatus).toBe('saved');
+        });
+
+        it('reports a failed save until a manual retry succeeds', async () => {
+            writeContent.mockRejectedValueOnce(new Error('Cannot write'));
+
+            editorChanged.next();
+            await flush(Constants.noteSaveTimeoutMilliseconds);
+            expect(component.saveStatus).toBe('failed');
+
+            editorChanged.next();
+            expect(component.saveStatus).toBe('failed');
+
+            component.retrySave();
+            await flush(0);
+            expect(writeContent).toHaveBeenCalledTimes(2);
+            expect(component.saveStatus).toBe('saved');
+        });
     });
 });
 

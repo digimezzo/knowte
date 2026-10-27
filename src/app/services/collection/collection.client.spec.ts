@@ -1,7 +1,9 @@
 import * as remote from '@electron/remote';
 import { EventEmitter } from 'events';
+import { Constants } from '../../common/application/constants';
 import { Operation } from '../../common/enums/operation';
 import { Scheduler } from '../../common/scheduling/scheduler';
+import { TasksCount } from '../../common/ui/tasks-count';
 import { CollectionClient } from './collection.client';
 import { CollectionEvents } from './collection-events';
 
@@ -76,6 +78,26 @@ describe('CollectionClient listener lifetime', () => {
             bus.eventNames().forEach((event) => expect(bus.listenerCount(event)).toBe(1));
             client.dispose();
             expect(bus.eventNames()).toEqual([]);
+        }
+    });
+
+    it('fails a note text save instead of waiting forever when the main window never answers', async () => {
+        let now = 0;
+        const now$ = jest.spyOn(Date, 'now').mockImplementation(() => now);
+        try {
+            const scheduler = new Scheduler();
+            jest.spyOn(scheduler, 'sleepAsync').mockImplementation(async (milliseconds: number) => {
+                now += milliseconds;
+            });
+            const client = new CollectionClient(scheduler);
+            clients.push(client);
+
+            const result = await client.saveNoteTextAsync('note', 'text', false, '', new TasksCount(0, 0));
+
+            expect(result).toBe(Operation.Error);
+            expect(now).toBeGreaterThanOrEqual(Constants.noteMetadataSaveTimeoutMilliseconds);
+        } finally {
+            now$.mockRestore();
         }
     });
 });
