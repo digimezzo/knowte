@@ -31,6 +31,7 @@ export class SearchBottomSheetComponent implements OnInit, AfterViewInit {
         // Focus doesn't work without setTimeout
         setTimeout(() => {
             this.searchInputElement.nativeElement.focus();
+            this.searchInputElement.nativeElement.select();
         }, 0);
     }
 

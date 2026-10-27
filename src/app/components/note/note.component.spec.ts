@@ -777,6 +777,14 @@ describe('SearchBottomSheetComponent input events', () => {
         await fixture.whenStable();
     });
 
+    it('selects the previous query when opened so typing replaces it', async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        const input: HTMLInputElement = fixture.nativeElement.querySelector('.notes-content-search-input');
+        expect(document.activeElement).toBe(input);
+        expect(input.selectionStart).toBe(0);
+        expect(input.selectionEnd).toBe('old'.length);
+    });
+
     it('submits the edited input on Enter keydown without waiting for keyup', async () => {
         const input: HTMLInputElement = fixture.nativeElement.querySelector('.notes-content-search-input');
         expect(input.value).toBe('old');
