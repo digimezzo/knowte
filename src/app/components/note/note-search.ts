@@ -32,8 +32,8 @@ export class NoteSearch {
             return true;
         }
         const highlight = new renderer.Highlight();
-        let firstMatch: { range: Range; root: HTMLElement } | undefined;
-        const roots = document.querySelectorAll<HTMLElement>('#editor .ql-editor, #markdown-output');
+        const firstMatches = new Map<HTMLElement, Range>();
+        const roots = document.querySelectorAll<HTMLElement>('#editor .ql-editor, .highlighted-content, #markdown-output');
 
         for (const root of Array.from(roots)) {
             const nodes: { node: Text; start: number; end: number }[] = [];
@@ -71,16 +71,25 @@ export class NoteSearch {
                 range.setStart(nodes[nodeIndex].node, match.index - nodes[nodeIndex].start);
                 range.setEnd(nodes[endNodeIndex].node, end - nodes[endNodeIndex].start);
                 highlight.add(range);
-                firstMatch = firstMatch || { range, root };
+                if (!firstMatches.has(root)) {
+                    firstMatches.set(root, range);
+                }
             }
         }
 
         renderer.CSS.highlights.set(this.highlightName, highlight);
-        if (firstMatch) {
-            const bounds = firstMatch.range.getBoundingClientRect();
-            const root = firstMatch.root;
-            root.scrollTop = Math.max(0, root.scrollTop + bounds.top - root.getBoundingClientRect().top
-                - root.clientHeight / 2 + bounds.height / 2);
+        for (const [root, range] of firstMatches) {
+            // Skips the Markdown source pane while it is hidden in preview-only mode.
+            if (root.offsetWidth === 0) {
+                continue;
+            }
+            const bounds = range.getBoundingClientRect();
+            const offset = root.scrollTop + bounds.top - root.getBoundingClientRect().top;
+            // The mirrored layer follows the textarea's scroll position, so scroll the textarea.
+            const container = root.matches('.highlighted-content')
+                ? root.parentElement?.querySelector<HTMLElement>('.markdown-input') || root
+                : root;
+            container.scrollTop = Math.max(0, offset - container.clientHeight / 2 + bounds.height / 2);
         }
         return true;
     }

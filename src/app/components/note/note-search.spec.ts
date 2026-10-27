@@ -66,11 +66,44 @@ describe('NoteSearch renderer highlights', () => {
 
     it('centers the first match in its scroll container', () => {
         root.scrollTop = 500;
+        Object.defineProperty(root, 'offsetWidth', { configurable: true, value: 300 });
         Object.defineProperty(root, 'clientHeight', { configurable: true, value: 200 });
         jest.spyOn(root, 'getBoundingClientRect').mockReturnValue({ top: 100 } as DOMRect);
         search.find('alpha');
         expect(root.scrollTop).toBe(710);
         expect(Range.prototype.getBoundingClientRect).toHaveBeenCalledTimes(1);
+    });
+
+    it('highlights the Markdown source and scrolls its textarea, not the mirrored layer', () => {
+        document.body.innerHTML = `
+            <div class="editor-wrapper">
+                <pre class="highlighted-content"><span class="md-title-1"># Alpha</span>\nbeta</pre>
+                <textarea class="markdown-input"></textarea>
+            </div>
+            <div id="markdown-output"><h1>Alpha</h1><p>beta</p></div>`;
+        const pre = document.querySelector<HTMLElement>('.highlighted-content');
+        const textarea = document.querySelector<HTMLElement>('.markdown-input');
+        Object.defineProperty(pre, 'offsetWidth', { configurable: true, value: 300 });
+        Object.defineProperty(textarea, 'clientHeight', { configurable: true, value: 200 });
+        jest.spyOn(pre, 'getBoundingClientRect').mockReturnValue({ top: 100 } as DOMRect);
+
+        search.find('alpha');
+
+        expect(matches()).toEqual(['Alpha', 'Alpha']);
+        expect(textarea.scrollTop).toBe(210);
+        expect(pre.scrollTop).toBe(0);
+    });
+
+    it('does not scroll the hidden Markdown source pane in preview-only mode', () => {
+        document.body.innerHTML = `
+            <div class="editor-wrapper"><pre class="highlighted-content">alpha</pre><textarea class="markdown-input"></textarea></div>
+            <div id="markdown-output"><p>alpha</p></div>`;
+        const textarea = document.querySelector<HTMLElement>('.markdown-input');
+
+        search.find('alpha');
+
+        expect(matches()).toEqual(['alpha', 'alpha']);
+        expect(textarea.scrollTop).toBe(0);
     });
 
     it('works with classic editor content and leaves unrelated highlights alone', () => {
