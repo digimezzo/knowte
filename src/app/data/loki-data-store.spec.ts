@@ -3,9 +3,12 @@ import loki from 'lokijs';
 import { DataStore } from './data-store';
 import { DataStoreFactory } from './data-store-factory';
 import { LokiDataStore } from './loki-data-store';
+import { Logger } from '../common/logging/logger';
+import { PerformanceDiagnostics } from '../common/logging/performance-diagnostics';
 
 jest.mock('lokijs', () => jest.fn());
 jest.mock('nanoid', () => ({ nanoid: () => 'entity-id' }));
+jest.mock('../common/logging/logger');
 
 describe('LokiDataStore initialization', () => {
     let store: DataStore;
@@ -20,6 +23,7 @@ describe('LokiDataStore initialization', () => {
     let collections: Map<string, object>;
 
     beforeEach(() => {
+        PerformanceDiagnostics.configure(true);
         collections = new Map();
         database = {
             loadDatabase: jest.fn((_options, callback) => (load = callback)),
@@ -34,6 +38,8 @@ describe('LokiDataStore initialization', () => {
         (loki as jest.Mock).mockReset().mockImplementation(() => database);
         store = new LokiDataStore();
     });
+
+    afterEach(() => PerformanceDiagnostics.configure(false));
 
     it('resolves the store contract to one lazy Loki implementation per injector', () => {
         TestBed.configureTestingModule({
@@ -189,6 +195,48 @@ describe('LokiDataStore initialization', () => {
         await Promise.resolve();
         save();
         await initialization;
+    });
+
+    it('separates synchronous save blocking from callback completion', async () => {
+        collections.set('notebooks', {});
+        collections.set('notes', {});
+        const initialization = store.initializeAsync('collection.db');
+        load();
+        await initialization;
+        const clock = jest.spyOn(performance, 'now').mockReturnValue(0);
+        const warn = jest.spyOn(Logger.prototype, 'warn').mockClear();
+        database.saveDatabase.mockImplementation((callback) => {
+            save = callback;
+            clock.mockReturnValue(200);
+        });
+        try {
+            const saving = store.saveAsync();
+            expect(warn).toHaveBeenCalledWith(
+                expect.stringMatching(/Database.save synchronous call .*finished in 200.0 ms/), 'Performance', 'operation',
+            );
+            clock.mockReturnValue(1200);
+            save();
+            await saving;
+            expect(warn).toHaveBeenCalledWith(
+                expect.stringMatching(/Database.save #.*finished in 1200.0 ms/), 'Performance', 'operation',
+            );
+        } finally {
+            clock.mockRestore();
+        }
+    });
+
+    it('logs failures from mutation-triggered saves without starting extra writes', async () => {
+        collections.set('notebooks', { insert: jest.fn() });
+        collections.set('notes', {});
+        const initialization = store.initializeAsync('collection.db');
+        load();
+        await initialization;
+        const error = new Error('Cannot write');
+        database.saveDatabase.mockImplementation((callback) => callback(error));
+        const logError = jest.spyOn(Logger.prototype, 'error').mockClear();
+        store.addNotebook('Private name');
+        expect(database.saveDatabase).toHaveBeenCalledTimes(1);
+        expect(logError).toHaveBeenCalledWith('Database save failed: Error: Cannot write', 'LokiDataStore', 'saveDatabase');
     });
 
     it('preserves CRUD and persistence behavior with real Loki and an in-memory adapter', async () => {

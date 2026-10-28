@@ -46,6 +46,10 @@
         "Website": "Site web"
     },
     "SettingsPage": {
+        "Diagnostics": "Diagnostic",
+        "OpenLogDirectory": "Ouvrir le dossier des journaux",
+        "EnablePerformanceDiagnostics": "Activer la journalisation des performances",
+        "PerformanceDiagnosticsDescription": "Enregistrer les durées des opérations et les blocages de l'interface pour analyser les ralentissements. Aucune fenêtre contextuelle. Redémarrez Knowte pour appliquer les modifications.",
         "FontSize": "Taille de police",
         "TextSize": "Taille du texte",
         "TextSizeInNotes": "Taille du texte dans les notes",

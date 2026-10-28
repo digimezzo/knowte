@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import { Desktop } from './desktop';
+import { PerformanceDiagnostics } from '../logging/performance-diagnostics';
 
 @Injectable()
 export class FileAccess {
@@ -169,7 +170,7 @@ export class FileAccess {
     }
 
     public async writeTextToFileAsync(filePath: string, textToWrite: string): Promise<void> {
-        await fs.writeFile(filePath, textToWrite);
+        await PerformanceDiagnostics.measureAsync('File.writeText', () => fs.writeFile(filePath, textToWrite));
     }
 
     public async writeBufferToFileAsync(filePath: string, bufferToWrite: Buffer): Promise<void> {
@@ -177,11 +178,11 @@ export class FileAccess {
     }
 
     public async getFileContentAsStringAsync(filePath: string): Promise<string> {
-        return await fs.readFile(filePath, 'utf-8');
+        return await PerformanceDiagnostics.measureAsync('File.readText', () => fs.readFile(filePath, 'utf-8'));
     }
 
     public getFileContentAsString(filePath: string): string {
-        return fs.readFileSync(filePath, 'utf-8');
+        return PerformanceDiagnostics.measure('File.readTextSync', () => fs.readFileSync(filePath, 'utf-8'));
     }
 
     public getDirectoryOrFileName(directoryOrFilePath: string): string {

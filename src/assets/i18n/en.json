@@ -78,6 +78,10 @@
         "Website": "Website"
     },
     "SettingsPage": {
+        "Diagnostics": "Diagnostics",
+        "OpenLogDirectory": "Open log folder",
+        "EnablePerformanceDiagnostics": "Enable performance logging",
+        "PerformanceDiagnosticsDescription": "Log operation timings and UI stalls to help investigate freezes. No popups are shown. Restart Knowte to apply changes.",
         "FontSize": "Font size",
         "TextSize": "Text size",
         "TextSizeInNotes": "Text size in notes",

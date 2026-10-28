@@ -46,6 +46,10 @@
         "Website": "Website"
     },
     "SettingsPage": {
+        "Diagnostics": "Diagnostiek",
+        "OpenLogDirectory": "Logboekmap openen",
+        "EnablePerformanceDiagnostics": "Prestatielogboek inschakelen",
+        "PerformanceDiagnosticsDescription": "Log bewerkingstijden en haperingen om vastlopers te onderzoeken. Er verschijnen geen pop-ups. Herstart Knowte om wijzigingen toe te passen.",
         "FontSize": "Lettergrootte",
         "TextSize": "Tekstgrootte",
         "TextSizeInNotes": "Tekstgrootte in notities",

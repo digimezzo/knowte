@@ -46,6 +46,10 @@
         "Website": "Website"
     },
     "SettingsPage": {
+        "Diagnostics": "Diagnóstico",
+        "OpenLogDirectory": "Abrir pasta de logs",
+        "EnablePerformanceDiagnostics": "Ativar registro de desempenho",
+        "PerformanceDiagnosticsDescription": "Registra a duração das operações e travamentos da interface para investigar lentidão. Nenhum pop-up é exibido. Reinicie o Knowte para aplicar as alterações.",
         "FontSize": "Tamanho da fonte",
         "TextSize": "Text size",
         "TextSizeInNotes": "Text size in notes",

@@ -3,6 +3,8 @@ import * as path from 'path';
 import { Mock } from 'typemoq';
 import { Desktop } from './desktop';
 import { FileAccess } from './file-access';
+import { Logger } from '../logging/logger';
+import { PerformanceDiagnostics } from '../logging/performance-diagnostics';
 
 jest.mock('@electron/remote', () => ({}));
 jest.mock('fs-extra', () => ({
@@ -94,5 +96,35 @@ describe('FileAccess asynchronous disk operations', () => {
 
         expect(fs.mkdir).toHaveBeenCalledWith('/preview/note', { recursive: true });
         expect(fs.remove).toHaveBeenCalledWith('/preview/note');
+    });
+
+    it('logs slow text reads without exposing the path or contents', async () => {
+        PerformanceDiagnostics.configure(true);
+        const clock = jest.spyOn(performance, 'now').mockReturnValue(0);
+        const warn = jest.spyOn(Logger.prototype, 'warn').mockImplementation(() => {});
+        (fs.readFile as jest.Mock).mockImplementation(async () => {
+            clock.mockReturnValue(250);
+            return 'Private contents';
+        });
+        try {
+            expect(await files.getFileContentAsStringAsync('/private/note.md')).toBe('Private contents');
+            expect(warn).toHaveBeenCalledWith(
+                expect.stringMatching(/File.readText .*finished in 250.0 ms/), 'Performance', 'operation',
+            );
+            expect(warn.mock.calls[0][0]).not.toMatch(/private|contents/i);
+        } finally {
+            PerformanceDiagnostics.configure(false);
+            clock.mockRestore();
+            warn.mockRestore();
+        }
+    });
+
+    it('preserves asynchronous text-write results and errors', async () => {
+        (fs.writeFile as jest.Mock).mockResolvedValueOnce(undefined);
+        await files.writeTextToFileAsync('/storage/note.md', 'Text');
+        expect(fs.writeFile).toHaveBeenCalledWith('/storage/note.md', 'Text');
+        const error = new Error('Cannot write');
+        (fs.writeFile as jest.Mock).mockRejectedValueOnce(error);
+        await expect(files.writeTextToFileAsync('/storage/note.md', 'Text')).rejects.toBe(error);
     });
 });

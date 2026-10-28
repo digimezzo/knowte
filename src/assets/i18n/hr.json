@@ -46,6 +46,10 @@
         "Website": "Web-stranica"
     },
     "SettingsPage": {
+        "Diagnostics": "Dijagnostika",
+        "OpenLogDirectory": "Otvori mapu zapisnika",
+        "EnablePerformanceDiagnostics": "Omogući zapisivanje performansi",
+        "PerformanceDiagnosticsDescription": "Bilježi trajanje radnji i zastoje sučelja radi istraživanja zamrzavanja. Nema skočnih prozora. Ponovno pokrenite Knowte za primjenu promjena.",
         "FontSize": "Veličina fonta",
         "TextSize": "Veličina teksta",
         "TextSizeInNotes": "Veličina teksta u bilješkama",

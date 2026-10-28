@@ -46,6 +46,10 @@
         "Website": "网站"
     },
     "SettingsPage": {
+        "Diagnostics": "诊断",
+        "OpenLogDirectory": "打开日志文件夹",
+        "EnablePerformanceDiagnostics": "启用性能日志",
+        "PerformanceDiagnosticsDescription": "记录操作耗时和界面延迟以排查卡顿，不显示弹出窗口。重启 Knowte 以应用更改。",
         "FontSize": "字体大小",
         "TextSize": "Text size",
         "TextSizeInNotes": "Text size in notes",

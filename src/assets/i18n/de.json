@@ -46,6 +46,10 @@
         "Website": "Webseite"
     },
     "SettingsPage": {
+        "Diagnostics": "Diagnose",
+        "OpenLogDirectory": "Protokollordner öffnen",
+        "EnablePerformanceDiagnostics": "Leistungsprotokollierung aktivieren",
+        "PerformanceDiagnosticsDescription": "Vorgangsdauer und UI-Verzögerungen zur Untersuchung von Problemen protokollieren. Keine Pop-ups. Starten Sie Knowte neu, um Änderungen anzuwenden.",
         "FontSize": "Schriftgröße",
         "TextSize": "Text size",
         "TextSizeInNotes": "Text size in notes",

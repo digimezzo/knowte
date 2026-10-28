@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import loki from 'lokijs';
 import moment from 'moment';
+import { Logger } from '../common/logging/logger';
+import { PerformanceDiagnostics } from '../common/logging/performance-diagnostics';
 import { DataStore } from './data-store';
 import { Note } from './entities/note';
 import { Notebook } from './entities/notebook';
@@ -13,6 +15,7 @@ export class LokiDataStore extends DataStore {
     private isLoaded: boolean = false;
     private initialization: Promise<void> | undefined;
     private initializingDatabaseFile: string;
+    private readonly logger: Logger = new Logger();
 
     private get notebooks(): any {
         this.ensureLoaded();
@@ -44,7 +47,7 @@ export class LokiDataStore extends DataStore {
 
         this.isLoaded = false;
         this.initializingDatabaseFile = databaseFile;
-        this.initialization = this.loadDatabaseAsync(databaseFile);
+        this.initialization = PerformanceDiagnostics.measureAsync('Database.load', () => this.loadDatabaseAsync(databaseFile), true);
         try {
             await this.initialization;
         } finally {
@@ -71,7 +74,7 @@ export class LokiDataStore extends DataStore {
 
         if (!existingNotebooks || !existingNotes) {
             await new Promise<void>((resolve, reject) => {
-                database.saveDatabase((error) => {
+                this.saveDatabase(database, (error) => {
                     if (error) {
                         reject(error);
                     } else {
@@ -90,7 +93,7 @@ export class LokiDataStore extends DataStore {
     public async saveAsync(): Promise<void> {
         this.ensureLoaded();
         await new Promise<void>((resolve, reject) => {
-            this.db.saveDatabase((error) => {
+            this.saveDatabase(this.db, (error) => {
                 if (error) {
                     reject(error);
                 } else {
@@ -100,24 +103,43 @@ export class LokiDataStore extends DataStore {
         });
     }
 
-    public getNotebooks(): Notebook[] {
-        const notebooks: Notebook[] = this.notebooks.chain().sort(this.caseInsensitiveNameSort).data();
+    private saveDatabase(database: loki, callback?: (error?: Error) => void): void {
+        const finish = PerformanceDiagnostics.start('Database.save', true);
+        const finishCall = PerformanceDiagnostics.start('Database.save synchronous call');
+        try {
+            database.saveDatabase((error) => {
+                finish(error ? 'failed' : 'callback received');
+                if (error) {
+                    this.logger.error(`Database save failed: ${error}`, 'LokiDataStore', 'saveDatabase');
+                }
+                callback?.(error);
+            });
+        } catch (error) {
+            finish('threw');
+            this.logger.error(`Database save threw: ${error}`, 'LokiDataStore', 'saveDatabase');
+            throw error;
+        } finally {
+            finishCall();
+        }
+    }
 
-        return notebooks;
+    public getNotebooks(): Notebook[] {
+        return PerformanceDiagnostics.measure('Database.getNotebooks',
+            () => this.notebooks.chain().sort(this.caseInsensitiveNameSort).data());
     }
 
     public getNotebookById(id: string): Notebook {
-        return this.notebooks.findOne({ id: id });
+        return PerformanceDiagnostics.measure('Database.getNotebookById', () => this.notebooks.findOne({ id: id }));
     }
 
     public getNotebookByName(name: string): Notebook {
-        return this.notebooks.findOne({ name: name });
+        return PerformanceDiagnostics.measure('Database.getNotebookByName', () => this.notebooks.findOne({ name: name }));
     }
 
     public addNotebook(name: string): string {
         const newNotebook: Notebook = new Notebook(name);
         this.notebooks.insert(newNotebook);
-        this.db.saveDatabase();
+        this.saveDatabase(this.db);
 
         return newNotebook.id;
     }
@@ -125,109 +147,97 @@ export class LokiDataStore extends DataStore {
     public deleteNotebook(id: string): void {
         const notebookToDelete: Notebook = this.getNotebookById(id);
         this.notebooks.remove(notebookToDelete);
-        this.db.saveDatabase();
+        this.saveDatabase(this.db);
     }
 
     public getNotes(): Note[] {
-        const notes: Note[] = this.notes
+        return PerformanceDiagnostics.measure('Database.getNotes', () => this.notes
             .chain()
             .where((obj) => {
                 return !obj.isTrashed;
             })
             .simplesort('modificationDate', true)
-            .data();
-
-        return notes;
+            .data(), true);
     }
 
     public getTrashedNotes(): Note[] {
-        const notes: Note[] = this.notes
+        return PerformanceDiagnostics.measure('Database.getTrashedNotes', () => this.notes
             .chain()
             .where((obj) => {
                 return obj.isTrashed;
             })
             .simplesort('trashedDate', true)
-            .data();
-
-        return notes;
+            .data(), true);
     }
 
     public getUnfiledNotes(): Note[] {
-        const notebookIds: string[] = this.notebooks
-            .chain()
-            .data()
-            .map((x) => x.id);
+        return PerformanceDiagnostics.measure('Database.getUnfiledNotes', () => {
+            const notebookIds: string[] = this.notebooks
+                .chain()
+                .data()
+                .map((x) => x.id);
 
-        const notes: Note[] = this.notes
-            .chain()
-            .where((obj) => {
-                return !obj.isTrashed && (obj.notebookId === '' || !notebookIds.includes(obj.notebookId));
-            })
-            .simplesort('modificationDate', true)
-            .data();
-
-        return notes;
+            return this.notes
+                .chain()
+                .where((obj) => {
+                    return !obj.isTrashed && (obj.notebookId === '' || !notebookIds.includes(obj.notebookId));
+                })
+                .simplesort('modificationDate', true)
+                .data();
+        }, true);
     }
 
     public getMarkedNotes(): Note[] {
-        const notes: Note[] = this.notes
+        return PerformanceDiagnostics.measure('Database.getMarkedNotes', () => this.notes
             .chain()
             .find({ isMarked: true })
             .where((obj) => {
                 return !obj.isTrashed;
             })
             .simplesort('modificationDate', true)
-            .data();
-
-        return notes;
+            .data(), true);
     }
 
     public getNotebookNotes(notebookId: string): Note[] {
-        const notes: Note[] = this.notes
+        return PerformanceDiagnostics.measure('Database.getNotebookNotes', () => this.notes
             .chain()
             .find({ notebookId: notebookId })
             .where((obj) => {
                 return !obj.isTrashed;
             })
             .simplesort('modificationDate', true)
-            .data();
-
-        return notes;
+            .data(), true);
     }
 
     public getNotesWithIdenticalBaseTitle(baseTitle: string): Note[] {
-        const notesWithIdenticalBaseTitle: Note[] = this.notes
+        return PerformanceDiagnostics.measure('Database.getNotesWithIdenticalBaseTitle', () => this.notes
             .chain()
             .where((obj) => {
                 return obj.title.startsWith(baseTitle);
             })
-            .data();
-
-        return notesWithIdenticalBaseTitle;
+            .data());
     }
 
     public addNote(title: string, notebookId: string, isMarkdownNote: boolean): string {
         const newNote: Note = new Note(title, notebookId, isMarkdownNote);
         this.notes.insert(newNote);
-        this.db.saveDatabase();
+        this.saveDatabase(this.db);
 
         return newNote.id;
     }
 
     public getNoteById(id: string): Note {
-        const note: Note = this.notes.findOne({ id: id });
-
-        return note;
+        return PerformanceDiagnostics.measure('Database.getNoteById', () => this.notes.findOne({ id: id }));
     }
 
     public getNoteByTitle(noteTitle: string): Note {
-        return this.notes.findOne({ title: noteTitle });
+        return PerformanceDiagnostics.measure('Database.getNoteByTitle', () => this.notes.findOne({ title: noteTitle }));
     }
 
     public deleteNote(id: string): void {
         const noteToDelete: Note = this.getNoteById(id);
         this.notes.remove(noteToDelete);
-        this.db.saveDatabase();
+        this.saveDatabase(this.db);
     }
 
     public trashNote(id: string): void {
@@ -235,21 +245,21 @@ export class LokiDataStore extends DataStore {
         noteToTrash.isTrashed = true;
         noteToTrash.isSelected = false;
         noteToTrash.trashedDate = moment().valueOf();
-        this.db.saveDatabase();
+        this.saveDatabase(this.db);
     }
 
     public encryptNote(id: string, secretKeyHash: string): void {
         const noteToEncrypt: Note = this.getNoteById(id);
         noteToEncrypt.isEncrypted = true;
         noteToEncrypt.secretKeyHash = secretKeyHash;
-        this.db.saveDatabase();
+        this.saveDatabase(this.db);
     }
 
     public decryptNote(id: string): void {
         const noteToDecrypt: Note = this.getNoteById(id);
         noteToDecrypt.isEncrypted = false;
         noteToDecrypt.secretKeyHash = '';
-        this.db.saveDatabase();
+        this.saveDatabase(this.db);
     }
 
     public restoreNote(id: string): void {
@@ -257,24 +267,24 @@ export class LokiDataStore extends DataStore {
         noteToRestore.isTrashed = false;
         noteToRestore.isSelected = false;
         noteToRestore.trashedDate = 0;
-        this.db.saveDatabase();
+        this.saveDatabase(this.db);
     }
 
     public updateNote(note: Note): void {
         this.notes.update(note);
         note.modificationDate = moment().valueOf();
-        this.db.saveDatabase();
+        this.saveDatabase(this.db);
     }
 
     public updateNoteWithoutDate(note: Note): void {
         this.notes.update(note);
-        this.db.saveDatabase();
+        this.saveDatabase(this.db);
     }
 
     public updateNotebook(notebook: Notebook, save: boolean = true): void {
         this.notebooks.update(notebook);
         if (save) {
-            this.db.saveDatabase();
+            this.saveDatabase(this.db);
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import * as remote from '@electron/remote';
 import log from 'electron-log';
@@ -11,6 +11,8 @@ import { SpellCheckService } from './services/spell-check/spell-check.service';
 import { TemporaryStorageService } from './services/temporary-storage/temporary-storage.service';
 import { TrashService } from './services/trash/trash.service';
 import { BackupService } from './services/backup/backup.service';
+import { PerformanceDiagnostics } from './common/logging/performance-diagnostics';
+import { BaseSettings } from './common/settings/base-settings';
 
 @Component({
     selector: 'app-root',
@@ -19,6 +21,7 @@ import { BackupService } from './services/backup/backup.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
     private subscription: Subscription = new Subscription();
+    private stopPerformanceMonitoring: () => void;
 
     constructor(
         public electron: ElectronService,
@@ -29,18 +32,25 @@ export class AppComponent implements OnInit, OnDestroy {
         private temporaryStorageService: TemporaryStorageService,
         private trash: TrashService,
         private backup: BackupService,
+        private zone: NgZone,
+        private settings: BaseSettings,
     ) {
         log.create('renderer');
         log.transports.file.resolvePath = () => path.join(remote.app.getPath('userData'), 'logs', 'Knowte.log');
+        PerformanceDiagnostics.configure(this.settings.performanceDiagnosticsEnabled);
     }
 
     @ViewChild('drawer') public drawer: any;
 
     public ngOnDestroy(): void {
+        this.stopPerformanceMonitoring?.();
         this.subscription.unsubscribe();
     }
 
     public ngOnInit(): void {
+        this.zone.runOutsideAngular(() => {
+            this.stopPerformanceMonitoring = PerformanceDiagnostics.monitorEventLoop(this.isNoteWindow() ? 'Note window' : 'Main window');
+        });
         if (!this.isNoteWindow()) {
             this.temporaryStorageService.clearDecryptedMarkdownAttachmentsCache();
             this.backup.start();

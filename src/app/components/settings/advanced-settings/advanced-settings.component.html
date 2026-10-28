@@ -22,4 +22,15 @@
     </div>
     <mat-divider class="my-3"></mat-divider>
     <app-backup-settings></app-backup-settings>
+    <mat-divider class="my-3"></mat-divider>
+    <div class="title1 mt-2">{{ 'SettingsPage.Diagnostics' | translate }}</div>
+    <app-toggle-switch class="mt-2" [(isChecked)]="settings.performanceDiagnosticsEnabled">
+        {{ 'SettingsPage.EnablePerformanceDiagnostics' | translate }}
+    </app-toggle-switch>
+    <div class="mt-2">{{ 'SettingsPage.PerformanceDiagnosticsDescription' | translate }}</div>
+    <div class="mt-2">
+        <app-accent-button (click)="openLogDirectoryAsync()">
+            {{ 'SettingsPage.OpenLogDirectory' | translate }}
+        </app-accent-button>
+    </div>
 </div>

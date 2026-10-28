@@ -46,6 +46,10 @@
         "Website": "Сайт"
     },
     "SettingsPage": {
+        "Diagnostics": "Диагностика",
+        "OpenLogDirectory": "Открыть папку журналов",
+        "EnablePerformanceDiagnostics": "Включить журнал производительности",
+        "PerformanceDiagnosticsDescription": "Записывать время операций и задержки интерфейса для анализа зависаний. Без всплывающих окон. Перезапустите Knowte для применения изменений.",
         "FontSize": "Размер шрифта",
         "TextSize": "Text size",
         "TextSizeInNotes": "Text size in notes",

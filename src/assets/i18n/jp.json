@@ -46,6 +46,10 @@
         "Website": "ウェブサイト"
     },
     "SettingsPage": {
+        "Diagnostics": "診断",
+        "OpenLogDirectory": "ログフォルダーを開く",
+        "EnablePerformanceDiagnostics": "パフォーマンスログを有効にする",
+        "PerformanceDiagnosticsDescription": "フリーズの調査用に操作時間と画面の応答遅延を記録します。ポップアップは表示しません。変更を適用するにはKnowteを再起動してください。",
         "FontSize": "フォント サイズ",
         "TextSize": "Text size",
         "TextSizeInNotes": "Text size in notes",

@@ -2,6 +2,7 @@ export abstract class BaseSettings {
     public abstract defaultLanguage: string;
     public abstract language: string;
     public abstract checkForUpdates: boolean;
+    public abstract performanceDiagnosticsEnabled: boolean;
     public abstract useCustomTitleBar: boolean;
     public abstract fontSize: number;
     public abstract theme: string;
