@@ -27,7 +27,7 @@
 
 .sub-menu-item__label-container {
     position: relative;
-    flex: 1;
+    flex: none;
     min-width: 0;
 }
 
@@ -42,14 +42,17 @@
 .sub-menu__count-label {
     background-color: var(--theme-accent-color);
     margin: -10px 0 0 10px;
+    box-sizing: border-box;
+    flex-shrink: 0;
     min-width: 22px;
     height: 22px;
     border-radius: 11px;
-    padding-left: 7px;
-    padding-right: 7px;
+    padding: 0 6px;
     color: #fff;
     font-size: 12px;
     font-weight: bold;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
     display: flex;
     align-items: center;
     justify-content: center;

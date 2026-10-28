@@ -101,6 +101,7 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
 import { WindowControlsComponent } from './components/window-controls/window-controls.component';
 import { CdkVirtualScrollViewportPatchDirective } from './directives/cdk-virtual-scroll-viewport-patch-directive';
 import { WebviewDirective } from './directives/webview.directive';
+import { PixelSnapDirective } from './directives/pixel-snap.directive';
 import { GlobalErrorHandler } from './globalErrorHandler';
 import { FixImagePathsPipe } from './pipes/fix-image-paths.pipe';
 import { TruncatePipe } from './pipes/truncate.pipe';
@@ -248,6 +249,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
         NoteLinkDialogComponent,
         WebviewDirective,
         CdkVirtualScrollViewportPatchDirective,
+        PixelSnapDirective,
         TruncatePipe,
         FixImagePathsPipe,
         SanitizeMarkdownPipe,

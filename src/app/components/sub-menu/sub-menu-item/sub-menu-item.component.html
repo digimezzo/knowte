@@ -1,10 +1,10 @@
 <div class="sub-menu-item no-select" matRipple>
-    <div class="sub-menu-item__label-container">
+    <div #labelContainer class="sub-menu-item__label-container">
         <span class="sub-menu-item__label" [ngClass]="{ 'sub-menu-item__label--selected': this.page === this.selectedPage }">{{
             text
         }}</span>
-        <span class="sub-menu-item__label-measure">{{ text }}</span>
+        <span #labelMeasure class="sub-menu-item__label-measure">{{ text }}</span>
     </div>
 
-    <div class="sub-menu__count-label" *ngIf="count > -1">{{ count }}</div>
+    <div class="sub-menu__count-label" *ngIf="count > -1"><span #countText>{{ count }}</span></div>
 </div>
