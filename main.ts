@@ -244,11 +244,13 @@ interface SpareNoteWindow {
     window: BrowserWindow;
     windowHasFrame: boolean;
     settingsSnapshot: string | undefined;
-    isLoaded: boolean;
+    loaded: Promise<boolean>;
 }
 
 let spareNoteWindow: SpareNoteWindow | undefined;
 let spareNoteWindowTimer: ReturnType<typeof setTimeout> | undefined;
+let settingsWatcherTimer: ReturnType<typeof setTimeout> | undefined;
+let isWatchingSettings: boolean = false;
 
 function readNoteWindowSettingsSnapshot(): string | undefined {
     try {
@@ -269,6 +271,64 @@ function noteWindowUrl(noteId?: string): string {
     return serve ? `http://localhost:4200${hash}` : `file://${__dirname}/dist/index.html${hash}`;
 }
 
+function getStaleSpareReason(spare: SpareNoteWindow, windowHasFrame: boolean): string | undefined {
+    if (spare.window.isDestroyed() || spare.window.webContents.isCrashed()) {
+        return 'renderer is gone';
+    }
+    if (spare.windowHasFrame !== windowHasFrame) {
+        return 'title bar setting changed';
+    }
+    const settingsSnapshot: string | undefined = readNoteWindowSettingsSnapshot();
+    // The spare window cached the settings at load time, so it can only be used if they did not change since.
+    if (settingsSnapshot == undefined || settingsSnapshot !== spare.settingsSnapshot) {
+        return 'settings changed';
+    }
+    return undefined;
+}
+
+function discardSpareNoteWindow(spare: SpareNoteWindow): void {
+    if (spareNoteWindow === spare) {
+        spareNoteWindow = undefined;
+    }
+    if (spare.window.isDestroyed()) {
+        return;
+    }
+    if (spare.window.webContents.isCrashed()) {
+        spare.window.destroy();
+    } else {
+        // close() instead of destroy() so the renderer's unload handlers unregister its globalEmitter listeners.
+        spare.window.close();
+    }
+}
+
+// Replaces a stale spare as soon as settings change, so it is fresh again by the time a note is opened.
+function watchSettingsForSpareNoteWindow(): void {
+    if (isWatchingSettings) {
+        return;
+    }
+    isWatchingSettings = true;
+
+    try {
+        // Watch the directory: settings are saved by renaming a temporary file over config.json.
+        fs.watch(app.getPath('userData'), (eventType: string, fileName: string) => {
+            if (fileName !== 'config.json') {
+                return;
+            }
+            clearTimeout(settingsWatcherTimer);
+            settingsWatcherTimer = setTimeout(() => {
+                const spare: SpareNoteWindow | undefined = spareNoteWindow;
+                if (spare != undefined && getStaleSpareReason(spare, windowhasFrame()) != undefined) {
+                    log.info('[App] Settings changed. Replacing spare note window.');
+                    discardSpareNoteWindow(spare);
+                    scheduleSpareNoteWindow(500);
+                }
+            }, 300);
+        });
+    } catch (error) {
+        log.warn(`[App] Could not watch settings for spare note window: ${error.message}`);
+    }
+}
+
 function scheduleSpareNoteWindow(delayMilliseconds: number): void {
     if (spareNoteWindow != undefined || spareNoteWindowTimer != undefined) {
         return;
@@ -280,13 +340,19 @@ function scheduleSpareNoteWindow(delayMilliseconds: number): void {
             return;
         }
 
+        watchSettingsForSpareNoteWindow();
+
         const settingsSnapshot: string | undefined = readNoteWindowSettingsSnapshot();
         const windowHasFrame: boolean = windowhasFrame();
         const window: BrowserWindow = buildNoteWindow(windowHasFrame, false, {});
-        const spare: SpareNoteWindow = { window, windowHasFrame, settingsSnapshot, isLoaded: false };
+        const loaded: Promise<boolean> = new Promise((resolve) => {
+            window.webContents.once('did-finish-load', () => resolve(true));
+            window.webContents.once('did-fail-load', () => resolve(false));
+            window.once('closed', () => resolve(false));
+        });
+        const spare: SpareNoteWindow = { window, windowHasFrame, settingsSnapshot, loaded };
         spareNoteWindow = spare;
 
-        window.webContents.once('did-finish-load', () => (spare.isLoaded = true));
         window.on('closed', () => {
             if (spareNoteWindow === spare) {
                 spareNoteWindow = undefined;
@@ -296,26 +362,23 @@ function scheduleSpareNoteWindow(delayMilliseconds: number): void {
     }, delayMilliseconds);
 }
 
-function takeSpareNoteWindow(windowHasFrame: boolean): BrowserWindow | undefined {
+async function takeSpareNoteWindow(windowHasFrame: boolean): Promise<BrowserWindow | undefined> {
     const spare: SpareNoteWindow | undefined = spareNoteWindow;
 
-    if (spare == undefined || !spare.isLoaded || spare.window.isDestroyed()) {
-        return undefined;
-    }
-
-    if (spare.window.webContents.isCrashed()) {
-        spareNoteWindow = undefined;
-        spare.window.destroy();
+    if (spare == undefined) {
+        log.info('[App] No spare note window available. Creating a new note window.');
         return undefined;
     }
 
     spareNoteWindow = undefined;
-    const settingsSnapshot: string | undefined = readNoteWindowSettingsSnapshot();
 
-    // The spare window cached the settings at load time, so it can only be used if they did not change since.
-    if (spare.windowHasFrame !== windowHasFrame || settingsSnapshot == undefined || settingsSnapshot !== spare.settingsSnapshot) {
-        // close() instead of destroy() so the renderer's unload handlers unregister its globalEmitter listeners.
-        spare.window.close();
+    // A spare that is still loading is always further along than a new window would be.
+    const isLoaded: boolean = await spare.loaded;
+    const staleReason: string | undefined = isLoaded ? getStaleSpareReason(spare, windowHasFrame) : 'failed to load';
+
+    if (staleReason != undefined) {
+        log.info(`[App] Spare note window not usable (${staleReason}). Creating a new note window.`);
+        discardSpareNoteWindow(spare);
         return undefined;
     }
 
@@ -388,7 +451,7 @@ function buildNoteWindow(
     return noteWindow;
 }
 
-function createNoteWindow(notePath: string, noteId: string, windowHasFrame: boolean): void {
+async function createNoteWindow(notePath: string, noteId: string, windowHasFrame: boolean): Promise<void> {
     // Load the previous state with fallback to defaults
     const noteWindowState = windowStateKeeper({
         defaultWidth: 800,
@@ -397,7 +460,7 @@ function createNoteWindow(notePath: string, noteId: string, windowHasFrame: bool
         file: `${noteId}.state`,
     });
 
-    let noteWindow: BrowserWindow | undefined = takeSpareNoteWindow(windowHasFrame);
+    let noteWindow: BrowserWindow | undefined = await takeSpareNoteWindow(windowHasFrame);
 
     if (noteWindow != undefined) {
         if (noteWindowState.x != undefined && noteWindowState.y != undefined) {
@@ -440,7 +503,7 @@ function createNoteWindow(notePath: string, noteId: string, windowHasFrame: bool
     noteWindowState.manage(noteWindow);
 
     // Prepare the next note window in the background, after this one had time to render.
-    scheduleSpareNoteWindow(1000);
+    scheduleSpareNoteWindow(500);
 }
 
 try {
@@ -448,7 +511,9 @@ try {
 
     // Open note windows
     ipcMain.on('open-note-window', (event: any, arg: any) => {
-        createNoteWindow(arg.notePath, arg.noteId, arg.windowHasFrame);
+        createNoteWindow(arg.notePath, arg.noteId, arg.windowHasFrame).catch((error) =>
+            log.error(`[App] Could not open note window: ${error.message}`),
+        );
     });
 
     // Print

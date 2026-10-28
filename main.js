@@ -221,6 +221,8 @@ function windowhasFrame() {
 }
 let spareNoteWindow;
 let spareNoteWindowTimer;
+let settingsWatcherTimer;
+let isWatchingSettings = false;
 function readNoteWindowSettingsSnapshot() {
     try {
         const settingsFile = path.join(electron_1.app.getPath('userData'), 'config.json');
@@ -239,6 +241,62 @@ function noteWindowUrl(noteId) {
     const hash = noteId == undefined ? '#/note' : `#/note?id=${encodeURIComponent(noteId)}`;
     return serve ? `http://localhost:4200${hash}` : `file://${__dirname}/dist/index.html${hash}`;
 }
+function getStaleSpareReason(spare, windowHasFrame) {
+    if (spare.window.isDestroyed() || spare.window.webContents.isCrashed()) {
+        return 'renderer is gone';
+    }
+    if (spare.windowHasFrame !== windowHasFrame) {
+        return 'title bar setting changed';
+    }
+    const settingsSnapshot = readNoteWindowSettingsSnapshot();
+    // The spare window cached the settings at load time, so it can only be used if they did not change since.
+    if (settingsSnapshot == undefined || settingsSnapshot !== spare.settingsSnapshot) {
+        return 'settings changed';
+    }
+    return undefined;
+}
+function discardSpareNoteWindow(spare) {
+    if (spareNoteWindow === spare) {
+        spareNoteWindow = undefined;
+    }
+    if (spare.window.isDestroyed()) {
+        return;
+    }
+    if (spare.window.webContents.isCrashed()) {
+        spare.window.destroy();
+    }
+    else {
+        // close() instead of destroy() so the renderer's unload handlers unregister its globalEmitter listeners.
+        spare.window.close();
+    }
+}
+// Replaces a stale spare as soon as settings change, so it is fresh again by the time a note is opened.
+function watchSettingsForSpareNoteWindow() {
+    if (isWatchingSettings) {
+        return;
+    }
+    isWatchingSettings = true;
+    try {
+        // Watch the directory: settings are saved by renaming a temporary file over config.json.
+        fs.watch(electron_1.app.getPath('userData'), (eventType, fileName) => {
+            if (fileName !== 'config.json') {
+                return;
+            }
+            clearTimeout(settingsWatcherTimer);
+            settingsWatcherTimer = setTimeout(() => {
+                const spare = spareNoteWindow;
+                if (spare != undefined && getStaleSpareReason(spare, windowhasFrame()) != undefined) {
+                    electron_log_1.default.info('[App] Settings changed. Replacing spare note window.');
+                    discardSpareNoteWindow(spare);
+                    scheduleSpareNoteWindow(500);
+                }
+            }, 300);
+        });
+    }
+    catch (error) {
+        electron_log_1.default.warn(`[App] Could not watch settings for spare note window: ${error.message}`);
+    }
+}
 function scheduleSpareNoteWindow(delayMilliseconds) {
     if (spareNoteWindow != undefined || spareNoteWindowTimer != undefined) {
         return;
@@ -248,12 +306,17 @@ function scheduleSpareNoteWindow(delayMilliseconds) {
         if (mainWindow == undefined || spareNoteWindow != undefined) {
             return;
         }
+        watchSettingsForSpareNoteWindow();
         const settingsSnapshot = readNoteWindowSettingsSnapshot();
         const windowHasFrame = windowhasFrame();
         const window = buildNoteWindow(windowHasFrame, false, {});
-        const spare = { window, windowHasFrame, settingsSnapshot, isLoaded: false };
+        const loaded = new Promise((resolve) => {
+            window.webContents.once('did-finish-load', () => resolve(true));
+            window.webContents.once('did-fail-load', () => resolve(false));
+            window.once('closed', () => resolve(false));
+        });
+        const spare = { window, windowHasFrame, settingsSnapshot, loaded };
         spareNoteWindow = spare;
-        window.webContents.once('did-finish-load', () => (spare.isLoaded = true));
         window.on('closed', () => {
             if (spareNoteWindow === spare) {
                 spareNoteWindow = undefined;
@@ -263,24 +326,23 @@ function scheduleSpareNoteWindow(delayMilliseconds) {
     }, delayMilliseconds);
 }
 function takeSpareNoteWindow(windowHasFrame) {
-    const spare = spareNoteWindow;
-    if (spare == undefined || !spare.isLoaded || spare.window.isDestroyed()) {
-        return undefined;
-    }
-    if (spare.window.webContents.isCrashed()) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const spare = spareNoteWindow;
+        if (spare == undefined) {
+            electron_log_1.default.info('[App] No spare note window available. Creating a new note window.');
+            return undefined;
+        }
         spareNoteWindow = undefined;
-        spare.window.destroy();
-        return undefined;
-    }
-    spareNoteWindow = undefined;
-    const settingsSnapshot = readNoteWindowSettingsSnapshot();
-    // The spare window cached the settings at load time, so it can only be used if they did not change since.
-    if (spare.windowHasFrame !== windowHasFrame || settingsSnapshot == undefined || settingsSnapshot !== spare.settingsSnapshot) {
-        // close() instead of destroy() so the renderer's unload handlers unregister its globalEmitter listeners.
-        spare.window.close();
-        return undefined;
-    }
-    return spare.window;
+        // A spare that is still loading is always further along than a new window would be.
+        const isLoaded = yield spare.loaded;
+        const staleReason = isLoaded ? getStaleSpareReason(spare, windowHasFrame) : 'failed to load';
+        if (staleReason != undefined) {
+            electron_log_1.default.info(`[App] Spare note window not usable (${staleReason}). Creating a new note window.`);
+            discardSpareNoteWindow(spare);
+            return undefined;
+        }
+        return spare.window;
+    });
 }
 function buildNoteWindow(windowHasFrame, show, bounds) {
     const settings = new settings_store_1.SettingsStore(electron_1.app.getPath('userData'));
@@ -325,60 +387,62 @@ function buildNoteWindow(windowHasFrame, show, bounds) {
     return noteWindow;
 }
 function createNoteWindow(notePath, noteId, windowHasFrame) {
-    // Load the previous state with fallback to defaults
-    const noteWindowState = windowStateKeeper({
-        defaultWidth: 800,
-        defaultHeight: 500,
-        path: notePath,
-        file: `${noteId}.state`,
-    });
-    let noteWindow = takeSpareNoteWindow(windowHasFrame);
-    if (noteWindow != undefined) {
-        if (noteWindowState.x != undefined && noteWindowState.y != undefined) {
-            noteWindow.setBounds({
+    return __awaiter(this, void 0, void 0, function* () {
+        // Load the previous state with fallback to defaults
+        const noteWindowState = windowStateKeeper({
+            defaultWidth: 800,
+            defaultHeight: 500,
+            path: notePath,
+            file: `${noteId}.state`,
+        });
+        let noteWindow = yield takeSpareNoteWindow(windowHasFrame);
+        if (noteWindow != undefined) {
+            if (noteWindowState.x != undefined && noteWindowState.y != undefined) {
+                noteWindow.setBounds({
+                    x: noteWindowState.x,
+                    y: noteWindowState.y,
+                    width: noteWindowState.width,
+                    height: noteWindowState.height,
+                });
+            }
+            else {
+                noteWindow.setSize(noteWindowState.width, noteWindowState.height);
+                noteWindow.center();
+            }
+            // In-page hash navigation lets the already bootstrapped app show the note without reloading.
+            noteWindow.webContents.executeJavaScript(`window.location.hash = ${JSON.stringify(`#/note?id=${encodeURIComponent(noteId)}`)};`);
+            noteWindow.show();
+            noteWindow.focus();
+        }
+        else {
+            // Create the window using the state information
+            const newNoteWindow = buildNoteWindow(windowHasFrame, true, {
                 x: noteWindowState.x,
                 y: noteWindowState.y,
                 width: noteWindowState.width,
                 height: noteWindowState.height,
             });
+            newNoteWindow.on('ready-to-show', () => {
+                newNoteWindow.show();
+                newNoteWindow.focus();
+            });
+            newNoteWindow.loadURL(noteWindowUrl(noteId));
+            noteWindow = newNoteWindow;
         }
-        else {
-            noteWindow.setSize(noteWindowState.width, noteWindowState.height);
-            noteWindow.center();
-        }
-        // In-page hash navigation lets the already bootstrapped app show the note without reloading.
-        noteWindow.webContents.executeJavaScript(`window.location.hash = ${JSON.stringify(`#/note?id=${encodeURIComponent(noteId)}`)};`);
-        noteWindow.show();
-        noteWindow.focus();
-    }
-    else {
-        // Create the window using the state information
-        const newNoteWindow = buildNoteWindow(windowHasFrame, true, {
-            x: noteWindowState.x,
-            y: noteWindowState.y,
-            width: noteWindowState.width,
-            height: noteWindowState.height,
-        });
-        newNoteWindow.on('ready-to-show', () => {
-            newNoteWindow.show();
-            newNoteWindow.focus();
-        });
-        newNoteWindow.loadURL(noteWindowUrl(noteId));
-        noteWindow = newNoteWindow;
-    }
-    globalAny.windowHasFrame = windowHasFrame;
-    // Let us register listeners on the window, so we can update the state
-    // automatically (the listeners will be removed when the window is closed)
-    // and restore the maximized or full screen state
-    noteWindowState.manage(noteWindow);
-    // Prepare the next note window in the background, after this one had time to render.
-    scheduleSpareNoteWindow(1000);
+        globalAny.windowHasFrame = windowHasFrame;
+        // Let us register listeners on the window, so we can update the state
+        // automatically (the listeners will be removed when the window is closed)
+        // and restore the maximized or full screen state
+        noteWindowState.manage(noteWindow);
+        // Prepare the next note window in the background, after this one had time to render.
+        scheduleSpareNoteWindow(500);
+    });
 }
 try {
     electron_log_1.default.info('[App] [main] +++ Starting +++');
     // Open note windows
     electron_1.ipcMain.on('open-note-window', (event, arg) => {
-        createNoteWindow(arg.notePath, arg.noteId, arg.windowHasFrame);
+        createNoteWindow(arg.notePath, arg.noteId, arg.windowHasFrame).catch((error) => electron_log_1.default.error(`[App] Could not open note window: ${error.message}`));
     });
     // Print
     electron_1.ipcMain.on('print', (event, data) => {
