@@ -86,6 +86,8 @@ function createMainWindow() {
             y: mainWindowState.y,
             width: mainWindowState.width,
             height: mainWindowState.height,
+            minWidth: 800,
+            minHeight: 500,
             backgroundColor: '#fff',
             frame: windowhasFrame(),
             icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'),
@@ -282,7 +284,7 @@ function takeSpareNoteWindow(windowHasFrame) {
 }
 function buildNoteWindow(windowHasFrame, show, bounds) {
     const settings = new settings_store_1.SettingsStore(electron_1.app.getPath('userData'));
-    const noteWindow = new electron_1.BrowserWindow(Object.assign(Object.assign({}, bounds), { backgroundColor: '#fff', frame: windowHasFrame, icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'), webPreferences: {
+    const noteWindow = new electron_1.BrowserWindow(Object.assign(Object.assign({}, bounds), { minWidth: 800, minHeight: 500, backgroundColor: '#fff', frame: windowHasFrame, icon: path.join(globalAny.__static, os.platform() === 'win32' ? 'icons/icon.ico' : 'icons/64x64.png'), webPreferences: {
             webSecurity: false,
             nodeIntegration: true,
             contextIsolation: false,
@@ -325,8 +327,8 @@ function buildNoteWindow(windowHasFrame, show, bounds) {
 function createNoteWindow(notePath, noteId, windowHasFrame) {
     // Load the previous state with fallback to defaults
     const noteWindowState = windowStateKeeper({
-        defaultWidth: 620,
-        defaultHeight: 400,
+        defaultWidth: 800,
+        defaultHeight: 500,
         path: notePath,
         file: `${noteId}.state`,
     });
