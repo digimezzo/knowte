@@ -212,6 +212,7 @@
         "ConfirmDecryptNote": "Decrypt note?",
         "NoteIsEncrypted": "Note is encrypted",
         "ConfirmCloseAllNotes": "Close all notes?",
+        "CloseWithUnsavedNotes": "Unsaved notes",
         "ConfirmMoveNote": "Move note?",
         "ConfirmMoveNotes": "Move notes?"
     },
@@ -232,6 +233,7 @@
         "ChooseNotebook": "Choose a notebook",
         "ConfirmDecryptNote": "Are you sure you want to decrypt this note?",
         "ConfirmCloseAllNotes": "This will close all open notes. Are you sure you want to continue?",
+        "CloseWithUnsavedNotes": "Some notes could not be saved. If you close Knowte now, their unsaved changes may be lost. Close anyway?",
         "ConfirmMoveNote": "Are you sure you want to move this note to collection '{{collection}}'?",
         "ConfirmMoveNotes": "Are you sure you want to move these notes to collection '{{collection}}'?"
     },

@@ -436,6 +436,29 @@ export class CollectionService {
         return this.openNoteIds.length > 0;
     }
 
+    public async saveAndCloseAllNotesAsync(): Promise<boolean> {
+        let allSaved: boolean = true;
+        for (const noteId of [...this.openNoteIds]) {
+            try {
+                await this.prepareNoteDeletionAsync(noteId);
+            } catch (error) {
+                this.logger.error(`Could not save note with id='${noteId}' before closing. Cause: ${error}`,
+                    'CollectionService', 'saveAndCloseAllNotesAsync');
+                allSaved = false;
+            }
+        }
+        try {
+            if (this.isInitialized) {
+                await this.collectionDataStoreAccess.saveAsync();
+            }
+        } catch (error) {
+            this.logger.error(`Could not save the data store before closing. Cause: ${error}`,
+                'CollectionService', 'saveAndCloseAllNotesAsync');
+            allSaved = false;
+        }
+        return allSaved;
+    }
+
     public async prepareBackupAsync(collection: string, storage: string): Promise<string> {
         if (storage !== this.settings.storageDirectory || this.collectionOperationInProgress ||
             this.initialization || this.movingNoteIds.size > 0) {

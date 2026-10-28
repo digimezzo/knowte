@@ -180,6 +180,7 @@
         "ConfirmDecryptNote": "Dešifrirati bilješku?",
         "NoteIsEncrypted": "Bilješka je šifrirana",
         "ConfirmCloseAllNotes": "Zatvoriti sve bilješke?",
+        "CloseWithUnsavedNotes": "Unsaved notes",
         "ConfirmMoveNote": "Premjestiti bilješku?",
         "ConfirmMoveNotes": "Premjestiti bilješke?"
     },
@@ -200,6 +201,7 @@
         "ChooseNotebook": "Odaberite bilježnicu",
         "ConfirmDecryptNote": "Jeste li sigurni da želite dešifrirati ovu bilješku?",
         "ConfirmCloseAllNotes": "Ovo će zatvoriti sve otvorene bilješke. Jeste li sigurni da želite nastaviti?",
+        "CloseWithUnsavedNotes": "Some notes could not be saved. If you close Knowte now, their unsaved changes may be lost. Close anyway?",
         "ConfirmMoveNote": "Jeste li sigurni da želite premjestiti ovu bilješku u kolekciju '{{collection}}'?",
         "ConfirmMoveNotes": "Jeste li sigurni da želite premjestiti ove bilješke u kolekciju '{{collection}}'?"
     },

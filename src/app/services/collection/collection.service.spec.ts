@@ -730,6 +730,41 @@ describe('CollectionService note deletion', () => {
         expect(logError).toHaveBeenCalled();
     });
 
+    it('saves and closes every open note before the main window closes', async () => {
+        const first = addNote(true, '');
+        const second = addNote(true, '');
+        await service.setNoteOpenAsync(first.id, true);
+        await service.setNoteOpenAsync(second.id, true);
+        const prepared: string[] = [];
+        emit.mockImplementation((event: string, id: string, callback: (operation: Operation) => void) => {
+            if (event === CollectionEvents.prepareNoteDeletionEvent) {
+                prepared.push(id);
+                callback(Operation.Success);
+            }
+        });
+
+        expect(await service.saveAndCloseAllNotesAsync()).toBe(true);
+        expect(prepared).toEqual([first.id, second.id]);
+    });
+
+    it('reports when an open note could not be saved before the main window closes, but still tries the others', async () => {
+        const failing = addNote(true, '');
+        const other = addNote(true, '');
+        await service.setNoteOpenAsync(failing.id, true);
+        await service.setNoteOpenAsync(other.id, true);
+        const prepared: string[] = [];
+        emit.mockImplementation((event: string, id: string, callback: (operation: Operation) => void) => {
+            if (event === CollectionEvents.prepareNoteDeletionEvent) {
+                prepared.push(id);
+                callback(id === failing.id ? Operation.Error : Operation.Success);
+            }
+        });
+
+        expect(await service.saveAndCloseAllNotesAsync()).toBe(false);
+        expect(prepared).toEqual([failing.id, other.id]);
+        expect(logError).toHaveBeenCalled();
+    });
+
     describe('changing the collections directory', () => {
         let currentSettings: BaseSettings;
         let loadedDirectory: string;

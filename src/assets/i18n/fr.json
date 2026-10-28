@@ -180,6 +180,7 @@
         "ConfirmDecryptNote": "Décrypter la note?",
         "NoteIsEncrypted": "La note est cryptée",
         "ConfirmCloseAllNotes": "Fermer toutes les notes?",
+        "CloseWithUnsavedNotes": "Notes non enregistrées",
         "ConfirmMoveNote": "Déplacer la note?",
         "ConfirmMoveNotes": "Déplacer les notes?"
     },
@@ -200,6 +201,7 @@
         "ChooseNotebook": "Choisissez un bloc-notes",
         "ConfirmDecryptNote": "Êtes-vous sûr de vouloir décrypter cette note?",
         "ConfirmCloseAllNotes": "Cela fermera toutes les notes ouvertes. Etes-vous sur de vouloir continuer?",
+        "CloseWithUnsavedNotes": "Certaines notes n'ont pas pu être enregistrées. Si vous fermez Knowte maintenant, leurs modifications non enregistrées risquent d'être perdues. Fermer quand même?",
         "ConfirmMoveNote": "Êtes-vous sûr de vouloir déplacer cette note vers la collection '{{collection}}'?",
         "ConfirmMoveNotes": "Êtes-vous sûr de vouloir déplacer ces notes vers la collection '{{collection}}'?"
     },
