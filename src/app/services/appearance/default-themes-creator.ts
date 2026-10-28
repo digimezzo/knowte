@@ -67,6 +67,7 @@ export class DefaultThemesCreator {
         themes.push(this.createPurpleLakeTheme());
         themes.push(this.createBloodyMaryTheme());
         themes.push(this.createQuepalTheme());
+        themes.push(this.createAdwaitaTheme());
 
         return themes;
     }
@@ -101,5 +102,61 @@ export class DefaultThemesCreator {
 
     private createQuepalTheme(): Theme {
         return new Theme('Quepal', this.creator, new ThemeCoreColors('#00998c', '#38EF7D', '#4ec486'), this.darkColors, this.lightColors);
+    }
+
+    private createAdwaitaTheme(): Theme {
+        const darkColors: ThemeNeutralColors = new ThemeNeutralColors(
+            '#222226', // background
+            '#ffffff', // primaryText
+            '#99999b', // secondaryText
+            '#333337', // separator
+            '#36363a', // contextMenuBackground
+            '#ffffff', // contextMenuPrimaryText
+            '#99999b', // contextMenuSecondaryText
+            '#4d4d51', // contextMenuSeparator
+            'rgba(255, 255, 255, 0.07)', // hoverBackground
+            'rgba(255, 255, 255, 0.10)', // selectionBackground
+            '#ffffff', // primaryButtonText
+            '#4d4d51', // secondaryButtonBackground
+            '#ffffff', // secondaryButtonText
+            '#222226', // editorBackground
+            '#36363a', // editorCodeBackground
+            '#333337', // editorBorder
+            '#ffffff', // editorPrimaryText
+            '#99999b', // editorSecondaryText
+            '#4d4d51', // buttonBorder
+            '#ffffff', // highlightForeground
+            '#ffffff', // tooltipText
+            '#4d4d51', // sliderBackground
+            '#ffffff' // sliderThumbBackground
+        );
+
+        const lightColors: ThemeNeutralColors = new ThemeNeutralColors(
+            '#fafafb', // background
+            '#323237', // primaryText
+            '#979799', // secondaryText
+            '#d2d2d4', // separator
+            '#ffffff', // contextMenuBackground
+            '#323237', // contextMenuPrimaryText
+            '#979799', // contextMenuSecondaryText
+            '#d2d2d4', // contextMenuSeparator
+            'rgba(46, 52, 54, 0.06)', // hoverBackground
+            'rgba(46, 52, 54, 0.10)', // selectionBackground
+            '#ffffff', // primaryButtonText
+            '#e0e0e1', // secondaryButtonBackground
+            '#323237', // secondaryButtonText
+            '#fafafb', // editorBackground
+            '#dcdcdd', // editorCodeBackground
+            '#d2d2d4', // editorBorder
+            '#323237', // editorPrimaryText
+            '#979799', // editorSecondaryText
+            '#e0e0e1', // buttonBorder
+            '#ffffff', // highlightForeground
+            '#ffffff', // tooltipText
+            '#e0e0e1', // sliderBackground
+            '#323237' // sliderThumbBackground
+        );
+
+        return new Theme('Adwaita', this.creator, new ThemeCoreColors('#3584e4', '#5ca4ff', '#3584e4'), darkColors, lightColors);
     }
 }

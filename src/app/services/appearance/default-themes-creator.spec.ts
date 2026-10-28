@@ -26,12 +26,13 @@ describe('DefaultThemesCreator', () => {
             const defaultThemes: Theme[] = defaultThemesCreator.createAllThemes();
 
             // Assert
-            expect(defaultThemes.length).toEqual(5);
+            expect(defaultThemes.length).toEqual(6);
             expect(defaultThemes[0].name).toEqual('Knowte');
             expect(defaultThemes[1].name).toEqual('Sanguine');
             expect(defaultThemes[2].name).toEqual('Purple Lake');
             expect(defaultThemes[3].name).toEqual('Bloody Mary');
             expect(defaultThemes[4].name).toEqual('Quepal');
+            expect(defaultThemes[5].name).toEqual('Adwaita');
         });
 
         it.each(new DefaultThemesCreator().createAllThemes())(
