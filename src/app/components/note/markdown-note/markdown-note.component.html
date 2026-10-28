@@ -109,6 +109,27 @@
             <div class="markdown-action-button no-select" (click)="this.noteEditor.applyCode()" title="{{ 'Notes.Code' | translate }} (Ctrl+M)">
                 <i class="fa-solid fa-code"></i>
             </div>
+            <button
+                type="button"
+                class="markdown-action-button markdown-code-language-button no-select"
+                (mousedown)="$event.preventDefault()"
+                [matMenuTriggerFor]="codeLanguageMenu"
+                [matMenuTriggerRestoreFocus]="false"
+                [title]="'Notes.InsertCodeBlock' | translate"
+                [attr.aria-label]="'Notes.InsertCodeBlock' | translate"
+            >
+                <i class="fa-solid fa-caret-down"></i>
+            </button>
+            <mat-menu #codeLanguageMenu="matMenu">
+                <button
+                    *ngFor="let language of codeLanguages"
+                    mat-menu-item
+                    class="menu-button"
+                    (click)="insertCodeBlock(language.code)"
+                >
+                    <span>{{ language.name }} ({{ language.code }})</span>
+                </button>
+            </mat-menu>
             <div class="markdown-action-button no-select" (click)="this.noteEditor.insertTable()" title="{{ 'Notes.Table' | translate }}">
                 <i class="fa-solid fa-table"></i>
             </div>

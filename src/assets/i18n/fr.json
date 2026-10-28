@@ -284,6 +284,7 @@
         "Link": "Lien",
         "Quote": "Citation",
         "Code": "Code",
+        "InsertCodeBlock": "Insérer un bloc de code — choisir un langage",
         "Table": "Tableau",
         "UnorderedList": "Liste non ordonnée",
         "OrderedList": "Liste ordonnée",

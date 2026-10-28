@@ -316,6 +316,7 @@
         "Link": "Link",
         "Quote": "Quote",
         "Code": "Code",
+        "InsertCodeBlock": "Insert code block — choose a language",
         "Table": "Table",
         "UnorderedList": "Unordered list",
         "OrderedList": "Ordered list",

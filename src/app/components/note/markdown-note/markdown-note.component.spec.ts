@@ -4,6 +4,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { marked } from 'marked';
 import { MarkedOptions, MarkdownModule, MarkdownService } from 'ngx-markdown';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
@@ -58,7 +62,7 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [MarkdownNoteComponent, FixImagePathsStubPipe],
-            imports: [FormsModule, TranslateModule.forRoot(), MarkdownModule.forRoot({
+            imports: [FormsModule, MatMenuModule, NoopAnimationsModule, TranslateModule.forRoot(), MarkdownModule.forRoot({
                 markedOptions: { provide: MarkedOptions, useValue: { headerIds: false, mangle: false } },
             })],
             providers: [
@@ -126,6 +130,129 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         return fixture.nativeElement.querySelector('button[aria-pressed]');
     }
 
+    describe('code language picker', () => {
+        let insertText: jest.Mock;
+        const originalExecCommand = document.execCommand;
+
+        beforeEach(() => {
+            component.noteEditor = new Proxy(component.noteEditor, {
+                set(target, property, value) {
+                    if (property === 'content') {
+                        content = value;
+                        return true;
+                    }
+                    return Reflect.set(target, property, value);
+                },
+            });
+            insertText = jest.fn((_command: string, _showUI: boolean, text: string) => {
+                input.setRangeText(text, input.selectionStart, input.selectionEnd, 'end');
+                input.dispatchEvent(new Event('input'));
+                return true;
+            });
+            document.execCommand = insertText;
+        });
+
+        afterEach(() => {
+            document.execCommand = originalExecCommand;
+        });
+
+        it('lists supported languages and inserts the chosen block from the menu', async () => {
+            input.setSelectionRange(input.value.length, input.value.length);
+            const button: HTMLButtonElement = fixture.nativeElement.querySelector('.markdown-code-language-button');
+            expect(button.getAttribute('aria-label')).toBe('Notes.InsertCodeBlock');
+            button.click();
+            fixture.detectChanges();
+            await fixture.whenStable();
+            const items = Array.from(TestBed.inject(OverlayContainer).getContainerElement()
+                .querySelectorAll<HTMLButtonElement>('[role="menuitem"]'));
+            expect(items.map((item) => item.textContent.trim())).toEqual(
+                component.codeLanguages.map((language) => `${language.name} (${language.code})`),
+            );
+            items.find((item) => item.textContent.includes('TypeScript')).click();
+            fixture.detectChanges();
+            await fixture.whenStable();
+
+            expect(input.value).toBe('# Note\n\n```typescript\n\n```\n');
+            expect(input.selectionStart).toBe('# Note\n\n```typescript\n'.length);
+            expect(input.selectionEnd).toBe(input.selectionStart);
+            expect(document.activeElement).toBe(input);
+        });
+
+        it.each([
+            ['```', 0, 0, '```typescript'],
+            ['```', 1, 1, '```typescript'],
+            ['```', 3, 3, '```typescript'],
+            ['```', 0, 3, '```typescript'],
+            ['Before\n  ```  \nAfter', 12, 12, 'Before\n  ```typescript  \nAfter'],
+            ['```\nconst answer = 42;\n```', 3, 3, '```typescript\nconst answer = 42;\n```'],
+        ])('adds only the language on a bare fence line in %j', (source, start, end, expected) => {
+            input.value = source;
+            input.setSelectionRange(start, end);
+
+            component.insertCodeBlock('typescript');
+
+            expect(input.value).toBe(expected);
+            expect(insertText).toHaveBeenCalledWith('insertText', false, 'typescript');
+            expect(input.selectionStart).toBe(expected.indexOf('typescript') + 'typescript'.length);
+            expect(input.selectionEnd).toBe(input.selectionStart);
+            expect(document.activeElement).toBe(input);
+        });
+
+        it.each([
+            ['', 0, 0, '```typescript\n\n```\n', ''],
+            ['before after', 7, 7, 'before \n\n```typescript\n\n```\n\nafter', ''],
+            ['const answer = 42;', 0, 18, '```typescript\nconst answer = 42;\n```\n', 'const answer = 42;'],
+            ['first\nsecond\n', 0, 13, '```typescript\nfirst\nsecond\n```\n', 'first\nsecond\n'],
+            ['```js\nhello\n```', 0, 15, '````typescript\n```js\nhello\n```\n````\n', '```js\nhello\n```'],
+        ])('inserts a fenced block for %j and preserves its selection', (source, start, end, expected, selected) => {
+            input.value = source;
+            input.setSelectionRange(start, end);
+
+            component.insertCodeBlock('typescript');
+
+            expect(input.value).toBe(expected);
+            expect(input.value.substring(input.selectionStart, input.selectionEnd)).toBe(selected);
+            expect(insertText).toHaveBeenCalledWith('insertText', false, expect.any(String));
+            expect(marked.lexer(expected).filter((token) => token.type === 'code')).toHaveLength(1);
+        });
+
+        it.each([
+            'bash', 'batch', 'c', 'cpp', 'csharp', 'css', 'go', 'html', 'java', 'javascript',
+            'json', 'markdown', 'python', 'rust', 'sql', 'typescript', 'vbnet', 'xml', 'yaml',
+        ])('inserts highlightable %s code', async (language) => {
+            input.value = '';
+            input.setSelectionRange(0, 0);
+
+            component.insertCodeBlock(language);
+            fixture.detectChanges();
+            await fixture.whenStable();
+
+            expect(input.value).toBe(`\`\`\`${language}\n\n\`\`\`\n`);
+            expect(preview.querySelector(`pre code.language-${language}`)).not.toBeNull();
+        });
+
+        it('does not insert in reading mode', () => {
+            isEditing = false;
+            component.insertCodeBlock('typescript');
+            expect(insertText).not.toHaveBeenCalled();
+        });
+
+        it.each(['unsupported', 'failed', 'throws'])('reports %s insertion errors', (failure) => {
+            if (failure === 'failed') {
+                insertText.mockReturnValue(false);
+            } else if (failure === 'throws') {
+                insertText.mockImplementation(() => { throw new Error('Insertion failed'); });
+            }
+
+            component.insertCodeBlock(failure === 'unsupported' ? 'unknown-language' : 'typescript');
+
+            expect(TestBed.inject(Logger).error).toHaveBeenCalledWith(
+                expect.stringContaining('Could not insert code block.'), 'MarkdownNoteComponent', 'insertCodeBlock',
+            );
+            expect(TestBed.inject(SnackBarService).oopsAnErrorOccurredAsync).toHaveBeenCalled();
+        });
+    });
+
     it.each([
         ['html', '<div class="note">Hello</div>'],
         ['xml', '<note>Hello</note>'],
@@ -134,7 +261,9 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         ['js', 'const answer = 42;'],
         ['typescript', 'const answer: number = 42;'],
         ['ts', 'const answer: number = 42;'],
+        ['vbnet', '\' A VB.NET example\nDim answer As Integer = 42\nConsole.WriteLine("Hello")'],
         ['bash', 'echo "Hello"'],
+        ['batch', '@echo off\nREM A Windows command script\nset NAME=Knowte\necho "Hello %NAME%"'],
         ['sh', 'echo "Hello"'],
         ['c', 'int answer = 42;'],
         ['cpp', 'int answer = 42;'],

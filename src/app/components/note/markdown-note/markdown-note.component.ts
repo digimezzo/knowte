@@ -31,6 +31,27 @@ export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
     private onImageLayout = () => this.scheduleScrollLayout();
 
     public isScrollSyncEnabled: boolean = true;
+    public readonly codeLanguages = [
+        { name: 'Bash', code: 'bash' },
+        { name: 'C', code: 'c' },
+        { name: 'C++', code: 'cpp' },
+        { name: 'C#', code: 'csharp' },
+        { name: 'CSS', code: 'css' },
+        { name: 'Go', code: 'go' },
+        { name: 'HTML', code: 'html' },
+        { name: 'Java', code: 'java' },
+        { name: 'JavaScript', code: 'javascript' },
+        { name: 'JSON', code: 'json' },
+        { name: 'Markdown', code: 'markdown' },
+        { name: 'Python', code: 'python' },
+        { name: 'Rust', code: 'rust' },
+        { name: 'SQL', code: 'sql' },
+        { name: 'TypeScript', code: 'typescript' },
+        { name: 'VB.NET', code: 'vbnet' },
+        { name: 'Windows Batch', code: 'batch' },
+        { name: 'XML', code: 'xml' },
+        { name: 'YAML', code: 'yaml' },
+    ];
 
     constructor(
         private collectionClient: CollectionClient,
@@ -205,6 +226,51 @@ export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
 
         event.preventDefault();
         this.noteEditor.applyHighlight();
+    }
+
+    public insertCodeBlock(language: string): void {
+        if (!this.noteEditor.isEditing) {
+            return;
+        }
+
+        try {
+            if (!this.codeLanguages.some((entry) => entry.code === language)) {
+                throw new Error(`Unsupported code language: ${language}`);
+            }
+            const input = this.markdownInput.nativeElement;
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            const lineStart = input.value.substring(0, start).lastIndexOf('\n') + 1;
+            const nextNewline = input.value.indexOf('\n', start);
+            const lineEnd = nextNewline < 0 ? input.value.length : nextNewline;
+            const bareFence = /^ {0,3}```[ \t]*$/.test(input.value.substring(lineStart, lineEnd));
+            if (bareFence && end <= lineEnd) {
+                const insertion = lineStart + input.value.substring(lineStart, lineEnd).indexOf('```') + 3;
+                input.focus();
+                input.setSelectionRange(insertion, insertion);
+                if (!document.execCommand('insertText', false, language)) {
+                    throw new Error('Could not insert text into the Markdown editor.');
+                }
+                input.setSelectionRange(insertion + language.length, insertion + language.length);
+                return;
+            }
+            const selected = input.value.substring(start, end);
+            const backticks = selected.match(/`+/g) || [];
+            const fence = '`'.repeat(Math.max(3, ...backticks.map((run) => run.length + 1)));
+            const prefix = start > 0 && input.value[start - 1] !== '\n' ? '\n\n' : '';
+            const suffix = end < input.value.length && input.value[end] !== '\n' ? '\n' : '';
+            const opening = `${prefix}${fence}${language}\n`;
+            const closing = `${selected.endsWith('\n') ? '' : '\n'}${fence}\n${suffix}`;
+            input.focus();
+            input.setSelectionRange(start, end);
+            if (!document.execCommand('insertText', false, opening + selected + closing)) {
+                throw new Error('Could not insert text into the Markdown editor.');
+            }
+            input.setSelectionRange(start + opening.length, start + opening.length + selected.length);
+        } catch (error) {
+            this.logger.error(`Could not insert code block. Cause: ${error}`, 'MarkdownNoteComponent', 'insertCodeBlock');
+            this.snackBar.oopsAnErrorOccurredAsync();
+        }
     }
 
     public toggleIsEditing(): void {

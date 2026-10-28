@@ -284,6 +284,7 @@
         "Link": "Link",
         "Quote": "Quote",
         "Code": "Code",
+        "InsertCodeBlock": "插入代码块 — 选择语言",
         "Table": "Table",
         "UnorderedList": "Unordered list",
         "OrderedList": "Ordered list",

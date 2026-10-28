@@ -284,6 +284,7 @@
         "Link": "Poveznica",
         "Quote": "Citat",
         "Code": "Kôd",
+        "InsertCodeBlock": "Umetni blok koda — odaberi jezik",
         "Table": "Tablica",
         "UnorderedList": "Grafički popis",
         "OrderedList": "Numerirani popis",

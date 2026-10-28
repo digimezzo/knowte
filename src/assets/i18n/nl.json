@@ -284,6 +284,7 @@
         "Link": "Koppeling",
         "Quote": "Citaat",
         "Code": "Code",
+        "InsertCodeBlock": "Codeblok invoegen — kies een taal",
         "Table": "Tabel",
         "UnorderedList": "Ongeordende lijst",
         "OrderedList": "Geordende lijst",

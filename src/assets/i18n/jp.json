@@ -284,6 +284,7 @@
         "Link": "Link",
         "Quote": "Quote",
         "Code": "Code",
+        "InsertCodeBlock": "コードブロックを挿入 — 言語を選択",
         "Table": "Table",
         "UnorderedList": "Unordered list",
         "OrderedList": "Ordered list",
