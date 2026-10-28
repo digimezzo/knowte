@@ -18,6 +18,23 @@ Knowte is a note taking application that allows you to quickly and easily organi
 
 ![Knowte2screenshot](Knowte.showcase.light.png)
 
+## Markdown code highlighting
+
+To color source code in a Markdown note's preview, add a language name after the opening triple backticks:
+
+````markdown
+```typescript
+const answer = 42;
+```
+````
+
+Supported languages include HTML/XML (`html`, `xml`), CSS (`css`), JavaScript (`javascript`, `js`),
+TypeScript (`typescript`, `ts`), Bash (`bash`, `sh`), C (`c`), C++ (`cpp`), C# (`csharp`, `cs`),
+Go (`go`), Java (`java`), JSON (`json`), Markdown (`markdown`, `md`), Python (`python`, `py`),
+Rust (`rust`), SQL (`sql`), and YAML (`yaml`, `yml`).
+Highlighting works offline and follows the selected light or dark theme.
+Code blocks without a language, or with an unsupported language, remain plain text.
+
 ## Build prerequisites
 
 -   wine: required to build Windows package

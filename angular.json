@@ -44,7 +44,24 @@
                         "stylePreprocessorOptions": {
                             "includePaths": ["src/css"]
                         },
-                        "scripts": ["./node_modules/quill/dist/quill.js", "./node_modules/marked/marked.min.js"],
+                        "scripts": [
+                            "./node_modules/quill/dist/quill.js",
+                            "./node_modules/marked/marked.min.js",
+                            "./node_modules/prismjs/prism.js",
+                            "./node_modules/prismjs/components/prism-bash.min.js",
+                            "./node_modules/prismjs/components/prism-c.min.js",
+                            "./node_modules/prismjs/components/prism-cpp.min.js",
+                            "./node_modules/prismjs/components/prism-csharp.min.js",
+                            "./node_modules/prismjs/components/prism-go.min.js",
+                            "./node_modules/prismjs/components/prism-java.min.js",
+                            "./node_modules/prismjs/components/prism-json.min.js",
+                            "./node_modules/prismjs/components/prism-markdown.min.js",
+                            "./node_modules/prismjs/components/prism-python.min.js",
+                            "./node_modules/prismjs/components/prism-rust.min.js",
+                            "./node_modules/prismjs/components/prism-sql.min.js",
+                            "./node_modules/prismjs/components/prism-typescript.min.js",
+                            "./node_modules/prismjs/components/prism-yaml.min.js"
+                        ],
                         "vendorChunk": true,
                         "extractLicenses": false,
                         "buildOptimizer": false,

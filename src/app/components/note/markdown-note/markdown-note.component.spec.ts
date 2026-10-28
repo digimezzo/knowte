@@ -37,6 +37,10 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     const originalResizeObserver = window.ResizeObserver;
 
     beforeAll(() => {
+        // Load the same offline highlighter and language grammars as the application.
+        const scripts: string[] = require('../../../../../angular.json').projects.knowte.architect.build.options.scripts;
+        scripts.filter((script) => script.includes('/prismjs/')).forEach((script) => require(`../../../../../${script}`));
+
         window.ResizeObserver = class implements ResizeObserver {
             public constructor(callback: ResizeObserverCallback) {
                 resizeCallback = callback;
@@ -121,6 +125,87 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     function toggleButton(): HTMLButtonElement {
         return fixture.nativeElement.querySelector('button[aria-pressed]');
     }
+
+    it.each([
+        ['html', '<div class="note">Hello</div>'],
+        ['xml', '<note>Hello</note>'],
+        ['css', '.note { color: red; }'],
+        ['javascript', 'const answer = 42;'],
+        ['js', 'const answer = 42;'],
+        ['typescript', 'const answer: number = 42;'],
+        ['ts', 'const answer: number = 42;'],
+        ['bash', 'echo "Hello"'],
+        ['sh', 'echo "Hello"'],
+        ['c', 'int answer = 42;'],
+        ['cpp', 'int answer = 42;'],
+        ['csharp', 'public class Note {}'],
+        ['cs', 'public class Note {}'],
+        ['go', 'package main'],
+        ['java', 'public class Note {}'],
+        ['json', '{"answer": 42}'],
+        ['markdown', '# Title'],
+        ['md', '# Title'],
+        ['python', 'def answer(): return 42'],
+        ['py', 'def answer(): return 42'],
+        ['rust', 'let answer = 42;'],
+        ['sql', 'SELECT * FROM notes;'],
+        ['yaml', 'answer: 42'],
+        ['yml', 'answer: 42'],
+    ])('highlights %s fenced code in the preview without changing the source', async (language, code) => {
+        content = `\`\`\`${language}\n${code}\n\`\`\``;
+        fixture.detectChanges();
+        await fixture.whenStable();
+        flushLayout();
+
+        const renderedCode = preview.querySelector('pre code');
+        expect(renderedCode.querySelector('.token')).not.toBeNull();
+        expect(renderedCode.textContent).toBe(code + '\n');
+        expect(input.value).toBe(content);
+        expect(TestBed.inject(Logger).error).not.toHaveBeenCalled();
+    });
+
+    it.each(['', 'text', 'unsupported-language'])('keeps %s code blocks readable without highlighting', async (language) => {
+        const code = '<script>alert("test")</script> & const answer = 42;';
+        content = `\`\`\`${language}\n${code}\n\`\`\``;
+        fixture.detectChanges();
+        await fixture.whenStable();
+        flushLayout();
+
+        const renderedCode = preview.querySelector('pre code');
+        expect(renderedCode.textContent).toBe(code + '\n');
+        expect(renderedCode.querySelector('.token')).toBeNull();
+        expect(preview.querySelector('script')).toBeNull();
+        expect(TestBed.inject(Logger).error).not.toHaveBeenCalled();
+    });
+
+    it('updates highlighting after editing and keeps inline code unhighlighted', async () => {
+        content = '```js\nconst answer = 42;\n```\n\n`const plain = true;`';
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(preview.querySelector('pre code .token.keyword')?.textContent).toBe('const');
+        expect(preview.querySelector('p code .token')).toBeNull();
+
+        content = '```python\ndef answer(): return 42\n```';
+        fixture.detectChanges();
+        await fixture.whenStable();
+        flushLayout();
+
+        expect(preview.querySelector('pre code .token.keyword')?.textContent).toBe('def');
+        expect(preview.querySelector('pre code').textContent).toBe('def answer(): return 42\n');
+        expect(TestBed.inject(Logger).error).not.toHaveBeenCalled();
+    });
+
+    it('preserves escaped code and sanitization when highlighting', async () => {
+        const code = '<img src=x onerror="alert(1)"><script>alert("test")</script>';
+        content = `\`\`\`html\n${code}\n\`\`\`\n\n<img src=x onerror="alert(2)">`;
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        expect(preview.querySelector('pre code .token.tag')).not.toBeNull();
+        expect(preview.querySelector('pre code').textContent).toBe(code + '\n');
+        expect(preview.querySelector('pre img, script, [onerror]')).toBeNull();
+        expect(preview.querySelector('img')?.getAttribute('src')).toBe('x');
+    });
 
     it('starts enabled and toggles through an accessible button, aligning from the editor on re-enable', () => {
         fixture.detectChanges();

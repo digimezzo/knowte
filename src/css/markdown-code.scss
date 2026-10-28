@@ -1,0 +1,65 @@
+.markdown-body pre code {
+    // Override the shared .note-editor text color without changing other note content.
+    .token.comment,
+    .token.prolog,
+    .token.doctype,
+    .token.cdata {
+        color: var(--color-prettylights-syntax-comment) !important;
+    }
+
+    .token.punctuation,
+    .token.operator {
+        color: var(--color-fg-default) !important;
+    }
+
+    .token.keyword,
+    .token.atrule {
+        color: var(--color-prettylights-syntax-keyword) !important;
+    }
+
+    .token.boolean,
+    .token.number,
+    .token.constant,
+    .token.property,
+    .token.attr-name {
+        color: var(--color-prettylights-syntax-constant) !important;
+    }
+
+    .token.string,
+    .token.char,
+    .token.attr-value,
+    .token.url {
+        color: var(--color-prettylights-syntax-string) !important;
+    }
+
+    .token.function,
+    .token.class-name,
+    .token.builtin {
+        color: var(--color-prettylights-syntax-entity) !important;
+    }
+
+    .token.tag,
+    .token.selector,
+    .token.inserted {
+        color: var(--color-prettylights-syntax-entity-tag) !important;
+    }
+
+    .token.regex,
+    .token.important,
+    .token.variable {
+        color: var(--color-prettylights-syntax-variable) !important;
+    }
+
+    .token.deleted {
+        color: var(--color-prettylights-syntax-markup-deleted-text) !important;
+    }
+
+    .token.bold,
+    .token.important {
+        font-weight: bold;
+    }
+
+    .token.italic {
+        font-style: italic;
+    }
+}
