@@ -103,7 +103,7 @@ export class Constants {
             name: 'Angular',
             description:
                 'Angular is a development platform for building mobile and desktop web applications using Typescript/JavaScript and other languages.',
-            url: 'https://angular.io/',
+            url: 'https://angular.dev/',
             licenseUrl: 'https://github.com/angular/angular/blob/master/LICENSE',
         },
         {
@@ -115,14 +115,20 @@ export class Constants {
         {
             name: 'angular-split',
             description: 'Angular UI library to split views and allow dragging to resize areas using CSS flexbox layout.',
-            url: 'https://material.angular.io/',
+            url: 'https://angular-split.github.io/',
             licenseUrl: 'https://github.com/angular-split/angular-split/blob/main/LICENSE',
         },
         {
             name: 'Angular Material',
             description: 'Component infrastructure and Material Design components for Angular.',
-            url: 'https://github.com/angular-split/angular-split',
-            licenseUrl: 'https://github.com/angular/material2/blob/master/LICENSE',
+            url: 'https://material.angular.dev/',
+            licenseUrl: 'https://github.com/angular/components/blob/main/LICENSE',
+        },
+        {
+            name: 'core-js',
+            description: 'A modular standard library for JavaScript, including polyfills for modern ECMAScript features.',
+            url: 'https://github.com/zloirock/core-js',
+            licenseUrl: 'https://github.com/zloirock/core-js/blob/master/LICENSE',
         },
         {
             name: 'crypto-js',
@@ -137,6 +143,12 @@ export class Constants {
             licenseUrl: 'https://github.com/cure53/DOMPurify/blob/main/LICENSE',
         },
         {
+            name: '@electron/remote',
+            description: 'Electron module to enable remote method calls between renderer and main processes.',
+            url: 'https://github.com/electron/remote',
+            licenseUrl: 'https://github.com/electron/remote/blob/main/LICENSE',
+        },
+        {
             name: 'Electron',
             description:
                 'The Electron framework lets you write cross-platform desktop applications using JavaScript, HTML and CSS. It is based on Node.js and Chromium.',
@@ -148,6 +160,12 @@ export class Constants {
             description: 'A module to register/unregister a keyboard shortcut locally to a BrowserWindow instance, without using a Menu.',
             url: 'https://github.com/parro-it/electron-localshortcut',
             licenseUrl: 'https://github.com/parro-it/electron-localshortcut/blob/master/license',
+        },
+        {
+            name: 'extract-zip',
+            description: 'Extracts ZIP files to a directory.',
+            url: 'https://github.com/max-mapper/extract-zip',
+            licenseUrl: 'https://github.com/max-mapper/extract-zip/blob/master/LICENSE',
         },
         {
             name: 'electron-log',
@@ -201,10 +219,40 @@ export class Constants {
             licenseUrl: 'https://github.com/moment/moment/blob/develop/LICENSE',
         },
         {
+            name: 'Marked',
+            description: 'A low-level Markdown compiler for parsing Markdown without caching or blocking.',
+            url: 'https://marked.js.org/',
+            licenseUrl: 'https://github.com/markedjs/marked/blob/master/LICENSE',
+        },
+        {
             name: 'Nano ID',
             description: 'A tiny (141 bytes), secure, URL-friendly, unique string ID generator for JavaScript.',
             url: 'https://github.com/ai/nanoid',
             licenseUrl: 'https://github.com/ai/nanoid/blob/master/LICENSE',
+        },
+        {
+            name: 'ngx-markdown',
+            description: 'An Angular library that renders Markdown content.',
+            url: 'https://github.com/jfcere/ngx-markdown',
+            licenseUrl: 'https://github.com/jfcere/ngx-markdown/blob/master/LICENSE',
+        },
+        {
+            name: '@ngx-translate/core',
+            description: 'The core internationalization library used to translate the application.',
+            url: 'https://github.com/ngx-translate/core',
+            licenseUrl: 'https://github.com/ngx-translate/core/blob/master/LICENSE',
+        },
+        {
+            name: '@ngx-translate/http-loader',
+            description: 'HTTP loader for translation files used with ngx-translate.',
+            url: 'https://github.com/ngx-translate/http-loader',
+            licenseUrl: 'https://github.com/ngx-translate/http-loader/blob/master/LICENSE',
+        },
+        {
+            name: 'PrismJS',
+            description: 'A lightweight, extensible syntax highlighter used for code blocks.',
+            url: 'https://prismjs.com/',
+            licenseUrl: 'https://github.com/PrismJS/prism/blob/master/LICENSE',
         },
         {
             name: 'Quill',
@@ -225,10 +273,40 @@ export class Constants {
             licenseUrl: 'https://github.com/parshap/node-sanitize-filename/blob/master/LICENSE.md',
         },
         {
+            name: 'Reflect Metadata',
+            description: 'Polyfill for the Metadata Reflection API used by Angular.',
+            url: 'https://github.com/microsoft/reflect-metadata',
+            licenseUrl: 'https://github.com/microsoft/reflect-metadata/blob/main/LICENSE',
+        },
+        {
+            name: 'RxJS',
+            description: 'A library for reactive programming using Observables.',
+            url: 'https://rxjs.dev/',
+            licenseUrl: 'https://github.com/ReactiveX/rxjs/blob/master/LICENSE.txt',
+        },
+        {
             name: 'SpinKit',
             description: 'A collection of loading indicators animated with CSS.',
             url: 'https://github.com/tobiasahlin/SpinKit',
             licenseUrl: 'https://github.com/tobiasahlin/SpinKit/blob/master/LICENSE',
+        },
+        {
+            name: 'tinycolor2',
+            description: 'A small, fast library for color manipulation and conversion.',
+            url: 'https://github.com/bgrins/TinyColor',
+            licenseUrl: 'https://github.com/bgrins/TinyColor/blob/master/LICENSE',
+        },
+        {
+            name: 'tslib',
+            description: 'Runtime library for TypeScript helper functions.',
+            url: 'https://github.com/microsoft/tslib',
+            licenseUrl: 'https://github.com/microsoft/tslib/blob/main/LICENSE.txt',
+        },
+        {
+            name: 'Zone.js',
+            description: 'An execution context that persists across asynchronous tasks, used by Angular.',
+            url: 'https://github.com/angular/angular/tree/main/packages/zone.js',
+            licenseUrl: 'https://github.com/angular/angular/blob/main/LICENSE',
         },
     ];
 }
