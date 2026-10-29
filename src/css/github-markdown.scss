@@ -697,6 +697,11 @@
     border: 1px solid var(--color-border-default);
 }
 
+.markdown-body table th:empty::after,
+.markdown-body table td:empty::after {
+    content: '\00a0';
+}
+
 .markdown-body table tr {
     background-color: var(--color-canvas-default);
     border-top: 1px solid var(--color-border-muted);
