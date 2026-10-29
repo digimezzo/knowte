@@ -43,6 +43,7 @@ export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
         { name: 'JavaScript', code: 'javascript' },
         { name: 'JSON', code: 'json' },
         { name: 'Markdown', code: 'markdown' },
+        { name: 'PowerShell', code: 'powershell' },
         { name: 'Python', code: 'python' },
         { name: 'Rust', code: 'rust' },
         { name: 'SQL', code: 'sql' },

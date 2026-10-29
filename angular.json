@@ -57,6 +57,7 @@
                             "./node_modules/prismjs/components/prism-java.min.js",
                             "./node_modules/prismjs/components/prism-json.min.js",
                             "./node_modules/prismjs/components/prism-markdown.min.js",
+                            "./node_modules/prismjs/components/prism-powershell.min.js",
                             "./node_modules/prismjs/components/prism-python.min.js",
                             "./node_modules/prismjs/components/prism-rust.min.js",
                             "./node_modules/prismjs/components/prism-sql.min.js",

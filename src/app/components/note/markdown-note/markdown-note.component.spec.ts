@@ -218,7 +218,7 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
 
         it.each([
             'bash', 'batch', 'c', 'cpp', 'csharp', 'css', 'go', 'html', 'java', 'javascript',
-            'json', 'markdown', 'python', 'rust', 'sql', 'typescript', 'vbnet', 'xml', 'yaml',
+            'json', 'markdown', 'powershell', 'python', 'rust', 'sql', 'typescript', 'vbnet', 'xml', 'yaml',
         ])('inserts highlightable %s code', async (language) => {
             input.value = '';
             input.setSelectionRange(0, 0);
@@ -274,6 +274,7 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         ['json', '{"answer": 42}'],
         ['markdown', '# Title'],
         ['md', '# Title'],
+        ['powershell', '# A PowerShell script\n$name = "Knowte"\nif ($true) { Write-Host "Hello $name" }'],
         ['python', 'def answer(): return 42'],
         ['py', 'def answer(): return 42'],
         ['rust', 'let answer = 42;'],
@@ -291,6 +292,19 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         expect(renderedCode.textContent).toBe(code + '\n');
         expect(input.value).toBe(content);
         expect(TestBed.inject(Logger).error).not.toHaveBeenCalled();
+    });
+
+    it('highlights PowerShell comments, variables, keywords and cmdlets', async () => {
+        content = '```powershell\n# Greeting\n$name = "Knowte"\nif ($true) { Write-Host "Hello $name" }\n```';
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        const code = preview.querySelector('pre code');
+        expect(code.querySelector('.token.comment')?.textContent).toBe('# Greeting');
+        expect(code.querySelector('.token.variable')?.textContent).toBe('$name');
+        expect(code.querySelector('.token.keyword')?.textContent).toBe('if');
+        expect(code.querySelector('.token.function')?.textContent).toBe('Write-Host');
+        expect(code.querySelector('.token.string .token.variable')?.textContent).toBe('$name');
     });
 
     it.each(['', 'text', 'unsupported-language'])('keeps %s code blocks readable without highlighting', async (language) => {
