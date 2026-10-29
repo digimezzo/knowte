@@ -29,7 +29,7 @@ export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
     private previewNeedsMapping: boolean = true;
     private lastScrollFromEditor: boolean = true;
     private destroyed: boolean = false;
-    private mermaidTheme?: 'default' | 'dark';
+    private mermaidDarkMode?: boolean;
     private onImageLayout = () => this.scheduleScrollLayout();
 
     public isScrollSyncEnabled: boolean = true;
@@ -118,15 +118,15 @@ export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
     }
 
     private onAppearanceThemeChanged(): void {
-        const theme = this.appearance.isUsingLightTheme ? 'default' : 'dark';
-        if (this.mermaidTheme !== undefined && theme !== this.mermaidTheme) {
+        const darkMode = !this.appearance.isUsingLightTheme;
+        if (this.mermaidDarkMode !== undefined && darkMode !== this.mermaidDarkMode) {
             void this.renderMermaidDiagrams(true);
         }
     }
 
     private async renderMermaidDiagrams(reset: boolean = false): Promise<void> {
-        const theme = this.appearance.isUsingLightTheme ? 'default' : 'dark';
-        this.mermaidTheme = theme;
+        const darkMode = !this.appearance.isUsingLightTheme;
+        this.mermaidDarkMode = darkMode;
         const preview = this.markdownOutput?.nativeElement;
         if (!preview) {
             return;
@@ -149,7 +149,8 @@ export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
             mermaid.initialize({
                 startOnLoad: false,
                 securityLevel: 'strict',
-                theme,
+                darkMode,
+                ...(darkMode ? { theme: 'redux-dark-color' } : {}),
             });
             await mermaid.run({ nodes });
         } catch (error) {

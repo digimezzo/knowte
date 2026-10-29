@@ -173,6 +173,7 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
             await fixture.whenStable();
             const items = Array.from(TestBed.inject(OverlayContainer).getContainerElement()
                 .querySelectorAll<HTMLButtonElement>('[role="menuitem"]'));
+            expect(items.some((item) => item.textContent.includes('Mermaid (mermaid)'))).toBe(true);
             expect(items.map((item) => item.textContent.trim())).toEqual(
                 component.codeLanguages.map((language) => `${language.name} (${language.code})`),
             );
@@ -532,8 +533,9 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
 
         expect(initialize).toHaveBeenCalledWith(expect.objectContaining({
             securityLevel: 'strict',
-            theme: 'default',
+            darkMode: false,
         }));
+        expect(initialize.mock.calls[0][0].theme).toBeUndefined();
         expect(initialize.mock.calls[0][0].themeCSS).toBeUndefined();
         expect(run).toHaveBeenCalled();
         expect(run.mock.calls.some(([options]) => Array.from(options.nodes).includes(diagram))).toBe(true);
@@ -560,7 +562,10 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
         await fixture.whenStable();
 
-        expect(initialize).toHaveBeenLastCalledWith(expect.objectContaining({ theme: 'dark' }));
+        expect(initialize).toHaveBeenLastCalledWith(expect.objectContaining({
+            darkMode: true,
+            theme: 'redux-dark-color',
+        }));
         expect(run.mock.calls.length).toBeGreaterThanOrEqual(2);
         expect(diagram.textContent).toBe(source);
         expect(diagram.hasAttribute('data-processed')).toBe(false);
