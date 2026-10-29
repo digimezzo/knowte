@@ -7,6 +7,7 @@ import { Operation } from '../../../common/enums/operation';
 import { createNoteLink, getLinkedNoteId, isNoteLink } from '../../../common/utils/note-link';
 import { Logger } from '../../../common/logging/logger';
 import { CollectionClient } from '../../../services/collection/collection.client';
+import { BaseAppearanceService } from '../../../services/appearance/base-appearance.service';
 import { NoteLinkTarget } from '../../../services/results/note-link-targets-result';
 import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { NoteLinkDialogComponent } from '../../dialogs/note-link-dialog/note-link-dialog.component';
@@ -28,6 +29,7 @@ export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
     private previewNeedsMapping: boolean = true;
     private lastScrollFromEditor: boolean = true;
     private destroyed: boolean = false;
+    private mermaidTheme?: 'default' | 'dark';
     private onImageLayout = () => this.scheduleScrollLayout();
 
     public isScrollSyncEnabled: boolean = true;
@@ -43,6 +45,7 @@ export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
         { name: 'JavaScript', code: 'javascript' },
         { name: 'JSON', code: 'json' },
         { name: 'Markdown', code: 'markdown' },
+        { name: 'Mermaid', code: 'mermaid' },
         { name: 'PowerShell', code: 'powershell' },
         { name: 'Python', code: 'python' },
         { name: 'Rust', code: 'rust' },
@@ -61,6 +64,7 @@ export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
         private logger: Logger,
         private markdownService: MarkdownService,
         private sanitizer: DomSanitizer,
+        private appearance: BaseAppearanceService,
     ) {}
 
     @ViewChild('highlightedContent') highlightedContent: ElementRef<HTMLPreElement>;
@@ -81,9 +85,13 @@ export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
         this.resizeObserver = new ResizeObserver(() => this.scheduleScrollLayout());
         this.resizeObserver.observe(input);
         this.resizeObserver.observe(preview);
-        this.mutationObserver = new MutationObserver(() => this.scheduleScrollLayout());
+        this.mutationObserver = new MutationObserver(() => {
+            this.scheduleScrollLayout();
+            this.onAppearanceThemeChanged();
+        });
         this.mutationObserver.observe(input, { attributes: true, attributeFilter: ['style', 'class'] });
         this.mutationObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['style', 'class'] });
+        this.mutationObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
         preview.addEventListener('load', this.onImageLayout, true);
         preview.addEventListener('error', this.onImageLayout, true);
         document.fonts?.addEventListener('loadingdone', this.onImageLayout);
@@ -105,7 +113,48 @@ export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
 
     public onPreviewReady(): void {
         this.previewNeedsMapping = true;
+        void this.renderMermaidDiagrams(true);
         this.scheduleScrollLayout();
+    }
+
+    private onAppearanceThemeChanged(): void {
+        const theme = this.appearance.isUsingLightTheme ? 'default' : 'dark';
+        if (this.mermaidTheme !== undefined && theme !== this.mermaidTheme) {
+            void this.renderMermaidDiagrams(true);
+        }
+    }
+
+    private async renderMermaidDiagrams(reset: boolean = false): Promise<void> {
+        const theme = this.appearance.isUsingLightTheme ? 'default' : 'dark';
+        this.mermaidTheme = theme;
+        const preview = this.markdownOutput?.nativeElement;
+        if (!preview) {
+            return;
+        }
+        const nodes = preview.querySelectorAll<HTMLElement>('.mermaid');
+        if (nodes.length === 0) {
+            return;
+        }
+        nodes.forEach((node) => {
+            if (node.dataset.mermaidSource === undefined) {
+                node.dataset.mermaidSource = node.textContent || '';
+            }
+            if (reset) {
+                node.textContent = node.dataset.mermaidSource;
+                node.removeAttribute('data-processed');
+            }
+        });
+        try {
+            const mermaid = (await import('mermaid')).default;
+            mermaid.initialize({
+                startOnLoad: false,
+                securityLevel: 'strict',
+                theme,
+            });
+            await mermaid.run({ nodes });
+        } catch (error) {
+            this.logger.error(`Could not render Mermaid diagram. Cause: ${error}`, 'MarkdownNoteComponent', 'renderMermaidDiagrams');
+        }
     }
 
     private scheduleScrollLayout(): void {

@@ -1,3 +1,8 @@
+jest.mock('mermaid', () => ({
+    __esModule: true,
+    default: { initialize: jest.fn(), run: jest.fn().mockResolvedValue(undefined) },
+}));
+
 import { Mock } from 'typemoq';
 import { ElementRef, NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -8,6 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { marked } from 'marked';
+import mermaid from 'mermaid';
 import { MarkedOptions, MarkdownModule, MarkdownService } from 'ngx-markdown';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
@@ -15,6 +21,7 @@ import { Operation } from '../../../common/enums/operation';
 import { Logger } from '../../../common/logging/logger';
 import { CollectionClient } from '../../../services/collection/collection.client';
 import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
+import { BaseAppearanceService } from '../../../services/appearance/base-appearance.service';
 import { INoteEditor } from '../note-editor/i-note-editor';
 import { MarkdownNoteComponent } from './markdown-note.component';
 import { MarkdownScrollMap } from './markdown-scroll-map';
@@ -70,6 +77,7 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
                 { provide: MatDialog, useValue: Mock.ofType<MatDialog>().object },
                 { provide: SnackBarService, useValue: { oopsAnErrorOccurredAsync: jest.fn().mockResolvedValue(undefined) } },
                 { provide: Logger, useValue: { error: jest.fn() } },
+                { provide: BaseAppearanceService, useValue: { isUsingLightTheme: true } },
             ],
             schemas: [NO_ERRORS_SCHEMA],
         }).compileComponents();
@@ -512,6 +520,54 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         expect(mappingPosition).not.toHaveBeenCalled();
     });
 
+    it('renders Mermaid diagrams when the preview is ready', async () => {
+        const initialize = jest.spyOn(mermaid, 'initialize');
+        const run = jest.spyOn(mermaid, 'run').mockResolvedValue(undefined);
+        const diagram = document.createElement('pre');
+        diagram.classList.add('mermaid');
+        preview.appendChild(diagram);
+
+        component.onPreviewReady();
+        await fixture.whenStable();
+
+        expect(initialize).toHaveBeenCalledWith(expect.objectContaining({
+            securityLevel: 'strict',
+            theme: 'default',
+        }));
+        expect(initialize.mock.calls[0][0].themeCSS).toBeUndefined();
+        expect(run).toHaveBeenCalled();
+        expect(run.mock.calls.some(([options]) => Array.from(options.nodes).includes(diagram))).toBe(true);
+    });
+
+    it('rerenders Mermaid diagrams when the appearance theme changes', async () => {
+        const initialize = jest.spyOn(mermaid, 'initialize');
+        const run = jest.spyOn(mermaid, 'run').mockResolvedValue(undefined);
+        const appearance = TestBed.inject(BaseAppearanceService);
+        const diagram = document.createElement('pre');
+        const source = 'graph LR\n    A --> B';
+        const originalBodyClass = document.body.className;
+        diagram.classList.add('mermaid');
+        diagram.textContent = source;
+        preview.appendChild(diagram);
+
+        component.onPreviewReady();
+        await fixture.whenStable();
+
+        diagram.innerHTML = '<svg></svg>';
+        diagram.setAttribute('data-processed', 'true');
+        appearance.isUsingLightTheme = false;
+        document.body.classList.add('theme-mutation-test');
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        await fixture.whenStable();
+
+        expect(initialize).toHaveBeenLastCalledWith(expect.objectContaining({ theme: 'dark' }));
+        expect(run.mock.calls.length).toBeGreaterThanOrEqual(2);
+        expect(diagram.textContent).toBe(source);
+        expect(diagram.hasAttribute('data-processed')).toBe(false);
+
+        document.body.className = originalBodyClass;
+    });
+
     it('does not treat preview scroll adjustments during an edit as user-driven scrolling', () => {
         flushLayout();
         scroll(preview, 1000);
@@ -543,6 +599,7 @@ describe('MarkdownNoteComponent highlight shortcut', () => {
                 Mock.ofType<Logger>().object,
                 Mock.ofType<MarkdownService>().object,
                 Mock.ofType<DomSanitizer>().object,
+                Mock.ofType<BaseAppearanceService>().object,
             );
         });
 
@@ -598,6 +655,7 @@ describe('MarkdownNoteComponent highlight shortcut', () => {
             Mock.ofType<Logger>().object,
             Mock.ofType<MarkdownService>().object,
             Mock.ofType<DomSanitizer>().object,
+            Mock.ofType<BaseAppearanceService>().object,
         );
         const editor = Mock.ofType<INoteEditor>();
         const applyHighlight = jest.fn();
@@ -639,7 +697,7 @@ describe('MarkdownNoteComponent highlight shortcut', () => {
             snackBar.setup((x) => x.linkedNoteUnavailableAsync()).returns(unavailable);
             snackBar.setup((x) => x.oopsAnErrorOccurredAsync()).returns(showError);
             component = new MarkdownNoteComponent(client.object, dialog.object, snackBar.object, Mock.ofType<Logger>().object,
-                Mock.ofType<MarkdownService>().object, Mock.ofType<DomSanitizer>().object);
+                Mock.ofType<MarkdownService>().object, Mock.ofType<DomSanitizer>().object, Mock.ofType<BaseAppearanceService>().object);
             const editor = Mock.ofType<INoteEditor>();
             editor.setup((x) => x.isEditing).returns(() => true);
             component.noteEditor = editor.object;

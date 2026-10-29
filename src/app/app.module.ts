@@ -168,6 +168,19 @@ export function MarkedOptionsFactory(): MarkedOptions {
         return MarkedRenderer.prototype.link.call(renderer, href ? getNoteLinkPreviewHref(href) : href, title, text) as string;
     };
 
+    renderer.code = (code: string, infostring: string, escaped: boolean) => {
+        const language = infostring?.trim().split(/\s+/, 1)[0].toLowerCase();
+        if (language === 'mermaid') {
+            const escapedCode = code.replace(/[&<>]/g, (character) => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+            })[character]);
+            return `<pre class="mermaid">${escapedCode}</pre>`;
+        }
+        return MarkedRenderer.prototype.code.call(renderer, code, infostring, escaped) as string;
+    };
+
     // remove task list bullets
     renderer.list = (body: string, ordered: boolean, start: number) => {
         const divElement = document.createElement('div');
