@@ -133,7 +133,7 @@ function createMainWindow() {
         mainWindow.on('ready-to-show', () => {
             mainWindow.show();
             mainWindow.focus();
-            scheduleSpareNoteWindow(3000);
+            scheduleSpareNoteWindow(0);
         });
         // Makes links open in external browser
         const handleRedirect = (e, localUrl) => {
@@ -310,8 +310,12 @@ function scheduleSpareNoteWindow(delayMilliseconds) {
         const settingsSnapshot = readNoteWindowSettingsSnapshot();
         const windowHasFrame = windowhasFrame();
         const window = buildNoteWindow(windowHasFrame, false, {});
+        const loadStartTime = Date.now();
         const loaded = new Promise((resolve) => {
-            window.webContents.once('did-finish-load', () => resolve(true));
+            window.webContents.once('did-finish-load', () => {
+                electron_log_1.default.info(`[App] Spare note window loaded in ${Date.now() - loadStartTime} ms.`);
+                resolve(true);
+            });
             window.webContents.once('did-fail-load', () => resolve(false));
             window.once('closed', () => resolve(false));
         });

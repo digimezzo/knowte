@@ -133,7 +133,7 @@ function createMainWindow(): void {
         mainWindow.on('ready-to-show', () => {
             mainWindow.show();
             mainWindow.focus();
-            scheduleSpareNoteWindow(3000);
+            scheduleSpareNoteWindow(0);
         });
 
         // Makes links open in external browser
@@ -345,8 +345,12 @@ function scheduleSpareNoteWindow(delayMilliseconds: number): void {
         const settingsSnapshot: string | undefined = readNoteWindowSettingsSnapshot();
         const windowHasFrame: boolean = windowhasFrame();
         const window: BrowserWindow = buildNoteWindow(windowHasFrame, false, {});
+        const loadStartTime: number = Date.now();
         const loaded: Promise<boolean> = new Promise((resolve) => {
-            window.webContents.once('did-finish-load', () => resolve(true));
+            window.webContents.once('did-finish-load', () => {
+                log.info(`[App] Spare note window loaded in ${Date.now() - loadStartTime} ms.`);
+                resolve(true);
+            });
             window.webContents.once('did-fail-load', () => resolve(false));
             window.once('closed', () => resolve(false));
         });
