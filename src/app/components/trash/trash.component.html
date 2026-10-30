@@ -1,11 +1,14 @@
-<div class="app-trash p-2">
+<div class="app-trash p-2" [attr.aria-busy]="trash.isDeleting">
+    <div class="app-trash__progress" *ngIf="trash.isDeleting">
+        <mat-spinner [diameter]="100"></mat-spinner>
+    </div>
     <div class="app-trash__header no-select">
         <div class="app-trash__title">
             <div class="title2">{{ 'Trash.Trash' | translate }}</div>
             <div class="count-label" appPixelSnap>{{ this.trashedNotes.length }}</div>
         </div>
         <div class="app-trash-select-all-checkbox" *ngIf="this.trashedNotes.length > 0">
-            <mat-checkbox class="m-2" (change)="selectAllNotes($event)"></mat-checkbox>
+            <mat-checkbox class="m-2" [disabled]="trash.isDeleting" (change)="selectAllNotes($event)"></mat-checkbox>
             <div>{{ 'Trash.SelectAllNotes' | translate }}</div>
         </div>
     </div>
@@ -13,7 +16,7 @@
         <cdk-virtual-scroll-viewport class="app-trash__notes" itemSize="48">
             <div class="trashed-note no-select" *cdkVirtualFor="let trashedNote of trashedNotes" (dblclick)="openNoteAsync(trashedNote)">
                 <div class="trashed-note__checkbox mx-2">
-                    <mat-checkbox (change)="changeNoteSelection(trashedNote, $event)" [(ngModel)]="trashedNote.isSelected"></mat-checkbox>
+                    <mat-checkbox [disabled]="trash.isDeleting" (change)="changeNoteSelection(trashedNote, $event)" [(ngModel)]="trashedNote.isSelected"></mat-checkbox>
                 </div>
                 <div class="trashed-note__info">
                     <div class="trashed-note__title" matTooltip="{{ trashedNote.title }}">{{ trashedNote.title }}</div>
@@ -31,12 +34,13 @@
                 class="list-button"
                 mat-mini-fab
                 color=""
+                [disabled]="trash.isDeleting"
                 (click)="deleteSelectedNotesAsync()"
                 matTooltip="{{ 'Trash.DeletePermanently' | translate }}"
             >
                 <i class="edit-item-icon lar la-trash-alt"></i>
             </button>
-            <button class="list-button" mat-fab (click)="restoreSelectedNotesAsync()" matTooltip="{{ 'Trash.Restore' | translate }}">
+            <button class="list-button" mat-fab [disabled]="trash.isDeleting" (click)="restoreSelectedNotesAsync()" matTooltip="{{ 'Trash.Restore' | translate }}">
                 <i class="restore-item-icon las la-undo"></i>
             </button>
         </div>

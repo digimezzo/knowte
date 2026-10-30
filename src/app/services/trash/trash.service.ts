@@ -8,8 +8,13 @@ export class TrashService {
     constructor() {}
 
     public openTrashRequested$: Observable<void> = this.openTrashRequested.asObservable();
+    public isDeleting: boolean = false;
 
     public openTrash(): void {
+        if (this.isDeleting) {
+            return;
+        }
+
         this.openTrashRequested.next();
     }
 }

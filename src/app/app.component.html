@@ -1,5 +1,5 @@
 <mat-drawer-container class="mat-drawer-container" hasBackdrop="True">
-    <mat-drawer class="mat-drawer-container__drawer" #drawer mode="over"><app-trash></app-trash></mat-drawer>
+    <mat-drawer class="mat-drawer-container__drawer" #drawer mode="over" [disableClose]="trash.isDeleting"><app-trash></app-trash></mat-drawer>
     <mat-drawer-content>
         <router-outlet></router-outlet>
     </mat-drawer-content>

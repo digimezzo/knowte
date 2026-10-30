@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
         private collectionService: CollectionService,
         private spellCheckerService: SpellCheckService,
         private temporaryStorageService: TemporaryStorageService,
-        private trash: TrashService,
+        public trash: TrashService,
         private backup: BackupService,
         private zone: NgZone,
         private settings: BaseSettings,

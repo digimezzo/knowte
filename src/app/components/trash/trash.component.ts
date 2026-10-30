@@ -59,6 +59,10 @@ export class TrashComponent implements OnInit, OnDestroy {
     }
 
     public async deleteSelectedNotesAsync(): Promise<void> {
+        if (this.trash.isDeleting) {
+            return;
+        }
+
         let title: string = await this.translator.getAsync('DialogTitles.ConfirmDeleteNotes');
         let text: string = await this.translator.getAsync('DialogTexts.ConfirmPermanentlyDeleteNotes');
 
@@ -74,27 +78,35 @@ export class TrashComponent implements OnInit, OnDestroy {
             data: { dialogTitle: title, dialogText: text },
         });
 
-        dialogRef.afterClosed().subscribe(async (result) => {
-            if (result) {
-                if (notesToDelete.length > 0) {
-                    const noteIdsToDelete: string[] = notesToDelete.map((x) => x.id);
-                    const operation: Operation = await this.collectionService.deleteNotesPermanentlyAsync(noteIdsToDelete);
+        const result: boolean = await dialogRef.afterClosed().toPromise();
+        if (!result || notesToDelete.length === 0 || this.trash.isDeleting) {
+            return;
+        }
 
-                    if (operation === Operation.Error) {
-                        const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteNotesError');
-                        this.dialog.open(ErrorDialogComponent, {
-                            width: '450px',
-                            data: { errorText: errorText },
-                        });
-                    }
+        this.trash.isDeleting = true;
+        try {
+            const noteIdsToDelete: string[] = notesToDelete.map((note) => note.id);
+            const operation: Operation = await this.collectionService.deleteNotesPermanentlyAsync(noteIdsToDelete);
 
-                    this.trashedNotes = this.collectionService.getTrashedNotes();
-                }
+            if (operation === Operation.Error) {
+                const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteNotesError');
+                this.dialog.open(ErrorDialogComponent, {
+                    width: '450px',
+                    data: { errorText: errorText },
+                });
             }
-        });
+
+            this.trashedNotes = this.collectionService.getTrashedNotes();
+        } finally {
+            this.trash.isDeleting = false;
+        }
     }
 
     public async restoreSelectedNotesAsync(): Promise<void> {
+        if (this.trash.isDeleting) {
+            return;
+        }
+
         const noteIdsToRestore: string[] = this.trashedNotes.filter((x) => x.isSelected).map((x) => x.id);
 
         if (noteIdsToRestore.length > 0) {
@@ -113,6 +125,10 @@ export class TrashComponent implements OnInit, OnDestroy {
     }
 
     public async openNoteAsync(note: Note): Promise<void> {
+        if (this.trash.isDeleting) {
+            return;
+        }
+
         if (!this.collectionService.noteIsOpen(note.id)) {
             this.logger.info(`Opening note with id=${note.id}`, 'NotesComponent', 'openNoteAsync');
             await this.collectionService.setNoteOpenAsync(note.id, true);
