@@ -30,8 +30,6 @@ function registerBackups({ app, ipcMain, getMainWindow, log }) {
             workerData: { action: request.action, options },
         });
         active = worker;
-        const startTime = Date.now();
-        log.info(`[Backup] ${request.action} started.`);
         try {
             return await new Promise((resolve, reject) => {
                 let finished = false;
@@ -68,7 +66,6 @@ function registerBackups({ app, ipcMain, getMainWindow, log }) {
             log.error(`[Backup] ${error.message}`);
             throw error;
         } finally {
-            log.info(`[Backup] ${request.action} finished in ${Date.now() - startTime} ms.`);
             checkpoints.clear();
             active = undefined;
         }

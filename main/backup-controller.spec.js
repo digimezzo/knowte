@@ -31,7 +31,7 @@ describe('Backup main-process bridge', () => {
         } };
         const app = new EventEmitter();
         app.getPath = () => root;
-        log = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
+        log = { error: jest.fn(), warn: jest.fn() };
         registerBackups({ app, ipcMain, getMainWindow: () => window, log });
     });
 
@@ -44,8 +44,6 @@ describe('Backup main-process bridge', () => {
         expect(result[0].collection).toBe('Work');
         expect(window.webContents.send).toHaveBeenCalledTimes(2);
         expect(await fs.pathExists(path.join(options.destination, result[0].file))).toBe(true);
-        expect(log.info).toHaveBeenCalledWith('[Backup] backup started.');
-        expect(log.info).toHaveBeenCalledWith(expect.stringMatching(/^\[Backup\] backup finished in \d+ ms\.$/));
     });
 
     test('logs changing-collection postponements without rejecting the backup request', async () => {
