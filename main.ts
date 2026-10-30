@@ -251,6 +251,7 @@ let spareNoteWindow: SpareNoteWindow | undefined;
 let spareNoteWindowTimer: ReturnType<typeof setTimeout> | undefined;
 let settingsWatcherTimer: ReturnType<typeof setTimeout> | undefined;
 let isWatchingSettings: boolean = false;
+const spareNoteWindowMaximumWaitMilliseconds: number = 500;
 
 function readNoteWindowSettingsSnapshot(): string | undefined {
     try {
@@ -376,8 +377,27 @@ async function takeSpareNoteWindow(windowHasFrame: boolean): Promise<BrowserWind
 
     spareNoteWindow = undefined;
 
-    // A spare that is still loading is always further along than a new window would be.
-    const isLoaded: boolean = await spare.loaded;
+    // A spare normally loads in about a second, but it can take much longer (e.g. on throttled or heavily scanned
+    // systems). Don't let opening a note wait for it indefinitely.
+    const waitStartTime: number = Date.now();
+    const isLoaded: boolean | undefined = await Promise.race([
+        spare.loaded,
+        new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), spareNoteWindowMaximumWaitMilliseconds)),
+    ]);
+
+    if (isLoaded === undefined) {
+        log.info(
+            `[App] Spare note window still loading after ${Date.now() - waitStartTime} ms. Creating a new note window.`,
+        );
+        // Keep the loading spare for a later note instead of throwing its progress away.
+        if (spareNoteWindow == undefined && !spare.window.isDestroyed()) {
+            spareNoteWindow = spare;
+        } else {
+            discardSpareNoteWindow(spare);
+        }
+        return undefined;
+    }
+
     const staleReason: string | undefined = isLoaded ? getStaleSpareReason(spare, windowHasFrame) : 'failed to load';
 
     if (staleReason != undefined) {
@@ -386,6 +406,7 @@ async function takeSpareNoteWindow(windowHasFrame: boolean): Promise<BrowserWind
         return undefined;
     }
 
+    log.info(`[App] Using spare note window (waited ${Date.now() - waitStartTime} ms).`);
     return spare.window;
 }
 
@@ -491,7 +512,9 @@ async function createNoteWindow(notePath: string, noteId: string, windowHasFrame
             width: noteWindowState.width,
             height: noteWindowState.height,
         });
+        const newWindowStartTime: number = Date.now();
         newNoteWindow.on('ready-to-show', () => {
+            log.info(`[App] New note window ready to show in ${Date.now() - newWindowStartTime} ms.`);
             newNoteWindow.show();
             newNoteWindow.focus();
         });

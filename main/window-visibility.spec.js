@@ -9,6 +9,8 @@ describe('Window recovery after display changes', () => {
     let openExternalLink;
     let openExternal;
     let warn;
+    let info;
+    let spareWindows;
 
     function createWindow(bounds, options = {}) {
         return {
@@ -41,7 +43,8 @@ describe('Window recovery after display changes', () => {
         };
         openExternal = jest.fn();
         warn = jest.fn();
-        const logger = { create: jest.fn(), info: jest.fn(), warn, transports: { file: {} } };
+        info = jest.fn();
+        const logger = { create: jest.fn(), info, warn, transports: { file: {} } };
         const mocks = {
             electron: { app, screen, shell: { openExternal }, BrowserWindow: { getAllWindows: () => windows },
                 ipcMain: { on: jest.fn(), handle: jest.fn() } },
@@ -55,21 +58,29 @@ describe('Window recovery after display changes', () => {
                 },
             },
             'electron-window-state': {},
-            'fs-extra': {},
+            'fs-extra': { existsSync: () => false },
             './main/backup-controller': { registerBackups: jest.fn() },
         };
         const source = fs.readFileSync(path.join(__dirname, '../main.ts'), 'utf8');
         const compiled = typescript.transpileModule(source, {
             compilerOptions: { module: typescript.ModuleKind.CommonJS, target: typescript.ScriptTarget.ES2017 },
         });
-        openExternalLink = vm.runInNewContext(compiled.outputText + '\nopenExternalLink;', {
-            require: (name) => Object.prototype.hasOwnProperty.call(mocks, name) ? mocks[name] : require(name),
-            exports: {},
-            process: { argv: [], env: {} },
-            global: {},
-            __dirname: path.join(__dirname, '..'),
-            console,
-        });
+        const exported = vm.runInNewContext(
+            compiled.outputText +
+                '\n({ openExternalLink, takeSpareNoteWindow, setSpare: (s) => { spareNoteWindow = s; }, getSpare: () => spareNoteWindow });',
+            {
+                require: (name) => Object.prototype.hasOwnProperty.call(mocks, name) ? mocks[name] : require(name),
+                exports: {},
+                process: { argv: [], env: {} },
+                global: {},
+                __dirname: path.join(__dirname, '..'),
+                console,
+                setTimeout: (...args) => setTimeout(...args),
+                clearTimeout: (...args) => clearTimeout(...args),
+            },
+        );
+        openExternalLink = exported.openExternalLink;
+        spareWindows = exported;
         const readyHandlers = app.on.mock.calls.filter(([event]) => event === 'ready');
         readyHandlers[1][1]();
     });
@@ -159,5 +170,34 @@ describe('Window recovery after display changes', () => {
         emitDisplayChange();
         expect(hidden.setBounds).not.toHaveBeenCalled();
         expect(destroyed.setBounds).not.toHaveBeenCalled();
+    });
+
+    function createSpare(loaded) {
+        const window = { isDestroyed: () => false, webContents: { isCrashed: () => false }, close: jest.fn(), destroy: jest.fn() };
+        return { window, windowHasFrame: false, settingsSnapshot: '', loaded };
+    }
+
+    test('uses a loaded spare note window', async () => {
+        const spare = createSpare(Promise.resolve(true));
+        spareWindows.setSpare(spare);
+        expect(await spareWindows.takeSpareNoteWindow(false)).toBe(spare.window);
+        expect(spareWindows.getSpare()).toBeUndefined();
+    });
+
+    test('does not wait indefinitely for a spare note window that is still loading', async () => {
+        jest.useFakeTimers();
+        try {
+            const spare = createSpare(new Promise(() => {}));
+            spareWindows.setSpare(spare);
+            const taken = spareWindows.takeSpareNoteWindow(false);
+            await jest.advanceTimersByTimeAsync(500);
+            expect(await taken).toBeUndefined();
+            // The loading spare is kept for a later note.
+            expect(spareWindows.getSpare()).toBe(spare);
+            expect(spare.window.close).not.toHaveBeenCalled();
+            expect(info).toHaveBeenCalledWith(expect.stringContaining('Spare note window still loading'));
+        } finally {
+            jest.useRealTimers();
+        }
     });
 });

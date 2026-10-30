@@ -223,6 +223,7 @@ let spareNoteWindow;
 let spareNoteWindowTimer;
 let settingsWatcherTimer;
 let isWatchingSettings = false;
+const spareNoteWindowMaximumWaitMilliseconds = 500;
 function readNoteWindowSettingsSnapshot() {
     try {
         const settingsFile = path.join(electron_1.app.getPath('userData'), 'config.json');
@@ -337,14 +338,31 @@ function takeSpareNoteWindow(windowHasFrame) {
             return undefined;
         }
         spareNoteWindow = undefined;
-        // A spare that is still loading is always further along than a new window would be.
-        const isLoaded = yield spare.loaded;
+        // A spare normally loads in about a second, but it can take much longer (e.g. on throttled or heavily scanned
+        // systems). Don't let opening a note wait for it indefinitely.
+        const waitStartTime = Date.now();
+        const isLoaded = yield Promise.race([
+            spare.loaded,
+            new Promise((resolve) => setTimeout(() => resolve(undefined), spareNoteWindowMaximumWaitMilliseconds)),
+        ]);
+        if (isLoaded === undefined) {
+            electron_log_1.default.info(`[App] Spare note window still loading after ${Date.now() - waitStartTime} ms. Creating a new note window.`);
+            // Keep the loading spare for a later note instead of throwing its progress away.
+            if (spareNoteWindow == undefined && !spare.window.isDestroyed()) {
+                spareNoteWindow = spare;
+            }
+            else {
+                discardSpareNoteWindow(spare);
+            }
+            return undefined;
+        }
         const staleReason = isLoaded ? getStaleSpareReason(spare, windowHasFrame) : 'failed to load';
         if (staleReason != undefined) {
             electron_log_1.default.info(`[App] Spare note window not usable (${staleReason}). Creating a new note window.`);
             discardSpareNoteWindow(spare);
             return undefined;
         }
+        electron_log_1.default.info(`[App] Using spare note window (waited ${Date.now() - waitStartTime} ms).`);
         return spare.window;
     });
 }
@@ -426,7 +444,9 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
                 width: noteWindowState.width,
                 height: noteWindowState.height,
             });
+            const newWindowStartTime = Date.now();
             newNoteWindow.on('ready-to-show', () => {
+                electron_log_1.default.info(`[App] New note window ready to show in ${Date.now() - newWindowStartTime} ms.`);
                 newNoteWindow.show();
                 newNoteWindow.focus();
             });
