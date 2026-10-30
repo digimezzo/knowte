@@ -87,6 +87,12 @@ export class PrintService {
                         padding: 2px 5px;
                     }
 
+                    pre.mermaid {
+                        background-color: transparent;
+                        border-radius: 0;
+                        padding: 0;
+                    }
+
                     blockquote {
                         border-left: 4px solid #d0d0d0;
                         margin: 5px 0 5px 0;
@@ -155,7 +161,36 @@ export class PrintService {
                 </style>`;
     }
 
+    private async renderMermaidDiagramsForPaperAsync(pageContent: string): Promise<string> {
+        const template: HTMLTemplateElement = document.createElement('template');
+        template.innerHTML = pageContent;
+        const nodes = template.content.querySelectorAll<HTMLElement>('pre.mermaid[data-mermaid-source]');
+
+        if (nodes.length === 0) {
+            return pageContent;
+        }
+
+        const mermaid = (await import('mermaid')).default;
+        // The preview may use a dark theme, but paper is always white.
+        mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', darkMode: false, theme: 'default' });
+
+        for (let i = 0; i < nodes.length; i++) {
+            try {
+                const { svg } = await mermaid.render(`knowte-print-mermaid-${i}`, nodes[i].dataset.mermaidSource);
+                nodes[i].innerHTML = svg;
+            } catch (error) {
+                this.logger.error(`Could not render Mermaid diagram for printing. Cause: ${error}`, 'PrintService', 'renderMermaidDiagramsForPaperAsync');
+            }
+        }
+
+        return template.innerHTML;
+    }
+
     private async writePrintHtmlFileAsync(pageTitle: string, pageContent: string, isMarkdownNote: boolean): Promise<string> {
+        if (isMarkdownNote) {
+            pageContent = await this.renderMermaidDiagramsForPaperAsync(pageContent);
+        }
+
         const printHtmlFileContent: string = this.createPrintHtmlFileContent(pageTitle, pageContent, isMarkdownNote);
 
         try {
