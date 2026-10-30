@@ -3,9 +3,10 @@ import { MatBottomSheet, MatBottomSheetConfig } from '@angular/material/bottom-s
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as remote from '@electron/remote';
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, SaveDialogOptions, SaveDialogReturnValue } from 'electron';
 import { merge, Subject, Subscription } from 'rxjs';
 import { auditTime, debounceTime } from 'rxjs/internal/operators';
+import { ApplicationPaths } from '../../common/application/applicationPaths';
 import { Constants } from '../../common/application/constants';
 import { ProductInformation } from '../../common/application/product-information';
 import { Operation } from '../../common/enums/operation';
@@ -18,6 +19,7 @@ import { BaseAppearanceService } from '../../services/appearance/base-appearance
 import { CollectionClient } from '../../services/collection/collection.client';
 import { CryptographyService } from '../../services/cryptography/cryptography.service';
 import { PersistanceService } from '../../services/persistance/persistance.service';
+import { PrintService } from '../../services/print/print.service';
 import { NoteDetailsResult } from '../../services/results/note-details-result';
 import { NoteMarkResult } from '../../services/results/note-mark-result';
 import { NoteOperationResult } from '../../services/results/note-operation-result';
@@ -33,7 +35,6 @@ import { NotificationDialogComponent } from '../dialogs/notification-dialog/noti
 import { PasswordInputDialogComponent } from '../dialogs/password-input-dialog/password-input-dialog.component';
 import { SearchBottomSheetComponent } from './bottom-sheets/search-bottom-sheet/search-bottom-sheet.component';
 import { ActionsBottomSheetComponent, NoteAction, NoteActionsData } from './bottom-sheets/actions-bottom-sheet/actions-bottom-sheet.component';
-import { ShareBottomSheetComponent } from './bottom-sheets/share-bottom-sheet/share-bottom-sheet.component';
 import { ContextMenuItemsEnabledState } from './context-menu-items-enabled-state';
 import { NoteContextMenuFactory } from './note-context-menu-factory';
 import { INoteEditor } from './note-editor/i-note-editor';
@@ -83,6 +84,7 @@ export class NoteComponent implements OnInit {
         private searchClient: SearchClient,
         private bottomSheet: MatBottomSheet,
         private noteEditorFactory: NoteEditorFactory,
+        private print: PrintService,
     ) {}
 
     public isEncrypted: boolean = false;
@@ -479,7 +481,9 @@ export class NoteComponent implements OnInit {
         switch (action) {
             case 'search': this.openSearchBottomSheet(); break;
             case 'tags': await this.editTagsAsync(); break;
-            case 'share': this.openShareBottomSheet(); break;
+            case 'export': await this.exportNoteAsync(); break;
+            case 'exportPdf': await this.exportNoteToPdfAsync(); break;
+            case 'print': await this.printNoteAsync(); break;
             case 'pin': this.toggleNotePin(); break;
             case 'mark': this.toggleNoteMark(); break;
             case 'encrypt': await this.encryptNoteAsync(); break;
@@ -980,20 +984,54 @@ export class NoteComponent implements OnInit {
         this.noteEditor.applyCode();
     }
 
-    public openShareBottomSheet(): void {
-        const config: MatBottomSheetConfig = {
-            data: {
-                noteId: this.noteId,
-                noteTitle: this.noteTitle,
-                noteText: this.noteEditor.text,
-                noteContent: this.noteEditor.content,
-                noteHtml: this.noteEditor.html,
-                isMarkdownNote: this.isMarkdownNote,
-                tags: this.tags,
-            },
+    public async exportNoteToPdfAsync(): Promise<void> {
+        const options: SaveDialogOptions = {
+            defaultPath: ApplicationPaths.getPdfExportPath(remote.app.getPath('documents'), this.noteTitle),
         };
+        const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
 
-        this.bottomSheet.open(ShareBottomSheetComponent, config);
+        if (saveDialogReturnValue.filePath != undefined) {
+            await this.print.exportToPdfAsync(saveDialogReturnValue.filePath, this.noteTitle, this.noteEditor.html, this.isMarkdownNote);
+        }
+    }
+
+    public async printNoteAsync(): Promise<void> {
+        await this.print.printAsync(this.noteTitle, this.noteEditor.html, this.isMarkdownNote);
+    }
+
+    public async exportNoteAsync(): Promise<void> {
+        const options: SaveDialogOptions = {
+            defaultPath: ApplicationPaths.getNoteExportPath(remote.app.getPath('documents'), this.noteTitle, this.isMarkdownNote),
+        };
+        const saveDialogReturnValue: SaveDialogReturnValue = await remote.dialog.showSaveDialog(undefined, options);
+
+        try {
+            if (saveDialogReturnValue.filePath != undefined && saveDialogReturnValue.filePath.length > 0) {
+                await this.persistance.exportNoteAsync(
+                    saveDialogReturnValue.filePath,
+                    this.noteId,
+                    this.noteTitle,
+                    this.noteEditor.text,
+                    this.noteEditor.content,
+                    this.isMarkdownNote,
+                    this.tags
+                );
+                this.snackBar.noteExportedAsync(this.noteTitle);
+            }
+        } catch (error) {
+            this.logger.error(
+                `An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`,
+                'NoteComponent',
+                'exportNoteAsync'
+            );
+
+            const errorText: string = await this.translator.getAsync('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle });
+
+            this.dialog.open(ErrorDialogComponent, {
+                width: '450px',
+                data: { errorText: errorText },
+            });
+        }
     }
 
     public strikeThrough(event: any): void {

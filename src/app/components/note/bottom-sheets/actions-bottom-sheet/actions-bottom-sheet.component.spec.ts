@@ -28,11 +28,12 @@ describe('ActionsBottomSheetComponent', () => {
         const translate = TestBed.inject(TranslateService);
         translate.setTranslation('en', {
             Tooltips: {
-                Search: 'Search', Share: 'Share', PinNote: 'Pin', UnpinNote: 'Unpin',
+                Search: 'Search', PinNote: 'Pin', UnpinNote: 'Unpin',
                 MarkNote: 'Mark', UnmarkNote: 'Unmark', EncryptNote: 'Encrypt',
                 DecryptNote: 'Decrypt', DeleteNote: 'Delete',
             },
             Tags: { Edit: 'Edit tags' },
+            Notes: { ExportNote: 'Export', ExportNoteToPdf: 'PDF', PrintNote: 'Print' },
         });
 
         translate.use('en');
@@ -44,17 +45,18 @@ describe('ActionsBottomSheetComponent', () => {
         return Array.from(fixture.nativeElement.querySelectorAll('button'));
     }
 
-    it('renders six labeled grid buttons and a separate Delete button', () => {
+    it('renders a separated share row, five labeled grid buttons and a separate Delete button', () => {
         expect(buttons().map((button) => button.textContent.trim()))
-            .toEqual(['Search', 'Edit tags', 'Share', 'Pin', 'Mark', 'Encrypt', 'Delete']);
-        expect(fixture.nativeElement.querySelectorAll('.note-actions-grid button')).toHaveLength(6);
+            .toEqual(['Export', 'PDF', 'Print', 'Search', 'Edit tags', 'Pin', 'Mark', 'Encrypt', 'Delete']);
+        expect(fixture.nativeElement.querySelectorAll('.note-share-actions button')).toHaveLength(3);
+        expect(fixture.nativeElement.querySelectorAll('.note-actions-grid:not(.note-share-actions) button')).toHaveLength(5);
         expect(fixture.nativeElement.querySelector('.note-actions-grid .note-delete-action')).toBeNull();
-        expect(fixture.nativeElement.querySelector('mat-divider')).not.toBeNull();
+        expect(fixture.nativeElement.querySelectorAll('mat-divider')).toHaveLength(2);
     });
 
-    it.each<NoteAction>(['search', 'tags', 'share', 'pin', 'mark', 'encrypt', 'delete'])(
+    it.each<NoteAction>(['export', 'exportPdf', 'print', 'search', 'tags', 'pin', 'mark', 'encrypt', 'delete'])(
         'returns the selected %s action through sheet dismissal', (action) => {
-            const actions: NoteAction[] = ['search', 'tags', 'share', 'pin', 'mark', 'encrypt', 'delete'];
+            const actions: NoteAction[] = ['export', 'exportPdf', 'print', 'search', 'tags', 'pin', 'mark', 'encrypt', 'delete'];
             buttons()[actions.indexOf(action)].click();
             expect(dismiss).toHaveBeenCalledTimes(1);
             expect(dismiss).toHaveBeenCalledWith(action);
@@ -68,8 +70,8 @@ describe('ActionsBottomSheetComponent', () => {
         fixture.detectChanges();
 
         expect(buttons().map((button) => button.textContent.trim()))
-            .toEqual(['Search', 'Edit tags', 'Share', 'Unpin', 'Unmark', 'Decrypt', 'Delete']);
-        buttons()[5].click();
+            .toEqual(['Export', 'PDF', 'Print', 'Search', 'Edit tags', 'Unpin', 'Unmark', 'Decrypt', 'Delete']);
+        buttons()[7].click();
         expect(dismiss).toHaveBeenCalledWith('decrypt');
     });
 
@@ -77,9 +79,9 @@ describe('ActionsBottomSheetComponent', () => {
         data.isTrashed = true;
         fixture.detectChanges();
 
-        expect(buttons()).toHaveLength(6);
+        expect(buttons()).toHaveLength(8);
         expect(fixture.nativeElement.querySelector('.note-delete-action')).toBeNull();
-        expect(fixture.nativeElement.querySelector('mat-divider')).toBeNull();
+        expect(fixture.nativeElement.querySelectorAll('mat-divider')).toHaveLength(1);
     });
 });
 

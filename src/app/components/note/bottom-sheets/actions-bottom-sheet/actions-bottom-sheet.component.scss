@@ -49,7 +49,7 @@
 }
 
 @media (max-width: 360px) {
-    .note-actions-grid {
+    .note-actions-grid:not(.note-share-actions) {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }

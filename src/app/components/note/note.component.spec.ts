@@ -91,7 +91,7 @@ describe('NoteComponent preparing deletion', () => {
         logger.setup((x) => x.warn(It.isAnyString(), It.isAnyString(), It.isAnyString())).callback(logWarning);
         component = new NoteComponent(
             mock(), zone.object, dialog, logger.object, mock(), translator.object, mock(), persistance.object,
-            settings.object, mock(), mock(), mock(), mock(), client, search.object, TestBed.inject(MatBottomSheet), mock(),
+            settings.object, mock(), mock(), mock(), mock(), client, search.object, TestBed.inject(MatBottomSheet), mock(), mock(),
         );
         component.noteId = 'note-id';
         component['hasLoadedNoteContent'] = true;
@@ -194,7 +194,9 @@ describe('NoteComponent preparing deletion', () => {
     it.each([
         ['search', 'openSearchBottomSheet'],
         ['tags', 'editTagsAsync'],
-        ['share', 'openShareBottomSheet'],
+        ['export', 'exportNoteAsync'],
+        ['exportPdf', 'exportNoteToPdfAsync'],
+        ['print', 'printNoteAsync'],
         ['pin', 'toggleNotePin'],
         ['mark', 'toggleNoteMark'],
         ['encrypt', 'encryptNoteAsync'],

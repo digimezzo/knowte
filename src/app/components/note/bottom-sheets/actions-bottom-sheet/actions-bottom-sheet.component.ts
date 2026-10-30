@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
-export type NoteAction = 'search' | 'tags' | 'share' | 'pin' | 'mark' | 'encrypt' | 'decrypt' | 'delete';
+export type NoteAction = 'search' | 'tags' | 'export' | 'exportPdf' | 'print' | 'pin' | 'mark' | 'encrypt' | 'decrypt' | 'delete';
 
 export interface NoteActionsData {
     isPinned: boolean;

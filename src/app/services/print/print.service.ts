@@ -93,6 +93,70 @@ export class PrintService {
                         padding: 0;
                     }
 
+                    /* GitHub light syntax colors, matching the preview's light theme. */
+                    pre code .token.comment,
+                    pre code .token.prolog,
+                    pre code .token.doctype,
+                    pre code .token.cdata {
+                        color: #6e7781;
+                    }
+
+                    pre code .token.punctuation,
+                    pre code .token.operator {
+                        color: #24292f;
+                    }
+
+                    pre code .token.keyword,
+                    pre code .token.atrule {
+                        color: #cf222e;
+                    }
+
+                    pre code .token.boolean,
+                    pre code .token.number,
+                    pre code .token.constant,
+                    pre code .token.property,
+                    pre code .token.attr-name {
+                        color: #0550ae;
+                    }
+
+                    pre code .token.string,
+                    pre code .token.char,
+                    pre code .token.attr-value,
+                    pre code .token.url {
+                        color: #0a3069;
+                    }
+
+                    pre code .token.function,
+                    pre code .token.class-name,
+                    pre code .token.builtin {
+                        color: #8250df;
+                    }
+
+                    pre code .token.tag,
+                    pre code .token.selector,
+                    pre code .token.inserted {
+                        color: #116329;
+                    }
+
+                    pre code .token.regex,
+                    pre code .token.important,
+                    pre code .token.variable {
+                        color: #953800;
+                    }
+
+                    pre code .token.deleted {
+                        color: #82071e;
+                    }
+
+                    pre code .token.bold,
+                    pre code .token.important {
+                        font-weight: bold;
+                    }
+
+                    pre code .token.italic {
+                        font-style: italic;
+                    }
+
                     blockquote {
                         border-left: 4px solid #d0d0d0;
                         margin: 5px 0 5px 0;

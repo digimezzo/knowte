@@ -72,7 +72,6 @@ import { LogoMainComponent } from './components/logo-main/logo-main.component';
 import { MainMenuComponent } from './components/main-menu/main-menu.component';
 import { SearchBottomSheetComponent } from './components/note/bottom-sheets/search-bottom-sheet/search-bottom-sheet.component';
 import { ActionsBottomSheetComponent } from './components/note/bottom-sheets/actions-bottom-sheet/actions-bottom-sheet.component';
-import { ShareBottomSheetComponent } from './components/note/bottom-sheets/share-bottom-sheet/share-bottom-sheet.component';
 import { SpellCheckBottomSheetComponent } from './components/note/bottom-sheets/spell-check-bottom-sheet/spell-check-bottom-sheet.component';
 import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { MarkdownNoteComponent } from './components/note/markdown-note/markdown-note.component';
@@ -254,7 +253,6 @@ export function MarkedOptionsFactory(): MarkedOptions {
         MoveNotesBottomSheetComponent,
         SearchBottomSheetComponent,
         ActionsBottomSheetComponent,
-        ShareBottomSheetComponent,
         SpellCheckLanguagesComponent,
         NoteTypeChooserBottomSheetComponent,
         NoteStatusBarComponent,
