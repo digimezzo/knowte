@@ -18,6 +18,18 @@ Knowte is a note taking application that allows you to quickly and easily organi
 
 ![Knowte2screenshot](Knowte.showcase.light.png)
 
+## Features
+
+- Create classic rich-text notes or write notes in Markdown with a live preview and synchronized scrolling.
+- Format Markdown with headings, emphasis, links, images, tables, quotes, task lists, and highlighted text.
+- Colorize fenced code blocks in the preview. The editor provides language templates for Bash, C, C++, C#, CSS, Go, HTML, Java, JavaScript, JSON, Markdown, Mermaid, PowerShell, Python, Rust, SQL, TypeScript, VB.NET, Windows Batch, XML, and YAML.
+- Render Mermaid diagrams directly from Markdown code blocks.
+- Organize notes into collections and notebooks. Pin, mark, tag, archive, and move notes.
+- Search note titles, contents, and tags, and create links between notes.
+- Encrypt notes, use the built-in trash, and back up and restore collections.
+- Import and export notes, and print notes or export them as PDF.
+- Choose light or dark themes, adjust text size, and use spell checking.
+
 ## Build prerequisites
 
 -   wine: required to build Windows package
