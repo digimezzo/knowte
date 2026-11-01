@@ -257,6 +257,9 @@
         "UnfiledNotes": "Неупорядоченные заметки",
         "Search": "Искать",
         "ClearSearch": "Очистить поиск",
+        "NoMatches": "No matches",
+        "PreviousMatch": "Previous match (Shift+F3)",
+        "NextMatch": "Next match (F3)",
         "DragNotesCount": "{{noteCount}} заметок",
         "TasksCount": "{{closedTasksCount}} из {{totalTasksCount}}"
     },

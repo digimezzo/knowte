@@ -448,6 +448,55 @@ describe('NoteComponent preparing deletion', () => {
         }
     });
 
+    it('shows the searched word and match position, and moves with F3 and Shift+F3', () => {
+        jest.useFakeTimers();
+        const noteSearch = component['noteSearch'];
+        jest.spyOn(noteSearch, 'find').mockReturnValue(true);
+        jest.spyOn(noteSearch, 'matchCount', 'get').mockReturnValue(5);
+        const position = jest.spyOn(noteSearch, 'currentMatch', 'get').mockReturnValue(1);
+        const next = jest.spyOn(noteSearch, 'next');
+        const previous = jest.spyOn(noteSearch, 'previous');
+        try {
+            searchTextChanged.next('alpha beta');
+            jest.runAllTimers();
+            expect([component.searchTerm, component.currentSearchMatch, component.searchMatchCount]).toEqual(['alpha', 1, 5]);
+
+            const f3 = new KeyboardEvent('keydown', { key: 'F3', cancelable: true });
+            position.mockReturnValue(2);
+            component.goToNextSearchMatch(f3);
+            expect(next).toHaveBeenCalledTimes(1);
+            expect(f3.defaultPrevented).toBe(true);
+            expect(component.currentSearchMatch).toBe(2);
+
+            position.mockReturnValue(1);
+            component.goToPreviousSearchMatch();
+            expect(previous).toHaveBeenCalledTimes(1);
+            expect(component.currentSearchMatch).toBe(1);
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it('closes the search from the bar so it is not reapplied', () => {
+        jest.useFakeTimers();
+        jest.spyOn(component['noteSearch'], 'find').mockReturnValue(true);
+        const clear = jest.spyOn(component['noteSearch'], 'clear');
+        (component.clearSearch as jest.Mock).mockRestore();
+        try {
+            searchTextChanged.next('alpha');
+            jest.runAllTimers();
+            component.closeSearch();
+
+            expect(clear).toHaveBeenCalled();
+            expect(component['searchText']).toBe('');
+            expect(component.searchTerm).toBe('');
+            component.openSearchBottomSheet();
+            expect(openSheet).toHaveBeenLastCalledWith(SearchBottomSheetComponent, { data: { searchText: '' } });
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
     it('does not scroll for a search that was cleared', () => {
         jest.useFakeTimers();
         (component.clearSearch as jest.Mock).mockRestore();

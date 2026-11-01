@@ -257,6 +257,9 @@
         "UnfiledNotes": "Notas não preenchidas",
         "Search": "Pesquisar",
         "ClearSearch": "Limpar pesquisa",
+        "NoMatches": "No matches",
+        "PreviousMatch": "Previous match (Shift+F3)",
+        "NextMatch": "Next match (F3)",
         "DragNotesCount": "{{noteCount}} notas",
         "TasksCount": "{{closedTasksCount}} de {{totalTasksCount}}"
     },

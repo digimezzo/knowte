@@ -257,6 +257,9 @@
         "UnfiledNotes": "未归档笔记",
         "Search": "搜索",
         "ClearSearch": "清除搜索",
+        "NoMatches": "No matches",
+        "PreviousMatch": "Previous match (Shift+F3)",
+        "NextMatch": "Next match (F3)",
         "DragNotesCount": "{{noteCount}} 笔记",
         "TasksCount": "{{closedTasksCount}} / {{totalTasksCount}}"
     },

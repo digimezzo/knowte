@@ -43,6 +43,42 @@
                     [noteEditor]="this.noteEditor"
                     [attachmentsDirectoryPath]="this.noteAttachmentsDirectoryPathForPreview"
                 ></app-markdown-note>
+                <div class="note-search-bar" *ngIf="this.searchTerm" role="search">
+                    <i class="las la-search note-search-bar-icon" aria-hidden="true"></i>
+                    <span class="note-search-bar-term">{{ this.searchTerm }}</span>
+                    <span class="note-search-bar-count" aria-live="polite">
+                        {{ this.searchMatchCount ? this.currentSearchMatch + ' / ' + this.searchMatchCount : ('MainPage.NoMatches' | translate) }}
+                    </span>
+                    <button
+                        type="button"
+                        class="note-search-bar-button"
+                        [disabled]="!this.searchMatchCount"
+                        matTooltip="{{ 'MainPage.PreviousMatch' | translate }}"
+                        [attr.aria-label]="'MainPage.PreviousMatch' | translate"
+                        (click)="goToPreviousSearchMatch()"
+                    >
+                        <i class="las la-angle-up" aria-hidden="true"></i>
+                    </button>
+                    <button
+                        type="button"
+                        class="note-search-bar-button"
+                        [disabled]="!this.searchMatchCount"
+                        matTooltip="{{ 'MainPage.NextMatch' | translate }}"
+                        [attr.aria-label]="'MainPage.NextMatch' | translate"
+                        (click)="goToNextSearchMatch()"
+                    >
+                        <i class="las la-angle-down" aria-hidden="true"></i>
+                    </button>
+                    <button
+                        type="button"
+                        class="note-search-bar-button"
+                        matTooltip="{{ 'MainPage.ClearSearch' | translate }}"
+                        [attr.aria-label]="'MainPage.ClearSearch' | translate"
+                        (click)="closeSearch()"
+                    >
+                        <i class="las la-times" aria-hidden="true"></i>
+                    </button>
+                </div>
                 <app-note-status-bar
                     [noteId]="this.noteId"
                     [isMarked]="this.isMarked"

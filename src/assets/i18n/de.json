@@ -257,6 +257,9 @@
         "UnfiledNotes": "Lose Notizen",
         "Search": "Suchen",
         "ClearSearch": "Suchen leeren",
+        "NoMatches": "Keine Treffer",
+        "PreviousMatch": "Vorheriger Treffer (Umschalt+F3)",
+        "NextMatch": "Nächster Treffer (F3)",
         "DragNotesCount": "{{noteCount}} Notizen",
         "TasksCount": "{{closedTasksCount}} von {{totalTasksCount}}"
     },

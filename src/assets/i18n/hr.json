@@ -257,6 +257,9 @@
         "UnfiledNotes": "Neraspoređene bilješke",
         "Search": "Pretraživanje",
         "ClearSearch": "Očisti pretragu",
+        "NoMatches": "No matches",
+        "PreviousMatch": "Previous match (Shift+F3)",
+        "NextMatch": "Next match (F3)",
         "DragNotesCount": "Bilješke: {{noteCount}}",
         "TasksCount": "{{closedTasksCount}} od {{totalTasksCount}}"
     },

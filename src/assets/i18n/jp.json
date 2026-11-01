@@ -257,6 +257,9 @@
         "UnfiledNotes": "未分類のメモ",
         "Search": "検索",
         "ClearSearch": "検索の消去",
+        "NoMatches": "No matches",
+        "PreviousMatch": "Previous match (Shift+F3)",
+        "NextMatch": "Next match (F3)",
         "DragNotesCount": "{{noteCount}} メモ",
         "TasksCount": "{{closedTasksCount}} / {{totalTasksCount}}"
     },

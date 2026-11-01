@@ -1,8 +1,16 @@
 import { NoteSearch } from './note-search';
 
+class TestHighlight extends Set<Range> {
+    public priority = 0;
+
+    constructor(...ranges: Range[]) {
+        super(ranges);
+    }
+}
+
 describe('NoteSearch renderer highlights', () => {
     let search: NoteSearch;
-    let highlights: Map<string, Set<Range>>;
+    let highlights: Map<string, TestHighlight>;
     let root: HTMLElement;
     let originalBounds: PropertyDescriptor | undefined;
 
@@ -15,7 +23,7 @@ describe('NoteSearch renderer highlights', () => {
         });
         document.body.innerHTML = '<div id="markdown-output"><p>Alpha beta ALPHA</p></div>';
         root = document.getElementById('markdown-output');
-        search = new NoteSearch({ Highlight: class extends Set<Range> {}, CSS: { highlights } });
+        search = new NoteSearch({ Highlight: TestHighlight, CSS: { highlights } });
     });
 
     afterEach(() => {
@@ -109,7 +117,7 @@ describe('NoteSearch renderer highlights', () => {
     it('works with classic editor content and leaves unrelated highlights alone', () => {
         root.id = 'editor';
         root.innerHTML = '<div class="ql-editor"><p>Alpha beta</p></div>';
-        const other = new Set<Range>();
+        const other = new TestHighlight();
         highlights.set('spelling', other);
         search.find('alpha');
         expect(matches()).toEqual(['Alpha']);
@@ -128,5 +136,98 @@ describe('NoteSearch renderer highlights', () => {
 
     it('allows native fallback on renderers without the Highlight API', () => {
         expect(new NoteSearch({}).find('alpha')).toBe(false);
+    });
+
+    function current(): string[] {
+        return Array.from(highlights.get('knowte-note-search-current') || []).map((range) => range.toString());
+    }
+
+    it('moves to the next and previous match, wrapping at both ends', () => {
+        search.find('alpha');
+        expect([search.currentMatch, search.matchCount, current()]).toEqual([1, 2, ['Alpha']]);
+
+        search.next();
+        expect([search.currentMatch, current()]).toEqual([2, ['ALPHA']]);
+        search.next();
+        expect([search.currentMatch, current()]).toEqual([1, ['Alpha']]);
+        search.previous();
+        expect([search.currentMatch, current()]).toEqual([2, ['ALPHA']]);
+        expect(matches()).toEqual(['Alpha', 'ALPHA']);
+    });
+
+    it('scrolls the pane to the match it moves to', () => {
+        Object.defineProperty(root, 'offsetWidth', { configurable: true, value: 300 });
+        Object.defineProperty(root, 'clientHeight', { configurable: true, value: 200 });
+        jest.spyOn(root, 'getBoundingClientRect').mockReturnValue({ top: 100 } as DOMRect);
+        search.find('alpha');
+        expect(root.scrollTop).toBe(210);
+
+        (Range.prototype.getBoundingClientRect as jest.Mock).mockReturnValueOnce({ top: 700, height: 20 });
+        search.next();
+        expect(root.scrollTop).toBe(720);
+    });
+
+    it('navigates the Markdown source while editing, scrolling the textarea', () => {
+        document.body.innerHTML = `
+            <div class="editor-wrapper">
+                <pre class="highlighted-content">[alpha](https://alpha.example) alpha</pre>
+                <textarea class="markdown-input"></textarea>
+            </div>
+            <div id="markdown-output"><p><a>alpha</a> alpha</p></div>`;
+        const pre = document.querySelector<HTMLElement>('.highlighted-content');
+        const textarea = document.querySelector<HTMLElement>('.markdown-input');
+        Object.defineProperty(pre, 'offsetWidth', { configurable: true, value: 300 });
+        Object.defineProperty(textarea, 'clientHeight', { configurable: true, value: 200 });
+
+        search.find('alpha');
+        expect(search.matchCount).toBe(3);
+        search.next();
+        expect(search.currentMatch).toBe(2);
+        expect(textarea.scrollTop).toBeGreaterThan(0);
+        expect(pre.scrollTop).toBe(0);
+    });
+
+    it('navigates the preview when the Markdown source is hidden', () => {
+        document.body.innerHTML = `
+            <div class="editor-wrapper">
+                <pre class="highlighted-content">[alpha](https://alpha.example) alpha</pre>
+                <textarea class="markdown-input"></textarea>
+            </div>
+            <div id="markdown-output"><p><a>alpha</a> alpha</p></div>`;
+        const pre = document.querySelector<HTMLElement>('.highlighted-content');
+        const textarea = document.querySelector<HTMLElement>('.markdown-input');
+        const preview = document.getElementById('markdown-output');
+        // Matches the real layout: the collapsed source pane still reports its 32px of padding.
+        Object.defineProperty(pre, 'offsetWidth', { configurable: true, value: 32 });
+        Object.defineProperty(pre, 'checkVisibility', { configurable: true, value: () => false });
+        Object.defineProperty(preview, 'offsetWidth', { configurable: true, value: 300 });
+        Object.defineProperty(preview, 'clientHeight', { configurable: true, value: 200 });
+        jest.spyOn(preview, 'getBoundingClientRect').mockReturnValue({ top: 100 } as DOMRect);
+
+        search.find('alpha');
+        expect([search.currentMatch, search.matchCount]).toEqual([1, 2]);
+        expect(preview.scrollTop).toBe(210);
+
+        (Range.prototype.getBoundingClientRect as jest.Mock).mockReturnValueOnce({ top: 700, height: 20 });
+        search.next();
+        expect(search.currentMatch).toBe(2);
+        expect(preview.scrollTop).toBe(720);
+        expect(textarea.scrollTop).toBe(0);
+        expect(current()).toEqual(['alpha']);
+        expect(Array.from(highlights.get('knowte-note-search-current'))[0].startContainer.parentElement?.closest('#markdown-output')).toBe(preview);
+    });
+
+    it('does nothing when navigating without matches, and clear resets the position', () => {
+        search.find('missing');
+        search.next();
+        search.previous();
+        expect([search.currentMatch, search.matchCount]).toEqual([0, 0]);
+        expect(highlights.has('knowte-note-search-current')).toBe(false);
+
+        search.find('alpha');
+        search.next();
+        search.clear();
+        expect([search.currentMatch, search.matchCount]).toEqual([0, 0]);
+        expect(highlights.has('knowte-note-search-current')).toBe(false);
     });
 });

@@ -3,6 +3,11 @@
     color: #111;
 }
 
+::highlight(knowte-note-search-current) {
+    background-color: #ff9632;
+    color: #111;
+}
+
 @import 'variables';
 
 .ql-snow.ql-toolbar {
@@ -113,6 +118,68 @@
 
 .ql-toolbar.ql-snow {
     padding-right: 50px !important;
+}
+
+.note-search-bar {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 4px;
+    // 1px top border + 23px buttons + 2px above and below; matches the status bar.
+    height: 28px;
+    // Keeps the close button 2px from the edge, like its top and bottom.
+    padding: 0 2px 0 8px;
+    border-top: 1px solid var(--theme-separator);
+}
+
+.note-search-bar-icon {
+    font-size: var(--fontsize-status-icon);
+    color: var(--theme-secondary-text);
+    // With the 4px gap, matches the status bar's 16px spacing after the save icon.
+    margin-right: 12px;
+}
+
+.note-search-bar-term {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: bold;
+    margin-right: 12px;
+}
+
+.note-search-bar-count {
+    flex: 1;
+    white-space: nowrap;
+    color: var(--theme-secondary-text);
+}
+
+.note-search-bar-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 23px;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+
+    > i {
+        font-size: 16px;
+    }
+
+    &:hover:not(:disabled) {
+        background-color: var(--theme-hover-background);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--theme-accent-color);
+    }
+
+    &:disabled {
+        cursor: default;
+        opacity: 0.4;
+    }
 }
 
 .ql-editor ul[data-checked='true'] li {

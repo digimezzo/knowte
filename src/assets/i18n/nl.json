@@ -257,6 +257,9 @@
         "UnfiledNotes": "Losse notities",
         "Search": "Zoeken",
         "ClearSearch": "Zoeken wissen",
+        "NoMatches": "Geen resultaten",
+        "PreviousMatch": "Vorige resultaat (Shift+F3)",
+        "NextMatch": "Volgende resultaat (F3)",
         "DragNotesCount": "{{noteCount}} notitities",
         "TasksCount": "{{closedTasksCount}} van {{totalTasksCount}}"
     },

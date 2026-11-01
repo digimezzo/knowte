@@ -107,6 +107,9 @@ export class NoteComponent implements OnInit {
     private searchText: string = '';
     private searchTimeout?: ReturnType<typeof setTimeout>;
     private noteSearch = new NoteSearch();
+    public searchTerm: string = '';
+    public searchMatchCount: number = 0;
+    public currentSearchMatch: number = 0;
     public noteEditor: INoteEditor;
 
     public async ngOnInit(): Promise<void> {
@@ -676,7 +679,35 @@ export class NoteComponent implements OnInit {
     public clearSearch(): void {
         clearTimeout(this.searchTimeout);
         this.noteSearch.clear();
+        this.updateSearchState('');
         this.noteWindow.webContents.stopFindInPage('clearSelection');
+    }
+
+    public closeSearch(): void {
+        this.searchText = '';
+        this.clearSearch();
+    }
+
+    @HostListener('document:keydown.f3', ['$event'])
+    public goToNextSearchMatch(event?: Event): void {
+        event?.preventDefault();
+        this.noteSearch.next();
+        this.updateSearchState(this.searchTerm);
+    }
+
+    @HostListener('document:keydown.shift.f3', ['$event'])
+    public goToPreviousSearchMatch(event?: Event): void {
+        event?.preventDefault();
+        this.noteSearch.previous();
+        this.updateSearchState(this.searchTerm);
+    }
+
+    private updateSearchState(term: string): void {
+        this.zone.run(() => {
+            this.searchTerm = term;
+            this.searchMatchCount = this.noteSearch.matchCount;
+            this.currentSearchMatch = this.noteSearch.currentMatch;
+        });
     }
 
     private applySearch(): void {
@@ -688,6 +719,7 @@ export class NoteComponent implements OnInit {
             // For now, we can only search for 1 word.
             this.searchTimeout = setTimeout(() => {
                 if (this.noteSearch.find(searchTextPieces[0])) {
+                    this.updateSearchState(searchTextPieces[0]);
                     return;
                 }
                 const activeElement = document.activeElement;
