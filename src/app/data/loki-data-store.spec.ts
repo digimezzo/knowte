@@ -267,7 +267,7 @@ describe('LokiDataStore initialization', () => {
         expect(store.getNotes()).toEqual([]);
         expect(store.getTrashedNotes().map((trashed) => trashed.id)).toEqual([noteId]);
         store.restoreNote(noteId);
-        store.encryptNote(noteId, 'hash');
+        store.encryptNote(noteId);
         expect(store.getNoteById(noteId).isEncrypted).toBe(true);
         store.decryptNote(noteId);
 

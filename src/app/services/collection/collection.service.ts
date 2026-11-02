@@ -1056,6 +1056,8 @@ export class CollectionService {
             if (note) {
                 if (isEncrypted) {
                     note.text = this.cryptography.encrypt(noteText, secretKey);
+                    // The note file is already in the current format, so the legacy verifier (which equals the old attachment key) must go.
+                    note.secretKeyHash = '';
                 } else {
                     note.text = noteText;
                 }
@@ -1560,9 +1562,8 @@ export class CollectionService {
         });
     }
 
-    public encryptNoteEventHandler(noteId: string, secretKey: string): void {
-        const secretKeyHash: string = this.cryptography.createHash(secretKey);
-        this.collectionDataStoreAccess.encryptNote(noteId, secretKeyHash);
+    public encryptNoteEventHandler(noteId: string): void {
+        this.collectionDataStoreAccess.encryptNote(noteId);
         this.changeVersion++;
     }
 

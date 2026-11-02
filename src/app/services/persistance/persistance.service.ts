@@ -9,6 +9,7 @@ import { TemporaryStorageService } from '../temporary-storage/temporary-storage.
 @Injectable()
 export class PersistanceService {
     private static readonly encryptedAttachmentExtension: string = '.enc';
+    private static readonly upgradeTemporaryFileExtension: string = '.upgrade';
 
     constructor(
         private collectionFileAccess: CollectionFileAccess,
@@ -17,6 +18,27 @@ export class PersistanceService {
         private fileAccess: FileAccess,
         private temporaryStorageService: TemporaryStorageService,
     ) {}
+
+    public async isSecretKeyCorrectAsync(noteId: string, secretKey: string, isMarkdownNote: boolean): Promise<boolean> {
+        const noteContent: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(
+            noteId,
+            this.settings.activeCollection,
+            isMarkdownNote,
+        );
+
+        if (!this.cryptography.isCurrentTextFormat(noteContent)) {
+            // Nothing to verify against; loading the content reports the problem.
+            return true;
+        }
+
+        try {
+            this.cryptography.decrypt(noteContent, secretKey);
+
+            return true;
+        } catch {
+            return false;
+        }
+    }
 
     public async getNoteContentAsync(noteId: string, isEncrypted: boolean, secretKey: string, isMarkdownNote: boolean): Promise<string> {
         const noteContent: string = await this.collectionFileAccess.getNoteContentByNoteIdAsync(
@@ -38,6 +60,7 @@ export class PersistanceService {
         isEncrypted: boolean,
         secretKey: string,
         isMarkdownNote: boolean,
+        upgradeLegacyEncryption: boolean = false,
     ): Promise<void> {
         let contentToWrite: string = noteJsonContent;
 
@@ -48,7 +71,7 @@ export class PersistanceService {
         await this.collectionFileAccess.saveNoteContentAsync(noteId, contentToWrite, this.settings.activeCollection, isMarkdownNote);
 
         if (isMarkdownNote) {
-            await this.syncMarkdownAttachmentEncryptionStateAsync(noteId, isEncrypted, secretKey);
+            await this.syncMarkdownAttachmentEncryptionStateAsync(noteId, isEncrypted, secretKey, upgradeLegacyEncryption);
         }
     }
 
@@ -119,7 +142,12 @@ export class PersistanceService {
         await this.collectionFileAccess.exportNoteAsync(exportFilePath, noteId, noteTitle, noteText, noteContent, isMarkdownNote, tags);
     }
 
-    private async syncMarkdownAttachmentEncryptionStateAsync(noteId: string, isEncrypted: boolean, secretKey: string): Promise<void> {
+    private async syncMarkdownAttachmentEncryptionStateAsync(
+        noteId: string,
+        isEncrypted: boolean,
+        secretKey: string,
+        upgradeLegacyEncryption: boolean,
+    ): Promise<void> {
         const noteAttachmentsDirectoryPath: string = this.collectionFileAccess.getNoteAttachmentsDirectoryPath(
             noteId,
             this.settings.activeCollection,
@@ -133,7 +161,17 @@ export class PersistanceService {
 
         if (isEncrypted && !StringUtils.isNullOrWhiteSpace(secretKey)) {
             for (const noteAttachmentPath of noteAttachmentPaths) {
+                if (noteAttachmentPath.endsWith(PersistanceService.upgradeTemporaryFileExtension)) {
+                    // Left behind by an interrupted upgrade; the original file is still intact.
+                    await this.fileAccess.deleteFileIfExistsAsync(noteAttachmentPath);
+                    continue;
+                }
+
                 if (noteAttachmentPath.endsWith(PersistanceService.encryptedAttachmentExtension)) {
+                    if (upgradeLegacyEncryption) {
+                        await this.upgradeAttachmentEncryptionAsync(noteAttachmentPath, secretKey);
+                    }
+
                     continue;
                 }
 
@@ -160,6 +198,23 @@ export class PersistanceService {
             await this.fileAccess.writeBufferToFileAsync(decryptedAttachmentPath, decryptedAttachmentBuffer);
             await this.fileAccess.deleteFileIfExistsAsync(noteAttachmentPath);
         }
+    }
+
+    private async upgradeAttachmentEncryptionAsync(encryptedAttachmentPath: string, secretKey: string): Promise<void> {
+        const encryptedAttachmentBuffer: Buffer = await this.fileAccess.getFileContentAsBufferAsync(encryptedAttachmentPath);
+
+        if (this.cryptography.isCurrentBufferFormat(encryptedAttachmentBuffer)) {
+            return;
+        }
+
+        const upgradedAttachmentBuffer: Buffer = this.cryptography.encryptBuffer(
+            this.cryptography.decryptBuffer(encryptedAttachmentBuffer, secretKey),
+            secretKey,
+        );
+        const temporaryPath: string = `${encryptedAttachmentPath}${PersistanceService.upgradeTemporaryFileExtension}`;
+
+        await this.fileAccess.writeBufferToFileAsync(temporaryPath, upgradedAttachmentBuffer);
+        this.fileAccess.renameFileOrDirectory(temporaryPath, encryptedAttachmentPath);
     }
 
     private getDecryptedAttachmentsDirectoryPath(noteId: string): string {

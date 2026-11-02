@@ -59,7 +59,7 @@ describe('NoteComponent preparing deletion', () => {
         jest.spyOn(client, 'setNoteOpen').mockImplementation(() => undefined);
         const persistance = Mock.ofType<PersistanceService>();
         writeContent = jest.fn().mockResolvedValue(undefined);
-        persistance.setup((x) => x.updateNoteContentAsync(It.isAny(), It.isAny(), It.isAny(), It.isAny(), It.isAny()))
+        persistance.setup((x) => x.updateNoteContentAsync(It.isAny(), It.isAny(), It.isAny(), It.isAny(), It.isAny(), It.isAny()))
             .returns(writeContent);
         const translator = Mock.ofType<TranslatorService>();
         translator.setup((x) => x.getAsync(It.isAny(), It.isAny())).returns(async () => 'Error');

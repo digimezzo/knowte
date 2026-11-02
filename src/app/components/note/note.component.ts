@@ -552,7 +552,8 @@ export class NoteComponent implements OnInit {
             if (result) {
                 this.isEncrypted = true;
                 this.secretKey = data.inputText;
-                this.collectionClient.encryptNote(this.noteId, this.secretKey);
+                this.secretKeyHash = '';
+                this.collectionClient.encryptNote(this.noteId);
                 await this.saveNoteContentAsync();
             }
         });
@@ -570,6 +571,7 @@ export class NoteComponent implements OnInit {
         dialogRef.afterClosed().subscribe(async (result: any) => {
             if (result) {
                 this.isEncrypted = false;
+                this.secretKeyHash = '';
                 this.collectionClient.decryptNote(this.noteId);
                 await this.saveNoteContentAsync();
                 this.secretKey = '';
@@ -813,17 +815,20 @@ export class NoteComponent implements OnInit {
             const tasksCount = this.noteEditor.getTasksCount();
 
             // Write the note file first: it holds the actual content and does not depend on the main window.
+            // A stored hash means the note still uses the legacy format; it is upgraded by this save.
             await this.persistance.updateNoteContentAsync(
                 this.noteId,
                 content,
                 this.isEncrypted,
                 this.secretKey,
                 this.isMarkdownNote,
+                this.isEncrypted && !!this.secretKeyHash,
             );
 
             operation = await this.collectionClient.saveNoteTextAsync(this.noteId, text, this.isEncrypted, this.secretKey, tasksCount);
 
             if (operation === Operation.Success) {
+                this.secretKeyHash = '';
                 await this.refreshMarkdownAttachmentPreviewDirectoryAsync();
             } else {
                 this.logger.error(`Could not save metadata for the note with id='${this.noteId}'. Operation: ${operation}`,
@@ -861,8 +866,12 @@ export class NoteComponent implements OnInit {
         return operation;
     }
 
-    private isSecretKeyCorrect(): boolean {
-        return this.cryptography.createHash(this.secretKey) === this.secretKeyHash;
+    private async isSecretKeyCorrectAsync(): Promise<boolean> {
+        if (this.secretKeyHash) {
+            return this.cryptography.createHash(this.secretKey) === this.secretKeyHash;
+        }
+
+        return await this.persistance.isSecretKeyCorrectAsync(this.noteId, this.secretKey, this.isMarkdownNote);
     }
 
     private async getNoteDetailsAsync(): Promise<void> {
@@ -937,12 +946,12 @@ export class NoteComponent implements OnInit {
 
         let isClosing: boolean = false;
 
-        while (!this.isSecretKeyCorrect() && !isClosing) {
+        while (!(await this.isSecretKeyCorrectAsync()) && !isClosing) {
             if (!(await this.requestSecretKeyAsync())) {
                 isClosing = true;
                 this.noteWindow.close();
             } else {
-                if (!this.isSecretKeyCorrect()) {
+                if (!(await this.isSecretKeyCorrectAsync())) {
                     const notificationTitle: string = await this.translator.getAsync('NotificationTitles.IncorrectKey');
                     const notificationText: string = await this.translator.getAsync('NotificationTexts.SecretKeyIncorrect');
                     const dialogRef: MatDialogRef<NotificationDialogComponent> = this.dialog.open(NotificationDialogComponent, {

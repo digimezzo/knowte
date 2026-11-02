@@ -86,6 +86,72 @@ describe('PersistanceService asynchronous attachment access', () => {
         files.verify((x) => x.deleteFileIfExistsAsync(source), Times.once());
     });
 
+    describe('legacy encryption', () => {
+        beforeEach(() => {
+            files.setup((x) => x.getFilesInDirectoryAsync('/storage/note')).returns(async () => ['/storage/note/image.png.enc']);
+        });
+
+        it('upgrades legacy attachments through a temporary file when asked to', async () => {
+            crypto.setup((x) => x.isCurrentBufferFormat(It.isAny())).returns(() => false);
+
+            await service.updateNoteContentAsync('note', 'content', true, 'key', true, true);
+
+            expect(writes).toHaveBeenCalledWith('/storage/note/image.png.enc.upgrade', Buffer.from('encrypted'));
+            files.verify((x) => x.renameFileOrDirectory('/storage/note/image.png.enc.upgrade', '/storage/note/image.png.enc'), Times.once());
+        });
+
+        it('leaves attachments in the current format alone', async () => {
+            crypto.setup((x) => x.isCurrentBufferFormat(It.isAny())).returns(() => true);
+
+            await service.updateNoteContentAsync('note', 'content', true, 'key', true, true);
+
+            expect(writes).not.toHaveBeenCalled();
+        });
+
+        it('does not touch existing encrypted attachments unless asked to upgrade', async () => {
+            crypto.setup((x) => x.isCurrentBufferFormat(It.isAny())).returns(() => false);
+
+            await service.updateNoteContentAsync('note', 'content', true, 'key', true);
+
+            expect(writes).not.toHaveBeenCalled();
+        });
+
+        it('removes temporary files left behind by an interrupted upgrade', async () => {
+            files.reset();
+            files.setup((x) => x.pathExistsAsync(It.isAnyString())).returns(async () => true);
+            files.setup((x) => x.getFilesInDirectoryAsync('/storage/note')).returns(async () => ['/storage/note/image.png.enc.upgrade']);
+            files.setup((x) => x.deleteFileIfExistsAsync(It.isAnyString())).returns(async () => undefined);
+
+            await service.updateNoteContentAsync('note', 'content', true, 'key', true, true);
+
+            files.verify((x) => x.deleteFileIfExistsAsync('/storage/note/image.png.enc.upgrade'), Times.once());
+        });
+    });
+
+    describe('verifying the secret key', () => {
+        beforeEach(() => {
+            crypto.setup((x) => x.isCurrentTextFormat(It.isAny())).returns((text: string) => text.startsWith('current:'));
+        });
+
+        function setContent(content: string): void {
+            collectionFiles.setup((x) => x.getNoteContentByNoteIdAsync('note', 'collection', true)).returns(async () => content);
+        }
+
+        it('accepts a key that decrypts current-format content', async () => {
+            setContent('current:data');
+            crypto.setup((x) => x.decrypt('current:data', 'key')).returns(() => 'plain');
+
+            expect(await service.isSecretKeyCorrectAsync('note', 'key', true)).toBe(true);
+        });
+
+        it('rejects a key that fails to decrypt current-format content', async () => {
+            setContent('current:data');
+            crypto.setup((x) => x.decrypt('current:data', 'wrong')).throws(new Error('Unsupported state or unable to authenticate data'));
+
+            expect(await service.isSecretKeyCorrectAsync('note', 'wrong', true)).toBe(false);
+        });
+    });
+
     it('propagates attachment access failures instead of reporting a successful save', async () => {
         const error = new Error('Storage unavailable');
         files.reset();

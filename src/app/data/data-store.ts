@@ -26,7 +26,7 @@ export abstract class DataStore {
     public abstract deleteNote(id: string): void;
     public abstract trashNote(id: string): void;
     public abstract restoreNote(id: string): void;
-    public abstract encryptNote(id: string, secretKeyHash: string): void;
+    public abstract encryptNote(id: string): void;
     public abstract decryptNote(id: string): void;
     public abstract updateNote(note: Note): void;
     public abstract updateNoteWithoutDate(note: Note): void;

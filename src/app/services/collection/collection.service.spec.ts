@@ -205,6 +205,14 @@ describe('CollectionService note deletion', () => {
             expect(service.changeVersion).toBeGreaterThan(0);
         });
 
+        it('drops the legacy secret key hash once an encrypted note is saved', () => {
+            const note = addNote(true, 'old');
+            note.isEncrypted = true;
+            note.secretKeyHash = 'legacy-hash';
+            service.saveNoteTextEventHandler(note.id, 'new', true, 'key', new TasksCount(0, 0), jest.fn());
+            expect(note.secretKeyHash).toBe('');
+        });
+
         it('tracks notebook, note and metadata notifications in the same counter', () => {
             const notifications = [
                 'notebookEdited', 'notebookDeleted', 'noteEdited', 'notesChanged',
@@ -220,7 +228,7 @@ describe('CollectionService note deletion', () => {
         it('tracks restores and encryption changes', () => {
             service.restoredCollectionAvailable();
             expect(service.changeVersion).toBe(1);
-            service.encryptNoteEventHandler('note', 'key');
+            service.encryptNoteEventHandler('note');
             expect(service.changeVersion).toBe(2);
             service.decryptNoteEventHandler('note');
             expect(service.changeVersion).toBe(3);

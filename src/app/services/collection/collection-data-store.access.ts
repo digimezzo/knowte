@@ -151,8 +151,8 @@ export class CollectionDataStoreAccess {
         return this.dataStore.getMarkedNotes();
     }
 
-    public encryptNote(noteId: string, secretKeyHash: string): void {
-        this.dataStore.encryptNote(noteId, secretKeyHash);
+    public encryptNote(noteId: string): void {
+        this.dataStore.encryptNote(noteId);
     }
 
     public decryptNote(noteId: string): void {

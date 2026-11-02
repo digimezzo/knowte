@@ -248,10 +248,10 @@ export class LokiDataStore extends DataStore {
         this.saveDatabase(this.db);
     }
 
-    public encryptNote(id: string, secretKeyHash: string): void {
+    public encryptNote(id: string): void {
         const noteToEncrypt: Note = this.getNoteById(id);
         noteToEncrypt.isEncrypted = true;
-        noteToEncrypt.secretKeyHash = secretKeyHash;
+        noteToEncrypt.secretKeyHash = '';
         this.saveDatabase(this.db);
     }
 

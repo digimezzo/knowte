@@ -164,8 +164,8 @@ export class CollectionClient implements OnDestroy {
         });
     }
 
-    public encryptNote(noteId: string, secretKey: string): void {
-        this.globalEmitter.emit(CollectionEvents.encryptNoteEvent, noteId, secretKey);
+    public encryptNote(noteId: string): void {
+        this.globalEmitter.emit(CollectionEvents.encryptNoteEvent, noteId);
     }
 
     public decryptNote(noteId: string): void {
