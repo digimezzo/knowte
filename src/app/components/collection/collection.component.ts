@@ -1,5 +1,5 @@
 import {animate, style, transition, trigger} from '@angular/animations';
-import {Component, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, HostListener, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import * as remote from '@electron/remote';
@@ -77,7 +77,8 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
     @ViewChild('split', {static: false}) public split: SplitComponent;
     @ViewChild('area1', {static: false}) public area1: SplitAreaDirective;
 
-    public area1Size: number = this.settings.notebooksPaneWidth;
+    public area1Size: number = Math.min(370, Math.max(230, this.settings.notebooksPaneWidth));
+    public isNotebooksPaneVisible: boolean = window.innerWidth >= 970;
 
     public applicationName: string = ProductInformation.applicationName;
     public notebooksCount: number = 0;
@@ -484,6 +485,11 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
                 data: {errorText: errorText},
             });
         }
+    }
+
+    @HostListener('window:resize')
+    public onWindowResize(): void {
+        this.isNotebooksPaneVisible = window.innerWidth >= 970;
     }
 
     public dragEnd(event: any): void {

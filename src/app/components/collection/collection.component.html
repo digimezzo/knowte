@@ -60,7 +60,7 @@
             <app-main-menu class="app-collection__menu" [selectedMenuItem]="1"></app-main-menu>
             <div class="app-collection__content viewport-height">
                 <as-split gutterSize="4" unit="pixel" direction="horizontal" (dragEnd)="dragEnd($event)" #split="asSplit">
-                    <as-split-area class="pt-2 pb-2" [size]="area1Size" minSize="10" #area1="asSplitArea">
+                    <as-split-area class="pt-2 pb-2" [order]="0" [size]="area1Size" [visible]="isNotebooksPaneVisible" [minSize]="230" [maxSize]="370" #area1="asSplitArea">
                         <!-- Notebooks -->
                         <div class="notebooks-pane">
                             <div class="notebooks-pane-content pl-2 pr-2">
@@ -179,8 +179,8 @@
                             </div>
                         </div>
                     </as-split-area>
-                    <as-split-area class="pt-2 pb-2" size="*" #area2="asSplitArea">
-                        <div class="right-pane pl-1 pr-2">
+                    <as-split-area class="pt-2 pb-2" [order]="1" size="*" #area2="asSplitArea">
+                        <div class="right-pane pr-2" [ngClass]="isNotebooksPaneVisible ? 'pl-1' : 'pl-2'">
                             <!-- Selected notebook and search -->
                             <app-active-notebook-and-search
                                 class="active-notebook-and-search"

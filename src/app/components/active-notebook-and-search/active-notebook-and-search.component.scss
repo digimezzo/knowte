@@ -17,11 +17,18 @@
 .notes-content-title {
     display: flex;
     align-self: flex-start;
+    min-width: 0;
+}
+
+.notes-content-title .count-label {
+    flex-shrink: 0;
 }
 
 .notes-content-title-text {
     white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
     padding-bottom: 3px;
 }
 

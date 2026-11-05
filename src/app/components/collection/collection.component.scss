@@ -69,6 +69,18 @@
 .notebooks-pane-content__title {
     display: flex;
     flex-direction: row;
+    min-width: 0;
+}
+
+.notebooks-pane-content__title > .title2 {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notebooks-pane-content__title > .count-label {
+    flex-shrink: 0;
 }
 
 .notebooks-archive-toggle {
