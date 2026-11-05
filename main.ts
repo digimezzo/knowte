@@ -571,6 +571,11 @@ try {
     app.on('ready', () => {
         screen.on('display-removed', recoverOffScreenWindows);
         screen.on('display-metrics-changed', recoverOffScreenWindows);
+
+        // Opt-in via Settings > Advanced > Diagnostics. Applies after a restart, like the renderer monitors.
+        if (new SettingsStore(app.getPath('userData')).get('performanceDiagnosticsEnabled', false)) {
+            require('./main/event-loop-monitor').monitorMainProcessEventLoop(log);
+        }
     });
 
     // Quit when all windows are closed.

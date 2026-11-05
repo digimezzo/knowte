@@ -491,6 +491,10 @@ try {
     electron_1.app.on('ready', () => {
         electron_1.screen.on('display-removed', recoverOffScreenWindows);
         electron_1.screen.on('display-metrics-changed', recoverOffScreenWindows);
+        // Opt-in via Settings > Advanced > Diagnostics. Applies after a restart, like the renderer monitors.
+        if (new settings_store_1.SettingsStore(electron_1.app.getPath('userData')).get('performanceDiagnosticsEnabled', false)) {
+            require('./main/event-loop-monitor').monitorMainProcessEventLoop(electron_log_1.default);
+        }
     });
     // Quit when all windows are closed.
     electron_1.app.on('window-all-closed', () => {
