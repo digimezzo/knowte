@@ -438,15 +438,17 @@ export class CollectionService {
 
     public async saveAndCloseAllNotesAsync(): Promise<boolean> {
         let allSaved: boolean = true;
-        for (const noteId of [...this.openNoteIds]) {
-            try {
-                await this.prepareNoteDeletionAsync(noteId);
-            } catch (error) {
-                this.logger.error(`Could not save note with id='${noteId}' before closing. Cause: ${error}`,
-                    'CollectionService', 'saveAndCloseAllNotesAsync');
-                allSaved = false;
-            }
-        }
+        await Promise.all(
+            [...this.openNoteIds].map(async (noteId: string) => {
+                try {
+                    await this.prepareNoteDeletionAsync(noteId);
+                } catch (error) {
+                    this.logger.error(`Could not save note with id='${noteId}' before closing. Cause: ${error}`,
+                        'CollectionService', 'saveAndCloseAllNotesAsync');
+                    allSaved = false;
+                }
+            }),
+        );
         try {
             if (this.isInitialized) {
                 await this.collectionDataStoreAccess.saveAsync();
@@ -726,8 +728,8 @@ export class CollectionService {
         let operation: Operation;
         this.globalEmitter.emit(CollectionEvents.prepareNoteDeletionEvent, noteId, (result: Operation) => (operation = result));
 
-        for (let attempt = 0; operation === undefined && attempt < 200; attempt++) {
-            await this.scheduler.sleepAsync(50);
+        for (let attempt = 0; operation === undefined && attempt < 1000; attempt++) {
+            await this.scheduler.sleepAsync(10);
         }
 
         if (operation !== Operation.Success) {

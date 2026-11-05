@@ -587,7 +587,18 @@ describe('NoteComponent preparing deletion', () => {
         }
     });
 
+    it('closes a clean note without rewriting its content', async () => {
+        const acknowledged = new Promise<Operation>((resolve) => {
+            client['prepareNoteDeletion'].next({ noteId: 'note-id', callback: resolve });
+        });
+
+        expect(await acknowledged).toBe(Operation.Success);
+        expect(writeContent).not.toHaveBeenCalled();
+        expect(closeWindow).toHaveBeenCalled();
+    });
+
     it('saves content and acknowledges success before closing the window', async () => {
+        component['isTextDirty'] = true;
         const dispose = jest.spyOn(client, 'dispose');
         const callback = jest.fn();
         const acknowledged = new Promise<Operation>((resolve) => {
@@ -610,6 +621,7 @@ describe('NoteComponent preparing deletion', () => {
     });
 
     it('ignores a delayed close while deletion is saving', async () => {
+        component['isTextDirty'] = true;
         let finishWrite: () => void;
         const started = new Promise<void>((resolve) => {
             writeContent.mockImplementationOnce(() => {
@@ -633,6 +645,7 @@ describe('NoteComponent preparing deletion', () => {
     });
 
     it('keeps the window open and reports errors when writing content fails', async () => {
+        component['isTextDirty'] = true;
         writeContent.mockRejectedValue(new Error('Cannot write'));
         const acknowledged = new Promise<Operation>((resolve) => {
             client['prepareNoteDeletion'].next({ noteId: 'note-id', callback: resolve });
@@ -676,6 +689,7 @@ describe('NoteComponent preparing deletion', () => {
     });
 
     it('cancels pending autosaves after preparing deletion', async () => {
+        component['isTextDirty'] = true;
         jest.useFakeTimers();
         try {
             component.noteContentChanged.next();

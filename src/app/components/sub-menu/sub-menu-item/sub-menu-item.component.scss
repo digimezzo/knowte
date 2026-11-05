@@ -14,6 +14,7 @@
     left: 0;
     top: 0;
     z-index: 1;
+    white-space: nowrap;
     color: var(--theme-secondary-text);
     text-transform: uppercase;
     font-size: var(--fontsize-larger) !important;
@@ -32,6 +33,9 @@
 }
 
 .sub-menu-item__label-measure {
+    // Inline-block + nowrap so ResizeObserver fires and the width isn't capped by the container's previous width.
+    display: inline-block;
+    white-space: nowrap;
     visibility: hidden;
     color: var(--theme-secondary-text);
     text-transform: uppercase;

@@ -186,3 +186,9 @@
 .drop-notebook {
     background-color: rgba(var(--theme-rgb-accent), 0.2);
 }
+
+@media (max-width: 969.98px) {
+    .app-collection__narrow-hidden-tab {
+        display: none !important;
+    }
+}

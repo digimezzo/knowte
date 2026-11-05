@@ -234,7 +234,8 @@ export class NoteComponent implements OnInit {
                     return;
                 }
 
-                const operation: Operation = await this.saveNoteContentAsync();
+                const needsContentSave: boolean = this.isTextDirty || !!this.pendingContentSave || !!this.secretKeyHash;
+                const operation: Operation = needsContentSave ? await this.saveNoteContentAsync() : Operation.Success;
                 if (operation === Operation.Success && !this.isTextDirty) {
                     this.cleanup();
                     // Closing can destroy this renderer before it acknowledges the save.
