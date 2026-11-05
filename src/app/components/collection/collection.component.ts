@@ -493,6 +493,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
     }
 
     public dragEnd(event: any): void {
+        this.area1Size = event.sizes[0];
         this.settings.notebooksPaneWidth = event.sizes[0];
     }
 
