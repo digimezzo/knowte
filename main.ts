@@ -52,6 +52,10 @@ function createMainWindow(): void {
     if (!gotTheLock) {
         app.quit();
     } else {
+        if (process.platform === 'linux') {
+            require('./main/linux-accent-monitor').startLinuxAccentMonitor({ app, BrowserWindow, log });
+        }
+
         app.on('second-instance', (event, commandLine, workingDirectory) => {
             // Someone tried to run a second instance, we should focus our window.
             if (mainWindow) {

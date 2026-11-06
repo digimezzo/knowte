@@ -65,6 +65,9 @@ function createMainWindow() {
         electron_1.app.quit();
     }
     else {
+        if (process.platform === 'linux') {
+            require('./main/linux-accent-monitor').startLinuxAccentMonitor({ app: electron_1.app, BrowserWindow: electron_1.BrowserWindow, log: electron_log_1.default });
+        }
         electron_1.app.on('second-instance', (event, commandLine, workingDirectory) => {
             // Someone tried to run a second instance, we should focus our window.
             if (mainWindow) {

@@ -1,30 +1,48 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import * as remote from '@electron/remote';
-import { ChildProcess, execSync, spawn } from 'child_process';
+import { execSync } from 'child_process';
+import { ipcRenderer } from 'electron';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable()
 export class Desktop implements OnDestroy {
     private accentColorChanged: Subject<void> = new Subject();
     private nativeThemeUpdated: Subject<void> = new Subject();
-    private linuxAccentMonitor: ChildProcess | undefined;
+    private readonly accentColorListener = () => this.accentColorChanged.next();
+    private readonly nativeThemeListener = () => this.nativeThemeUpdated.next();
+    private readonly unloadListener = () => this.dispose();
+    private disposed = false;
 
     constructor() {
         if (remote.systemPreferences != undefined) {
-            remote.systemPreferences.on('accent-color-changed', () => this.accentColorChanged.next());
+            remote.systemPreferences.on('accent-color-changed', this.accentColorListener);
         }
 
         if (remote.nativeTheme != undefined) {
-            remote.nativeTheme.on('updated', () => this.nativeThemeUpdated.next());
+            remote.nativeTheme.on('updated', this.nativeThemeListener);
         }
 
         if (process.platform === 'linux') {
-            this.startLinuxAccentColorMonitor();
+            ipcRenderer.on('linux-accent-color-changed', this.accentColorListener);
         }
+        window.addEventListener('unload', this.unloadListener);
     }
 
     public ngOnDestroy(): void {
-        this.stopLinuxAccentColorMonitor();
+        this.dispose();
+    }
+
+    private dispose(): void {
+        if (this.disposed) {
+            return;
+        }
+        this.disposed = true;
+        remote.systemPreferences?.removeListener('accent-color-changed', this.accentColorListener);
+        remote.nativeTheme?.removeListener('updated', this.nativeThemeListener);
+        if (process.platform === 'linux') {
+            ipcRenderer.removeListener('linux-accent-color-changed', this.accentColorListener);
+        }
+        window.removeEventListener('unload', this.unloadListener);
     }
 
     public accentColorChanged$: Observable<void> = this.accentColorChanged.asObservable();
@@ -102,42 +120,5 @@ export class Desktop implements OnDestroy {
         const toHex = (n: number): string => Math.max(0, Math.min(255, n)).toString(16).padStart(2, '0');
 
         return toHex(r) + toHex(g) + toHex(b) + 'ff';
-    }
-
-    /**
-     * Monitors accent color changes on Linux via the Freedesktop Portal D-Bus signal.
-     */
-    private startLinuxAccentColorMonitor(): void {
-        try {
-            this.linuxAccentMonitor = spawn('gdbus', [
-                'monitor',
-                '--session',
-                '--dest',
-                'org.freedesktop.portal.Desktop',
-                '--object-path',
-                '/org/freedesktop/portal/desktop',
-            ]);
-
-            this.linuxAccentMonitor.stdout?.on('data', (data: Buffer) => {
-                const text = data.toString();
-
-                if (text.includes('accent-color')) {
-                    this.accentColorChanged.next();
-                }
-            });
-
-            this.linuxAccentMonitor.on('error', () => {
-                // gdbus not available — ignore silently
-            });
-        } catch {
-            // spawn failed — ignore silently
-        }
-    }
-
-    private stopLinuxAccentColorMonitor(): void {
-        if (this.linuxAccentMonitor != undefined) {
-            this.linuxAccentMonitor.kill();
-            this.linuxAccentMonitor = undefined;
-        }
     }
 }
