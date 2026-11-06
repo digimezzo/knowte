@@ -31,6 +31,7 @@ describe('PerformanceDiagnostics', () => {
 
     it('does not time, log or start a timer when disabled, but still executes operations', async () => {
         PerformanceDiagnostics.configure(false);
+        expect(PerformanceDiagnostics.isEnabled()).toBe(false);
         const clock = jest.spyOn(performance, 'now').mockClear();
         const finish = PerformanceDiagnostics.start('Database.save', true);
         finish();
@@ -64,6 +65,7 @@ describe('PerformanceDiagnostics', () => {
     });
 
     it('pairs start and finish entries using the same operation ID', () => {
+        expect(PerformanceDiagnostics.isEnabled()).toBe(true);
         const finish = PerformanceDiagnostics.start('Database.save', true);
         now = 20;
         finish('callback received');

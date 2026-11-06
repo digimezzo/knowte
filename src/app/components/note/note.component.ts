@@ -12,6 +12,7 @@ import { ProductInformation } from '../../common/application/product-information
 import { Operation } from '../../common/enums/operation';
 import { ClipboardManager } from '../../common/io/clipboard-manager';
 import { Logger } from '../../common/logging/logger';
+import { PerformanceDiagnostics } from '../../common/logging/performance-diagnostics';
 import { BaseSettings } from '../../common/settings/base-settings';
 import { StringUtils } from '../../common/utils/strings-utils';
 import { TagUtils } from '../../common/utils/tag-utils';
@@ -119,37 +120,57 @@ export class NoteComponent implements OnInit {
                 return;
             }
             this.noteId = params['id'];
-            this.noteWindow = remote.getCurrentWindow();
-            await this.getNoteDetailsAsync();
+            const label = `noteId=${this.noteId}`;
+            const finish = PerformanceDiagnostics.start(`NoteOpen.initialize ${label}`, true);
+            let completed = false;
+            try {
+                this.noteWindow = remote.getCurrentWindow();
+                await PerformanceDiagnostics.measureAsync(`NoteOpen.details ${label}`, () => this.getNoteDetailsAsync(), true);
 
-            this.noteEditor = this.noteEditorFactory.create(this.noteId, this.isMarkdownNote);
-            await this.noteEditor.initializeAsync();
-
-            await this.requestSecretKeyOrCloseNoteAsync();
-            await this.refreshMarkdownAttachmentPreviewDirectoryAsync();
-            this.addSubscriptions();
-            this.addDocumentListeners();
-
-            await this.getNoteContentAsync();
-            this.searchText = await this.searchClient.getSearchTextAsync();
-            this.applySearch();
-
-            this.noteWindow.webContents.on('context-menu', (event, contextMenuParams) => {
-                const hasSelectedText: boolean = this.noteEditor.hasSelectedText();
-                const contextMenuItemsEnabledState: ContextMenuItemsEnabledState = new ContextMenuItemsEnabledState(
-                    hasSelectedText,
-                    this.clipboard.containsText() || this.clipboard.containsImage(),
+                this.noteEditor = PerformanceDiagnostics.measure(
+                    `NoteOpen.editorCreate ${label}`, () => this.noteEditorFactory.create(this.noteId, this.isMarkdownNote), true,
                 );
-                this.noteContextMenuFactory.createAsync(
-                    this.noteWindow.webContents,
-                    contextMenuParams,
-                    contextMenuItemsEnabledState,
-                    () => this.noteEditor.performCut(),
-                    () => this.noteEditor.performCopy(),
-                    () => this.noteEditor.performPaste(),
-                    () => this.noteEditor.performDelete(),
+                await PerformanceDiagnostics.measureAsync(`NoteOpen.editorInitialize ${label}`, () => this.noteEditor.initializeAsync(), true);
+
+                await PerformanceDiagnostics.measureAsync(
+                    `NoteOpen.unlock ${label}`, () => this.requestSecretKeyOrCloseNoteAsync(), true,
                 );
-            });
+                await PerformanceDiagnostics.measureAsync(
+                    `NoteOpen.attachmentPreview ${label}`, () => this.refreshMarkdownAttachmentPreviewDirectoryAsync(), true,
+                );
+                this.addSubscriptions();
+                this.addDocumentListeners();
+
+                await PerformanceDiagnostics.measureAsync(`NoteOpen.content ${label}`, () => this.getNoteContentAsync(), true);
+                this.searchText = await PerformanceDiagnostics.measureAsync(
+                    `NoteOpen.searchText ${label}`, () => this.searchClient.getSearchTextAsync(), true,
+                );
+                PerformanceDiagnostics.measure(`NoteOpen.applySearch ${label}`, () => this.applySearch(), true);
+
+                this.noteWindow.webContents.on('context-menu', (event, contextMenuParams) => {
+                    const hasSelectedText: boolean = this.noteEditor.hasSelectedText();
+                    const contextMenuItemsEnabledState: ContextMenuItemsEnabledState = new ContextMenuItemsEnabledState(
+                        hasSelectedText,
+                        this.clipboard.containsText() || this.clipboard.containsImage(),
+                    );
+                    this.noteContextMenuFactory.createAsync(
+                        this.noteWindow.webContents,
+                        contextMenuParams,
+                        contextMenuItemsEnabledState,
+                        () => this.noteEditor.performCut(),
+                        () => this.noteEditor.performCopy(),
+                        () => this.noteEditor.performPaste(),
+                        () => this.noteEditor.performDelete(),
+                    );
+                });
+                completed = true;
+                if (this.hasLoadedNoteContent && PerformanceDiagnostics.isEnabled()) {
+                    const finishFrame = PerformanceDiagnostics.start(`NoteOpen.nextAnimationFrame ${label}`, true);
+                    requestAnimationFrame(() => finishFrame(`documentHidden=${document.hidden}`));
+                }
+            } finally {
+                finish(`completed=${completed}; contentLoaded=${this.hasLoadedNoteContent}`);
+            }
         });
     }
 
@@ -893,15 +914,16 @@ export class NoteComponent implements OnInit {
 
     private async getNoteContentAsync(): Promise<void> {
         try {
-            const noteContent: string = await this.persistance.getNoteContentAsync(
-                this.noteId,
-                this.isEncrypted,
-                this.secretKey,
-                this.isMarkdownNote,
+            const noteContent: string = await PerformanceDiagnostics.measureAsync(
+                `NoteOpen.contentRead noteId=${this.noteId}`,
+                () => this.persistance.getNoteContentAsync(this.noteId, this.isEncrypted, this.secretKey, this.isMarkdownNote),
+                true,
             );
 
             this.logger.info(`Setting the content for the note with id='${this.noteId}'`, 'NoteComponent', 'getNoteContentAsync');
-            this.noteEditor.content = noteContent;
+            PerformanceDiagnostics.measure(`NoteOpen.contentAssign noteId=${this.noteId}`, () => {
+                this.noteEditor.content = noteContent;
+            }, true);
             this.hasLoadedNoteContent = true;
         } catch (error) {
             this.logger.error(

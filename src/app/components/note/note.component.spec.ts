@@ -11,6 +11,7 @@ import { It, Mock } from 'typemoq';
 import { Constants } from '../../common/application/constants';
 import { Operation } from '../../common/enums/operation';
 import { Logger } from '../../common/logging/logger';
+import { PerformanceDiagnostics } from '../../common/logging/performance-diagnostics';
 import { Scheduler } from '../../common/scheduling/scheduler';
 import { BaseSettings } from '../../common/settings/base-settings';
 import { TasksCount } from '../../common/ui/tasks-count';
@@ -47,6 +48,7 @@ describe('NoteComponent preparing deletion', () => {
     let openSheet: jest.Mock;
     let sheetDismissed: Subject<NoteAction | undefined>;
     let logWarning: jest.Mock;
+    let readContent: jest.Mock;
 
     function mock<T>(): T {
         return Mock.ofType<T>().object;
@@ -58,6 +60,9 @@ describe('NoteComponent preparing deletion', () => {
         saveTags = jest.spyOn(client, 'saveNoteTagsAsync').mockResolvedValue(Operation.Success);
         jest.spyOn(client, 'setNoteOpen').mockImplementation(() => undefined);
         const persistance = Mock.ofType<PersistanceService>();
+        readContent = jest.fn().mockResolvedValue('private note content');
+        persistance.setup((x) => x.getNoteContentAsync(It.isAny(), It.isAny(), It.isAny(), It.isAny()))
+            .returns(readContent);
         writeContent = jest.fn().mockResolvedValue(undefined);
         persistance.setup((x) => x.updateNoteContentAsync(It.isAny(), It.isAny(), It.isAny(), It.isAny(), It.isAny(), It.isAny()))
             .returns(writeContent);
@@ -113,6 +118,39 @@ describe('NoteComponent preparing deletion', () => {
         component['noteWindow'] = window.object;
         jest.spyOn(component, 'clearSearch').mockImplementation(() => undefined);
         component['addSubscriptions']();
+    });
+
+    it('measures reading and assigning note content without logging its contents', async () => {
+        PerformanceDiagnostics.configure(true);
+        const info = jest.spyOn(Logger.prototype, 'info');
+        const warn = jest.spyOn(Logger.prototype, 'warn');
+        try {
+            const editor = Mock.ofType<INoteEditor>();
+            const assigned = jest.fn();
+            editor.setup((x) => x.content = It.isAnyString()).callback(assigned);
+            component.noteEditor = editor.object;
+            component['hasLoadedNoteContent'] = false;
+            await component['getNoteContentAsync']();
+            expect(readContent).toHaveBeenCalledTimes(1);
+            expect(assigned).toHaveBeenCalledWith('private note content');
+            expect(component['hasLoadedNoteContent']).toBe(true);
+            const messages = [...info.mock.calls, ...warn.mock.calls].map(([message]) => message);
+            expect(messages.some((message) => message.includes('NoteOpen.contentRead noteId=note-id'))).toBe(true);
+            expect(messages.some((message) => message.includes('NoteOpen.contentAssign noteId=note-id'))).toBe(true);
+            expect(messages.every((message) => !message.includes('private note content'))).toBe(true);
+        } finally {
+            PerformanceDiagnostics.configure(false);
+            info.mockRestore();
+            warn.mockRestore();
+        }
+    });
+
+    it('keeps content unloaded and reports errors when reading fails', async () => {
+        readContent.mockRejectedValueOnce(new Error('Read failed'));
+        component['hasLoadedNoteContent'] = false;
+        await component['getNoteContentAsync']();
+        expect(component['hasLoadedNoteContent']).toBe(false);
+        expect(showDialog).toHaveBeenCalled();
     });
 
     it('saves dirty content for backup without closing or blocking the note window', async () => {

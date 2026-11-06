@@ -1457,6 +1457,7 @@ export class CollectionService {
             }
             if (!this.openNoteIds.includes(noteId)) {
                 this.openNoteIds.push(noteId);
+                const finishOpenRequest = PerformanceDiagnostics.start(`NoteOpen.dispatch noteId=${noteId}`, true);
 
                 try {
                     const activeCollectionDirectoryPath: string = await this.collectionFileAccess.getCollectionDirectoryPath(
@@ -1473,7 +1474,9 @@ export class CollectionService {
                         windowHasFrame: this.appearance.windowHasNativeTitleBar,
                     };
                     ipcRenderer.send('open-note-window', arg);
+                    finishOpenRequest('sent to main process');
                 } catch (error) {
+                    finishOpenRequest('failed');
                     this.openNoteIds = this.openNoteIds.filter((id) => id !== noteId);
                     throw error;
                 }
