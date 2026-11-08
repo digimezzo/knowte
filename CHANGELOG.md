@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-11-08
+
+### Added
+
+- Optional skip trash for empty notes
+- Markdown highlight functionality
+- Note tagging functionality including search in tags
+- Archiving of notebooks
+- Linking of markdown notes to each other
+- Collection backup functionality
+
+### Fixed
+
+- Bold is not bold in markdown on Windows
+- Pressing 'Tab' in a note makes the cursor disappear
+- Images are not encrypted when encrypting markdown note
+- Menu item selection not bold enough
+- Checkboxes are exported to PDF as bullet points
+- Open notes remain invisible when external monitor is disconnected
+- Loading and saving a note hangs the UI when the disk is slow
+- The notebooks menu on the note window opens too far to the right and is too narrow the first time
+- Many UI fixes and tweaks
+
 ## [3.0.2] - 2026-03-22
 
 ### Added
