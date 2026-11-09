@@ -11,6 +11,7 @@ import * as url from 'url';
 import { SettingsStore } from './src/app/common/settings/settings-store';
 
 app.commandLine.appendSwitch('disable-color-correct-rendering');
+app.commandLine.appendSwitch('disable-features', 'UseEcoQoSForBackgroundProcess');
 
 log.create('main');
 log.transports.file.resolvePath = () => path.join(app.getPath('userData'), 'logs', 'Knowte.log');

@@ -32,6 +32,7 @@ const path = require("path");
 const url = require("url");
 const settings_store_1 = require("./src/app/common/settings/settings-store");
 electron_1.app.commandLine.appendSwitch('disable-color-correct-rendering');
+electron_1.app.commandLine.appendSwitch('disable-features', 'UseEcoQoSForBackgroundProcess');
 electron_log_1.default.create('main');
 electron_log_1.default.transports.file.resolvePath = () => path.join(electron_1.app.getPath('userData'), 'logs', 'Knowte.log');
 let mainWindow, serve;
