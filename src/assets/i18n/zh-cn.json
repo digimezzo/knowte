@@ -46,6 +46,9 @@
         "Website": "网站"
     },
     "SettingsPage": {
+        "NoteWindowPerformance": "笔记窗口性能",
+        "EnableNoteWindowPreloading": "预加载笔记窗口",
+        "NoteWindowPreloadingDescription": "预加载会准备一个隐藏的笔记窗口，以加快打开速度。关闭后可比较性能。重启 Knowte 以应用更改。",
         "Diagnostics": "诊断",
         "OpenLogDirectory": "打开日志文件夹",
         "EnablePerformanceDiagnostics": "启用性能日志",

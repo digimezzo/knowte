@@ -32,6 +32,16 @@ describe('Settings skipTrashForEmptyNotes', () => {
         expect(new Settings().performanceDiagnosticsEnabled).toBe(false);
     });
 
+    it('enables note window preloading by default and remembers changes', () => {
+        storedSettings.set('language', 'en');
+        expect(new Settings().noteWindowPreloadingEnabled).toBe(true);
+        const settings = new Settings();
+        settings.noteWindowPreloadingEnabled = false;
+        expect(new Settings().noteWindowPreloadingEnabled).toBe(false);
+        settings.noteWindowPreloadingEnabled = true;
+        expect(new Settings().noteWindowPreloadingEnabled).toBe(true);
+    });
+
     it('leaves backups opt-in with hourly scheduling and five retained backups', () => {
         const settings = new Settings();
         expect(settings.backupEnabled).toBe(false);

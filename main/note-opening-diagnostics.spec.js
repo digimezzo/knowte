@@ -10,13 +10,18 @@ describe('Note opening diagnostics', () => {
     let now;
     let created;
     let schedule;
+    let app;
+    let configuredPreloading;
+    let settingsContents;
 
     beforeEach(() => {
         now = 0;
         created = [];
         schedule = jest.fn();
         info = jest.fn();
-        const app = { commandLine: { appendSwitch: jest.fn() }, getPath: () => '/test', on: jest.fn() };
+        configuredPreloading = true;
+        settingsContents = undefined;
+        app = { commandLine: { appendSwitch: jest.fn() }, getPath: () => '/test', on: jest.fn() };
         class BrowserWindow extends EventEmitter {
             constructor() {
                 super();
@@ -29,7 +34,7 @@ describe('Note opening diagnostics', () => {
                 created.push(this);
             }
             isDestroyed() { return false; }
-            loadURL() {}
+            loadURL(url) { this.loadedUrl = url; }
             show() {}
             focus() {}
             setSize() {}
@@ -37,13 +42,22 @@ describe('Note opening diagnostics', () => {
         }
         const logger = { create: jest.fn(), info, warn: jest.fn(), error: jest.fn(), transports: { file: {} } };
         const mocks = {
-            electron: { app, BrowserWindow, ipcMain: { on: jest.fn(), handle: jest.fn() }, screen: {} },
+            electron: { app, BrowserWindow, ipcMain: { on: jest.fn(), handle: jest.fn() }, screen: { on: jest.fn() } },
             'electron-log': { default: logger },
             '@electron/remote/main': { initialize: jest.fn(), enable: jest.fn() },
             'electron-window-state': () => ({ width: 800, height: 500, manage: jest.fn() }),
-            'fs-extra': { existsSync: () => false, watch: jest.fn() },
+            'fs-extra': {
+                existsSync: () => settingsContents !== undefined,
+                readFileSync: () => settingsContents,
+                watch: jest.fn(),
+            },
             './src/app/common/settings/settings-store': {
-                SettingsStore: class { has() { return true; } get() { return false; } },
+                SettingsStore: class {
+                    has() { return true; }
+                    get(key, fallback) {
+                        return key === 'noteWindowPreloadingEnabled' ? (configuredPreloading ?? fallback) : false;
+                    }
+                },
             },
             './main/backup-controller': { registerBackups: jest.fn() },
         };
@@ -55,6 +69,7 @@ describe('Note opening diagnostics', () => {
             ({
                 createNoteWindow,
                 scheduleSpareNoteWindow,
+                readNoteWindowSettingsSnapshot,
                 setEnabled: (enabled) => { noteOpenDiagnosticsEnabled = enabled; },
                 setSpare: (spare) => { spareNoteWindow = spare; },
                 setMainWindow: (window) => { mainWindow = window; }
@@ -108,6 +123,41 @@ describe('Note opening diagnostics', () => {
         expect(info).toHaveBeenCalledWith(expect.stringContaining('spareId=1 window created webContentsId=1'));
         expect(info).toHaveBeenCalledWith(expect.stringContaining('spareId=1 dom-ready elapsed=750.0 ms'));
         expect(info).toHaveBeenCalledWith(expect.stringContaining('spareId=1 did-finish-load elapsed=1000.0 ms'));
+    });
+
+    test('opens new windows without scheduling spares when preloading is disabled at startup', async () => {
+        configuredPreloading = false;
+        const ready = app.on.mock.calls.filter(([name]) => name === 'ready')[1][1];
+        ready();
+        api.setMainWindow({});
+        api.scheduleSpareNoteWindow(0);
+        expect(schedule).not.toHaveBeenCalled();
+        await api.createNoteWindow('/test', 'note-1', false);
+        await api.createNoteWindow('/test', 'note-2', false);
+        expect(created).toHaveLength(2);
+        expect(created[0].loadedUrl).toContain('#/note?id=note-1');
+        expect(created[1].loadedUrl).toContain('#/note?id=note-2');
+        expect(schedule).not.toHaveBeenCalled();
+        expect(info).toHaveBeenCalledWith('[App] Note window preloading disabled.');
+    });
+
+    test('preloads by default when the setting is absent', () => {
+        configuredPreloading = undefined;
+        const ready = app.on.mock.calls.filter(([name]) => name === 'ready')[1][1];
+        ready();
+        api.setMainWindow({});
+        api.scheduleSpareNoteWindow(0);
+        expect(schedule).toHaveBeenCalledTimes(1);
+        expect(info).toHaveBeenCalledWith('[App] Note window preloading enabled.');
+    });
+
+    test('does not invalidate a spare when the restart-only preloading preference changes', () => {
+        settingsContents = JSON.stringify({ theme: 'dark', noteWindowPreloadingEnabled: true });
+        const snapshot = api.readNoteWindowSettingsSnapshot();
+        settingsContents = JSON.stringify({ theme: 'dark', noteWindowPreloadingEnabled: false });
+        expect(api.readNoteWindowSettingsSnapshot()).toBe(snapshot);
+        settingsContents = JSON.stringify({ theme: 'light', noteWindowPreloadingEnabled: false });
+        expect(api.readNoteWindowSettingsSnapshot()).not.toBe(snapshot);
     });
 
     test('logs the fresh window path and loading events when no spare exists', async () => {

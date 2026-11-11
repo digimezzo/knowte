@@ -46,6 +46,9 @@
         "Website": "Website"
     },
     "SettingsPage": {
+        "NoteWindowPerformance": "Prestaties van notitievensters",
+        "EnableNoteWindowPreloading": "Notitievensters vooraf laden",
+        "NoteWindowPreloadingDescription": "Bij vooraf laden wordt een verborgen notitievenster voorbereid om notities sneller te openen. Schakel dit uit om de prestaties te vergelijken. Herstart Knowte om de wijziging toe te passen.",
         "Diagnostics": "Diagnostiek",
         "OpenLogDirectory": "Logboekmap openen",
         "EnablePerformanceDiagnostics": "Prestatielogboek inschakelen",

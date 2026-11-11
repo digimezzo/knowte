@@ -3,6 +3,7 @@ export abstract class BaseSettings {
     public abstract language: string;
     public abstract checkForUpdates: boolean;
     public abstract performanceDiagnosticsEnabled: boolean;
+    public abstract noteWindowPreloadingEnabled: boolean;
     public abstract useCustomTitleBar: boolean;
     public abstract fontSize: number;
     public abstract theme: string;

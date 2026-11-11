@@ -78,6 +78,9 @@
         "Website": "Website"
     },
     "SettingsPage": {
+        "NoteWindowPerformance": "Note window performance",
+        "EnableNoteWindowPreloading": "Preload note windows",
+        "NoteWindowPreloadingDescription": "Preloading prepares a hidden note window to speed up opening. Disable it to compare performance. Restart Knowte to apply changes.",
         "Diagnostics": "Diagnostics",
         "OpenLogDirectory": "Open log folder",
         "EnablePerformanceDiagnostics": "Enable performance logging",

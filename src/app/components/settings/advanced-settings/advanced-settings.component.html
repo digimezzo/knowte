@@ -23,6 +23,12 @@
     <mat-divider class="my-3"></mat-divider>
     <app-backup-settings></app-backup-settings>
     <mat-divider class="my-3"></mat-divider>
+    <div class="title1 mt-2">{{ 'SettingsPage.NoteWindowPerformance' | translate }}</div>
+    <app-toggle-switch class="mt-2" [(isChecked)]="settings.noteWindowPreloadingEnabled">
+        {{ 'SettingsPage.EnableNoteWindowPreloading' | translate }}
+    </app-toggle-switch>
+    <div class="mt-2">{{ 'SettingsPage.NoteWindowPreloadingDescription' | translate }}</div>
+    <mat-divider class="my-3"></mat-divider>
     <div class="title1 mt-2">{{ 'SettingsPage.Diagnostics' | translate }}</div>
     <app-toggle-switch class="mt-2" [(isChecked)]="settings.performanceDiagnosticsEnabled">
         {{ 'SettingsPage.EnablePerformanceDiagnostics' | translate }}

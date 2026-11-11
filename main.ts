@@ -257,6 +257,7 @@ let spareNoteWindowTimer: ReturnType<typeof setTimeout> | undefined;
 let settingsWatcherTimer: ReturnType<typeof setTimeout> | undefined;
 let isWatchingSettings: boolean = false;
 let noteOpenDiagnosticsEnabled: boolean = false;
+let noteWindowPreloadingEnabled: boolean = true;
 let nextSpareDiagnosticId: number = 0;
 
 function noteOpenTrace(label: string): (stage: string) => void {
@@ -275,8 +276,9 @@ function readNoteWindowSettingsSnapshot(): string | undefined {
         if (!fs.existsSync(settingsFile)) {
             return '';
         }
-        // Backup status changes frequently and does not affect note windows.
-        const { backupLastSuccess, backupLastError, ...relevantSettings } = JSON.parse(fs.readFileSync(settingsFile, 'utf-8'));
+        // Backup status and the restart-only preloading preference do not affect a spare's cached settings.
+        const { backupLastSuccess, backupLastError, noteWindowPreloadingEnabled: preloading, ...relevantSettings } =
+            JSON.parse(fs.readFileSync(settingsFile, 'utf-8'));
         return JSON.stringify(relevantSettings);
     } catch (error) {
         return undefined;
@@ -347,7 +349,7 @@ function watchSettingsForSpareNoteWindow(): void {
 }
 
 function scheduleSpareNoteWindow(delayMilliseconds: number): void {
-    if (spareNoteWindow != undefined || spareNoteWindowTimer != undefined) {
+    if (!noteWindowPreloadingEnabled || spareNoteWindow != undefined || spareNoteWindowTimer != undefined) {
         return;
     }
 
@@ -636,7 +638,10 @@ try {
         screen.on('display-metrics-changed', recoverOffScreenWindows);
 
         // Opt-in via Settings > Advanced > Diagnostics. Applies after a restart, like the renderer monitors.
-        noteOpenDiagnosticsEnabled = new SettingsStore(app.getPath('userData')).get('performanceDiagnosticsEnabled', false);
+        const settings = new SettingsStore(app.getPath('userData'));
+        noteOpenDiagnosticsEnabled = settings.get('performanceDiagnosticsEnabled', false);
+        noteWindowPreloadingEnabled = settings.get('noteWindowPreloadingEnabled', true);
+        log.info(`[App] Note window preloading ${noteWindowPreloadingEnabled ? 'enabled' : 'disabled'}.`);
         if (noteOpenDiagnosticsEnabled) {
             require('./main/event-loop-monitor').monitorMainProcessEventLoop(log);
         }

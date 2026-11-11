@@ -46,6 +46,9 @@
         "Website": "Сайт"
     },
     "SettingsPage": {
+        "NoteWindowPerformance": "Производительность окон заметок",
+        "EnableNoteWindowPreloading": "Предварительно загружать окна заметок",
+        "NoteWindowPreloadingDescription": "Предварительная загрузка подготавливает скрытое окно для ускорения открытия заметок. Отключите её для сравнения производительности. Перезапустите Knowte, чтобы применить изменение.",
         "Diagnostics": "Диагностика",
         "OpenLogDirectory": "Открыть папку журналов",
         "EnablePerformanceDiagnostics": "Включить журнал производительности",

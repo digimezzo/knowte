@@ -46,6 +46,9 @@
         "Website": "ウェブサイト"
     },
     "SettingsPage": {
+        "NoteWindowPerformance": "ノートウィンドウのパフォーマンス",
+        "EnableNoteWindowPreloading": "ノートウィンドウを事前に読み込む",
+        "NoteWindowPreloadingDescription": "ノートを素早く開くために非表示のウィンドウを準備します。パフォーマンスを比較するには無効にしてください。変更を適用するにはKnowteを再起動してください。",
         "Diagnostics": "診断",
         "OpenLogDirectory": "ログフォルダーを開く",
         "EnablePerformanceDiagnostics": "パフォーマンスログを有効にする",

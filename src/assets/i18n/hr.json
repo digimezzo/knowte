@@ -46,6 +46,9 @@
         "Website": "Web-stranica"
     },
     "SettingsPage": {
+        "NoteWindowPerformance": "Performanse prozora bilješki",
+        "EnableNoteWindowPreloading": "Unaprijed učitaj prozore bilješki",
+        "NoteWindowPreloadingDescription": "Unaprijed se priprema skriveni prozor bilješke radi bržeg otvaranja. Isključite za usporedbu performansi. Ponovno pokrenite Knowte za primjenu promjene.",
         "Diagnostics": "Dijagnostika",
         "OpenLogDirectory": "Otvori mapu zapisnika",
         "EnablePerformanceDiagnostics": "Omogući zapisivanje performansi",

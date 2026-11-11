@@ -227,6 +227,7 @@ let spareNoteWindowTimer;
 let settingsWatcherTimer;
 let isWatchingSettings = false;
 let noteOpenDiagnosticsEnabled = false;
+let noteWindowPreloadingEnabled = true;
 let nextSpareDiagnosticId = 0;
 function noteOpenTrace(label) {
     if (!noteOpenDiagnosticsEnabled) {
@@ -243,8 +244,8 @@ function readNoteWindowSettingsSnapshot() {
         if (!fs.existsSync(settingsFile)) {
             return '';
         }
-        // Backup status changes frequently and does not affect note windows.
-        const _a = JSON.parse(fs.readFileSync(settingsFile, 'utf-8')), { backupLastSuccess, backupLastError } = _a, relevantSettings = __rest(_a, ["backupLastSuccess", "backupLastError"]);
+        // Backup status and the restart-only preloading preference do not affect a spare's cached settings.
+        const _a = JSON.parse(fs.readFileSync(settingsFile, 'utf-8')), { backupLastSuccess, backupLastError, noteWindowPreloadingEnabled: preloading } = _a, relevantSettings = __rest(_a, ["backupLastSuccess", "backupLastError", "noteWindowPreloadingEnabled"]);
         return JSON.stringify(relevantSettings);
     }
     catch (error) {
@@ -312,7 +313,7 @@ function watchSettingsForSpareNoteWindow() {
     }
 }
 function scheduleSpareNoteWindow(delayMilliseconds) {
-    if (spareNoteWindow != undefined || spareNoteWindowTimer != undefined) {
+    if (!noteWindowPreloadingEnabled || spareNoteWindow != undefined || spareNoteWindowTimer != undefined) {
         return;
     }
     const trace = noteOpenTrace(`spareId=${noteOpenDiagnosticsEnabled ? ++nextSpareDiagnosticId : 0}`);
@@ -552,7 +553,10 @@ try {
         electron_1.screen.on('display-removed', recoverOffScreenWindows);
         electron_1.screen.on('display-metrics-changed', recoverOffScreenWindows);
         // Opt-in via Settings > Advanced > Diagnostics. Applies after a restart, like the renderer monitors.
-        noteOpenDiagnosticsEnabled = new settings_store_1.SettingsStore(electron_1.app.getPath('userData')).get('performanceDiagnosticsEnabled', false);
+        const settings = new settings_store_1.SettingsStore(electron_1.app.getPath('userData'));
+        noteOpenDiagnosticsEnabled = settings.get('performanceDiagnosticsEnabled', false);
+        noteWindowPreloadingEnabled = settings.get('noteWindowPreloadingEnabled', true);
+        electron_log_1.default.info(`[App] Note window preloading ${noteWindowPreloadingEnabled ? 'enabled' : 'disabled'}.`);
         if (noteOpenDiagnosticsEnabled) {
             require('./main/event-loop-monitor').monitorMainProcessEventLoop(electron_log_1.default);
         }

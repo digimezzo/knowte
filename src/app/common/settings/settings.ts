@@ -34,6 +34,14 @@ export class Settings implements BaseSettings {
         this.settings.set('performanceDiagnosticsEnabled', value);
     }
 
+    public get noteWindowPreloadingEnabled(): boolean {
+        return this.settings.get('noteWindowPreloadingEnabled', true);
+    }
+
+    public set noteWindowPreloadingEnabled(value: boolean) {
+        this.settings.set('noteWindowPreloadingEnabled', value);
+    }
+
     // checkForUpdates
     public get checkForUpdates(): boolean {
         return this.settings.get('checkForUpdates');

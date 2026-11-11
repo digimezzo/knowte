@@ -46,6 +46,9 @@
         "Website": "Webseite"
     },
     "SettingsPage": {
+        "NoteWindowPerformance": "Leistung der Notizfenster",
+        "EnableNoteWindowPreloading": "Notizfenster vorab laden",
+        "NoteWindowPreloadingDescription": "Beim Vorabladen wird ein verborgenes Notizfenster vorbereitet, um Notizen schneller zu öffnen. Deaktivieren Sie dies, um die Leistung zu vergleichen. Starten Sie Knowte neu, um die Änderung anzuwenden.",
         "Diagnostics": "Diagnose",
         "OpenLogDirectory": "Protokollordner öffnen",
         "EnablePerformanceDiagnostics": "Leistungsprotokollierung aktivieren",

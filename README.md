@@ -34,6 +34,8 @@ Knowte is a note taking application that allows you to quickly and easily organi
 
 To investigate delays, enable **Settings > Advanced > Diagnostics > Enable performance diagnostics** and restart Knowte.
 Use **Open log folder** in the same section to find the log. Disable the setting and restart to stop the additional logging.
+To compare note opening without the hidden spare window, disable **Settings > Advanced > Note window performance >
+Preload note windows** and restart Knowte. Preloading is enabled by default; re-enable it and restart to restore it.
 
 Note-opening entries include the note ID, process ID and timestamps. `NoteOpen.dispatch` records the request from the main
 window; `[noteOpen]` entries record window selection, spare loading and the wait for it; and `NoteOpen.initialize` and its

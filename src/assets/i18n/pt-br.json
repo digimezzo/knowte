@@ -46,6 +46,9 @@
         "Website": "Website"
     },
     "SettingsPage": {
+        "NoteWindowPerformance": "Desempenho das janelas de notas",
+        "EnableNoteWindowPreloading": "Pré-carregar janelas de notas",
+        "NoteWindowPreloadingDescription": "O pré-carregamento prepara uma janela de nota oculta para acelerar a abertura. Desative para comparar o desempenho. Reinicie o Knowte para aplicar a alteração.",
         "Diagnostics": "Diagnóstico",
         "OpenLogDirectory": "Abrir pasta de logs",
         "EnablePerformanceDiagnostics": "Ativar registro de desempenho",
