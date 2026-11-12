@@ -63,8 +63,10 @@ export class AppComponent implements OnInit, OnDestroy {
             this.backup.start();
         }
 
-        this.appearance.applyAppearance();
-        this.spellCheckerService.applyActiveSpellCheckLanguagesIfEnabled();
+        PerformanceDiagnostics.measure('RendererStartup.applyAppearance', () => this.appearance.applyAppearance(), true);
+        PerformanceDiagnostics.measure(
+            'RendererStartup.applySpellCheck', () => this.spellCheckerService.applyActiveSpellCheckLanguagesIfEnabled(), true,
+        );
 
         this.subscription.add(
             this.trash.openTrashRequested$.subscribe(() => {
@@ -74,7 +76,9 @@ export class AppComponent implements OnInit, OnDestroy {
             }),
         );
 
-        const showWelcome: boolean = !this.collectionService.hasCollections();
+        const showWelcome: boolean = !PerformanceDiagnostics.measure(
+            'RendererStartup.hasCollections', () => this.collectionService.hasCollections(), true,
+        );
 
         if (showWelcome) {
             this.router.navigate(['/welcome']);

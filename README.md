@@ -43,6 +43,12 @@ individual stages record work in the note window. A `nextAnimationFrame` entry r
 not proof that the note has been painted or is responsive. Unlock timing may include time spent entering a password.
 An operation with a start but no finish may still be running, or its window may have closed.
 
+`rendererStartup` records elapsed time from navigation to the application entry point (after static imports are evaluated),
+Angular bootstrap duration, browser navigation milestones and up to five slow script or link resources (identified by bundle
+category only). Navigation milestones are measured from navigation and can overlap with bootstrap and other timings; do not
+add them together. These measurements can help narrow down slow startup, but cannot attribute the cause to a specific process.
+`NoteOpen.detailsClient` and `NoteOpen.detailsServer` separate collection initialization, IPC callback, polling and server work.
+
 The log can contain note IDs, collection paths and other diagnostic information. Review it before sharing; these timing
 entries do not include note contents. Background-window timer throttling or system sleep can also produce event-loop warnings.
 

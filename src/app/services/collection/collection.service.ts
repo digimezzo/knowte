@@ -1355,30 +1355,37 @@ export class CollectionService {
     }
 
     private async getNoteDetailsEventHandler(noteId: string, callback: any): Promise<void> {
-        const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
-        let notebookName: string = await this.translator.getAsync('MainPage.UnfiledNotes');
+        const finish = PerformanceDiagnostics.start(`NoteOpen.detailsServer noteId=${noteId}`, true);
+        try {
+            const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
+            let notebookName: string = await PerformanceDiagnostics.measureAsync(
+                `NoteOpen.detailsServer.translation noteId=${noteId}`, () => this.translator.getAsync('MainPage.UnfiledNotes'), true,
+            );
 
-        if (note.notebookId) {
-            const notebook: Notebook = this.collectionDataStoreAccess.getNotebookById(note.notebookId);
+            if (note.notebookId) {
+                const notebook: Notebook = this.collectionDataStoreAccess.getNotebookById(note.notebookId);
 
-            if (notebook) {
-                notebookName = notebook.name;
+                if (notebook) {
+                    notebookName = notebook.name;
+                }
             }
-        }
 
-        callback(
-            new NoteDetailsResult(
-                note.title,
-                notebookName,
-                note.isMarked,
-                note.isPinned,
-                note.isTrashed,
-                note.isEncrypted,
-                note.secretKeyHash,
-                note.isMarkdownNote,
-                TagUtils.normalize(note.tags),
-            ),
-        );
+            PerformanceDiagnostics.measure(`NoteOpen.detailsServer.callback noteId=${noteId}`, () => callback(
+                new NoteDetailsResult(
+                    note.title,
+                    notebookName,
+                    note.isMarked,
+                    note.isPinned,
+                    note.isTrashed,
+                    note.isEncrypted,
+                    note.secretKeyHash,
+                    note.isMarkdownNote,
+                    TagUtils.normalize(note.tags),
+                ),
+            ), true);
+        } finally {
+            finish();
+        }
     }
 
     private async sendNotebookNameAsync(noteId: string): Promise<void> {
