@@ -1,5 +1,5 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ErrorHandler, NgModule, SecurityContext } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
@@ -216,8 +216,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
     // };
 }
 
-@NgModule({
-    declarations: [
+@NgModule({ declarations: [
         AppComponent,
         BackupSettingsComponent,
         WindowControlsComponent,
@@ -277,8 +276,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
         InformationAboutComponent,
         InformationComponentsComponent,
     ],
-    imports: [
-        MarkdownModule.forRoot({
+    bootstrap: [AppComponent], imports: [MarkdownModule.forRoot({
             markedOptions: {
                 provide: MARKED_OPTIONS,
                 useFactory: MarkedOptionsFactory,
@@ -307,7 +305,6 @@ export function MarkedOptionsFactory(): MarkedOptions {
         BrowserModule,
         ScrollingModule,
         FormsModule,
-        HttpClientModule,
         AppRoutingModule,
         AngularSplitModule,
         TranslateModule.forRoot({
@@ -316,9 +313,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
                 useFactory: HttpLoaderFactory,
                 deps: [HttpClient],
             },
-        }),
-    ],
-    providers: [
+        })], providers: [
         ElectronService,
         CollectionService,
         CollectionClient,
@@ -366,7 +361,6 @@ export function MarkedOptionsFactory(): MarkedOptions {
         { provide: BaseSettings, useClass: Settings },
         { provide: BaseApplication, useClass: Application },
         { provide: BaseAppearanceService, useClass: AppearanceService },
-    ],
-    bootstrap: [AppComponent],
-})
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class AppModule {}
