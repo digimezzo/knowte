@@ -25,7 +25,7 @@ jest.mock('../../services/collection/collection.service', () => ({ CollectionSer
 jest.mock('../../services/translator/translator.service', () => ({ TranslatorService: class {} }));
 jest.mock('../../common/logging/logger', () => ({ Logger: class {} }));
 
-@Component({ templateUrl: '../../app.component.html' })
+@Component({ standalone: false, templateUrl: '../../app.component.html' })
 class TrashDrawerTestComponent {
     public constructor(public trash: TrashService) {}
 }

@@ -1,10 +1,13 @@
 import { SecurityContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { DomSanitizer } from '@angular/platform-browser';
-import { marked } from 'marked';
+import { marked, MarkedOptions } from 'marked';
 import { buildSourceBlocks, interpolateScroll, MarkdownScrollMap } from './markdown-scroll-map';
 
-const options: marked.MarkedOptions = { headerIds: false, mangle: false };
+const options: MarkedOptions = { };
+
+export const parseSync = (src: string, options: MarkedOptions = {}): string =>
+    marked.parse(src, { ...options, async: false }) as string;
 
 function rect(top: number, height: number): DOMRect {
     return { x: 0, y: top, width: 300, height, top, bottom: top + height, left: 0, right: 300, toJSON: () => ({ top, height }) };
@@ -20,7 +23,7 @@ describe('Markdown source blocks', () => {
 
     function blocks(source: string, renderedSource = source) {
         const preview = document.createElement('div');
-        preview.innerHTML = sanitize(marked.parse(renderedSource, options));
+        preview.innerHTML = sanitize(parseSync(renderedSource, options));
         return buildSourceBlocks(source, preview, options, sanitize);
     }
 
@@ -108,7 +111,7 @@ describe('Measured Markdown scroll map', () => {
         wrapper.append(input, preview);
         document.body.append(wrapper);
         input.value = source;
-        preview.innerHTML = marked.parse(source, options);
+        preview.innerHTML = parseSync(source, options);
         Object.defineProperties(input, {
             clientWidth: { value: 300 },
             clientHeight: { value: 100 },
