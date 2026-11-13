@@ -6,6 +6,7 @@ import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
     templateUrl: './main-menu.component.html',
     styleUrls: ['./main-menu.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class MainMenuComponent implements OnInit {
     constructor() {}

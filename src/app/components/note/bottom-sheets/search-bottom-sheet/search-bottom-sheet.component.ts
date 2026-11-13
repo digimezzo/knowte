@@ -6,6 +6,7 @@ import { SearchClient } from '../../../../services/search/search.client';
     selector: 'app-search-bottom-sheet',
     styleUrls: ['./search-bottom-sheet.component.scss'],
     templateUrl: 'search-bottom-sheet.component.html',
+    standalone: false
 })
 export class SearchBottomSheetComponent implements OnInit, AfterViewInit {
     private _searchText: string = '';

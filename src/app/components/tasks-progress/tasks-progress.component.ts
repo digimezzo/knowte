@@ -3,7 +3,8 @@ import { Component, OnInit, Input } from '@angular/core';
 @Component({
     selector: 'app-tasks-progress',
     templateUrl: './tasks-progress.component.html',
-    styleUrls: ['./tasks-progress.component.scss']
+    styleUrls: ['./tasks-progress.component.scss'],
+    standalone: false
 })
 export class TasksProgressComponent implements OnInit {
     private _closedTasksCount: number;

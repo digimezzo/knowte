@@ -18,6 +18,7 @@ import { MarkdownScrollMap } from './markdown-scroll-map';
     templateUrl: './markdown-note.component.html',
     styleUrls: ['./markdown-note.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
     private isPickingNote: boolean = false;

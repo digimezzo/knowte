@@ -16,6 +16,7 @@ import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.compo
     templateUrl: './trash.component.html',
     styleUrls: ['./trash.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class TrashComponent implements OnInit, OnDestroy {
     private subscription: Subscription = new Subscription();

@@ -9,6 +9,7 @@ import { FileAccess } from '../../../common/io/file-access';
     templateUrl: './error-dialog.component.html',
     styleUrls: ['./error-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class ErrorDialogComponent implements OnInit {
     constructor(

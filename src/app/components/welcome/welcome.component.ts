@@ -14,6 +14,7 @@ import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.compo
     templateUrl: './welcome.component.html',
     styleUrls: ['./welcome.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class WelcomeComponent implements OnInit {
     constructor(

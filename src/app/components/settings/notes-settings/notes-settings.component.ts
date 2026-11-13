@@ -11,6 +11,7 @@ import {
     templateUrl: './notes-settings.component.html',
     styleUrls: ['./notes-settings.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class NotesSettingsComponent {
     public constructor(

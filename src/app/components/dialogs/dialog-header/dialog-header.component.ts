@@ -4,7 +4,8 @@ import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
     selector: 'app-dialog-header',
     templateUrl: './dialog-header.component.html',
     styleUrls: ['./dialog-header.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class DialogHeaderComponent implements OnInit {
     constructor() {

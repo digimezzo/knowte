@@ -120,14 +120,14 @@
                 "serve": {
                     "builder": "@angular-builders/custom-webpack:dev-server",
                     "options": {
-                        "browserTarget": "knowte:build"
+                        "buildTarget": "knowte:build"
                     },
                     "configurations": {
                         "dev": {
-                            "browserTarget": "knowte:build:dev"
+                            "buildTarget": "knowte:build:dev"
                         },
                         "production": {
-                            "browserTarget": "knowte:build:production"
+                            "buildTarget": "knowte:build:production"
                         }
                     },
                     "defaultConfiguration": "dev"

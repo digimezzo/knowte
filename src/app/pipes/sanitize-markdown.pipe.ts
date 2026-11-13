@@ -3,6 +3,7 @@ import DOMPurify from 'dompurify';
 
 @Pipe({
     name: 'sanitizeMarkdown',
+    standalone: false
 })
 export class SanitizeMarkdownPipe implements PipeTransform {
     public constructor() {}

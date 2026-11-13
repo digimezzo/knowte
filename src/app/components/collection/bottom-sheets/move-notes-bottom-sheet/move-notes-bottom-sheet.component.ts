@@ -11,6 +11,7 @@ import { ErrorDialogComponent } from '../../../dialogs/error-dialog/error-dialog
     selector: 'app-move-notes-bottom-sheet',
     templateUrl: 'move-notes-bottom-sheet.component.html',
     styleUrls: ['./move-notes-bottom-sheet.component.scss'],
+    standalone: false
 })
 export class MoveNotesBottomSheetComponent implements OnInit {
     constructor(

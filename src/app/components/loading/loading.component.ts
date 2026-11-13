@@ -8,6 +8,7 @@ import { CollectionService } from '../../services/collection/collection.service'
     templateUrl: './loading.component.html',
     styleUrls: ['./loading.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class LoadingComponent implements OnInit {
     constructor(private collectionService: CollectionService, public appearance: BaseAppearanceService, public router: Router) {}

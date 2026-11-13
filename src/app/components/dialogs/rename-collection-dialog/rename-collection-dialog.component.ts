@@ -11,6 +11,7 @@ import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
     templateUrl: './rename-collection-dialog.component.html',
     styleUrls: ['./rename-collection-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class RenameCollectionDialogComponent implements OnInit {
     constructor(

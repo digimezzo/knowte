@@ -6,6 +6,7 @@ import { NoteCreator } from '../note-creator';
     selector: 'app-note-type-chooser-bottom-sheet',
     templateUrl: 'note-type-chooser-bottom-sheet.component.html',
     styleUrls: ['./note-type-chooser-bottom-sheet.component.scss'],
+    standalone: false
 })
 export class NoteTypeChooserBottomSheetComponent {
     constructor(

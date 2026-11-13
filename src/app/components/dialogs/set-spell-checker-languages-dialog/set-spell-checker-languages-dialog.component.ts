@@ -6,6 +6,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
     templateUrl: './set-spell-checker-languages-dialog.component.html',
     styleUrls: ['./set-spell-checker-languages-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class SetSpellCheckerLanguagesDialogComponent {
     constructor() {}

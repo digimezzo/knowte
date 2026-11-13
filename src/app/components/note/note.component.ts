@@ -48,6 +48,7 @@ import { NoteSaveStatus } from './note-status-bar/note-status-bar.component';
     templateUrl: './note.component.html',
     styleUrls: ['./note.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class NoteComponent implements OnInit {
     private subscription: Subscription = new Subscription();

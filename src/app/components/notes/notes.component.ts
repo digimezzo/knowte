@@ -16,6 +16,7 @@ import {SearchService} from '../../services/search/search.service';
     templateUrl: './notes.component.html',
     styleUrls: ['./notes.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class NotesComponent implements OnInit, OnDestroy {
     private _category: string;

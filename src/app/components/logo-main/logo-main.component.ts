@@ -6,6 +6,7 @@ import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
     templateUrl: './logo-main.component.html',
     styleUrls: ['./logo-main.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class LogoMainComponent implements OnInit {
     constructor() {}

@@ -25,7 +25,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AngularSplitModule } from 'angular-split';
-import { marked } from 'marked';
+import { marked, Tokens } from 'marked';
 import { MARKED_OPTIONS, MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
 import 'reflect-metadata';
 import '../polyfills';
@@ -161,30 +161,27 @@ marked.use(markdownUncPathExtension);
 export function MarkedOptionsFactory(): MarkedOptions {
     const renderer = new MarkedRenderer();
 
-    renderer.link = (href: string, title: string, text: string) => {
-        // Keep Angular's HTML sanitization enabled; render internal URLs as safe local anchors.
-        return MarkedRenderer.prototype.link.call(renderer, href ? getNoteLinkPreviewHref(href) : href, title, text) as string;
+    const htmlEscapes: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
+
+    renderer.link = (token: Tokens.Link) => {
+        const href = token.href ? getNoteLinkPreviewHref(token.href) : token.href;
+        return MarkedRenderer.prototype.link.call(renderer, { ...token, href }) as string;
     };
 
-    const htmlEscapes: Record<string, string> = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-    };
-
-    renderer.code = (code: string, infostring: string | undefined, escaped: boolean) => {
-        const language = infostring?.trim().split(/\s+/, 1)[0].toLowerCase();
+    renderer.code = (token: Tokens.Code) => {
+        const language = token.lang?.trim().split(/\s+/, 1)[0].toLowerCase();
         if (language === 'mermaid') {
-            const escapedCode = code.replace(/[&<>]/g, (character) => htmlEscapes[character] ?? character);
+            const escapedCode = token.text.replace(/[&<>]/g, (c) => htmlEscapes[c] ?? c);
             return `<pre class="mermaid">${escapedCode}</pre>`;
         }
-        return MarkedRenderer.prototype.code.call(renderer, code, infostring, escaped) as string;
+        return MarkedRenderer.prototype.code.call(renderer, token) as string;
     };
 
     // remove task list bullets
-    renderer.list = (body: string, ordered: boolean, start: number) => {
+    renderer.list = (token: Tokens.List) => {
+        const html = MarkedRenderer.prototype.list.call(renderer, token) as string;
         const divElement = document.createElement('div');
-        divElement.innerHTML = body;
+        divElement.innerHTML = html;
 
         divElement.querySelectorAll('li').forEach((li) => {
             li.childNodes.forEach((child) => {
@@ -200,7 +197,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
             });
         });
 
-        return MarkedRenderer.prototype.list.call(renderer, divElement.innerHTML, ordered, start) as string;
+        return divElement.innerHTML;
     };
 
     return { renderer };
@@ -216,7 +213,8 @@ export function MarkedOptionsFactory(): MarkedOptions {
     // };
 }
 
-@NgModule({ declarations: [
+@NgModule({
+    declarations: [
         AppComponent,
         BackupSettingsComponent,
         WindowControlsComponent,
@@ -276,7 +274,9 @@ export function MarkedOptionsFactory(): MarkedOptions {
         InformationAboutComponent,
         InformationComponentsComponent,
     ],
-    bootstrap: [AppComponent], imports: [MarkdownModule.forRoot({
+    bootstrap: [AppComponent],
+    imports: [
+        MarkdownModule.forRoot({
             markedOptions: {
                 provide: MARKED_OPTIONS,
                 useFactory: MarkedOptionsFactory,
@@ -313,7 +313,9 @@ export function MarkedOptionsFactory(): MarkedOptions {
                 useFactory: HttpLoaderFactory,
                 deps: [HttpClient],
             },
-        })], providers: [
+        }),
+    ],
+    providers: [
         ElectronService,
         CollectionService,
         CollectionClient,
@@ -362,5 +364,6 @@ export function MarkedOptionsFactory(): MarkedOptions {
         { provide: BaseApplication, useClass: Application },
         { provide: BaseAppearanceService, useClass: AppearanceService },
         provideHttpClient(withInterceptorsFromDi()),
-    ] })
+    ],
+})
 export class AppModule {}

@@ -10,6 +10,7 @@ import {ProductInformation} from "../../../common/application/product-informatio
     templateUrl: './information-about.component.html',
     styleUrls: ['./information-about.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class InformationAboutComponent {
     public constructor(private dialog: MatDialog) {}

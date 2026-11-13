@@ -14,6 +14,7 @@ export interface NoteActionsData {
     selector: 'app-actions-bottom-sheet',
     templateUrl: './actions-bottom-sheet.component.html',
     styleUrls: ['./actions-bottom-sheet.component.scss'],
+    standalone: false
 })
 export class ActionsBottomSheetComponent {
     constructor(

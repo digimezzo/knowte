@@ -7,6 +7,7 @@ import { ProductInformation } from '../../common/application/product-information
     templateUrl: './logo-full.component.html',
     styleUrls: ['./logo-full.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class LogoFullComponent implements OnInit {
     constructor() {}

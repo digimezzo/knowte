@@ -11,6 +11,7 @@ import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
     templateUrl: './rename-notebook-dialog.component.html',
     styleUrls: ['./rename-notebook-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class RenameNotebookDialogComponent implements OnInit {
     constructor(

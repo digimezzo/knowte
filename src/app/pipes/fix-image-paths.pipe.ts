@@ -6,6 +6,7 @@ import { CollectionFileAccess } from '../services/collection/collection-file-acc
 
 @Pipe({
     name: 'fixImagePaths',
+    standalone: false
 })
 export class FixImagePathsPipe implements PipeTransform {
     public constructor(

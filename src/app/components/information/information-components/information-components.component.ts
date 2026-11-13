@@ -7,6 +7,7 @@ import {Constants} from "../../../common/application/constants";
     templateUrl: './information-components.component.html',
     styleUrls: ['./information-components.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class InformationComponentsComponent {
     public constructor() {}

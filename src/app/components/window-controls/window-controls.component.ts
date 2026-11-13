@@ -7,6 +7,7 @@ import { BrowserWindow } from 'electron';
     templateUrl: './window-controls.component.html',
     styleUrls: ['./window-controls.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class WindowControlsComponent implements OnInit {
     constructor() {}

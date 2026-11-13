@@ -13,6 +13,7 @@ import { ErrorDialogComponent } from '../../dialogs/error-dialog/error-dialog.co
     templateUrl: './backup-settings.component.html',
     styleUrls: ['./backup-settings.component.scss'],
     host: { style: 'display: block;' },
+    standalone: false
 })
 export class BackupSettingsComponent {
     @Input() public restoreOnly: boolean = false;

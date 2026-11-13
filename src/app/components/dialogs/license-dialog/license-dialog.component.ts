@@ -5,7 +5,8 @@ import { MatDialogRef } from '@angular/material/dialog';
     selector: 'app-license-dialog',
     templateUrl: './license-dialog.component.html',
     styleUrls: ['./license-dialog.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class LicenseDialogComponent implements OnInit {
     constructor(private dialogRef: MatDialogRef<LicenseDialogComponent>) {

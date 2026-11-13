@@ -20,6 +20,7 @@ import { RenameCollectionDialogComponent } from '../dialogs/rename-collection-di
     templateUrl: './collection-switcher.component.html',
     styleUrls: ['./collection-switcher.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class CollectionSwitcherComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
