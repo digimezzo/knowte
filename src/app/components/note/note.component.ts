@@ -175,7 +175,7 @@ export class NoteComponent implements OnInit {
     }
 
     @HostListener('document:keydown.escape')
-    private handleEscape(): void {
+    protected handleEscape(): void {
         if (this.settings.closeNotesWithEscape && !this.isEditingTags && !this.isActionsSheetOpen) {
             this.noteWindow.close();
         }
