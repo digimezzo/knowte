@@ -1,4 +1,4 @@
-import { enableProdMode, ViewEncapsulation } from '@angular/core';
+import { enableProdMode, ViewEncapsulation, provideZoneChangeDetection } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
@@ -12,8 +12,6 @@ if (AppConfig.production) {
 
 const bootstrapStartTime = performance.now();
 platformBrowserDynamic()
-  .bootstrapModule(AppModule, {
-    preserveWhitespaces: false
-  })
+  .bootstrapModule(AppModule, { applicationProviders: [provideZoneChangeDetection()], preserveWhitespaces: false,})
   .then(() => logRendererStartup(mainEntryTime, performance.now() - bootstrapStartTime))
   .catch(err => console.error(err));

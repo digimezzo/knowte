@@ -1,61 +1,87 @@
 <div class="note-status no-select">
-    <div class="d-flex flex-row align-items-center mr-2" [ngSwitch]="saveStatus">
-        <i *ngSwitchCase="'saved'" class="note-status-icon las la-check-circle" matTooltip="{{ 'Tooltips.AllChangesSaved' | translate }}"></i>
-        <i *ngSwitchCase="'unsaved'" class="note-status-icon las la-pen" matTooltip="{{ 'Tooltips.UnsavedChanges' | translate }}"></i>
+  <div class="d-flex flex-row align-items-center mr-2">
+    @switch (saveStatus) {
+      @case ('saved') {
+        <i class="note-status-icon las la-check-circle" matTooltip="{{ 'Tooltips.AllChangesSaved' | translate }}"></i>
+      }
+      @case ('unsaved') {
+        <i class="note-status-icon las la-pen" matTooltip="{{ 'Tooltips.UnsavedChanges' | translate }}"></i>
+      }
+      @case ('failed') {
         <i
-            *ngSwitchCase="'failed'"
-            class="note-status-icon note-status-icon-error las la-exclamation-triangle pointer"
-            matTooltip="{{ 'Tooltips.SaveFailed' | translate }}"
-            (click)="retrySave.emit()"
+          class="note-status-icon note-status-icon-error las la-exclamation-triangle pointer"
+          matTooltip="{{ 'Tooltips.SaveFailed' | translate }}"
+          (click)="retrySave.emit()"
         ></i>
-    </div>
-    <div class="d-flex flex-row align-items-center mr-2">
-        <i class="note-status-icon las la-spell-check mr-05"></i>
-        <div class="d-flex flex-row align-items-center" *ngIf="!this.settings.enableSpellChecker">
-            <div class="note-status-text" *ngIf="!this.settings.enableSpellChecker">{{ 'Notes.Disabled' | translate }}</div>
-        </div>
+      }
+    }
+  </div>
+  <div class="d-flex flex-row align-items-center mr-2">
+    <i class="note-status-icon las la-spell-check mr-05"></i>
+    @if (!this.settings.enableSpellChecker) {
+      <div class="d-flex flex-row align-items-center">
+        @if (!this.settings.enableSpellChecker) {
+          <div class="note-status-text">{{ 'Notes.Disabled' | translate }}</div>
+        }
+      </div>
+    }
 
-        <div
-            class="d-flex flex-row align-items-center pointer"
-            *ngIf="this.settings.enableSpellChecker"
-            matTooltip="{{ 'Tooltips.ChangeSpellCheckerLanguages' | translate }}"
-            (click)="openSpellCheckBottomSheet()"
-        >
-            <div class="note-status-text" *ngIf="this.spellCheckService.numberOfEnabledLanguages !== 1">
-                {{ this.spellCheckService.numberOfEnabledLanguages }} {{ 'Notes.Languages' | translate }}
-            </div>
-            <div class="note-status-text" *ngIf="this.spellCheckService.numberOfEnabledLanguages === 1">
-                {{ this.spellCheckService.firstEnabledLanguage }}
-            </div>
-        </div>
-    </div>
-    <div class="fill"></div>
-    <div
+    @if (this.settings.enableSpellChecker) {
+      <div
         class="d-flex flex-row align-items-center pointer"
-        (click)="openTextSizeBottomSheet()"
-        matTooltip="{{ 'Tooltips.ChangeTextSize' | translate }}"
+        matTooltip="{{ 'Tooltips.ChangeSpellCheckerLanguages' | translate }}"
+        (click)="openSpellCheckBottomSheet()"
+        >
+        @if (this.spellCheckService.numberOfEnabledLanguages !== 1) {
+          <div class="note-status-text">
+            {{ this.spellCheckService.numberOfEnabledLanguages }} {{ 'Notes.Languages' | translate }}
+          </div>
+        }
+        @if (this.spellCheckService.numberOfEnabledLanguages === 1) {
+          <div class="note-status-text">
+            {{ this.spellCheckService.firstEnabledLanguage }}
+          </div>
+        }
+      </div>
+    }
+  </div>
+  <div class="fill"></div>
+  <div
+    class="d-flex flex-row align-items-center pointer"
+    (click)="openTextSizeBottomSheet()"
+    matTooltip="{{ 'Tooltips.ChangeTextSize' | translate }}"
     >
-        <i class="note-status-icon las la-binoculars mr-05"></i>
-        <div class="note-status-text mr-2">{{ this.settings.noteZoomPercentage }}%</div>
-    </div>
-    <div class="pointer">
-        <div *ngIf="isPinned" (click)="toggleNotePin()" matTooltip="{{ 'Tooltips.UnpinNote' | translate }}">
-            <i class="note-status-icon rotate-45-ccw las la-thumbtack"></i>
-        </div>
-        <div *ngIf="!isPinned" (click)="toggleNotePin()" matTooltip="{{ 'Tooltips.PinNote' | translate }}">
-            <i class="note-status-icon rotate-45-cw las la-thumbtack"></i>
-        </div>
-    </div>
-    <div class="pointer ml-1">
-        <div *ngIf="isMarked" (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">
-            <i class="note-status-icon las la-heart"></i>
-        </div>
-        <div *ngIf="!isMarked" (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.MarkNote' | translate }}">
-            <i class="note-status-icon lar la-heart"></i>
-        </div>
-    </div>
+    <i class="note-status-icon las la-binoculars mr-05"></i>
+    <div class="note-status-text mr-2">{{ this.settings.noteZoomPercentage }}%</div>
+  </div>
+  <div class="pointer">
+    @if (isPinned) {
+      <div (click)="toggleNotePin()" matTooltip="{{ 'Tooltips.UnpinNote' | translate }}">
+        <i class="note-status-icon rotate-45-ccw las la-thumbtack"></i>
+      </div>
+    }
+    @if (!isPinned) {
+      <div (click)="toggleNotePin()" matTooltip="{{ 'Tooltips.PinNote' | translate }}">
+        <i class="note-status-icon rotate-45-cw las la-thumbtack"></i>
+      </div>
+    }
+  </div>
+  <div class="pointer ml-1">
+    @if (isMarked) {
+      <div (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.UnmarkNote' | translate }}">
+        <i class="note-status-icon las la-heart"></i>
+      </div>
+    }
+    @if (!isMarked) {
+      <div (click)="toggleNoteMark()" matTooltip="{{ 'Tooltips.MarkNote' | translate }}">
+        <i class="note-status-icon lar la-heart"></i>
+      </div>
+    }
+  </div>
 
-    <div class="ml-1" *ngIf="isEncrypted" matTooltip="{{ 'Tooltips.ThisNoteIsEncrypted' | translate }}">
-        <i class="note-status-icon las la-lock"></i>
+  @if (isEncrypted) {
+    <div class="ml-1" matTooltip="{{ 'Tooltips.ThisNoteIsEncrypted' | translate }}">
+      <i class="note-status-icon las la-lock"></i>
     </div>
+  }
 </div>

@@ -6,6 +6,7 @@ module.exports = {
     roots: ['<rootDir>/'],
     testMatch: ['<rootDir>/src/**/*(*.)+(spec).+(ts)', '<rootDir>/main/**/*(*.)+(spec).+(js)'],
     setupFilesAfterEnv: ['<rootDir>/src/test.ts'],
+    transformIgnorePatterns: ['node_modules/(?!(.*\\.mjs$|@angular/common/locales/.*\\.js$|marked/))'],
     moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths || {}, {
         prefix: '<rootDir>/',
     }),

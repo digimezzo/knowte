@@ -46,7 +46,7 @@
                         },
                         "scripts": [
                             "./node_modules/quill/dist/quill.js",
-                            "./node_modules/marked/marked.min.js",
+                            "./node_modules/marked/lib/marked.umd.js",
                             "./node_modules/prismjs/prism.js",
                             "./node_modules/prismjs/components/prism-bash.min.js",
                             "./node_modules/prismjs/components/prism-batch.min.js",

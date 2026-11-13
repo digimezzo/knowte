@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as remote from '@electron/remote';
-import { Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/internal/operators';
+import { debounceTime, distinctUntilChanged, Observable, Subject } from 'rxjs';
 import { SearchEvents } from './search-events';
 
 @Injectable()

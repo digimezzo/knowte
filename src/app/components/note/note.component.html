@@ -1,93 +1,108 @@
 <div class="window-frame">
-    <div class="window-frame-titlebar">
-        <div class="window-frame-titlebar-dragarea"></div>
-        <app-notebook-switcher [noteId]="noteId" *ngIf="!appearance.windowHasNativeTitleBar"></app-notebook-switcher>
-        <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
+  <div class="window-frame-titlebar">
+    <div class="window-frame-titlebar-dragarea"></div>
+    @if (!appearance.windowHasNativeTitleBar) {
+      <app-notebook-switcher [noteId]="noteId"></app-notebook-switcher>
+    }
+    @if (!appearance.windowHasNativeTitleBar) {
+      <app-window-controls></app-window-controls>
+    }
+  </div>
+  @if (isBusy) {
+    <div class="window-frame-overlay">
+      <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
     </div>
-    <div class="window-frame-overlay" *ngIf="isBusy">
-        <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
-    </div>
-    <div class="window-frame-content" [ngStyle]="{ top: appearance.windowHasNativeTitleBar ? '0' : '32px' }">
-        <div class="note-content">
-            <div class="note-content-floating">
-                <button
-                    class="note-content-floating-button"
-                    mat-fab
-                    (click)="openActionsBottomSheet()"
-                    [disabled]="isBusy"
-                    [attr.aria-label]="'Tooltips.Actions' | translate"
-                    [attr.aria-expanded]="isActionsSheetOpen"
-                    aria-haspopup="dialog"
-                    matTooltip="{{ 'Tooltips.Actions' | translate }}"
-                >
-                    <i class="note-content-floating-button-icon las la-edit" aria-hidden="true"></i>
-                </button>
-            </div>
-            <div class="note-content-fixed">
-                <div class="note-content-fixed-title">
-                    <input
-                        class="note-content-fixed-title-text"
-                        type="text"
-                        [(ngModel)]="noteTitle"
-                        (ngModelChange)="onNoteTitleChange($event)"
-                        (keydown)="onTitleKeydown($event)"
-                    />
-                </div>
-                <div class="note-tags px-2" *ngIf="tags.length > 0">
-                    <span class="note-tag" *ngFor="let tag of tags" [matTooltip]="tag">{{ tag }}</span>
-                </div>
-                <div *ngIf="!this.isMarkdownNote" class="fill w-100 h-100 overflow-hidden markdown-body note-editor" id="editor"></div>
-                <app-markdown-note
-                    *ngIf="this.isMarkdownNote"
-                    class="fill w-100 h-100 overflow-hidden"
-                    [noteEditor]="this.noteEditor"
-                    [attachmentsDirectoryPath]="this.noteAttachmentsDirectoryPathForPreview"
-                ></app-markdown-note>
-                <div class="note-search-bar" *ngIf="this.searchTerm" role="search">
-                    <i class="las la-search note-search-bar-icon" aria-hidden="true"></i>
-                    <span class="note-search-bar-term">{{ this.searchTerm }}</span>
-                    <span class="note-search-bar-count" aria-live="polite">
-                        {{ this.searchMatchCount ? this.currentSearchMatch + ' / ' + this.searchMatchCount : ('MainPage.NoMatches' | translate) }}
-                    </span>
-                    <button
-                        type="button"
-                        class="note-search-bar-button"
-                        [disabled]="!this.searchMatchCount"
-                        matTooltip="{{ 'MainPage.PreviousMatch' | translate }}"
-                        [attr.aria-label]="'MainPage.PreviousMatch' | translate"
-                        (click)="goToPreviousSearchMatch()"
-                    >
-                        <i class="las la-angle-up" aria-hidden="true"></i>
-                    </button>
-                    <button
-                        type="button"
-                        class="note-search-bar-button"
-                        [disabled]="!this.searchMatchCount"
-                        matTooltip="{{ 'MainPage.NextMatch' | translate }}"
-                        [attr.aria-label]="'MainPage.NextMatch' | translate"
-                        (click)="goToNextSearchMatch()"
-                    >
-                        <i class="las la-angle-down" aria-hidden="true"></i>
-                    </button>
-                    <button
-                        type="button"
-                        class="note-search-bar-button"
-                        matTooltip="{{ 'MainPage.ClearSearch' | translate }}"
-                        [attr.aria-label]="'MainPage.ClearSearch' | translate"
-                        (click)="closeSearch()"
-                    >
-                        <i class="las la-times" aria-hidden="true"></i>
-                    </button>
-                </div>
-                <app-note-status-bar
-                    [noteId]="this.noteId"
-                    [isMarked]="this.isMarked"
-                    [isPinned]="this.isPinned"
-                    [isEncrypted]="this.isEncrypted"
-                    [saveStatus]="this.saveStatus"
-                    (retrySave)="retrySave()"
-                ></app-note-status-bar>
-            </div>
+  }
+  <div class="window-frame-content" [ngStyle]="{ top: appearance.windowHasNativeTitleBar ? '0' : '32px' }">
+    <div class="note-content">
+      <div class="note-content-floating">
+        <button
+          class="note-content-floating-button"
+          mat-fab
+          (click)="openActionsBottomSheet()"
+          [disabled]="isBusy"
+          [attr.aria-label]="'Tooltips.Actions' | translate"
+          [attr.aria-expanded]="isActionsSheetOpen"
+          aria-haspopup="dialog"
+          matTooltip="{{ 'Tooltips.Actions' | translate }}"
+          >
+          <i class="note-content-floating-button-icon las la-edit" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="note-content-fixed">
+        <div class="note-content-fixed-title">
+          <input
+            class="note-content-fixed-title-text"
+            type="text"
+            [(ngModel)]="noteTitle"
+            (ngModelChange)="onNoteTitleChange($event)"
+            (keydown)="onTitleKeydown($event)"
+            />
         </div>
+        @if (tags.length > 0) {
+          <div class="note-tags px-2">
+            @for (tag of tags; track tag) {
+              <span class="note-tag" [matTooltip]="tag">{{ tag }}</span>
+            }
+          </div>
+        }
+        @if (!this.isMarkdownNote) {
+          <div class="fill w-100 h-100 overflow-hidden markdown-body note-editor" id="editor"></div>
+        }
+        @if (this.isMarkdownNote) {
+          <app-markdown-note
+            class="fill w-100 h-100 overflow-hidden"
+            [noteEditor]="this.noteEditor"
+            [attachmentsDirectoryPath]="this.noteAttachmentsDirectoryPathForPreview"
+          ></app-markdown-note>
+        }
+        @if (this.searchTerm) {
+          <div class="note-search-bar" role="search">
+            <i class="las la-search note-search-bar-icon" aria-hidden="true"></i>
+            <span class="note-search-bar-term">{{ this.searchTerm }}</span>
+            <span class="note-search-bar-count" aria-live="polite">
+              {{ this.searchMatchCount ? this.currentSearchMatch + ' / ' + this.searchMatchCount : ('MainPage.NoMatches' | translate) }}
+            </span>
+            <button
+              type="button"
+              class="note-search-bar-button"
+              [disabled]="!this.searchMatchCount"
+              matTooltip="{{ 'MainPage.PreviousMatch' | translate }}"
+              [attr.aria-label]="'MainPage.PreviousMatch' | translate"
+              (click)="goToPreviousSearchMatch()"
+              >
+              <i class="las la-angle-up" aria-hidden="true"></i>
+            </button>
+            <button
+              type="button"
+              class="note-search-bar-button"
+              [disabled]="!this.searchMatchCount"
+              matTooltip="{{ 'MainPage.NextMatch' | translate }}"
+              [attr.aria-label]="'MainPage.NextMatch' | translate"
+              (click)="goToNextSearchMatch()"
+              >
+              <i class="las la-angle-down" aria-hidden="true"></i>
+            </button>
+            <button
+              type="button"
+              class="note-search-bar-button"
+              matTooltip="{{ 'MainPage.ClearSearch' | translate }}"
+              [attr.aria-label]="'MainPage.ClearSearch' | translate"
+              (click)="closeSearch()"
+              >
+              <i class="las la-times" aria-hidden="true"></i>
+            </button>
+          </div>
+        }
+        <app-note-status-bar
+          [noteId]="this.noteId"
+          [isMarked]="this.isMarked"
+          [isPinned]="this.isPinned"
+          [isEncrypted]="this.isEncrypted"
+          [saveStatus]="this.saveStatus"
+          (retrySave)="retrySave()"
+        ></app-note-status-bar>
+      </div>
     </div>
+  </div>
 </div>

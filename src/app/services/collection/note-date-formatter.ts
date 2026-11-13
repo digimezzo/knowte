@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as moment from 'moment';
-import { Duration, Moment } from 'moment';
+import moment, { Duration, Moment } from 'moment';
 import { DateUtils } from '../../common/utils/date-utils';
 import { NoteDateFormatResult } from '../results/note-date-format-result';
 import { TranslatorService } from '../translator/translator.service';

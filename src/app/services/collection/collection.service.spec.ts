@@ -13,6 +13,8 @@ import { Note } from '../../data/entities/note';
 import { Notebook } from '../../data/entities/notebook';
 import { BaseAppearanceService } from '../appearance/base-appearance.service';
 import { CryptographyService } from '../cryptography/cryptography.service';
+import { NoteMarkResult } from '../results/note-mark-result';
+import { NotePinResult } from '../results/note-pin-result';
 import { SearchService } from '../search/search.service';
 import { TemporaryStorageService } from '../temporary-storage/temporary-storage.service';
 import { TranslatorService } from '../translator/translator.service';
@@ -218,13 +220,19 @@ describe('CollectionService note deletion', () => {
         it('tracks notebook, note and metadata notifications in the same counter', () => {
             const notifications = [
                 'notebookEdited', 'notebookDeleted', 'noteEdited', 'notesChanged',
-                'noteMarkChanged', 'notePinChanged', 'noteNotebookChanged',
+                'noteNotebookChanged',
             ] as const;
             for (const notification of notifications) {
                 const before = service.changeVersion;
                 service[notification].next();
                 expect(service.changeVersion).toBe(before + 1);
             }
+            const beforeMark = service.changeVersion;
+            service['noteMarkChanged'].next(new NoteMarkResult('note', true, 1));
+            expect(service.changeVersion).toBe(beforeMark + 1);
+            const beforePin = service.changeVersion;
+            service['notePinChanged'].next(new NotePinResult('note', true));
+            expect(service.changeVersion).toBe(beforePin + 1);
         });
 
         it('tracks restores and encryption changes', () => {

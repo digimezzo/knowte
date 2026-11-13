@@ -25,7 +25,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AngularSplitModule } from 'angular-split';
-import { MARKED_OPTIONS, MarkdownModule } from 'ngx-markdown';
+import { MARKED_OPTIONS, MarkdownModule, SANITIZE } from 'ngx-markdown';
 import 'reflect-metadata';
 import '../polyfills';
 import { AppRoutingModule } from './app-routing.module';
@@ -216,7 +216,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
                 provide: MARKED_OPTIONS,
                 useFactory: MarkedOptionsFactory,
             },
-            sanitize: SecurityContext.HTML,
+            sanitize: { provide: SANITIZE, useValue: SecurityContext.HTML },
         }),
         MatListModule,
         MatDialogModule,

@@ -1,39 +1,43 @@
 <div class="notes-content-title-and-search no-select">
-    <!-- Notes title -->
-    <div class="notes-content-title">
-        <div class="title2 notes-content-title-text">
-            {{ activeNotebook?.name }}
-            <i
-                class="notebook-archive-icon las la-archive ml-1"
-                *ngIf="activeNotebook?.isArchived"
-                [matTooltip]="'NotebookArchive.Archived' | translate"
-                [attr.aria-label]="'NotebookArchive.Archived' | translate"
-                role="img"
-            ></i>
-        </div>
-        <div class="count-label" appPixelSnap>{{ notesCount }}</div>
+  <!-- Notes title -->
+  <div class="notes-content-title">
+    <div class="title2 notes-content-title-text">
+      {{ activeNotebook?.name }}
+      @if (activeNotebook?.isArchived) {
+        <i
+          class="notebook-archive-icon las la-archive ml-1"
+          [matTooltip]="'NotebookArchive.Archived' | translate"
+          [attr.aria-label]="'NotebookArchive.Archived' | translate"
+          role="img"
+        ></i>
+      }
     </div>
-    <!-- Search -->
-    <div class="notes-content-search-container">
-        <div class="notes-content-search" [class.notes-content-search-highlight]="this.searchService.searchText">
-            <input
-                class="notes-content-search-input"
-                type="text"
-                #searchInput
-                [(ngModel)]="this.searchService.searchText"
-                placeholder="{{ 'MainPage.Search' | translate }}"
-                matTooltip="{{ 'Tags.SearchHint' | translate }}"
-                [attr.aria-label]="'Tags.SearchHint' | translate"
-            />
-            <div class="notes-content-search-icons">
-                <i class="las la-search notes-content-search-icon" *ngIf="!this.searchService.searchText"></i>
-                <i
-                    class="las la-times notes-content-search-icon pointer"
-                    *ngIf="this.searchService.searchText"
-                    matTooltip="{{ 'MainPage.ClearSearch' | translate }}"
-                    (click)="clearSearchText()"
-                ></i>
-            </div>
-        </div>
+    <div class="count-label" appPixelSnap>{{ notesCount }}</div>
+  </div>
+  <!-- Search -->
+  <div class="notes-content-search-container">
+    <div class="notes-content-search" [class.notes-content-search-highlight]="this.searchService.searchText">
+      <input
+        class="notes-content-search-input"
+        type="text"
+        #searchInput
+        [(ngModel)]="this.searchService.searchText"
+        placeholder="{{ 'MainPage.Search' | translate }}"
+        matTooltip="{{ 'Tags.SearchHint' | translate }}"
+        [attr.aria-label]="'Tags.SearchHint' | translate"
+        />
+      <div class="notes-content-search-icons">
+        @if (!this.searchService.searchText) {
+          <i class="las la-search notes-content-search-icon"></i>
+        }
+        @if (this.searchService.searchText) {
+          <i
+            class="las la-times notes-content-search-icon pointer"
+            matTooltip="{{ 'MainPage.ClearSearch' | translate }}"
+            (click)="clearSearchText()"
+          ></i>
+        }
+      </div>
     </div>
+  </div>
 </div>

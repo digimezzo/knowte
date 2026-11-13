@@ -1,68 +1,89 @@
 <div class="notes">
-    <!-- Drag image -->
-    <div class="drag-image no-select" id="drag-image">
-        <div class="drag-image-icon">
-            <img class="drag-image-icon-pen" src="./assets/images/pencil_256x256.svg" />
-        </div>
-        <div class="drag-image-text mx-1" *ngIf="draggableNoteIds.length === 1">
-            {{ draggedNote.title | truncate: 30 : true }}
-        </div>
-        <div class="drag-image-text mx-1" *ngIf="draggableNoteIds.length > 1">
-            {{ 'MainPage.DragNotesCount' | translate: { noteCount: draggableNoteIds.length } }}
-        </div>
+  <!-- Drag image -->
+  <div class="drag-image no-select" id="drag-image">
+    <div class="drag-image-icon">
+      <img class="drag-image-icon-pen" src="./assets/images/pencil_256x256.svg" />
     </div>
-    <!-- Notes list -->
-    <cdk-virtual-scroll-viewport class="notes-list" itemSize="50">
-        <div class="note-item-container" [ngClass]="{ 'selected-item': note.isSelected }" *cdkVirtualFor="let note of notes" matRipple>
-            <div
-                class="note-item no-select"
-                [ngClass]="{ 'pinned-note': note.isPinned }"
-                (dblclick)="openNoteAsync(note)"
-                (click)="setSelectedNotes(note, $event)"
-                draggable="true"
-                (dragstart)="dragStart($event, note)"
-            >
-                <div class="note-item-icon">
-                    <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg" />
-                </div>
-                <div
-                    class="note-item-info px-1"
-                    matTooltip="{{ 'Tooltips.LastChanged' | translate }}: {{ note.displayExactModificationDate }}"
-                >
-                    <div class="note-item-info-title">
-                        <span>{{ note.title }}</span>
-                    </div>
-                    <div class="note-item-info-date-and-tasks">
-                        <i class="note-status-icon lab la-markdown" *ngIf="note.isMarkdownNote"></i>
-                        <i class="note-status-icon lar la-edit" *ngIf="!note.isMarkdownNote"></i>
-                        <i class="note-status-icon las la-lock ml-1" *ngIf="note.isEncrypted"></i>
-                        <i class="note-status-icon-accent las la-thumbtack rotate-45-ccw ml-1" *ngIf="note.isPinned"></i>
-                        <div class="note-status-text ml-1">{{ note.displayModificationDate }}</div>
-                        <app-tasks-progress
-                            class="ml-1"
-                            *ngIf="note.totalTasksCount > 0"
-                            [closedTasksCount]="note.closedTasksCount"
-                            [totalTasksCount]="note.totalTasksCount"
-                        >
-                        </app-tasks-progress>
-                        <div class="note-item-tags ml-1" *ngIf="note.tags?.length" [matTooltip]="note.tags.join(', ')">
-                            <span class="note-item-tag" *ngFor="let tag of note.tags">{{ tag }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="note-item-actions">
-                    <button
-                        type="button"
-                        class="note-item-action"
-                        (click)="toggleNoteMark(note)"
-                        [matTooltip]="(note.isMarked ? 'Tooltips.UnmarkNote' : 'Tooltips.MarkNote') | translate"
-                        [attr.aria-label]="(note.isMarked ? 'Tooltips.UnmarkNote' : 'Tooltips.MarkNote') | translate"
-                    >
-                        <i class="note-item-actions-heart-marked las la-heart" *ngIf="note.isMarked"></i>
-                        <i class="note-item-actions-heart-unmarked lar la-heart" *ngIf="!note.isMarked"></i>
-                    </button>
-                </div>
-            </div>
+    @if (draggableNoteIds.length === 1) {
+      <div class="drag-image-text mx-1">
+        {{ draggedNote.title | truncate: 30 : true }}
+      </div>
+    }
+    @if (draggableNoteIds.length > 1) {
+      <div class="drag-image-text mx-1">
+        {{ 'MainPage.DragNotesCount' | translate: { noteCount: draggableNoteIds.length } }}
+      </div>
+    }
+  </div>
+  <!-- Notes list -->
+  <cdk-virtual-scroll-viewport class="notes-list" itemSize="50">
+    <div class="note-item-container" [ngClass]="{ 'selected-item': note.isSelected }" *cdkVirtualFor="let note of notes" matRipple>
+      <div
+        class="note-item no-select"
+        [ngClass]="{ 'pinned-note': note.isPinned }"
+        (dblclick)="openNoteAsync(note)"
+        (click)="setSelectedNotes(note, $event)"
+        draggable="true"
+        (dragstart)="dragStart($event, note)"
+        >
+        <div class="note-item-icon">
+          <img class="note-item-icon-pen" src="./assets/images/pencil_256x256.svg" />
         </div>
-    </cdk-virtual-scroll-viewport>
+        <div
+          class="note-item-info px-1"
+          matTooltip="{{ 'Tooltips.LastChanged' | translate }}: {{ note.displayExactModificationDate }}"
+          >
+          <div class="note-item-info-title">
+            <span>{{ note.title }}</span>
+          </div>
+          <div class="note-item-info-date-and-tasks">
+            @if (note.isMarkdownNote) {
+              <i class="note-status-icon lab la-markdown"></i>
+            }
+            @if (!note.isMarkdownNote) {
+              <i class="note-status-icon lar la-edit"></i>
+            }
+            @if (note.isEncrypted) {
+              <i class="note-status-icon las la-lock ml-1"></i>
+            }
+            @if (note.isPinned) {
+              <i class="note-status-icon-accent las la-thumbtack rotate-45-ccw ml-1"></i>
+            }
+            <div class="note-status-text ml-1">{{ note.displayModificationDate }}</div>
+            @if (note.totalTasksCount > 0) {
+              <app-tasks-progress
+                class="ml-1"
+                [closedTasksCount]="note.closedTasksCount"
+                [totalTasksCount]="note.totalTasksCount"
+                >
+              </app-tasks-progress>
+            }
+            @if (note.tags?.length) {
+              <div class="note-item-tags ml-1" [matTooltip]="note.tags.join(', ')">
+                @for (tag of note.tags; track tag) {
+                  <span class="note-item-tag">{{ tag }}</span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+        <div class="note-item-actions">
+          <button
+            type="button"
+            class="note-item-action"
+            (click)="toggleNoteMark(note)"
+            [matTooltip]="(note.isMarked ? 'Tooltips.UnmarkNote' : 'Tooltips.MarkNote') | translate"
+            [attr.aria-label]="(note.isMarked ? 'Tooltips.UnmarkNote' : 'Tooltips.MarkNote') | translate"
+            >
+            @if (note.isMarked) {
+              <i class="note-item-actions-heart-marked las la-heart"></i>
+            }
+            @if (!note.isMarked) {
+              <i class="note-item-actions-heart-unmarked lar la-heart"></i>
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  </cdk-virtual-scroll-viewport>
 </div>

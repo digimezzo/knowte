@@ -1,56 +1,74 @@
 <app-logo-main
-    class="main-logo pointer"
-    (click)="goBackToCollection()"
-    matTooltip="{{ 'Tooltips.BackToNotes' | translate }}"
-    [showBackArrow]="true"
+  class="main-logo pointer"
+  (click)="goBackToCollection()"
+  matTooltip="{{ 'Tooltips.BackToNotes' | translate }}"
+  [showBackArrow]="true"
 ></app-logo-main>
 <div class="window-frame">
-    <div class="window-frame-titlebar">
-        <div class="window-frame-titlebar-dragarea pl-1"></div>
-        <app-collection-switcher *ngIf="!appearance.windowHasNativeTitleBar"></app-collection-switcher>
-        <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
+  <div class="window-frame-titlebar">
+    <div class="window-frame-titlebar-dragarea pl-1"></div>
+    @if (!appearance.windowHasNativeTitleBar) {
+      <app-collection-switcher></app-collection-switcher>
+    }
+    @if (!appearance.windowHasNativeTitleBar) {
+      <app-window-controls></app-window-controls>
+    }
+  </div>
+  @if (isBusy) {
+    <div class="window-frame-overlay">
+      <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
     </div>
-    <div class="window-frame-overlay" *ngIf="isBusy">
-        <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
+  }
+  <div class="window-frame-content" [ngStyle]="{ top: appearance.windowHasNativeTitleBar ? '10px' : '32px' }">
+    <div class="app-settings">
+      <app-sub-menu class="app-settings__submenu">
+        <app-sub-menu-item
+          [page]="0"
+          [selectedPage]="this.page"
+          [text]="'SettingsTabs.Appearance' | translate"
+          (click)="this.setPage(0)"
+          >
+        </app-sub-menu-item>
+        <app-sub-menu-item
+          [page]="1"
+          [selectedPage]="this.page"
+          [text]="'SettingsTabs.Notes' | translate"
+          (click)="this.setPage(1)"
+          >
+        </app-sub-menu-item>
+        <app-sub-menu-item
+          [page]="2"
+          [selectedPage]="this.page"
+          [text]="'SettingsTabs.Advanced' | translate"
+          (click)="this.setPage(2)"
+          >
+        </app-sub-menu-item>
+      </app-sub-menu>
+      <mat-divider></mat-divider>
+      <app-main-menu class="app-settings__menu" [selectedMenuItem]="2"></app-main-menu>
+      <div class="app-settings__content viewport-height">
+        <!-- Appearance -->
+        @if (this.leftToRight(0)) {
+          <app-appearance-settings [@enterLeftToRight]></app-appearance-settings>
+        }
+        @if (this.rightToLeft(0)) {
+          <app-appearance-settings [@enterRightToLeft]></app-appearance-settings>
+        }
+        <!-- Notes -->
+        @if (this.leftToRight(1)) {
+          <app-notes-settings [@enterLeftToRight]></app-notes-settings>
+        }
+        @if (this.rightToLeft(1)) {
+          <app-notes-settings [@enterRightToLeft]></app-notes-settings>
+        }
+        <!-- Advanced -->
+        @if (this.leftToRight(2)) {
+          <app-advanced-settings [@enterLeftToRight]></app-advanced-settings>
+        }
+        @if (this.rightToLeft(2)) {
+          <app-advanced-settings [@enterRightToLeft]></app-advanced-settings>
+        }
+      </div>
     </div>
-    <div class="window-frame-content" [ngStyle]="{ top: appearance.windowHasNativeTitleBar ? '10px' : '32px' }">
-        <div class="app-settings">
-            <app-sub-menu class="app-settings__submenu">
-                <app-sub-menu-item
-                    [page]="0"
-                    [selectedPage]="this.page"
-                    [text]="'SettingsTabs.Appearance' | translate"
-                    (click)="this.setPage(0)"
-                >
-                </app-sub-menu-item>
-                <app-sub-menu-item
-                    [page]="1"
-                    [selectedPage]="this.page"
-                    [text]="'SettingsTabs.Notes' | translate"
-                    (click)="this.setPage(1)"
-                >
-                </app-sub-menu-item>
-                <app-sub-menu-item
-                    [page]="2"
-                    [selectedPage]="this.page"
-                    [text]="'SettingsTabs.Advanced' | translate"
-                    (click)="this.setPage(2)"
-                >
-                </app-sub-menu-item>
-            </app-sub-menu>
-            <mat-divider></mat-divider>
-            <app-main-menu class="app-settings__menu" [selectedMenuItem]="2"></app-main-menu>
-            <div class="app-settings__content viewport-height">
-                <!-- Appearance -->
-                <app-appearance-settings *ngIf="this.leftToRight(0)" [@enterLeftToRight]></app-appearance-settings>
-                <app-appearance-settings *ngIf="this.rightToLeft(0)" [@enterRightToLeft]></app-appearance-settings>
-                <!-- Notes -->
-                <app-notes-settings *ngIf="this.leftToRight(1)" [@enterLeftToRight]></app-notes-settings>
-                <app-notes-settings *ngIf="this.rightToLeft(1)" [@enterRightToLeft]></app-notes-settings>
-                <!-- Advanced -->
-                <app-advanced-settings *ngIf="this.leftToRight(2)" [@enterLeftToRight]></app-advanced-settings>
-                <app-advanced-settings *ngIf="this.rightToLeft(2)" [@enterRightToLeft]></app-advanced-settings>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>

@@ -1,4 +1,8 @@
 <div class="app-logo-main">
-    <img *ngIf="!showBackArrow" class="app-logo-main__icon" src="./assets/images/pencil_and_shadow_256x256.svg" />
-    <i *ngIf="showBackArrow" class="app-logo-main__backarrow las la-arrow-left"></i>
+  @if (!showBackArrow) {
+    <img class="app-logo-main__icon" src="./assets/images/pencil_and_shadow_256x256.svg" />
+  }
+  @if (showBackArrow) {
+    <i class="app-logo-main__backarrow las la-arrow-left"></i>
+  }
 </div>

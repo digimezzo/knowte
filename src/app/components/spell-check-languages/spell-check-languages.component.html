@@ -1,9 +1,10 @@
 <div class="d-flex flex-column">
+  @for (spellCheckLanguage of this.spellCheckLanguages; track spellCheckLanguage) {
     <mat-checkbox
-        *ngFor="let spellCheckLanguage of this.spellCheckLanguages"
-        (change)="toggleSpellCheckLanguage(spellCheckLanguage)"
-        [(ngModel)]="spellCheckLanguage.isEnabled"
-    >
-        {{ spellCheckLanguage.localizedName }} ({{ spellCheckLanguage.englishName }})
+      (change)="toggleSpellCheckLanguage(spellCheckLanguage)"
+      [(ngModel)]="spellCheckLanguage.isEnabled"
+      >
+      {{ spellCheckLanguage.localizedName }} ({{ spellCheckLanguage.englishName }})
     </mat-checkbox>
+  }
 </div>

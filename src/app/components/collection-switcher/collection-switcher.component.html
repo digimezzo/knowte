@@ -1,61 +1,67 @@
 <div class="collection-switcher">
-    <div class="collection-switcher-active-collection no-select mr-1">
-        {{ this.collectionService.activeCollection }}
+  <div class="collection-switcher-active-collection no-select mr-1">
+    {{ this.collectionService.activeCollection }}
+  </div>
+  <div class="window-button" mat-icon-button [matMenuTriggerFor]="menu" matTooltip="{{ 'Tooltips.ChangeCollection' | translate }}">
+    <div class="collection-switcher-button">
+      <i class="collection-switcher-button__icon las la-bars"></i>
+      @if (this.updateService.isUpdateAvailable) {
+        <div class="collection-switcher-button__updateindicator"></div>
+      }
     </div>
-    <div class="window-button" mat-icon-button [matMenuTriggerFor]="menu" matTooltip="{{ 'Tooltips.ChangeCollection' | translate }}">
-        <div class="collection-switcher-button">
-            <i class="collection-switcher-button__icon las la-bars"></i>
-            <div class="collection-switcher-button__updateindicator" *ngIf="this.updateService.isUpdateAvailable"></div>
-        </div>
-    </div>
+  </div>
 </div>
 <mat-menu #menu="matMenu">
-    <button class="menu-button" mat-menu-item (click)="addCollectionAsync()">
-        <span class="d-flex align-items-center">
-            <i class="collection-switcher-icon las la-plus"></i>
-            {{ 'CollectionSwitcher.AddCollection' | translate }}
+  <button class="menu-button" mat-menu-item (click)="addCollectionAsync()">
+    <span class="d-flex align-items-center">
+      <i class="collection-switcher-icon las la-plus"></i>
+      {{ 'CollectionSwitcher.AddCollection' | translate }}
+    </span>
+  </button>
+  <mat-divider></mat-divider>
+  @for (collection of collections; track collection) {
+    <div>
+      <button class="menu-button" mat-menu-item>
+        <span class="collection-switcher-item" (click)="activateCollectionAsync(collection)">
+          <i class="collection-switcher-icon las la-box" [ngClass]="{ isActive: collection === activeCollection }"> </i>
+          {{ collection }}
         </span>
-    </button>
-    <mat-divider></mat-divider>
-    <div *ngFor="let collection of collections">
-        <button class="menu-button" mat-menu-item>
-            <span class="collection-switcher-item" (click)="activateCollectionAsync(collection)">
-                <i class="collection-switcher-icon las la-box" [ngClass]="{ isActive: collection === activeCollection }"> </i>
-                {{ collection }}
-            </span>
-            <span class="menu-command-item mr-1">
-                <i
-                    class="menu-command-item-icon mr-2 lar la-edit"
-                    matTooltip="{{ 'Tooltips.Rename' | translate }}"
-                    (click)="renameCollectionAsync(collection)"
-                >
-                </i>
-                <i
-                    class="menu-command-item-icon lar la-trash-alt"
-                    matTooltip="{{ 'Tooltips.Delete' | translate }}"
-                    (click)="deleteCollectionAsync(collection)"
-                >
-                </i>
-            </span>
-        </button>
-    </div>
-    <mat-divider></mat-divider>
-    <button class="menu-button" mat-menu-item (click)="openTrash()">
-        <span class="d-flex align-items-center">
-            <i class="collection-switcher-icon las la-trash-alt"></i>
-            {{ 'CollectionSwitcher.OpenTrash' | translate }}
+        <span class="menu-command-item mr-1">
+          <i
+            class="menu-command-item-icon mr-2 lar la-edit"
+            matTooltip="{{ 'Tooltips.Rename' | translate }}"
+            (click)="renameCollectionAsync(collection)"
+            >
+          </i>
+          <i
+            class="menu-command-item-icon lar la-trash-alt"
+            matTooltip="{{ 'Tooltips.Delete' | translate }}"
+            (click)="deleteCollectionAsync(collection)"
+            >
+          </i>
         </span>
-    </button>
-    <mat-divider></mat-divider>
-    <button class="menu-button" mat-menu-item (click)="openDonateLink()">
-        <span class="d-flex align-items-center"> <i class="donate-icon las la-heart mr-1"></i> {{ 'AboutPage.Donate' | translate }} </span>
-    </button>
-    <div *ngIf="this.updateService.isUpdateAvailable">
-        <mat-divider></mat-divider>
-        <button mat-menu-item (click)="downloadLatestRelease()">
-            <div class="accent">
-                {{ 'CollectionSwitcher.Download' | translate }} {{ this.applicationName }} {{ this.updateService.latestRelease }}
-            </div>
-        </button>
+      </button>
     </div>
+  }
+  <mat-divider></mat-divider>
+  <button class="menu-button" mat-menu-item (click)="openTrash()">
+    <span class="d-flex align-items-center">
+      <i class="collection-switcher-icon las la-trash-alt"></i>
+      {{ 'CollectionSwitcher.OpenTrash' | translate }}
+    </span>
+  </button>
+  <mat-divider></mat-divider>
+  <button class="menu-button" mat-menu-item (click)="openDonateLink()">
+    <span class="d-flex align-items-center"> <i class="donate-icon las la-heart mr-1"></i> {{ 'AboutPage.Donate' | translate }} </span>
+  </button>
+  @if (this.updateService.isUpdateAvailable) {
+    <div>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="downloadLatestRelease()">
+        <div class="accent">
+          {{ 'CollectionSwitcher.Download' | translate }} {{ this.applicationName }} {{ this.updateService.latestRelease }}
+        </div>
+      </button>
+    </div>
+  }
 </mat-menu>
