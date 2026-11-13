@@ -6,6 +6,7 @@ import { Operation } from '../../common/enums/operation';
 import { Scheduler } from '../../common/scheduling/scheduler';
 import { TasksCount } from '../../common/ui/tasks-count';
 import { PerformanceDiagnostics } from '../../common/logging/performance-diagnostics';
+import { Logger } from '../../common/logging/logger';
 import { Notebook } from '../../data/entities/notebook';
 import { NoteDetailsResult } from '../results/note-details-result';
 import { NoteMarkResult } from '../results/note-mark-result';
@@ -133,10 +134,15 @@ export class CollectionClient implements OnDestroy {
             (receivedNoteOperationResult: NoteOperationResult) => (noteOperationResult = receivedNoteOperationResult)
         );
 
-        while (noteOperationResult === null || noteOperationResult === undefined) {
+        const deadline: number = Date.now() + Constants.noteMetadataSaveTimeoutMilliseconds;
+        while ((noteOperationResult === null || noteOperationResult === undefined) && Date.now() < deadline) {
             await this.scheduler.sleepAsync(50);
         }
 
+        if (noteOperationResult == undefined) {
+            new Logger().error(`Timed out saving the title for note with id='${noteId}'.`, 'CollectionClient', 'saveNoteTitleAsync');
+            return new NoteOperationResult(Operation.Error);
+        }
         return noteOperationResult;
     }
 

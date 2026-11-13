@@ -17,6 +17,7 @@ import { BaseSettings } from '../../common/settings/base-settings';
 import { TasksCount } from '../../common/ui/tasks-count';
 import { CollectionClient } from '../../services/collection/collection.client';
 import { PersistanceService } from '../../services/persistance/persistance.service';
+import { NoteOperationResult } from '../../services/results/note-operation-result';
 import { SearchClient } from '../../services/search/search.client';
 import { TranslatorService } from '../../services/translator/translator.service';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
@@ -846,6 +847,69 @@ describe('NoteComponent preparing deletion', () => {
         component['removeSubscriptions']();
     });
 
+    it('does not start a competing autosave while closing and cleans up only when closing succeeds', async () => {
+        component['isTextDirty'] = true;
+        component['saveNoteTitleAsync'] = jest.fn().mockResolvedValue(Operation.Success);
+        let finishWrite: () => void;
+        const started = new Promise<void>((resolve) => {
+            writeContent.mockImplementationOnce(() => {
+                resolve();
+                return new Promise<void>((finish) => { finishWrite = finish; });
+            });
+        });
+        const dispose = jest.spyOn(client, 'dispose');
+        closeWindow.mockImplementation(() => {
+            component.beforeunloadHandler({ preventDefault: jest.fn(), returnValue: undefined });
+        });
+
+        const closing = component['saveAndCloseAsync']();
+        await started;
+        await component['autosaveNoteContentAsync']();
+        expect(writeContent).toHaveBeenCalledTimes(1);
+        expect(dispose).not.toHaveBeenCalled();
+        finishWrite();
+        await closing;
+
+        expect(closeWindow).toHaveBeenCalledTimes(1);
+        expect(dispose).toHaveBeenCalledTimes(1);
+        expect(component.isBusy).toBe(false);
+    });
+
+    it('keeps close handling alive when a pending save cancels a close attempt', async () => {
+        let finishWrite: () => void;
+        const started = new Promise<void>((resolve) => {
+            writeContent.mockImplementationOnce(() => {
+                resolve();
+                return new Promise<void>((finish) => { finishWrite = finish; });
+            });
+        });
+        const saving = component['saveNoteContentAsync']();
+        await started;
+        const event = { preventDefault: jest.fn(), returnValue: undefined };
+        closeWindow.mockImplementation(() => component.beforeunloadHandler(event));
+        const dispose = jest.spyOn(client, 'dispose');
+
+        component['close']();
+        expect(event.preventDefault).toHaveBeenCalled();
+        expect(dispose).not.toHaveBeenCalled();
+        expect(component['subscription'].closed).toBe(false);
+        finishWrite();
+        await saving;
+        component['removeSubscriptions']();
+    });
+
+    it('keeps a failed title save dirty and preserves the entered title', async () => {
+        component.initialNoteTitle = 'Original';
+        component.noteTitle = 'Changed';
+        component['isTitleDirty'] = true;
+        jest.spyOn(client, 'saveNoteTitleAsync').mockResolvedValue(new NoteOperationResult(Operation.Error));
+
+        expect(await component['saveNoteTitleAsync']('Changed')).toBe(Operation.Error);
+        expect(component.noteTitle).toBe('Changed');
+        expect(component['isTitleDirty']).toBe(true);
+        expect(showDialog).toHaveBeenCalled();
+    });
+
     describe('autosave', () => {
         let editorChanged: Subject<void>;
 
@@ -942,6 +1006,18 @@ describe('NoteComponent preparing deletion', () => {
             await flush(0);
 
             expect(writeContent).toHaveBeenCalledTimes(1);
+        });
+
+        it('retries an autosave deferred by another busy operation', async () => {
+            component.isBusy = true;
+            editorChanged.next();
+            await flush(Constants.noteSaveTimeoutMilliseconds);
+            expect(writeContent).not.toHaveBeenCalled();
+
+            component.isBusy = false;
+            await flush(Constants.noteSaveRetryMilliseconds + Constants.noteSaveTimeoutMilliseconds);
+            expect(writeContent).toHaveBeenCalledTimes(1);
+            expect(component['isTextDirty']).toBe(false);
         });
 
         it('never overwrites a note whose content failed to load', async () => {

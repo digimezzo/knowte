@@ -142,4 +142,26 @@ describe('CollectionClient listener lifetime', () => {
             now$.mockRestore();
         }
     });
+
+    it('fails a note title save instead of waiting forever when the main window never answers', async () => {
+        let now = 0;
+        const now$ = jest.spyOn(Date, 'now').mockImplementation(() => now);
+        const log = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
+        try {
+            const scheduler = new Scheduler();
+            jest.spyOn(scheduler, 'sleepAsync').mockImplementation(async (milliseconds: number) => {
+                now += milliseconds;
+            });
+            const client = new CollectionClient(scheduler);
+            clients.push(client);
+
+            const result = await client.saveNoteTitleAsync('note', 'old', 'new');
+            expect(result.operation).toBe(Operation.Error);
+            expect(now).toBeGreaterThanOrEqual(Constants.noteMetadataSaveTimeoutMilliseconds);
+            expect(log).toHaveBeenCalledWith(expect.stringContaining('Timed out'), 'CollectionClient', 'saveNoteTitleAsync');
+        } finally {
+            now$.mockRestore();
+            log.mockRestore();
+        }
+    });
 });

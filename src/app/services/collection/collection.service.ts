@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import * as remote from '@electron/remote';
 import { ipcRenderer } from 'electron';
 import { merge, Observable, Subject } from 'rxjs';
@@ -43,14 +43,17 @@ import { NoteModelFactory } from './note-model-factory';
  * this class via the main process, never open another store for the same database.
  */
 @Injectable()
-export class CollectionService {
+export class CollectionService implements OnDestroy {
     public changeVersion: number = 0;
     private initialization: Promise<void> | undefined;
     private collectionOperationInProgress: boolean = false;
     private collectionChangeInProgress: boolean = false;
     private movingNoteIds: Set<string> = new Set();
     private isInitialized: boolean = false;
+    private noteEventsRegistered: boolean = false;
+    private destroyed: boolean = false;
     private globalEmitter: any = remote.getGlobal('globalEmitter');
+    private readonly unloadListener = () => this.ngOnDestroy();
     private openNoteIds: string[] = [];
 
     private collectionsChanged: Subject<void> = new Subject();
@@ -78,6 +81,23 @@ export class CollectionService {
     private encryptNoteEventListener: any = this.encryptNoteEventHandler.bind(this);
     private decryptNoteEventListener: any = this.decryptNoteEventHandler.bind(this);
     private getIsInitializedEventEventListener: any = this.getIsInitializedEventHandler.bind(this);
+    private readonly noteEventListeners = {
+        [CollectionEvents.getNoteLinkTargetsEvent]: this.getNoteLinkTargetsEventListener,
+        [CollectionEvents.openLinkedNoteEvent]: this.openLinkedNoteEventListener,
+        [CollectionEvents.setNoteOpenEvent]: this.setNoteOpenEventListener,
+        [CollectionEvents.setNoteMarkEvent]: this.setNoteMarkEventListener,
+        [CollectionEvents.setNotePinEvent]: this.setNotePinEventListener,
+        [CollectionEvents.setNotebookEvent]: this.setNotebookEventListener,
+        [CollectionEvents.getNoteDetailsEvent]: this.getNoteDetailsEventListener,
+        [CollectionEvents.getNotebooksEvent]: this.getNotebooksEventListener,
+        [CollectionEvents.saveNoteTitleEvent]: this.saveNoteTitleEventListener,
+        [CollectionEvents.saveNoteTextEvent]: this.saveNoteTextEventListener,
+        [CollectionEvents.saveNoteTagsEvent]: this.saveNoteTagsEventListener,
+        [CollectionEvents.deleteNoteEvent]: this.deleteNoteEventListener,
+        [CollectionEvents.encryptNoteEvent]: this.encryptNoteEventListener,
+        [CollectionEvents.decryptNoteEvent]: this.decryptNoteEventListener,
+        [CollectionEvents.getIsInitializedEvent]: this.getIsInitializedEventEventListener,
+    };
 
     private _activeCollection: string;
 
@@ -120,39 +140,29 @@ export class CollectionService {
     }
 
     private listenToNoteEvents(): void {
-        // Remove listeners
-        this.globalEmitter.removeListener(CollectionEvents.getNoteLinkTargetsEvent, this.getNoteLinkTargetsEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.openLinkedNoteEvent, this.openLinkedNoteEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.setNoteOpenEvent, this.setNoteOpenEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.setNoteMarkEvent, this.setNoteMarkEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.setNotePinEvent, this.setNotePinEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.setNotebookEvent, this.setNotebookEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.getNoteDetailsEvent, this.getNoteDetailsEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.getNotebooksEvent, this.getNotebooksEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.saveNoteTitleEvent, this.saveNoteTitleEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.saveNoteTextEvent, this.saveNoteTextEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.saveNoteTagsEvent, this.saveNoteTagsEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.deleteNoteEvent, this.deleteNoteEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.encryptNoteEvent, this.encryptNoteEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.decryptNoteEvent, this.decryptNoteEventListener);
-        this.globalEmitter.removeListener(CollectionEvents.getIsInitializedEvent, this.getIsInitializedEventEventListener);
+        if (this.noteEventsRegistered || this.destroyed) {
+            return;
+        }
 
-        // Add listeners
-        this.globalEmitter.on(CollectionEvents.getNoteLinkTargetsEvent, this.getNoteLinkTargetsEventListener);
-        this.globalEmitter.on(CollectionEvents.openLinkedNoteEvent, this.openLinkedNoteEventListener);
-        this.globalEmitter.on(CollectionEvents.setNoteOpenEvent, this.setNoteOpenEventListener);
-        this.globalEmitter.on(CollectionEvents.setNoteMarkEvent, this.setNoteMarkEventListener);
-        this.globalEmitter.on(CollectionEvents.setNotePinEvent, this.setNotePinEventListener);
-        this.globalEmitter.on(CollectionEvents.setNotebookEvent, this.setNotebookEventListener);
-        this.globalEmitter.on(CollectionEvents.getNoteDetailsEvent, this.getNoteDetailsEventListener);
-        this.globalEmitter.on(CollectionEvents.getNotebooksEvent, this.getNotebooksEventListener);
-        this.globalEmitter.on(CollectionEvents.saveNoteTitleEvent, this.saveNoteTitleEventListener);
-        this.globalEmitter.on(CollectionEvents.saveNoteTextEvent, this.saveNoteTextEventListener);
-        this.globalEmitter.on(CollectionEvents.saveNoteTagsEvent, this.saveNoteTagsEventListener);
-        this.globalEmitter.on(CollectionEvents.deleteNoteEvent, this.deleteNoteEventListener);
-        this.globalEmitter.on(CollectionEvents.encryptNoteEvent, this.encryptNoteEventListener);
-        this.globalEmitter.on(CollectionEvents.decryptNoteEvent, this.decryptNoteEventListener);
-        this.globalEmitter.on(CollectionEvents.getIsInitializedEvent, this.getIsInitializedEventEventListener);
+        // Removing unregistered callbacks can cause @electron/remote to release them.
+        for (const [event, listener] of Object.entries(this.noteEventListeners)) {
+            this.globalEmitter.on(event, listener);
+        }
+        this.noteEventsRegistered = true;
+        window.addEventListener('unload', this.unloadListener);
+    }
+
+    public ngOnDestroy(): void {
+        this.destroyed = true;
+        if (!this.noteEventsRegistered) {
+            return;
+        }
+
+        for (const [event, listener] of Object.entries(this.noteEventListeners)) {
+            this.globalEmitter.removeListener(event, listener);
+        }
+        this.noteEventsRegistered = false;
+        window.removeEventListener('unload', this.unloadListener);
     }
 
     public hasCollections(): boolean {

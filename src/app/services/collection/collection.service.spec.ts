@@ -151,6 +151,8 @@ describe('CollectionService note deletion', () => {
         service.notesChanged$.subscribe(notesChanged);
     });
 
+    afterEach(() => service.ngOnDestroy());
+
     function addNote(isMarkdownNote: boolean, content: string, text = ''): Note {
         const note = new Note('New note', '', isMarkdownNote);
         note.id = `note-${notes.length}`;
@@ -915,6 +917,64 @@ describe('CollectionService note deletion', () => {
 
             expect(initializeStore).toHaveBeenCalledTimes(2);
             expect(on).toHaveBeenCalled();
+        });
+
+        it('registers note listeners once without first removing remote callbacks', async () => {
+            await service.initializeAsync();
+            expect(globalEmitter.removeListener).not.toHaveBeenCalled();
+            const registeredEvents = on.mock.calls.map(([event]) => event);
+            expect(registeredEvents).toContain(CollectionEvents.getIsInitializedEvent);
+            expect(registeredEvents).toContain(CollectionEvents.getNoteDetailsEvent);
+
+            service['isInitialized'] = false;
+            await service.initializeAsync();
+            expect(on.mock.calls.map(([event]) => event)).toEqual(registeredEvents);
+            expect(globalEmitter.removeListener).not.toHaveBeenCalled();
+        });
+
+        it('removes its registered listeners on unload without disturbing other listeners', async () => {
+            const bus = new EventEmitter();
+            globalEmitter.on.mockImplementation((event, listener) => bus.on(event, listener));
+            globalEmitter.removeListener.mockImplementation((event, listener) => bus.removeListener(event, listener));
+            const otherListener = jest.fn();
+            bus.on(CollectionEvents.getNoteDetailsEvent, otherListener);
+            await service.initializeAsync();
+            const registrations = on.mock.calls.map(([event, listener]) => [event, listener]);
+            expect(bus.listenerCount(CollectionEvents.getNoteDetailsEvent)).toBe(2);
+
+            window.dispatchEvent(new Event('unload'));
+            expect(globalEmitter.removeListener.mock.calls).toEqual(registrations);
+            expect(bus.listeners(CollectionEvents.getNoteDetailsEvent)).toEqual([otherListener]);
+            for (const [event] of registrations) {
+                if (event !== CollectionEvents.getNoteDetailsEvent) {
+                    expect(bus.listenerCount(event)).toBe(0);
+                }
+            }
+            service.ngOnDestroy();
+            expect(globalEmitter.removeListener).toHaveBeenCalledTimes(registrations.length);
+        });
+
+        it('removes registered listeners when the service is destroyed', async () => {
+            await service.initializeAsync();
+            const registrations = on.mock.calls.map(([event, listener]) => [event, listener]);
+            service.ngOnDestroy();
+            expect(globalEmitter.removeListener.mock.calls).toEqual(registrations);
+            window.dispatchEvent(new Event('unload'));
+            expect(globalEmitter.removeListener).toHaveBeenCalledTimes(registrations.length);
+        });
+
+        it('does not register listeners if destroyed while initialization is in progress', async () => {
+            let finishLoading: () => void;
+            initializeStore.mockReturnValue(new Promise<void>((resolve) => (finishLoading = resolve)));
+            const initialization = service.initializeAsync();
+            while (!finishLoading) {
+                await Promise.resolve();
+            }
+            service.ngOnDestroy();
+            finishLoading();
+            await initialization;
+            expect(on).not.toHaveBeenCalled();
+            expect(globalEmitter.removeListener).not.toHaveBeenCalled();
         });
     });
 

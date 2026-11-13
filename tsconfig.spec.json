@@ -4,7 +4,8 @@
         "outDir": "./out-tsc/spec",
         "types": [
             "jest", // 1
-            "node"
+            "node",
+            "dom-webcodecs"
         ],
         "esModuleInterop": true, // 2
         "emitDecoratorMetadata": true // 3

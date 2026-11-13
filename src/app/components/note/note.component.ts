@@ -331,6 +331,11 @@ export class NoteComponent implements OnInit {
             return;
         }
 
+        if (this.isBusy) {
+            this.saveRetryTimeout = setTimeout(() => this.noteContentChanged.next(), Constants.noteSaveRetryMilliseconds);
+            return;
+        }
+
         const operation: Operation = await this.saveNoteContentAsync(!this.isAutosaveErrorReported);
         if (operation === Operation.Success) {
             this.isAutosaveErrorReported = false;
@@ -623,20 +628,20 @@ export class NoteComponent implements OnInit {
             return;
         }
         this.zone.run(() => (this.isBusy = true));
-        const setNoteTitleOperation: Operation = await this.saveNoteTitleAsync(this.noteTitle);
-        const setNoteTextOperation: Operation = await this.saveNoteContentAsync();
+        try {
+            const setNoteTitleOperation: Operation = await this.saveNoteTitleAsync(this.noteTitle);
+            const setNoteTextOperation: Operation = await this.saveNoteContentAsync();
 
-        // Close is only allowed when saving both title and text is successful
-        if (setNoteTitleOperation === Operation.Success && setNoteTextOperation === Operation.Success && !this.isTextDirty) {
-            this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, 'NoteComponent', 'saveAndCloseAsync');
-            this.close();
-        } else {
+            if (setNoteTitleOperation === Operation.Success && setNoteTextOperation === Operation.Success && !this.isTextDirty) {
+                this.logger.info(`Closing note with id=${this.noteId} after saving changes.`, 'NoteComponent', 'saveAndCloseAsync');
+                this.close();
+            }
+        } finally {
             this.zone.run(() => (this.isBusy = false));
         }
     }
 
     private close(): void {
-        this.cleanup();
         this.noteWindow.close();
     }
 
@@ -771,7 +776,6 @@ export class NoteComponent implements OnInit {
             this.zone.run(() => (this.noteTitle = this.initialNoteTitle));
             this.snackBar.noteTitleCannotBeEmptyAsync();
         } else if (result.operation === Operation.Error) {
-            this.zone.run(() => (this.noteTitle = this.initialNoteTitle));
             const errorText: string = await this.translator.getAsync('ErrorTexts.RenameNoteError', { noteTitle: this.initialNoteTitle });
 
             this.zone.run(() => {
@@ -790,7 +794,9 @@ export class NoteComponent implements OnInit {
             // Do nothing
         }
 
-        this.isTitleDirty = false;
+        if (result.operation !== Operation.Error) {
+            this.isTitleDirty = false;
+        }
         this.refreshSaveStatus();
 
         return result.operation;
