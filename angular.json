@@ -135,7 +135,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "knowte:build"
+                      "buildTarget": "knowte:build"
                     }
                 }
             }
