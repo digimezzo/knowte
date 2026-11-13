@@ -25,8 +25,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AngularSplitModule } from 'angular-split';
-import { marked, Tokens } from 'marked';
-import { MARKED_OPTIONS, MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
+import { MARKED_OPTIONS, MarkdownModule } from 'ngx-markdown';
 import 'reflect-metadata';
 import '../polyfills';
 import { AppRoutingModule } from './app-routing.module';
@@ -75,9 +74,7 @@ import { SpellCheckBottomSheetComponent } from './components/note/bottom-sheets/
 import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { MarkdownNoteComponent } from './components/note/markdown-note/markdown-note.component';
 import { NoteLinkDialogComponent } from './components/dialogs/note-link-dialog/note-link-dialog.component';
-import { getNoteLinkPreviewHref } from './common/utils/note-link';
-import { markdownHighlightExtension } from './components/note/markdown-note/markdown-highlight';
-import { markdownUncPathExtension } from './components/note/markdown-note/markdown-unc-path';
+import { MarkedOptionsFactory } from './components/note/markdown-note/markdown-options';
 import { NoteContextMenuFactory } from './components/note/note-context-menu-factory';
 import { BoundaryGetter } from './components/note/note-editor/boundary-getter';
 import { ImageProcessor } from './components/note/note-editor/image-processor';
@@ -150,68 +147,6 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
     hideDelay: 0,
     touchendHideDelay: 0,
 };
-
-marked.use(markdownHighlightExtension);
-marked.use(markdownUncPathExtension);
-
-/**
- * Function that returns `MarkedOptions` with renderer override
- * See: https://github.com/jfcere/ngx-markdown/issues/315
- */
-export function MarkedOptionsFactory(): MarkedOptions {
-    const renderer = new MarkedRenderer();
-
-    const htmlEscapes: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-
-    renderer.link = (token: Tokens.Link) => {
-        const href = token.href ? getNoteLinkPreviewHref(token.href) : token.href;
-        return MarkedRenderer.prototype.link.call(renderer, { ...token, href }) as string;
-    };
-
-    renderer.code = (token: Tokens.Code) => {
-        const language = token.lang?.trim().split(/\s+/, 1)[0].toLowerCase();
-        if (language === 'mermaid') {
-            const escapedCode = token.text.replace(/[&<>]/g, (c) => htmlEscapes[c] ?? c);
-            return `<pre class="mermaid">${escapedCode}</pre>`;
-        }
-        return MarkedRenderer.prototype.code.call(renderer, token) as string;
-    };
-
-    // remove task list bullets
-    renderer.list = (token: Tokens.List) => {
-        const html = MarkedRenderer.prototype.list.call(renderer, token) as string;
-        const divElement = document.createElement('div');
-        divElement.innerHTML = html;
-
-        divElement.querySelectorAll('li').forEach((li) => {
-            li.childNodes.forEach((child) => {
-                if (child instanceof HTMLInputElement && child.type === 'checkbox') {
-                    li.classList.add('task-list-item');
-                    const checkbox = document.createElement('span');
-                    checkbox.classList.add('task-list-checkbox');
-                    if (child.checked) {
-                        checkbox.classList.add('task-list-checkbox-checked');
-                    }
-                    child.replaceWith(checkbox);
-                }
-            });
-        });
-
-        return divElement.innerHTML;
-    };
-
-    return { renderer };
-
-    // See: https://snyk.io/advisor/npm-package/ngx-markdown/functions/ngx-markdown.MarkedRenderer
-    // return {
-    //     renderer: renderer,
-    //     gfm: true,
-    //     breaks: false,
-    //     pedantic: false,
-    //     smartLists: true,
-    //     smartypants: false,
-    // };
-}
 
 @NgModule({
     declarations: [
