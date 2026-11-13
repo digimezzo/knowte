@@ -1,6 +1,6 @@
-import { marked } from 'marked';
+import { MarkedExtension } from 'marked';
 
-export const markdownHighlightExtension: marked.MarkedExtension = {
+export const markdownHighlightExtension: MarkedExtension = {
     extensions: [
         {
             name: 'mark',
