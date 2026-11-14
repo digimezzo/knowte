@@ -35,7 +35,8 @@
         "electron:linux": "npm run build:prod && npx electron-builder build --linux --config electron-builder.config.js",
         "electron:windows": "npm run build:prod && npx electron-builder build --windows --config electron-builder.config.js",
         "electron:mac": "npm run build:prod && npx electron-builder build --mac --config electron-builder.config.js",
-        "test": "npx jest --verbose"
+        "test": "npx jest --verbose",
+        "lint": "ng lint"
     },
     "overrides": {
         "ngx-markdown": {
@@ -87,15 +88,18 @@
         "@angular/platform-browser": "21.2.26",
         "@angular/platform-browser-dynamic": "21.2.26",
         "@angular/router": "21.2.26",
+        "@eslint/js": "^10.0.1",
         "@ngx-translate/core": "15.0.0",
         "@ngx-translate/http-loader": "8.0.0",
         "@types/d3-dispatch": "3.0.1",
         "@types/jest": "30.0.0",
         "@types/node": "^22.20.5",
+        "angular-eslint": "^21.4.0",
         "core-js": "2.6.1",
         "electron": "^43.0.0",
         "electron-builder": "26.18.0",
         "electron-reload": "1.5.0",
+        "eslint": "^10.15.0",
         "jest": "^30.0.0",
         "jest-environment-jsdom": "^30.5.2",
         "jest-preset-angular": "^16.0.0",
@@ -106,6 +110,7 @@
         "type-fest": "3.13.1",
         "typemoq": "^2.1.0",
         "typescript": "~5.9.3",
+        "typescript-eslint": "^8.72.2",
         "wait-on": "^9.5.1",
         "zone.js": "~0.15.1"
     }
