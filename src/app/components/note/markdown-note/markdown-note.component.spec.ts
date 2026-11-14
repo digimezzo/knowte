@@ -25,6 +25,7 @@ import { BaseAppearanceService } from '../../../services/appearance/base-appeara
 import { INoteEditor } from '../note-editor/i-note-editor';
 import { MarkdownNoteComponent } from './markdown-note.component';
 import { MarkdownScrollMap } from './markdown-scroll-map';
+import angularJson from '../../../../../angular.json';
 
 @Pipe({ name: 'fixImagePaths', standalone: false })
 class FixImagePathsStubPipe implements PipeTransform {
@@ -49,8 +50,9 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
 
     beforeAll(() => {
         // Load the same offline highlighter and language grammars as the application.
-        const scripts: string[] = require('../../../../../angular.json').projects.knowte.architect.build.options.scripts;
-        scripts.filter((script) => script.includes('/prismjs/')).forEach((script) => require(`../../../../../${script}`));
+        angularJson.projects.knowte.architect.build.options.scripts
+        .filter((script: string) => script.includes('/prismjs/'))
+        .forEach((script: string) => jest.requireActual(`../../../../../${script}`));
 
         window.ResizeObserver = class implements ResizeObserver {
             public constructor(callback: ResizeObserverCallback) {

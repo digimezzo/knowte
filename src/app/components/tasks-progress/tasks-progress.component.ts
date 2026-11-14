@@ -33,7 +33,7 @@ export class TasksProgressComponent implements OnInit {
         this.calculateWidth();
     }
 
-    public width: Number;
+    public width: number;
 
     public ngOnInit(): void {
         this.calculateWidth();

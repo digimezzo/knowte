@@ -3,11 +3,11 @@ import { ipcRenderer } from 'electron';
 import { Desktop } from './desktop';
 
 jest.mock('@electron/remote', () => {
-    const EventEmitter = require('events').EventEmitter;
+    const { EventEmitter } = jest.requireActual<typeof import('events')>('events');
     return { systemPreferences: new EventEmitter(), nativeTheme: new EventEmitter() };
 });
 jest.mock('electron', () => {
-    const EventEmitter = require('events').EventEmitter;
+    const { EventEmitter } = jest.requireActual<typeof import('events')>('events');
     return { ipcRenderer: new EventEmitter() };
 });
 

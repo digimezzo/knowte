@@ -60,7 +60,7 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
             )
         );
 
-        this.subscription.add(this.translatorService.languageChanged$.subscribe(async (_) => await this.getNotebookNameAsync()));
+        this.subscription.add(this.translatorService.languageChanged$.subscribe(async () => await this.getNotebookNameAsync()));
     }
 
     public async openNotebooksMenuAsync(menuTrigger: MatMenuTrigger): Promise<void> {

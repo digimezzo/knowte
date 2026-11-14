@@ -56,7 +56,7 @@ export class NoteComponent implements OnInit {
     private isTitleDirty: boolean = false;
     private isTextDirty: boolean = false;
     private contentRevision: number = 0;
-    private pendingContentSave: Promise<Operation>;
+    private pendingContentSave?: Promise<Operation>;
     private saveRetryTimeout?: ReturnType<typeof setTimeout>;
     private isAutosaveErrorReported: boolean = false;
     private hasSaveError: boolean = false;
@@ -804,8 +804,8 @@ export class NoteComponent implements OnInit {
     }
 
     private saveNoteContentAsync(notifyOnError: boolean = true): Promise<Operation> {
-        const previousSave: Promise<Operation> = this.pendingContentSave;
-        let save: Promise<Operation>;
+        const previousSave = this.pendingContentSave;
+        let save: Promise<Operation> | undefined = undefined;
         save = (async () => {
             try {
                 if (previousSave) {
@@ -961,11 +961,11 @@ export class NoteComponent implements OnInit {
         );
     }
 
-    public heading1(event: any): void {
+    public heading1(): void {
         this.noteEditor.applyHeading(1);
     }
 
-    public heading2(event: any): void {
+    public heading2(): void {
         this.noteEditor.applyHeading(2);
     }
 
@@ -1105,7 +1105,7 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    public strikeThrough(event: any): void {
+    public strikeThrough(): void {
         this.noteEditor.applyStrikeThrough();
     }
 }

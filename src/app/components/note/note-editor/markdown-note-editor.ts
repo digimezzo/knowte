@@ -252,7 +252,7 @@ export class MarkdownNoteEditor implements INoteEditor {
     public focus(): void {
         // setTimeout required to ensure that markdown-input is visible before setting focus
         setTimeout(() => {
-            let markdownInputElement: any = this.getMarkdownInputElement();
+            const markdownInputElement: any = this.getMarkdownInputElement();
             markdownInputElement.focus();
             markdownInputElement.selectionStart = markdownInputElement.value.length;
             markdownInputElement.scrollTop = markdownInputElement.scrollHeight;
@@ -501,17 +501,10 @@ export class MarkdownNoteEditor implements INoteEditor {
             end = wordBoundary.end;
         }
 
-        let startContainsFormatting: boolean = false;
-
         const possibleStartFormatting: string = markdownInputElement.value.substring(start, start + formatting.length);
-
-        startContainsFormatting = possibleStartFormatting === formatting;
-
-        let endContainsFormatting: boolean = false;
-
+        const startContainsFormatting : boolean = possibleStartFormatting === formatting;
         const possibleEndFormatting: string = markdownInputElement.value.substring(end - formatting.length, end);
-
-        endContainsFormatting = possibleEndFormatting === formatting;
+        const endContainsFormatting: boolean = possibleEndFormatting === formatting;
 
         return startContainsFormatting && endContainsFormatting;
     }
@@ -520,14 +513,12 @@ export class MarkdownNoteEditor implements INoteEditor {
         const markdownInputElement: any = this.getMarkdownInputElement();
         const lineBoundary: LineBoundary = this.boundaryGetter.getLineBoundary(markdownInputElement);
 
-        let startContainsFormatting: boolean = false;
-
         const possibleStartFormatting: string = markdownInputElement.value.substring(
             lineBoundary.start,
             lineBoundary.start + formatting.length,
         );
 
-        startContainsFormatting = possibleStartFormatting === formatting;
+        const startContainsFormatting: boolean = possibleStartFormatting === formatting;
 
         return startContainsFormatting;
     }

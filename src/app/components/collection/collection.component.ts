@@ -238,7 +238,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
     }
 
     public renameNotebook(): void {
-        const dialogRef: MatDialogRef<RenameNotebookDialogComponent> = this.dialog.open(RenameNotebookDialogComponent, {
+        this.dialog.open(RenameNotebookDialogComponent, {
             width: '450px',
             data: {notebookId: this.activeNotebook.id},
         });
@@ -453,8 +453,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
 
     public async notesDrop(event: any): Promise<void> {
         event.preventDefault();
-        const droppedFilesPaths: string[] = this.file.getDroppedFilesPaths(event);
-
+       
         if (this.file.isDroppingFiles(event)) {
             // Dropping files
             const pathsOfDroppedFiles: string[] = this.file.getDroppedFilesPaths(event);

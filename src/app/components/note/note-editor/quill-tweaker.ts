@@ -12,7 +12,7 @@ export class QuillTweaker {
      * @param quill The Quill instance
      */
     public forcePasteOfUnformattedText(quill: Quill): void {
-        quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+        quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node) => {
             const plaintext = node.innerText;
             const Delta = Quill.import('delta');
             return new Delta().insert(plaintext);

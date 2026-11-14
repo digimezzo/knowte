@@ -8,7 +8,6 @@ import {Note} from '../../data/entities/note';
 import {Notebook} from '../../data/entities/notebook';
 import {CollectionService} from '../../services/collection/collection.service';
 import {NoteMarkResult} from '../../services/results/note-mark-result';
-import {NotePinResult} from '../../services/results/note-pin-result';
 import {SearchService} from '../../services/search/search.service';
 
 @Component({
@@ -76,7 +75,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         this.subscription = this.collectionService.noteEdited$.subscribe(async () => await this.getNotesAsync());
         this.subscription.add(this.collectionService.notesChanged$.subscribe(async () => await this.getNotesAsync()));
         this.subscription.add(this.collectionService.noteNotebookChanged$.subscribe(async () => await this.getNotesAsync()));
-        this.subscription.add(this.searchService.searchTextChanged$.subscribe(async (_) => await this.getNotesAsync()));
+        this.subscription.add(this.searchService.searchTextChanged$.subscribe(async () => await this.getNotesAsync()));
 
         this.subscription.add(
             this.collectionService.noteMarkChanged$.subscribe(async (result: NoteMarkResult) => {
@@ -89,7 +88,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         );
 
         this.subscription.add(
-            this.collectionService.notePinChanged$.subscribe(async (result: NotePinResult) => {
+            this.collectionService.notePinChanged$.subscribe(async () => {
                 await this.getNotesAsync();
             })
         );
@@ -128,7 +127,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     private markNote(result: NoteMarkResult): void {
         if (this.notes.length > 0) {
-            const noteToMark: Note = this.notes.find((x) => x.id === result.noteId);
+            const noteToMark: Note | undefined = this.notes.find((x) => x.id === result.noteId);
 
             if (noteToMark) {
                 noteToMark.isMarked = result.isMarked;

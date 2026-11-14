@@ -242,7 +242,7 @@ export class AppearanceService implements BaseAppearanceService {
 
         try {
             this.applyTheme();
-        } catch (e) {
+        } catch {
             this.selectedTheme.isBroken = true;
             this.settings.theme = 'Dopamine';
             this.setSelectedThemeFromSettings();

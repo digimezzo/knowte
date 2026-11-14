@@ -40,7 +40,7 @@ export class TranslatorService {
         this.languageChanged.next(language);
     }
 
-    public getAsync(key: string | Array<string>, interpolateParams?: Object): Promise<string> {
+    public getAsync(key: string | Array<string>, interpolateParams?: object): Promise<string> {
         return this.translate.get(key, interpolateParams).toPromise();
     }
 

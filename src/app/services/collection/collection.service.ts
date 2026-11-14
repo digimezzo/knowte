@@ -229,12 +229,8 @@ export class CollectionService implements OnDestroy {
     private async initializeCollectionAsync(): Promise<void> {
         // Get the active collection from the settings
         let activeCollection: string = this.settings.activeCollection;
-        let activeCollectionDirectory: string = '';
-
-        if (await this.collectionFileAccess.collectionAndItsDirectoryExistAsync(this.settings.activeCollection)) {
-            // There is an active collection and the collection directory exists
-            activeCollectionDirectory = await this.collectionFileAccess.getCollectionDirectoryPath(this.settings.activeCollection);
-        } else {
+        
+        if (!await this.collectionFileAccess.collectionAndItsDirectoryExistAsync(activeCollection)) {
             // There is no active collection or no collection directory
             // Get all collection directories in the storage directory
             const collections: string[] = await this.collectionFileAccess.getCollectionsAsync();
@@ -829,8 +825,8 @@ export class CollectionService implements OnDestroy {
             uncategorizedNotes = this.getVisibleNotes(uncategorizedNotes);
 
             // Set pinned notes at the top
-            let pinnedUncategorizedNotes: Note[] = uncategorizedNotes.filter((x) => x.isPinned);
-            let unpinnedUncategorizedNotes: Note[] = uncategorizedNotes.filter((x) => !x.isPinned);
+            const pinnedUncategorizedNotes: Note[] = uncategorizedNotes.filter((x) => x.isPinned);
+            const unpinnedUncategorizedNotes: Note[] = uncategorizedNotes.filter((x) => !x.isPinned);
 
             uncategorizedNotes = [];
             uncategorizedNotes.push(...pinnedUncategorizedNotes);

@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Desktop } from '../../common/io/desktop';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -32,6 +33,7 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
         private translatorService: TranslatorService,
         private snackBarService: SnackBarService,
         private trashService: TrashService,
+        private desktop: Desktop,
         private dialog: MatDialog
     ) {}
 
@@ -188,7 +190,7 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
     }
 
     public openDonateLink(): void {
-        require('electron').shell.openExternal(Constants.donateUrl);
+        this.desktop.openLink(Constants.donateUrl);
     }
 
     public downloadLatestRelease(): void {

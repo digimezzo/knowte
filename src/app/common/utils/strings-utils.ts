@@ -16,7 +16,7 @@ export class StringUtils {
             if (stringToCheck.trim() === '') {
                 return true;
             }
-        } catch (error) {
+        } catch {
             return true;
         }
 
