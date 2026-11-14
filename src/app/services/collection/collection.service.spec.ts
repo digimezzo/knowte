@@ -475,7 +475,6 @@ describe('CollectionService note deletion', () => {
             matching.tags = ['Work', 'project alpha'];
             const tagOnly = addNote(false, 'Content');
             tagOnly.tags = ['work'];
-            const textOnly = addNote(false, 'Content', 'meeting budget work');
             const partialTag = addNote(false, 'Content', 'meeting budget');
             partialTag.tags = ['homework'];
 

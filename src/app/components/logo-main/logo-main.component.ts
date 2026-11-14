@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 
 @Component({
     selector: 'app-logo-main',
@@ -8,11 +8,9 @@ import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
     encapsulation: ViewEncapsulation.None,
     standalone: false
 })
-export class LogoMainComponent implements OnInit {
+export class LogoMainComponent {
     constructor() {}
 
     @Input()
     public showBackArrow: boolean;
-
-    public ngOnInit(): void {}
 }

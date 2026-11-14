@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Operation } from '../../../common/enums/operation';
 import { CollectionService } from '../../../services/collection/collection.service';
@@ -13,7 +13,7 @@ import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
     encapsulation: ViewEncapsulation.None,
     standalone: false
 })
-export class RenameCollectionDialogComponent implements OnInit {
+export class RenameCollectionDialogComponent {
     constructor(
         private collectionService: CollectionService,
         private dialogRef: MatDialogRef<RenameCollectionDialogComponent>,
@@ -27,8 +27,6 @@ export class RenameCollectionDialogComponent implements OnInit {
 
     public oldCollection: string = this.data.oldCollection;
     public newCollection: string = this.data.oldCollection;
-
-    public ngOnInit(): void {}
 
     public async renameCollectionAsync(): Promise<void> {
         const operation: Operation = await this.collectionService.renameCollectionAsync(this.oldCollection, this.newCollection);

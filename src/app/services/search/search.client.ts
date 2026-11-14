@@ -24,7 +24,7 @@ export class SearchClient {
          * It is not possible to change a string from inside a function
          * because it is not a reference type. So we use an array instead.
          */
-        let searchTexts: string[] = [];
+        const searchTexts: string[] = [];
 
         this.globalEmitter.emit(SearchEvents.getSearchTextEvent, (receivedSearchText: string) => searchTexts.push(receivedSearchText));
 

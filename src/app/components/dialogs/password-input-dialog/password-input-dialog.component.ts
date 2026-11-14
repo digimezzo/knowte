@@ -1,5 +1,6 @@
-import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { PasswordInputData } from './password-input-data';
 
 @Component({
     selector: 'app-password-input-dialog',
@@ -8,8 +9,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
     encapsulation: ViewEncapsulation.None,
     standalone: false
 })
-export class PasswordInputDialogComponent implements OnInit {
-    constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<PasswordInputDialogComponent>) {
+export class PasswordInputDialogComponent {
+    constructor(@Inject(MAT_DIALOG_DATA) public data: PasswordInputData, private dialogRef: MatDialogRef<PasswordInputDialogComponent>) {
         dialogRef.disableClose = true;
     }
 
@@ -39,8 +40,6 @@ export class PasswordInputDialogComponent implements OnInit {
 
         return false;
     }
-
-    public ngOnInit(): void {}
 
     public closeDialog(): void {
         if (this.canCloseDialog) {

@@ -91,7 +91,7 @@ export class CollectionFileAccess {
 
     public async collectionAndItsDirectoryExistAsync(collection: string): Promise<boolean> {
         const storageDirectory: string = this.settings.storageDirectory;
-        let activeCollection: string = this.settings.activeCollection;
+        const activeCollection: string = this.settings.activeCollection;
 
         if (!activeCollection) {
             return false;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { ProductInformation } from '../../common/application/product-information';
 
 @Component({
@@ -7,12 +7,10 @@ import { ProductInformation } from '../../common/application/product-information
     templateUrl: './logo-full.component.html',
     styleUrls: ['./logo-full.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    standalone: false
+    standalone: false,
 })
-export class LogoFullComponent implements OnInit {
+export class LogoFullComponent {
     constructor() {}
 
     public applicationName: string = ProductInformation.applicationName.toUpperCase();
-
-    public ngOnInit(): void {}
 }

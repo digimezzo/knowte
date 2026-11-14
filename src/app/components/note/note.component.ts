@@ -41,6 +41,7 @@ import { INoteEditor } from './note-editor/i-note-editor';
 import { NoteEditorFactory } from './note-editor/note-editor-factory';
 import { NoteSearch } from './note-search';
 import { NoteSaveStatus } from './note-status-bar/note-status-bar.component';
+import { PasswordInputData } from '../dialogs/password-input-dialog/password-input-data';
 
 @Component({
     selector: 'app-note',
@@ -530,14 +531,14 @@ export class NoteComponent implements OnInit {
         const titleText: string = await this.translator.getAsync('DialogTitles.NoteIsEncrypted');
         const placeholderText: string = await this.translator.getAsync('Input.SecretKey');
 
-        const data: any = {
-            titleText: titleText,
-            inputText: '',
-            placeholderText: placeholderText,
-            confirmationPlaceholderText: '',
-            confirmationErrorText: '',
-            requiresConfirmation: false,
-        };
+        const data: PasswordInputData = new PasswordInputData(
+            titleText,
+            '',
+            placeholderText,
+            '',
+            '',
+            false
+        );
 
         const dialogRef: MatDialogRef<PasswordInputDialogComponent> = this.dialog.open(PasswordInputDialogComponent, {
             width: '450px',

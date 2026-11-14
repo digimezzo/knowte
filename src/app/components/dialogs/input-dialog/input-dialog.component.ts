@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
@@ -8,12 +8,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
     encapsulation: ViewEncapsulation.None,
     standalone: false
 })
-export class InputDialogComponent implements OnInit {
+export class InputDialogComponent {
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<InputDialogComponent>) {
         dialogRef.disableClose = true;
     }
-
-    public ngOnInit(): void {}
 
     public closeDialog(): void {
         if (this.data.inputText || this.data.allowEmpty) {
