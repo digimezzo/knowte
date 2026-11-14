@@ -15,6 +15,7 @@ module.exports = tseslint.config(
     processor: angular.processInlineTemplates,
     rules: {
     "@angular-eslint/prefer-inject": "off",
+    "@angular-eslint/prefer-standalone": "off"
   },
   },
   {

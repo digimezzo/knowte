@@ -3,8 +3,9 @@
     "compilerOptions": {
       "esModuleInterop": true,
       "moduleResolution": "bundler",
+      "types": ["jest", "node"]
     },
     "angularCompilerOptions": {
-        "strictTemplates": true
+        "strictTemplates": true,
     }
 }

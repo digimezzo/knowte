@@ -1,9 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import {BaseSettings} from "../../../common/settings/base-settings";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {
-    SetSpellCheckerLanguagesDialogComponent
-} from "../../dialogs/set-spell-checker-languages-dialog/set-spell-checker-languages-dialog.component";
+import { BaseSettings } from '../../../common/settings/base-settings';
+import { MatDialog } from '@angular/material/dialog';
+import { SetSpellCheckerLanguagesDialogComponent } from '../../dialogs/set-spell-checker-languages-dialog/set-spell-checker-languages-dialog.component';
 
 @Component({
     selector: 'app-notes-settings',
@@ -11,7 +9,7 @@ import {
     templateUrl: './notes-settings.component.html',
     styleUrls: ['./notes-settings.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    standalone: false
+    standalone: false,
 })
 export class NotesSettingsComponent {
     public constructor(
@@ -63,7 +61,7 @@ export class NotesSettingsComponent {
     }
 
     public setSpellCheckerLanguages(): void {
-        const dialogRef: MatDialogRef<SetSpellCheckerLanguagesDialogComponent> = this.dialog.open(SetSpellCheckerLanguagesDialogComponent, {
+        this.dialog.open(SetSpellCheckerLanguagesDialogComponent, {
             width: '450px',
         });
     }
