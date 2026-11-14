@@ -20,6 +20,7 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable @typescript-eslint/no-require-imports */
 const electron_1 = require("electron");
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
@@ -34,9 +35,9 @@ const settings_store_1 = require("./src/app/common/settings/settings-store");
 electron_1.app.commandLine.appendSwitch('disable-color-correct-rendering');
 electron_log_1.default.create('main');
 electron_log_1.default.transports.file.resolvePath = () => path.join(electron_1.app.getPath('userData'), 'logs', 'Knowte.log');
-let mainWindow, serve;
+let mainWindow;
 const args = process.argv.slice(1);
-serve = args.some((val) => val === '--serve');
+const serve = args.some((val) => val === '--serve');
 // Workaround: Global does not allow setting custom properties.
 // We need to cast it to "any" first.
 const globalAny = global;
@@ -68,7 +69,7 @@ function createMainWindow() {
         if (process.platform === 'linux') {
             require('./main/linux-accent-monitor').startLinuxAccentMonitor({ app: electron_1.app, BrowserWindow: electron_1.BrowserWindow, log: electron_log_1.default });
         }
-        electron_1.app.on('second-instance', (event, commandLine, workingDirectory) => {
+        electron_1.app.on('second-instance', () => {
             // Someone tried to run a second instance, we should focus our window.
             if (mainWindow) {
                 if (mainWindow.isMinimized()) {
@@ -245,10 +246,11 @@ function readNoteWindowSettingsSnapshot() {
             return '';
         }
         // Backup status and the restart-only preloading preference do not affect a spare's cached settings.
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const _a = JSON.parse(fs.readFileSync(settingsFile, 'utf-8')), { backupLastSuccess, backupLastError, noteWindowPreloadingEnabled: preloading } = _a, relevantSettings = __rest(_a, ["backupLastSuccess", "backupLastError", "noteWindowPreloadingEnabled"]);
         return JSON.stringify(relevantSettings);
     }
-    catch (error) {
+    catch (_b) {
         return undefined;
     }
 }
@@ -579,8 +581,7 @@ try {
         }
     });
 }
-catch (error) {
+catch (_a) {
     // Catch Error
-    // throw error;
 }
 //# sourceMappingURL=main.js.map
