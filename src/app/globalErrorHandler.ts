@@ -9,10 +9,10 @@ import { ErrorDialogComponent } from './components/dialogs/error-dialog/error-di
 export class GlobalErrorHandler implements ErrorHandler {
     constructor(private logger: Logger, private dialog: MatDialog, private zone: NgZone) {}
 
-    public handleError(error: any): void {
-        this.logger.error(`Handling global error. Cause: ${error}.`, 'GlobalErrorHandler', 'handleError');
-        this.showGlobalErrorDialog();
-    }
+    public handleError(error: unknown): void {
+    this.logger.error(`Handling global error. Cause: ${error}.`, 'GlobalErrorHandler', 'handleError');
+    this.showGlobalErrorDialog();
+}
 
     public showGlobalErrorDialog(): void {
         this.logger.info('Showing global error dialog', 'GlobalErrorHandler', 'showGlobalErrorDialog');

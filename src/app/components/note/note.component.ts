@@ -42,6 +42,10 @@ import { NoteEditorFactory } from './note-editor/note-editor-factory';
 import { NoteSearch } from './note-search';
 import { NoteSaveStatus } from './note-status-bar/note-status-bar.component';
 import { PasswordInputData } from '../dialogs/password-input-dialog/password-input-data';
+import { ConfirmationDialogData } from '../dialogs/confirmation-dialog/confirmation-dialog-data';
+import { InputData } from '../dialogs/input-dialog/input-data';
+import { SearchData } from './bottom-sheets/search-bottom-sheet/search-data';
+import { NotificationData } from '../dialogs/notification-dialog/notification-data';
 
 @Component({
     selector: 'app-note',
@@ -376,7 +380,7 @@ export class NoteComponent implements OnInit {
 
     // ngOnDestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
-    public beforeunloadHandler(event: any): void {
+    public beforeunloadHandler(event: BeforeUnloadEvent): void {
         // A spare window that never received a note has nothing to save or mark as closed.
         if (!this.noteId) {
             this.collectionClient.dispose();
@@ -408,7 +412,7 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    public onTitleKeydown(event: any): void {
+    public onTitleKeydown(event: KeyboardEvent): void {
         if (event.key === 'Enter' || event.key === 'Tab') {
             // Make sure enter is not applied to the editor
             event.preventDefault();
@@ -434,13 +438,13 @@ export class NoteComponent implements OnInit {
         this.isEditingTags = true;
         this.isBusy = true;
         try {
-            const data = {
-                titleText: await this.translator.getAsync('Tags.Edit'),
-                placeholderText: await this.translator.getAsync('Tags.Input'),
-                descriptionText: await this.translator.getAsync('Tags.Description'),
-                inputText: this.tags.join(', '),
-                allowEmpty: true,
-            };
+            const data = new InputData(
+                await this.translator.getAsync('Tags.Edit'),
+                await this.translator.getAsync('Tags.Input'),
+                await this.translator.getAsync('Tags.Description'),
+                this.tags.join(', '),
+                true
+            );
             const dialogRef = this.dialog.open(InputDialogComponent, { width: '450px', data });
             if (!(await dialogRef.afterClosed().toPromise())) {
                 return;
@@ -470,7 +474,7 @@ export class NoteComponent implements OnInit {
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
-            data: { dialogTitle: title, dialogText: text },
+            data: new ConfirmationDialogData(title, text),
         });
 
         dialogRef.afterClosed().subscribe(async (result) => {
@@ -545,7 +549,7 @@ export class NoteComponent implements OnInit {
             data: data,
         });
 
-        const result: any = await dialogRef.afterClosed().toPromise();
+        const result = await dialogRef.afterClosed().toPromise();
 
         if (result) {
             this.secretKey = data.inputText;
@@ -562,21 +566,21 @@ export class NoteComponent implements OnInit {
         const confirmationPlaceholderText: string = await this.translator.getAsync('Input.ConfirmSecretKey');
         const confirmationErrorText: string = await this.translator.getAsync('Input.SecretKeysDoNotMatch');
 
-        const data: any = {
-            titleText: titleText,
-            inputText: '',
-            placeholderText: placeholderText,
-            confirmationPlaceholderText: confirmationPlaceholderText,
-            confirmationErrorText: confirmationErrorText,
-            requiresConfirmation: true,
-        };
+        const data = new PasswordInputData(
+            titleText,
+            '',
+            placeholderText,
+            confirmationPlaceholderText,
+            confirmationErrorText,
+            true
+        );
 
         const dialogRef: MatDialogRef<PasswordInputDialogComponent> = this.dialog.open(PasswordInputDialogComponent, {
             width: '450px',
             data: data,
         });
 
-        dialogRef.afterClosed().subscribe(async (result: any) => {
+        dialogRef.afterClosed().subscribe(async (result: boolean) => {
             if (result) {
                 this.isEncrypted = true;
                 this.secretKey = data.inputText;
@@ -593,10 +597,10 @@ export class NoteComponent implements OnInit {
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
-            data: { dialogTitle: title, dialogText: text },
+            data: new ConfirmationDialogData(title, text),
         });
 
-        dialogRef.afterClosed().subscribe(async (result: any) => {
+        dialogRef.afterClosed().subscribe(async (result: boolean) => {
             if (result) {
                 this.isEncrypted = false;
                 this.secretKeyHash = '';
@@ -986,7 +990,7 @@ export class NoteComponent implements OnInit {
                     const notificationText: string = await this.translator.getAsync('NotificationTexts.SecretKeyIncorrect');
                     const dialogRef: MatDialogRef<NotificationDialogComponent> = this.dialog.open(NotificationDialogComponent, {
                         width: '450px',
-                        data: { notificationTitle: notificationTitle, notificationText: notificationText },
+                        data: new NotificationData(notificationTitle, notificationText),
                     });
 
                     await dialogRef.afterClosed().toPromise();
@@ -998,10 +1002,10 @@ export class NoteComponent implements OnInit {
     @HostListener('document:keydown.control.f')
     public openSearchBottomSheet(): void {
         const config: MatBottomSheetConfig = {
-            data: { searchText: TagUtils.parseSearch(this.searchText).text },
+            data: new SearchData(TagUtils.parseSearch(this.searchText).text),
         };
 
-        const ref = this.bottomSheet.open<SearchBottomSheetComponent, any, string>(SearchBottomSheetComponent, config);
+        const ref = this.bottomSheet.open<SearchBottomSheetComponent, SearchData, string>(SearchBottomSheetComponent, config);
         this.subscription.add(ref.afterDismissed().subscribe((searchText) => {
             if (searchText !== undefined) {
                 this.searchText = searchText;

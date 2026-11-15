@@ -148,7 +148,7 @@ export class FileAccess {
     }
 
     public async isDirectoryAsync(path: string): Promise<boolean> {
-        const stat: any = await fs.stat(path);
+        const stat = await fs.stat(path);
 
         if (stat.isDirectory()) {
             return true;

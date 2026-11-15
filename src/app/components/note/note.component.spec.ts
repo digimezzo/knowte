@@ -1,4 +1,4 @@
-import { NgZone, NO_ERRORS_SCHEMA } from '@angular/core';
+import { SearchData } from './bottom-sheets/search-bottom-sheet/search-data';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
@@ -530,7 +530,7 @@ describe('NoteComponent preparing deletion', () => {
             expect(component['searchText']).toBe('');
             expect(component.searchTerm).toBe('');
             component.openSearchBottomSheet();
-            expect(openSheet).toHaveBeenLastCalledWith(SearchBottomSheetComponent, { data: { searchText: '' } });
+            expect(openSheet).toHaveBeenLastCalledWith(SearchBottomSheetComponent, { data: new SearchData('') });
         } finally {
             jest.useRealTimers();
         }
@@ -602,7 +602,7 @@ describe('NoteComponent preparing deletion', () => {
             expect(findInPage).toHaveBeenCalledWith('new', { forward: true, findNext: false });
             expect(window.getSelection().anchorNode).toBe(document.body);
             component.openSearchBottomSheet();
-            expect(openSheet).toHaveBeenLastCalledWith(SearchBottomSheetComponent, { data: { searchText: 'new' } });
+            expect(openSheet).toHaveBeenLastCalledWith(SearchBottomSheetComponent, { data: new SearchData('new') });
         } finally {
             jest.useRealTimers();
         }
@@ -1065,7 +1065,7 @@ describe('SearchBottomSheetComponent searching', () => {
         const search = Mock.ofType<SearchClient>();
         const searchChanged = jest.fn();
         search.setup((x) => x.onSearchTextChanged(It.isAnyString())).callback(searchChanged);
-        const component = new SearchBottomSheetComponent({}, sheet.object, search.object);
+        const component = new SearchBottomSheetComponent(new SearchData(''), sheet.object, search.object);
         component.searchText = 'work';
 
         component.performSearch();

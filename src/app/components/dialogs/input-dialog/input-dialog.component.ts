@@ -1,5 +1,6 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { InputData } from './input-data';
 
 @Component({
     selector: 'app-input-dialog',
@@ -9,7 +10,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
     standalone: false
 })
 export class InputDialogComponent {
-    constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<InputDialogComponent>) {
+    constructor(@Inject(MAT_DIALOG_DATA) public data: InputData, private dialogRef: MatDialogRef<InputDialogComponent>) {
         dialogRef.disableClose = true;
     }
 

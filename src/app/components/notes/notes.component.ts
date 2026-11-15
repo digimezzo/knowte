@@ -1,26 +1,25 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {Constants} from '../../common/application/constants';
-import {Logger} from '../../common/logging/logger';
-import {BaseSettings} from '../../common/settings/base-settings';
-import {SelectionWatcher} from '../../common/ui/selection-watcher';
-import {Note} from '../../data/entities/note';
-import {Notebook} from '../../data/entities/notebook';
-import {CollectionService} from '../../services/collection/collection.service';
-import {NoteMarkResult} from '../../services/results/note-mark-result';
-import {SearchService} from '../../services/search/search.service';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Constants } from '../../common/application/constants';
+import { Logger } from '../../common/logging/logger';
+import { BaseSettings } from '../../common/settings/base-settings';
+import { SelectionWatcher } from '../../common/ui/selection-watcher';
+import { Note } from '../../data/entities/note';
+import { Notebook } from '../../data/entities/notebook';
+import { CollectionService } from '../../services/collection/collection.service';
+import { NoteMarkResult } from '../../services/results/note-mark-result';
+import { SearchService } from '../../services/search/search.service';
 
 @Component({
     selector: 'app-notes',
     templateUrl: './notes.component.html',
     styleUrls: ['./notes.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    standalone: false
+    standalone: false,
 })
 export class NotesComponent implements OnInit, OnDestroy {
     private _category: string;
-    
-    
+
     private subscription: Subscription;
     private _activeNotebook: Notebook;
     private selectionWatcher: SelectionWatcher = new SelectionWatcher();
@@ -30,10 +29,8 @@ export class NotesComponent implements OnInit, OnDestroy {
         private collectionService: CollectionService,
         private settings: BaseSettings,
         private logger: Logger,
-    ) {
-    }
+    ) {}
 
-    
     public get category(): string {
         return this._category;
     }
@@ -84,13 +81,13 @@ export class NotesComponent implements OnInit, OnDestroy {
                 } else {
                     this.markNote(result);
                 }
-            })
+            }),
         );
 
         this.subscription.add(
             this.collectionService.notePinChanged$.subscribe(async () => {
                 await this.getNotesAsync();
-            })
+            }),
         );
 
         await this.getNotesAsync();
@@ -142,7 +139,7 @@ export class NotesComponent implements OnInit, OnDestroy {
                 this.notes = await this.collectionService.getNotesAsync(
                     this.activeNotebook.id,
                     this._category,
-                    this.settings.showExactDatesInTheNotesList
+                    this.settings.showExactDatesInTheNotesList,
                 );
                 this.selectionWatcher.reset(this.notes);
                 this.selectedNoteIds.emit([]);
@@ -155,7 +152,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         return this.notes.filter((x) => x.isSelected).map((x) => x.id);
     }
 
-    public dragStart(event: any, draggedNote: Note): void {
+    public dragStart(event: DragEvent, draggedNote: Note): void {
         this.draggedNote = draggedNote;
         this.draggableNoteIds = this.getSelectedNoteIds();
 
@@ -163,7 +160,18 @@ export class NotesComponent implements OnInit, OnDestroy {
             this.draggableNoteIds.push(draggedNote.id);
         }
 
-        event.dataTransfer.setDragImage(document.getElementById('drag-image'), -10, -10);
-        event.dataTransfer.setData('text', JSON.stringify(this.draggableNoteIds));
+        const dataTransfer: DataTransfer | null = event.dataTransfer;
+
+        if (!dataTransfer) {
+            return;
+        }
+
+        const dragImage: HTMLElement | null = document.getElementById('drag-image');
+
+        if (dragImage) {
+            dataTransfer.setDragImage(dragImage, -10, -10);
+        }
+
+        dataTransfer.setData('text', JSON.stringify(this.draggableNoteIds));
     }
 }

@@ -24,7 +24,7 @@ import { CollectionEvents } from './collection-events';
  */
 @Injectable()
 export class CollectionClient implements OnDestroy {
-    private globalEmitter: any = remote.getGlobal('globalEmitter');
+    private globalEmitter = remote.getGlobal('globalEmitter');
     private disposed: boolean = false;
     private readonly unloadListener = () => this.dispose();
     private readonly eventListeners = {

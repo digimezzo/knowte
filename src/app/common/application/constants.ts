@@ -1,4 +1,5 @@
 import { FontSize } from './font-size';
+import { IExternalComponent } from './i-external-component';
 import { Language } from './language';
 import { SpellCheckLanguage } from './spell-check-language';
 
@@ -98,7 +99,7 @@ export class Constants {
         new SpellCheckLanguage('vi', 'Vietnamese', 'Tiếng Việt', true),
     ];
 
-    public static readonly externalComponents: any[] = [
+    public static readonly externalComponents: IExternalComponent[] = [
         {
             name: 'Angular',
             description:

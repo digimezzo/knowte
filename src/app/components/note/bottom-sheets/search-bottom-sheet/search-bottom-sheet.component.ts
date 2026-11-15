@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { SearchClient } from '../../../../services/search/search.client';
+import { SearchData } from './search-data';
 
 @Component({
     selector: 'app-search-bottom-sheet',
@@ -11,7 +12,7 @@ import { SearchClient } from '../../../../services/search/search.client';
 export class SearchBottomSheetComponent implements OnInit, AfterViewInit {
     private _searchText: string = '';
     constructor(
-        @Inject(MAT_BOTTOM_SHEET_DATA) private data: any,
+        @Inject(MAT_BOTTOM_SHEET_DATA) private data: SearchData,
         private bottomSheetRef: MatBottomSheetRef<SearchBottomSheetComponent>,
         private searchClient: SearchClient
     ) {}

@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import {Constants} from "../../../common/application/constants";
+import { IExternalComponent } from '../../../common/application/i-external-component';
 
 @Component({
     selector: 'app-information-components',
@@ -12,5 +13,5 @@ import {Constants} from "../../../common/application/constants";
 export class InformationComponentsComponent {
     public constructor() {}
 
-    public externalComponents: any[] = Constants.externalComponents;
+    public externalComponents: IExternalComponent[] = Constants.externalComponents;
 }

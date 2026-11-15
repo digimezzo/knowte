@@ -5,6 +5,8 @@ import { CollectionService } from '../../../services/collection/collection.servi
 import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../../services/translator/translator.service';
 import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
+import { ErrorData } from '../error-dialog/error-data';
+import { RenameCollectionData } from './rename-collection-data';
 
 @Component({
     selector: 'app-rename-collection-dialog',
@@ -18,7 +20,7 @@ export class RenameCollectionDialogComponent {
         private collectionService: CollectionService,
         private dialogRef: MatDialogRef<RenameCollectionDialogComponent>,
         private translator: TranslatorService,
-        @Inject(MAT_DIALOG_DATA) public data: any,
+        @Inject(MAT_DIALOG_DATA) public data: RenameCollectionData,
         private dialog: MatDialog,
         private snackBar: SnackBarService
     ) {
@@ -26,19 +28,19 @@ export class RenameCollectionDialogComponent {
     }
 
     public oldCollection: string = this.data.oldCollection;
-    public newCollection: string = this.data.oldCollection;
+    public newCollection: string = ''; // Will be filled in by dialog input
 
     public async renameCollectionAsync(): Promise<void> {
         const operation: Operation = await this.collectionService.renameCollectionAsync(this.oldCollection, this.newCollection);
 
         if (operation === Operation.Error) {
             const errorText: string = await this.translator.getAsync('ErrorTexts.RenameCollectionError', {
-                collection: this.newCollection,
+                collection: this.oldCollection,
             });
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px',
-                data: { errorText: errorText },
+                data: new ErrorData(errorText),
             });
         } else if (operation === Operation.Duplicate) {
             this.snackBar.duplicateCollectionAsync(this.newCollection);

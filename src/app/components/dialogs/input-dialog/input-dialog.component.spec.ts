@@ -1,11 +1,12 @@
 import { MatDialogRef } from '@angular/material/dialog';
 import { It, Mock, Times } from 'typemoq';
 import { InputDialogComponent } from './input-dialog.component';
+import { InputData } from './input-data';
 
 describe('InputDialogComponent', () => {
     it.each([false, true])('allows an empty value only when requested (allowEmpty=%s)', (allowEmpty) => {
         const ref = Mock.ofType<MatDialogRef<InputDialogComponent>>();
-        const component = new InputDialogComponent({ inputText: '', allowEmpty }, ref.object);
+        const component = new InputDialogComponent( new InputData('', '', '', '', allowEmpty), ref.object);
 
         component.closeDialog();
 
@@ -14,7 +15,7 @@ describe('InputDialogComponent', () => {
 
     it('keeps existing non-empty input behavior', () => {
         const ref = Mock.ofType<MatDialogRef<InputDialogComponent>>();
-        const component = new InputDialogComponent({ inputText: 'Notebook' }, ref.object);
+        const component = new InputDialogComponent(new InputData('', '', '', 'Notebook', false), ref.object);
 
         component.closeDialog();
 

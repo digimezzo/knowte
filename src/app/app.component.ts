@@ -16,6 +16,8 @@ import { PerformanceDiagnostics } from './common/logging/performance-diagnostics
 import { BaseSettings } from './common/settings/base-settings';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmation-dialog/confirmation-dialog.component';
 import { TranslatorService } from './services/translator/translator.service';
+import { ConfirmationDialogData } from './components/dialogs/confirmation-dialog/confirmation-dialog-data';
+import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
     selector: 'app-root',
@@ -48,7 +50,7 @@ export class AppComponent implements OnInit, OnDestroy {
         PerformanceDiagnostics.configure(this.settings.performanceDiagnosticsEnabled);
     }
 
-    @ViewChild('drawer') public drawer: any;
+    @ViewChild('drawer') public drawer!: MatDrawer;
 
     public ngOnDestroy(): void {
         this.stopPerformanceMonitoring?.();
@@ -126,7 +128,7 @@ export class AppComponent implements OnInit, OnDestroy {
         const dialogTitle: string = await this.translator.getAsync('DialogTitles.CloseWithUnsavedNotes');
         const dialogText: string = await this.translator.getAsync('DialogTexts.CloseWithUnsavedNotes');
         const result: boolean = await this.zone.run(() =>
-            this.dialog.open(ConfirmationDialogComponent, { width: '450px', data: { dialogTitle, dialogText } })
+            this.dialog.open(ConfirmationDialogComponent, { width: '450px', data: new ConfirmationDialogData(dialogTitle, dialogText) })
                 .afterClosed().toPromise(),
         );
         return !!result;

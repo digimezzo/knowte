@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Constants } from '../../../common/application/constants';
 import { Desktop } from '../../../common/io/desktop';
 import { FileAccess } from '../../../common/io/file-access';
+import { ErrorData } from './error-data';
 
 @Component({
     selector: 'app-error-dialog',
@@ -13,7 +14,7 @@ import { FileAccess } from '../../../common/io/file-access';
 })
 export class ErrorDialogComponent {
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: any,
+        @Inject(MAT_DIALOG_DATA) public data: ErrorData,
         private dialogRef: MatDialogRef<ErrorDialogComponent>,
         private fileAccess: FileAccess,
         private desktop: Desktop

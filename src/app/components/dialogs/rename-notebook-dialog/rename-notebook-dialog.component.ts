@@ -5,6 +5,7 @@ import { CollectionService } from '../../../services/collection/collection.servi
 import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../../services/translator/translator.service';
 import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
+import { RenameNotebookData } from './rename-notebook-data';
 
 @Component({
     selector: 'app-rename-notebook-dialog',
@@ -18,7 +19,7 @@ export class RenameNotebookDialogComponent {
         private collectionService: CollectionService,
         private dialogRef: MatDialogRef<RenameNotebookDialogComponent>,
         private translator: TranslatorService,
-        @Inject(MAT_DIALOG_DATA) public data: any,
+        @Inject(MAT_DIALOG_DATA) public data: RenameNotebookData,
         private dialog: MatDialog,
         private snackBar: SnackBarService
     ) {

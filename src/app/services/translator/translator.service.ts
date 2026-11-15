@@ -6,13 +6,14 @@ import { Constants } from '../../common/application/constants';
 import { Language } from '../../common/application/language';
 import { BaseSettings } from '../../common/settings/base-settings';
 import { TranslatorEvents } from './translator-events';
+import { EventEmitter } from 'events';
 
 @Injectable()
 export class TranslatorService {
     private languageChanged: Subject<Language> = new Subject();
 
-    private globalEmitter: any = remote.getGlobal('globalEmitter');
-    private languageChangedListener: any = this.languageChangedHandler.bind(this);
+    private globalEmitter: EventEmitter = remote.getGlobal('globalEmitter');
+    private languageChangedListener = this.languageChangedHandler.bind(this);
     private _selectedLanguage: Language;
 
     constructor(private translate: TranslateService, private settings: BaseSettings) {

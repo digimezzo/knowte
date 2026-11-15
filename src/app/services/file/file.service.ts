@@ -2,30 +2,38 @@ import { Injectable } from '@angular/core';
 import * as path from 'path';
 import { Constants } from '../../common/application/constants';
 
+type ElectronFile = File & { path: string };
+
 @Injectable()
 export class FileService {
     constructor() {}
 
-    public isDroppingFiles(dropEvent: any): boolean {
+    public isDroppingFiles(dropEvent: DragEvent): boolean {
         return this.getDroppedFilesPaths(dropEvent).length > 0;
     }
 
-    public getDroppedFilesPaths(dropEvent: any): string[] {
+    public getDroppedFilesPaths(dropEvent: DragEvent): string[] {
+        const dataTransfer: DataTransfer | null = dropEvent.dataTransfer;
+
+        if (!dataTransfer) {
+            return [];
+        }
+
         const droppedFilesPaths: string[] = [];
 
-        if (dropEvent.dataTransfer.items) {
+        if (dataTransfer.items) {
             // Use DataTransferItemList interface to access the file(s)
-            for (let i: number = 0; i < dropEvent.dataTransfer.items.length; i++) {
+            for (let i: number = 0; i < dataTransfer.items.length; i++) {
                 // If dropped items aren't files, reject them.
-                if (dropEvent.dataTransfer.items[i].kind === 'file') {
-                    const file: any = dropEvent.dataTransfer.items[i].getAsFile();
+                if (dataTransfer.items[i].kind === 'file') {
+                    const file: ElectronFile = dataTransfer.items[i].getAsFile() as ElectronFile;
                     droppedFilesPaths.push(file.path);
                 }
             }
         } else {
             // Use DataTransfer interface to access the file(s)
-            for (let i: number = 0; i < dropEvent.dataTransfer.files.length; i++) {
-                droppedFilesPaths.push(dropEvent.dataTransfer.files[i].path);
+            for (let i: number = 0; i < dataTransfer.files.length; i++) {
+                droppedFilesPaths.push((dataTransfer.files[i] as ElectronFile).path);
             }
         }
 
@@ -34,7 +42,7 @@ export class FileService {
 
     public getNoteFilePaths(filePaths: string[]): string[] {
         const noteFilePaths: string[] = filePaths.filter(
-            (x) => path.extname(x) === Constants.classicNoteExportExtension || path.extname(x) === Constants.markdownNoteExportExtension
+            (x) => path.extname(x) === Constants.classicNoteExportExtension || path.extname(x) === Constants.markdownNoteExportExtension,
         );
 
         return noteFilePaths;

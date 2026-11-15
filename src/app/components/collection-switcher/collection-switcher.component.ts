@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { RenameCollectionData } from '../dialogs/rename-collection-dialog/rename-collection-data';
 import { Desktop } from '../../common/io/desktop';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -15,6 +16,8 @@ import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/conf
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
 import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
 import { RenameCollectionDialogComponent } from '../dialogs/rename-collection-dialog/rename-collection-dialog.component';
+import { ConfirmationDialogData } from '../dialogs/confirmation-dialog/confirmation-dialog-data';
+import { InputData } from '../dialogs/input-dialog/input-data';
 
 @Component({
     selector: 'app-collection-switcher',
@@ -64,14 +67,14 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
         const titleText: string = await this.translatorService.getAsync('DialogTitles.AddCollection');
         const placeholderText: string = await this.translatorService.getAsync('Input.Collection');
 
-        const data: any = { titleText: titleText, inputText: '', placeholderText: placeholderText };
+        const data = new InputData(titleText, '', placeholderText, '', false);
 
         const dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
             width: '450px',
             data: data,
         });
 
-        const result: any = await dialogRef.afterClosed().toPromise();
+        const result = await dialogRef.afterClosed().toPromise();
 
         if (result) {
             const collection: string = data.inputText;
@@ -123,10 +126,10 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
-            data: { dialogTitle: title, dialogText: text },
+            data: new ConfirmationDialogData(title, text),
         });
 
-        const result: any = await dialogRef.afterClosed().toPromise();
+        const result = await dialogRef.afterClosed().toPromise();
 
         if (result) {
             return true;
@@ -144,7 +147,7 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
 
         this.dialog.open(RenameCollectionDialogComponent, {
             width: '450px',
-            data: { oldCollection: collection },
+            data: new RenameCollectionData(collection),
         });
     }
 
@@ -160,10 +163,10 @@ export class CollectionSwitcherComponent implements OnInit, OnDestroy {
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
-            data: { dialogTitle: title, dialogText: text },
+            data: new ConfirmationDialogData(title, text),
         });
 
-        const result: any = await dialogRef.afterClosed().toPromise();
+        const result = await dialogRef.afterClosed().toPromise();
 
         if (result) {
             const operation: Operation = await this.collectionService.deleteCollectionAsync(collection);

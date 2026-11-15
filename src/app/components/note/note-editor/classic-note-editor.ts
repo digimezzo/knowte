@@ -79,7 +79,7 @@ export class ClassicNoteEditor implements INoteEditor {
     }
 
     public hasSelectedText(): boolean {
-        const range: any = this.quill.getSelection();
+        const range = this.quill.getSelection();
 
         if (range && range.length > 0) {
             return true;
@@ -89,7 +89,7 @@ export class ClassicNoteEditor implements INoteEditor {
     }
 
     public performCut(): void {
-        const range: any = this.quill.getSelection();
+        const range = this.quill.getSelection();
 
         if (!range || range.length === 0) {
             return;
@@ -107,7 +107,7 @@ export class ClassicNoteEditor implements INoteEditor {
     }
 
     public performCopy(): void {
-        const range: any = this.quill.getSelection();
+        const range = this.quill.getSelection();
 
         if (!range || range.length === 0) {
             return;
@@ -141,7 +141,7 @@ export class ClassicNoteEditor implements INoteEditor {
     }
 
     public performDelete(): void {
-        const range: any = this.quill.getSelection();
+        const range = this.quill.getSelection();
 
         if (!range || range.length === 0) {
             return;
@@ -185,23 +185,28 @@ export class ClassicNoteEditor implements INoteEditor {
         }
     }
 
-    private insertImage(file: any): void {
+    private insertImage(file: Blob): void {
         const reader: FileReader = new FileReader();
 
-        reader.onload = (e: any) => {
+        reader.onload = () => {
             const img: HTMLImageElement = document.createElement('img');
-            img.src = e.target.result;
+            img.src = reader.result as string;
 
-            const range: Range = window.getSelection().getRangeAt(0);
+            const selection: Selection | null = window.getSelection();
+
+            if (!selection || selection.rangeCount === 0) {
+                return;
+            }
+
+            const range: Range = selection.getRangeAt(0);
             range.deleteContents();
             range.insertNode(img);
         };
-
         reader.readAsDataURL(file);
     }
 
     private pastTextFromClipboard(): void {
-        const range: any = this.quill.getSelection();
+        const range = this.quill.getSelection();
 
         if (!range) {
             return;
@@ -220,8 +225,8 @@ export class ClassicNoteEditor implements INoteEditor {
     }
 
     public applyHeading(headingSize: number): void {
-        const range: any = this.quill.getSelection();
-        const format: any = this.quill.getFormat(range.index, range.length);
+        const range = this.quill.getSelection();
+        const format = this.quill.getFormat(range.index, range.length);
         const formatString: string = JSON.stringify(format);
 
         const selectionContainsHeader: boolean = !formatString.includes(`"header":${headingSize}`);
@@ -265,8 +270,8 @@ export class ClassicNoteEditor implements INoteEditor {
     }
 
     public applyStrikeThrough(): void {
-        const range: any = this.quill.getSelection();
-        const format: any = this.quill.getFormat(range.index, range.length);
+        const range = this.quill.getSelection();
+        const format = this.quill.getFormat(range.index, range.length);
         const formatString: string = JSON.stringify(format);
 
         const applyStrikeThrough: boolean = !formatString.includes('strike');

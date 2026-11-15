@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { NoteCreator } from '../note-creator';
+import { NoteTypeChooserData } from './note-type-chooser-data';
 
 @Component({
     selector: 'app-note-type-chooser-bottom-sheet',
@@ -10,7 +11,7 @@ import { NoteCreator } from '../note-creator';
 })
 export class NoteTypeChooserBottomSheetComponent {
     constructor(
-        @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
+        @Inject(MAT_BOTTOM_SHEET_DATA) public data: NoteTypeChooserData,
         private noteCreator: NoteCreator,
         private bottomSheetRef: MatBottomSheetRef<NoteTypeChooserBottomSheetComponent>
     ) {}

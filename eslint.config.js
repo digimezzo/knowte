@@ -12,7 +12,6 @@ module.exports = tseslint.config(
         rules: {
             '@angular-eslint/prefer-inject': 'off',
             '@angular-eslint/prefer-standalone': 'off',
-            '@typescript-eslint/no-explicit-any': 'off'
         },
     },
     {
