@@ -253,6 +253,7 @@ describe('NoteComponent preparing deletion', () => {
 
         expect(openSheet).toHaveBeenCalledWith(ActionsBottomSheetComponent, expect.objectContaining({
             panelClass: 'note-actions-sheet',
+            restoreFocus: false,
             data: {
                 isPinned: component.isPinned, isMarked: component.isMarked,
                 isEncrypted: component.isEncrypted, isTrashed: component.isTrashed,

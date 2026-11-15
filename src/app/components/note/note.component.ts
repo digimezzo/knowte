@@ -511,6 +511,7 @@ export class NoteComponent implements OnInit {
                 {
                     ariaLabel,
                     panelClass: 'note-actions-sheet',
+                    restoreFocus: false,
                     data: {
                         isPinned: this.isPinned,
                         isMarked: this.isMarked,
