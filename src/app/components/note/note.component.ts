@@ -55,6 +55,17 @@ import { NotificationData } from '../dialogs/notification-dialog/notification-da
     standalone: false
 })
 export class NoteComponent implements OnInit {
+    // Heading shortcuts are matched on the physical key (event.code), so they work for the main-row digits and the
+    // numeric keypad alike, regardless of keyboard layout (e.g. AZERTY), NumLock state or how the OS reports event.key.
+    private static readonly headingKeyCodes: Readonly<Record<string, number>> = {
+        Digit1: 1,
+        Numpad1: 1,
+        Digit2: 2,
+        Numpad2: 2,
+        Digit3: 3,
+        Numpad3: 3,
+    };
+
     private subscription: Subscription = new Subscription();
 
     private isTitleDirty: boolean = false;
@@ -999,7 +1010,52 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    @HostListener('document:keydown.control.f')
+    /**
+     * Single entry point for all Ctrl+<key> shortcuts.
+     *
+     * - Digits (headings) are matched on event.code, so main-row digits and numeric keypad both work on any layout.
+     * - Letters are matched on event.key (lowercased, which also covers Caps Lock), so Ctrl+<letter> follows the
+     *   letter printed on the key for the user's layout (e.g. Ctrl+Q on AZERTY is the key labelled Q).
+     * - Exact modifier match: Ctrl only. This also excludes AltGr, which Windows reports as Ctrl+Alt.
+     */
+    @HostListener('document:keydown', ['$event'])
+    public onShortcutKeydown(event: KeyboardEvent): void {
+        if (!event.ctrlKey || event.shiftKey || event.altKey || event.metaKey || event.isComposing) {
+            return;
+        }
+
+        const headingLevel: number | undefined = NoteComponent.headingKeyCodes[event.code];
+        if (headingLevel !== undefined) {
+            event.preventDefault();
+            this.noteEditor?.applyHeading(headingLevel);
+            return;
+        }
+
+        switch ((event.key ?? '').toLowerCase()) {
+            case 'f':
+                this.openSearchBottomSheet();
+                break;
+            case 'b':
+                this.applyBold();
+                break;
+            case 'i':
+                this.applyItalic();
+                break;
+            case 's':
+                this.applyStrikeThrough();
+                break;
+            case 'k':
+                this.insertLink();
+                break;
+            case 'q':
+                this.applyQuote();
+                break;
+            case 'm':
+                this.applyCode();
+                break;
+        }
+    }
+
     public openSearchBottomSheet(): void {
         const config: MatBottomSheetConfig = {
             data: new SearchData(TagUtils.parseSearch(this.searchText).text),
@@ -1014,49 +1070,40 @@ export class NoteComponent implements OnInit {
         }));
     }
 
-    @HostListener('document:keydown.control.b')
     public applyBold(): void {
-        this.noteEditor.applyBold();
+        this.noteEditor?.applyBold();
     }
 
-    @HostListener('document:keydown.control.i')
     public applyItalic(): void {
-        this.noteEditor.applyItalic();
+        this.noteEditor?.applyItalic();
     }
 
-    @HostListener('document:keydown.control.s')
     public applyStrikeThrough(): void {
-        this.noteEditor.applyStrikeThrough();
+        this.noteEditor?.applyStrikeThrough();
     }
 
-    @HostListener('document:keydown.control.1')
     public applyHeading1(): void {
-        this.noteEditor.applyHeading(1);
+        this.noteEditor?.applyHeading(1);
     }
 
-    @HostListener('document:keydown.control.2')
     public applyHeading2(): void {
-        this.noteEditor.applyHeading(2);
+        this.noteEditor?.applyHeading(2);
     }
 
-    @HostListener('document:keydown.control.3')
     public applyHeading3(): void {
-        this.noteEditor.applyHeading(3);
+        this.noteEditor?.applyHeading(3);
     }
 
-    @HostListener('document:keydown.control.k')
     public insertLink(): void {
-        this.noteEditor.insertLink();
+        this.noteEditor?.insertLink();
     }
 
-    @HostListener('document:keydown.control.q')
     public applyQuote(): void {
-        this.noteEditor.applyQuote();
+        this.noteEditor?.applyQuote();
     }
 
-    @HostListener('document:keydown.control.m')
     public applyCode(): void {
-        this.noteEditor.applyCode();
+        this.noteEditor?.applyCode();
     }
 
     public async exportNoteToPdfAsync(): Promise<void> {

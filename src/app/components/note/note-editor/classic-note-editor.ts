@@ -225,6 +225,11 @@ export class ClassicNoteEditor implements INoteEditor {
     }
 
     public applyHeading(headingSize: number): void {
+        // Heading size 3 is not supported on classic notes.
+        if(headingSize > 2) {
+            return;
+        }
+
         const range = this.quill.getSelection();
         const format = this.quill.getFormat(range.index, range.length);
         const formatString: string = JSON.stringify(format);
