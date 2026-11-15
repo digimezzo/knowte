@@ -226,6 +226,12 @@ export class Constants {
             licenseUrl: 'https://github.com/markedjs/marked/blob/master/LICENSE',
         },
         {
+            name: 'Mermaid',
+            description: 'A diagramming and charting tool that renders text definitions as diagrams.',
+            url: 'https://github.com/mermaid-js/mermaid',
+            licenseUrl: 'https://github.com/mermaid-js/mermaid/blob/develop/LICENSE',
+        },
+        {
             name: 'Nano ID',
             description: 'A tiny (141 bytes), secure, URL-friendly, unique string ID generator for JavaScript.',
             url: 'https://github.com/ai/nanoid',
