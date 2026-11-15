@@ -3,6 +3,7 @@ import { AfterViewInit, Directive, ElementRef, NgZone, OnDestroy } from '@angula
 // Keeps a badge on whole device pixels, so its background and text are rounded the same way and the text stays centered.
 @Directive({
     selector: '[appPixelSnap]',
+    standalone: false
 })
 export class PixelSnapDirective implements AfterViewInit, OnDestroy {
     private resizeObserver: ResizeObserver;

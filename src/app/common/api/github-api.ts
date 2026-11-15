@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { StringUtils } from '../utils/strings-utils';
@@ -10,7 +11,7 @@ export class GitHubApi {
         const url: string = `https://api.github.com/repos/${owner}/${repo}/releases`;
         const releasesResponse: any = await this.httpClient.get<any>(url).toPromise();
 
-        let latestRelease: any = releasesResponse.find((x) => x.prerelease);
+        let latestRelease: any;
 
         if (includePrereleases) {
             latestRelease = releasesResponse.find((x) => x.prerelease);

@@ -44,7 +44,7 @@ export class ClipboardManager {
         const clipboardImage: NativeImage = imagePathFromClipboard
             ? nativeImage.createFromPath(imagePathFromClipboard)
             : clipboard.readImage();
-        const blob: Blob = new Blob([clipboardImage.toJPEG(80)], { type: 'image/jpeg' });
+        const blob: Blob = new Blob([Uint8Array.from(clipboardImage.toJPEG(80))], { type: 'image/jpeg' });
         return blob;
     }
 

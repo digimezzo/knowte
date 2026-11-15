@@ -91,18 +91,8 @@ export class SnackBarService {
         this.showActionSnackBar(message, action, false);
     }
 
-    private showActionLessSnackBar(message: string): void {
-        this.zone.run(() => {
-            this.matSnackBar.open(message, '', { duration: this.calculateDuration(message) });
-        });
-    }
-
     private showActionSnackBar(message: string, action: string, keepOpen: boolean): void {
-        let config: any = { duration: this.calculateDuration(message) };
-
-        if (keepOpen) {
-            config = {};
-        }
+        const config = keepOpen ? {} : { duration: this.calculateDuration(message) };
 
         this.zone.run(() => {
             this.matSnackBar.open(message, action, config);

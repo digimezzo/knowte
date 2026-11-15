@@ -8,6 +8,7 @@ import { CollectionService } from '../../../services/collection/collection.servi
     templateUrl: './settings-text-size-in-notes.component.html',
     styleUrls: ['./settings-text-size-in-notes.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class SettingsTextSizeInNotesComponent {
     constructor(private collectionService: CollectionService, private settings: BaseSettings) {}

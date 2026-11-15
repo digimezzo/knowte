@@ -14,7 +14,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { marked } from 'marked';
 import mermaid from 'mermaid';
-import { MarkedOptions, MarkdownModule, MarkdownService } from 'ngx-markdown';
+import { MARKED_OPTIONS, MarkdownModule, MarkdownService } from 'ngx-markdown';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { Operation } from '../../../common/enums/operation';
@@ -25,10 +25,11 @@ import { BaseAppearanceService } from '../../../services/appearance/base-appeara
 import { INoteEditor } from '../note-editor/i-note-editor';
 import { MarkdownNoteComponent } from './markdown-note.component';
 import { MarkdownScrollMap } from './markdown-scroll-map';
+import angularJson from '../../../../../angular.json';
 
-@Pipe({ name: 'fixImagePaths' })
+@Pipe({ name: 'fixImagePaths', standalone: false })
 class FixImagePathsStubPipe implements PipeTransform {
-    public transform(value: string): string {
+    transform(value: string): string {
         return value;
     }
 }
@@ -49,8 +50,9 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
 
     beforeAll(() => {
         // Load the same offline highlighter and language grammars as the application.
-        const scripts: string[] = require('../../../../../angular.json').projects.knowte.architect.build.options.scripts;
-        scripts.filter((script) => script.includes('/prismjs/')).forEach((script) => require(`../../../../../${script}`));
+        angularJson.projects.knowte.architect.build.options.scripts
+        .filter((script: string) => script.includes('/prismjs/'))
+        .forEach((script: string) => jest.requireActual(`../../../../../${script}`));
 
         window.ResizeObserver = class implements ResizeObserver {
             public constructor(callback: ResizeObserverCallback) {
@@ -69,9 +71,15 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [MarkdownNoteComponent, FixImagePathsStubPipe],
-            imports: [FormsModule, MatMenuModule, NoopAnimationsModule, TranslateModule.forRoot(), MarkdownModule.forRoot({
-                markedOptions: { provide: MarkedOptions, useValue: { headerIds: false, mangle: false } },
-            })],
+            imports: [
+                FormsModule,
+                MatMenuModule,
+                NoopAnimationsModule,
+                TranslateModule.forRoot(),
+                MarkdownModule.forRoot({
+                    markedOptions: { provide: MARKED_OPTIONS, useValue: {} },
+                }),
+            ],
             providers: [
                 { provide: CollectionClient, useValue: Mock.ofType<CollectionClient>().object },
                 { provide: MatDialog, useValue: Mock.ofType<MatDialog>().object },
@@ -89,11 +97,13 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
             layoutCallback = callback;
             return 1;
         });
-        jest.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => { layoutCallback = undefined; });
+        jest.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {
+            layoutCallback = undefined;
+        });
         // Component tests exercise event routing; layout accuracy is tested separately with measured anchors.
-        mappingPosition = jest.spyOn(MarkdownScrollMap.prototype, 'position').mockImplementation(
-            (position, fromEditor) => fromEditor ? position * 2 : position / 2,
-        );
+        mappingPosition = jest
+            .spyOn(MarkdownScrollMap.prototype, 'position')
+            .mockImplementation((position, fromEditor) => (fromEditor ? position * 2 : position / 2));
         component = fixture.componentInstance;
         const editor = Mock.ofType<INoteEditor>();
         isEditing = true;
@@ -171,8 +181,9 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
             button.click();
             fixture.detectChanges();
             await fixture.whenStable();
-            const items = Array.from(TestBed.inject(OverlayContainer).getContainerElement()
-                .querySelectorAll<HTMLButtonElement>('[role="menuitem"]'));
+            const items = Array.from(
+                TestBed.inject(OverlayContainer).getContainerElement().querySelectorAll<HTMLButtonElement>('[role="menuitem"]'),
+            );
             expect(items.some((item) => item.textContent.includes('Mermaid (mermaid)'))).toBe(true);
             expect(items.map((item) => item.textContent.trim())).toEqual(
                 component.codeLanguages.map((language) => `${language.name} (${language.code})`),
@@ -226,8 +237,26 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         });
 
         it.each([
-            'bash', 'batch', 'c', 'cpp', 'csharp', 'css', 'go', 'html', 'java', 'javascript',
-            'json', 'markdown', 'powershell', 'python', 'rust', 'sql', 'typescript', 'vbnet', 'xml', 'yaml',
+            'bash',
+            'batch',
+            'c',
+            'cpp',
+            'csharp',
+            'css',
+            'go',
+            'html',
+            'java',
+            'javascript',
+            'json',
+            'markdown',
+            'powershell',
+            'python',
+            'rust',
+            'sql',
+            'typescript',
+            'vbnet',
+            'xml',
+            'yaml',
         ])('inserts highlightable %s code', async (language) => {
             input.value = '';
             input.setSelectionRange(0, 0);
@@ -250,13 +279,17 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
             if (failure === 'failed') {
                 insertText.mockReturnValue(false);
             } else if (failure === 'throws') {
-                insertText.mockImplementation(() => { throw new Error('Insertion failed'); });
+                insertText.mockImplementation(() => {
+                    throw new Error('Insertion failed');
+                });
             }
 
             component.insertCodeBlock(failure === 'unsupported' ? 'unknown-language' : 'typescript');
 
             expect(TestBed.inject(Logger).error).toHaveBeenCalledWith(
-                expect.stringContaining('Could not insert code block.'), 'MarkdownNoteComponent', 'insertCodeBlock',
+                expect.stringContaining('Could not insert code block.'),
+                'MarkdownNoteComponent',
+                'insertCodeBlock',
             );
             expect(TestBed.inject(SnackBarService).oopsAnErrorOccurredAsync).toHaveBeenCalled();
         });
@@ -467,11 +500,12 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         expect(input.scrollTop).toBe(750);
     });
 
-    it('rebuilds source blocks after editing and realigns after images load', () => {
+    it('rebuilds source blocks after editing and realigns after images load', async () => {
         const update = jest.spyOn(MarkdownScrollMap.prototype, 'update');
         flushLayout();
         content = '# Changed\n\nParagraph';
         fixture.detectChanges();
+        await fixture.whenStable();
         component.onPreviewReady();
         flushLayout();
         expect(update).toHaveBeenLastCalledWith(content);
@@ -515,7 +549,9 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         flushLayout();
         expect(component.isScrollSyncEnabled).toBe(false);
         expect(TestBed.inject(Logger).error).toHaveBeenCalledWith(
-            expect.stringContaining('Mismatched preview'), 'MarkdownNoteComponent', 'synchronizeScroll',
+            expect.stringContaining('Mismatched preview'),
+            'MarkdownNoteComponent',
+            'synchronizeScroll',
         );
         expect(TestBed.inject(SnackBarService).oopsAnErrorOccurredAsync).toHaveBeenCalled();
         expect(mappingPosition).not.toHaveBeenCalled();
@@ -531,10 +567,12 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         component.onPreviewReady();
         await fixture.whenStable();
 
-        expect(initialize).toHaveBeenCalledWith(expect.objectContaining({
-            securityLevel: 'strict',
-            darkMode: false,
-        }));
+        expect(initialize).toHaveBeenCalledWith(
+            expect.objectContaining({
+                securityLevel: 'strict',
+                darkMode: false,
+            }),
+        );
         expect(initialize.mock.calls[0][0].theme).toBeUndefined();
         expect(initialize.mock.calls[0][0].themeCSS).toBeUndefined();
         expect(run).toHaveBeenCalled();
@@ -562,10 +600,12 @@ describe('MarkdownNoteComponent synchronized scrolling', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
         await fixture.whenStable();
 
-        expect(initialize).toHaveBeenLastCalledWith(expect.objectContaining({
-            darkMode: true,
-            theme: 'redux-dark-color',
-        }));
+        expect(initialize).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+                darkMode: true,
+                theme: 'redux-dark-color',
+            }),
+        );
         expect(run.mock.calls.length).toBeGreaterThanOrEqual(2);
         expect(diagram.textContent).toBe(source);
         expect(diagram.hasAttribute('data-processed')).toBe(false);
@@ -633,9 +673,7 @@ describe('MarkdownNoteComponent highlight shortcut', () => {
         });
 
         it('accepts longer closing fences', () => {
-            expect(component.highlightMarkdown('~~~\n# Code\n~~~~\n# Title')).toContain(
-                '<span class="md-title-1"># Title</span>',
-            );
+            expect(component.highlightMarkdown('~~~\n# Code\n~~~~\n# Title')).toContain('<span class="md-title-1"># Title</span>');
         });
 
         it('keeps escaping HTML in and outside code blocks', () => {
@@ -646,9 +684,7 @@ describe('MarkdownNoteComponent highlight shortcut', () => {
         });
 
         it('does not treat backticks in a backtick fence info string as a code block', () => {
-            expect(component.highlightMarkdown('```invalid`info\n# Title')).toContain(
-                '<span class="md-title-1"># Title</span>',
-            );
+            expect(component.highlightMarkdown('```invalid`info\n# Title')).toContain('<span class="md-title-1"># Title</span>');
         });
     });
 
@@ -701,8 +737,15 @@ describe('MarkdownNoteComponent highlight shortcut', () => {
             const snackBar = Mock.ofType<SnackBarService>();
             snackBar.setup((x) => x.linkedNoteUnavailableAsync()).returns(unavailable);
             snackBar.setup((x) => x.oopsAnErrorOccurredAsync()).returns(showError);
-            component = new MarkdownNoteComponent(client.object, dialog.object, snackBar.object, Mock.ofType<Logger>().object,
-                Mock.ofType<MarkdownService>().object, Mock.ofType<DomSanitizer>().object, Mock.ofType<BaseAppearanceService>().object);
+            component = new MarkdownNoteComponent(
+                client.object,
+                dialog.object,
+                snackBar.object,
+                Mock.ofType<Logger>().object,
+                Mock.ofType<MarkdownService>().object,
+                Mock.ofType<DomSanitizer>().object,
+                Mock.ofType<BaseAppearanceService>().object,
+            );
             const editor = Mock.ofType<INoteEditor>();
             editor.setup((x) => x.isEditing).returns(() => true);
             component.noteEditor = editor.object;

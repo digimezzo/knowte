@@ -13,6 +13,7 @@ import { TranslatorService } from '../../../services/translator/translator.servi
     templateUrl: './notebook-switcher.component.html',
     styleUrls: ['./notebook-switcher.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class NotebookSwitcherComponent implements OnInit, OnDestroy {
     private subscription: Subscription = new Subscription();
@@ -59,7 +60,7 @@ export class NotebookSwitcherComponent implements OnInit, OnDestroy {
             )
         );
 
-        this.subscription.add(this.translatorService.languageChanged$.subscribe(async (_) => await this.getNotebookNameAsync()));
+        this.subscription.add(this.translatorService.languageChanged$.subscribe(async () => await this.getNotebookNameAsync()));
     }
 
     public async openNotebooksMenuAsync(menuTrigger: MatMenuTrigger): Promise<void> {

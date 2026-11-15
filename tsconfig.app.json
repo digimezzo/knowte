@@ -4,7 +4,7 @@
         "outDir": "../out-tsc/app",
         "module": "esnext",
         "baseUrl": "",
-        "types": ["dom-webcodecs"]
+        "types": []
     },
     "exclude": ["**/*.spec.ts"]
 }

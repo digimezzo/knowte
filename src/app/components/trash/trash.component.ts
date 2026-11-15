@@ -10,12 +10,14 @@ import { TranslatorService } from '../../services/translator/translator.service'
 import { TrashService } from '../../services/trash/trash.service';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
+import { ConfirmationDialogData } from '../dialogs/confirmation-dialog/confirmation-dialog-data';
 
 @Component({
     selector: 'app-trash',
     templateUrl: './trash.component.html',
     styleUrls: ['./trash.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class TrashComponent implements OnInit, OnDestroy {
     private subscription: Subscription = new Subscription();
@@ -75,7 +77,7 @@ export class TrashComponent implements OnInit, OnDestroy {
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
-            data: { dialogTitle: title, dialogText: text },
+            data: new ConfirmationDialogData(title, text),
         });
 
         const result: boolean = await dialogRef.afterClosed().toPromise();

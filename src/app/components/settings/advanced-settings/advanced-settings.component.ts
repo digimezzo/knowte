@@ -14,10 +14,11 @@ import * as fs from 'fs-extra';
 
 @Component({
     selector: 'app-advanced-settings',
-    host: {style: 'display: block; width: 100%;'},
+    host: { style: 'display: block; width: 100%;' },
     templateUrl: './advanced-settings.component.html',
     styleUrls: ['./advanced-settings.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class AdvancedSettingsComponent {
     public constructor(

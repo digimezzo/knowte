@@ -8,6 +8,7 @@ const countLabelMinWidth: number = 22;
     host: { style: 'display: block' },
     templateUrl: './sub-menu-item.component.html',
     styleUrls: ['./sub-menu-item.component.scss'],
+    standalone: false
 })
 export class SubMenuItemComponent implements AfterViewInit, OnDestroy {
     private resizeObserver: ResizeObserver;

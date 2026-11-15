@@ -10,6 +10,7 @@ import {Desktop} from "../../../common/io/desktop";
     templateUrl: './appearance-settings.component.html',
     styleUrls: ['./appearance-settings.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class AppearanceSettingsComponent {
     public constructor(

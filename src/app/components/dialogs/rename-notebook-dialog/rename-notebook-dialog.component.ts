@@ -1,23 +1,25 @@
-import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Operation } from '../../../common/enums/operation';
 import { CollectionService } from '../../../services/collection/collection.service';
 import { SnackBarService } from '../../../services/snack-bar/snack-bar.service';
 import { TranslatorService } from '../../../services/translator/translator.service';
 import { ErrorDialogComponent } from '../error-dialog/error-dialog.component';
+import { RenameNotebookData } from './rename-notebook-data';
 
 @Component({
     selector: 'app-rename-notebook-dialog',
     templateUrl: './rename-notebook-dialog.component.html',
     styleUrls: ['./rename-notebook-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
-export class RenameNotebookDialogComponent implements OnInit {
+export class RenameNotebookDialogComponent {
     constructor(
         private collectionService: CollectionService,
         private dialogRef: MatDialogRef<RenameNotebookDialogComponent>,
         private translator: TranslatorService,
-        @Inject(MAT_DIALOG_DATA) public data: any,
+        @Inject(MAT_DIALOG_DATA) public data: RenameNotebookData,
         private dialog: MatDialog,
         private snackBar: SnackBarService
     ) {
@@ -26,8 +28,6 @@ export class RenameNotebookDialogComponent implements OnInit {
 
     public notebookId: string = this.data.notebookId;
     public notebookName: string = this.collectionService.getNotebookName(this.data.notebookId);
-
-    public ngOnInit(): void {}
 
     public async renameNotebookAsync(): Promise<void> {
         const operation: Operation = await this.collectionService.renameNotebookAsync(this.notebookId, this.notebookName);

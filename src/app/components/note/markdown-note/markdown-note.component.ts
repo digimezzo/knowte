@@ -18,6 +18,7 @@ import { MarkdownScrollMap } from './markdown-scroll-map';
     templateUrl: './markdown-note.component.html',
     styleUrls: ['./markdown-note.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
     private isPickingNote: boolean = false;
@@ -264,8 +265,7 @@ export class MarkdownNoteComponent implements AfterViewInit, OnDestroy {
 
     public onTabKey(event: Event): void {
         event.preventDefault();
-        const textarea = this.markdownInput.nativeElement;
-
+       
         // Use execCommand to insert spaces so the action is undoable (Ctrl+Z)
         document.execCommand('insertText', false, '    ');
     }

@@ -30,28 +30,6 @@ Knowte is a note taking application that allows you to quickly and easily organi
 - Import and export notes, and print notes or export them as PDF.
 - Choose light or dark themes, adjust text size, and use spell checking.
 
-## Performance diagnostics
-
-To investigate delays, enable **Settings > Advanced > Diagnostics > Enable performance diagnostics** and restart Knowte.
-Use **Open log folder** in the same section to find the log. Disable the setting and restart to stop the additional logging.
-To compare note opening without the hidden spare window, disable **Settings > Advanced > Note window performance >
-Preload note windows** and restart Knowte. Preloading is enabled by default; re-enable it and restart to restore it.
-
-Note-opening entries include the note ID, process ID and timestamps. `NoteOpen.dispatch` records the request from the main
-window; `[noteOpen]` entries record window selection, spare loading and the wait for it; and `NoteOpen.initialize` and its
-individual stages record work in the note window. A `nextAnimationFrame` entry records a browser animation-frame callback,
-not proof that the note has been painted or is responsive. Unlock timing may include time spent entering a password.
-An operation with a start but no finish may still be running, or its window may have closed.
-
-`rendererStartup` records elapsed time from navigation to the application entry point (after static imports are evaluated),
-Angular bootstrap duration, browser navigation milestones and up to five slow script or link resources (identified by bundle
-category only). Navigation milestones are measured from navigation and can overlap with bootstrap and other timings; do not
-add them together. These measurements can help narrow down slow startup, but cannot attribute the cause to a specific process.
-`NoteOpen.detailsClient` and `NoteOpen.detailsServer` separate collection initialization, IPC callback, polling and server work.
-
-The log can contain note IDs, collection paths and other diagnostic information. Review it before sharing; these timing
-entries do not include note contents. Background-window timer throttling or system sleep can also produce event-loop warnings.
-
 ## Build prerequisites
 
 -   wine: required to build Windows package

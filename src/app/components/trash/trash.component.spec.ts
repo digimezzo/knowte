@@ -25,7 +25,7 @@ jest.mock('../../services/collection/collection.service', () => ({ CollectionSer
 jest.mock('../../services/translator/translator.service', () => ({ TranslatorService: class {} }));
 jest.mock('../../common/logging/logger', () => ({ Logger: class {} }));
 
-@Component({ templateUrl: '../../app.component.html' })
+@Component({ standalone: false, templateUrl: '../../app.component.html' })
 class TrashDrawerTestComponent {
     public constructor(public trash: TrashService) {}
 }
@@ -33,8 +33,13 @@ class TrashDrawerTestComponent {
 describe('TrashComponent deletion', () => {
     let component: TrashComponent;
     let trash: TrashService;
-    let dialog: any;
-    let collection: any;
+    let dialog: { open: jest.Mock };
+    let collection: {
+        deleteNotesPermanentlyAsync: jest.Mock;
+        getTrashedNotes: jest.Mock;
+        restoreNotes: jest.Mock;
+        noteIsOpen: jest.Mock;
+    };
     let finishDeletion: (operation: Operation) => void;
     let failDeletion: (error: Error) => void;
     let deletionStarted: Promise<void>;
@@ -56,10 +61,17 @@ describe('TrashComponent deletion', () => {
             restoreNotes: jest.fn(),
             noteIsOpen: jest.fn(),
         };
-        component = new TrashComponent(dialog, { getAsync: jest.fn().mockResolvedValue('text') } as any,
-            collection, trash, {} as any);
-        component.trashedNotes = [{ id: 'selected', title: 'Selected', isSelected: true },
-            { id: 'other', isSelected: false }] as Note[];
+        component = new TrashComponent(
+            dialog as unknown as MatDialog,
+            { getAsync: jest.fn().mockResolvedValue('text') } as unknown as TranslatorService,
+            collection as unknown as CollectionService,
+            trash,
+            {} as unknown as Logger,
+        );
+        component.trashedNotes = [
+            { id: 'selected', title: 'Selected', isSelected: true },
+            { id: 'other', isSelected: false },
+        ] as Note[];
     });
 
     it('stays busy and blocks toggling trash until deletion finishes', async () => {
@@ -118,8 +130,17 @@ describe('TrashComponent deletion', () => {
     it('shows a progress ring and prevents backdrop and Escape closing until deletion finishes', async () => {
         await TestBed.configureTestingModule({
             declarations: [TrashComponent, TrashDrawerTestComponent],
-            imports: [FormsModule, ScrollingModule, MatButtonModule, MatCheckboxModule, MatProgressSpinnerModule,
-                MatSidenavModule, MatTooltipModule, NoopAnimationsModule, TranslateModule.forRoot()],
+            imports: [
+                FormsModule,
+                ScrollingModule,
+                MatButtonModule,
+                MatCheckboxModule,
+                MatProgressSpinnerModule,
+                MatSidenavModule,
+                MatTooltipModule,
+                NoopAnimationsModule,
+                TranslateModule.forRoot(),
+            ],
             providers: [
                 { provide: TrashService, useValue: trash },
                 { provide: CollectionService, useValue: collection },
@@ -155,7 +176,8 @@ describe('TrashComponent deletion', () => {
         expect(fixture.nativeElement.querySelector('.app-trash__buttons .la-trash-alt')).not.toBeNull();
         expect(fixture.nativeElement.querySelector('.app-trash').getAttribute('aria-busy')).toBe('true');
         expect(drawer.disableClose).toBe(true);
-        fixture.debugElement.queryAll(By.css('.app-trash button, .app-trash input[type="checkbox"]'))
+        fixture.debugElement
+            .queryAll(By.css('.app-trash button, .app-trash input[type="checkbox"]'))
             .forEach((control) => expect(control.nativeElement.disabled).toBe(true));
         fixture.nativeElement.querySelector('.mat-drawer-backdrop').click();
         drawerElement.nativeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', keyCode: 27, bubbles: true }));

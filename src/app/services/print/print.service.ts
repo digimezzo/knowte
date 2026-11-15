@@ -11,13 +11,14 @@ export class PrintService {
         try {
             const printHtmlFilePath: string = await this.writePrintHtmlFileAsync(pageTitle, pageContent, isMarkdownNote);
 
-            const data: any = { printHtmlFilePath };
+            const data: { printHtmlFilePath: string } = { printHtmlFilePath };
 
             this.logger.info('Sending "print" command to main.', 'PrintService', 'printAsync');
 
             ipcRenderer.send('print', data);
-        } catch (error) {
-            this.logger.error(`Printing failed. Error: ${error.message}`, 'PrintService', 'printAsync');
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.error(`Printing failed. Error: ${errorMessage}`, 'PrintService', 'printAsync');
         }
     }
 
@@ -25,13 +26,14 @@ export class PrintService {
         try {
             const printHtmlFilePath: string = await this.writePrintHtmlFileAsync(pageTitle, pageContent, isMarkdownNote);
 
-            const data: any = { pdfFilePath, printHtmlFilePath };
+            const data = { pdfFilePath, printHtmlFilePath };
 
             this.logger.info(`Sending "printToPDF" command with filePath='${pdfFilePath}' to main.`, 'PrintService', 'exportToPdfAsync');
 
             ipcRenderer.send('printToPDF', data);
-        } catch (error) {
-            this.logger.error(`Export to PDF failed. Error: ${error.message}`, 'PrintService', 'exportToPdfAsync');
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.logger.error(`Export to PDF failed. Error: ${errorMessage}`, 'PrintService', 'exportToPdfAsync');
         }
     }
 
@@ -240,7 +242,7 @@ export class PrintService {
 
         for (let i = 0; i < nodes.length; i++) {
             try {
-                const { svg } = await mermaid.render(`knowte-print-mermaid-${i}`, nodes[i].dataset.mermaidSource);
+                const { svg } = await mermaid.render(`knowte-print-mermaid-${i}`, nodes[i].dataset.mermaidSource!);
                 nodes[i].innerHTML = svg;
             } catch (error) {
                 this.logger.error(`Could not render Mermaid diagram for printing. Cause: ${error}`, 'PrintService', 'renderMermaidDiagramsForPaperAsync');
@@ -262,7 +264,7 @@ export class PrintService {
 
             return printHtmlFilePath;
         } catch (error) {
-            this.logger.error(`Could not create print.html file. Error: ${error.message}`, 'PrintService', 'writePrintHtmlFileAsync');
+            this.logger.error(`Could not create print.html file. Error: ${error instanceof Error ? error.message : String(error)}`, 'PrintService', 'writePrintHtmlFileAsync');
             throw error;
         }
     }

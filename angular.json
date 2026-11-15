@@ -46,7 +46,7 @@
                         },
                         "scripts": [
                             "./node_modules/quill/dist/quill.js",
-                            "./node_modules/marked/marked.min.js",
+                            "./node_modules/marked/lib/marked.umd.js",
                             "./node_modules/prismjs/prism.js",
                             "./node_modules/prismjs/components/prism-bash.min.js",
                             "./node_modules/prismjs/components/prism-batch.min.js",
@@ -120,22 +120,28 @@
                 "serve": {
                     "builder": "@angular-builders/custom-webpack:dev-server",
                     "options": {
-                        "browserTarget": "knowte:build"
+                        "buildTarget": "knowte:build"
                     },
                     "configurations": {
                         "dev": {
-                            "browserTarget": "knowte:build:dev"
+                            "buildTarget": "knowte:build:dev"
                         },
                         "production": {
-                            "browserTarget": "knowte:build:production"
+                            "buildTarget": "knowte:build:production"
                         }
                     },
                     "defaultConfiguration": "dev"
                 },
                 "extract-i18n": {
-                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "builder": "@angular/build:extract-i18n",
                     "options": {
-                        "browserTarget": "knowte:build"
+                        "buildTarget": "knowte:build"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-eslint/builder:lint",
+                    "options": {
+                        "lintFilePatterns": ["src/**/*.ts", "src/**/*.html", "main.ts"]
                     }
                 }
             }
@@ -151,6 +157,6 @@
         }
     },
     "cli": {
-      "analytics": false
+        "analytics": false
     }
 }

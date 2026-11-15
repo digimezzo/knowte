@@ -10,6 +10,7 @@ import { SearchService } from '../../services/search/search.service';
     templateUrl: './active-notebook-and-search.component.html',
     styleUrls: ['./active-notebook-and-search.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class ActiveNotebookAndSearchComponent implements OnInit {
     @ViewChild('searchInput', { static: true }) public searchInputElement: ElementRef;

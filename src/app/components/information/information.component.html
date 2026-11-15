@@ -1,46 +1,60 @@
 <app-logo-main
-    class="main-logo pointer"
-    (click)="goBackToCollection()"
-    matTooltip="{{ 'Tooltips.BackToNotes' | translate }}"
-    [showBackArrow]="true"
+  class="main-logo pointer"
+  (click)="goBackToCollection()"
+  matTooltip="{{ 'Tooltips.BackToNotes' | translate }}"
+  [showBackArrow]="true"
 ></app-logo-main>
 <div class="window-frame">
-    <div class="window-frame-titlebar">
-        <div class="window-frame-titlebar-dragarea pl-1"></div>
-        <app-collection-switcher *ngIf="!appearance.windowHasNativeTitleBar"></app-collection-switcher>
-        <app-window-controls *ngIf="!appearance.windowHasNativeTitleBar"></app-window-controls>
+  <div class="window-frame-titlebar">
+    <div class="window-frame-titlebar-dragarea pl-1"></div>
+    @if (!appearance.windowHasNativeTitleBar) {
+      <app-collection-switcher></app-collection-switcher>
+    }
+    @if (!appearance.windowHasNativeTitleBar) {
+      <app-window-controls></app-window-controls>
+    }
+  </div>
+  @if (isBusy) {
+    <div class="window-frame-overlay">
+      <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
     </div>
-    <div class="window-frame-overlay" *ngIf="isBusy">
-        <mat-spinner class="mt-4" [diameter]="100"></mat-spinner>
+  }
+  <div class="window-frame-content" [ngStyle]="{ top: appearance.windowHasNativeTitleBar ? '10px' : '32px' }">
+    <div class="app-information">
+      <app-sub-menu class="app-information__submenu">
+        <app-sub-menu-item
+          [page]="0"
+          [selectedPage]="this.page"
+          [text]="'InformationTabs.About' | translate"
+          (click)="this.setPage(0)"
+          >
+        </app-sub-menu-item>
+        <app-sub-menu-item
+          [page]="1"
+          [selectedPage]="this.page"
+          [text]="'InformationTabs.Components' | translate"
+          (click)="this.setPage(1)"
+          >
+        </app-sub-menu-item>
+      </app-sub-menu>
+      <mat-divider></mat-divider>
+      <app-main-menu class="app-information__menu" [selectedMenuItem]="3"></app-main-menu>
+      <div class="app-information__content viewport-height">
+        <!-- About -->
+        @if (this.leftToRight(0)) {
+          <app-information-about [@enterLeftToRight]></app-information-about>
+        }
+        @if (this.rightToLeft(0)) {
+          <app-information-about [@enterRightToLeft]></app-information-about>
+        }
+        <!-- Components -->
+        @if (this.leftToRight(1)) {
+          <app-information-components [@enterLeftToRight]></app-information-components>
+        }
+        @if (this.rightToLeft(1)) {
+          <app-information-components [@enterRightToLeft]></app-information-components>
+        }
+      </div>
     </div>
-    <div class="window-frame-content" [ngStyle]="{ top: appearance.windowHasNativeTitleBar ? '10px' : '32px' }">
-        <div class="app-information">
-            <app-sub-menu class="app-information__submenu">
-                <app-sub-menu-item
-                    [page]="0"
-                    [selectedPage]="this.page"
-                    [text]="'InformationTabs.About' | translate"
-                    (click)="this.setPage(0)"
-                >
-                </app-sub-menu-item>
-                <app-sub-menu-item
-                    [page]="1"
-                    [selectedPage]="this.page"
-                    [text]="'InformationTabs.Components' | translate"
-                    (click)="this.setPage(1)"
-                >
-                </app-sub-menu-item>
-            </app-sub-menu>
-            <mat-divider></mat-divider>
-            <app-main-menu class="app-information__menu" [selectedMenuItem]="3"></app-main-menu>
-            <div class="app-information__content viewport-height">
-                <!-- About -->
-                <app-information-about *ngIf="this.leftToRight(0)" [@enterLeftToRight]></app-information-about>
-                <app-information-about *ngIf="this.rightToLeft(0)" [@enterRightToLeft]></app-information-about>
-                <!-- Components -->
-                <app-information-components *ngIf="this.leftToRight(1)" [@enterLeftToRight]></app-information-components>
-                <app-information-components *ngIf="this.rightToLeft(1)" [@enterRightToLeft]></app-information-components>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>

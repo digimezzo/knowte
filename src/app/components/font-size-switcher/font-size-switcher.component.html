@@ -1,7 +1,9 @@
 <mat-form-field>
-    <mat-select [(ngModel)]="appearance.selectedFontSize">
-        <mat-option *ngFor="let fontSize of appearance.fontSizes" [value]="fontSize">
-            {{ fontSize.normalSize }} px
-        </mat-option>
-    </mat-select>
+  <mat-select [(ngModel)]="appearance.selectedFontSize">
+    @for (fontSize of appearance.fontSizes; track fontSize) {
+      <mat-option [value]="fontSize">
+        {{ fontSize.normalSize }} px
+      </mat-option>
+    }
+  </mat-select>
 </mat-form-field>

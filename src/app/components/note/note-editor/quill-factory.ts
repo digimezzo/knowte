@@ -12,7 +12,7 @@ export class QuillFactory {
         const noteTextPlaceHolder: string = await this.translator.getAsync('Notes.NotePlaceholder');
 
         // Adds undo and redo icons
-        const icons: any = Quill.import('ui/icons');
+        const icons = Quill.import('ui/icons');
 
         icons['undo'] = `<svg class="custom-undo" viewbox="0 0 18 18">
                             <polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10"></polygon>

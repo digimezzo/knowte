@@ -1,9 +1,8 @@
-import { Component, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, NgZone, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import * as remote from '@electron/remote';
 import { OpenDialogReturnValue } from 'electron';
-import { ProductInformation } from '../../common/application/product-information';
 import { Logger } from '../../common/logging/logger';
 import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
 import { CollectionService } from '../../services/collection/collection.service';
@@ -14,8 +13,9 @@ import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.compo
     templateUrl: './welcome.component.html',
     styleUrls: ['./welcome.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
-export class WelcomeComponent implements OnInit {
+export class WelcomeComponent {
     constructor(
         private translator: TranslatorService,
         private collectionService: CollectionService,
@@ -27,8 +27,6 @@ export class WelcomeComponent implements OnInit {
     ) {}
     
     public isBusy: boolean = false;
-
-    public ngOnInit(): void {}
 
     public async openDirectoryChooserAsync(): Promise<void> {
         this.logger.info('Opening directory chooser', 'WelcomeComponent', 'openDirectoryChooserAsync');

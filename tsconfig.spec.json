@@ -5,7 +5,6 @@
         "types": [
             "jest", // 1
             "node",
-            "dom-webcodecs"
         ],
         "esModuleInterop": true, // 2
         "emitDecoratorMetadata": true // 3

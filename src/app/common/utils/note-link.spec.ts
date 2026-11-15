@@ -8,9 +8,10 @@ import { markdownHighlightExtension } from '../../components/note/markdown-note/
 describe('Note link Markdown', () => {
     beforeAll(() => marked.use(markdownHighlightExtension));
     const renderer = new Renderer();
-    renderer.link = (href, title, text) => Renderer.prototype.link.call(
-        renderer, href ? getNoteLinkPreviewHref(href) : href, title, text,
-    );
+    renderer.link = (token) => Renderer.prototype.link.call(renderer, {
+    ...token,
+    href: token.href ? getNoteLinkPreviewHref(token.href) : token.href,
+});
 
     it.each(['AbC_123-xyz', 'target'])('preserves case-sensitive IDs: %s', (id) => {
         const source = createNoteLink(id, 'A note');
@@ -32,7 +33,7 @@ describe('Note link Markdown', () => {
         'A ==highlighted== title',
     ])('escapes labels without creating extra markup: %s', (title) => {
         const container = document.createElement('div');
-        container.innerHTML = marked.parse(createNoteLink('target', title), { renderer });
+        container.innerHTML = marked.parse(createNoteLink('target', title), { renderer, async: false }) as string;
         expect(container.querySelector('a').textContent).toBe(title);
         expect(container.querySelectorAll('a')).toHaveLength(1);
         expect(container.querySelectorAll('img, strong, em, code')).toHaveLength(0);

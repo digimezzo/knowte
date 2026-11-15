@@ -37,6 +37,7 @@ import { MarkdownNoteExportMetadata } from './markdown-note-export-metadata';
 import { NoteDateFormatter } from './note-date-formatter';
 import { NoteModel } from './note-model';
 import { NoteModelFactory } from './note-model-factory';
+import { EventEmitter } from 'events';
 
 /**
  * Database access is owned by the main window. Note windows must communicate with
@@ -52,7 +53,7 @@ export class CollectionService implements OnDestroy {
     private isInitialized: boolean = false;
     private noteEventsRegistered: boolean = false;
     private destroyed: boolean = false;
-    private globalEmitter: any = remote.getGlobal('globalEmitter');
+    private globalEmitter: EventEmitter = remote.getGlobal('globalEmitter');
     private readonly unloadListener = () => this.ngOnDestroy();
     private openNoteIds: string[] = [];
 
@@ -66,21 +67,21 @@ export class CollectionService implements OnDestroy {
     private notePinChanged: Subject<NotePinResult> = new Subject<NotePinResult>();
     private noteNotebookChanged: Subject<void> = new Subject();
 
-    private setNoteOpenEventListener: any = this.setNoteOpenAsync.bind(this);
+    private setNoteOpenEventListener = this.setNoteOpenAsync.bind(this);
     private getNoteLinkTargetsEventListener = this.getNoteLinkTargetsEventHandler.bind(this);
     private openLinkedNoteEventListener = this.openLinkedNoteEventHandler.bind(this);
-    private setNoteMarkEventListener: any = this.setNoteMark.bind(this);
-    private setNotePinEventListener: any = this.setNotePin.bind(this);
-    private setNotebookEventListener: any = this.setNotebook.bind(this);
-    private getNoteDetailsEventListener: any = this.getNoteDetailsEventHandler.bind(this);
-    private getNotebooksEventListener: any = this.getNotebooksEventHandler.bind(this);
-    private saveNoteTitleEventListener: any = this.saveNoteTitleEventHandler.bind(this);
-    private saveNoteTextEventListener: any = this.saveNoteTextEventHandler.bind(this);
+    private setNoteMarkEventListener = this.setNoteMark.bind(this);
+    private setNotePinEventListener = this.setNotePin.bind(this);
+    private setNotebookEventListener = this.setNotebook.bind(this);
+    private getNoteDetailsEventListener = this.getNoteDetailsEventHandler.bind(this);
+    private getNotebooksEventListener = this.getNotebooksEventHandler.bind(this);
+    private saveNoteTitleEventListener = this.saveNoteTitleEventHandler.bind(this);
+    private saveNoteTextEventListener = this.saveNoteTextEventHandler.bind(this);
     private saveNoteTagsEventListener = this.saveNoteTagsEventHandler.bind(this);
-    private deleteNoteEventListener: any = this.deleteNoteEventHandlerAsync.bind(this);
-    private encryptNoteEventListener: any = this.encryptNoteEventHandler.bind(this);
-    private decryptNoteEventListener: any = this.decryptNoteEventHandler.bind(this);
-    private getIsInitializedEventEventListener: any = this.getIsInitializedEventHandler.bind(this);
+    private deleteNoteEventListener = this.deleteNoteEventHandlerAsync.bind(this);
+    private encryptNoteEventListener = this.encryptNoteEventHandler.bind(this);
+    private decryptNoteEventListener = this.decryptNoteEventHandler.bind(this);
+    private getIsInitializedEventEventListener = this.getIsInitializedEventHandler.bind(this);
     private readonly noteEventListeners = {
         [CollectionEvents.getNoteLinkTargetsEvent]: this.getNoteLinkTargetsEventListener,
         [CollectionEvents.openLinkedNoteEvent]: this.openLinkedNoteEventListener,
@@ -229,12 +230,8 @@ export class CollectionService implements OnDestroy {
     private async initializeCollectionAsync(): Promise<void> {
         // Get the active collection from the settings
         let activeCollection: string = this.settings.activeCollection;
-        let activeCollectionDirectory: string = '';
-
-        if (await this.collectionFileAccess.collectionAndItsDirectoryExistAsync(this.settings.activeCollection)) {
-            // There is an active collection and the collection directory exists
-            activeCollectionDirectory = await this.collectionFileAccess.getCollectionDirectoryPath(this.settings.activeCollection);
-        } else {
+        
+        if (!await this.collectionFileAccess.collectionAndItsDirectoryExistAsync(activeCollection)) {
             // There is no active collection or no collection directory
             // Get all collection directories in the storage directory
             const collections: string[] = await this.collectionFileAccess.getCollectionsAsync();
@@ -829,8 +826,8 @@ export class CollectionService implements OnDestroy {
             uncategorizedNotes = this.getVisibleNotes(uncategorizedNotes);
 
             // Set pinned notes at the top
-            let pinnedUncategorizedNotes: Note[] = uncategorizedNotes.filter((x) => x.isPinned);
-            let unpinnedUncategorizedNotes: Note[] = uncategorizedNotes.filter((x) => !x.isPinned);
+            const pinnedUncategorizedNotes: Note[] = uncategorizedNotes.filter((x) => x.isPinned);
+            const unpinnedUncategorizedNotes: Note[] = uncategorizedNotes.filter((x) => !x.isPinned);
 
             uncategorizedNotes = [];
             uncategorizedNotes.push(...pinnedUncategorizedNotes);
@@ -997,7 +994,7 @@ export class CollectionService implements OnDestroy {
         return setNotebookOperation;
     }
 
-    public saveNoteTitleEventHandler(noteId: string, initialNoteTitle: string, finalNoteTitle: string, callback: any): void {
+    public saveNoteTitleEventHandler(noteId: string, initialNoteTitle: string, finalNoteTitle: string, callback: (result: NoteOperationResult) => void): void {
         let uniqueNoteTitle: string = finalNoteTitle.trim();
 
         if (uniqueNoteTitle.length === 0) {
@@ -1060,7 +1057,7 @@ export class CollectionService implements OnDestroy {
         isEncrypted: boolean,
         secretKey: string,
         tasksCount: TasksCount,
-        callback: any,
+        callback: (operation: Operation) => void,
     ): void {
         try {
             const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
@@ -1364,7 +1361,7 @@ export class CollectionService implements OnDestroy {
         return existingCollections && existingCollections.length > 0;
     }
 
-    private async getNoteDetailsEventHandler(noteId: string, callback: any): Promise<void> {
+    private async getNoteDetailsEventHandler(noteId: string, callback: (result: NoteDetailsResult) => void): Promise<void> {
         const finish = PerformanceDiagnostics.start(`NoteOpen.detailsServer noteId=${noteId}`, true);
         try {
             const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
@@ -1413,7 +1410,7 @@ export class CollectionService implements OnDestroy {
         this.onNotebookChanged(noteId, notebookName);
     }
 
-    private async getNotebooksEventHandler(callback: any): Promise<void> {
+    private async getNotebooksEventHandler(callback: (notebooks: Notebook[]) => void): Promise<void> {
         const notebooks: Notebook[] = await this.getNotebooksAsync(false);
         callback(notebooks);
     }
@@ -1594,7 +1591,7 @@ export class CollectionService implements OnDestroy {
         this.changeVersion++;
     }
 
-    private async getIsInitializedEventHandler(callback: any): Promise<void> {
+    private async getIsInitializedEventHandler(callback: (isInitialized: boolean) => void): Promise<void> {
         callback(this.isInitialized);
     }
 

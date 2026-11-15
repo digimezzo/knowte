@@ -1,27 +1,30 @@
 <div class="d-flex flex-row align-items-center justify-content-center">
-    <div class="notes-content-search mr-4" [class.notes-content-search-highlight]="this.searchText">
-        <input
-            class="notes-content-search-input"
-            type="text"
-            #searchInput
-            [(ngModel)]="this.searchText"
-            placeholder="{{ 'MainPage.Search' | translate }}"
-            [attr.aria-label]="'MainPage.Search' | translate"
-            (keydown.enter)="$event.preventDefault(); $event.stopPropagation(); performSearch()"
-        />
-        <div class="notes-content-search-icons" *ngIf="!this.searchText">
-            <i class="las la-search notes-content-search-icon" aria-hidden="true"></i>
-        </div>
-        <button
-            type="button"
-            class="notes-content-search-icons"
-            *ngIf="this.searchText"
-            matTooltip="{{ 'MainPage.ClearSearch' | translate }}"
-            [attr.aria-label]="'MainPage.ClearSearch' | translate"
-            (click)="this.clearSearch(); searchInput.focus()"
+  <div class="notes-content-search mr-4" [class.notes-content-search-highlight]="this.searchText">
+    <input
+      class="notes-content-search-input"
+      type="text"
+      #searchInput
+      [(ngModel)]="this.searchText"
+      placeholder="{{ 'MainPage.Search' | translate }}"
+      [attr.aria-label]="'MainPage.Search' | translate"
+      (keydown.enter)="$event.preventDefault(); $event.stopPropagation(); performSearch()"
+      />
+    @if (!this.searchText) {
+      <div class="notes-content-search-icons">
+        <i class="las la-search notes-content-search-icon" aria-hidden="true"></i>
+      </div>
+    }
+    @if (this.searchText) {
+      <button
+        type="button"
+        class="notes-content-search-icons"
+        matTooltip="{{ 'MainPage.ClearSearch' | translate }}"
+        [attr.aria-label]="'MainPage.ClearSearch' | translate"
+        (click)="this.clearSearch(); searchInput.focus()"
         >
-            <i class="las la-times notes-content-search-icon" aria-hidden="true"></i>
-        </button>
-    </div>
-    <app-accent-button class="mr-1" color="primary" (click)="performSearch()">{{ 'Buttons.Search' | translate }}</app-accent-button>
+        <i class="las la-times notes-content-search-icon" aria-hidden="true"></i>
+      </button>
+    }
+  </div>
+  <app-accent-button class="mr-1" color="primary" (click)="performSearch()">{{ 'Buttons.Search' | translate }}</app-accent-button>
 </div>

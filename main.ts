@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { app, BrowserWindow, ipcMain, Menu, screen, shell } from 'electron';
 // Logging needs to be imported in main.ts also. Otherwise it just doesn't work anywhere else.
 // See post by megahertz: https://github.com/megahertz/electron-log/issues/60
@@ -15,9 +17,10 @@ app.commandLine.appendSwitch('disable-color-correct-rendering');
 log.create('main');
 log.transports.file.resolvePath = () => path.join(app.getPath('userData'), 'logs', 'Knowte.log');
 
-let mainWindow, serve;
+let mainWindow: BrowserWindow | undefined;
+
 const args = process.argv.slice(1);
-serve = args.some((val) => val === '--serve');
+const serve = args.some((val) => val === '--serve');
 
 // Workaround: Global does not allow setting custom properties.
 // We need to cast it to "any" first.
@@ -56,7 +59,7 @@ function createMainWindow(): void {
             require('./main/linux-accent-monitor').startLinuxAccentMonitor({ app, BrowserWindow, log });
         }
 
-        app.on('second-instance', (event, commandLine, workingDirectory) => {
+        app.on('second-instance', () => {
             // Someone tried to run a second instance, we should focus our window.
             if (mainWindow) {
                 if (mainWindow.isMinimized()) {
@@ -277,10 +280,12 @@ function readNoteWindowSettingsSnapshot(): string | undefined {
             return '';
         }
         // Backup status and the restart-only preloading preference do not affect a spare's cached settings.
+        
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { backupLastSuccess, backupLastError, noteWindowPreloadingEnabled: preloading, ...relevantSettings } =
             JSON.parse(fs.readFileSync(settingsFile, 'utf-8'));
         return JSON.stringify(relevantSettings);
-    } catch (error) {
+    } catch {
         return undefined;
     }
 }
@@ -665,7 +670,6 @@ try {
             createMainWindow();
         }
     });
-} catch (error) {
+} catch {
     // Catch Error
-    // throw error;
 }

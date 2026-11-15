@@ -6,15 +6,18 @@ import { SnackBarService } from '../../../../services/snack-bar/snack-bar.servic
 import { TranslatorService } from '../../../../services/translator/translator.service';
 import { ConfirmationDialogComponent } from '../../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ErrorDialogComponent } from '../../../dialogs/error-dialog/error-dialog.component';
+import { ConfirmationDialogData } from '../../../dialogs/confirmation-dialog/confirmation-dialog-data';
+import { MoveNotesData } from './move-notes-data';
 
 @Component({
     selector: 'app-move-notes-bottom-sheet',
     templateUrl: 'move-notes-bottom-sheet.component.html',
     styleUrls: ['./move-notes-bottom-sheet.component.scss'],
+    standalone: false
 })
 export class MoveNotesBottomSheetComponent implements OnInit {
     constructor(
-        @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
+        @Inject(MAT_BOTTOM_SHEET_DATA) public data: MoveNotesData,
         private dialog: MatDialog,
         private bottomSheetRef: MatBottomSheetRef<MoveNotesBottomSheetComponent>,
         private collectionService: CollectionService,
@@ -22,7 +25,7 @@ export class MoveNotesBottomSheetComponent implements OnInit {
         private snackBarService: SnackBarService
     ) {}
 
-    public collections: string[];
+    public collections: string[] = [];
     public activeCollection: string = '';
 
     public async ngOnInit(): Promise<void> {
@@ -46,10 +49,10 @@ export class MoveNotesBottomSheetComponent implements OnInit {
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
-            data: { dialogTitle: title, dialogText: text },
+            data: new ConfirmationDialogData(title, text),
         });
 
-        const result: any = await dialogRef.afterClosed().toPromise();
+        const result = await dialogRef.afterClosed().toPromise();
 
         if (result) {
             const numberOfNotes: number = await this.collectionService.moveNotesToCollectionAsync(this.data.selectedNoteIds, collection);

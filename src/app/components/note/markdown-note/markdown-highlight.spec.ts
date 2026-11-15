@@ -1,9 +1,12 @@
 import { SecurityContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { DomSanitizer } from '@angular/platform-browser';
-import { marked } from 'marked';
+import { marked, MarkedOptions } from 'marked';
 import { SanitizeMarkdownPipe } from '../../../pipes/sanitize-markdown.pipe';
 import { markdownHighlightExtension } from './markdown-highlight';
+
+export const parseSync = (src: string, options: MarkedOptions = {}): string =>
+    marked.parse(src, { ...options, async: false }) as string;
 
 describe('Markdown highlighting', () => {
     beforeAll(() => marked.use(markdownHighlightExtension));
@@ -17,7 +20,7 @@ describe('Markdown highlighting', () => {
         ['==first\nsecond==', '<p><mark>first\nsecond</mark></p>\n'],
         ['==& <b>text</b>==', '<p><mark>&amp; <b>text</b></mark></p>\n'],
     ])('renders %s', (source, expected) => {
-        expect(marked.parse(source)).toBe(expected);
+        expect(parseSync(source)).toBe(expected);
     });
 
     it.each([
@@ -30,23 +33,23 @@ describe('Markdown highlighting', () => {
         '[link](https://example.com/==path==)',
         '![==alt==](image.png)',
     ])('does not highlight literal markers in %s', (source) => {
-        expect(marked.parse(source)).not.toContain('<mark>');
+        expect(parseSync(source)).not.toContain('<mark>');
     });
 
     it('preserves escaped equals inside highlights', () => {
-        expect(marked.parse('==one \\== two==')).toBe('<p><mark>one == two</mark></p>\n');
+        expect(parseSync('==one \\== two==')).toBe('<p><mark>one == two</mark></p>\n');
     });
 
     it('preserves highlights through Angular preview sanitization', () => {
         const sanitizer = TestBed.inject(DomSanitizer);
-        const html = marked.parse('==**highlight**==');
+        const html = parseSync('==**highlight**==');
 
         expect(sanitizer.sanitize(SecurityContext.HTML, html)).toBe('<p><mark><strong>highlight</strong></mark></p>&#10;');
     });
 
     it('preserves highlights while removing unsafe HTML through the Markdown pipe', () => {
         const pipe = new SanitizeMarkdownPipe();
-        const html = marked.parse('==highlight==<script>alert(1)</script>');
+        const html = parseSync('==highlight==<script>alert(1)</script>');
 
         expect(pipe.transform(html)).toContain('<mark>highlight</mark>');
         expect(pipe.transform(html)).not.toContain('<script>');

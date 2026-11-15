@@ -1,4 +1,4 @@
-import { marked } from 'marked';
+import { MarkedExtension } from 'marked';
 
 const uncPathPattern = /^\\\\[^\\/\s]+(?:\\[^\\/\s]+)+/;
 
@@ -6,7 +6,7 @@ function escapeHtml(value: string): string {
     return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-export const markdownUncPathExtension: marked.MarkedExtension = {
+export const markdownUncPathExtension: MarkedExtension = {
     extensions: [
         {
             name: 'uncPath',

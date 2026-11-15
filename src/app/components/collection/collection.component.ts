@@ -1,38 +1,42 @@
-import {animate, style, transition, trigger} from '@angular/animations';
-import {Component, HostListener, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {MatBottomSheet} from '@angular/material/bottom-sheet';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { Component, HostListener, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import * as remote from '@electron/remote';
-import {SplitAreaDirective, SplitComponent} from 'angular-split';
-import {OpenDialogReturnValue} from 'electron';
-import {Subscription} from 'rxjs';
-import {Constants} from '../../common/application/constants';
-import {ProductInformation} from '../../common/application/product-information';
-import {Operation} from '../../common/enums/operation';
-import {Logger} from '../../common/logging/logger';
-import {BaseSettings} from '../../common/settings/base-settings';
-import {SelectionWatcher} from '../../common/ui/selection-watcher';
-import {TagUtils} from '../../common/utils/tag-utils';
-import {Note} from '../../data/entities/note';
-import {Notebook} from '../../data/entities/notebook';
-import {BaseAppearanceService} from '../../services/appearance/base-appearance.service';
-import {CollectionService} from '../../services/collection/collection.service';
-import {FileService} from '../../services/file/file.service';
-import {NoteMarkResult} from '../../services/results/note-mark-result';
-import {NotesCountResult} from '../../services/results/notes-count-result';
-import {SnackBarService} from '../../services/snack-bar/snack-bar.service';
-import {TranslatorService} from '../../services/translator/translator.service';
-import {UpdateService} from '../../services/update/update.service';
-import {ConfirmationDialogComponent} from '../dialogs/confirmation-dialog/confirmation-dialog.component';
-import {ErrorDialogComponent} from '../dialogs/error-dialog/error-dialog.component';
-import {InputDialogComponent} from '../dialogs/input-dialog/input-dialog.component';
-import {RenameNotebookDialogComponent} from '../dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
-import {MoveNotesBottomSheetComponent} from './bottom-sheets/move-notes-bottom-sheet/move-notes-bottom-sheet.component';
-import {NoteCreator} from './note-creator';
-import {
-    NoteTypeChooserBottomSheetComponent
-} from './note-type-chooser-bottom-sheet/note-type-chooser-bottom-sheet.component';
-import {AnimatedPage} from "../animated-page";
+import { IOutputData, SplitAreaDirective, SplitComponent } from 'angular-split';
+import { OpenDialogReturnValue } from 'electron';
+import { Subscription } from 'rxjs';
+import { Constants } from '../../common/application/constants';
+import { ProductInformation } from '../../common/application/product-information';
+import { Operation } from '../../common/enums/operation';
+import { Logger } from '../../common/logging/logger';
+import { BaseSettings } from '../../common/settings/base-settings';
+import { SelectionWatcher } from '../../common/ui/selection-watcher';
+import { TagUtils } from '../../common/utils/tag-utils';
+import { Note } from '../../data/entities/note';
+import { Notebook } from '../../data/entities/notebook';
+import { BaseAppearanceService } from '../../services/appearance/base-appearance.service';
+import { CollectionService } from '../../services/collection/collection.service';
+import { FileService } from '../../services/file/file.service';
+import { NoteMarkResult } from '../../services/results/note-mark-result';
+import { NotesCountResult } from '../../services/results/notes-count-result';
+import { SnackBarService } from '../../services/snack-bar/snack-bar.service';
+import { TranslatorService } from '../../services/translator/translator.service';
+import { UpdateService } from '../../services/update/update.service';
+import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
+import { ErrorDialogComponent } from '../dialogs/error-dialog/error-dialog.component';
+import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.component';
+import { RenameNotebookDialogComponent } from '../dialogs/rename-notebook-dialog/rename-notebook-dialog.component';
+import { MoveNotesBottomSheetComponent } from './bottom-sheets/move-notes-bottom-sheet/move-notes-bottom-sheet.component';
+import { NoteCreator } from './note-creator';
+import { NoteTypeChooserBottomSheetComponent } from './note-type-chooser-bottom-sheet/note-type-chooser-bottom-sheet.component';
+import { AnimatedPage } from '../animated-page';
+import { ErrorData } from '../dialogs/error-dialog/error-data';
+import { RenameNotebookData } from '../dialogs/rename-notebook-dialog/rename-notebook-data';
+import { ConfirmationDialogData } from '../dialogs/confirmation-dialog/confirmation-dialog-data';
+import { InputData } from '../dialogs/input-dialog/input-data';
+import { NoteTypeChooserData } from './note-type-chooser-bottom-sheet/note-type-chooser-data';
+import { MoveNotesData } from './bottom-sheets/move-notes-bottom-sheet/move-notes-data';
 
 @Component({
     selector: 'app-collection',
@@ -40,17 +44,26 @@ import {AnimatedPage} from "../animated-page";
     styleUrls: ['./collection.component.scss'],
     animations: [
         trigger('selectionAction', [
-            transition(':enter', [
-                style({opacity: 0, transform: 'translateY(16px)'}),
-                animate('150ms {{enterDelay}} ease-out', style({opacity: 1, transform: 'translateY(0)'})),
-            ], {params: {enterDelay: '0ms'}}),
-            transition(':leave', [
-                style({opacity: 1, transform: 'translateY(0)'}),
-                animate('150ms {{leaveDelay}} ease-in', style({opacity: 0, transform: 'translateY(16px)'})),
-            ], {params: {leaveDelay: '0ms'}}),
+            transition(
+                ':enter',
+                [
+                    style({ opacity: 0, transform: 'translateY(16px)' }),
+                    animate('150ms {{enterDelay}} ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+                ],
+                { params: { enterDelay: '0ms' } },
+            ),
+            transition(
+                ':leave',
+                [
+                    style({ opacity: 1, transform: 'translateY(0)' }),
+                    animate('150ms {{leaveDelay}} ease-in', style({ opacity: 0, transform: 'translateY(16px)' })),
+                ],
+                { params: { leaveDelay: '0ms' } },
+            ),
         ]),
     ],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false,
 })
 export class CollectionComponent extends AnimatedPage implements OnInit, OnDestroy {
     private subscription: Subscription;
@@ -67,15 +80,15 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
         private settings: BaseSettings,
         private dialog: MatDialog,
         private logger: Logger,
-        private zone: NgZone
+        private zone: NgZone,
     ) {
         super();
     }
-    
+
     public category: string = Constants.allCategory;
 
-    @ViewChild('split', {static: false}) public split: SplitComponent;
-    @ViewChild('area1', {static: false}) public area1: SplitAreaDirective;
+    @ViewChild('split', { static: false }) public split: SplitComponent;
+    @ViewChild('area1', { static: false }) public area1: SplitAreaDirective;
 
     public area1Size: number = Math.min(370, Math.max(230, this.settings.notebooksPaneWidth));
     public isNotebooksPaneVisible: boolean = window.innerWidth >= 970;
@@ -89,7 +102,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
     public markedNotesCount: number = 0;
     public notebooks: Notebook[];
     public activeNotebook: Notebook;
-    public hoveredNotebook: Notebook;
+    public hoveredNotebook: Notebook | null = null;
     public selectedNoteIds: string[];
     public selectedNote: Note | null = null;
     public disableActionAnimations: boolean =
@@ -129,7 +142,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
             const errorText = await this.translator.getAsync('NotebookArchive.SaveError');
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px',
-                data: {errorText: errorText},
+                data: new ErrorData(errorText, false),
             });
         }
     }
@@ -159,7 +172,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
                 this.yesterdayNotesCount = result.yesterdayNotesCount;
                 this.thisWeekNotesCount = result.thisWeekNotesCount;
                 this.markedNotesCount = result.markedNotesCount;
-            })
+            }),
         );
 
         this.subscription.add(
@@ -167,7 +180,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
                 this.zone.run(() => {
                     this.markedNotesCount = result.markedNotesCount;
                 });
-            })
+            }),
         );
     }
 
@@ -185,14 +198,14 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
 
         if (this.selectionWatcher.selectedItemsCount > 0) {
             // If no notebook is selected, keep the current notebook active.
-            this.activeNotebook = this.selectionWatcher.selectedItems[0];
+            this.activeNotebook = this.selectionWatcher.selectedItems[0] as Notebook;
         }
 
         this.zone.run(() => {
-            this.canRenameNotebook = this.selectionWatcher.selectedItemsCount === 1 && !this.selectionWatcher.selectedItems[0].isDefault;
+            this.canRenameNotebook = this.selectionWatcher.selectedItemsCount === 1 && !(this.selectionWatcher.selectedItems[0] as Notebook).isDefault;
             this.canDeleteNotebooks =
                 this.selectionWatcher.selectedItemsCount > 1 ||
-                (this.selectionWatcher.selectedItemsCount === 1 && !this.selectionWatcher.selectedItems[0].isDefault);
+                (this.selectionWatcher.selectedItemsCount === 1 && !(this.selectionWatcher.selectedItems[0] as Notebook).isDefault);
         });
     }
 
@@ -200,14 +213,14 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
         const titleText: string = await this.translator.getAsync('DialogTitles.AddNotebook');
         const placeholderText: string = await this.translator.getAsync('Input.NotebookName');
 
-        const data: any = {titleText: titleText, inputText: '', placeholderText: placeholderText};
+        const data = new InputData(titleText, '', placeholderText, '', false);
 
         const dialogRef: MatDialogRef<InputDialogComponent> = this.dialog.open(InputDialogComponent, {
             width: '450px',
             data: data,
         });
 
-        const result: any = await dialogRef.afterClosed().toPromise();
+        const result = await dialogRef.afterClosed().toPromise();
 
         if (result) {
             const notebookName: string = data.inputText;
@@ -224,7 +237,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
                     });
                     this.dialog.open(ErrorDialogComponent, {
                         width: '450px',
-                        data: {errorText: errorText},
+                        data: new ErrorData(errorText, false),
                     });
                     break;
                 }
@@ -237,9 +250,9 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
     }
 
     public renameNotebook(): void {
-        const dialogRef: MatDialogRef<RenameNotebookDialogComponent> = this.dialog.open(RenameNotebookDialogComponent, {
+        this.dialog.open(RenameNotebookDialogComponent, {
             width: '450px',
-            data: {notebookId: this.activeNotebook.id},
+            data: new RenameNotebookData(this.activeNotebook.id),
         });
     }
 
@@ -251,25 +264,25 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
         if (this.selectionWatcher.selectedItemsCount === 1) {
             title = await this.translator.getAsync('DialogTitles.ConfirmDeleteNotebook');
             text = await this.translator.getAsync('DialogTexts.ConfirmDeleteNotebook', {
-                notebookName: this.selectionWatcher.selectedItems[0].name,
+                notebookName: (this.selectionWatcher.selectedItems[0] as Notebook).name,
             });
         }
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
-            data: {dialogTitle: title, dialogText: text},
+            data: new ConfirmationDialogData(title, text),
         });
 
-        const result: any = await dialogRef.afterClosed().toPromise();
+        const result = await dialogRef.afterClosed().toPromise();
 
         if (result) {
-            const operation: Operation = await this.collection.deleteNotebooksAsync(this.selectionWatcher.selectedItems.map((x) => x.id));
+            const operation: Operation = await this.collection.deleteNotebooksAsync(this.selectionWatcher.selectedItems.map((x) => (x as Notebook).id));
 
             if (operation === Operation.Error) {
                 const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteNotebooksError');
                 this.dialog.open(ErrorDialogComponent, {
                     width: '450px',
-                    data: {errorText: errorText},
+                    data: new ErrorData(errorText, false),
                 });
             }
         }
@@ -293,7 +306,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
             this.logger.warn(
                 'User requested to delete notes, but there are not selected notes.',
                 'CollectionComponent',
-                'deleteNotesAsync'
+                'deleteNotesAsync',
             );
             return;
         }
@@ -301,19 +314,19 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
         if (this.selectedNoteIds.length === 1) {
             const note: Note = await this.collection.getNote(this.selectedNoteIds[0]);
             title = await this.translator.getAsync('DialogTitles.ConfirmDeleteNote');
-            text = await this.translator.getAsync('DialogTexts.ConfirmDeleteNote', {noteTitle: note.title});
+            text = await this.translator.getAsync('DialogTexts.ConfirmDeleteNote', { noteTitle: note.title });
 
             if (!this.settings.moveDeletedNotesToTrash) {
-                text = await this.translator.getAsync('DialogTexts.ConfirmPermanentlyDeleteNote', {noteTitle: note.title});
+                text = await this.translator.getAsync('DialogTexts.ConfirmPermanentlyDeleteNote', { noteTitle: note.title });
             }
         }
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
-            data: {dialogTitle: title, dialogText: text},
+            data: new ConfirmationDialogData(title, text),
         });
 
-        const result: any = await dialogRef.afterClosed().toPromise();
+        const result = await dialogRef.afterClosed().toPromise();
 
         if (result) {
             // Delete the notes
@@ -323,7 +336,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
                 const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteNotesError');
                 this.dialog.open(ErrorDialogComponent, {
                     width: '450px',
-                    data: {errorText: errorText},
+                    data: new ErrorData(errorText, false),
                 });
             }
         }
@@ -348,27 +361,31 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
         }
 
         try {
-            const data = {
-                titleText: await this.translator.getAsync('Tags.Edit'),
-                placeholderText: await this.translator.getAsync('Tags.Input'),
-                descriptionText: await this.translator.getAsync('Tags.Description'),
-                inputText: (note.tags || []).join(', '),
-                allowEmpty: true,
-            };
-            const dialogRef = this.dialog.open(InputDialogComponent, {width: '450px', data});
+            const data = new InputData(
+                await this.translator.getAsync('Tags.Edit'),
+                await this.translator.getAsync('Tags.Input'),
+                await this.translator.getAsync('Tags.Description'),
+                (note.tags || []).join(', '),
+                true
+            );
+            const dialogRef = this.dialog.open(InputDialogComponent, { width: '450px', data });
             if (!(await dialogRef.afterClosed().toPromise())) {
                 return;
             }
 
             const tags: string[] = TagUtils.normalize(data.inputText.split(','));
-            if (await this.collection.saveNoteTagsAsync(note.id, tags) !== Operation.Success) {
+            if ((await this.collection.saveNoteTagsAsync(note.id, tags)) !== Operation.Success) {
                 throw new Error('Saving note tags failed.');
             }
             note.tags = tags;
         } catch (error) {
-            this.logger.error(`Could not edit tags for note with id=${note.id}. Cause: ${error}`, 'CollectionComponent', 'editSelectedNoteTagsAsync');
+            this.logger.error(
+                `Could not edit tags for note with id=${note.id}. Cause: ${error}`,
+                'CollectionComponent',
+                'editSelectedNoteTagsAsync',
+            );
             const errorText: string = await this.translator.getAsync('Tags.SaveError');
-            this.dialog.open(ErrorDialogComponent, {width: '450px', data: {errorText}});
+            this.dialog.open(ErrorDialogComponent, { width: '450px', data: new ErrorData(errorText, false) });
         }
     }
 
@@ -382,7 +399,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
                         Constants.markdownNoteExportExtension.replace('.', ''),
                     ],
                 },
-                {name: await this.translator.getAsync('DialogTexts.AllFiles'), extensions: ['*']},
+                { name: await this.translator.getAsync('DialogTexts.AllFiles'), extensions: ['*'] },
             ],
             properties: ['openFile', 'multiSelections'],
         });
@@ -395,13 +412,13 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
             await this.importNoteFilesAsync(openDialogReturnValue.filePaths, this.activeNotebook);
         }
     }
-    
+
     private async getNotebooksAsync(): Promise<void> {
         this.notebooks = await this.collection.getNotebooksAsync(true);
         this.selectionWatcher.reset(this.notebooks, true);
 
         // Set 1st notebook active by default
-        this.activeNotebook = this.selectionWatcher.selectedItems[0];
+        this.activeNotebook = this.selectionWatcher.selectedItems[0] as Notebook;
         this.notebooksCount = this.notebooks.length - 2;
         this.canRenameNotebook = false;
         this.canDeleteNotebooks = false;
@@ -411,48 +428,53 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
         await this.getNotebooksAsync();
     }
 
-    public notebookDragOver(event: any, notebook: Notebook): void {
+    public notebookDragOver(event: DragEvent, notebook: Notebook): void {
         event.preventDefault();
         this.hoveredNotebook = notebook;
     }
 
-    public notebookDragLeave(event: any): void {
+    public notebookDragLeave(event: DragEvent): void {
         event.preventDefault();
         this.hoveredNotebook = null;
     }
 
-    public async notebookDrop(event: any, notebook: Notebook): Promise<void> {
-        event.preventDefault();
-        this.hoveredNotebook = null;
+    public async notebookDrop(event: DragEvent, notebook: Notebook): Promise<void> {
+    event.preventDefault();
+    this.hoveredNotebook = null;
 
-        if (this.file.isDroppingFiles(event)) {
-            // Dropping files
-            const pathsOfDroppedFiles: string[] = this.file.getDroppedFilesPaths(event);
-            await this.importNoteFilesAsync(pathsOfDroppedFiles, notebook);
-        } else {
-            const noteIds: string[] = JSON.parse(event.dataTransfer.getData('text'));
-            const operation: Operation = this.collection.setNotebook(notebook.id, noteIds);
+    if (this.file.isDroppingFiles(event)) {
+        // Dropping files
+        const pathsOfDroppedFiles: string[] = this.file.getDroppedFilesPaths(event);
+        await this.importNoteFilesAsync(pathsOfDroppedFiles, notebook);
+    } else {
+        const droppedData: string | undefined = event.dataTransfer?.getData('text');
 
-            if (operation === Operation.Success) {
-                if (noteIds.length > 1) {
-                    this.snackBar.notesMovedToNotebookAsync(notebook.name);
-                } else {
-                    this.snackBar.noteMovedToNotebookAsync(notebook.name);
-                }
-            } else if (operation === Operation.Error) {
-                const errorText: string = await this.translator.getAsync('ErrorTexts.ChangeNotebookError');
+        if (!droppedData) {
+            return;
+        }
 
-                this.dialog.open(ErrorDialogComponent, {
-                    width: '450px',
-                    data: {errorText: errorText},
-                });
+        const noteIds: string[] = JSON.parse(droppedData);
+        const operation: Operation = this.collection.setNotebook(notebook.id, noteIds);
+
+        if (operation === Operation.Success) {
+            if (noteIds.length > 1) {
+                this.snackBar.notesMovedToNotebookAsync(notebook.name);
+            } else {
+                this.snackBar.noteMovedToNotebookAsync(notebook.name);
             }
+        } else if (operation === Operation.Error) {
+            const errorText: string = await this.translator.getAsync('ErrorTexts.ChangeNotebookError');
+
+            this.dialog.open(ErrorDialogComponent, {
+                width: '450px',
+                data: new ErrorData(errorText, false),
+            });
         }
     }
+}
 
-    public async notesDrop(event: any): Promise<void> {
+    public async notesDrop(event: DragEvent): Promise<void> {
         event.preventDefault();
-        const droppedFilesPaths: string[] = this.file.getDroppedFilesPaths(event);
 
         if (this.file.isDroppingFiles(event)) {
             // Dropping files
@@ -461,7 +483,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
         }
     }
 
-    public notesDragOver(event: any): void {
+    public notesDragOver(event: DragEvent): void {
         event.preventDefault();
     }
 
@@ -482,7 +504,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px',
-                data: {errorText: errorText},
+                data: new ErrorData(errorText, false),
             });
         }
     }
@@ -492,21 +514,25 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
         this.isNotebooksPaneVisible = window.innerWidth >= 970;
     }
 
-    public dragEnd(event: any): void {
-        this.area1Size = event.sizes[0];
-        this.settings.notebooksPaneWidth = event.sizes[0];
+    public dragEnd(event: IOutputData): void {
+        const size = event.sizes[0];
+
+        if (typeof size === 'number') {
+            this.area1Size = size;
+            this.settings.notebooksPaneWidth = size;
+        }
     }
 
     public openMoveNotesBottomSheet(): void {
         this.bottomSheet.open(MoveNotesBottomSheetComponent, {
-            data: {selectedNoteIds: this.selectedNoteIds},
+            data: new MoveNotesData(this.selectedNoteIds),
         });
     }
 
     public async addNoteAsync(): Promise<void> {
         if (this.settings.canCreateClassicNotes && this.settings.canCreateMarkdownNotes) {
             this.bottomSheet.open(NoteTypeChooserBottomSheetComponent, {
-                data: {activeNotebookId: this.activeNotebook.id},
+                data: new NoteTypeChooserData(this.activeNotebook.id),
             });
         } else if (this.settings.canCreateClassicNotes) {
             await this.noteCreator.createClassicNoteAsync(this.activeNotebook.id);

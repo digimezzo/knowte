@@ -3,7 +3,8 @@ import { Component, OnInit, Input } from '@angular/core';
 @Component({
     selector: 'app-tasks-progress',
     templateUrl: './tasks-progress.component.html',
-    styleUrls: ['./tasks-progress.component.scss']
+    styleUrls: ['./tasks-progress.component.scss'],
+    standalone: false
 })
 export class TasksProgressComponent implements OnInit {
     private _closedTasksCount: number;
@@ -32,7 +33,7 @@ export class TasksProgressComponent implements OnInit {
         this.calculateWidth();
     }
 
-    public width: Number;
+    public width: number;
 
     public ngOnInit(): void {
         this.calculateWidth();

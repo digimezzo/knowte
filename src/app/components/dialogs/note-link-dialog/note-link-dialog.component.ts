@@ -7,6 +7,7 @@ import { CollectionUtils } from '../../../common/utils/collection-utils';
     selector: 'app-note-link-dialog',
     templateUrl: './note-link-dialog.component.html',
     styleUrls: ['./note-link-dialog.component.scss'],
+    standalone: false
 })
 export class NoteLinkDialogComponent {
     private _searchText: string = '';

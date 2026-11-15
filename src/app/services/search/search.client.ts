@@ -3,6 +3,7 @@ import * as remote from '@electron/remote';
 import { Observable, Subject } from 'rxjs';
 import { Scheduler } from '../../common/scheduling/scheduler';
 import { SearchEvents } from './search-events';
+import { EventEmitter } from 'events';
 
 /**
  * SearchService should never be initialized from the note window. There should
@@ -12,7 +13,7 @@ import { SearchEvents } from './search-events';
  */
 @Injectable()
 export class SearchClient {
-    private globalEmitter: any = remote.getGlobal('globalEmitter');
+    private globalEmitter: EventEmitter = remote.getGlobal('globalEmitter');
     private searchTextChanged: Subject<string> = new Subject();
 
     public constructor(private scheduler: Scheduler) {}
@@ -24,7 +25,7 @@ export class SearchClient {
          * It is not possible to change a string from inside a function
          * because it is not a reference type. So we use an array instead.
          */
-        let searchTexts: string[] = [];
+        const searchTexts: string[] = [];
 
         this.globalEmitter.emit(SearchEvents.getSearchTextEvent, (receivedSearchText: string) => searchTexts.push(receivedSearchText));
 

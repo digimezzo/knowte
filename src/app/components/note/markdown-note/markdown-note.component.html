@@ -1,172 +1,175 @@
 <div class="d-flex flex-column fill w-100 h-100 overflow-hidden">
-    <div class="d-flex flex-row">
-        <div class="markdown-edit-button no-select ml-1" (click)="toggleIsEditing()">
-            <i class="markdown-icon las la-columns" [ngClass]="{ accent: this.noteEditor.isEditing }"></i>
-            {{ 'Notes.Edit' | translate }}
-        </div>
-        <div class="d-flex flex-row" *ngIf="this.noteEditor.isEditing">
-            <div class="markdown-action-separator no-select"></div>
-            <button
-                type="button"
-                class="markdown-action-button markdown-scroll-sync-button no-select"
-                (mousedown)="$event.preventDefault()"
-                (click)="toggleScrollSync()"
-                [title]="'Notes.SyncScrolling' | translate"
-                [attr.aria-label]="'Notes.SyncScrolling' | translate"
-                [attr.aria-pressed]="isScrollSyncEnabled"
-            >
-                <i class="fa-solid fa-arrows-up-down"></i>
-            </button>
-            <div class="markdown-action-separator no-select"></div>
-            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyBold()" title="{{ 'Notes.Bold' | translate }} (Ctrl+B)">
-                <i class="fa-solid fa-bold"></i>
-            </div>
-            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyItalic()" title="{{ 'Notes.Italic' | translate }} (Ctrl+I)">
-                <i class="fa-solid fa-italic"></i>
-            </div>
-            <div
-                class="markdown-action-button no-select"
-                (click)="this.noteEditor.applyStrikeThrough()"
-                title="{{ 'Notes.Strikethrough' | translate }} (Ctrl+S)"
-            >
-                <i class="fa-solid fa-strikethrough"></i>
-            </div>
-            <button
-                type="button"
-                class="markdown-action-button no-select"
-                (mousedown)="$event.preventDefault()"
-                (click)="this.noteEditor.applyHighlight()"
-                title="{{ 'Tooltips.Highlight' | translate }} (Ctrl+H)"
-                [attr.aria-label]="'Tooltips.Highlight' | translate"
-                aria-keyshortcuts="Control+h"
-            >
-                <i class="fa-solid fa-highlighter"></i>
-            </button>
-            <div class="markdown-action-separator no-select"></div>
-            <div
-                class="markdown-action-button no-select"
-                (click)="this.noteEditor.applyHeading(1)"
-                title="{{ 'Notes.Heading1' | translate }} (Ctrl+1)"
-            >
-                <i class="fa-solid fa-heading"></i>
-                <div class="markdown-action-button-subscript">1</div>
-            </div>
-            <div
-                class="markdown-action-button no-select"
-                (click)="this.noteEditor.applyHeading(2)"
-                title="{{ 'Notes.Heading2' | translate }} (Ctrl+2)"
-            >
-                <i class="fa-solid fa-heading"></i>
-                <div class="markdown-action-button-subscript">2</div>
-            </div>
-            <div
-                class="markdown-action-button no-select"
-                (click)="this.noteEditor.applyHeading(3)"
-                title="{{ 'Notes.Heading3' | translate }} (Ctrl+3)"
-            >
-                <i class="fa-solid fa-heading"></i>
-                <div class="markdown-action-button-subscript">3</div>
-            </div>
-            <div class="markdown-action-separator no-select"></div>
-            <div
-                class="markdown-action-button no-select"
-                (click)="this.noteEditor.applyUnorderedList()"
-                title="{{ 'Notes.UnorderedList' | translate }}"
-            >
-                <i class="fa-solid fa-list-ul"></i>
-            </div>
-            <div
-                class="markdown-action-button no-select"
-                (click)="this.noteEditor.applyOrderedList()"
-                title="{{ 'Notes.OrderedList' | translate }}"
-            >
-                <i class="fa-solid fa-list-ol"></i>
-            </div>
-            <div
-                class="markdown-action-button no-select"
-                (click)="this.noteEditor.applyTaskList()"
-                title="{{ 'Notes.TaskList' | translate }}"
-            >
-                <i class="fa-solid fa-list-check"></i>
-            </div>
-            <div class="markdown-action-separator no-select"></div>
-            <div class="markdown-action-button no-select" (click)="this.noteEditor.insertLink()" title="{{ 'Notes.Link' | translate }} (Ctrl+K)">
-                <i class="fa-solid fa-link"></i>
-            </div>
-            <button
-                type="button"
-                class="markdown-action-button no-select"
-                (mousedown)="$event.preventDefault()"
-                (click)="insertNoteLinkAsync()"
-                title="{{ 'NoteLinks.LinkToNote' | translate }}..."
-                [attr.aria-label]="'NoteLinks.LinkToNote' | translate"
-            >
-                <i class="fa-solid fa-file-circle-plus"></i>
-            </button>
-            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyQuote()" title="{{ 'Notes.Quote' | translate }} (Ctrl+Q)">
-                <i class="fa-solid fa-quote-right"></i>
-            </div>
-            <div class="markdown-action-button no-select" (click)="this.noteEditor.applyCode()" title="{{ 'Notes.Code' | translate }} (Ctrl+M)">
-                <i class="fa-solid fa-code"></i>
-            </div>
-            <button
-                type="button"
-                class="markdown-action-button markdown-code-language-button no-select"
-                (mousedown)="$event.preventDefault()"
-                [matMenuTriggerFor]="codeLanguageMenu"
-                [matMenuTriggerRestoreFocus]="false"
-                [title]="'Notes.InsertCodeBlock' | translate"
-                [attr.aria-label]="'Notes.InsertCodeBlock' | translate"
-            >
-                <i class="fa-solid fa-caret-down"></i>
-            </button>
-            <mat-menu #codeLanguageMenu="matMenu">
-                <button
-                    *ngFor="let language of codeLanguages"
-                    mat-menu-item
-                    class="menu-button"
-                    (click)="insertCodeBlock(language.code)"
-                >
-                    <span>{{ language.name }} ({{ language.code }})</span>
-                </button>
-            </mat-menu>
-            <div class="markdown-action-button no-select" (click)="this.noteEditor.insertTable()" title="{{ 'Notes.Table' | translate }}">
-                <i class="fa-solid fa-table"></i>
-            </div>
-            <div class="markdown-action-separator no-select"></div>
-            <div
-                class="markdown-action-button no-select"
-                (click)="this.noteEditor.addImageFromDiskAsync()"
-                title="{{ 'Notes.Image' | translate }}"
-            >
-                <i class="fa-regular fa-image"></i>
-            </div>
-        </div>
+  <div class="d-flex flex-row">
+    <div class="markdown-edit-button no-select ml-1" (click)="toggleIsEditing()">
+      <i class="markdown-icon las la-columns" [ngClass]="{ accent: this.noteEditor.isEditing }"></i>
+      {{ 'Notes.Edit' | translate }}
     </div>
-    <div class="d-flex flex-row fill overflow-hidden pt-1 pb-2 note-editor">
-        <div #editorWrapper class="editor-wrapper" [ngClass]="{ 'editor-wrapper-hidden': !this.noteEditor.isEditing }">
-            <pre #highlightedContent class="highlighted-content" [innerHTML]="highlightMarkdown(this.noteEditor.content)"></pre>
-            <textarea
-                #markdownInput
-                class="markdown-input"
-                id="markdown-input"
-                [(ngModel)]="this.noteEditor.content"
-                (ngModelChange)="onEditorContentChange()"
-                (scroll)="onEditorScroll()"
-                (keydown.tab)="onTabKey($event)"
-                (keydown.control.h)="onHighlightShortcut($event)"
-            ></textarea>
+    @if (this.noteEditor.isEditing) {
+      <div class="d-flex flex-row">
+        <div class="markdown-action-separator no-select"></div>
+        <button
+          type="button"
+          class="markdown-action-button markdown-scroll-sync-button no-select"
+          (mousedown)="$event.preventDefault()"
+          (click)="toggleScrollSync()"
+          [title]="'Notes.SyncScrolling' | translate"
+          [attr.aria-label]="'Notes.SyncScrolling' | translate"
+          [attr.aria-pressed]="isScrollSyncEnabled"
+          >
+          <i class="fa-solid fa-arrows-up-down"></i>
+        </button>
+        <div class="markdown-action-separator no-select"></div>
+        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyBold()" title="{{ 'Notes.Bold' | translate }} (Ctrl+B)">
+          <i class="fa-solid fa-bold"></i>
         </div>
-        <markdown
-            #markdownOutput
-            class="markdown-output markdown-body"
-            id="markdown-output"
-            (scroll)="onPreviewScroll()"
-            (ready)="onPreviewReady()"
-            (click)="onPreviewClickAsync($event)"
-            (auxclick)="onPreviewClickAsync($event)"
-            [ngClass]="{ 'markdown-output-maximized': !this.noteEditor.isEditing }"
-            [data]="this.noteEditor.content | fixImagePaths: this.noteEditor.noteId : this.attachmentsDirectoryPath"
-        ></markdown>
+        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyItalic()" title="{{ 'Notes.Italic' | translate }} (Ctrl+I)">
+          <i class="fa-solid fa-italic"></i>
+        </div>
+        <div
+          class="markdown-action-button no-select"
+          (click)="this.noteEditor.applyStrikeThrough()"
+          title="{{ 'Notes.Strikethrough' | translate }} (Ctrl+S)"
+          >
+          <i class="fa-solid fa-strikethrough"></i>
+        </div>
+        <button
+          type="button"
+          class="markdown-action-button no-select"
+          (mousedown)="$event.preventDefault()"
+          (click)="this.noteEditor.applyHighlight()"
+          title="{{ 'Tooltips.Highlight' | translate }} (Ctrl+H)"
+          [attr.aria-label]="'Tooltips.Highlight' | translate"
+          aria-keyshortcuts="Control+h"
+          >
+          <i class="fa-solid fa-highlighter"></i>
+        </button>
+        <div class="markdown-action-separator no-select"></div>
+        <div
+          class="markdown-action-button no-select"
+          (click)="this.noteEditor.applyHeading(1)"
+          title="{{ 'Notes.Heading1' | translate }} (Ctrl+1)"
+          >
+          <i class="fa-solid fa-heading"></i>
+          <div class="markdown-action-button-subscript">1</div>
+        </div>
+        <div
+          class="markdown-action-button no-select"
+          (click)="this.noteEditor.applyHeading(2)"
+          title="{{ 'Notes.Heading2' | translate }} (Ctrl+2)"
+          >
+          <i class="fa-solid fa-heading"></i>
+          <div class="markdown-action-button-subscript">2</div>
+        </div>
+        <div
+          class="markdown-action-button no-select"
+          (click)="this.noteEditor.applyHeading(3)"
+          title="{{ 'Notes.Heading3' | translate }} (Ctrl+3)"
+          >
+          <i class="fa-solid fa-heading"></i>
+          <div class="markdown-action-button-subscript">3</div>
+        </div>
+        <div class="markdown-action-separator no-select"></div>
+        <div
+          class="markdown-action-button no-select"
+          (click)="this.noteEditor.applyUnorderedList()"
+          title="{{ 'Notes.UnorderedList' | translate }}"
+          >
+          <i class="fa-solid fa-list-ul"></i>
+        </div>
+        <div
+          class="markdown-action-button no-select"
+          (click)="this.noteEditor.applyOrderedList()"
+          title="{{ 'Notes.OrderedList' | translate }}"
+          >
+          <i class="fa-solid fa-list-ol"></i>
+        </div>
+        <div
+          class="markdown-action-button no-select"
+          (click)="this.noteEditor.applyTaskList()"
+          title="{{ 'Notes.TaskList' | translate }}"
+          >
+          <i class="fa-solid fa-list-check"></i>
+        </div>
+        <div class="markdown-action-separator no-select"></div>
+        <div class="markdown-action-button no-select" (click)="this.noteEditor.insertLink()" title="{{ 'Notes.Link' | translate }} (Ctrl+K)">
+          <i class="fa-solid fa-link"></i>
+        </div>
+        <button
+          type="button"
+          class="markdown-action-button no-select"
+          (mousedown)="$event.preventDefault()"
+          (click)="insertNoteLinkAsync()"
+          title="{{ 'NoteLinks.LinkToNote' | translate }}..."
+          [attr.aria-label]="'NoteLinks.LinkToNote' | translate"
+          >
+          <i class="fa-solid fa-file-circle-plus"></i>
+        </button>
+        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyQuote()" title="{{ 'Notes.Quote' | translate }} (Ctrl+Q)">
+          <i class="fa-solid fa-quote-right"></i>
+        </div>
+        <div class="markdown-action-button no-select" (click)="this.noteEditor.applyCode()" title="{{ 'Notes.Code' | translate }} (Ctrl+M)">
+          <i class="fa-solid fa-code"></i>
+        </div>
+        <button
+          type="button"
+          class="markdown-action-button markdown-code-language-button no-select"
+          (mousedown)="$event.preventDefault()"
+          [matMenuTriggerFor]="codeLanguageMenu"
+          [matMenuTriggerRestoreFocus]="false"
+          [title]="'Notes.InsertCodeBlock' | translate"
+          [attr.aria-label]="'Notes.InsertCodeBlock' | translate"
+          >
+          <i class="fa-solid fa-caret-down"></i>
+        </button>
+        <mat-menu #codeLanguageMenu="matMenu">
+          @for (language of codeLanguages; track language) {
+            <button
+              mat-menu-item
+              class="menu-button"
+              (click)="insertCodeBlock(language.code)"
+              >
+              <span>{{ language.name }} ({{ language.code }})</span>
+            </button>
+          }
+        </mat-menu>
+        <div class="markdown-action-button no-select" (click)="this.noteEditor.insertTable()" title="{{ 'Notes.Table' | translate }}">
+          <i class="fa-solid fa-table"></i>
+        </div>
+        <div class="markdown-action-separator no-select"></div>
+        <div
+          class="markdown-action-button no-select"
+          (click)="this.noteEditor.addImageFromDiskAsync()"
+          title="{{ 'Notes.Image' | translate }}"
+          >
+          <i class="fa-regular fa-image"></i>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="d-flex flex-row fill overflow-hidden pt-1 pb-2 note-editor">
+    <div #editorWrapper class="editor-wrapper" [ngClass]="{ 'editor-wrapper-hidden': !this.noteEditor.isEditing }">
+      <pre #highlightedContent class="highlighted-content" [innerHTML]="highlightMarkdown(this.noteEditor.content)"></pre>
+      <textarea
+        #markdownInput
+        class="markdown-input"
+        id="markdown-input"
+        [(ngModel)]="this.noteEditor.content"
+        (ngModelChange)="onEditorContentChange()"
+        (scroll)="onEditorScroll()"
+        (keydown.tab)="onTabKey($event)"
+        (keydown.control.h)="onHighlightShortcut($event)"
+      ></textarea>
     </div>
+    <markdown
+      #markdownOutput
+      class="markdown-output markdown-body"
+      id="markdown-output"
+      (scroll)="onPreviewScroll()"
+      (ready)="onPreviewReady()"
+      (click)="onPreviewClickAsync($event)"
+      (auxclick)="onPreviewClickAsync($event)"
+      [ngClass]="{ 'markdown-output-maximized': !this.noteEditor.isEditing }"
+      [data]="this.noteEditor.content | fixImagePaths: this.noteEditor.noteId : this.attachmentsDirectoryPath"
+    ></markdown>
+  </div>
 </div>

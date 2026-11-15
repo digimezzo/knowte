@@ -8,6 +8,7 @@ import { SpellCheckService } from '../../services/spell-check/spell-check.servic
     templateUrl: './spell-check-languages.component.html',
     styleUrls: ['./spell-check-languages.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class SpellCheckLanguagesComponent {
     constructor(private spellCheckService: SpellCheckService) {}

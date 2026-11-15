@@ -1,6 +1,6 @@
-import { marked } from 'marked';
+import { MarkedExtension, Tokens } from 'marked';
 
-export const markdownHighlightExtension: marked.MarkedExtension = {
+export const markdownHighlightExtension: MarkedExtension = {
     extensions: [
         {
             name: 'mark',
@@ -24,4 +24,14 @@ export const markdownHighlightExtension: marked.MarkedExtension = {
             },
         },
     ],
+    renderer: {
+        image(token: Tokens.Image) {
+            // Alt text must stay plain: drop the inline tokens so extensions
+            // like ==mark== are not rendered inside it.
+            delete (token as { tokens?: unknown }).tokens;
+            // Returning false falls back to marked's default image renderer,
+            // which then uses the plain `text`.
+            return false;
+        },
+    },
 };

@@ -1,3 +1,4 @@
+import { SearchData } from './bottom-sheets/search-bottom-sheet/search-data';
 import { NgZone, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -53,6 +54,10 @@ describe('NoteComponent preparing deletion', () => {
 
     function mock<T>(): T {
         return Mock.ofType<T>().object;
+    }
+
+    function beforeUnloadEvent(): BeforeUnloadEvent & { preventDefault: jest.Mock } {
+        return { preventDefault: jest.fn(), returnValue: undefined } as unknown as BeforeUnloadEvent & { preventDefault: jest.Mock };
     }
 
     beforeEach(() => {
@@ -364,7 +369,7 @@ describe('NoteComponent preparing deletion', () => {
         });
         const editing = component.editTagsAsync();
         await saveStarted;
-        const event = { preventDefault: jest.fn(), returnValue: undefined };
+        const event = beforeUnloadEvent();
         component.beforeunloadHandler(event);
         expect(event.preventDefault).toHaveBeenCalled();
         const callback = jest.fn();
@@ -530,7 +535,7 @@ describe('NoteComponent preparing deletion', () => {
             expect(component['searchText']).toBe('');
             expect(component.searchTerm).toBe('');
             component.openSearchBottomSheet();
-            expect(openSheet).toHaveBeenLastCalledWith(SearchBottomSheetComponent, { data: { searchText: '' } });
+            expect(openSheet).toHaveBeenLastCalledWith(SearchBottomSheetComponent, { data: new SearchData('') });
         } finally {
             jest.useRealTimers();
         }
@@ -602,7 +607,7 @@ describe('NoteComponent preparing deletion', () => {
             expect(findInPage).toHaveBeenCalledWith('new', { forward: true, findNext: false });
             expect(window.getSelection().anchorNode).toBe(document.body);
             component.openSearchBottomSheet();
-            expect(openSheet).toHaveBeenLastCalledWith(SearchBottomSheetComponent, { data: { searchText: 'new' } });
+            expect(openSheet).toHaveBeenLastCalledWith(SearchBottomSheetComponent, { data: new SearchData('new') });
         } finally {
             jest.useRealTimers();
         }
@@ -778,7 +783,7 @@ describe('NoteComponent preparing deletion', () => {
         });
         const save = component['saveNoteContentAsync']();
         await started;
-        const event = { preventDefault: jest.fn(), returnValue: undefined };
+        const event = beforeUnloadEvent();
         component.beforeunloadHandler(event);
         expect(event.preventDefault).toHaveBeenCalled();
         component['removeSubscriptions']();
@@ -788,7 +793,7 @@ describe('NoteComponent preparing deletion', () => {
 
     it('retains dirty flags when closing to save and the write fails', async () => {
         component['isTextDirty'] = true;
-        const event = { preventDefault: jest.fn(), returnValue: undefined };
+        const event = beforeUnloadEvent();
         component.beforeunloadHandler(event);
         component['removeSubscriptions']();
         expect(component['isTextDirty']).toBe(true);
@@ -859,7 +864,7 @@ describe('NoteComponent preparing deletion', () => {
         });
         const dispose = jest.spyOn(client, 'dispose');
         closeWindow.mockImplementation(() => {
-            component.beforeunloadHandler({ preventDefault: jest.fn(), returnValue: undefined });
+            component.beforeunloadHandler(beforeUnloadEvent());
         });
 
         const closing = component['saveAndCloseAsync']();
@@ -885,7 +890,7 @@ describe('NoteComponent preparing deletion', () => {
         });
         const saving = component['saveNoteContentAsync']();
         await started;
-        const event = { preventDefault: jest.fn(), returnValue: undefined };
+        const event = beforeUnloadEvent();
         closeWindow.mockImplementation(() => component.beforeunloadHandler(event));
         const dispose = jest.spyOn(client, 'dispose');
 
@@ -1065,7 +1070,7 @@ describe('SearchBottomSheetComponent searching', () => {
         const search = Mock.ofType<SearchClient>();
         const searchChanged = jest.fn();
         search.setup((x) => x.onSearchTextChanged(It.isAnyString())).callback(searchChanged);
-        const component = new SearchBottomSheetComponent({}, sheet.object, search.object);
+        const component = new SearchBottomSheetComponent(new SearchData(''), sheet.object, search.object);
         component.searchText = 'work';
 
         component.performSearch();

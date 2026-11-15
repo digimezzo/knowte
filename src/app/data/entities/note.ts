@@ -1,11 +1,13 @@
 import moment from 'moment';
 import { nanoid } from 'nanoid';
+import { ISelectable } from './i-selectable';
 
-export class Note {
+export class Note implements ISelectable {
     constructor(
         public title: string,
         public notebookId: string,
         public isMarkdownNote: boolean,
+        public isSelected: boolean = false,
     ) {}
 
     public id: string = nanoid();
@@ -19,7 +21,6 @@ export class Note {
     public tags: string[] = [];
     public displayModificationDate: string;
     public displayExactModificationDate: string;
-    public isSelected: boolean = false;
     public closedTasksCount: number = 0;
     public totalTasksCount: number = 0;
     public isTrashed: boolean = false;

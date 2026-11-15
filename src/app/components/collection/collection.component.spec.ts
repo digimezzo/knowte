@@ -174,7 +174,7 @@ describe('CollectionComponent notebook archiving', () => {
         await component.setNotebooksArchivedAsync(true);
 
         expect(openDialog).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({
-            data: { errorText: 'Archive failed' },
+            data: { errorText: 'Archive failed', isGlobalError: false },
         }));
         expect(component.notebooks).toContain(regular);
     });

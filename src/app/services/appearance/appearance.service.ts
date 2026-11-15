@@ -19,14 +19,15 @@ import { DefaultThemesCreator } from './default-themes-creator';
 import { Palette } from './palette';
 import { Theme } from './theme/theme';
 import { ThemeNeutralColors } from './theme/theme-neutral-colors';
+import { EventEmitter } from 'events';
 
 type ThemeSettings = Pick<BaseSettings, 'followSystemTheme' | 'useLightBackgroundTheme' | 'followSystemColor'>;
 
 @Injectable()
 export class AppearanceService implements BaseAppearanceService {
-    private globalEmitter: any = remote.getGlobal('globalEmitter');
-    private themeChangedListener: any = this.applyThemeFromGlobalEvent.bind(this);
-    private fontSizeChangedListener: any = this.applyFontSizeFromGlobalEvent.bind(this);
+    private globalEmitter: EventEmitter = remote.getGlobal('globalEmitter');
+    private themeChangedListener = this.applyThemeFromGlobalEvent.bind(this);
+    private fontSizeChangedListener = this.applyFontSizeFromGlobalEvent.bind(this);
 
     private interval: number;
     private _themes: Theme[] = [];
@@ -166,7 +167,7 @@ export class AppearanceService implements BaseAppearanceService {
     }
 
     private initialize(): void {
-        this._windowHasNativeTitleBar = this.application.getGlobal('windowHasFrame');
+        this._windowHasNativeTitleBar = this.application.getGlobal('windowHasFrame') as boolean;
 
         this._themesDirectoryPath = this.getThemesDirectoryPath();
         this.ensureThemesDirectoryExists();
@@ -242,7 +243,7 @@ export class AppearanceService implements BaseAppearanceService {
 
         try {
             this.applyTheme();
-        } catch (e) {
+        } catch {
             this.selectedTheme.isBroken = true;
             this.settings.theme = 'Dopamine';
             this.setSelectedThemeFromSettings();

@@ -17,7 +17,7 @@ export class Application implements BaseApplication {
 
     public argumentsReceived$: Observable<string[]> = this.argumentsReceived.asObservable();
 
-    public getGlobal(name: string): any {
+    public getGlobal(name: string): unknown {
         return remote.getGlobal(name);
     }
 

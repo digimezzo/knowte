@@ -1,4 +1,4 @@
-import { marked } from 'marked';
+import { marked, MarkedOptions, Tokens } from 'marked';
 
 interface SourceBlock {
     startLine: number;
@@ -47,7 +47,7 @@ function normalizeSource(source: string, pedantic: boolean): string {
 export function buildSourceBlocks(
     source: string,
     preview: HTMLElement,
-    options: marked.MarkedOptions,
+    options: MarkedOptions,
     sanitize: (html: string) => string,
 ): SourceBlock[] {
     // Only DOM structure is compared; generated heading IDs are stripped by preview sanitization.
@@ -93,7 +93,7 @@ export function buildSourceBlocks(
         if (token.type === 'list' && 'items' in token && actual[0] instanceof HTMLElement) {
             const items = Array.from(actual[0].children).filter((child) => child.tagName === 'LI');
             let itemOffset = 0;
-            token.items.forEach((item: marked.Tokens.ListItem, index: number) => {
+            token.items.forEach((item: Tokens.ListItem, index: number) => {
                 const itemStart = token.raw.indexOf(item.raw, itemOffset);
                 if (itemStart >= 0 && items[index]) {
                     const line = startLine + token.raw.substring(0, itemStart).split('\n').length - 1;
@@ -128,7 +128,7 @@ export class MarkdownScrollMap {
     public constructor(
         private input: HTMLTextAreaElement,
         private preview: HTMLElement,
-        private options: marked.MarkedOptions,
+        private options: MarkedOptions,
         private sanitize: (html: string) => string,
     ) {
         this.mirror = document.createElement('pre');

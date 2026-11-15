@@ -1,8 +1,10 @@
+import { ISelectable } from "../../data/entities/i-selectable";
+
 export class SelectionWatcher {
     constructor() { }
 
-    private items: any[];
-    private lastSelectedItem: any;
+    private items: ISelectable[] = [];
+    private lastSelectedItem: ISelectable | null = null;
 
     public get hasItems(): boolean {
         return this.items != null;
@@ -16,7 +18,7 @@ export class SelectionWatcher {
         return this.items.filter(x => x.isSelected).length;
     }
 
-    public get selectedItems(): any[] {
+    public get selectedItems(): ISelectable[] {
         if (!this.hasItems) {
             return [];
         }
@@ -24,7 +26,7 @@ export class SelectionWatcher {
         return this.items.filter(x => x.isSelected);
     }
 
-    public reset(items: any[], selectFirstItem: boolean = false): void {
+    public reset(items: ISelectable[], selectFirstItem: boolean = false): void {
         this.items = items;
 
         if (this.items.length > 0) {
@@ -36,7 +38,7 @@ export class SelectionWatcher {
         }
     }
 
-    public selectItemsRange(item: any): void {
+    public selectItemsRange(item: ISelectable): void {
         if (!this.hasItems) {
             return;
         }
@@ -64,7 +66,7 @@ export class SelectionWatcher {
         }
     }
 
-    public selectSingleItem(item: any): void {
+    public selectSingleItem(item: ISelectable): void {
         if (!this.hasItems) {
             return;
         }
@@ -81,7 +83,7 @@ export class SelectionWatcher {
         }
     }
 
-    public toggleItemSelection(item: any): void {
+    public toggleItemSelection(item: ISelectable): void {
         if (!this.hasItems) {
             return;
         }

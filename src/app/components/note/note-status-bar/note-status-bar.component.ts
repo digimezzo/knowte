@@ -12,6 +12,7 @@ export type NoteSaveStatus = 'saved' | 'unsaved' | 'failed';
     selector: 'app-note-status-bar',
     styleUrls: ['./note-status-bar.component.scss'],
     templateUrl: 'note-status-bar.component.html',
+    standalone: false
 })
 export class NoteStatusBarComponent {
     constructor(

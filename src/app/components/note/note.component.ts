@@ -4,8 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as remote from '@electron/remote';
 import { BrowserWindow, SaveDialogOptions, SaveDialogReturnValue } from 'electron';
-import { merge, Subject, Subscription } from 'rxjs';
-import { auditTime, debounceTime } from 'rxjs/internal/operators';
+import { auditTime, debounceTime, merge, Subject, Subscription } from 'rxjs';
 import { ApplicationPaths } from '../../common/application/applicationPaths';
 import { Constants } from '../../common/application/constants';
 import { ProductInformation } from '../../common/application/product-information';
@@ -42,12 +41,18 @@ import { INoteEditor } from './note-editor/i-note-editor';
 import { NoteEditorFactory } from './note-editor/note-editor-factory';
 import { NoteSearch } from './note-search';
 import { NoteSaveStatus } from './note-status-bar/note-status-bar.component';
+import { PasswordInputData } from '../dialogs/password-input-dialog/password-input-data';
+import { ConfirmationDialogData } from '../dialogs/confirmation-dialog/confirmation-dialog-data';
+import { InputData } from '../dialogs/input-dialog/input-data';
+import { SearchData } from './bottom-sheets/search-bottom-sheet/search-data';
+import { NotificationData } from '../dialogs/notification-dialog/notification-data';
 
 @Component({
     selector: 'app-note',
     templateUrl: './note.component.html',
     styleUrls: ['./note.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class NoteComponent implements OnInit {
     private subscription: Subscription = new Subscription();
@@ -55,7 +60,7 @@ export class NoteComponent implements OnInit {
     private isTitleDirty: boolean = false;
     private isTextDirty: boolean = false;
     private contentRevision: number = 0;
-    private pendingContentSave: Promise<Operation>;
+    private pendingContentSave?: Promise<Operation>;
     private saveRetryTimeout?: ReturnType<typeof setTimeout>;
     private isAutosaveErrorReported: boolean = false;
     private hasSaveError: boolean = false;
@@ -175,7 +180,7 @@ export class NoteComponent implements OnInit {
     }
 
     @HostListener('document:keydown.escape')
-    private handleEscape(): void {
+    protected handleEscape(): void {
         if (this.settings.closeNotesWithEscape && !this.isEditingTags && !this.isActionsSheetOpen) {
             this.noteWindow.close();
         }
@@ -375,7 +380,7 @@ export class NoteComponent implements OnInit {
 
     // ngOnDestroy doesn't tell us when a note window is closed, so we use this event instead.
     @HostListener('window:beforeunload', ['$event'])
-    public beforeunloadHandler(event: any): void {
+    public beforeunloadHandler(event: BeforeUnloadEvent): void {
         // A spare window that never received a note has nothing to save or mark as closed.
         if (!this.noteId) {
             this.collectionClient.dispose();
@@ -407,7 +412,7 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    public onTitleKeydown(event: any): void {
+    public onTitleKeydown(event: KeyboardEvent): void {
         if (event.key === 'Enter' || event.key === 'Tab') {
             // Make sure enter is not applied to the editor
             event.preventDefault();
@@ -433,13 +438,13 @@ export class NoteComponent implements OnInit {
         this.isEditingTags = true;
         this.isBusy = true;
         try {
-            const data = {
-                titleText: await this.translator.getAsync('Tags.Edit'),
-                placeholderText: await this.translator.getAsync('Tags.Input'),
-                descriptionText: await this.translator.getAsync('Tags.Description'),
-                inputText: this.tags.join(', '),
-                allowEmpty: true,
-            };
+            const data = new InputData(
+                await this.translator.getAsync('Tags.Edit'),
+                await this.translator.getAsync('Tags.Input'),
+                await this.translator.getAsync('Tags.Description'),
+                this.tags.join(', '),
+                true
+            );
             const dialogRef = this.dialog.open(InputDialogComponent, { width: '450px', data });
             if (!(await dialogRef.afterClosed().toPromise())) {
                 return;
@@ -469,7 +474,7 @@ export class NoteComponent implements OnInit {
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
-            data: { dialogTitle: title, dialogText: text },
+            data: new ConfirmationDialogData(title, text),
         });
 
         dialogRef.afterClosed().subscribe(async (result) => {
@@ -530,21 +535,21 @@ export class NoteComponent implements OnInit {
         const titleText: string = await this.translator.getAsync('DialogTitles.NoteIsEncrypted');
         const placeholderText: string = await this.translator.getAsync('Input.SecretKey');
 
-        const data: any = {
-            titleText: titleText,
-            inputText: '',
-            placeholderText: placeholderText,
-            confirmationPlaceholderText: '',
-            confirmationErrorText: '',
-            requiresConfirmation: false,
-        };
+        const data: PasswordInputData = new PasswordInputData(
+            titleText,
+            '',
+            placeholderText,
+            '',
+            '',
+            false
+        );
 
         const dialogRef: MatDialogRef<PasswordInputDialogComponent> = this.dialog.open(PasswordInputDialogComponent, {
             width: '450px',
             data: data,
         });
 
-        const result: any = await dialogRef.afterClosed().toPromise();
+        const result = await dialogRef.afterClosed().toPromise();
 
         if (result) {
             this.secretKey = data.inputText;
@@ -561,21 +566,21 @@ export class NoteComponent implements OnInit {
         const confirmationPlaceholderText: string = await this.translator.getAsync('Input.ConfirmSecretKey');
         const confirmationErrorText: string = await this.translator.getAsync('Input.SecretKeysDoNotMatch');
 
-        const data: any = {
-            titleText: titleText,
-            inputText: '',
-            placeholderText: placeholderText,
-            confirmationPlaceholderText: confirmationPlaceholderText,
-            confirmationErrorText: confirmationErrorText,
-            requiresConfirmation: true,
-        };
+        const data = new PasswordInputData(
+            titleText,
+            '',
+            placeholderText,
+            confirmationPlaceholderText,
+            confirmationErrorText,
+            true
+        );
 
         const dialogRef: MatDialogRef<PasswordInputDialogComponent> = this.dialog.open(PasswordInputDialogComponent, {
             width: '450px',
             data: data,
         });
 
-        dialogRef.afterClosed().subscribe(async (result: any) => {
+        dialogRef.afterClosed().subscribe(async (result: boolean) => {
             if (result) {
                 this.isEncrypted = true;
                 this.secretKey = data.inputText;
@@ -592,10 +597,10 @@ export class NoteComponent implements OnInit {
 
         const dialogRef: MatDialogRef<ConfirmationDialogComponent> = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
-            data: { dialogTitle: title, dialogText: text },
+            data: new ConfirmationDialogData(title, text),
         });
 
-        dialogRef.afterClosed().subscribe(async (result: any) => {
+        dialogRef.afterClosed().subscribe(async (result: boolean) => {
             if (result) {
                 this.isEncrypted = false;
                 this.secretKeyHash = '';
@@ -803,8 +808,8 @@ export class NoteComponent implements OnInit {
     }
 
     private saveNoteContentAsync(notifyOnError: boolean = true): Promise<Operation> {
-        const previousSave: Promise<Operation> = this.pendingContentSave;
-        let save: Promise<Operation>;
+        const previousSave = this.pendingContentSave;
+        let save: Promise<Operation> | undefined = undefined;
         save = (async () => {
             try {
                 if (previousSave) {
@@ -960,11 +965,11 @@ export class NoteComponent implements OnInit {
         );
     }
 
-    public heading1(event: any): void {
+    public heading1(): void {
         this.noteEditor.applyHeading(1);
     }
 
-    public heading2(event: any): void {
+    public heading2(): void {
         this.noteEditor.applyHeading(2);
     }
 
@@ -985,7 +990,7 @@ export class NoteComponent implements OnInit {
                     const notificationText: string = await this.translator.getAsync('NotificationTexts.SecretKeyIncorrect');
                     const dialogRef: MatDialogRef<NotificationDialogComponent> = this.dialog.open(NotificationDialogComponent, {
                         width: '450px',
-                        data: { notificationTitle: notificationTitle, notificationText: notificationText },
+                        data: new NotificationData(notificationTitle, notificationText),
                     });
 
                     await dialogRef.afterClosed().toPromise();
@@ -997,10 +1002,10 @@ export class NoteComponent implements OnInit {
     @HostListener('document:keydown.control.f')
     public openSearchBottomSheet(): void {
         const config: MatBottomSheetConfig = {
-            data: { searchText: TagUtils.parseSearch(this.searchText).text },
+            data: new SearchData(TagUtils.parseSearch(this.searchText).text),
         };
 
-        const ref = this.bottomSheet.open<SearchBottomSheetComponent, any, string>(SearchBottomSheetComponent, config);
+        const ref = this.bottomSheet.open<SearchBottomSheetComponent, SearchData, string>(SearchBottomSheetComponent, config);
         this.subscription.add(ref.afterDismissed().subscribe((searchText) => {
             if (searchText !== undefined) {
                 this.searchText = searchText;
@@ -1104,7 +1109,7 @@ export class NoteComponent implements OnInit {
         }
     }
 
-    public strikeThrough(event: any): void {
+    public strikeThrough(): void {
         this.noteEditor.applyStrikeThrough();
     }
 }

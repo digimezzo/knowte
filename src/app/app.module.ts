@@ -1,5 +1,5 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ErrorHandler, NgModule, SecurityContext } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
@@ -25,10 +25,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AngularSplitModule } from 'angular-split';
-import { marked } from 'marked';
-import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
+import { MARKED_OPTIONS, MarkdownModule, SANITIZE } from 'ngx-markdown';
 import 'reflect-metadata';
-import 'zone.js/mix';
 import '../polyfills';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -76,9 +74,7 @@ import { SpellCheckBottomSheetComponent } from './components/note/bottom-sheets/
 import { TextSizeBottomSheetComponent } from './components/note/bottom-sheets/text-size-bottom-sheet/text-size-bottom-sheet.component';
 import { MarkdownNoteComponent } from './components/note/markdown-note/markdown-note.component';
 import { NoteLinkDialogComponent } from './components/dialogs/note-link-dialog/note-link-dialog.component';
-import { getNoteLinkPreviewHref } from './common/utils/note-link';
-import { markdownHighlightExtension } from './components/note/markdown-note/markdown-highlight';
-import { markdownUncPathExtension } from './components/note/markdown-note/markdown-unc-path';
+import { MarkedOptionsFactory } from './components/note/markdown-note/markdown-options';
 import { NoteContextMenuFactory } from './components/note/note-context-menu-factory';
 import { BoundaryGetter } from './components/note/note-editor/boundary-getter';
 import { ImageProcessor } from './components/note/note-editor/image-processor';
@@ -152,69 +148,6 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
     touchendHideDelay: 0,
 };
 
-marked.use(markdownHighlightExtension);
-marked.use(markdownUncPathExtension);
-
-/**
- * Function that returns `MarkedOptions` with renderer override
- * See: https://github.com/jfcere/ngx-markdown/issues/315
- */
-export function MarkedOptionsFactory(): MarkedOptions {
-    const renderer = new MarkedRenderer();
-
-    renderer.link = (href: string, title: string, text: string) => {
-        // Keep Angular's HTML sanitization enabled; render internal URLs as safe local anchors.
-        return MarkedRenderer.prototype.link.call(renderer, href ? getNoteLinkPreviewHref(href) : href, title, text) as string;
-    };
-
-    renderer.code = (code: string, infostring: string, escaped: boolean) => {
-        const language = infostring?.trim().split(/\s+/, 1)[0].toLowerCase();
-        if (language === 'mermaid') {
-            const escapedCode = code.replace(/[&<>]/g, (character) => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-            })[character]);
-            return `<pre class="mermaid">${escapedCode}</pre>`;
-        }
-        return MarkedRenderer.prototype.code.call(renderer, code, infostring, escaped) as string;
-    };
-
-    // remove task list bullets
-    renderer.list = (body: string, ordered: boolean, start: number) => {
-        const divElement = document.createElement('div');
-        divElement.innerHTML = body;
-
-        divElement.querySelectorAll('li').forEach((li) => {
-            li.childNodes.forEach((child) => {
-                if (child instanceof HTMLInputElement && child.type === 'checkbox') {
-                    li.classList.add('task-list-item');
-                    const checkbox = document.createElement('span');
-                    checkbox.classList.add('task-list-checkbox');
-                    if (child.checked) {
-                        checkbox.classList.add('task-list-checkbox-checked');
-                    }
-                    child.replaceWith(checkbox);
-                }
-            });
-        });
-
-        return MarkedRenderer.prototype.list.call(renderer, divElement.innerHTML, ordered, start) as string;
-    };
-
-    return { renderer };
-
-    // See: https://snyk.io/advisor/npm-package/ngx-markdown/functions/ngx-markdown.MarkedRenderer
-    // return {
-    //     renderer: renderer,
-    //     gfm: true,
-    //     breaks: false,
-    //     pedantic: false,
-    //     smartLists: true,
-    //     smartypants: false,
-    // };
-}
-
 @NgModule({
     declarations: [
         AppComponent,
@@ -276,13 +209,14 @@ export function MarkedOptionsFactory(): MarkedOptions {
         InformationAboutComponent,
         InformationComponentsComponent,
     ],
+    bootstrap: [AppComponent],
     imports: [
         MarkdownModule.forRoot({
             markedOptions: {
-                provide: MarkedOptions,
+                provide: MARKED_OPTIONS,
                 useFactory: MarkedOptionsFactory,
             },
-            sanitize: SecurityContext.HTML,
+            sanitize: { provide: SANITIZE, useValue: SecurityContext.HTML },
         }),
         MatListModule,
         MatDialogModule,
@@ -306,7 +240,6 @@ export function MarkedOptionsFactory(): MarkedOptions {
         BrowserModule,
         ScrollingModule,
         FormsModule,
-        HttpClientModule,
         AppRoutingModule,
         AngularSplitModule,
         TranslateModule.forRoot({
@@ -365,7 +298,7 @@ export function MarkedOptionsFactory(): MarkedOptions {
         { provide: BaseSettings, useClass: Settings },
         { provide: BaseApplication, useClass: Application },
         { provide: BaseAppearanceService, useClass: AppearanceService },
+        provideHttpClient(withInterceptorsFromDi()),
     ],
-    bootstrap: [AppComponent],
 })
 export class AppModule {}
