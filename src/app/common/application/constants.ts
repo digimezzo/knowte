@@ -108,10 +108,10 @@ export class Constants {
             licenseUrl: 'https://github.com/angular/angular/blob/master/LICENSE',
         },
         {
-            name: 'Archiver',
-            description: 'A streaming interface for archive generation.',
-            url: 'https://www.archiverjs.com/',
-            licenseUrl: 'https://github.com/archiverjs/node-archiver/blob/master/LICENSE',
+            name: 'Angular Material',
+            description: 'Component infrastructure and Material Design components for Angular.',
+            url: 'https://material.angular.dev/',
+            licenseUrl: 'https://github.com/angular/components/blob/main/LICENSE',
         },
         {
             name: 'angular-split',
@@ -120,10 +120,10 @@ export class Constants {
             licenseUrl: 'https://github.com/angular-split/angular-split/blob/main/LICENSE',
         },
         {
-            name: 'Angular Material',
-            description: 'Component infrastructure and Material Design components for Angular.',
-            url: 'https://material.angular.dev/',
-            licenseUrl: 'https://github.com/angular/components/blob/main/LICENSE',
+            name: 'Archiver',
+            description: 'A streaming interface for archive generation.',
+            url: 'https://www.archiverjs.com/',
+            licenseUrl: 'https://github.com/archiverjs/node-archiver/blob/master/LICENSE',
         },
         {
             name: 'core-js',
@@ -144,12 +144,6 @@ export class Constants {
             licenseUrl: 'https://github.com/cure53/DOMPurify/blob/main/LICENSE',
         },
         {
-            name: '@electron/remote',
-            description: 'Electron module to enable remote method calls between renderer and main processes.',
-            url: 'https://github.com/electron/remote',
-            licenseUrl: 'https://github.com/electron/remote/blob/main/LICENSE',
-        },
-        {
             name: 'Electron',
             description:
                 'The Electron framework lets you write cross-platform desktop applications using JavaScript, HTML and CSS. It is based on Node.js and Chromium.',
@@ -161,12 +155,6 @@ export class Constants {
             description: 'A module to register/unregister a keyboard shortcut locally to a BrowserWindow instance, without using a Menu.',
             url: 'https://github.com/parro-it/electron-localshortcut',
             licenseUrl: 'https://github.com/parro-it/electron-localshortcut/blob/master/license',
-        },
-        {
-            name: 'extract-zip',
-            description: 'Extracts ZIP files to a directory.',
-            url: 'https://github.com/max-mapper/extract-zip',
-            licenseUrl: 'https://github.com/max-mapper/extract-zip/blob/master/LICENSE',
         },
         {
             name: 'electron-log',
@@ -182,6 +170,12 @@ export class Constants {
             licenseUrl: 'https://github.com/mawie81/electron-window-state/blob/master/license',
         },
         {
+            name: '@electron/remote',
+            description: 'Electron module to enable remote method calls between renderer and main processes.',
+            url: 'https://github.com/electron/remote',
+            licenseUrl: 'https://github.com/electron/remote/blob/main/LICENSE',
+        },
+        {
             name: 'Font Awesome free',
             description: `Font Awesome is the Internet's icon library and toolkit, used by millions of designers, developers, and content creators.`,
             url: 'https://github.com/FortAwesome/Font-Awesome',
@@ -193,6 +187,12 @@ export class Constants {
                 "Adds file system methods that aren't included in the native fs module and adds promise support to the fs methods.",
             url: 'https://github.com/jprichardson/node-fs-extra',
             licenseUrl: 'https://github.com/jprichardson/node-fs-extra/blob/master/LICENSE',
+        },
+        {
+            name: '@keep-lts/extract-zip (extract-zip)',
+            description: 'A security-maintained drop-in fork of extract-zip for extracting ZIP files.',
+            url: 'https://www.npmjs.com/package/@keep-lts/extract-zip',
+            licenseUrl: 'https://github.com/max-mapper/extract-zip/blob/master/LICENSE',
         },
         {
             name: 'Line Awesome',
@@ -208,28 +208,28 @@ export class Constants {
             licenseUrl: 'https://github.com/techfort/LokiJS/blob/master/LICENSE.txt',
         },
         {
-            name: 'Material Design icons',
-            description: 'Material Design icons by Google.',
-            url: 'https://github.com/google/material-design-icons',
-            licenseUrl: 'https://github.com/google/material-design-icons/blob/master/LICENSE',
-        },
-        {
-            name: 'Moment',
-            description: 'Parse, validate, manipulate, and display dates in javascript.',
-            url: 'http://momentjs.com',
-            licenseUrl: 'https://github.com/moment/moment/blob/develop/LICENSE',
-        },
-        {
             name: 'Marked',
             description: 'A low-level Markdown compiler for parsing Markdown without caching or blocking.',
             url: 'https://marked.js.org/',
             licenseUrl: 'https://github.com/markedjs/marked/blob/master/LICENSE',
         },
         {
+            name: 'Material Design icons',
+            description: 'Material Design icons by Google.',
+            url: 'https://github.com/google/material-design-icons',
+            licenseUrl: 'https://github.com/google/material-design-icons/blob/master/LICENSE',
+        },
+        {
             name: 'Mermaid',
             description: 'A diagramming and charting tool that renders text definitions as diagrams.',
             url: 'https://github.com/mermaid-js/mermaid',
             licenseUrl: 'https://github.com/mermaid-js/mermaid/blob/develop/LICENSE',
+        },
+        {
+            name: 'Moment',
+            description: 'Parse, validate, manipulate, and display dates in javascript.',
+            url: 'http://momentjs.com',
+            licenseUrl: 'https://github.com/moment/moment/blob/develop/LICENSE',
         },
         {
             name: 'Nano ID',
@@ -274,12 +274,6 @@ export class Constants {
             licenseUrl: 'https://github.com/Fandom-OSS/quill-blot-formatter/blob/master/LICENSE',
         },
         {
-            name: 'sanitize-filename',
-            description: 'Sanitize a string to be safe for use as a filename by removing directory paths and invalid characters.',
-            url: 'https://github.com/parshap/node-sanitize-filename',
-            licenseUrl: 'https://github.com/parshap/node-sanitize-filename/blob/master/LICENSE.md',
-        },
-        {
             name: 'Reflect Metadata',
             description: 'Polyfill for the Metadata Reflection API used by Angular.',
             url: 'https://github.com/microsoft/reflect-metadata',
@@ -290,6 +284,12 @@ export class Constants {
             description: 'A library for reactive programming using Observables.',
             url: 'https://rxjs.dev/',
             licenseUrl: 'https://github.com/ReactiveX/rxjs/blob/master/LICENSE.txt',
+        },
+        {
+            name: 'sanitize-filename',
+            description: 'Sanitize a string to be safe for use as a filename by removing directory paths and invalid characters.',
+            url: 'https://github.com/parshap/node-sanitize-filename',
+            licenseUrl: 'https://github.com/parshap/node-sanitize-filename/blob/master/LICENSE.md',
         },
         {
             name: 'SpinKit',
