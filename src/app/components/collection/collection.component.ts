@@ -142,7 +142,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
             const errorText = await this.translator.getAsync('NotebookArchive.SaveError');
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px',
-                data: new ErrorData(errorText),
+                data: new ErrorData(errorText, false),
             });
         }
     }
@@ -237,7 +237,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
                     });
                     this.dialog.open(ErrorDialogComponent, {
                         width: '450px',
-                        data: new ErrorData(errorText),
+                        data: new ErrorData(errorText, false),
                     });
                     break;
                 }
@@ -282,7 +282,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
                 const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteNotebooksError');
                 this.dialog.open(ErrorDialogComponent, {
                     width: '450px',
-                    data: new ErrorData(errorText),
+                    data: new ErrorData(errorText, false),
                 });
             }
         }
@@ -336,7 +336,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
                 const errorText: string = await this.translator.getAsync('ErrorTexts.DeleteNotesError');
                 this.dialog.open(ErrorDialogComponent, {
                     width: '450px',
-                    data: new ErrorData(errorText),
+                    data: new ErrorData(errorText, false),
                 });
             }
         }
@@ -385,7 +385,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
                 'editSelectedNoteTagsAsync',
             );
             const errorText: string = await this.translator.getAsync('Tags.SaveError');
-            this.dialog.open(ErrorDialogComponent, { width: '450px', data: new ErrorData(errorText) });
+            this.dialog.open(ErrorDialogComponent, { width: '450px', data: new ErrorData(errorText, false) });
         }
     }
 
@@ -467,7 +467,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px',
-                data: new ErrorData(errorText),
+                data: new ErrorData(errorText, false),
             });
         }
     }
@@ -504,7 +504,7 @@ export class CollectionComponent extends AnimatedPage implements OnInit, OnDestr
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px',
-                data: new ErrorData(errorText),
+                data: new ErrorData(errorText, false),
             });
         }
     }

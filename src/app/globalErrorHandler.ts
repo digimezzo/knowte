@@ -4,6 +4,7 @@ import * as remote from '@electron/remote';
 import { BrowserWindow } from 'electron';
 import { Logger } from './common/logging/logger';
 import { ErrorDialogComponent } from './components/dialogs/error-dialog/error-dialog.component';
+import { ErrorData } from './components/dialogs/error-dialog/error-data';
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
@@ -22,7 +23,7 @@ export class GlobalErrorHandler implements ErrorHandler {
                 // TranslationService is not able to provide the translation of texts in this class.
                 // So we use a workaround where the translation happens in the error dialog itself.
                 width: '450px',
-                data: { isGlobalError: true },
+                data: new ErrorData('An unexpected error occurred.', true),
             });
 
             dialogRef.afterClosed().subscribe(() => {

@@ -40,7 +40,7 @@ export class RenameCollectionDialogComponent {
 
             this.dialog.open(ErrorDialogComponent, {
                 width: '450px',
-                data: new ErrorData(errorText),
+                data: new ErrorData(errorText, false),
             });
         } else if (operation === Operation.Duplicate) {
             this.snackBar.duplicateCollectionAsync(this.newCollection);
