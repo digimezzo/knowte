@@ -11,10 +11,6 @@ export class PerformanceDiagnostics {
         this.enabled = enabled;
     }
 
-    public static isEnabled(): boolean {
-        return this.enabled;
-    }
-
     public static start(operation: string, logAll: boolean = false): (details?: string) => void {
         if (!this.enabled) {
             return this.noop;
