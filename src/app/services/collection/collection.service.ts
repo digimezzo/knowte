@@ -7,7 +7,6 @@ import { Constants } from '../../common/application/constants';
 import { Operation } from '../../common/enums/operation';
 import { FileAccess } from '../../common/io/file-access';
 import { Logger } from '../../common/logging/logger';
-import { PerformanceDiagnostics } from '../../common/logging/performance-diagnostics';
 import { Scheduler } from '../../common/scheduling/scheduler';
 import { BaseSettings } from '../../common/settings/base-settings';
 import { TasksCount } from '../../common/ui/tasks-count';
@@ -118,8 +117,13 @@ export class CollectionService implements OnDestroy {
         private logger: Logger,
     ) {
         merge(
-            this.notebookEdited, this.notebookDeleted, this.noteEdited, this.notesChanged,
-            this.noteMarkChanged, this.notePinChanged, this.noteNotebookChanged,
+            this.notebookEdited,
+            this.notebookDeleted,
+            this.noteEdited,
+            this.notesChanged,
+            this.noteMarkChanged,
+            this.notePinChanged,
+            this.noteNotebookChanged,
         ).subscribe(() => this.changeVersion++);
     }
 
@@ -230,8 +234,8 @@ export class CollectionService implements OnDestroy {
     private async initializeCollectionAsync(): Promise<void> {
         // Get the active collection from the settings
         let activeCollection: string = this.settings.activeCollection;
-        
-        if (!await this.collectionFileAccess.collectionAndItsDirectoryExistAsync(activeCollection)) {
+
+        if (!(await this.collectionFileAccess.collectionAndItsDirectoryExistAsync(activeCollection))) {
             // There is no active collection or no collection directory
             // Get all collection directories in the storage directory
             const collections: string[] = await this.collectionFileAccess.getCollectionsAsync();
@@ -450,8 +454,11 @@ export class CollectionService implements OnDestroy {
                 try {
                     await this.prepareNoteDeletionAsync(noteId);
                 } catch (error) {
-                    this.logger.error(`Could not save note with id='${noteId}' before closing. Cause: ${error}`,
-                        'CollectionService', 'saveAndCloseAllNotesAsync');
+                    this.logger.error(
+                        `Could not save note with id='${noteId}' before closing. Cause: ${error}`,
+                        'CollectionService',
+                        'saveAndCloseAllNotesAsync',
+                    );
                     allSaved = false;
                 }
             }),
@@ -461,16 +468,23 @@ export class CollectionService implements OnDestroy {
                 await this.collectionDataStoreAccess.saveAsync();
             }
         } catch (error) {
-            this.logger.error(`Could not save the data store before closing. Cause: ${error}`,
-                'CollectionService', 'saveAndCloseAllNotesAsync');
+            this.logger.error(
+                `Could not save the data store before closing. Cause: ${error}`,
+                'CollectionService',
+                'saveAndCloseAllNotesAsync',
+            );
             allSaved = false;
         }
         return allSaved;
     }
 
     public async prepareBackupAsync(collection: string, storage: string): Promise<string> {
-        if (storage !== this.settings.storageDirectory || this.collectionOperationInProgress ||
-            this.initialization || this.movingNoteIds.size > 0) {
+        if (
+            storage !== this.settings.storageDirectory ||
+            this.collectionOperationInProgress ||
+            this.initialization ||
+            this.movingNoteIds.size > 0
+        ) {
             throw Object.assign(new Error('The collection is changing. Backup will be retried later.'), { code: 'BACKUP_POSTPONED' });
         }
         if (collection !== this.settings.activeCollection) {
@@ -493,8 +507,11 @@ export class CollectionService implements OnDestroy {
             }
             revisions.push(`${noteId}:${result}`);
         }
-        if (this.collectionOperationInProgress || collection !== this.settings.activeCollection ||
-            JSON.stringify(noteIds) !== JSON.stringify([...this.openNoteIds].sort())) {
+        if (
+            this.collectionOperationInProgress ||
+            collection !== this.settings.activeCollection ||
+            JSON.stringify(noteIds) !== JSON.stringify([...this.openNoteIds].sort())
+        ) {
             throw Object.assign(new Error('The collection changed while preparing backup.'), { code: 'BACKUP_POSTPONED' });
         }
         await this.collectionDataStoreAccess.saveAsync();
@@ -620,8 +637,12 @@ export class CollectionService implements OnDestroy {
 
             for (const notebookId of new Set(notebookIds)) {
                 const notebook = this.collectionDataStoreAccess.getNotebookById(notebookId);
-                if (!notebook || notebook.isDefault ||
-                    notebookId === Constants.allNotesNotebookId || notebookId === Constants.unfiledNotesNotebookId) {
+                if (
+                    !notebook ||
+                    notebook.isDefault ||
+                    notebookId === Constants.allNotesNotebookId ||
+                    notebookId === Constants.unfiledNotesNotebookId
+                ) {
                     throw new Error(`Notebook with id=${notebookId} cannot be archived.`);
                 }
                 previousStates.push({ notebook, isArchived: notebook.isArchived });
@@ -636,8 +657,7 @@ export class CollectionService implements OnDestroy {
             for (const state of previousStates) {
                 state.notebook.isArchived = state.isArchived;
             }
-            this.logger.error(`Could not change notebook archive state. Cause: ${error}`,
-                'CollectionService', 'setNotebooksArchivedAsync');
+            this.logger.error(`Could not change notebook archive state. Cause: ${error}`, 'CollectionService', 'setNotebooksArchivedAsync');
             return Operation.Error;
         }
 
@@ -703,9 +723,7 @@ export class CollectionService implements OnDestroy {
                 await this.prepareNoteDeletionAsync(noteId);
                 const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
                 const skipTrash: boolean =
-                    this.settings.moveDeletedNotesToTrash &&
-                    this.settings.skipTrashForEmptyNotes &&
-                    (await this.isNoteEmptyAsync(note));
+                    this.settings.moveDeletedNotesToTrash && this.settings.skipTrashForEmptyNotes && (await this.isNoteEmptyAsync(note));
 
                 if (this.settings.moveDeletedNotesToTrash && !skipTrash) {
                     this.collectionDataStoreAccess.trashNote(noteId);
@@ -806,7 +824,6 @@ export class CollectionService implements OnDestroy {
     }
 
     public async getNotesAsync(notebookId: string, category: string, useExactDates: boolean): Promise<Note[]> {
-        const finish = PerformanceDiagnostics.start('Collection.refreshNotes', true);
         const notesCountResult: NotesCountResult = new NotesCountResult();
 
         let notes: Note[] = [];
@@ -889,8 +906,6 @@ export class CollectionService implements OnDestroy {
             this.notesCountChanged.next(notesCountResult);
         } catch (error) {
             this.logger.error(`Could not get notes. Cause: ${error}`, 'CollectionService', 'getNotesAsync');
-        } finally {
-            finish(`returnedNotes=${notes.length}; matchingNotes=${notesCountResult.allNotesCount}`);
         }
 
         return notes;
@@ -994,7 +1009,12 @@ export class CollectionService implements OnDestroy {
         return setNotebookOperation;
     }
 
-    public saveNoteTitleEventHandler(noteId: string, initialNoteTitle: string, finalNoteTitle: string, callback: (result: NoteOperationResult) => void): void {
+    public saveNoteTitleEventHandler(
+        noteId: string,
+        initialNoteTitle: string,
+        finalNoteTitle: string,
+        callback: (result: NoteOperationResult) => void,
+    ): void {
         let uniqueNoteTitle: string = finalNoteTitle.trim();
 
         if (uniqueNoteTitle.length === 0) {
@@ -1122,8 +1142,11 @@ export class CollectionService implements OnDestroy {
             if (note) {
                 note.tags = previousTags;
             }
-            this.logger.error(`Could not save tags for note with id=${noteId}. Cause: ${error}`,
-                'CollectionService', 'saveNoteTagsEventHandler');
+            this.logger.error(
+                `Could not save tags for note with id=${noteId}. Cause: ${error}`,
+                'CollectionService',
+                'saveNoteTagsEventHandler',
+            );
             return Operation.Error;
         }
 
@@ -1131,18 +1154,17 @@ export class CollectionService implements OnDestroy {
         return Operation.Success;
     }
 
-    public async saveNoteTagsEventHandler(
-        noteId: string,
-        tags: string[],
-        callback: (operation: Operation) => void,
-    ): Promise<void> {
+    public async saveNoteTagsEventHandler(noteId: string, tags: string[], callback: (operation: Operation) => void): Promise<void> {
         callback(await this.saveNoteTagsAsync(noteId, tags));
     }
 
     public async moveNotesToCollectionAsync(noteIds: string[], newCollection: string): Promise<number> {
         if (this.collectionOperationInProgress || newCollection === this.settings.activeCollection) {
-            this.logger.error('Cannot move notes while another collection operation is in progress or to the active collection.',
-                'CollectionService', 'moveNotesToCollectionAsync');
+            this.logger.error(
+                'Cannot move notes while another collection operation is in progress or to the active collection.',
+                'CollectionService',
+                'moveNotesToCollectionAsync',
+            );
             return 0;
         }
 
@@ -1170,7 +1192,7 @@ export class CollectionService implements OnDestroy {
                 await destination.saveAsync();
             }
 
-            if (await this.deleteNotesPermanentlyAsync(noteIds) !== Operation.Success) {
+            if ((await this.deleteNotesPermanentlyAsync(noteIds)) !== Operation.Success) {
                 return 0;
             }
             await this.collectionDataStoreAccess.saveAsync();
@@ -1294,7 +1316,11 @@ export class CollectionService implements OnDestroy {
         const classicNoteExport: ClassicNoteExport = JSON.parse(noteFileContent);
 
         const noteId: string = await this.importNoteToDatastoreAsync(
-            classicNoteExport.title, classicNoteExport.text, notebookId, false, classicNoteExport.tags,
+            classicNoteExport.title,
+            classicNoteExport.text,
+            notebookId,
+            false,
+            classicNoteExport.tags,
         );
 
         await this.collectionFileAccess.saveNoteContentAsync(noteId, classicNoteExport.content, this.settings.activeCollection, false);
@@ -1362,37 +1388,30 @@ export class CollectionService implements OnDestroy {
     }
 
     private async getNoteDetailsEventHandler(noteId: string, callback: (result: NoteDetailsResult) => void): Promise<void> {
-        const finish = PerformanceDiagnostics.start(`NoteOpen.detailsServer noteId=${noteId}`, true);
-        try {
-            const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
-            let notebookName: string = await PerformanceDiagnostics.measureAsync(
-                `NoteOpen.detailsServer.translation noteId=${noteId}`, () => this.translator.getAsync('MainPage.UnfiledNotes'), true,
-            );
+        const note: Note = this.collectionDataStoreAccess.getNoteById(noteId);
+        let notebookName: string = await this.translator.getAsync('MainPage.UnfiledNotes');
 
-            if (note.notebookId) {
-                const notebook: Notebook = this.collectionDataStoreAccess.getNotebookById(note.notebookId);
+        if (note.notebookId) {
+            const notebook: Notebook = this.collectionDataStoreAccess.getNotebookById(note.notebookId);
 
-                if (notebook) {
-                    notebookName = notebook.name;
-                }
+            if (notebook) {
+                notebookName = notebook.name;
             }
-
-            PerformanceDiagnostics.measure(`NoteOpen.detailsServer.callback noteId=${noteId}`, () => callback(
-                new NoteDetailsResult(
-                    note.title,
-                    notebookName,
-                    note.isMarked,
-                    note.isPinned,
-                    note.isTrashed,
-                    note.isEncrypted,
-                    note.secretKeyHash,
-                    note.isMarkdownNote,
-                    TagUtils.normalize(note.tags),
-                ),
-            ), true);
-        } finally {
-            finish();
         }
+
+        callback(
+            new NoteDetailsResult(
+                note.title,
+                notebookName,
+                note.isMarked,
+                note.isPinned,
+                note.isTrashed,
+                note.isEncrypted,
+                note.secretKeyHash,
+                note.isMarkdownNote,
+                TagUtils.normalize(note.tags),
+            ),
+        );
     }
 
     private async sendNotebookNameAsync(noteId: string): Promise<void> {
@@ -1418,7 +1437,8 @@ export class CollectionService implements OnDestroy {
     private async getNoteLinkTargetsEventHandler(callback: (serializedResult: string) => void): Promise<void> {
         try {
             const unfiledName = await this.translator.getAsync('MainPage.UnfiledNotes');
-            const notes = this.collectionDataStoreAccess.getNotes()
+            const notes = this.collectionDataStoreAccess
+                .getNotes()
                 .filter((note) => !note.isTrashed)
                 .map((note) => ({
                     id: note.id,
@@ -1439,8 +1459,11 @@ export class CollectionService implements OnDestroy {
     private async openLinkedNoteEventHandler(noteId: string, callback: (operation: Operation) => void): Promise<void> {
         try {
             if (this.initialization || this.collectionChangeInProgress || this.movingNoteIds.has(noteId)) {
-                this.logger.warn('Cannot follow a note link while its collection or note is changing.',
-                    'CollectionService', 'openLinkedNoteEventHandler');
+                this.logger.warn(
+                    'Cannot follow a note link while its collection or note is changing.',
+                    'CollectionService',
+                    'openLinkedNoteEventHandler',
+                );
                 callback(Operation.Aborted);
                 return;
             }
@@ -1465,13 +1488,15 @@ export class CollectionService implements OnDestroy {
     public async setNoteOpenAsync(noteId: string, isOpen: boolean): Promise<void> {
         if (isOpen) {
             if (this.initialization || this.collectionChangeInProgress || this.movingNoteIds.has(noteId)) {
-                this.logger.warn('Cannot open a note while its collection is changing or the note is being moved.',
-                    'CollectionService', 'setNoteOpenAsync');
+                this.logger.warn(
+                    'Cannot open a note while its collection is changing or the note is being moved.',
+                    'CollectionService',
+                    'setNoteOpenAsync',
+                );
                 return;
             }
             if (!this.openNoteIds.includes(noteId)) {
                 this.openNoteIds.push(noteId);
-                const finishOpenRequest = PerformanceDiagnostics.start(`NoteOpen.dispatch noteId=${noteId}`, true);
 
                 try {
                     const activeCollectionDirectoryPath: string = await this.collectionFileAccess.getCollectionDirectoryPath(
@@ -1488,9 +1513,7 @@ export class CollectionService implements OnDestroy {
                         windowHasFrame: this.appearance.windowHasNativeTitleBar,
                     };
                     ipcRenderer.send('open-note-window', arg);
-                    finishOpenRequest('sent to main process');
                 } catch (error) {
-                    finishOpenRequest('failed');
                     this.openNoteIds = this.openNoteIds.filter((id) => id !== noteId);
                     throw error;
                 }
@@ -1553,7 +1576,10 @@ export class CollectionService implements OnDestroy {
         }
 
         const archivedNotebookIds = new Set(
-            this.collectionDataStoreAccess.getNotebooks().filter((notebook) => notebook.isArchived).map((notebook) => notebook.id),
+            this.collectionDataStoreAccess
+                .getNotebooks()
+                .filter((notebook) => notebook.isArchived)
+                .map((notebook) => notebook.id),
         );
         return notes.filter((note) => !archivedNotebookIds.has(note.notebookId));
     }
@@ -1576,7 +1602,8 @@ export class CollectionService implements OnDestroy {
 
         return unfilteredNotes.filter((note) => {
             const matchesTag: boolean = tagPatterns.every((tagPattern) =>
-                (note.tags || []).some((tag) => tag.length > 0 && tagPattern.test(tag)));
+                (note.tags || []).some((tag) => tag.length > 0 && tagPattern.test(tag)),
+            );
             return matchesTag && CollectionUtils.containsAll(`${note.title} ${note.text}`, searchTextPieces);
         });
     }

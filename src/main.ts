@@ -3,15 +3,11 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
 import { AppConfig } from './environments/environment';
-import { logRendererStartup } from './app/common/logging/renderer-startup-diagnostics';
 
-const mainEntryTime = performance.now();
 if (AppConfig.production) {
-  enableProdMode();
+    enableProdMode();
 }
 
-const bootstrapStartTime = performance.now();
 platformBrowserDynamic()
-  .bootstrapModule(AppModule, { applicationProviders: [provideZoneChangeDetection()], preserveWhitespaces: false,})
-  .then(() => logRendererStartup(mainEntryTime, performance.now() - bootstrapStartTime))
-  .catch(err => console.error(err));
+    .bootstrapModule(AppModule, { applicationProviders: [provideZoneChangeDetection()], preserveWhitespaces: false })
+    .catch((err) => console.error(err));

@@ -11,7 +11,6 @@ import { ProductInformation } from '../../common/application/product-information
 import { Operation } from '../../common/enums/operation';
 import { ClipboardManager } from '../../common/io/clipboard-manager';
 import { Logger } from '../../common/logging/logger';
-import { PerformanceDiagnostics } from '../../common/logging/performance-diagnostics';
 import { BaseSettings } from '../../common/settings/base-settings';
 import { StringUtils } from '../../common/utils/strings-utils';
 import { TagUtils } from '../../common/utils/tag-utils';
@@ -34,7 +33,11 @@ import { InputDialogComponent } from '../dialogs/input-dialog/input-dialog.compo
 import { NotificationDialogComponent } from '../dialogs/notification-dialog/notification-dialog.component';
 import { PasswordInputDialogComponent } from '../dialogs/password-input-dialog/password-input-dialog.component';
 import { SearchBottomSheetComponent } from './bottom-sheets/search-bottom-sheet/search-bottom-sheet.component';
-import { ActionsBottomSheetComponent, NoteAction, NoteActionsData } from './bottom-sheets/actions-bottom-sheet/actions-bottom-sheet.component';
+import {
+    ActionsBottomSheetComponent,
+    NoteAction,
+    NoteActionsData,
+} from './bottom-sheets/actions-bottom-sheet/actions-bottom-sheet.component';
 import { ContextMenuItemsEnabledState } from './context-menu-items-enabled-state';
 import { NoteContextMenuFactory } from './note-context-menu-factory';
 import { INoteEditor } from './note-editor/i-note-editor';
@@ -52,7 +55,7 @@ import { NotificationData } from '../dialogs/notification-dialog/notification-da
     templateUrl: './note.component.html',
     styleUrls: ['./note.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    standalone: false
+    standalone: false,
 })
 export class NoteComponent implements OnInit {
     // Heading shortcuts are matched on the physical key (event.code), so they work for the main-row digits and the
@@ -136,57 +139,37 @@ export class NoteComponent implements OnInit {
                 return;
             }
             this.noteId = params['id'];
-            const label = `noteId=${this.noteId}`;
-            const finish = PerformanceDiagnostics.start(`NoteOpen.initialize ${label}`, true);
-            let completed = false;
-            try {
-                this.noteWindow = remote.getCurrentWindow();
-                await PerformanceDiagnostics.measureAsync(`NoteOpen.details ${label}`, () => this.getNoteDetailsAsync(), true);
+            this.noteWindow = remote.getCurrentWindow();
+            await this.getNoteDetailsAsync();
 
-                this.noteEditor = PerformanceDiagnostics.measure(
-                    `NoteOpen.editorCreate ${label}`, () => this.noteEditorFactory.create(this.noteId, this.isMarkdownNote), true,
-                );
-                await PerformanceDiagnostics.measureAsync(`NoteOpen.editorInitialize ${label}`, () => this.noteEditor.initializeAsync(), true);
+            this.noteEditor = this.noteEditorFactory.create(this.noteId, this.isMarkdownNote);
+            await this.noteEditor.initializeAsync();
 
-                await PerformanceDiagnostics.measureAsync(
-                    `NoteOpen.unlock ${label}`, () => this.requestSecretKeyOrCloseNoteAsync(), true,
-                );
-                await PerformanceDiagnostics.measureAsync(
-                    `NoteOpen.attachmentPreview ${label}`, () => this.refreshMarkdownAttachmentPreviewDirectoryAsync(), true,
-                );
-                this.addSubscriptions();
-                this.addDocumentListeners();
+            await this.requestSecretKeyOrCloseNoteAsync();
+            await this.refreshMarkdownAttachmentPreviewDirectoryAsync();
+            this.addSubscriptions();
+            this.addDocumentListeners();
 
-                await PerformanceDiagnostics.measureAsync(`NoteOpen.content ${label}`, () => this.getNoteContentAsync(), true);
-                this.searchText = await PerformanceDiagnostics.measureAsync(
-                    `NoteOpen.searchText ${label}`, () => this.searchClient.getSearchTextAsync(), true,
-                );
-                PerformanceDiagnostics.measure(`NoteOpen.applySearch ${label}`, () => this.applySearch(), true);
+            await this.getNoteContentAsync();
+            this.searchText = await this.searchClient.getSearchTextAsync();
+            this.applySearch();
 
-                this.noteWindow.webContents.on('context-menu', (event, contextMenuParams) => {
-                    const hasSelectedText: boolean = this.noteEditor.hasSelectedText();
-                    const contextMenuItemsEnabledState: ContextMenuItemsEnabledState = new ContextMenuItemsEnabledState(
-                        hasSelectedText,
-                        this.clipboard.containsText() || this.clipboard.containsImage(),
-                    );
-                    this.noteContextMenuFactory.createAsync(
-                        this.noteWindow.webContents,
-                        contextMenuParams,
-                        contextMenuItemsEnabledState,
-                        () => this.noteEditor.performCut(),
-                        () => this.noteEditor.performCopy(),
-                        () => this.noteEditor.performPaste(),
-                        () => this.noteEditor.performDelete(),
-                    );
-                });
-                completed = true;
-                if (this.hasLoadedNoteContent && PerformanceDiagnostics.isEnabled()) {
-                    const finishFrame = PerformanceDiagnostics.start(`NoteOpen.nextAnimationFrame ${label}`, true);
-                    requestAnimationFrame(() => finishFrame(`documentHidden=${document.hidden}`));
-                }
-            } finally {
-                finish(`completed=${completed}; contentLoaded=${this.hasLoadedNoteContent}`);
-            }
+            this.noteWindow.webContents.on('context-menu', (event, contextMenuParams) => {
+                const hasSelectedText: boolean = this.noteEditor.hasSelectedText();
+                const contextMenuItemsEnabledState: ContextMenuItemsEnabledState = new ContextMenuItemsEnabledState(
+                    hasSelectedText,
+                    this.clipboard.containsText() || this.clipboard.containsImage(),
+                );
+                this.noteContextMenuFactory.createAsync(
+                    this.noteWindow.webContents,
+                    contextMenuParams,
+                    contextMenuItemsEnabledState,
+                    () => this.noteEditor.performCut(),
+                    () => this.noteEditor.performCopy(),
+                    () => this.noteEditor.performPaste(),
+                    () => this.noteEditor.performDelete(),
+                );
+            });
         });
     }
 
@@ -208,11 +191,11 @@ export class NoteComponent implements OnInit {
                         throw Object.assign(new Error('The note is not ready for backup.'), { code: 'BACKUP_POSTPONED' });
                     }
                     if (this.isTitleDirty) {
-                        throw Object.assign(new Error('A note title is still being edited. Retry after it has been saved.'),
-                            { code: 'BACKUP_POSTPONED' });
+                        throw Object.assign(new Error('A note title is still being edited. Retry after it has been saved.'), {
+                            code: 'BACKUP_POSTPONED',
+                        });
                     }
-                    if ((this.isTextDirty || this.pendingContentSave) &&
-                        await this.saveNoteContentAsync(false) !== Operation.Success) {
+                    if ((this.isTextDirty || this.pendingContentSave) && (await this.saveNoteContentAsync(false)) !== Operation.Success) {
                         throw new Error('Could not save note content for backup.');
                     }
                     if (this.isTextDirty || this.isTitleDirty) {
@@ -454,14 +437,14 @@ export class NoteComponent implements OnInit {
                 await this.translator.getAsync('Tags.Input'),
                 await this.translator.getAsync('Tags.Description'),
                 this.tags.join(', '),
-                true
+                true,
             );
             const dialogRef = this.dialog.open(InputDialogComponent, { width: '450px', data });
             if (!(await dialogRef.afterClosed().toPromise())) {
                 return;
             }
             const tags: string[] = TagUtils.normalize(data.inputText.split(','));
-            if (await this.collectionClient.saveNoteTagsAsync(this.noteId, tags) !== Operation.Success) {
+            if ((await this.collectionClient.saveNoteTagsAsync(this.noteId, tags)) !== Operation.Success) {
                 throw new Error('Saving note tags failed.');
             }
             this.zone.run(() => (this.tags = tags));
@@ -506,35 +489,50 @@ export class NoteComponent implements OnInit {
         this.isActionsSheetOpen = true;
         let action: NoteAction | undefined;
         try {
-            const ref = this.bottomSheet.open<ActionsBottomSheetComponent, NoteActionsData, NoteAction>(
-                ActionsBottomSheetComponent,
-                {
-                    ariaLabel,
-                    panelClass: 'note-actions-sheet',
-                    restoreFocus: false,
-                    data: {
-                        isPinned: this.isPinned,
-                        isMarked: this.isMarked,
-                        isEncrypted: this.isEncrypted,
-                        isTrashed: this.isTrashed,
-                    },
+            const ref = this.bottomSheet.open<ActionsBottomSheetComponent, NoteActionsData, NoteAction>(ActionsBottomSheetComponent, {
+                ariaLabel,
+                panelClass: 'note-actions-sheet',
+                restoreFocus: false,
+                data: {
+                    isPinned: this.isPinned,
+                    isMarked: this.isMarked,
+                    isEncrypted: this.isEncrypted,
+                    isTrashed: this.isTrashed,
                 },
-            );
+            });
             action = await ref.afterDismissed().toPromise();
         } finally {
             this.isActionsSheetOpen = false;
         }
 
         switch (action) {
-            case 'search': this.openSearchBottomSheet(); break;
-            case 'tags': await this.editTagsAsync(); break;
-            case 'export': await this.exportNoteAsync(); break;
-            case 'exportPdf': await this.exportNoteToPdfAsync(); break;
-            case 'print': await this.printNoteAsync(); break;
-            case 'pin': this.toggleNotePin(); break;
-            case 'mark': this.toggleNoteMark(); break;
-            case 'encrypt': await this.encryptNoteAsync(); break;
-            case 'decrypt': await this.decryptNoteAsync(); break;
+            case 'search':
+                this.openSearchBottomSheet();
+                break;
+            case 'tags':
+                await this.editTagsAsync();
+                break;
+            case 'export':
+                await this.exportNoteAsync();
+                break;
+            case 'exportPdf':
+                await this.exportNoteToPdfAsync();
+                break;
+            case 'print':
+                await this.printNoteAsync();
+                break;
+            case 'pin':
+                this.toggleNotePin();
+                break;
+            case 'mark':
+                this.toggleNoteMark();
+                break;
+            case 'encrypt':
+                await this.encryptNoteAsync();
+                break;
+            case 'decrypt':
+                await this.decryptNoteAsync();
+                break;
             case 'delete':
                 if (!this.isTrashed) {
                     await this.deleteNoteAsync();
@@ -547,14 +545,7 @@ export class NoteComponent implements OnInit {
         const titleText: string = await this.translator.getAsync('DialogTitles.NoteIsEncrypted');
         const placeholderText: string = await this.translator.getAsync('Input.SecretKey');
 
-        const data: PasswordInputData = new PasswordInputData(
-            titleText,
-            '',
-            placeholderText,
-            '',
-            '',
-            false
-        );
+        const data: PasswordInputData = new PasswordInputData(titleText, '', placeholderText, '', '', false);
 
         const dialogRef: MatDialogRef<PasswordInputDialogComponent> = this.dialog.open(PasswordInputDialogComponent, {
             width: '450px',
@@ -578,14 +569,7 @@ export class NoteComponent implements OnInit {
         const confirmationPlaceholderText: string = await this.translator.getAsync('Input.ConfirmSecretKey');
         const confirmationErrorText: string = await this.translator.getAsync('Input.SecretKeysDoNotMatch');
 
-        const data = new PasswordInputData(
-            titleText,
-            '',
-            placeholderText,
-            confirmationPlaceholderText,
-            confirmationErrorText,
-            true
-        );
+        const data = new PasswordInputData(titleText, '', placeholderText, confirmationPlaceholderText, confirmationErrorText, true);
 
         const dialogRef: MatDialogRef<PasswordInputDialogComponent> = this.dialog.open(PasswordInputDialogComponent, {
             width: '450px',
@@ -845,8 +829,11 @@ export class NoteComponent implements OnInit {
     private async saveNoteContentNowAsync(notifyOnError: boolean): Promise<Operation> {
         if (!this.hasLoadedNoteContent) {
             // Saving now would overwrite the note file with whatever partial content the editor holds.
-            this.logger.error(`Not saving note with id='${this.noteId}' because its content was not loaded.`,
-                'NoteComponent', 'saveNoteContentNowAsync');
+            this.logger.error(
+                `Not saving note with id='${this.noteId}' because its content was not loaded.`,
+                'NoteComponent',
+                'saveNoteContentNowAsync',
+            );
             return Operation.Error;
         }
 
@@ -876,8 +863,11 @@ export class NoteComponent implements OnInit {
                 this.secretKeyHash = '';
                 await this.refreshMarkdownAttachmentPreviewDirectoryAsync();
             } else {
-                this.logger.error(`Could not save metadata for the note with id='${this.noteId}'. Operation: ${operation}`,
-                    'NoteComponent', 'saveNoteContentNowAsync');
+                this.logger.error(
+                    `Could not save metadata for the note with id='${this.noteId}'. Operation: ${operation}`,
+                    'NoteComponent',
+                    'saveNoteContentNowAsync',
+                );
                 showErrorDialog = operation === Operation.Error;
             }
         } catch (error) {
@@ -937,16 +927,15 @@ export class NoteComponent implements OnInit {
 
     private async getNoteContentAsync(): Promise<void> {
         try {
-            const noteContent: string = await PerformanceDiagnostics.measureAsync(
-                `NoteOpen.contentRead noteId=${this.noteId}`,
-                () => this.persistance.getNoteContentAsync(this.noteId, this.isEncrypted, this.secretKey, this.isMarkdownNote),
-                true,
+            const noteContent: string = await this.persistance.getNoteContentAsync(
+                this.noteId,
+                this.isEncrypted,
+                this.secretKey,
+                this.isMarkdownNote,
             );
 
             this.logger.info(`Setting the content for the note with id='${this.noteId}'`, 'NoteComponent', 'getNoteContentAsync');
-            PerformanceDiagnostics.measure(`NoteOpen.contentAssign noteId=${this.noteId}`, () => {
-                this.noteEditor.content = noteContent;
-            }, true);
+            this.noteEditor.content = noteContent;
             this.hasLoadedNoteContent = true;
         } catch (error) {
             this.logger.error(
@@ -1063,12 +1052,14 @@ export class NoteComponent implements OnInit {
         };
 
         const ref = this.bottomSheet.open<SearchBottomSheetComponent, SearchData, string>(SearchBottomSheetComponent, config);
-        this.subscription.add(ref.afterDismissed().subscribe((searchText) => {
-            if (searchText !== undefined) {
-                this.searchText = searchText;
-                this.applySearch();
-            }
-        }));
+        this.subscription.add(
+            ref.afterDismissed().subscribe((searchText) => {
+                if (searchText !== undefined) {
+                    this.searchText = searchText;
+                    this.applySearch();
+                }
+            }),
+        );
     }
 
     public applyBold(): void {
@@ -1137,7 +1128,7 @@ export class NoteComponent implements OnInit {
                     this.noteEditor.text,
                     this.noteEditor.content,
                     this.isMarkdownNote,
-                    this.tags
+                    this.tags,
                 );
                 this.snackBar.noteExportedAsync(this.noteTitle);
             }
@@ -1145,7 +1136,7 @@ export class NoteComponent implements OnInit {
             this.logger.error(
                 `An error occurred while exporting the note with title '${this.noteTitle}'. Cause: ${error}`,
                 'NoteComponent',
-                'exportNoteAsync'
+                'exportNoteAsync',
             );
 
             const errorText: string = await this.translator.getAsync('ErrorTexts.ExportNoteError', { noteTitle: this.noteTitle });

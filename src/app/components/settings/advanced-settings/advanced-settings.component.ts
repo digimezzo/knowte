@@ -9,8 +9,6 @@ import {BaseAppearanceService} from "../../../services/appearance/base-appearanc
 import {MatDialog} from "@angular/material/dialog";
 import {Router} from "@angular/router";
 import {Logger} from "../../../common/logging/logger";
-import * as path from 'path';
-import * as fs from 'fs-extra';
 
 @Component({
     selector: 'app-advanced-settings',
@@ -54,19 +52,6 @@ export class AdvancedSettingsComponent {
 
     public set skipTrashForEmptyNotesChecked(v: boolean) {
         this.settings.skipTrashForEmptyNotes = v;
-    }
-
-    public async openLogDirectoryAsync(): Promise<void> {
-        try {
-            const directory = path.join(remote.app.getPath('userData'), 'logs');
-            await fs.ensureDir(directory);
-            const error = await remote.shell.openPath(directory);
-            if (error) {
-                throw new Error(error);
-            }
-        } catch (error) {
-            this.logger.error(`Could not open log directory. Cause: ${error}`, 'AdvancedSettingsComponent', 'openLogDirectoryAsync');
-        }
     }
 
     public async openDirectoryChooserAsync(): Promise<void> {

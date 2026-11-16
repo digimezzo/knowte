@@ -252,26 +252,13 @@ interface SpareNoteWindow {
     windowHasFrame: boolean;
     settingsSnapshot: string | undefined;
     loaded: Promise<boolean>;
-    isLoading: () => boolean;
 }
 
 let spareNoteWindow: SpareNoteWindow | undefined;
 let spareNoteWindowTimer: ReturnType<typeof setTimeout> | undefined;
 let settingsWatcherTimer: ReturnType<typeof setTimeout> | undefined;
 let isWatchingSettings: boolean = false;
-let noteOpenDiagnosticsEnabled: boolean = false;
 let noteWindowPreloadingEnabled: boolean = true;
-let nextSpareDiagnosticId: number = 0;
-
-function noteOpenTrace(label: string): (stage: string) => void {
-    if (!noteOpenDiagnosticsEnabled) {
-        return () => {};
-    }
-    const start = performance.now();
-    return (stage: string) => {
-        log.info(`[Performance] [noteOpen] ${label} ${stage} elapsed=${(performance.now() - start).toFixed(1)} ms (pid=${process.pid})`);
-    };
-}
 
 function readNoteWindowSettingsSnapshot(): string | undefined {
     try {
@@ -358,50 +345,27 @@ function scheduleSpareNoteWindow(delayMilliseconds: number): void {
         return;
     }
 
-    const trace = noteOpenTrace(`spareId=${noteOpenDiagnosticsEnabled ? ++nextSpareDiagnosticId : 0}`);
-    trace(`scheduled delay=${delayMilliseconds} ms`);
     spareNoteWindowTimer = setTimeout(() => {
         spareNoteWindowTimer = undefined;
         if (mainWindow == undefined || spareNoteWindow != undefined) {
-            trace('creation skipped');
             return;
         }
 
-        trace('creation started');
         watchSettingsForSpareNoteWindow();
 
         const settingsSnapshot: string | undefined = readNoteWindowSettingsSnapshot();
         const windowHasFrame: boolean = windowhasFrame();
-        trace('settings read');
         const window: BrowserWindow = buildNoteWindow(windowHasFrame, false, {});
-        trace(`window created webContentsId=${window.webContents.id}`);
         const loadStartTime: number = Date.now();
-        trace('load starting');
-        if (noteOpenDiagnosticsEnabled) {
-            window.webContents.once('did-start-loading', () => trace('did-start-loading'));
-            window.webContents.once('dom-ready', () => trace('dom-ready'));
-            window.webContents.once('did-stop-loading', () => trace('did-stop-loading'));
-        }
-        let loadFinished = false;
         const loaded: Promise<boolean> = new Promise((resolve) => {
             window.webContents.once('did-finish-load', () => {
-                loadFinished = true;
-                trace('did-finish-load');
                 log.info(`[App] Spare note window loaded in ${Date.now() - loadStartTime} ms.`);
                 resolve(true);
             });
-            window.webContents.once('did-fail-load', () => {
-                loadFinished = true;
-                trace('did-fail-load');
-                resolve(false);
-            });
-            window.once('closed', () => {
-                loadFinished = true;
-                trace('closed');
-                resolve(false);
-            });
+            window.webContents.once('did-fail-load', () => resolve(false));
+            window.once('closed', () => resolve(false));
         });
-        const spare: SpareNoteWindow = { window, windowHasFrame, settingsSnapshot, loaded, isLoading: () => !loadFinished };
+        const spare: SpareNoteWindow = { window, windowHasFrame, settingsSnapshot, loaded };
         spareNoteWindow = spare;
 
         window.on('closed', () => {
@@ -413,11 +377,10 @@ function scheduleSpareNoteWindow(delayMilliseconds: number): void {
     }, delayMilliseconds);
 }
 
-async function takeSpareNoteWindow(windowHasFrame: boolean, trace: (stage: string) => void): Promise<BrowserWindow | undefined> {
+async function takeSpareNoteWindow(windowHasFrame: boolean): Promise<BrowserWindow | undefined> {
     const spare: SpareNoteWindow | undefined = spareNoteWindow;
 
     if (spare == undefined) {
-        trace('spare=unavailable');
         log.info('[App] No spare note window available. Creating a new note window.');
         return undefined;
     }
@@ -425,18 +388,10 @@ async function takeSpareNoteWindow(windowHasFrame: boolean, trace: (stage: strin
     spareNoteWindow = undefined;
 
     // A spare that is still loading is always further along than a new window would be.
-    if (noteOpenDiagnosticsEnabled) {
-        trace(`spare wait started state=${spare.isLoading() ? 'loading' : 'settled'} webContentsId=${spare.window.webContents.id}`);
-    }
-    const waitStarted = noteOpenDiagnosticsEnabled ? performance.now() : 0;
     const isLoaded: boolean = await spare.loaded;
-    if (noteOpenDiagnosticsEnabled) {
-        trace(`spare wait finished loaded=${isLoaded} wait=${(performance.now() - waitStarted).toFixed(1)} ms`);
-    }
     const staleReason: string | undefined = isLoaded ? getStaleSpareReason(spare, windowHasFrame) : 'failed to load';
 
     if (staleReason != undefined) {
-        trace(`spare rejected reason=${staleReason}`);
         log.info(`[App] Spare note window not usable (${staleReason}). Creating a new note window.`);
         discardSpareNoteWindow(spare);
         return undefined;
@@ -512,8 +467,6 @@ function buildNoteWindow(
 }
 
 async function createNoteWindow(notePath: string, noteId: string, windowHasFrame: boolean): Promise<void> {
-    const trace = noteOpenTrace(`noteId=${noteId}`);
-    trace('main request received');
     // Load the previous state with fallback to defaults
     const noteWindowState = windowStateKeeper({
         defaultWidth: 800,
@@ -522,11 +475,9 @@ async function createNoteWindow(notePath: string, noteId: string, windowHasFrame
         file: `${noteId}.state`,
     });
 
-    trace('window state loaded');
-    let noteWindow: BrowserWindow | undefined = await takeSpareNoteWindow(windowHasFrame, trace);
+    let noteWindow: BrowserWindow | undefined = await takeSpareNoteWindow(windowHasFrame);
 
     if (noteWindow != undefined) {
-        trace(`using spare webContentsId=${noteWindow.webContents.id}`);
         if (noteWindowState.x != undefined && noteWindowState.y != undefined) {
             noteWindow.setBounds({
                 x: noteWindowState.x,
@@ -543,7 +494,6 @@ async function createNoteWindow(notePath: string, noteId: string, windowHasFrame
         noteWindow.webContents.executeJavaScript(`window.location.hash = ${JSON.stringify(`#/note?id=${encodeURIComponent(noteId)}`)};`);
         noteWindow.show();
         noteWindow.focus();
-        trace('spare navigation requested and shown');
     } else {
         // Create the window using the state information
         const newNoteWindow: BrowserWindow = buildNoteWindow(windowHasFrame, true, {
@@ -552,15 +502,7 @@ async function createNoteWindow(notePath: string, noteId: string, windowHasFrame
             width: noteWindowState.width,
             height: noteWindowState.height,
         });
-        trace(`new window created webContentsId=${newNoteWindow.webContents.id}`);
-        if (noteOpenDiagnosticsEnabled) {
-            newNoteWindow.webContents.once('did-start-loading', () => trace('new window did-start-loading'));
-            newNoteWindow.webContents.once('dom-ready', () => trace('new window dom-ready'));
-            newNoteWindow.webContents.once('did-finish-load', () => trace('new window did-finish-load'));
-            newNoteWindow.webContents.once('did-fail-load', () => trace('new window did-fail-load'));
-        }
         newNoteWindow.on('ready-to-show', () => {
-            trace('new window ready-to-show');
             newNoteWindow.show();
             newNoteWindow.focus();
         });
@@ -574,7 +516,6 @@ async function createNoteWindow(notePath: string, noteId: string, windowHasFrame
     // automatically (the listeners will be removed when the window is closed)
     // and restore the maximized or full screen state
     noteWindowState.manage(noteWindow);
-    trace('window state management registered');
 
     // Prepare the next note window in the background, after this one had time to render.
     scheduleSpareNoteWindow(500);
@@ -642,14 +583,9 @@ try {
         screen.on('display-removed', recoverOffScreenWindows);
         screen.on('display-metrics-changed', recoverOffScreenWindows);
 
-        // Opt-in via Settings > Advanced > Diagnostics. Applies after a restart, like the renderer monitors.
         const settings = new SettingsStore(app.getPath('userData'));
-        noteOpenDiagnosticsEnabled = settings.get('performanceDiagnosticsEnabled', false);
         noteWindowPreloadingEnabled = settings.get('noteWindowPreloadingEnabled', true);
         log.info(`[App] Note window preloading ${noteWindowPreloadingEnabled ? 'enabled' : 'disabled'}.`);
-        if (noteOpenDiagnosticsEnabled) {
-            require('./main/event-loop-monitor').monitorMainProcessEventLoop(log);
-        }
     });
 
     // Quit when all windows are closed.

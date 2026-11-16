@@ -26,14 +26,6 @@ export class Settings implements BaseSettings {
         this.settings.set('language', v);
     }
 
-    public get performanceDiagnosticsEnabled(): boolean {
-        return this.settings.get('performanceDiagnosticsEnabled', false);
-    }
-
-    public set performanceDiagnosticsEnabled(value: boolean) {
-        this.settings.set('performanceDiagnosticsEnabled', value);
-    }
-
     public get noteWindowPreloadingEnabled(): boolean {
         return this.settings.get('noteWindowPreloadingEnabled', true);
     }

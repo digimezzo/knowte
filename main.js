@@ -228,18 +228,7 @@ let spareNoteWindow;
 let spareNoteWindowTimer;
 let settingsWatcherTimer;
 let isWatchingSettings = false;
-let noteOpenDiagnosticsEnabled = false;
 let noteWindowPreloadingEnabled = true;
-let nextSpareDiagnosticId = 0;
-function noteOpenTrace(label) {
-    if (!noteOpenDiagnosticsEnabled) {
-        return () => { };
-    }
-    const start = performance.now();
-    return (stage) => {
-        electron_log_1.default.info(`[Performance] [noteOpen] ${label} ${stage} elapsed=${(performance.now() - start).toFixed(1)} ms (pid=${process.pid})`);
-    };
-}
 function readNoteWindowSettingsSnapshot() {
     try {
         const settingsFile = path.join(electron_1.app.getPath('userData'), 'config.json');
@@ -319,48 +308,25 @@ function scheduleSpareNoteWindow(delayMilliseconds) {
     if (!noteWindowPreloadingEnabled || spareNoteWindow != undefined || spareNoteWindowTimer != undefined) {
         return;
     }
-    const trace = noteOpenTrace(`spareId=${noteOpenDiagnosticsEnabled ? ++nextSpareDiagnosticId : 0}`);
-    trace(`scheduled delay=${delayMilliseconds} ms`);
     spareNoteWindowTimer = setTimeout(() => {
         spareNoteWindowTimer = undefined;
         if (mainWindow == undefined || spareNoteWindow != undefined) {
-            trace('creation skipped');
             return;
         }
-        trace('creation started');
         watchSettingsForSpareNoteWindow();
         const settingsSnapshot = readNoteWindowSettingsSnapshot();
         const windowHasFrame = windowhasFrame();
-        trace('settings read');
         const window = buildNoteWindow(windowHasFrame, false, {});
-        trace(`window created webContentsId=${window.webContents.id}`);
         const loadStartTime = Date.now();
-        trace('load starting');
-        if (noteOpenDiagnosticsEnabled) {
-            window.webContents.once('did-start-loading', () => trace('did-start-loading'));
-            window.webContents.once('dom-ready', () => trace('dom-ready'));
-            window.webContents.once('did-stop-loading', () => trace('did-stop-loading'));
-        }
-        let loadFinished = false;
         const loaded = new Promise((resolve) => {
             window.webContents.once('did-finish-load', () => {
-                loadFinished = true;
-                trace('did-finish-load');
                 electron_log_1.default.info(`[App] Spare note window loaded in ${Date.now() - loadStartTime} ms.`);
                 resolve(true);
             });
-            window.webContents.once('did-fail-load', () => {
-                loadFinished = true;
-                trace('did-fail-load');
-                resolve(false);
-            });
-            window.once('closed', () => {
-                loadFinished = true;
-                trace('closed');
-                resolve(false);
-            });
+            window.webContents.once('did-fail-load', () => resolve(false));
+            window.once('closed', () => resolve(false));
         });
-        const spare = { window, windowHasFrame, settingsSnapshot, loaded, isLoading: () => !loadFinished };
+        const spare = { window, windowHasFrame, settingsSnapshot, loaded };
         spareNoteWindow = spare;
         window.on('closed', () => {
             if (spareNoteWindow === spare) {
@@ -370,27 +336,18 @@ function scheduleSpareNoteWindow(delayMilliseconds) {
         window.loadURL(noteWindowUrl());
     }, delayMilliseconds);
 }
-function takeSpareNoteWindow(windowHasFrame, trace) {
+function takeSpareNoteWindow(windowHasFrame) {
     return __awaiter(this, void 0, void 0, function* () {
         const spare = spareNoteWindow;
         if (spare == undefined) {
-            trace('spare=unavailable');
             electron_log_1.default.info('[App] No spare note window available. Creating a new note window.');
             return undefined;
         }
         spareNoteWindow = undefined;
         // A spare that is still loading is always further along than a new window would be.
-        if (noteOpenDiagnosticsEnabled) {
-            trace(`spare wait started state=${spare.isLoading() ? 'loading' : 'settled'} webContentsId=${spare.window.webContents.id}`);
-        }
-        const waitStarted = noteOpenDiagnosticsEnabled ? performance.now() : 0;
         const isLoaded = yield spare.loaded;
-        if (noteOpenDiagnosticsEnabled) {
-            trace(`spare wait finished loaded=${isLoaded} wait=${(performance.now() - waitStarted).toFixed(1)} ms`);
-        }
         const staleReason = isLoaded ? getStaleSpareReason(spare, windowHasFrame) : 'failed to load';
         if (staleReason != undefined) {
-            trace(`spare rejected reason=${staleReason}`);
             electron_log_1.default.info(`[App] Spare note window not usable (${staleReason}). Creating a new note window.`);
             discardSpareNoteWindow(spare);
             return undefined;
@@ -442,8 +399,6 @@ function buildNoteWindow(windowHasFrame, show, bounds) {
 }
 function createNoteWindow(notePath, noteId, windowHasFrame) {
     return __awaiter(this, void 0, void 0, function* () {
-        const trace = noteOpenTrace(`noteId=${noteId}`);
-        trace('main request received');
         // Load the previous state with fallback to defaults
         const noteWindowState = windowStateKeeper({
             defaultWidth: 800,
@@ -451,10 +406,8 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
             path: notePath,
             file: `${noteId}.state`,
         });
-        trace('window state loaded');
-        let noteWindow = yield takeSpareNoteWindow(windowHasFrame, trace);
+        let noteWindow = yield takeSpareNoteWindow(windowHasFrame);
         if (noteWindow != undefined) {
-            trace(`using spare webContentsId=${noteWindow.webContents.id}`);
             if (noteWindowState.x != undefined && noteWindowState.y != undefined) {
                 noteWindow.setBounds({
                     x: noteWindowState.x,
@@ -471,7 +424,6 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
             noteWindow.webContents.executeJavaScript(`window.location.hash = ${JSON.stringify(`#/note?id=${encodeURIComponent(noteId)}`)};`);
             noteWindow.show();
             noteWindow.focus();
-            trace('spare navigation requested and shown');
         }
         else {
             // Create the window using the state information
@@ -481,15 +433,7 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
                 width: noteWindowState.width,
                 height: noteWindowState.height,
             });
-            trace(`new window created webContentsId=${newNoteWindow.webContents.id}`);
-            if (noteOpenDiagnosticsEnabled) {
-                newNoteWindow.webContents.once('did-start-loading', () => trace('new window did-start-loading'));
-                newNoteWindow.webContents.once('dom-ready', () => trace('new window dom-ready'));
-                newNoteWindow.webContents.once('did-finish-load', () => trace('new window did-finish-load'));
-                newNoteWindow.webContents.once('did-fail-load', () => trace('new window did-fail-load'));
-            }
             newNoteWindow.on('ready-to-show', () => {
-                trace('new window ready-to-show');
                 newNoteWindow.show();
                 newNoteWindow.focus();
             });
@@ -501,7 +445,6 @@ function createNoteWindow(notePath, noteId, windowHasFrame) {
         // automatically (the listeners will be removed when the window is closed)
         // and restore the maximized or full screen state
         noteWindowState.manage(noteWindow);
-        trace('window state management registered');
         // Prepare the next note window in the background, after this one had time to render.
         scheduleSpareNoteWindow(500);
     });
@@ -555,14 +498,9 @@ try {
     electron_1.app.on('ready', () => {
         electron_1.screen.on('display-removed', recoverOffScreenWindows);
         electron_1.screen.on('display-metrics-changed', recoverOffScreenWindows);
-        // Opt-in via Settings > Advanced > Diagnostics. Applies after a restart, like the renderer monitors.
         const settings = new settings_store_1.SettingsStore(electron_1.app.getPath('userData'));
-        noteOpenDiagnosticsEnabled = settings.get('performanceDiagnosticsEnabled', false);
         noteWindowPreloadingEnabled = settings.get('noteWindowPreloadingEnabled', true);
         electron_log_1.default.info(`[App] Note window preloading ${noteWindowPreloadingEnabled ? 'enabled' : 'disabled'}.`);
-        if (noteOpenDiagnosticsEnabled) {
-            require('./main/event-loop-monitor').monitorMainProcessEventLoop(electron_log_1.default);
-        }
     });
     // Quit when all windows are closed.
     electron_1.app.on('window-all-closed', () => {

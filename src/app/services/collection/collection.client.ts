@@ -5,7 +5,6 @@ import { Constants } from '../../common/application/constants';
 import { Operation } from '../../common/enums/operation';
 import { Scheduler } from '../../common/scheduling/scheduler';
 import { TasksCount } from '../../common/ui/tasks-count';
-import { PerformanceDiagnostics } from '../../common/logging/performance-diagnostics';
 import { Logger } from '../../common/logging/logger';
 import { Notebook } from '../../data/entities/notebook';
 import { NoteDetailsResult } from '../results/note-details-result';
@@ -93,32 +92,19 @@ export class CollectionClient implements OnDestroy {
     public noteZoomPercentageChanged$: Observable<void> = this.noteZoomPercentageChanged.asObservable();
 
     public async getNoteDetailsAsync(noteId: string): Promise<NoteDetailsResult> {
-        await PerformanceDiagnostics.measureAsync(
-            `NoteOpen.detailsClient.waitForCollection noteId=${noteId}`, () => this.waitForInitializedAsync(), true,
+        await this.waitForInitializedAsync();
+
+        let noteDetailsResult: NoteDetailsResult | null = null;
+
+        this.globalEmitter.emit(
+            CollectionEvents.getNoteDetailsEvent,
+            noteId,
+            (receivedNoteDetailsResult: NoteDetailsResult) => (noteDetailsResult = receivedNoteDetailsResult)
         );
 
-        let noteDetailsResult: NoteDetailsResult;
-        const finishCallback = PerformanceDiagnostics.start(`NoteOpen.detailsClient.callback noteId=${noteId}`, true);
-        PerformanceDiagnostics.measure(
-            `NoteOpen.detailsClient.emit noteId=${noteId}`,
-            () => this.globalEmitter.emit(
-                CollectionEvents.getNoteDetailsEvent,
-                noteId,
-                (receivedNoteDetailsResult: NoteDetailsResult) => {
-                    noteDetailsResult = receivedNoteDetailsResult;
-                    finishCallback();
-                },
-            ),
-            true,
-        );
-
-        const finishPolling = PerformanceDiagnostics.start(`NoteOpen.detailsClient.poll noteId=${noteId}`, true);
-        let polls = 0;
         while (noteDetailsResult === null || noteDetailsResult === undefined) {
-            polls++;
             await this.scheduler.sleepAsync(50);
         }
-        finishPolling(`polls=${polls}`);
 
         return noteDetailsResult;
     }
