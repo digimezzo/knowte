@@ -93,32 +93,19 @@ export class CollectionClient implements OnDestroy {
     public noteZoomPercentageChanged$: Observable<void> = this.noteZoomPercentageChanged.asObservable();
 
     public async getNoteDetailsAsync(noteId: string): Promise<NoteDetailsResult> {
-        await PerformanceDiagnostics.measureAsync(
-            `NoteOpen.detailsClient.waitForCollection noteId=${noteId}`, () => this.waitForInitializedAsync(), true,
+        await this.waitForInitializedAsync();
+
+        let noteDetailsResult: NoteDetailsResult | null = null;
+
+        this.globalEmitter.emit(
+            CollectionEvents.getNoteDetailsEvent,
+            noteId,
+            (receivedNoteDetailsResult: NoteDetailsResult) => (noteDetailsResult = receivedNoteDetailsResult)
         );
 
-        let noteDetailsResult: NoteDetailsResult;
-        const finishCallback = PerformanceDiagnostics.start(`NoteOpen.detailsClient.callback noteId=${noteId}`, true);
-        PerformanceDiagnostics.measure(
-            `NoteOpen.detailsClient.emit noteId=${noteId}`,
-            () => this.globalEmitter.emit(
-                CollectionEvents.getNoteDetailsEvent,
-                noteId,
-                (receivedNoteDetailsResult: NoteDetailsResult) => {
-                    noteDetailsResult = receivedNoteDetailsResult;
-                    finishCallback();
-                },
-            ),
-            true,
-        );
-
-        const finishPolling = PerformanceDiagnostics.start(`NoteOpen.detailsClient.poll noteId=${noteId}`, true);
-        let polls = 0;
         while (noteDetailsResult === null || noteDetailsResult === undefined) {
-            polls++;
             await this.scheduler.sleepAsync(50);
         }
-        finishPolling(`polls=${polls}`);
 
         return noteDetailsResult;
     }
