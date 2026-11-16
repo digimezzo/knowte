@@ -1,4 +1,4 @@
-import { Component, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, NgZone, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import * as remote from '@electron/remote';
@@ -12,8 +12,6 @@ import { SpellCheckService } from './services/spell-check/spell-check.service';
 import { TemporaryStorageService } from './services/temporary-storage/temporary-storage.service';
 import { TrashService } from './services/trash/trash.service';
 import { BackupService } from './services/backup/backup.service';
-import { PerformanceDiagnostics } from './common/logging/performance-diagnostics';
-import { BaseSettings } from './common/settings/base-settings';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmation-dialog/confirmation-dialog.component';
 import { TranslatorService } from './services/translator/translator.service';
 import { ConfirmationDialogData } from './components/dialogs/confirmation-dialog/confirmation-dialog-data';
@@ -27,7 +25,6 @@ import { MatDrawer } from '@angular/material/sidenav';
 })
 export class AppComponent implements OnInit, OnDestroy {
     private subscription: Subscription = new Subscription();
-    private stopPerformanceMonitoring: () => void;
     private isClosingAllowed: boolean = false;
     private isPreparingClose: boolean = false;
 
@@ -41,26 +38,20 @@ export class AppComponent implements OnInit, OnDestroy {
         public trash: TrashService,
         private backup: BackupService,
         private zone: NgZone,
-        private settings: BaseSettings,
         private dialog: MatDialog,
         private translator: TranslatorService,
     ) {
         log.create('renderer');
         log.transports.file.resolvePath = () => path.join(remote.app.getPath('userData'), 'logs', 'Knowte.log');
-        PerformanceDiagnostics.configure(this.settings.performanceDiagnosticsEnabled);
     }
 
     @ViewChild('drawer') public drawer!: MatDrawer;
 
     public ngOnDestroy(): void {
-        this.stopPerformanceMonitoring?.();
         this.subscription.unsubscribe();
     }
 
     public ngOnInit(): void {
-        this.zone.runOutsideAngular(() => {
-            this.stopPerformanceMonitoring = PerformanceDiagnostics.monitorEventLoop(this.isNoteWindow() ? 'Note window' : 'Main window');
-        });
         if (!this.isNoteWindow()) {
             this.temporaryStorageService.clearDecryptedMarkdownAttachmentsCache();
             this.backup.start();

@@ -7,7 +7,6 @@ import { Constants } from '../../common/application/constants';
 import { Operation } from '../../common/enums/operation';
 import { FileAccess } from '../../common/io/file-access';
 import { Logger } from '../../common/logging/logger';
-import { PerformanceDiagnostics } from '../../common/logging/performance-diagnostics';
 import { Scheduler } from '../../common/scheduling/scheduler';
 import { BaseSettings } from '../../common/settings/base-settings';
 import { TasksCount } from '../../common/ui/tasks-count';
@@ -825,7 +824,6 @@ export class CollectionService implements OnDestroy {
     }
 
     public async getNotesAsync(notebookId: string, category: string, useExactDates: boolean): Promise<Note[]> {
-        const finish = PerformanceDiagnostics.start('Collection.refreshNotes', true);
         const notesCountResult: NotesCountResult = new NotesCountResult();
 
         let notes: Note[] = [];
@@ -908,8 +906,6 @@ export class CollectionService implements OnDestroy {
             this.notesCountChanged.next(notesCountResult);
         } catch (error) {
             this.logger.error(`Could not get notes. Cause: ${error}`, 'CollectionService', 'getNotesAsync');
-        } finally {
-            finish(`returnedNotes=${notes.length}; matchingNotes=${notesCountResult.allNotesCount}`);
         }
 
         return notes;

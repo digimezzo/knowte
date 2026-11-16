@@ -23,15 +23,6 @@ jest.mock('./settings-store', () => {
 describe('Settings skipTrashForEmptyNotes', () => {
     beforeEach(() => storedSettings.clear());
 
-    it('keeps performance diagnostics off by default and persists the opt-in', () => {
-        expect(new Settings().performanceDiagnosticsEnabled).toBe(false);
-        const settings = new Settings();
-        settings.performanceDiagnosticsEnabled = true;
-        expect(new Settings().performanceDiagnosticsEnabled).toBe(true);
-        settings.performanceDiagnosticsEnabled = false;
-        expect(new Settings().performanceDiagnosticsEnabled).toBe(false);
-    });
-
     it('enables note window preloading by default and remembers changes', () => {
         storedSettings.set('language', 'en');
         expect(new Settings().noteWindowPreloadingEnabled).toBe(true);

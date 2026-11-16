@@ -5,7 +5,6 @@ import { Constants } from '../../common/application/constants';
 import { Operation } from '../../common/enums/operation';
 import { Scheduler } from '../../common/scheduling/scheduler';
 import { TasksCount } from '../../common/ui/tasks-count';
-import { PerformanceDiagnostics } from '../../common/logging/performance-diagnostics';
 import { Logger } from '../../common/logging/logger';
 import { Notebook } from '../../data/entities/notebook';
 import { NoteDetailsResult } from '../results/note-details-result';
