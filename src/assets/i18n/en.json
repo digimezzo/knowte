@@ -110,7 +110,10 @@
         "CollectionsDirectory": "Collections directory",
         "SelectOtherCollectionsDirectory": "Select another collections directory",
         "SelectButton": "SELECT...",
-        "SkipTrashForEmptyNotes": "Permanently delete empty notes (no text, images or attachments) instead of moving them to the trash"
+        "SkipTrashForEmptyNotes": "Permanently delete empty notes (no text, images or attachments) instead of moving them to the trash",
+        "LogFile": "Log file",
+        "SomethingWrongLookInLogFile": "Did something go wrong? Have a look in the log file.",
+        "ViewLog": "View log"
     },
     "ComponentsPage": {
         "Components": "Components"

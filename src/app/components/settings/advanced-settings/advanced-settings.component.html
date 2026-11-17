@@ -28,4 +28,10 @@
         {{ 'SettingsPage.EnableNoteWindowPreloading' | translate }}
     </app-toggle-switch>
     <div class="mt-2">{{ 'SettingsPage.NoteWindowPreloadingDescription' | translate }}</div>
+    <mat-divider class="my-3"></mat-divider>
+    <div class="title1 mt-2">{{ 'SettingsPage.LogFile' | translate }}</div>
+    <div>{{ 'SettingsPage.SomethingWrongLookInLogFile' | translate }}</div>
+    <app-accent-button class="mt-2" (click)="this.viewLog()">
+        {{ 'SettingsPage.ViewLog' | translate }}
+    </app-accent-button>
 </div>

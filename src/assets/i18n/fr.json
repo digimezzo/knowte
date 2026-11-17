@@ -78,7 +78,10 @@
         "CollectionsDirectory": "Collections directory",
         "SelectOtherCollectionsDirectory": "Select another collections directory",
         "SelectButton": "SELECT...",
-        "SkipTrashForEmptyNotes": "Supprimer définitivement les notes vides (sans texte, images ni pièces jointes) au lieu de les déplacer dans la corbeille"
+        "SkipTrashForEmptyNotes": "Supprimer définitivement les notes vides (sans texte, images ni pièces jointes) au lieu de les déplacer dans la corbeille",
+        "LogFile": "Fichier journal",
+        "SomethingWrongLookInLogFile": "Quelque chose s'est mal passé ? Jetez un oeil dans le fichier journal.",
+        "ViewLog": "Consulter journal"
     },
     "ComponentsPage": {
         "Components": "Composants"

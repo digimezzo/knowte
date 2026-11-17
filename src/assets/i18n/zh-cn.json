@@ -78,7 +78,10 @@
         "CollectionsDirectory": "Collections directory",
         "SelectOtherCollectionsDirectory": "Select another collections directory",
         "SelectButton": "SELECT...",
-        "SkipTrashForEmptyNotes": "Permanently delete empty notes (no text, images or attachments) instead of moving them to the trash"
+        "SkipTrashForEmptyNotes": "Permanently delete empty notes (no text, images or attachments) instead of moving them to the trash",
+        "LogFile": "日志文件",
+        "SomethingWrongLookInLogFile": "是否发生错误了？请在日志文件里查看。",
+        "ViewLog": "查看日志"
     },
     "ComponentsPage": {
         "Components": "组件"

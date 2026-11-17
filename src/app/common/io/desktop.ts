@@ -3,6 +3,8 @@ import * as remote from '@electron/remote';
 import { execSync } from 'child_process';
 import { ipcRenderer } from 'electron';
 import { Observable, Subject } from 'rxjs';
+import * as os from 'os';
+import * as path from 'path';
 
 @Injectable()
 export class Desktop implements OnDestroy {
@@ -52,12 +54,29 @@ export class Desktop implements OnDestroy {
         remote.shell.openExternal(url);
     }
 
-    public showInFolder(fullPath: string): void {
-        remote.shell.showItemInFolder(fullPath);
+    public showInFolder(filePath: string): void {
+        if (process.platform === 'linux' && process.env.SNAP != undefined && !this.isInHomeDirectory(filePath)) {
+            void remote.shell.openPath(path.dirname(filePath)).catch(() => undefined);
+            return;
+        }
+
+        remote.shell.showItemInFolder(filePath);
     }
 
-    public openPath(fullPath: string): void {
-        remote.shell.openPath(fullPath);
+    private isInHomeDirectory(filePath: string): boolean {
+        const homeDirectory = os.homedir();
+
+        if (homeDirectory === '') {
+            return false;
+        }
+
+        const relativePath = path.relative(path.resolve(homeDirectory), path.resolve(filePath));
+
+        return relativePath === '' || (!relativePath.startsWith('..') && !path.isAbsolute(relativePath));
+    }
+
+    public openPath(filePath: string): void {
+        remote.shell.openPath(filePath);
     }
 
     public shouldUseDarkColors(): boolean {

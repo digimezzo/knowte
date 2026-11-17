@@ -9,6 +9,7 @@ import {BaseAppearanceService} from "../../../services/appearance/base-appearanc
 import {MatDialog} from "@angular/material/dialog";
 import {Router} from "@angular/router";
 import {Logger} from "../../../common/logging/logger";
+import { LogViewer } from '../../../common/io/log-viewer';
 
 @Component({
     selector: 'app-advanced-settings',
@@ -24,6 +25,7 @@ export class AdvancedSettingsComponent {
         private translator: TranslatorService,
         private collectionService: CollectionService,
         public appearance: BaseAppearanceService,
+        private logViewer: LogViewer,
         private dialog: MatDialog,
         public router: Router,
         private logger: Logger
@@ -91,5 +93,9 @@ export class AdvancedSettingsComponent {
 
         await this.router.navigate(['/collection']);
 
+    }
+
+    public viewLog(): void {
+        this.logViewer.viewLog();
     }
 }

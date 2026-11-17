@@ -78,7 +78,10 @@
         "CollectionsDirectory": "Collections directory",
         "SelectOtherCollectionsDirectory": "Select another collections directory",
         "SelectButton": "SELECT...",
-        "SkipTrashForEmptyNotes": "Verwijder lege notities (zonder tekst, afbeeldingen of bijlagen) permanent in plaats van ze naar de prullenbak te verplaatsen"
+        "SkipTrashForEmptyNotes": "Verwijder lege notities (zonder tekst, afbeeldingen of bijlagen) permanent in plaats van ze naar de prullenbak te verplaatsen",
+        "LogFile": "Log bestand",
+        "SomethingWrongLookInLogFile": "Is er iets misgegaan? Kijk eens in het logbestand.",
+        "ViewLog": "Raadpleeg logbestand"
     },
     "ComponentsPage": {
         "Components": "Componenten"

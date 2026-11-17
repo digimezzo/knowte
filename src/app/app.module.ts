@@ -135,6 +135,7 @@ import { NotesSettingsComponent } from './components/settings/notes-settings/not
 import { InformationComponentsComponent } from './components/information/information-components/information-components.component';
 import { InformationAboutComponent } from './components/information/information-about/information-about.component';
 import { SanitizeMarkdownPipe } from './pipes/sanitize-markdown.pipe';
+import { LogViewer } from './common/io/log-viewer';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -278,6 +279,7 @@ export const CustomTooltipDefaults: MatTooltipDefaultOptions = {
         Logger,
         NoteCreator,
         FileAccess,
+        LogViewer,
         CollectionPathConverter,
         CollectionFileAccess,
         CollectionDataStoreAccess,
