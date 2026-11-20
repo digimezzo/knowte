@@ -61,6 +61,7 @@ export class BackupSettingsComponent {
         try {
             const result = await remote.dialog.showOpenDialog({
                 title: await this.translator.getAsync('Backup.Restore'),
+                defaultPath: this.settings.backupDirectory || undefined,
                 properties: ['openFile'],
                 filters: [{ name: 'Knowte backup', extensions: ['knowtebackup'] }],
             });
