@@ -76,7 +76,7 @@ function createMainWindow(): void {
 
         // Load the previous state with fallback to defaults
         const mainWindowState = windowStateKeeper({
-            defaultWidth: 850,
+            defaultWidth: 1000,
             defaultHeight: 600,
         });
 

@@ -84,7 +84,7 @@ function createMainWindow() {
         electron_1.Menu.setApplicationMenu(undefined);
         // Load the previous state with fallback to defaults
         const mainWindowState = windowStateKeeper({
-            defaultWidth: 850,
+            defaultWidth: 1000,
             defaultHeight: 600,
         });
         // Create the window using the state information
