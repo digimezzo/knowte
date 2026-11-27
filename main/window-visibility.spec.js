@@ -4,6 +4,91 @@ const vm = require('vm');
 const typescript = require('typescript');
 const { EventEmitter } = require('events');
 
+describe('Snap window frames', () => {
+    function setup(platform, snap, savedPreference) {
+        const windows = [];
+        const storedSettings = new Map();
+        if (savedPreference !== undefined) {
+            storedSettings.set('useCustomTitleBar', savedPreference);
+        }
+        class MockWindow extends EventEmitter {
+            constructor(options) {
+                super();
+                this.options = options;
+                this.webContents = new EventEmitter();
+                this.webContents.setWindowOpenHandler = jest.fn();
+                this.loadURL = jest.fn();
+                windows.push(this);
+            }
+        }
+        const app = {
+            commandLine: { appendSwitch: jest.fn() },
+            getPath: () => '/tmp/knowte-test',
+            requestSingleInstanceLock: () => true,
+            on: jest.fn(),
+            quit: jest.fn(),
+        };
+        const logger = { create: jest.fn(), info: jest.fn(), transports: { file: {} } };
+        const mocks = {
+            electron: { app, BrowserWindow: MockWindow, Menu: { setApplicationMenu: jest.fn() },
+                ipcMain: { on: jest.fn() } },
+            'electron-log': { default: logger },
+            '@electron/remote/main': { initialize: jest.fn(), enable: jest.fn() },
+            'electron-window-state': () => ({ manage: jest.fn() }),
+            os: { platform: () => platform },
+            './src/app/common/settings/settings-store': {
+                SettingsStore: class {
+                    has(key) { return storedSettings.has(key); }
+                    get(key) { return storedSettings.get(key); }
+                    set(key, value) { storedSettings.set(key, value); }
+                },
+            },
+            'fs-extra': {},
+            './main/backup-controller': { registerBackups: jest.fn() },
+            './main/linux-accent-monitor': { startLinuxAccentMonitor: jest.fn() },
+        };
+        const source = fs.readFileSync(path.join(__dirname, '../main.ts'), 'utf8');
+        const compiled = typescript.transpileModule(source, {
+            compilerOptions: { module: typescript.ModuleKind.CommonJS, target: typescript.ScriptTarget.ES2017 },
+        });
+        const globals = {};
+        const main = vm.runInNewContext(compiled.outputText + '\n({ createMainWindow, createNoteWindow });', {
+            require: (name) => Object.prototype.hasOwnProperty.call(mocks, name) ? mocks[name] : require(name),
+            exports: {},
+            process: { argv: [], env: snap === undefined ? {} : { SNAP: snap }, platform },
+            global: globals,
+            __dirname: path.join(__dirname, '..'),
+            console,
+            setTimeout: jest.fn(),
+        });
+        return { main, globals, windows, storedSettings };
+    }
+
+    test.each([false, true, undefined])('forces frameless main and note windows on Snap with preference %s', async (preference) => {
+        const { main, globals, windows, storedSettings } = setup('linux', '/snap/knowte/current', preference);
+        main.createMainWindow();
+        await main.createNoteWindow('/notes', 'note-id', true);
+        expect(windows.map((window) => window.options.frame)).toEqual([false, false]);
+        expect(globals.isSnap).toBe(true);
+        expect(globals.windowHasFrame).toBe(false);
+        expect(storedSettings.get('useCustomTitleBar')).toBe(preference);
+        expect(storedSettings.has('useCustomTitleBar')).toBe(preference !== undefined);
+    });
+
+    test.each([
+        ['linux', undefined, false, true],
+        ['linux', undefined, true, false],
+        ['win32', '/snap/knowte/current', false, true],
+    ])('preserves the saved frame preference outside Snap on %s', async (platform, snap, preference, hasFrame) => {
+        const { main, globals, windows } = setup(platform, snap, preference);
+        main.createMainWindow();
+        await main.createNoteWindow('/notes', 'note-id', hasFrame);
+        expect(windows.map((window) => window.options.frame)).toEqual([hasFrame, hasFrame]);
+        expect(globals.isSnap).toBe(false);
+        expect(globals.windowHasFrame).toBe(hasFrame);
+    });
+});
+
 describe('Main window startup visibility', () => {
     let window;
     let scheduleSpare;

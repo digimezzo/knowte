@@ -3,6 +3,7 @@ import {BaseAppearanceService} from "../../../services/appearance/base-appearanc
 import {TranslatorService} from "../../../services/translator/translator.service";
 import {BaseSettings} from "../../../common/settings/base-settings";
 import {Desktop} from "../../../common/io/desktop";
+import { BaseApplication } from '../../../common/io/base-application';
 
 @Component({
     selector: 'app-appearance-settings',
@@ -13,12 +14,17 @@ import {Desktop} from "../../../common/io/desktop";
     standalone: false
 })
 export class AppearanceSettingsComponent {
+    public readonly isSnap: boolean;
+
     public constructor(
         public appearance: BaseAppearanceService,
         public translator: TranslatorService,
         public settings: BaseSettings,
         private desktop: Desktop,
-    ) {}
+        application: BaseApplication,
+    ) {
+        this.isSnap = application.getGlobal('isSnap') === true;
+    }
 
     public get useCustomTitleBarChecked(): boolean {
         return this.settings.useCustomTitleBar;

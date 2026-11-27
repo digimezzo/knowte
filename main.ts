@@ -25,6 +25,8 @@ const serve = args.some((val) => val === '--serve');
 // Workaround: Global does not allow setting custom properties.
 // We need to cast it to "any" first.
 const globalAny: any = global;
+const isSnap: boolean = process.platform === 'linux' && process.env.SNAP != undefined;
+globalAny.isSnap = isSnap;
 
 // Static folder is not detected correctly in production
 if (process.env.NODE_ENV !== 'development') {
@@ -247,6 +249,10 @@ function openExternalLink(url: string): void {
 }
 
 function windowhasFrame(): boolean {
+    if (isSnap) {
+        return false;
+    }
+
     const settings = new SettingsStore(app.getPath('userData'));
 
     if (!settings.has('useCustomTitleBar')) {
@@ -480,6 +486,10 @@ function buildNoteWindow(
 }
 
 async function createNoteWindow(notePath: string, noteId: string, windowHasFrame: boolean): Promise<void> {
+    if (isSnap) {
+        windowHasFrame = false;
+    }
+
     // Load the previous state with fallback to defaults
     const noteWindowState = windowStateKeeper({
         defaultWidth: 800,

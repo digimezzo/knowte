@@ -45,9 +45,11 @@
       </mat-select>
     </mat-form-field>
   </div>
-  <mat-divider class="my-3"></mat-divider>
-  <div class="title1 mt-2">{{ 'SettingsPage.TitleBar' | translate }}</div>
-  <app-toggle-switch class="mt-2" [(isChecked)]="useCustomTitleBarChecked">
-    {{ 'SettingsPage.UseCustomTitleBar' | translate }}
-  </app-toggle-switch>
+  @if (!isSnap) {
+    <mat-divider class="my-3"></mat-divider>
+    <div class="title1 mt-2">{{ 'SettingsPage.TitleBar' | translate }}</div>
+    <app-toggle-switch class="mt-2" [(isChecked)]="useCustomTitleBarChecked">
+      {{ 'SettingsPage.UseCustomTitleBar' | translate }}
+    </app-toggle-switch>
+  }
 </div>

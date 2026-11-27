@@ -42,6 +42,8 @@ const serve = args.some((val) => val === '--serve');
 // Workaround: Global does not allow setting custom properties.
 // We need to cast it to "any" first.
 const globalAny = global;
+const isSnap = process.platform === 'linux' && process.env.SNAP != undefined;
+globalAny.isSnap = isSnap;
 // Static folder is not detected correctly in production
 if (process.env.NODE_ENV !== 'development') {
     globalAny.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\');
@@ -224,6 +226,9 @@ function openExternalLink(url) {
     electron_1.shell.openExternal(url);
 }
 function windowhasFrame() {
+    if (isSnap) {
+        return false;
+    }
     const settings = new settings_store_1.SettingsStore(electron_1.app.getPath('userData'));
     if (!settings.has('useCustomTitleBar')) {
         if (os.platform() === 'win32') {
@@ -410,6 +415,9 @@ function buildNoteWindow(windowHasFrame, show, bounds) {
 }
 function createNoteWindow(notePath, noteId, windowHasFrame) {
     return __awaiter(this, void 0, void 0, function* () {
+        if (isSnap) {
+            windowHasFrame = false;
+        }
         // Load the previous state with fallback to defaults
         const noteWindowState = windowStateKeeper({
             defaultWidth: 800,
