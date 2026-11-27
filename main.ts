@@ -135,13 +135,26 @@ function createMainWindow(): void {
             app.quit();
         });
 
+        const window = mainWindow;
+        let hasShownMainWindow = false;
+        const showMainWindow = (reason: string): void => {
+            if (hasShownMainWindow || mainWindow !== window || window.isDestroyed()) {
+                return;
+            }
+
+            hasShownMainWindow = true;
+            log.info(`[Main] [showMainWindow] Showing main window (trigger: ${reason})`);
+            window.show();
+            window.focus();
+            scheduleSpareNoteWindow(0);
+        };
+
         // 'ready-to-show' doesn't fire on Windows in dev mode. In prod it seems to work.
         // See: https://github.com/electron/electron/issues/7779
-        mainWindow.on('ready-to-show', () => {
-            mainWindow.show();
-            mainWindow.focus();
-            scheduleSpareNoteWindow(0);
-        });
+        mainWindow.on('ready-to-show', () => showMainWindow('ready-to-show'));
+        // GPU/compositor initialization can prevent ready-to-show on the first snap launch.
+        mainWindow.webContents.on('did-finish-load', () => showMainWindow('did-finish-load'));
+        setTimeout(() => showMainWindow('timeout'), 10000);
 
         // Makes links open in external browser
         const handleRedirect = (e: any, localUrl: string) => {

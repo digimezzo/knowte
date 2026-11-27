@@ -2,6 +2,112 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const typescript = require('typescript');
+const { EventEmitter } = require('events');
+
+describe('Main window startup visibility', () => {
+    let window;
+    let scheduleSpare;
+
+    beforeEach(() => {
+        jest.useFakeTimers();
+        const app = {
+            commandLine: { appendSwitch: jest.fn() },
+            getPath: () => '/tmp/knowte-test',
+            requestSingleInstanceLock: () => true,
+            on: jest.fn(),
+            quit: jest.fn(),
+        };
+        class MockWindow extends EventEmitter {
+            constructor() {
+                super();
+                window = this;
+                this.webContents = new EventEmitter();
+                this.webContents.setWindowOpenHandler = jest.fn();
+                this.show = jest.fn();
+                this.focus = jest.fn();
+                this.loadURL = jest.fn();
+                this.isDestroyed = jest.fn(() => false);
+            }
+        }
+        const logger = { create: jest.fn(), info: jest.fn(), transports: { file: {} } };
+        const mocks = {
+            electron: { app, BrowserWindow: MockWindow, Menu: { setApplicationMenu: jest.fn() },
+                ipcMain: { on: jest.fn() } },
+            'electron-log': { default: logger },
+            '@electron/remote/main': { initialize: jest.fn(), enable: jest.fn() },
+            'electron-window-state': () => ({ manage: jest.fn() }),
+            './src/app/common/settings/settings-store': {
+                SettingsStore: class {
+                    has() { return true; }
+                    get() { return false; }
+                },
+            },
+            'fs-extra': {},
+            './main/backup-controller': { registerBackups: jest.fn() },
+        };
+        const source = fs.readFileSync(path.join(__dirname, '../main.ts'), 'utf8');
+        const compiled = typescript.transpileModule(source, {
+            compilerOptions: { module: typescript.ModuleKind.CommonJS, target: typescript.ScriptTarget.ES2017 },
+        });
+        scheduleSpare = jest.fn();
+        const createMainWindow = vm.runInNewContext(
+            compiled.outputText + '\nscheduleSpareNoteWindow = scheduleSpare; createMainWindow;',
+            {
+                require: (name) => Object.prototype.hasOwnProperty.call(mocks, name) ? mocks[name] : require(name),
+                exports: {},
+                process: { argv: [], env: {} },
+                global: {},
+                __dirname: path.join(__dirname, '..'),
+                console,
+                setTimeout,
+                scheduleSpare,
+            },
+        );
+        createMainWindow();
+    });
+
+    afterEach(() => jest.useRealTimers());
+
+    test.each(['ready-to-show', 'did-finish-load', 'timeout'])(
+        'shows and focuses the window once when %s fires first',
+        (trigger) => {
+            if (trigger === 'ready-to-show') {
+                window.emit('ready-to-show');
+            } else if (trigger === 'did-finish-load') {
+                window.webContents.emit('did-finish-load');
+            } else {
+                jest.advanceTimersByTime(9999);
+                expect(window.show).not.toHaveBeenCalled();
+                jest.advanceTimersByTime(1);
+            }
+
+            window.emit('ready-to-show');
+            window.webContents.emit('did-finish-load');
+            jest.advanceTimersByTime(10000);
+            expect(window.show).toHaveBeenCalledTimes(1);
+            expect(window.focus).toHaveBeenCalledTimes(1);
+            expect(scheduleSpare).toHaveBeenCalledTimes(1);
+            expect(scheduleSpare).toHaveBeenCalledWith(0);
+        },
+    );
+
+    test('does not show a closed window when a fallback fires', () => {
+        window.emit('closed');
+        window.webContents.emit('did-finish-load');
+        jest.advanceTimersByTime(10000);
+        expect(window.show).not.toHaveBeenCalled();
+        expect(scheduleSpare).not.toHaveBeenCalled();
+    });
+
+    test('does not show a destroyed window', () => {
+        window.isDestroyed.mockReturnValue(true);
+        window.emit('ready-to-show');
+        window.webContents.emit('did-finish-load');
+        jest.advanceTimersByTime(10000);
+        expect(window.show).not.toHaveBeenCalled();
+        expect(scheduleSpare).not.toHaveBeenCalled();
+    });
+});
 
 describe('Window recovery after display changes', () => {
     let screen;
